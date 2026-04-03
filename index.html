@@ -736,6 +736,17 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   return h;
 }
 
+// Korean particle helper (이/가, 을/를, 과/와) based on ohaeng index
+// 목(0)·금(3) have final consonant; 화(1)·토(2)·수(4) do not
+const OH_BC=[true,false,false,true,false];
+function ohP(idx,type){
+  const h=OH_BC[idx];
+  if(type==='i')return h?'이':'가';
+  if(type==='eul')return h?'을':'를';
+  if(type==='gwa')return h?'과':'와';
+  return '';
+}
+
 // 용신(用神) — favorable element
 function getYongsin(oh){
   const sheng=[1,2,3,4,0]; // 木→火→土→金→水→木
@@ -750,7 +761,7 @@ function getYongsin(oh){
   const ks=ke.indexOf(maxOh); // element that controls the strongest = also useful
 
   return{main:ys,support:ys2,control:ks,
-    desc:`가장 약한 ${OHNAME[ys]}을(를) 보강하는 것이 유리합니다. ${OHNAME[ys2]}도 도움이 됩니다.`};
+    desc:`가장 약한 ${OHNAME[ys]}${ohP(ys,'eul')} 보강하는 것이 유리합니다. ${OHNAME[ys2]}도 도움이 됩니다.`};
 }
 
 // ══════════════════════════════════════════════
@@ -1066,7 +1077,7 @@ function getWarnings(saju,oh){
   const maxV=Math.max(...oh);
   if(maxV>=4){
     const oi=oh.indexOf(maxV);
-    warns.push(`<b>${OHNAME[oi]} 과다</b>: 사주에서 ${OHNAME[oi]}이 과도합니다. ${['성급함과 분노 조절','감정 기복과 충동','변화 거부와 고집','냉정함과 고립','우유부단과 방황'][oi]} 경향에 주의하세요.`);
+    warns.push(`<b>${OHNAME[oi]} 과다</b>: 사주에서 ${OHNAME[oi]}${ohP(oi,'i')} 과도합니다. ${['성급함과 분노 조절','감정 기복과 충동','변화 거부와 고집','냉정함과 고립','우유부단과 방황'][oi]} 경향에 주의하세요.`);
   }
   const minV=Math.min(...oh);
   if(minV===0){
@@ -1192,8 +1203,8 @@ function getOhMBTILink(oh){
 
 function getHarmonyGuide(saju,mbti,info,oh,dm){
   const lines=[];
-  lines.push(`<b>타고난 천성</b>: ${dm.n}의 기질로 ${dm.core.substring(0,20)}... 특성을 가집니다.`);
-  lines.push(`<b>현재의 나</b>: MBTI ${mbti}(${info.title})로 ${info.desc.substring(0,40)}... 특성을 보입니다.`);
+  lines.push(`<b>타고난 천성</b>: ${dm.n} — ${dm.core}입니다.`);
+  lines.push(`<b>현재의 나</b>: MBTI ${mbti}(${info.title}) — ${info.desc}`);
 
   const score=[sameEIScore(saju,info),sameTFScore(saju,info)].filter(Boolean).length;
   if(score>=2){
@@ -1237,7 +1248,7 @@ function getCombinedWarnings(saju,mbti,info,oh,dm){
     warns.push('⚠️ <b>완벽주의</b> 성향이 이중으로 강합니다. 충분히 좋은 것(Good Enough)을 인정하는 자세가 스트레스 예방에 도움됩니다.');
 
   const maxOh=oh.indexOf(Math.max(...oh));
-  warns.push(`강한 ${OHNAME[maxOh]}과 MBTI ${mbti}의 조합: 장점은 극대화하되 각각의 약점이 상호 강화되지 않도록 자기 인식을 유지하세요.`);
+  warns.push(`강한 ${OHNAME[maxOh]}${ohP(maxOh,'gwa')} MBTI ${mbti}의 조합: 장점은 극대화하되 각각의 약점이 상호 강화되지 않도록 자기 인식을 유지하세요.`);
 
   return warns.map(w=>`<div class="abody" style="margin-bottom:8px;padding:9px 10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)">${w}</div>`).join('');
 }
@@ -1259,7 +1270,7 @@ function analyze(){
   if(!year||year<1900||year>2050){return showErr('년도는 1900~2050 사이로 입력해주세요.');}
   if(!month||month<1||month>12){return showErr('월은 1~12로 입력해주세요.');}
   if(!day||day<1||day>31){return showErr('일은 1~31로 입력해주세요.');}
-  if(mbti&&!MBTI_DB[mbti]){return showErr(`'${mbti}'은(는) 올바른 MBTI 유형이 아닙니다. 예) INTJ, ENFP, ESTJ 등`);}
+  if(mbti&&!MBTI_DB[mbti]){return showErr(`'${mbti}'는 올바른 MBTI 유형이 아닙니다. 예) INTJ, ENFP, ESTJ 등`);}
 
   // Show loading state
   const btn=document.querySelector('.analyze-btn');
