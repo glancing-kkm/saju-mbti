@@ -148,6 +148,38 @@ html,body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background
 .lsub{font-size:.73rem;color:var(--sub);margin-top:3px}
 
 .mbti-badge{display:inline-block;padding:6px 18px;border-radius:50px;font-size:1.1rem;font-weight:800;letter-spacing:3px;color:#fff;background:linear-gradient(135deg,#6D3206,#B8860B)}
+
+/* ── 운세 ── */
+.fcat-wrap{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.fcat{flex-shrink:0;padding:7px 13px;border:1.5px solid var(--border);border-radius:50px;font-size:.75rem;font-weight:600;color:var(--sub);background:var(--card);cursor:pointer;white-space:nowrap}
+.fcat.on{border-color:var(--accent);background:var(--accent);color:#fff}
+.fpanel{display:none}
+.fpanel.on{display:block}
+.star-on{color:#B8860B;font-size:.95rem}
+.star-off{color:#ddd;font-size:.95rem}
+.stars-row{display:flex;gap:2px;margin:4px 0 7px}
+.month-advice{margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)}
+.month-advice-label{font-size:.72rem;font-weight:700;color:var(--sub);margin-bottom:4px}
+.month-advice-body{font-size:.79rem;line-height:1.68}
+
+/* ── 궁합 ── */
+.ghap-form{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.score-ring-wrap{text-align:center;margin:14px 0 10px}
+.score-ring{width:90px;height:90px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 8px;border:5px solid}
+.sring-h{border-color:var(--wood)}
+.sring-m{border-color:var(--earth)}
+.sring-l{border-color:var(--fire)}
+.score-num{font-size:1.8rem;font-weight:700;line-height:1.1}
+.snum-h{color:var(--wood)}
+.snum-m{color:var(--earth)}
+.snum-l{color:var(--fire)}
+.score-grade{font-size:.73rem;font-weight:600;margin-top:2px}
+.compat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.compat-cell{background:var(--earth-bg);border-radius:8px;padding:8px 4px;text-align:center}
+.compat-cell-label{font-size:.62rem;color:var(--sub);margin-bottom:3px}
+.compat-cell-val{font-size:.82rem;font-weight:700}
+.compare-pillars{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}
+.compare-arrow{font-size:1.3rem;color:var(--sub);padding:0 4px}
 </style>
 </head>
 <body>
@@ -255,11 +287,15 @@ html,body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background
     <div class="tabs">
       <button class="tab on" onclick="tab(0)">만세력</button>
       <button class="tab" onclick="tab(1)">사주분석</button>
-      <button class="tab" onclick="tab(2)">MBTI비교</button>
+      <button class="tab" onclick="tab(2)">운세</button>
+      <button class="tab" onclick="tab(3)">궁합</button>
+      <button class="tab" onclick="tab(4)">MBTI</button>
     </div>
     <div class="panel on" id="p0"></div>
     <div class="panel" id="p1"></div>
     <div class="panel" id="p2"></div>
+    <div class="panel" id="p3"></div>
+    <div class="panel" id="p4"></div>
   </div>
 </div>
 
@@ -1269,6 +1305,388 @@ function getCombinedWarnings(saju,mbti,info,oh,dm){
 }
 
 // ══════════════════════════════════════════════
+//  GLOBAL STATE (for 운세 / 궁합 reuse)
+// ══════════════════════════════════════════════
+let _saju=null;
+let _g2gender='male',_g2cal='solar',_g2leap=false;
+function setG2Gender(g){_g2gender=g;document.getElementById('g2bm').className='tog'+(g==='male'?' on':'');document.getElementById('g2bf').className='tog'+(g==='female'?' on':'');}
+function setG2Cal(t){_g2cal=t;document.getElementById('g2bs').className='tog'+(t==='solar'?' on':'');document.getElementById('g2bl').className='tog'+(t==='lunar'?' on':'');document.getElementById('g2leapSec').className='leap-sec'+(t==='lunar'?' vis':'');}
+function setG2Leap(b){_g2leap=b;document.getElementById('g2breg').className='tog'+(!b?' on':'');document.getElementById('g2blp').className='tog'+(b?' on':'');}
+
+// ══════════════════════════════════════════════
+//  PANEL 2: 운세
+// ══════════════════════════════════════════════
+const TG_SCORES={
+  '비견':{love:3,wealth:3,health:3,study:3},
+  '겁재':{love:2,wealth:2,health:3,study:3},
+  '식신':{love:4,wealth:4,health:5,study:4},
+  '상관':{love:3,wealth:3,health:3,study:5},
+  '편재':{love:4,wealth:5,health:3,study:2},
+  '정재':{love:4,wealth:5,health:4,study:3},
+  '편관':{love:3,wealth:3,health:2,study:3},
+  '정관':{love:4,wealth:4,health:4,study:5},
+  '편인':{love:2,wealth:3,health:3,study:5},
+  '정인':{love:3,wealth:3,health:4,study:5},
+};
+
+const YEAR_FLOW={
+  '비견':(y)=>`${y}년은 독립심과 자아의식이 강해지는 한 해입니다. 혼자 힘으로 개척하는 힘이 커지며, 협력보다 단독 행동에서 더 큰 성과를 낼 수 있습니다. 동업이나 금전 거래는 신중히 하세요.`,
+  '겁재':(y)=>`${y}년은 경쟁과 변동이 많은 한 해입니다. 강한 추진력이 생기지만 재물 유출에 주의가 필요합니다. 투기성 투자보다는 안정적 관리가 중요하며, 충동적 결정을 피하세요.`,
+  '식신':(y)=>`${y}년은 여유롭고 풍요로운 한 해가 기대됩니다. 창의력과 표현력이 살아나며 새로운 즐거움과 만남이 찾아옵니다. 재물운도 안정적이며 건강 상태도 양호합니다.`,
+  '상관':(y)=>`${y}년은 변화와 도전이 많은 역동적인 해입니다. 창의적 아이디어가 넘치고 기존의 틀을 깨고 싶어집니다. 관직·직장에서 마찰이 있을 수 있으니 언행에 주의하세요.`,
+  '편재':(y)=>`${y}년은 사업적 기회와 이성 인연이 활발한 해입니다. 과감한 도전이 결실을 맺을 수 있으며 재물운이 상승합니다. 다만 지출도 늘어나니 균형 있는 재정 관리가 필요합니다.`,
+  '정재':(y)=>`${y}년은 성실한 노력이 안정적 결실로 돌아오는 해입니다. 재물과 직업이 안정되고 꾸준한 관리로 풍요를 쌓을 수 있습니다. 인연 관계도 성숙하고 믿음직한 방향으로 발전합니다.`,
+  '편관':(y)=>`${y}년은 도전과 승부가 많은 역동적인 해입니다. 명예와 지위를 향한 강한 의지가 생기지만 무리한 욕심은 피해야 합니다. 건강 관리와 심리적 안정에 특별히 신경쓰세요.`,
+  '정관':(y)=>`${y}년은 사회적 인정과 안정이 찾아오는 해입니다. 직업과 명예운이 상승하며 책임감 있는 행동이 좋은 평가로 이어집니다. 안정적 성장을 추구하기에 가장 좋은 시기입니다.`,
+  '편인':(y)=>`${y}년은 내면으로 침잠하여 새로운 것을 탐구하기 좋은 해입니다. 전문성 개발과 독창적 학습이 두각을 나타내며, 외적 활동보다 내적 성장에 집중할 때 빛을 발합니다.`,
+  '정인':(y)=>`${y}년은 학업·자격증·배움에서 두드러진 성과가 기대되는 해입니다. 인생의 귀인(貴人)이 나타나 도움을 받을 수 있으며, 자격 취득이나 진학에 유리한 시기입니다.`,
+};
+
+const FORTUNE_DESCS={
+  love:{
+    '비견':'독립심이 강해져 자기 자신에게 집중하는 한 해입니다. 기존 관계를 돌아보고 재정립하는 시기이며, 새로운 인연보다는 기존 인연을 깊게 만드는 것이 유리합니다.',
+    '겁재':'감정 기복이 크고 연인 사이에 갈등이 생길 수 있습니다. 자기 주장보다 상대방의 입장을 헤아리는 노력이 필요하며, 충동적인 이별 결정은 삼가세요.',
+    '식신':'즐겁고 자연스러운 만남이 이어지는 해입니다. 자기표현이 매력적으로 빛나며 이성에게 좋은 인상을 줍니다. 연애 중이라면 관계가 더욱 깊어지는 시기입니다.',
+    '상관':'창의적이고 독특한 매력이 빛나는 시기입니다. 다만 감정 표현이 과해 오해를 살 수 있으니 세심한 배려가 필요합니다. 새로운 이성과의 만남 가능성이 있습니다.',
+    '편재':'이성 인연이 활발하게 들어오는 해입니다. 설렘과 흥분이 가득한 만남이 기대되며 결혼을 고려 중이라면 진전이 있을 수 있습니다. 충동적인 감정보다 신중한 선택이 중요합니다.',
+    '정재':'안정적이고 진지한 인연이 찾아오는 해입니다. 믿음직한 만남이 이어지며 결혼 적기라고 할 수 있습니다. 오래된 인연이 더욱 성숙하고 깊어지는 시기입니다.',
+    '편관':'강렬하고 자극적인 감정의 만남이 있을 수 있습니다. 열정적인 연애가 가능하지만 갈등이나 이별 위험도 있습니다. 감정에 휩쓸리지 않는 냉철한 판단이 필요합니다.',
+    '정관':'책임감 있고 사회적으로 인정받는 인연을 만날 가능성이 높은 해입니다. 공식적인 관계(결혼 등)로의 발전이 기대되며 관계가 성숙해집니다.',
+    '편인':'연애보다는 내면의 성장에 집중하게 되는 시기입니다. 혼자만의 시간이 늘어나고 관계를 재정비하기 좋습니다. 성급한 만남보다 천천히 인연을 쌓아가는 것이 좋습니다.',
+    '정인':'포근하고 안정적인 감정 교류가 이루어지는 해입니다. 배움을 통한 만남이 소중한 인연으로 발전할 수 있으며, 귀인의 도움으로 인연이 이어질 수 있습니다.',
+  },
+  wealth:{
+    '비견':'인맥과 협력을 통한 기회가 생기지만 재물의 분산에 주의가 필요합니다. 타인과의 금전 관계는 명확히 하고 보증·대여는 피하는 것이 좋습니다.',
+    '겁재':'재물 변동이 크고 지출이 늘어나는 시기입니다. 충동 구매나 투기성 투자를 자제하고 안정적인 저축과 관리에 집중하세요. 예상치 못한 지출이 생길 수 있습니다.',
+    '식신':'꾸준한 노력이 안정적인 수입으로 이어지는 해입니다. 창의적인 방식의 부업이나 새로운 수입원 개발이 유리합니다. 자기계발에 투자하면 더 큰 결실로 돌아옵니다.',
+    '상관':'기존 방식을 벗어난 새로운 수입원이 생길 수 있습니다. 변화에 민첩하게 대응하고 창의적인 접근을 시도해보세요. 다만 직장에서의 갈등이 재물에 영향을 줄 수 있습니다.',
+    '편재':'사업적 기회와 투자 수익이 기대되는 해입니다. 과감한 결단이 큰 결실로 이어질 수 있으나 과도한 욕심은 금물입니다. 적절한 리스크 관리가 성공의 열쇠입니다.',
+    '정재':'성실한 노력이 안정적인 재물로 돌아오는 해입니다. 꼼꼼한 재정 관리와 저축으로 탄탄한 기반을 쌓을 수 있습니다. 부동산·장기 투자에 유리한 시기입니다.',
+    '편관':'직업적 도전과 승진 기회가 있는 시기입니다. 재물보다는 명예와 지위에 집중하면 장기적으로 더 큰 재물이 따릅니다. 불필요한 지출을 줄이세요.',
+    '정관':'안정적인 직장과 수입이 기대되는 해입니다. 공직이나 조직 내 승진에 유리하며 꾸준한 수입으로 재산을 불릴 수 있습니다.',
+    '편인':'재물 흐름이 다소 느린 시기입니다. 새로운 기술이나 지식 습득에 투자하면 미래에 큰 결실로 돌아옵니다. 지금 당장의 수익보다 장기적 전략이 현명합니다.',
+    '정인':'학문과 교육 관련 수입이 기대됩니다. 전문성을 바탕으로 한 안정적 수입이 이어지며, 과도한 투자보다 안정적 관리에 집중하는 것이 좋습니다.',
+  },
+  health:{
+    '비견':'전반적으로 활기찬 한 해입니다. 꾸준한 운동 습관을 유지하면 건강을 잘 관리할 수 있습니다. 과도한 경쟁으로 인한 스트레스 누적에 주의하세요.',
+    '겁재':'경쟁과 스트레스로 소화기·신경계에 무리가 갈 수 있습니다. 충분한 수면과 휴식을 취하고 과격한 운동보다 안정적인 활동을 선택하세요.',
+    '식신':'소화기 건강이 좋아지고 활력이 넘치는 해입니다. 즐거운 활동이 면역력을 높여줍니다. 과식이나 과음만 주의하면 건강한 한 해가 될 것입니다.',
+    '상관':'신경이 예민해질 수 있는 시기입니다. 규칙적인 생활 패턴이 중요합니다. 무리한 야간 활동을 줄이고 충분한 휴식을 취하세요.',
+    '편재':'활동량이 늘어나는 해입니다. 과로와 부상에 주의하고 균형 잡힌 식단과 규칙적인 운동을 병행하세요.',
+    '정재':'안정적인 건강 상태가 유지되는 해입니다. 꾸준한 관리로 좋은 컨디션을 유지할 수 있으며, 정기 건강검진을 챙기기 좋은 시기입니다.',
+    '편관':'무리한 활동으로 부상이나 피로가 쌓일 수 있습니다. 급격한 운동보다 점진적 체력 관리가 좋으며, 스트레스성 질환에 주의하세요.',
+    '정관':'규칙적인 생활이 건강을 지켜주는 해입니다. 정기 건강검진과 예방적 관리로 건강한 한 해를 유지할 수 있습니다.',
+    '편인':'스트레스성 질환과 신경계 이상에 주의가 필요합니다. 명상이나 취미활동으로 정신 건강을 챙기고 수면의 질을 높이세요.',
+    '정인':'면역력이 강화되고 건강이 안정되는 해입니다. 충분한 수면과 영양 관리로 몸과 마음의 균형을 유지하세요.',
+  },
+  study:{
+    '비견':'독립적인 학습이 효과적인 시기입니다. 자기 주도적으로 탐구하는 방식이 성과를 냅니다. 스터디 그룹보다는 개인 공부가 더 잘 맞는 해입니다.',
+    '겁재':'경쟁 환경이 자극제가 될 수 있습니다. 강한 승부욕으로 목표를 향해 나아갈 수 있으나 집중력 유지에 의식적 노력이 필요합니다.',
+    '식신':'창의적 사고가 돋보이는 해입니다. 예술·창작·언어 계통의 학습에서 두각을 나타내며, 즐기면서 배우는 방식이 가장 효과적입니다.',
+    '상관':'독창적인 아이디어가 풍부한 시기입니다. 기존 이론에 도전하는 창의적 접근이 높은 평가를 받습니다.',
+    '편재':'실용적인 지식과 경험을 쌓는 데 좋은 해입니다. 이론보다 현장 학습과 직접 경험이 효과적입니다.',
+    '정재':'꼼꼼하고 체계적인 학습으로 착실히 실력을 쌓을 수 있는 해입니다. 재정 관련 학문에서 특히 강점을 발휘합니다.',
+    '편관':'강한 의지로 목표를 향해 돌진하기 좋은 시기입니다. 자격증·시험 도전에 유리하며 경쟁 환경에서 실력이 발휘됩니다.',
+    '정관':'체계적인 학습과 공인 시험에서 성과가 기대되는 해입니다. 규율 있는 공부가 빛을 발하며 공무원·전문직 시험에 특히 유리합니다.',
+    '편인':'깊이 있는 탐구와 연구에 몰입하기 좋은 해입니다. 전문 분야의 심화 학습에서 탁월한 성과를 낼 수 있습니다.',
+    '정인':'학업 운이 가장 강한 십신입니다. 시험·진학·자격증 모든 학습에서 좋은 결과가 기대되며 멘토의 도움으로 크게 성장합니다.',
+  },
+};
+
+const MONTH_ADVICE={
+  love:{
+    '비견':'이달은 자기 자신에게 집중하세요. 연인이 있다면 서로의 공간을 배려하는 것이 관계를 단단하게 만듭니다.',
+    '겁재':'이달은 감정 조절이 중요합니다. 오해가 생기기 쉬우니 신중하게 말하고 행동하세요.',
+    '식신':'이달은 자연스러운 자기표현이 매력을 높입니다. 부담 없는 만남을 즐기고 관계를 가볍게 이어가세요.',
+    '상관':'이달은 창의적인 데이트나 이벤트가 효과적입니다. 상대방에게 놀라움을 선사해보세요.',
+    '편재':'이달은 새로운 만남의 기회가 열립니다. 사교 모임이나 소개팅에 적극적으로 참여해보세요.',
+    '정재':'이달은 진지하고 책임 있는 대화가 관계를 깊게 만듭니다. 미래에 대한 이야기를 나누기 좋은 시기입니다.',
+    '편관':'이달은 감정 충돌에 주의하세요. 상대방의 입장을 먼저 이해하려는 노력이 갈등을 예방합니다.',
+    '정관':'이달은 공식적이고 진지한 관계 진전이 이루어질 수 있습니다. 성실하고 책임감 있는 모습을 보여주세요.',
+    '편인':'이달은 혼자만의 시간을 갖는 것도 좋습니다. 내면의 목소리에 귀 기울이고 관계를 편안하게 유지하세요.',
+    '정인':'이달은 배려심 있는 행동이 빛을 발합니다. 상대방의 필요를 먼저 챙기는 따뜻한 모습이 관계를 풍요롭게 합니다.',
+  },
+  wealth:{
+    '비견':'이달은 독립적인 수입 활동에 집중하세요. 협력 프로젝트보다 단독으로 추진하는 일이 더 잘 풀립니다.',
+    '겁재':'이달은 지출 관리에 특별히 신경쓰세요. 충동 구매를 줄이고 계획적인 소비 패턴을 유지하는 것이 중요합니다.',
+    '식신':'이달은 창의적인 방식으로 수익을 창출할 기회가 있습니다. 재능을 살린 부업을 시도해보세요.',
+    '상관':'이달은 변화에 민첩하게 대응하면 좋은 기회를 잡을 수 있습니다. 새로운 수입원에 대해 열린 마음을 가지세요.',
+    '편재':'이달은 투자나 사업 기회에 주목하세요. 과감한 결단이 좋은 결과로 이어질 수 있지만 과욕은 금물입니다.',
+    '정재':'이달은 꼼꼼한 재정 관리로 안정적인 수입을 지킬 수 있습니다. 저축과 절약에 집중하기 좋은 달입니다.',
+    '편관':'이달은 직업과 명예에 집중하면 장기적으로 재물이 따릅니다. 단기 이익보다 커리어 발전에 투자하세요.',
+    '정관':'이달은 안정적인 수입이 유지됩니다. 장기적인 재정 계획을 세우기 좋은 달입니다.',
+    '편인':'이달은 새로운 기술이나 지식 습득에 투자하는 것이 현명합니다. 미래를 위한 투자가 중요합니다.',
+    '정인':'이달은 전문성 기반의 수입이 안정적으로 유지됩니다. 무리한 투자보다 안전한 관리에 집중하세요.',
+  },
+  health:{
+    '비견':'이달은 규칙적인 운동 습관을 유지하세요. 경쟁으로 인한 스트레스를 운동으로 해소하는 것이 좋습니다.',
+    '겁재':'이달은 충분한 수면과 휴식이 필요합니다. 과도한 활동을 줄이고 몸의 신호에 귀 기울이세요.',
+    '식신':'이달은 즐거운 활동이 건강을 높여줍니다. 맛있는 식사와 여가 활동을 통해 몸과 마음을 회복하세요.',
+    '상관':'이달은 신경계 건강에 주의가 필요합니다. 규칙적인 취침 시간과 명상이 도움이 됩니다.',
+    '편재':'이달은 과로에 주의하세요. 활동량이 증가하므로 충분한 영양 보충과 휴식이 필요합니다.',
+    '정재':'이달은 건강 관리의 최적기입니다. 정기 검진이나 건강 루틴을 점검하기 좋은 달입니다.',
+    '편관':'이달은 부상 예방에 신경쓰세요. 무리한 운동은 피하고 스트레칭을 꾸준히 하세요.',
+    '정관':'이달은 규칙적인 생활이 건강의 기반입니다. 일정한 시간에 자고 일어나는 습관을 지키세요.',
+    '편인':'이달은 정신 건강에 집중하세요. 명상과 독서를 통해 내면의 안정을 찾는 것이 중요합니다.',
+    '정인':'이달은 전반적으로 건강이 양호합니다. 가족의 건강도 함께 챙기는 여유를 가져보세요.',
+  },
+  study:{
+    '비견':'이달은 혼자 공부하는 방식이 가장 효과적입니다. 자기 주도 학습으로 집중력을 높이세요.',
+    '겁재':'이달은 경쟁 의식을 동기부여로 활용하세요. 자신의 페이스를 유지하는 것이 중요합니다.',
+    '식신':'이달은 창의적인 학습 방식이 효과적입니다. 흥미 위주의 공부로 접근하세요.',
+    '상관':'이달은 기존 방식에 얽매이지 마세요. 독창적인 학습법을 시도하면 놀라운 성과를 낼 수 있습니다.',
+    '편재':'이달은 이론보다 실습 위주의 학습이 효과적입니다. 현장 경험이 지식을 빠르게 흡수시켜 줍니다.',
+    '정재':'이달은 체계적이고 꼼꼼한 복습이 실력 향상의 핵심입니다. 기본기를 탄탄히 다지세요.',
+    '편관':'이달은 시험 도전에 최적입니다. 강한 의지로 목표에 집중하면 좋은 결과를 얻을 수 있습니다.',
+    '정관':'이달은 규율 있는 학습 계획을 세우고 꾸준히 실행하세요. 꼼꼼한 시험 준비가 합격을 이끕니다.',
+    '편인':'이달은 깊이 있는 탐구에 집중하세요. 한 가지 주제를 완전히 이해하는 방식이 도움됩니다.',
+    '정인':'이달은 학습 운이 왕성합니다. 시험이나 자격증 도전에 최고의 타이밍입니다.',
+  },
+};
+
+function renderFortune(saju){
+  const oh=ohCount(saju);
+  const now=new Date();
+  const cy=now.getFullYear(),cm=now.getMonth()+1,cd=now.getDate();
+  const cyIdx=(cy-4+3600)%60;
+  const cyStem=cyIdx%10,cyBranch=cyIdx%12;
+  const yearTG=tenGod(saju.dp.stem,cyStem);
+  const cMI=monthIdx(cy,cm,cd,-1,0);
+  const cMP=monthPillar(cyStem,cMI);
+  const monthTG=tenGod(saju.dp.stem,cMP.stem);
+  const sc=TG_SCORES[yearTG]||{love:3,wealth:3,health:3,study:3};
+
+  let h=`<div class="card">
+    <div class="ctitle big">📅 ${cy}년 세운 — ${STEMS[cyStem]}${BRCH[cyBranch]}년 (${STEMKO[cyStem]}${BRCHKO[cyBranch]}년)</div>
+    <div class="irow"><span class="ikey">올해의 오행 기운</span><span class="ival">${OHNAME[SOH[cyStem]]} · ${OHNAME[BOH[cyBranch]]}</span></div>
+    <div class="irow"><span class="ikey">일간 기준 세운 십신</span><span class="ival"><b>${yearTG}</b></span></div>
+    <div class="irow"><span class="ikey">이달 월운 십신</span><span class="ival">${monthTG}</span></div>
+    <div class="asec" style="margin-top:10px">
+      <div class="atitle">올해 전체 흐름</div>
+      <div class="abody">${(YEAR_FLOW[yearTG]||((y)=>`${y}년은 사주의 흐름에 따라 다양한 변화가 찾아옵니다. 타고난 강점을 살리고 약점을 보완하며 균형 잡힌 한 해를 만들어가세요.`))(cy)}</div>
+    </div>
+  </div>`;
+
+  const cats=[
+    {key:'love',label:'💕 애정·결혼운'},
+    {key:'wealth',label:'💰 재물·직업운'},
+    {key:'health',label:'🌿 건강운'},
+    {key:'study',label:'📚 학업·이동운'},
+  ];
+
+  h+=`<div class="fcat-wrap">`;
+  cats.forEach((c,i)=>h+=`<button class="fcat${i===0?' on':''}" onclick="switchFcat(${i})">${c.label}</button>`);
+  h+=`</div>`;
+
+  cats.forEach((c,i)=>{
+    const score=sc[c.key]||3;
+    h+=`<div class="fpanel${i===0?' on':''}" id="fp${i}"><div class="card">
+      <div class="ctitle big">${c.label}</div>
+      <div class="stars-row">${[1,2,3,4,5].map(j=>`<span class="${j<=score?'star-on':'star-off'}">${j<=score?'★':'☆'}</span>`).join('')}</div>
+      <div class="abody">${(FORTUNE_DESCS[c.key]&&FORTUNE_DESCS[c.key][yearTG])||'올해 운세는 꾸준한 노력과 긍정적인 자세로 만들어 나갈 수 있습니다.'}</div>
+      <div class="month-advice">
+        <div class="month-advice-label">이달 조언 (${cm}월)</div>
+        <div class="month-advice-body">${(MONTH_ADVICE[c.key]&&MONTH_ADVICE[c.key][monthTG])||'이달의 흐름에 맞춰 유연하게 대응하는 것이 중요합니다.'}</div>
+      </div>
+    </div></div>`;
+  });
+
+  return h;
+}
+
+function switchFcat(n){
+  document.querySelectorAll('.fcat').forEach((t,i)=>t.className='fcat'+(i===n?' on':''));
+  document.querySelectorAll('.fpanel').forEach((p,i)=>p.className='fpanel'+(i===n?' on':''));
+}
+
+// ══════════════════════════════════════════════
+//  PANEL 3: 궁합
+// ══════════════════════════════════════════════
+function renderGunghapForm(){
+  return `<div class="ghap-form">
+    <div class="ctitle big">👫 상대방 정보 입력</div>
+    <div style="margin-bottom:10px">
+      <div class="sec-label">상대방 성별</div>
+      <div class="tog-row">
+        <button class="tog on" id="g2bm" onclick="setG2Gender('male')">남성</button>
+        <button class="tog" id="g2bf" onclick="setG2Gender('female')">여성</button>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="sec-label">양력 / 음력</div>
+      <div class="tog-row">
+        <button class="tog on" id="g2bs" onclick="setG2Cal('solar')">양력</button>
+        <button class="tog" id="g2bl" onclick="setG2Cal('lunar')">음력</button>
+      </div>
+    </div>
+    <div class="leap-sec" id="g2leapSec">
+      <div class="sec-label">달 종류</div>
+      <div class="tog-row">
+        <button class="tog on" id="g2breg" onclick="setG2Leap(false)">평달</button>
+        <button class="tog" id="g2blp" onclick="setG2Leap(true)">윤달</button>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="sec-label">생년월일</div>
+      <div class="row3">
+        <div class="ig" style="flex:2.2"><label>년도</label><input type="number" id="g2Y" placeholder="예: 1995" min="1900" max="2050"></div>
+        <div class="ig"><label>월</label><input type="number" id="g2M" placeholder="월" min="1" max="12"></div>
+        <div class="ig"><label>일</label><input type="number" id="g2D" placeholder="일" min="1" max="31"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="sec-label">태어난 시각 <span style="font-weight:400;text-transform:none;font-size:.7rem">(선택)</span></div>
+      <select class="ig" id="g2H" style="width:100%;padding:11px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);font-size:.94rem;-webkit-appearance:none;appearance:none">
+        <option value="-1">시간 미상</option>
+        ${[...Array(24)].map((_,i)=>`<option value="${i}">${String(i).padStart(2,'0')}시</option>`).join('')}
+      </select>
+    </div>
+    <div class="err" id="g2err"></div>
+    <button class="analyze-btn" onclick="analyzeGunghap()">💕 궁합 분석하기</button>
+  </div>
+  <div id="gunghapResult"></div>`;
+}
+
+function analyzeGunghap(){
+  const errEl=document.getElementById('g2err');
+  errEl.className='err';
+  const y2=parseInt(document.getElementById('g2Y').value)||0;
+  const m2=parseInt(document.getElementById('g2M').value)||0;
+  const d2=parseInt(document.getElementById('g2D').value)||0;
+  const h2=parseInt(document.getElementById('g2H').value);
+  if(!y2||y2<1900||y2>2050){errEl.textContent='년도를 확인해주세요.';errEl.className='err vis';return;}
+  if(!m2||m2<1||m2>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
+  if(!d2||d2<1||d2>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
+  try{
+    let sy2=y2,sm2=m2,sd2=d2;
+    if(_g2cal==='lunar'){const s=l2s(y2,m2,d2,_g2leap);sy2=s.y;sm2=s.m;sd2=s.d;}
+    const saju2=calcSaju(sy2,sm2,sd2,h2,0);
+    const result=calcGunghap(_saju,saju2,gender,_g2gender);
+    document.getElementById('gunghapResult').innerHTML=renderGunghapResult(_saju,saju2,result);
+    document.getElementById('gunghapResult').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
+}
+
+function calcGunghap(saju1,saju2,gen1,gen2){
+  const sheng=[1,2,3,4,0],ke=[2,3,4,0,1];
+  const e1=SOH[saju1.dp.stem],e2=SOH[saju2.dp.stem];
+
+  let ohScore=70,ohRelType='중립';
+  if(sheng[e1]===e2||sheng[e2]===e1){ohScore=sheng[e2]===e1?83:78;ohRelType='상생(相生)';}
+  else if(e1===e2){ohScore=72;ohRelType='비화(比和)';}
+  else if(ke[e1]===e2||ke[e2]===e1){ohScore=55;ohRelType='상극(相剋)';}
+
+  const tg12=tenGod(saju1.dp.stem,saju2.dp.stem);
+  const tg21=tenGod(saju2.dp.stem,saju1.dp.stem);
+  const isOpposite=(gen1!==gen2);
+  const tgMap={'비견':65,'겁재':55,'식신':80,'상관':75,
+    '편재':isOpposite?88:72,'정재':isOpposite?90:75,
+    '편관':isOpposite?82:68,'정관':isOpposite?88:72,'편인':70,'정인':72};
+  const tgScore=tgMap[tg12]||65;
+
+  const br1=saju1.dp.branch,br2=saju2.dp.branch;
+  const hapPairs=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+  const isHap=hapPairs.some(([a,b])=>(br1===a&&br2===b)||(br1===b&&br2===a));
+  const isCrash=Math.abs(br1-br2)===6;
+  let brScore=isHap?90:isCrash?40:70;
+
+  const oh1=ohCount(saju1),oh2=ohCount(saju2);
+  const combined=oh1.map((v,i)=>v+oh2[i]);
+  const maxC=Math.max(...combined),minC=Math.min(...combined);
+  const span=maxC-minC;
+  const balScore=span<=2?90:span<=4?75:span<=6?60:45;
+
+  const total=Math.round(ohScore*.3+tgScore*.3+brScore*.25+balScore*.15);
+  let grade,gradeColor;
+  if(total>=85){grade='천생연분 (天生緣分)';gradeColor='var(--wood)';}
+  else if(total>=75){grade='좋은 인연';gradeColor='var(--wood)';}
+  else if(total>=65){grade='보통 궁합';gradeColor='var(--earth)';}
+  else if(total>=55){grade='노력이 필요한 궁합';gradeColor='var(--earth)';}
+  else{grade='쉽지 않은 궁합';gradeColor='var(--fire)';}
+
+  return{score:total,grade,gradeColor,ohScore,tgScore,brScore,balScore,
+    ohRelType,tg12,tg21,isHap,isCrash,e1,e2,oh1,oh2};
+}
+
+function renderGunghapResult(saju1,saju2,result){
+  const sc=result.score;
+  const ringCls=sc>=75?'sring-h':sc>=60?'sring-m':'sring-l';
+  const numCls=sc>=75?'snum-h':sc>=60?'snum-m':'snum-l';
+
+  let h=`<div class="card">
+    <div class="ctitle big">💑 궁합 분석 결과</div>
+    <div class="score-ring-wrap">
+      <div class="score-ring ${ringCls}">
+        <div class="score-num ${numCls}">${sc}</div>
+        <div class="score-grade">/ 100</div>
+      </div>
+      <div style="font-size:.95rem;font-weight:700;color:${result.gradeColor}">${result.grade}</div>
+    </div>
+    <div class="compat-grid">
+      <div class="compat-cell"><div class="compat-cell-label">오행 관계</div><div class="compat-cell-val" style="font-size:.75rem">${result.ohRelType}</div></div>
+      <div class="compat-cell"><div class="compat-cell-label">일지 관계</div><div class="compat-cell-val" style="font-size:.78rem">${result.isHap?'합(合) ✓':result.isCrash?'충(沖) ⚡':'중립'}</div></div>
+      <div class="compat-cell"><div class="compat-cell-label">오행 균형</div><div class="compat-cell-val" style="font-size:.78rem">${result.balScore>=80?'좋음':result.balScore>=65?'보통':'부족'}</div></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="card"><div class="ctitle big">📊 세부 점수</div><div class="bars">`;
+  [{label:'오행 상생·상극',score:result.ohScore},
+   {label:'십신 관계',score:result.tgScore},
+   {label:'일지 합·충',score:result.brScore},
+   {label:'오행 균형',score:result.balScore}].forEach(cat=>{
+    const color=cat.score>=80?'var(--wood)':cat.score>=65?'var(--earth)':'var(--fire)';
+    h+=`<div class="bar-row">
+      <div class="bar-name" style="font-size:.67rem;width:82px;color:var(--sub)">${cat.label}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${cat.score}%;background:${color}"></div></div>
+      <div class="bar-cnt" style="color:${color};width:28px">${cat.score}</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+
+  const ohDescs={'상생(相生)':'두 사람의 오행이 서로 생(生)해주는 관계입니다. 자연스럽게 서로를 보완하고 성장을 돕는 이상적인 관계입니다.',
+    '비화(比和)':'두 사람의 오행이 같습니다. 서로를 잘 이해하고 공감하지만 때로는 경쟁 구도가 형성될 수 있습니다.',
+    '상극(相剋)':'두 사람의 오행이 서로 극(剋)하는 관계입니다. 갈등이 생길 수 있지만 서로 자극을 주고 성장할 수 있는 관계이기도 합니다.',
+    '중립':'두 사람의 오행이 직접적인 상생·상극 관계가 아닙니다. 노력에 따라 다양한 방향으로 발전할 수 있습니다.'};
+  const tgDescs={'편재':'강한 끌림과 설레임이 있는 관계입니다. 서로에게 흥미롭고 매력적으로 보이며 열정적인 연애를 즐길 수 있습니다.',
+    '정재':'안정적이고 신뢰할 수 있는 관계입니다. 함께 미래를 설계하기에 좋은 파트너이며 결혼 궁합으로도 훌륭합니다.',
+    '정관':'서로 책임감 있고 존중하는 관계입니다. 공식적 관계로 발전하기 좋으며 사회적으로 인정받는 커플이 될 수 있습니다.',
+    '편관':'강렬하고 역동적인 관계입니다. 서로를 자극하고 변화시키는 힘이 있지만 충돌도 잦을 수 있습니다.',
+    '식신':'편안하고 즐거운 관계입니다. 함께 있으면 행복하고 자연스러운 표현이 가능합니다.',
+    '상관':'창의적이고 독창적인 관계입니다. 서로에게 자극을 주지만 언쟁이나 오해가 생길 수 있습니다.',
+    '비견':'대등한 동반자 관계입니다. 서로 독립적이고 경쟁도 하지만 든든한 지지자가 됩니다.',
+    '겁재':'경쟁과 자극이 강한 관계입니다. 서로의 의지를 끌어올리지만 재물이나 감정 갈등에 주의가 필요합니다.',
+    '정인':'배우고 성장하는 관계입니다. 한쪽이 돌봄과 지혜를 제공하며 안정적인 신뢰가 형성됩니다.',
+    '편인':'독특하고 개성 있는 관계입니다. 서로를 통해 새로운 세계를 경험하며 특별한 유대감을 형성합니다.'};
+
+  let advice='';
+  if(sc>=85)advice='두 사람의 궁합이 매우 좋습니다! 서로의 장점이 잘 맞으며 자연스럽게 성장할 수 있는 인연입니다. 이 인연을 소중히 가꾸어 나가세요.';
+  else if(sc>=70)advice='좋은 궁합입니다. 서로 보완하는 부분이 많아 함께 성장할 수 있습니다. 서로의 차이점을 인정하고 존중하는 자세가 관계를 더욱 풍요롭게 만듭니다.';
+  else if(sc>=55)advice='보통 궁합입니다. 서로 노력한다면 좋은 관계를 만들 수 있습니다. 상대방의 다른 점을 자신과 다름으로 이해하고 수용하는 것이 핵심입니다.';
+  else advice='다소 어려운 궁합입니다. 하지만 사주팔자가 전부는 아닙니다. 서로에 대한 깊은 이해와 진심 어린 노력으로 어떤 궁합도 극복할 수 있습니다.';
+
+  h+=`<div class="card">
+    <div class="ctitle big">💬 궁합 해석</div>
+    <div class="asec"><div class="atitle">오행 관계: ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
+    ${result.isHap?`<div class="asec" style="margin-top:10px"><div class="atitle">일지 합(合) ✓ — 매우 좋음</div><div class="abody">두 사람의 일지(日支)가 서로 합(合)하는 관계입니다. 자연스러운 끌림이 있으며 함께 있으면 편안함을 느끼는 천생연분과 같은 인연입니다.</div></div>`:''}
+    ${result.isCrash?`<div class="asec" style="margin-top:10px"><div class="atitle">일지 충(沖) ⚡ — 주의 필요</div><div class="abody">두 사람의 일지(日支)가 서로 충(沖)하는 관계입니다. 갑작스러운 변화나 갈등이 생길 수 있습니다. 서로에 대한 이해와 배려가 중요합니다.</div></div>`:''}
+    <div class="asec" style="margin-top:10px"><div class="atitle">십신으로 본 관계: ${result.tg12}</div><div class="abody">${tgDescs[result.tg12]||''}</div></div>
+    <div class="asec" style="margin-top:10px;padding:10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)"><div class="abody">${advice}</div></div>
+  </div>`;
+
+  h+=`<div class="card"><div class="ctitle big">👁 두 사람의 일주 비교</div>
+    <div class="compare-pillars">
+      ${pillarHTML('나 (日柱)',saju1.dp.stem,saju1.dp.branch)}
+      <div class="compare-arrow">↔</div>
+      ${pillarHTML('상대 (日柱)',saju2.dp.stem,saju2.dp.branch)}
+    </div>
+    <div class="irow" style="margin-top:8px"><span class="ikey">내가 상대에게</span><span class="ival">${result.tg12}</span></div>
+    <div class="irow"><span class="ikey">상대가 나에게</span><span class="ival">${result.tg21}</span></div>
+  </div>`;
+
+  return h;
+}
+
+// ══════════════════════════════════════════════
 //  MAIN
 // ══════════════════════════════════════════════
 function analyze(){
@@ -1310,10 +1728,13 @@ function analyze(){
 
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
+      _saju=saju;
 
       document.getElementById('p0').innerHTML=renderManseryeok(saju,sy,sm,sd,hour,min,lunarInfo);
       document.getElementById('p1').innerHTML=renderSajuAnalysis(saju);
-      document.getElementById('p2').innerHTML=renderMBTI(saju,mbti);
+      document.getElementById('p2').innerHTML=renderFortune(saju);
+      document.getElementById('p3').innerHTML=renderGunghapForm();
+      document.getElementById('p4').innerHTML=renderMBTI(saju,mbti);
 
       document.getElementById('formWrap').style.display='none';
       document.getElementById('resWrap').className='result-wrap vis';
