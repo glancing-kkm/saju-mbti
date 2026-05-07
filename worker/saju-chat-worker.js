@@ -51,8 +51,7 @@ export default {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          // 신규 계정 호환성을 위해 Haiku 사용. 권한 있는 계정은 'claude-sonnet-4-6' 또는 'claude-opus-4-7'로 변경 가능.
-          model: 'claude-haiku-4-5',
+          model: 'claude-sonnet-4-6',
           max_tokens: 1500,
           system: [
             {
