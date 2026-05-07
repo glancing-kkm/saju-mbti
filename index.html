@@ -298,6 +298,55 @@ html,body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background
 .sin-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px}
 .sin-name{font-size:.83rem;font-weight:800}
 .sin-loc{font-size:.7rem;color:var(--sub)}
+
+/* ── Mini 만세력 (섹션 인라인용, 강조 가능) ── */
+.mm{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0 6px;background:#FAFAF5;padding:9px 7px;border-radius:10px;border:1px solid var(--border)}
+.mm-col{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:6px 4px 7px;text-align:center;transition:.2s;position:relative}
+.mm-col.hl{border:2.5px solid var(--accent);box-shadow:0 0 0 3px rgba(184,134,11,.18);background:linear-gradient(135deg,#FFF8E1,#FFFFFE);transform:translateY(-2px);z-index:2}
+.mm-col.hl::after{content:'★';position:absolute;top:-9px;right:-5px;color:var(--accent);font-size:.95rem;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.mm-lab{font-size:.6rem;color:var(--sub);margin-bottom:4px;font-weight:600;letter-spacing:.3px}
+.mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
+.mm-cell{padding:4px 2px;font-size:.86rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.mm-cell .mm-sub{font-size:.55rem;font-weight:500;opacity:.85;margin-top:1px}
+.mm-stem{margin-bottom:2px}
+.mm-pointer{font-size:.72rem;color:var(--accent);margin:4px 0 10px;text-align:center;font-weight:700}
+
+/* 신살 표시줄 */
+.mm-sin-row{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:5px 0 14px;padding:0 7px}
+.mm-sin-cell{text-align:center;font-size:.55rem;line-height:1.4;min-height:22px}
+.mm-sin-cell .ms{display:inline-block;background:var(--fire-bg);color:var(--fire);padding:2px 7px;border-radius:50px;font-weight:700;margin:1px 1px}
+.mm-sin-cell .ms.g{background:var(--wood-bg);color:var(--wood)}
+.mm-sin-cell .ms.y{background:var(--earth-bg);color:var(--earth)}
+
+/* ── 대운/세운 6주 시각화 ── */
+.dx-wrap{margin:10px 0 12px;background:#FAFAF5;padding:10px 8px;border-radius:10px;border:1px solid var(--border)}
+.dx-lab-row{display:flex;justify-content:flex-end;gap:5px;margin-bottom:5px;font-size:.62rem;color:var(--sub);font-weight:700;padding-right:3px}
+.dx{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}
+.dx-col{flex-shrink:0;min-width:42px;padding:5px 4px 6px;background:#fff;border:1.5px solid var(--border);border-radius:7px;text-align:center}
+.dx-col.fixed{opacity:.62}
+.dx-col.daeun{border:2.5px solid var(--earth);background:#FFF3E0;box-shadow:0 0 0 3px rgba(230,81,0,.12);opacity:1;transform:translateY(-1px)}
+.dx-col.sewoon{border:2.5px solid var(--accent);background:#FFF8E1;box-shadow:0 0 0 3px rgba(184,134,11,.18);opacity:1;transform:translateY(-1px)}
+.dx-col-lab{font-size:.55rem;color:var(--sub);font-weight:700;letter-spacing:.3px;margin-bottom:2px}
+.dx-col.daeun .dx-col-lab{color:var(--earth)}
+.dx-col.sewoon .dx-col-lab{color:var(--accent)}
+.dx-col-s,.dx-col-b{font-size:.85rem;font-weight:800;padding:2px 0;border-radius:4px}
+.dx-col-s{margin-bottom:1px}
+
+/* ── 궁합 (배우자 비교) ── */
+.gg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.gg-side{background:#FAFAF5;border:1px solid var(--border);border-radius:10px;padding:9px 6px}
+.gg-side h5{font-size:.74rem;font-weight:800;text-align:center;margin-bottom:6px;color:var(--accent);letter-spacing:.5px}
+.gg-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.gg-mc{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:4px 1px;text-align:center}
+.gg-mc-l{font-size:.5rem;color:var(--sub);font-weight:600;margin-bottom:2px}
+.gg-mc-s,.gg-mc-b{font-size:.72rem;font-weight:800;padding:1px 0;border-radius:3px}
+.gg-input{background:#FAFAF5;border:1px dashed var(--border);border-radius:12px;padding:14px;margin:14px 0}
+.gg-input .sec-label{margin-bottom:7px}
+.gg-score-ring{width:88px;height:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 8px;border:5px solid}
+
+/* ── 카테고리 mini-summary 박스 ── */
+.cat-where{padding:9px 12px;background:var(--earth-bg);border-left:3px solid var(--earth);border-radius:8px;margin:10px 0 12px;font-size:.78rem;line-height:1.65}
+.cat-where b{color:var(--earth)}
 </style>
 </head>
 <body>
@@ -1496,6 +1545,134 @@ function tryUnlock(){
 }
 
 // ══════════════════════════════════════════════
+//  미니 만세력 컴포넌트 (강조·신살·대운세운)
+// ══════════════════════════════════════════════
+function miniManse(saju,highlight,opts){
+  const hl=highlight?(Array.isArray(highlight)?highlight:[highlight]):[];
+  const showSub=opts&&opts.showSub!==false;
+  const ps=[
+    {key:'year',label:'년주',stem:saju.yp.stem,branch:saju.yp.branch},
+    {key:'month',label:'월주',stem:saju.mp.stem,branch:saju.mp.branch},
+    {key:'day',label:'일주',stem:saju.dp.stem,branch:saju.dp.branch},
+    {key:'hour',label:'시주',stem:saju.hp?saju.hp.stem:undefined,branch:saju.hp?saju.hp.branch:undefined}
+  ];
+  let h='<div class="mm">';
+  ps.forEach(p=>{
+    const isHl=hl.includes(p.key);
+    if(p.stem===undefined){
+      h+=`<div class="mm-col${isHl?' hl':''}">
+        <div class="mm-lab">${p.label}</div>
+        <div class="mm-cell eu" style="font-size:.7rem">시간<br>미상</div>
+      </div>`;
+    }else{
+      const sCls=OHCLS[SOH[p.stem]],bCls=OHCLS[BOH[p.branch]];
+      h+=`<div class="mm-col${isHl?' hl':''}">
+        <div class="mm-lab">${p.label}</div>
+        <div class="mm-cell mm-stem ${sCls}">${STEMS[p.stem]}${showSub?`<span class="mm-sub">${STEMKO[p.stem]}</span>`:''}</div>
+        <div class="mm-cell ${bCls}">${BRCH[p.branch]}${showSub?`<span class="mm-sub">${BRCHKO[p.branch]}</span>`:''}</div>
+      </div>`;
+    }
+  });
+  h+='</div>';
+  return h;
+}
+
+function miniManseWithPointer(saju,highlight,pointerText){
+  return miniManse(saju,highlight)+(pointerText?`<div class="mm-pointer">${pointerText}</div>`:'');
+}
+
+function miniManseWithSinsal(saju){
+  const sins=findSinsal(saju);
+  const byKey={year:[],month:[],day:[],hour:[]};
+  const locMap={'년지':'year','년주':'year','월지':'month','월주':'month','일지':'day','일주':'day','시지':'hour','시주':'hour'};
+  sins.forEach(s=>{
+    const k=locMap[s.loc];
+    if(k){
+      const name=s.n.split(' ')[0];
+      // dedupe per pillar
+      if(!byKey[k].some(x=>x.n===name))byKey[k].push({n:name,tag:s.tag});
+    }
+  });
+  let h=miniManse(saju);
+  h+='<div class="mm-sin-row">';
+  ['year','month','day','hour'].forEach(k=>{
+    const items=byKey[k];
+    h+='<div class="mm-sin-cell">';
+    if(items.length===0)h+='<span style="color:#ccc;font-size:.55rem">·</span>';
+    else items.forEach(it=>{
+      const cls=it.tag==='g'?'g':it.tag==='y'?'y':'';
+      h+=`<div><span class="ms ${cls}">${it.n}</span></div>`;
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+// 사주 4주 + 대운 + (선택)세운 시각화
+function pillarPlusRow(saju,daeun,sewoon){
+  let lab='<div class="dx-lab-row">';
+  // labels rendered above pillars (right-aligned)
+  lab+='</div>';
+  let h='<div class="dx-wrap"><div class="dx">';
+  // 시 → 일 → 월 → 년 (전통적으로 오른쪽이 년주이지만 시각적으론 좌→우로 년/월/일/시)
+  const ps=[
+    {l:'년주',s:saju.yp.stem,b:saju.yp.branch},
+    {l:'월주',s:saju.mp.stem,b:saju.mp.branch},
+    {l:'일주',s:saju.dp.stem,b:saju.dp.branch},
+    {l:'시주',s:saju.hp?saju.hp.stem:null,b:saju.hp?saju.hp.branch:null}
+  ];
+  ps.forEach(p=>{
+    if(p.s===null){
+      h+=`<div class="dx-col fixed"><div class="dx-col-lab">${p.l}</div><div class="dx-col-s eu">·</div><div class="dx-col-b eu">·</div></div>`;
+    }else{
+      h+=`<div class="dx-col fixed"><div class="dx-col-lab">${p.l}</div><div class="dx-col-s ${OHCLS[SOH[p.s]]}">${STEMS[p.s]}</div><div class="dx-col-b ${OHCLS[BOH[p.b]]}">${BRCH[p.b]}</div></div>`;
+    }
+  });
+  if(daeun){
+    h+=`<div class="dx-col daeun"><div class="dx-col-lab">대운</div><div class="dx-col-s ${OHCLS[SOH[daeun.stem]]}">${STEMS[daeun.stem]}</div><div class="dx-col-b ${OHCLS[BOH[daeun.branch]]}">${BRCH[daeun.branch]}</div></div>`;
+  }
+  if(sewoon){
+    h+=`<div class="dx-col sewoon"><div class="dx-col-lab">세운</div><div class="dx-col-s ${OHCLS[SOH[sewoon.stem]]}">${STEMS[sewoon.stem]}</div><div class="dx-col-b ${OHCLS[BOH[sewoon.branch]]}">${BRCH[sewoon.branch]}</div></div>`;
+  }
+  h+='</div></div>';
+  return h;
+}
+
+// 사주에서 특정 십신이 어느 주에 있는지 찾기
+function findTenGodPillars(saju,tgList){
+  const dStem=saju.dp.stem;
+  const found=new Set();
+  const ps=[
+    {key:'year',s:saju.yp.stem,b:saju.yp.branch},
+    {key:'month',s:saju.mp.stem,b:saju.mp.branch},
+    {key:'day',s:null,b:saju.dp.branch}, // 일주는 일간이 기준이라 천간 비교 안함
+    saju.hp?{key:'hour',s:saju.hp.stem,b:saju.hp.branch}:null
+  ].filter(Boolean);
+  ps.forEach(p=>{
+    if(p.s!==null){
+      const tg=tenGod(dStem,p.s);
+      if(tgList.includes(tg))found.add(p.key);
+    }
+    if(p.b!==null){
+      const btg=tenGod(dStem,BR_MAIN_STEM[p.b]);
+      if(tgList.includes(btg))found.add(p.key);
+    }
+  });
+  return [...found];
+}
+
+// 사주에서 특정 오행이 어느 주에 있는지
+function findOhPillars(saju,ohIdx){
+  const found=new Set();
+  if(SOH[saju.yp.stem]===ohIdx||BOH[saju.yp.branch]===ohIdx)found.add('year');
+  if(SOH[saju.mp.stem]===ohIdx||BOH[saju.mp.branch]===ohIdx)found.add('month');
+  if(SOH[saju.dp.stem]===ohIdx||BOH[saju.dp.branch]===ohIdx)found.add('day');
+  if(saju.hp&&(SOH[saju.hp.stem]===ohIdx||BOH[saju.hp.branch]===ohIdx))found.add('hour');
+  return [...found];
+}
+
+// ══════════════════════════════════════════════
 //  유료 사주 — 카테고리별 상세 풀이
 // ══════════════════════════════════════════════
 function getStemBranchRelation(stem,branch){
@@ -1568,124 +1745,639 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const rel=getStemBranchRelation(dp.stem,dp.branch);
   const sinNames=sins.map(s=>s.n.split(' ')[0]);
   const has=(n)=>sinNames.includes(n);
+  const dStemOh=SOH[dp.stem];
+  const wealthOh=(dStemOh+2)%5;   // 재성 오행
+  const officerOh=(dStemOh+4)%5;  // 관성 오행
+  const outputOh=(dStemOh+1)%5;   // 식상 오행
+  const resourceOh=(dStemOh+3)%5; // 인성 오행
 
   let h='';
-  // ===== 사주팔자 =====
-  h+=paidWrap('SAJU PALJA','🌱','사주팔자 종합 풀이',[
-    `당신의 사주팔자는 <em>${STEMS[yp.stem]}${BRCH[yp.branch]} · ${STEMS[mp.stem]}${BRCH[mp.branch]} · ${STEMS[dp.stem]}${BRCH[dp.branch]} · ${hp?STEMS[hp.stem]+BRCH[hp.branch]:'시간미상'}</em> 입니다. 일간(日干)은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]}) — ${dm.n.split('(')[0]}</em>으로, ${dm.core}을 본질로 하는 기운입니다. 사주의 주인공이 되는 글자가 어떤 성정을 타고났는지가 모든 풀이의 출발점이 됩니다.`,
-    `일지(日支)는 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) — ${ANIMAL[dp.branch]}</em>이며, 오행으로는 <em>${OHNAME[BOH[dp.branch]]}</em>에 해당합니다. 일지는 사주에서 「나의 자리이자 배우자의 자리(配偶宮)」로 보는데, ${OHNAME[SOH[dp.stem]]}인 일간이 ${OHNAME[BOH[dp.branch]]}의 일지 위에 앉아 있어 ${rel.desc}를 이룹니다. ${rel.imp}`,
-    `년주는 <em>${STEMS[yp.stem]}${BRCH[yp.branch]}(${STEMKO[yp.stem]}${BRCHKO[yp.branch]})</em>로, 천간 ${STEMKO[yp.stem]}는 일간 기준 <em>${yTG}</em>에 해당합니다. ${getTenGodMeaning(yTG)} 년주는 조상·뿌리·초년의 자리이므로, ${yTG}의 기운이 어린 시절의 환경과 가치관 형성에 영향을 미쳤습니다.`,
-    `월주는 <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em>로, 천간 ${STEMKO[mp.stem]}는 일간 기준 <em>${mTG}</em>입니다. ${getTenGodMeaning(mTG)} 월주는 청년기·직업·부모의 자리이며 사주의 격국을 결정짓는 핵심 자리로, 본 사주는 <em>${gk.name}</em>으로 잡힙니다. ${gk.desc}`,
-    hp?`시주는 <em>${STEMS[hp.stem]}${BRCH[hp.branch]}(${STEMKO[hp.stem]}${BRCHKO[hp.branch]})</em>로, 천간 ${STEMKO[hp.stem]}는 일간 기준 <em>${hTG}</em>에 해당합니다. ${getTenGodMeaning(hTG)} 시주는 자녀·말년의 자리이자 인생 후반의 모습을 보여주는 자리입니다.`:`시주는 시간 미상으로 정확한 풀이는 제한됩니다. 시간 정보가 확인되면 자녀운과 말년운까지 더 정확히 풀이할 수 있습니다.`,
-    `종합하면 일간 ${dm.n.split('(')[0]}이 <em>${gk.name}</em>의 형태로 발현되며, 사주 전체의 균형을 위한 용신은 <em>${OHNAME[ys.main]}</em> 기운입니다. ${dm.pos.slice(0,3).join(', ')}이 핵심 강점이며, ${dm.neg.slice(0,2).join(', ')}이 그림자가 됩니다.`
-  ]);
 
-  // ===== 총운 =====
-  const tot=oh.reduce((a,b)=>a+b,0);
-  const me=oh[SOH[dp.stem]],isStrong=me>=tot/3;
-  h+=paidWrap('TOTAL','✨','총운 — 인생 흐름의 큰 그림',[
-    `사주의 강약을 보면, 일간 ${OHNAME[SOH[dp.stem]]}의 비율이 ${Math.round(me/tot*100)}%로 ${isStrong?'<em>신강(身強)</em> — 자기 기운이 충분한 형태':'<em>신약(身弱)</em> — 자기 기운이 약한 형태'}입니다. ${isStrong?'기운이 강하니 재성(재물)·관성(직책)·식상(표현)을 적극적으로 쓰는 흐름이 길합니다.':'기운이 약하니 인성(공부·자격)·비겁(동료·자립)으로 자신을 보강한 후 재성·관성을 추구하는 것이 안정적입니다.'}`,
-    `${gk.name}의 기운을 타고나, ${gk.desc.split('.').slice(0,1).join('.')}. 이 격국이 평생의 큰 줄기가 되며, 직업과 인생관에 지속적으로 영향을 줍니다. 여기에 용신 ${OHNAME[ys.main]}을 적극 활용하면 격국의 장점이 극대화됩니다.`,
-    `오행 분포는 목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}로, ${oh.indexOf(Math.max(...oh))===0?'창의·진취성':oh.indexOf(Math.max(...oh))===1?'열정·표현력':oh.indexOf(Math.max(...oh))===2?'안정·실용':oh.indexOf(Math.max(...oh))===3?'결단·원칙':'지혜·유연성'}이 두드러집니다. ${oh.indexOf(Math.min(...oh))===0?'창의·추진력':oh.indexOf(Math.min(...oh))===1?'열정·표현':oh.indexOf(Math.min(...oh))===2?'안정·현실감':oh.indexOf(Math.min(...oh))===3?'결단·원칙':'지혜·유연'}이 부족한 영역으로, 이 부분을 의식적으로 보완해야 합니다.`,
-    `${has('천을귀인')?'천을귀인이 사주에 들어 있어 위기마다 귀인의 도움을 받는 평생 길운입니다.':has('역마')?'역마살이 사주를 흔들어 변동과 이동의 기운이 강하며, 활동 반경이 넓어집니다.':has('화개')?'화개살이 자리잡아 학문·예술·종교에 대한 깊은 끌림이 있습니다.':'사주에 강한 길흉살이 두드러지지 않아 비교적 잔잔한 흐름의 인생을 만들어갑니다.'} 이는 인생 전반의 결을 결정짓는 요소로 작용합니다.`
-  ],{good:`타고난 ${dm.pos.slice(0,2).join('과 ')}을(를) 살리고, 용신 ${OHNAME[ys.main]} 기운(색상·방향·음식)을 의식적으로 가까이 하면 운이 자연스럽게 풀립니다.`,
-    warn:`${dm.neg.slice(0,2).join(', ')} 면이 그림자입니다. 특히 ${oh[0]>=4?'목 과다(고집·분노)':oh[1]>=4?'화 과다(성급·산만)':oh[2]>=4?'토 과다(고집·답답함)':oh[3]>=4?'금 과다(냉정·고립)':oh[4]>=4?'수 과다(우유부단·방황)':'균형 깨짐'}을 경계하고, 부족한 ${OHNAME[oh.indexOf(Math.min(...oh))]} 기운을 보강하는 노력이 필요합니다.`});
-
-  // ===== 재물운 =====
-  h+=paidWrap('WEALTH','💰','재물운 — 돈의 흐름과 그릇',[
-    `사주에서 재물은 일간이 극(剋)하는 오행, 즉 <em>재성(財星)</em>으로 봅니다. ${dm.n.split('(')[0]} 일간 기준 재성은 <em>${OHNAME[(SOH[dp.stem]+2)%5]}</em>에 해당하며, 사주 전체에 정재 ${wealth.pj}개·편재 ${wealth.pp}개가 자리잡고 있습니다. 정재와 편재의 비율이 재물 다루는 스타일을 결정합니다.`,
-    wealth.style,
-    `신강·신약 측면에서 보면 ${isStrong?'<em>신강한 사주</em>로 재물을 다스릴 힘이 있어, 적극적인 재테크와 사업 도전이 유리합니다. 큰 흐름의 돈을 다뤄도 흔들리지 않는 그릇입니다.':'<em>신약한 사주</em>로 무리한 재물 추구는 오히려 잃기 쉽습니다. 인성(공부·자격증·전문성)을 먼저 쌓아 그릇을 키운 뒤 재물에 도전하는 것이 안정적입니다.'} ${has('편재')||has('정재')?'재성이 활발히 작용하는 사주로, 시기를 잘 만나면 큰 결실을 거둘 수 있습니다.':'재성이 명확히 드러나지 않아 명예나 전문성으로 가치를 인정받는 형태가 더 잘 맞습니다.'}`,
-    `용신 ${OHNAME[ys.main]} 기운이 활성화되는 시기에 재물운이 풀리며, 반대로 용신을 극(剋)하는 ${OHNAME[(ys.main+2)%5]} 기운이 강한 시기에는 보수적 운영이 필요합니다. 색상으로는 <em>${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]}</em>, 방향으로는 <em>${['동(東)','남(南)','중앙','서(西)','북(北)'][ys.main]}</em>이 도움이 되며, 통장·지갑·작업 공간에 적용하면 효과가 있습니다.`
-  ],{good:wealth.advice,warn:`${has('겁재')?'겁재가 강해 동업·과시 소비·충동 투자에 의한 재물 손실을 경계하세요.':wealth.pp>wealth.pj?'편재 위주이므로 큰 흐름의 돈을 다루다 한순간에 잃을 수 있습니다. 분산과 절제가 핵심입니다.':'성실한 흐름이지만 큰 도약을 원할 때는 외부 자문과 인맥 확장이 필요합니다.'}`});
-
-  // ===== 직장·사업운 =====
-  const careerDetail=getCareerDetail(saju,gk,ys);
-  h+=paidWrap('CAREER','💼','직업·사업운',[
-    `직업운은 사주에서 <em>관성(官星) — 일간을 극하는 오행</em>과 <em>식상(食傷) — 일간이 생하는 오행</em>의 흐름으로 봅니다. ${dm.n.split('(')[0]} 일간에게 관성은 <em>${OHNAME[(SOH[dp.stem]+4)%5]}</em>이며 책임감·명예·직책의 의미를, 식상은 <em>${OHNAME[(SOH[dp.stem]+1)%5]}</em>으로 표현·창작·자유의 의미를 가집니다.`,
-    `격국 <em>${gk.name}</em>의 흐름에 따르면, ${gk.desc} 이 격국이 가장 잘 발현되는 직업 분야는 ${careerDetail.gkc.length>0?careerDetail.gkc.join(', '):'타고난 적성에 맞는 다양한 분야'}입니다.`,
-    `오행 측면에서 일간 ${OHNAME[SOH[dp.stem]]}의 적성은 ${careerDetail.dmCareer.slice(0,4).join(', ')} 등의 영역과 친화력이 좋습니다. 여기에 용신 ${OHNAME[ys.main]}을 활용한 분야 — ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]} — 까지 결합하면 가장 만족스러운 진로가 됩니다.`,
-    `${has('역마')?'역마살이 들어 있어 활동성 높은 직업, 출장·해외·외근이 많은 일이 잘 맞습니다.':has('문창')?'문창귀인이 들어 있어 글·기획·강의 등 지적 활동에서 빛납니다.':has('양인')||has('백호')?'양인·백호의 강한 기운이 있어 무관·외과·의료·운동·예술 등 강도 높은 일에서 두각을 나타냅니다.':'사주에 강한 직업 신살이 두드러지지 않으므로 격국과 용신을 따라가면 됩니다.'} ${isStrong?'신강한 사주이므로 자기 사업·전문직·리더 포지션을 추진해도 무리가 없습니다.':'신약한 사주이므로 큰 조직에서 안정적으로 입지를 다진 후 독립을 고려하는 것이 안전합니다.'}`
-  ],{good:`${gk.name}의 강점이 발현되는 시기(대운에서 격국을 돕는 글자가 들어올 때)에 큰 도약을 만들 수 있습니다. 이 시기에 이직·창업·승진을 적극 추진하세요.`,
-    warn:`관성이 너무 강하면 책임 과부하로, 식상이 너무 강하면 권위와 충돌로 직장 갈등이 생기기 쉽습니다. ${has('상관')?'특히 상관 기운이 있으니 상사·규율과의 마찰을 의식적으로 관리하세요.':'본인의 성향과 조직 문화의 결을 미리 살펴 선택하세요.'}`});
-
-  // ===== 연애·결혼운 =====
-  h+=paidWrap('LOVE','💕','연애·결혼운',[
-    `연애운은 사주에서 <em>일지(日支)인 ${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) 배우자궁</em>과 ${gender==='male'?'재성(財星) — '+OHNAME[(SOH[dp.stem]+2)%5]:'관성(官星) — '+OHNAME[(SOH[dp.stem]+4)%5]}의 흐름으로 봅니다. ${gender==='male'?'남자는 재성이 아내를':'여자는 관성이 남편을'} 의미하기 때문입니다.`,
-    `당신의 일지는 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]})</em>이며, 일간 ${dm.n.split('(')[0]}와 ${rel.desc}를 이룹니다. ${rel.imp}`,
-    `${has('도화')?'<em>도화살(桃花煞)</em>이 사주에 자리잡아 매력과 끼가 풍부합니다. 이성에게 호감을 끌어당기는 힘이 강하지만, 다양한 인연 속에서 진중한 만남을 의식적으로 선택해야 합니다. 도화살은 잘 쓰면 매력의 자산이고, 잘못 쓰면 이성 문제의 씨앗이 됩니다.':has('홍염')?'<em>홍염살(紅艶煞)</em>이 들어 있어 은밀하고 깊은 매력이 있습니다. 표면적 끌림보다 한번 빠지면 깊어지는 인연이 잘 어울리며, 진정성이 관계의 핵심이 됩니다.':'사주에 강한 매력의 살이 두드러지지 않아 ${dm.pos[0]}과 같은 본연의 성품으로 인연을 만들어갑니다. 진실한 만남에서 행복을 찾는 유형입니다.'}`,
-    `결혼 시기는 일반적으로 ${gender==='male'?'재성':'관성'}이 강해지는 대운·세운에 만나는 인연이 결실로 이어지는 경우가 많습니다. 또한 일지가 합(合)이 되는 해 — 즉 ${getDajiHapDesc(dp.branch)}가 들어오는 해에 결혼 인연이 맺어지기 쉽습니다.`
-  ],{good:`배우자궁(일지)이 ${rel.desc.includes('비화')?'동질적이라 닮은꼴 인연이 편안':rel.desc.includes('인성')?'인성으로 작용해 배우자가 정신적·물질적 후원자가':rel.desc.includes('식상')?'식상으로 작용해 배우자에게 표현·돌봄을 주는 관계가':rel.desc.includes('재성')?'재성으로 작용해 배우자가 활동의 무대가':'관성으로 작용해 배우자에게서 추진력·자극을 받는 관계가'} 됩니다.`,
-    warn:`${has('도화')?'도화 활용은 좋지만 삼각관계·외도 유혹에 휘말리지 않도록 자기 절제가 필요합니다.':has('백호')?'백호살의 급격한 변화 기운이 부부 사이의 충돌로 나타날 수 있으니, 평소에 대화로 갈등을 풀어내는 습관이 중요합니다.':'배우자와 가치관이 충돌할 때 자기 입장만 고집하지 말고 한 발짝 물러서서 상대를 이해해 보세요.'}`});
-
-  // ===== 건강운 =====
-  h+=paidWrap('HEALTH','🌿','건강운 — 오행 균형과 장부',[
-    `사주의 건강은 오행 균형으로 봅니다. 목(간담) ${oh[0]} · 화(심소장) ${oh[1]} · 토(비위) ${oh[2]} · 금(폐대장) ${oh[3]} · 수(신방광) ${oh[4]} 분포에서, ${Math.max(...oh)>=4?'<em>'+OHNAME[oh.indexOf(Math.max(...oh))]+' 과다</em>':'특정 오행 과다는 없으며'}, ${Math.min(...oh)===0?'<em>'+OHNAME[oh.indexOf(Math.min(...oh))]+' 결핍</em>':'결핍 영역도 두드러지지 않아 비교적 균형 잡힌 흐름'}입니다.`,
-    Math.max(...oh)>=4?`${OHNAME[oh.indexOf(Math.max(...oh))]}이 과다해 ${['간 기능 항진·과로·분노 조절','심혈관·고혈압·번열·불면','당뇨·복부 비만·과식','기관지·강박·만성 비염','결석·부종·과민'][oh.indexOf(Math.max(...oh))]} 등의 증상에 주의해야 합니다. 해당 장부에 부담을 주는 음식과 습관을 피하고, 반대 오행으로 균형을 잡으세요.`:'특정 장부 과다 부담은 없으므로 균형 유지가 핵심입니다.',
-    Math.min(...oh)===0?`반대로 ${OHNAME[oh.indexOf(Math.min(...oh))]} 기운이 결핍되어 ${['피로·시력·근육경직','순환장애·우울·수면부족','소화불량·식욕부진','호흡기·피부 알레르기','요통·생식·뼈·청력'][oh.indexOf(Math.min(...oh))]} 영역이 약할 수 있습니다. ${['신맛·녹색 음식','쓴맛·붉은 음식','단맛·노란 음식','매운맛·흰 음식','짠맛·검은 음식'][oh.indexOf(Math.min(...oh))]}으로 보강하세요.`:'결핍 영역도 없어 평소 식습관·운동만 잘 유지하면 큰 무리는 없습니다.',
-    `${has('백호')||has('양인')?'백호살·양인살의 강한 기운은 사고·외상·급성 질환의 가능성을 시사합니다. 위험한 활동에서 안전 수칙을 철저히 지키세요.':has('역마')?'역마살이 강하니 이동 중 사고·교통 사고에 유의하고, 출장·해외 활동 시 컨디션 관리에 신경쓰세요.':'사주에 강한 건강 위험 신살은 두드러지지 않습니다. 평소 무리하지 않는 페이스가 가장 좋은 약입니다.'}`
-  ],{good:`용신 ${OHNAME[ys.main]} 기운에 해당하는 ${['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][ys.main]}을 식단에 늘리고, ${['산책·등산','운동·요가','명상·정원 가꾸기','정리정돈·필라테스','수영·독서'][ys.main]} 같은 활동이 컨디션을 회복시킵니다.`,
-    warn:'사주는 체질의 경향성을 보여주는 참고 자료일 뿐, 실제 진단은 반드시 전문의와 상담하세요. 정기적인 건강 검진을 게을리하지 마세요.'});
-
-  // ===== 학업·시험운 =====
-  h+=paidWrap('STUDY','📚','학업·시험운',[
-    `학업운은 <em>인성(印星) — 일간을 생하는 오행 ${OHNAME[(SOH[dp.stem]+3)%5]}</em>과 <em>식상(食傷) — 일간이 생하는 오행 ${OHNAME[(SOH[dp.stem]+1)%5]}</em>의 흐름으로 봅니다. 인성은 받아들이는 학습력을, 식상은 표현하고 응용하는 능력을 의미합니다.`,
-    `${has('문창')?'<em>문창귀인(文昌貴人)</em>이 사주에 들어 있어 학문·시험·문서운에 매우 길합니다. 두뇌가 명석하고 글재주·논리력이 뛰어나며, 자격증과 시험에 강합니다.':has('화개')?'<em>화개살(華蓋煞)</em>이 들어 있어 한 분야에 깊이 천착하는 학자·연구형 자질이 강합니다. 깊이 있는 학문에 어울립니다.':'사주에 강한 학업 신살은 없으나, 인성과 식상의 균형 정도에 따라 꾸준한 학습력을 발휘할 수 있습니다.'}`,
-    `${gk.name.includes('인')?'격국 자체가 인성격이라 학문·교육 분야에서 큰 결실을 거둘 수 있습니다. 학습이 곧 본인의 정체성이 되는 구조입니다.':gk.name.includes('식')||gk.name.includes('상관')?'식상격이라 응용·창작·표현 학습에 강합니다. 단순 암기보다 토론·발표·창작 형식의 학습이 잘 맞습니다.':'격국에 따른 학업 강점이 명확하지 않으므로, 흥미를 느끼는 분야를 깊게 파는 전략이 효과적입니다.'} 시험·자격증을 준비할 때는 인성에 해당하는 ${OHNAME[(SOH[dp.stem]+3)%5]} 기운이 강해지는 대운·세운을 활용하면 결실을 거두기 쉽습니다.`
-  ]);
-
-  // ===== 인간관계 =====
-  h+=paidWrap('HUMAN','👥','인간관계',[
-    `인간관계는 <em>비겁(比劫) — 일간과 같은 오행</em>으로 형제·동료를, <em>인성</em>으로 부모·스승을, <em>관성</em>으로 상사를, <em>재성</em>으로 ${gender==='male'?'아내·여성':'재물·돈'}을, ${gender==='female'?'관성으로 남편을, ':''}식상으로 자녀·후배를 봅니다.`,
-    `${has('천을귀인')?'<em>천을귀인(天乙貴人)</em>이 사주에 자리잡아 평생 위기마다 귀인의 도움을 받습니다. 인복이 좋으며, 어려운 상황에서도 도와주는 사람이 나타나는 길운입니다.':'천을귀인은 없으나, 본인의 ${dm.pos[0]} 같은 성품이 자연스러운 인덕을 만들어줍니다.'}`,
-    `${has('역마')?'역마살이 강해 활동 반경이 넓고 다양한 사람들과 인연을 맺습니다. 새로운 환경에서 빠르게 적응하며 인맥을 형성하는 능력이 있습니다.':'사주의 합(合)·충(沖)을 보면 인간관계의 결이 드러나는데, 본 사주에서는 비교적 잔잔한 흐름이 보입니다.'} ${has('상관')?'다만 상관 기운이 있어 권위·규율과의 마찰이 생기기 쉬우니, 윗사람과의 관계에서 의식적인 절제가 필요합니다.':''}`
-  ],{good:'타고난 인덕을 살리고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일 깊은 관계 몇 개가 넓은 인맥보다 든든합니다.',
-    warn:`${has('겁재')?'겁재 기운으로 동업·금전 거래에서 신뢰를 잃기 쉬우니 친한 사이일수록 명확한 계약과 기록이 중요합니다.':'관계에서 자기 주장과 경청의 균형을 의식적으로 잡아주세요.'}`});
-
-  // ===== 신살 종합 =====
-  if(sins.length>0){
-    let sinPara=`사주에 자리잡은 신살은 ${[...new Set(sinNames)].join(', ')} 입니다. 각 신살이 어느 자리에 있느냐에 따라 영향이 달라집니다.`;
-    const sinDetails=[...new Set(sinNames)].map(name=>{
-      const item=sins.find(s=>s.n.startsWith(name));
-      const locs=sins.filter(s=>s.n.startsWith(name)).map(s=>s.loc).join('·');
-      return `<em>${name}</em>이(가) ${locs}에 자리잡았습니다. ${item.d}`;
-    });
-    h+=paidWrap('SINSAL','⚡','신살 종합 분석',[sinPara,...sinDetails]);
+  // ═════════════════════════════════════
+  // 사주팔자 종합
+  // ═════════════════════════════════════
+  let sajuBody=`<p>당신의 사주팔자는 다음과 같습니다. 일간(日干)은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]}) — ${dm.n.split('(')[0]}</em>으로, ${dm.core}을 본질로 하는 기운입니다. 사주의 주인공이 되는 글자가 어떤 성정을 타고났는지가 모든 풀이의 출발점이 됩니다.</p>`;
+  sajuBody+=miniManse(saju);
+  // 일주
+  sajuBody+=`<p style="margin-top:14px"><b>① 일주(日柱) — 「나」의 자리</b></p>`;
+  sajuBody+=miniManseWithPointer(saju,'day','↑ 강조된 일주가 「나의 자리」입니다');
+  sajuBody+=`<p>일간은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]})</em>, 일지는 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) — ${ANIMAL[dp.branch]}</em>입니다. 일지는 사주에서 「나의 자리이자 배우자의 자리(配偶宮)」로, ${OHNAME[dStemOh]}인 일간이 ${OHNAME[BOH[dp.branch]]}의 일지 위에 앉아 있어 ${rel.desc}를 이룹니다.</p>`;
+  sajuBody+=`<p>${rel.imp}</p>`;
+  // 년주
+  sajuBody+=`<p style="margin-top:14px"><b>② 년주(年柱) — 조상·뿌리·초년의 자리</b></p>`;
+  sajuBody+=miniManseWithPointer(saju,'year','↑ 강조된 년주가 「뿌리·초년」 자리입니다');
+  sajuBody+=`<p>년주는 <em>${STEMS[yp.stem]}${BRCH[yp.branch]}(${STEMKO[yp.stem]}${BRCHKO[yp.branch]})</em>이며, 천간 ${STEMKO[yp.stem]}는 일간 기준 <em>${yTG}</em>에 해당합니다. ${getTenGodMeaning(yTG)} 년주의 기운이 어린 시절 환경과 가치관 형성에 영향을 미쳤습니다.</p>`;
+  // 월주
+  sajuBody+=`<p style="margin-top:14px"><b>③ 월주(月柱) — 청년기·직업·격국의 자리</b></p>`;
+  sajuBody+=miniManseWithPointer(saju,'month','↑ 강조된 월주가 「격국·직업」을 결정하는 핵심 자리');
+  sajuBody+=`<p>월주는 <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em>이며, 천간 ${STEMKO[mp.stem]}는 일간 기준 <em>${mTG}</em>입니다. ${getTenGodMeaning(mTG)} 본 사주의 격국은 월지 정기를 기준으로 <em>${gk.name}</em>으로 잡힙니다.</p>`;
+  sajuBody+=`<p>${gk.desc}</p>`;
+  // 시주
+  sajuBody+=`<p style="margin-top:14px"><b>④ 시주(時柱) — 자녀·말년의 자리</b></p>`;
+  sajuBody+=miniManseWithPointer(saju,'hour','↑ 강조된 시주가 「자녀·말년」 자리입니다');
+  if(hp){
+    sajuBody+=`<p>시주는 <em>${STEMS[hp.stem]}${BRCH[hp.branch]}(${STEMKO[hp.stem]}${BRCHKO[hp.branch]})</em>이며, 천간 ${STEMKO[hp.stem]}는 일간 기준 <em>${hTG}</em>에 해당합니다. ${getTenGodMeaning(hTG)} 인생 후반의 모습과 자녀와의 관계를 보여주는 자리입니다.</p>`;
+  }else{
+    sajuBody+=`<p>시주는 시간 미상이라 정확한 풀이는 제한됩니다. 시간 정보가 확인되면 자녀운과 말년운까지 더 정확히 풀이할 수 있어요.</p>`;
   }
+  sajuBody+=`<p style="margin-top:14px"><b>⑤ 종합</b><br>일간 ${dm.n.split('(')[0]}이 <em>${gk.name}</em>의 형태로 발현되며, 사주 전체의 균형을 위한 용신은 <em>${OHNAME[ys.main]}</em> 기운입니다. ${dm.pos.slice(0,3).join(', ')}이 핵심 강점이며, ${dm.neg.slice(0,2).join(', ')}이 그림자가 됩니다.</p>`;
 
-  // ===== 대운 시기별 풀이 =====
+  h+=`<div class="nb-card">
+    <div class="nb-cat">SAJU PALJA</div>
+    <div class="nb-title">🌱 사주팔자 종합 풀이</div>
+    <div class="nb-body">${sajuBody}</div>
+  </div>`;
+
+  // ═════════════════════════════════════
+  // 총운
+  // ═════════════════════════════════════
+  const tot=oh.reduce((a,b)=>a+b,0);
+  const me=oh[dStemOh],isStrong=me>=tot/3;
+  let totBody=miniManse(saju);
+  totBody+=`<p>사주의 강약을 보면, 일간 ${OHNAME[dStemOh]}의 비율이 ${Math.round(me/tot*100)}%로 ${isStrong?'<em>신강(身強)</em> — 자기 기운이 충분한 형태':'<em>신약(身弱)</em> — 자기 기운이 약한 형태'}입니다. ${isStrong?'기운이 강하니 재성(재물)·관성(직책)·식상(표현)을 적극적으로 쓰는 흐름이 길합니다. 자기 사업·도전·리더 포지션이 잘 맞습니다.':'기운이 약하니 인성(공부·자격)·비겁(동료·자립)으로 자신을 보강한 후 재성·관성을 추구하는 것이 안정적입니다. 큰 조직 안에서 입지를 다진 뒤 도약하세요.'}</p>`;
+  totBody+=`<p>${gk.name}의 기운을 타고나, ${gk.desc} 이 격국이 평생의 큰 줄기가 되며 직업과 인생관에 지속적으로 영향을 줍니다.</p>`;
+  totBody+=`<p>오행 분포는 <em>목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}</em>로, ${['창의·진취성','열정·표현력','안정·실용','결단·원칙','지혜·유연성'][oh.indexOf(Math.max(...oh))]}이 두드러집니다. 반대로 ${['창의·추진력','열정·표현','안정·현실감','결단·원칙','지혜·유연'][oh.indexOf(Math.min(...oh))]}이 부족한 영역으로, 이 부분을 의식적으로 보완해야 합니다.</p>`;
+  totBody+=`<p>용신은 <em>${OHNAME[ys.main]}</em>입니다. 용신은 사주 균형을 잡아주는 가장 도움이 되는 오행으로, 이 기운에 해당하는 색상·방향·음식·활동을 일상에 더 가까이 두면 운이 자연스럽게 풀립니다.</p>`;
+  totBody+=`<p>${has('천을귀인')?'<em>천을귀인</em>이 사주에 들어 있어 위기마다 귀인의 도움을 받는 평생 길운입니다.':has('역마')?'<em>역마살</em>이 사주를 흔들어 변동과 이동의 기운이 강하며 활동 반경이 넓어집니다.':has('화개')?'<em>화개살</em>이 자리잡아 학문·예술·종교에 대한 깊은 끌림이 있습니다.':'사주에 강한 길흉살이 두드러지지 않아 비교적 잔잔한 흐름의 인생을 만들어갑니다.'} 이 결이 인생 전반의 색깔을 결정짓습니다.</p>`;
+  h+=paidWrapBody('TOTAL','✨','총운 — 인생 흐름의 큰 그림',totBody,
+    {good:`타고난 ${dm.pos.slice(0,2).join('과 ')}을(를) 살리고, 용신 ${OHNAME[ys.main]} 기운(색상·방향·음식)을 의식적으로 가까이 하면 운이 자연스럽게 풀립니다.`,
+     warn:`${dm.neg.slice(0,2).join(', ')} 면이 그림자입니다. 특히 ${oh[0]>=4?'목 과다(고집·분노)':oh[1]>=4?'화 과다(성급·산만)':oh[2]>=4?'토 과다(고집·답답함)':oh[3]>=4?'금 과다(냉정·고립)':oh[4]>=4?'수 과다(우유부단·방황)':'균형 깨짐'}을 경계하고, 부족한 ${OHNAME[oh.indexOf(Math.min(...oh))]} 기운을 보강하는 노력이 필요합니다.`});
+
+  // ═════════════════════════════════════
+  // 재물운
+  // ═════════════════════════════════════
+  const wealthPillars=findTenGodPillars(saju,['정재','편재']);
+  let wBody=`<p>재물은 사주에서 <em>일간이 극(剋)하는 오행 = 재성(財星)</em>으로 봅니다. ${dm.n.split('(')[0]} 일간 기준 재성은 <em>${OHNAME[wealthOh]}</em>에 해당하며, 음양에 따라 <em>정재(안정 재물)</em>와 <em>편재(활동 재물)</em>로 나뉩니다.</p>`;
+  wBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 8글자 중 ${OHNAME[wealthOh]} 기운에 해당하는 글자(천간·지지)가 재성입니다. 본 사주에는 <b>정재 ${wealth.pj}개 · 편재 ${wealth.pp}개</b>가 자리잡고 있습니다.</div>`;
+  if(wealthPillars.length>0){
+    wBody+=miniManseWithPointer(saju,wealthPillars,'↑ 강조된 자리에 재성(財星)이 있습니다');
+  }else{
+    wBody+=miniManse(saju);
+    wBody+=`<div class="mm-pointer">↑ 사주 천간에 재성이 없어 지장간 속에 숨어 있는 형태입니다</div>`;
+  }
+  wBody+=`<p>${wealth.style}</p>`;
+  wBody+=`<p>신강·신약 측면에서 보면 ${isStrong?'<em>신강한 사주</em>로 재물을 다스릴 힘이 있어, 적극적인 재테크와 사업 도전이 유리합니다. 큰 흐름의 돈을 다뤄도 흔들리지 않는 그릇입니다.':'<em>신약한 사주</em>로 무리한 재물 추구는 오히려 잃기 쉽습니다. 인성(공부·자격증·전문성)을 먼저 쌓아 그릇을 키운 뒤 재물에 도전하는 것이 안정적입니다.'} ${has('편재')||has('정재')?'재성이 활발히 작용하는 사주로, 시기를 잘 만나면 큰 결실을 거둘 수 있습니다.':'재성이 명확히 드러나지 않아 명예나 전문성으로 가치를 인정받는 형태가 더 잘 맞습니다.'}</p>`;
+  wBody+=`<p>재물이 들어오는 시기는 <em>재성이 들어오는 대운·세운</em>입니다. 즉 <em>${OHNAME[wealthOh]} 기운</em>의 글자가 들어오는 해에 사업·투자·이직의 결실이 생기기 쉽습니다. 반대로 <em>비겁(${OHNAME[dStemOh]})</em>이 강해지는 시기에는 재물이 분산·손실되기 쉬우니 보수적으로 운영해야 합니다.</p>`;
+  wBody+=`<p>용신 <em>${OHNAME[ys.main]}</em> 기운이 활성화되는 시기에 재물운이 풀리며, 색상으로는 ${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]}, 방향으로는 ${['동(東)','남(南)','중앙','서(西)','북(北)'][ys.main]}이 도움이 됩니다. 통장·지갑·작업 공간에 적용하면 효과가 있습니다.</p>`;
+  h+=paidWrapBody('WEALTH','💰','재물운 — 돈의 흐름과 그릇',wBody,
+    {good:wealth.advice,warn:`${has('겁재')?'겁재가 강해 동업·과시 소비·충동 투자에 의한 재물 손실을 경계하세요.':wealth.pp>wealth.pj?'편재 위주이므로 큰 흐름의 돈을 다루다 한순간에 잃을 수 있습니다. 분산과 절제가 핵심입니다.':'성실한 흐름이지만 큰 도약을 원할 때는 외부 자문과 인맥 확장이 필요합니다.'}`});
+
+  // ═════════════════════════════════════
+  // 직업·사업운
+  // ═════════════════════════════════════
+  const careerPillars=findTenGodPillars(saju,['정관','편관','식신','상관']);
+  const careerDetail=getCareerDetail(saju,gk,ys);
+  let cBody=`<p>직업운은 <em>관성(官星) — 일간을 극하는 오행</em>과 <em>식상(食傷) — 일간이 생하는 오행</em>의 흐름으로 봅니다. ${dm.n.split('(')[0]} 일간에게 관성은 <em>${OHNAME[officerOh]}</em>(책임·명예·직책), 식상은 <em>${OHNAME[outputOh]}</em>(표현·창작·자유)을 의미합니다.</p>`;
+  cBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> ${OHNAME[officerOh]}이나 ${OHNAME[outputOh]} 기운의 글자가 사주에 어디 있는지를 봅니다. 또한 격국이 잡히는 <b>월주</b>가 직업의 주된 결을 결정합니다.</div>`;
+  if(careerPillars.length>0){
+    cBody+=miniManseWithPointer(saju,careerPillars,'↑ 강조된 자리에 관성·식상이 있어 직업 기운이 됩니다');
+  }else{
+    cBody+=miniManse(saju,'month');
+    cBody+=`<div class="mm-pointer">↑ 월주(격국 자리)가 직업의 결을 결정합니다</div>`;
+  }
+  cBody+=`<p>본 사주의 격국 <em>${gk.name}</em>의 흐름에 따르면, ${gk.desc}</p>`;
+  cBody+=`<p><b>적합한 분야</b><br>${careerDetail.gkc.length>0?'· 격국 추천: '+careerDetail.gkc.join(', ')+'<br>':''}· 일간 ${OHNAME[dStemOh]} 적성: ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· 용신 ${OHNAME[ys.main]} 활용: ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
+  cBody+=`<p>${has('역마')?'<em>역마살</em>이 들어 있어 활동성 높은 직업, 출장·해외·외근이 많은 일이 잘 맞습니다.':has('문창')?'<em>문창귀인</em>이 들어 있어 글·기획·강의 등 지적 활동에서 빛납니다.':has('양인')||has('백호')?'<em>양인·백호</em>의 강한 기운이 있어 무관·외과·의료·운동·예술 등 강도 높은 일에서 두각을 나타냅니다.':'사주에 강한 직업 신살이 두드러지지 않으므로 격국과 용신을 따라가면 됩니다.'} ${isStrong?'신강한 사주이므로 자기 사업·전문직·리더 포지션을 추진해도 무리가 없습니다.':'신약한 사주이므로 큰 조직에서 안정적으로 입지를 다진 후 독립을 고려하는 것이 안전합니다.'}</p>`;
+  cBody+=`<p>승진·이직 시기는 <em>관성이 들어오는 대운·세운</em>(${OHNAME[officerOh]} 기운의 해)에 결정적인 변화가 생기기 쉽습니다. 또한 식상이 강한 시기에는 창업·프리랜서 전향이 잘 맞고, 인성이 강한 시기에는 자격증·학위·전문성 강화에 시간을 투자하는 것이 좋습니다.</p>`;
+  h+=paidWrapBody('CAREER','💼','직업·사업운',cBody,
+    {good:`${gk.name}의 강점이 발현되는 시기(대운에서 격국을 돕는 글자가 들어올 때)에 큰 도약을 만들 수 있습니다. 이 시기에 이직·창업·승진을 적극 추진하세요.`,
+     warn:`관성이 너무 강하면 책임 과부하로, 식상이 너무 강하면 권위와 충돌로 직장 갈등이 생기기 쉽습니다. ${has('상관')?'특히 상관 기운이 있으니 상사·규율과의 마찰을 의식적으로 관리하세요.':'본인의 성향과 조직 문화의 결을 미리 살펴 선택하세요.'}`});
+
+  // ═════════════════════════════════════
+  // 연애·결혼운
+  // ═════════════════════════════════════
+  const lovePillars=['day']; // 일지(배우자궁)는 무조건 강조
+  const loveTGPillars=findTenGodPillars(saju,gender==='male'?['정재','편재']:['정관','편관']);
+  loveTGPillars.forEach(p=>{if(!lovePillars.includes(p))lovePillars.push(p);});
+  let lBody=`<p>연애운은 <em>일지(日支) — 배우자궁(配偶宮)</em>과 ${gender==='male'?'<em>재성(財星)</em>':'<em>관성(官星)</em>'}의 흐름으로 봅니다. ${gender==='male'?'남자에게 재성('+OHNAME[wealthOh]+')은 아내를':'여자에게 관성('+OHNAME[officerOh]+')은 남편을'} 의미하기 때문입니다.</p>`;
+  lBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> <b>일주의 지지(일지)</b>가 배우자궁이며, 사주 안의 ${gender==='male'?OHNAME[wealthOh]+' 글자(재성)':OHNAME[officerOh]+' 글자(관성)'}들이 ${gender==='male'?'아내·여성':'남편·남성'}을 상징합니다.</div>`;
+  lBody+=miniManseWithPointer(saju,lovePillars,'↑ 강조된 자리: 일지(배우자궁) + '+(gender==='male'?'재성':'관성'));
+  lBody+=`<p>당신의 일지는 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) — ${ANIMAL[dp.branch]}</em>이며, 일간 ${dm.n.split('(')[0]}와 ${rel.desc}를 이룹니다. ${rel.imp}</p>`;
+  lBody+=`<p>${has('도화')?'<em>도화살(桃花煞)</em>이 사주에 자리잡아 매력과 끼가 풍부합니다. 이성에게 호감을 끌어당기는 힘이 강하지만, 다양한 인연 속에서 진중한 만남을 의식적으로 선택해야 합니다. 도화살은 잘 쓰면 매력의 자산이고, 잘못 쓰면 이성 문제의 씨앗이 됩니다.':has('홍염')?'<em>홍염살(紅艶煞)</em>이 들어 있어 은밀하고 깊은 매력이 있습니다. 표면적 끌림보다 한번 빠지면 깊어지는 인연이 잘 어울리며, 진정성이 관계의 핵심이 됩니다.':'사주에 강한 매력의 살이 두드러지지 않아 '+dm.pos[0]+' 같은 본연의 성품으로 인연을 만들어갑니다. 진실한 만남에서 행복을 찾는 유형입니다.'}</p>`;
+  lBody+=`<p>결혼 시기는 일반적으로 <em>${gender==='male'?'재성':'관성'}이 강해지는 대운·세운</em>(${OHNAME[gender==='male'?wealthOh:officerOh]} 기운의 해)에 만나는 인연이 결실로 이어지는 경우가 많습니다. 또한 일지가 합(合)이 되는 해 — 즉 <em>${getDajiHapDesc(dp.branch)}</em>가 들어오는 해에 결혼 인연이 맺어지기 쉽습니다.</p>`;
+  lBody+=`<p>배우자의 모습은 일지의 글자와 ${gender==='male'?'재성':'관성'}의 결로 그려집니다. ${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]}) 일지를 가진 분의 배우자는 ${getSpouseImage(dp.branch)}는 분이 잘 어울립니다.</p>`;
+  h+=paidWrapBody('LOVE','💕','연애·결혼운',lBody,
+    {good:`배우자궁(일지)이 ${rel.desc.includes('비화')?'동질적이라 닮은꼴 인연이 편안':rel.desc.includes('인성')?'인성으로 작용해 배우자가 정신적·물질적 후원자가':rel.desc.includes('식상')?'식상으로 작용해 배우자에게 표현·돌봄을 주는 관계가':rel.desc.includes('재성')?'재성으로 작용해 배우자가 활동의 무대가':'관성으로 작용해 배우자에게서 추진력·자극을 받는 관계가'} 됩니다.`,
+     warn:`${has('도화')?'도화 활용은 좋지만 삼각관계·외도 유혹에 휘말리지 않도록 자기 절제가 필요합니다.':has('백호')?'백호살의 급격한 변화 기운이 부부 사이의 충돌로 나타날 수 있으니, 평소에 대화로 갈등을 풀어내는 습관이 중요합니다.':'배우자와 가치관이 충돌할 때 자기 입장만 고집하지 말고 한 발짝 물러서서 상대를 이해해 보세요.'}`});
+
+  // ═════════════════════════════════════
+  // 건강운
+  // ═════════════════════════════════════
+  const maxOhIdx=oh.indexOf(Math.max(...oh));
+  const minOhIdx=oh.indexOf(Math.min(...oh));
+  const healthPillars=findOhPillars(saju,maxOhIdx);
+  let hBody=`<p>사주의 건강은 <em>오행 균형</em>으로 봅니다. 각 오행은 신체 장부와 연결되어 — 목(간담) · 화(심소장) · 토(비위) · 금(폐대장) · 수(신방광) — 어느 오행이 너무 강하거나 약한지가 체질의 경향성을 보여줍니다.</p>`;
+  hBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 8글자의 오행 분포를 봅니다. 본 사주는 <b>목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}</b>로, 가장 강한 ${OHNAME[maxOhIdx]}과 가장 약한 ${OHNAME[minOhIdx]}을(를) 주의해야 합니다.</div>`;
+  if(healthPillars.length>0){
+    hBody+=miniManseWithPointer(saju,healthPillars,`↑ 강조된 자리에 ${OHNAME[maxOhIdx]} 기운이 강하게 자리잡고 있습니다`);
+  }
+  hBody+=`<p>${Math.max(...oh)>=4?'<em>'+OHNAME[maxOhIdx]+' 과다</em>로 '+['간 기능 항진·과로·분노 조절 어려움','심혈관·고혈압·번열·불면','당뇨·복부 비만·과식','기관지·강박·만성 비염','결석·부종·과민'][maxOhIdx]+' 등의 증상에 주의해야 합니다. 해당 장부에 부담을 주는 음식과 습관을 피하고, 반대 오행으로 균형을 잡으세요.':'특정 오행 과다는 두드러지지 않아 큰 위험 요소는 적습니다. 다만 가장 비중이 높은 '+OHNAME[maxOhIdx]+' 기운이 ['+['피로 누적','순환 부담','소화 부담','호흡기 민감','요통·생식기 약함'][maxOhIdx]+'] 경향으로 나타날 수 있으니 의식적인 관리가 필요합니다.'}</p>`;
+  hBody+=`<p>${Math.min(...oh)===0?'반대로 <em>'+OHNAME[minOhIdx]+' 결핍</em>으로 '+['피로·시력·근육 경직','순환장애·우울·수면 부족','소화불량·식욕 부진','호흡기·피부 알레르기','요통·생식·뼈·청력 약화'][minOhIdx]+' 영역이 약할 수 있습니다. '+['신맛·녹색 음식','쓴맛·붉은 음식','단맛·노란 음식','매운맛·흰 음식','짠맛·검은 음식'][minOhIdx]+'으로 보강하세요.':'결핍 오행도 두드러지지 않아 비교적 균형 잡힌 사주입니다. 평소 식습관·운동을 잘 유지하면 큰 무리는 없습니다.'}</p>`;
+  hBody+=`<p>${has('백호')||has('양인')?'<em>백호살·양인살</em>의 강한 기운은 사고·외상·급성 질환의 가능성을 시사합니다. 위험한 활동에서 안전 수칙을 철저히 지키고, 정기 검진을 게을리하지 마세요.':has('역마')?'<em>역마살</em>이 강하니 이동 중 사고·교통 사고에 유의하고, 출장·해외 활동 시 컨디션 관리에 신경쓰세요.':'사주에 강한 건강 위험 신살은 두드러지지 않습니다. 평소 무리하지 않는 페이스가 가장 좋은 약입니다.'}</p>`;
+  hBody+=`<p>건강 회복기는 <em>${OHNAME[ys.main]}</em>이 강해지는 대운·세운입니다. 이 시기에 식단을 정비하고 운동 루틴을 만들면 효과가 배가됩니다. 반대로 ${OHNAME[(ys.main+2)%5]}이 강한 시기에는 무리하지 말고 휴식을 우선하세요.</p>`;
+  h+=paidWrapBody('HEALTH','🌿','건강운 — 오행 균형과 장부',hBody,
+    {good:`용신 ${OHNAME[ys.main]} 기운에 해당하는 ${['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][ys.main]}을 식단에 늘리고, ${['산책·등산','운동·요가','명상·정원 가꾸기','정리정돈·필라테스','수영·독서'][ys.main]} 같은 활동이 컨디션을 회복시킵니다.`,
+     warn:'사주는 체질의 경향성을 보여주는 참고 자료일 뿐, 실제 진단은 반드시 전문의와 상담하세요. 정기적인 건강 검진을 게을리하지 마세요.'});
+
+  // ═════════════════════════════════════
+  // 학업·시험운
+  // ═════════════════════════════════════
+  const studyPillars=findTenGodPillars(saju,['정인','편인','식신','상관']);
+  let stBody=`<p>학업운은 <em>인성(印星) — 일간을 생하는 오행 ${OHNAME[resourceOh]}</em>과 <em>식상(食傷) — 일간이 생하는 오행 ${OHNAME[outputOh]}</em>의 흐름으로 봅니다. 인성은 <b>받아들이는 학습력</b>을, 식상은 <b>표현·응용 능력</b>을 의미합니다.</p>`;
+  stBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주에서 ${OHNAME[resourceOh]} 기운(인성)과 ${OHNAME[outputOh]} 기운(식상) 글자를 봅니다. 또한 <b>문창귀인</b>이라는 신살이 있으면 시험·문서운에 강합니다.</div>`;
+  if(studyPillars.length>0){
+    stBody+=miniManseWithPointer(saju,studyPillars,'↑ 강조된 자리에 학업과 관련된 인성·식상이 있습니다');
+  }
+  stBody+=`<p>${has('문창')?'<em>문창귀인(文昌貴人)</em>이 사주에 들어 있어 학문·시험·문서운에 매우 길합니다. 두뇌가 명석하고 글재주·논리력이 뛰어나며, 자격증과 시험에 강합니다.':has('화개')?'<em>화개살(華蓋煞)</em>이 들어 있어 한 분야에 깊이 천착하는 학자·연구형 자질이 강합니다. 깊이 있는 학문에 어울립니다.':'사주에 강한 학업 신살은 없으나, 인성과 식상의 균형 정도에 따라 꾸준한 학습력을 발휘할 수 있습니다.'}</p>`;
+  stBody+=`<p>${gk.name.includes('인')?'격국 자체가 인성격이라 학문·교육 분야에서 큰 결실을 거둘 수 있습니다. 학습이 곧 본인의 정체성이 되는 구조입니다.':gk.name.includes('식')||gk.name.includes('상관')?'식상격이라 응용·창작·표현 학습에 강합니다. 단순 암기보다 토론·발표·창작 형식의 학습이 잘 맞습니다.':'격국에 따른 학업 강점이 명확하지 않으므로, 흥미를 느끼는 분야를 깊게 파는 전략이 효과적입니다.'}</p>`;
+  stBody+=`<p>시험·자격증 합격 시기는 <em>인성이 들어오는 대운·세운</em>(${OHNAME[resourceOh]} 기운의 해)이 가장 유리합니다. 이 시기에 큰 시험·논문·저술을 완성하면 결실이 따라옵니다. 식상이 강한 시기는 발표·창작 활동에 강하지만 정통 학문 시험에서는 산만해질 수 있어요.</p>`;
+  h+=paidWrapBody('STUDY','📚','학업·시험운',stBody);
+
+  // ═════════════════════════════════════
+  // 인간관계
+  // ═════════════════════════════════════
+  let huBody=`<p>인간관계는 <em>비겁(比劫)</em>으로 형제·동료를, <em>인성</em>으로 부모·스승을, <em>관성</em>으로 상사를, <em>재성</em>으로 ${gender==='male'?'아내·여성':'재물·돈'}을, ${gender==='female'?'관성으로 남편을, ':''}식상으로 자녀·후배를 봅니다.</p>`;
+  huBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 인간관계는 사주 전체의 십신 분포 + <b>천을귀인·역마살</b> 같은 신살을 종합적으로 봅니다.</div>`;
+  huBody+=miniManseWithSinsal(saju);
+  huBody+=`<p>${has('천을귀인')?'<em>천을귀인(天乙貴人)</em>이 사주에 자리잡아 평생 위기마다 귀인의 도움을 받습니다. 인복이 좋으며, 어려운 상황에서도 도와주는 사람이 나타나는 길운입니다.':'천을귀인은 없으나, 본인의 '+dm.pos[0]+' 같은 성품이 자연스러운 인덕을 만들어줍니다.'}</p>`;
+  huBody+=`<p>${has('역마')?'<em>역마살</em>이 강해 활동 반경이 넓고 다양한 사람들과 인연을 맺습니다. 새로운 환경에서 빠르게 적응하며 인맥을 형성하는 능력이 있습니다.':'사주의 합·충을 보면 인간관계의 결이 드러나는데, 본 사주에서는 비교적 잔잔한 흐름이 보입니다.'} ${has('상관')?'다만 상관 기운이 있어 권위·규율과의 마찰이 생기기 쉬우니, 윗사람과의 관계에서 의식적인 절제가 필요합니다.':''}</p>`;
+  huBody+=`<p>형제·동료 관계는 비겁의 강약으로 봅니다. ${oh[dStemOh]>=3?'비겁이 강해 형제·친구가 많고 자기 주장도 강합니다. 동업이나 협력보다는 자기 사업이 잘 맞아요.':'비겁이 약해 외동 또는 형제와 거리가 있을 수 있습니다. 외부 인맥을 통해 관계망을 넓혀가는 것이 좋습니다.'}</p>`;
+  h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
+    {good:'타고난 인덕을 살리고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일 깊은 관계 몇 개가 넓은 인맥보다 든든합니다.',
+     warn:`${has('겁재')?'겁재 기운으로 동업·금전 거래에서 신뢰를 잃기 쉬우니 친한 사이일수록 명확한 계약과 기록이 중요합니다.':'관계에서 자기 주장과 경청의 균형을 의식적으로 잡아주세요.'}`});
+
+  // ═════════════════════════════════════
+  // 신살 종합 (만세력 위에 살 표시)
+  // ═════════════════════════════════════
+  let sinBody=`<p>신살(神煞)은 사주 안의 특정 글자 조합이 만들어내는 「작은 별자리」와 같습니다. 어느 자리(년·월·일·시)에 자리잡았느냐에 따라 영향이 달라지므로, 만세력 위에 표시해 살펴보겠습니다.</p>`;
+  sinBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 만세력 각 주(년주·월주·일주·시주) 아래에 해당 자리에 있는 신살을 표시했습니다.</div>`;
+  sinBody+=miniManseWithSinsal(saju);
+  if(sins.length>0){
+    sinBody+=`<p style="margin-top:14px"><b>각 신살의 의미와 영향</b></p>`;
+    [...new Set(sinNames)].forEach(name=>{
+      const item=sins.find(s=>s.n.startsWith(name));
+      const items=sins.filter(s=>s.n.startsWith(name));
+      const locs=items.map(s=>s.loc).join(' · ');
+      sinBody+=`<p><em>${item.n}</em> <span style="color:var(--sub);font-size:.78rem">[${locs}]</span><br>${item.d}`;
+      // 위치별 의미
+      items.forEach(it=>{
+        sinBody+=`<br><span style="color:var(--sub);font-size:.77rem">· ${it.loc}에 있을 때: ${getSinsalLocImpact(name,it.loc)}</span>`;
+      });
+      sinBody+=`</p>`;
+    });
+  }else{
+    sinBody+=`<p>본 사주에는 두드러진 신살이 없습니다. 신살이 없다는 것이 나쁜 의미는 아니며, 사주 본연의 흐름이 큰 굴곡 없이 진행된다는 뜻입니다.</p>`;
+  }
+  h+=paidWrapBody('SINSAL','⚡','신살 종합 분석',sinBody);
+
+  // ═════════════════════════════════════
+  // 대운 시기별 (시각화 + 상세)
+  // ═════════════════════════════════════
   const dq=calcDaeun(saju,sy,sm,sd,sh,smin,gender);
   const now=new Date();
-  const age=now.getFullYear()-sy+1; // 한국 나이 근사
+  const age=now.getFullYear()-sy+1;
   let curDIdx=0;
   for(let i=0;i<dq.daeuns.length;i++){
     if(age>=dq.daeuns[i].age && (i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){curDIdx=i;break;}
   }
+  let dBody=`<p>대운(大運)은 10년마다 바뀌는 큰 흐름입니다. 본인의 사주 4기둥에 새로운 글자(대운의 천간·지지)가 더해지면, 그 글자가 일간과 어떤 관계인지에 따라 10년의 결이 달라집니다.</p>`;
+  dBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 4주 + <b>대운 1주</b>를 함께 보고, 대운의 글자가 사주에 어떤 영향을 주는지 분석합니다. 대운은 ${dq.forward?'순행':'역행'}이며 시작 나이는 ${dq.startYears}세${dq.startMonths>0?' '+dq.startMonths+'개월':''}부터입니다.</p></div>`;
+
   let tlh='';
   dq.daeuns.forEach((du,i)=>{
     const isCur=i===curDIdx;
     const tg=tenGod(saju.dp.stem,du.stem);
-    const desc=getDaeunDesc(tg,du,saju);
+    const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
+    const desc=getDaeunDescDetail(tg,btg,du,saju,isStrong,ys);
     tlh+=`<div class="tl-item${isCur?' cur':''}">
-      <div class="tl-age">${du.age}세 ~ ${du.age+9}세${isCur?' · 현재 대운':''}</div>
-      <div class="tl-pil">${STEMS[du.stem]}${BRCH[du.branch]}(${STEMKO[du.stem]}${BRCHKO[du.branch]}) · 십신: ${tg}</div>
+      <div class="tl-age">${du.age}세 ~ ${du.age+9}세${isCur?' · 현재 대운':''}</div>`;
+    tlh+=pillarPlusRow(saju,du,null);
+    tlh+=`<div class="tl-pil">대운 글자 → 천간 ${STEMS[du.stem]}(${STEMKO[du.stem]}) = <em>${tg}</em> · 지지 ${BRCH[du.branch]}(${BRCHKO[du.branch]}) = <em>${btg}</em></div>
       <div class="tl-body">${desc}</div>
     </div>`;
   });
+  dBody+=`<div class="tl">${tlh}</div>`;
   h+=`<div class="nb-card">
     <div class="nb-cat">DAEUN × 10년</div>
     <div class="nb-title">📅 대운 시기별 풀이 — 인생의 큰 흐름</div>
-    <div class="nb-body" style="margin-bottom:8px"><p>대운은 10년마다 바뀌는 큰 흐름으로, 본인의 사주에 어떤 새로운 글자가 더해지는지 보고 그 기간의 기운을 풀이합니다. 대운 ${dq.forward?'순행':'역행'}, 시작 ${dq.startYears}세 ${dq.startMonths>0?dq.startMonths+'개월':''}부터.</p></div>
-    <div class="tl">${tlh}</div>
+    <div class="nb-body">${dBody}</div>
   </div>`;
 
+  // ═════════════════════════════════════
+  // 세운 (올해)
+  // ═════════════════════════════════════
+  const cy=now.getFullYear();
+  const cyIdx=(cy-4+3600)%60;
+  const swStem=cyIdx%10, swBranch=cyIdx%12;
+  const swSaewoon={stem:swStem,branch:swBranch};
+  const swTG=tenGod(saju.dp.stem,swStem);
+  const swBTG=tenGod(saju.dp.stem,BR_MAIN_STEM[swBranch]);
+  const curDaeun=dq.daeuns[curDIdx];
+  let swBody=`<p>세운(歲運)은 1년 단위 운세 흐름입니다. 매년 1월 4~5일경 입춘을 기점으로 새 세운 글자가 들어옵니다. ${cy}년의 세운 글자는 <em>${STEMS[swStem]}${BRCH[swBranch]}(${STEMKO[swStem]}${BRCHKO[swBranch]})년</em>입니다.</p>`;
+  swBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 4주 + 현재 대운 + 올해 세운을 함께 봅니다. 대운이 「큰 그림」, 세운이 「올해의 색」을 결정합니다.</div>`;
+  swBody+=pillarPlusRow(saju,curDaeun,swSaewoon);
+  swBody+=`<p>${cy}년 세운 글자 분석:<br>· 천간 <em>${STEMS[swStem]}(${STEMKO[swStem]})</em> = 일간 기준 <em>${swTG}</em><br>· 지지 <em>${BRCH[swBranch]}(${BRCHKO[swBranch]})</em>의 정기 = 일간 기준 <em>${swBTG}</em></p>`;
+  swBody+=`<p>${getSewoonDesc(swTG,swBTG,curDaeun,saju)}</p>`;
+  // 합/충 분석
+  const swHapChung=analyzeSewoonHapChung(saju,swSaewoon);
+  if(swHapChung)swBody+=`<p>${swHapChung}</p>`;
+  swBody+=`<p>현재 ${curDaeun.age}세 대운 <em>${STEMS[curDaeun.stem]}${BRCH[curDaeun.branch]}</em>의 흐름과 결합하면, 올해 ${cy}년은 ${getDaeunSewoonCombo(saju,curDaeun,swSaewoon,ys)} 시기입니다.</p>`;
+  h+=paidWrapBody('SEWOON','🗓','세운 — 올해의 흐름',swBody);
+
+  // ═════════════════════════════════════
+  // 궁합 (배우자 입력)
+  // ═════════════════════════════════════
+  h+=renderGunghapSection();
+
+  // ═════════════════════════════════════
   // 마무리
+  // ═════════════════════════════════════
   h+=`<div class="nb-card" style="background:linear-gradient(135deg,#FFF8E1,#FDF6EC);text-align:center">
     <div style="font-size:.95rem;font-weight:700;margin-bottom:8px">🎋 마무리</div>
     <div style="font-size:.82rem;line-height:1.85;color:var(--text)">사주는 인생의 지도이지, 운명의 족쇄가 아닙니다.<br>당신이 타고난 ${dm.pos.slice(0,2).join('과 ')}을(를) 의식적으로 발현시키고, ${dm.neg.slice(0,1).join(',')}을(를) 다스리는 노력이 곧 좋은 사주를 완성하는 길입니다.</div>
   </div>`;
 
   return h;
+}
+
+function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
+  let h=`<div class="nb-card">
+    <div class="nb-cat">${catLabel}</div>
+    <div class="nb-title">${emoji} ${title}</div>
+    <div class="nb-body">${bodyHtml}</div>`;
+  if(goodWarn){
+    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${goodWarn.good}</div></div>`;
+    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${goodWarn.warn}</div></div>`;
+  }
+  h+='</div>';
+  return h;
+}
+
+function getSpouseImage(branch){
+  const m={
+    0:'지적이고 사색적이며 차분한 성품',
+    1:'성실하고 인내심이 강한 안정적인 성품',
+    2:'리더십과 추진력이 강한 활기찬 성품',
+    3:'섬세하고 예술적 감각이 풍부한 성품',
+    4:'신중하고 신뢰감 있으며 포용력이 큰 성품',
+    5:'통찰력이 뛰어나고 지혜로운 성품',
+    6:'밝고 열정적이며 활동적인 성품',
+    7:'온화하고 배려심이 깊은 다정한 성품',
+    8:'민첩하고 재치 있으며 사교적인 성품',
+    9:'세심하고 완벽을 추구하는 깔끔한 성품',
+    10:'의리 있고 헌신적이며 듬직한 성품',
+    11:'자유롭고 지혜로우며 깊이 있는 성품'
+  };
+  return m[branch]||'개성 있는 성품을 가진';
+}
+
+function getSinsalLocImpact(name,loc){
+  // 기본 위치별 영향
+  const locImpact={
+    '천을귀인':{
+      '년지':'조상·초년에 귀인의 도움이 컸으며, 가문의 음덕이 있습니다.',
+      '월지':'직장·청년기에 결정적 도움을 주는 윗사람이 나타납니다.',
+      '일지':'배우자가 본인의 평생 귀인이 됩니다.',
+      '시지':'자녀가 효성이 깊고 말년에 든든한 후원이 됩니다.'
+    },
+    '도화살':{
+      '년지':'어린 시절부터 인기가 많고 매력이 일찍 드러납니다.',
+      '월지':'직장·사회 활동에서 매력이 발휘되어 인맥이 풍부해집니다.',
+      '일지':'배우자가 매력적이며, 본인도 이성에게 인기가 많습니다.',
+      '시지':'말년에도 매력이 유지되며 인기가 사라지지 않습니다.'
+    },
+    '역마살':{
+      '년지':'고향을 떠나 활동하는 인생, 해외나 타향에서 자리를 잡습니다.',
+      '월지':'직업이 활동적이고 출장·외근·이동이 많은 일과 인연이 깊습니다.',
+      '일지':'결혼 후에도 부부가 함께 이동하거나 변동이 많은 생활입니다.',
+      '시지':'말년에도 활동적이고 자녀가 멀리 떨어져 살 수 있습니다.'
+    },
+    '화개살':{
+      '년지':'조상에 학자·종교인이 있거나 어린 시절부터 종교·예술 환경에 노출됩니다.',
+      '월지':'직업적으로 학문·예술·종교 분야에 깊이 관여합니다.',
+      '일지':'배우자가 종교·예술·학문에 끌리는 사람일 수 있습니다.',
+      '시지':'말년에 종교·철학·예술에 깊이 빠져들기 쉽습니다.'
+    },
+    '양인살':{
+      '년지':'타고난 카리스마가 강하지만 어린 시절 충돌이 잦았을 수 있습니다.',
+      '월지':'직업에서 강한 추진력을 발휘하지만 동료와 갈등도 잦습니다.',
+      '일지':'배우자가 강하거나 부부 사이에 강한 충돌이 있을 수 있습니다.',
+      '시지':'말년이 강한 기운에 휩쓸리지 않도록 평정심이 필요합니다.'
+    },
+    '백호살':{
+      '년주':'조상·뿌리에 급변·사고의 흔적이 있을 수 있습니다.',
+      '월주':'직장·청년기에 급격한 변화나 위기를 겪기 쉽습니다.',
+      '일주':'본인이 급변의 중심에 서며, 부부 사이에 강한 굴곡이 있을 수 있습니다.',
+      '시주':'자녀운에서 변화가 잦거나 말년이 격동적일 수 있습니다.'
+    },
+    '괴강살':{
+      '년주':'조상의 카리스마와 통솔력을 물려받았습니다.',
+      '월주':'직장에서 강력한 리더십을 발휘하지만 강한 만큼 적도 많습니다.',
+      '일주':'본인이 큰 그릇이나 강한 만큼 부드러움을 갖춰야 합니다.',
+      '시주':'말년에 큰 일을 이루는 그릇이나 자녀가 강한 사람일 수 있습니다.'
+    },
+    '홍염살':{
+      '년지':'어린 시절부터 은밀한 매력이 풍부했습니다.',
+      '월지':'직업적 매력으로 사람을 끌어당기는 힘이 있습니다.',
+      '일지':'배우자가 매력적이며 부부 사이에 강한 끌림이 있습니다.',
+      '시지':'말년에도 매력이 유지되며 자녀도 매력적입니다.'
+    },
+    '문창귀인':{
+      '년지':'조상에 학자가 있거나 어린 시절부터 학습 환경이 좋았습니다.',
+      '월지':'직업적으로 학문·문서·기획에 강합니다.',
+      '일지':'배우자가 지적이며 학식이 있는 사람일 수 있습니다.',
+      '시지':'자녀가 영민하고 말년까지 학습 욕구가 유지됩니다.'
+    }
+  };
+  return (locImpact[name]&&locImpact[name][loc])||'해당 자리에 깊은 영향을 줍니다.';
+}
+
+function getDaeunDescDetail(tg,btg,du,saju,isStrong,ys){
+  const baseDesc={
+    '비견':`비견(자립·동료) 천간 대운으로, 자기 정체성과 추진력이 강해지는 시기입니다. 자기 사업·전문직·독립이 잘 풀리며, 형제·동료의 도움도 받습니다. 단 동업이나 의존 관계는 신중하게.`,
+    '겁재':`겁재(경쟁·도전) 천간 대운으로, 강한 의지와 도전 정신이 발휘됩니다. 큰 추진력으로 결실을 만들 수 있지만, 충동적 결정·재물 손실·동업 갈등을 경계해야 합니다.`,
+    '식신':`식신(표현·풍요) 천간 대운으로, 의식주가 풍족해지고 창작·표현 활동이 빛납니다. 자녀운·요식·교육·예술 분야에서 결실을 거두며, 마음의 여유가 생기는 시기입니다.`,
+    '상관':`상관(독창·도전) 천간 대운으로, 독창적 아이디어와 강한 표현력이 발휘됩니다. 예술·기술·강의·미디어 분야에서 두각을 나타내지만, 권위·규율과의 마찰을 조심해야 합니다.`,
+    '편재':`편재(활동적 재물) 천간 대운으로, 사업·투자·인맥의 큰 흐름을 다루는 시기입니다. 재물 기회가 많이 찾아오나, 큰 흐름인 만큼 한순간에 잃을 수도 있어 분산과 절제가 핵심입니다.`,
+    '정재':`정재(안정 재물) 천간 대운으로, 성실한 노력이 꾸준한 재물로 돌아옵니다. 직장운이 안정되고 결혼·가정의 결실을 만들기 좋은 시기입니다. 절약과 저축으로 자산을 다지세요.`,
+    '편관':`편관(추진·도전) 천간 대운으로, 강한 추진력과 도전 정신이 큰 일을 만듭니다. 무관·법조·경영·승진의 기회가 찾아오지만, 과로·스트레스·갈등 관리가 관건입니다.`,
+    '정관':`정관(명예·책임) 천간 대운으로, 사회적 명예와 책임 있는 자리가 주어집니다. 공직·관리직·승진의 기회가 풍부하며, 사회적 신뢰가 쌓이는 시기입니다.`,
+    '편인':`편인(전문·통찰) 천간 대운으로, 깊이 있는 학문·기술·연구·종교 분야에 끌립니다. 독창적 사고로 한 분야에 천착해 큰 성과를 낼 수 있지만, 고립·우울 경향에 주의.`,
+    '정인':`정인(학문·자비) 천간 대운으로, 학습·자격증·문서·부모 덕이 풍요로운 시기입니다. 교육·문화·복지 분야에서 결실을 거두며, 안정감과 보살핌의 기운이 강해집니다.`
+  };
+  let r=baseDesc[tg]||'';
+  // 지지 영향 추가
+  const branchInfluence={
+    0:'자(子) 지지로 지혜·사색·물의 기운이 더해집니다.',
+    1:'축(丑) 지지로 인내·축적·토의 기운이 더해집니다.',
+    2:'인(寅) 지지로 진취·도약·목의 기운이 더해집니다.',
+    3:'묘(卯) 지지로 창의·성장·목의 기운이 더해집니다.',
+    4:'진(辰) 지지로 변화·축장·토의 기운이 더해집니다.',
+    5:'사(巳) 지지로 활동·확장·화의 기운이 더해집니다.',
+    6:'오(午) 지지로 열정·성취·화의 기운이 더해집니다.',
+    7:'미(未) 지지로 결실·정리·토의 기운이 더해집니다.',
+    8:'신(申) 지지로 결단·실행·금의 기운이 더해집니다.',
+    9:'유(酉) 지지로 정제·완성·금의 기운이 더해집니다.',
+    10:'술(戌) 지지로 보존·신의·토의 기운이 더해집니다.',
+    11:'해(亥) 지지로 사색·시작·수의 기운이 더해집니다.'
+  };
+  r+=` ${branchInfluence[du.branch]||''}`;
+  // 용신 합치 여부
+  const stemOh=SOH[du.stem],branchOh=BOH[du.branch];
+  if(stemOh===ys.main||branchOh===ys.main){
+    r+=` <b style="color:var(--wood)">용신 ${OHNAME[ys.main]}이 들어와 매우 길한 흐름</b>입니다.`;
+  }else if(stemOh===(ys.main+2)%5||branchOh===(ys.main+2)%5){
+    r+=` <b style="color:var(--fire)">용신을 극하는 기운이 들어와 보수적 운영</b>이 필요합니다.`;
+  }
+  return r;
+}
+
+function getSewoonDesc(swTG,swBTG,daeun,saju){
+  const tgDescMap={
+    '비견':'주체성과 추진력이 강해지는 한 해입니다. 자기 일에 집중하고 자립을 추구하기 좋습니다.',
+    '겁재':'강한 의지가 발휘되지만 충동적 결정이나 재물 손실을 경계해야 합니다.',
+    '식신':'표현력과 여유가 풍부한 한 해. 창작·요식·교육 분야에서 빛납니다.',
+    '상관':'독창적 아이디어가 떠오르지만 권위와 충돌하기 쉬운 시기. 표현 방식에 신중하세요.',
+    '편재':'활동적 재물 기회가 많이 찾아옵니다. 인맥 활용·사업 확장에 좋은 한 해.',
+    '정재':'성실한 노력이 안정 재물로 돌아오는 한 해. 결혼·가정의 결실에도 좋은 시기.',
+    '편관':'도전과 변화의 기운. 승진·이직·창업 등 큰 결정의 해가 될 수 있어요.',
+    '정관':'명예와 책임의 자리. 공식적 자리·승진·학위 같은 결실이 따릅니다.',
+    '편인':'학문·전문성·통찰이 깊어지는 한 해. 한 분야에 깊이 천착하기 좋습니다.',
+    '정인':'학습·문서·자격증의 결실이 따르는 한 해. 부모와의 관계도 좋아집니다.'
+  };
+  let r=`천간 ${swTG}의 기운으로 ${tgDescMap[swTG]||'사주 흐름에 새로운 변화를 더하는 한 해'} `;
+  if(swTG!==swBTG){
+    r+=`지지 ${swBTG}의 기운이 더해져 ${tgDescMap[swBTG]?tgDescMap[swBTG].split('.')[0]+'.':''} 두 기운이 함께 작용합니다.`;
+  }
+  return r;
+}
+
+function analyzeSewoonHapChung(saju,sewoon){
+  const sB=sewoon.branch;
+  const branches=[
+    {n:'년지',b:saju.yp.branch},
+    {n:'월지',b:saju.mp.branch},
+    {n:'일지',b:saju.dp.branch},
+    saju.hp?{n:'시지',b:saju.hp.branch}:null
+  ].filter(Boolean);
+  const yukhap=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+  for(const p of branches){
+    if(yukhap.some(([a,b])=>(p.b===a&&sB===b)||(p.b===b&&sB===a))){
+      return `<b style="color:var(--wood)">${p.n}와 세운 지지의 합(合)</b>이 일어나 인연·결합·결실의 기운이 활성화됩니다.`;
+    }
+    if(Math.abs(p.b-sB)===6){
+      return `<b style="color:var(--fire)">${p.n}와 세운 지지의 충(沖)</b>이 일어나 변동·이사·이직 같은 변화 가능성이 큽니다.`;
+    }
+  }
+  return null;
+}
+
+function getDaeunSewoonCombo(saju,daeun,sewoon,ys){
+  const dStemOh=SOH[saju.dp.stem];
+  const swStemOh=SOH[sewoon.stem];
+  const dwStemOh=SOH[daeun.stem];
+  if(swStemOh===ys.main||BOH[sewoon.branch]===ys.main){
+    return `용신 ${OHNAME[ys.main]} 기운이 활성화되어 <b>전반적으로 길한 흐름</b>의 한 해`;
+  }
+  if(swStemOh===dStemOh){
+    return `비겁이 강해지는 한 해로 <b>자립·독립의 기운</b>이 강한 시기`;
+  }
+  if(swStemOh===(dStemOh+2)%5){
+    return `재성이 들어와 <b>재물·기회의 흐름</b>이 활성화되는 한 해`;
+  }
+  if(swStemOh===(dStemOh+4)%5){
+    return `관성이 들어와 <b>책임·승진·도전</b>의 흐름이 강한 한 해`;
+  }
+  return `사주에 새로운 ${OHNAME[swStemOh]} 기운이 더해지며 다양한 변화가 가능한 한 해`;
+}
+
+// ═════════ 궁합 섹션 ═════════
+function renderGunghapSection(){
+  return `<div class="nb-card">
+    <div class="nb-cat">COMPATIBILITY</div>
+    <div class="nb-title">💑 궁합 풀이 — 배우자·연인 사주 비교</div>
+    <div class="nb-body">
+      <p>배우자(또는 연인)의 사주를 입력하면 두 사람의 사주팔자를 나란히 비교해 종합 궁합을 풀이해드립니다. 일간의 상생·상극, 일지의 합·충, 십신 작용을 중심으로 분석합니다.</p>
+    </div>
+    <div class="gg-input" id="ggInput">
+      <div class="sec-label">상대방 정보</div>
+      <div class="tog-row" style="margin-bottom:9px">
+        <button class="tog on" id="g2bm" onclick="setG2Gender('male')">남성</button>
+        <button class="tog" id="g2bf" onclick="setG2Gender('female')">여성</button>
+      </div>
+      <div class="tog-row" style="margin-bottom:9px">
+        <button class="tog on" id="g2bs" onclick="setG2Cal('solar')">양력</button>
+        <button class="tog" id="g2bl" onclick="setG2Cal('lunar')">음력</button>
+      </div>
+      <div class="leap-sec" id="g2leapSec">
+        <div class="tog-row" style="margin-bottom:9px">
+          <button class="tog on" id="g2breg" onclick="setG2Leap(false)">평달</button>
+          <button class="tog" id="g2blp" onclick="setG2Leap(true)">윤달</button>
+        </div>
+      </div>
+      <div class="row3" style="margin-bottom:9px">
+        <div class="ig" style="flex:2.2"><label>년도</label><input type="number" id="g2Y" placeholder="1990" min="1900" max="2050"></div>
+        <div class="ig"><label>월</label><input type="number" id="g2M" placeholder="월" min="1" max="12"></div>
+        <div class="ig"><label>일</label><input type="number" id="g2D" placeholder="일" min="1" max="31"></div>
+      </div>
+      <div class="ig" style="margin-bottom:9px">
+        <label>태어난 시각 (선택)</label>
+        <select id="g2H" style="width:100%;padding:11px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);font-size:.94rem;-webkit-appearance:none;appearance:none">
+          <option value="-1">시간 미상</option>
+          ${[...Array(24)].map((_,i)=>`<option value="${i}">${String(i).padStart(2,'0')}시</option>`).join('')}
+        </select>
+      </div>
+      <div class="err" id="g2err"></div>
+      <button class="lock-btn" style="width:100%;margin-top:6px" onclick="analyzeGunghapDetail()">💕 궁합 분석하기</button>
+    </div>
+    <div id="ggResultBox"></div>
+  </div>`;
+}
+
+function analyzeGunghapDetail(){
+  const errEl=document.getElementById('g2err');
+  errEl.className='err';
+  const y=parseInt(document.getElementById('g2Y').value)||0;
+  const m=parseInt(document.getElementById('g2M').value)||0;
+  const d=parseInt(document.getElementById('g2D').value)||0;
+  const h=parseInt(document.getElementById('g2H').value);
+  if(!y||y<1900||y>2050){errEl.textContent='년도를 확인해주세요.';errEl.className='err vis';return;}
+  if(!m||m<1||m>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
+  if(!d||d<1||d>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
+  try{
+    let sy=y,sm=m,sd=d;
+    if(_g2cal==='lunar'){const s=l2s(y,m,d,_g2leap);sy=s.y;sm=s.m;sd=s.d;}
+    const saju2=calcSaju(sy,sm,sd,h,0);
+    document.getElementById('ggResultBox').innerHTML=renderGunghapDetailFull(_saju,saju2,gender,_g2gender);
+    document.getElementById('ggResultBox').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
+}
+
+function miniGgSide(saju){
+  const ps=[
+    {l:'년',s:saju.yp.stem,b:saju.yp.branch},
+    {l:'월',s:saju.mp.stem,b:saju.mp.branch},
+    {l:'일',s:saju.dp.stem,b:saju.dp.branch},
+    saju.hp?{l:'시',s:saju.hp.stem,b:saju.hp.branch}:{l:'시',s:null,b:null}
+  ];
+  let h='<div class="gg-mini">';
+  ps.forEach(p=>{
+    if(p.s===null){
+      h+=`<div class="gg-mc"><div class="gg-mc-l">${p.l}</div><div class="gg-mc-s eu" style="font-size:.55rem">미상</div><div class="gg-mc-b eu" style="font-size:.55rem">미상</div></div>`;
+    }else{
+      h+=`<div class="gg-mc"><div class="gg-mc-l">${p.l}</div><div class="gg-mc-s ${OHCLS[SOH[p.s]]}">${STEMS[p.s]}</div><div class="gg-mc-b ${OHCLS[BOH[p.b]]}">${BRCH[p.b]}</div></div>`;
+    }
+  });
+  h+='</div>';
+  return h;
+}
+
+function renderGunghapDetailFull(s1,s2,g1,g2){
+  const result=calcGunghap(s1,s2,g1,g2);
+  const dm1=DM[s1.dp.stem],dm2=DM[s2.dp.stem];
+  const e1=SOH[s1.dp.stem],e2=SOH[s2.dp.stem];
+  const tg12=tenGod(s1.dp.stem,s2.dp.stem);
+  const tg21=tenGod(s2.dp.stem,s1.dp.stem);
+
+  let h=`<div style="margin-top:14px"><div class="gg-wrap">
+    <div class="gg-side">
+      <h5>나의 사주</h5>
+      ${miniGgSide(s1)}
+      <div style="text-align:center;font-size:.7rem;margin-top:5px;color:var(--sub)">${dm1.n.split('(')[0]} (${g1==='male'?'남':'여'})</div>
+    </div>
+    <div class="gg-side">
+      <h5>상대 사주</h5>
+      ${miniGgSide(s2)}
+      <div style="text-align:center;font-size:.7rem;margin-top:5px;color:var(--sub)">${dm2.n.split('(')[0]} (${g2==='male'?'남':'여'})</div>
+    </div>
+  </div>`;
+
+  // 점수 ring
+  h+=`<div style="text-align:center;margin:18px 0 14px">
+    <div class="gg-score-ring" style="border-color:${result.gradeColor}">
+      <div style="font-size:1.6rem;font-weight:800;color:${result.gradeColor};line-height:1">${result.score}</div>
+      <div style="font-size:.62rem;color:var(--sub)">/ 100</div>
+    </div>
+    <div style="font-size:.92rem;font-weight:700;color:${result.gradeColor};margin-top:5px">${result.grade}</div>
+  </div>`;
+
+  // 카테고리 풀이
+  h+=`<div class="nb-body">`;
+  h+=`<p><b>① 일간 오행 관계</b><br>두 분의 일간(日干)은 각각 <em>${dm1.n.split('(')[0]} (${OHNAME[e1]})</em>와 <em>${dm2.n.split('(')[0]} (${OHNAME[e2]})</em>입니다. ${getOhRelDesc(e1,e2)}</p>`;
+  h+=`<p><b>② 일지 배우자궁 관계</b><br>본인의 일지 <em>${BRCH[s1.dp.branch]}(${BRCHKO[s1.dp.branch]})</em>와 상대의 일지 <em>${BRCH[s2.dp.branch]}(${BRCHKO[s2.dp.branch]})</em>는 ${result.isHap?'서로 <em style="color:var(--wood)">합(合)</em>을 이루는 관계로, 자연스러운 끌림과 편안함이 있습니다.':result.isCrash?'서로 <em style="color:var(--fire)">충(沖)</em>을 이루는 관계로, 끌림은 강하지만 충돌과 변동도 잦을 수 있습니다.':'특별한 합·충 관계는 아니지만, 다른 글자들의 작용으로 관계가 형성됩니다.'}</p>`;
+  h+=`<p><b>③ 십신 작용</b><br>본인이 상대를 보는 관계는 <em>${tg12}</em>이며, 상대가 본인을 보는 관계는 <em>${tg21}</em>입니다. ${getTgPairDesc(tg12,tg21,g1,g2)}</p>`;
+  h+=`<p><b>④ 성격 궁합</b><br>${getPersonalityCompat(dm1,dm2,e1,e2)}</p>`;
+  h+=`<p><b>⑤ 가치관·생활 리듬</b><br>${getValueCompat(s1,s2,result)}</p>`;
+  h+=`<p><b>⑥ 갈등 포인트</b><br>${getConflictPoint(s1,s2,result)}</p>`;
+  h+=`<p><b>⑦ 궁합을 풀어가는 비결</b><br>${getCompatTip(result,dm1,dm2)}</p>`;
+  h+=`</div>`;
+
+  // 세부 점수
+  h+=`<div style="margin-top:14px">
+    <div style="font-size:.78rem;font-weight:700;color:var(--sub);margin-bottom:8px">📊 세부 점수</div>
+    <div class="bars">`;
+  [{label:'오행 상생·상극',score:result.ohScore},
+   {label:'십신 관계',score:result.tgScore},
+   {label:'일지 합·충',score:result.brScore},
+   {label:'오행 균형',score:result.balScore}].forEach(c=>{
+    const color=c.score>=80?'var(--wood)':c.score>=65?'var(--earth)':'var(--fire)';
+    h+=`<div class="bar-row">
+      <div class="bar-name" style="font-size:.65rem;width:82px;color:var(--sub)">${c.label}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${c.score}%;background:${color}"></div></div>
+      <div class="bar-cnt" style="color:${color};width:28px">${c.score}</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+
+  h+='</div>';
+  return h;
+}
+
+function getOhRelDesc(e1,e2){
+  const sheng=[1,2,3,4,0],ke=[2,3,4,0,1];
+  if(e1===e2)return `같은 오행이라 서로를 깊이 이해하고 비슷한 가치관을 공유합니다. 다만 닮은 만큼 같은 단점도 강해질 수 있습니다.`;
+  if(sheng[e1]===e2)return `본인이 상대를 생(生)하는 관계로, 본인이 상대에게 도움과 영감을 주는 위치입니다. 상대는 본인 곁에서 성장하지만, 본인은 자칫 일방적으로 베푸는 입장이 될 수 있어요.`;
+  if(sheng[e2]===e1)return `상대가 본인을 생(生)하는 관계로, 상대가 본인을 후원하고 받쳐주는 든든한 인연입니다. 어려울 때 의지가 되는 관계입니다.`;
+  if(ke[e1]===e2)return `본인이 상대를 극(剋)하는 관계로, 본인의 의지가 상대에게 영향을 주는 위치입니다. 잘 쓰면 상대를 다듬고 성장시키지만, 잘못 쓰면 상대를 답답하게 만들 수 있습니다.`;
+  if(ke[e2]===e1)return `상대가 본인을 극(剋)하는 관계로, 상대로부터 자극과 압력을 받는 위치입니다. 그 자극이 성장의 동력이 될 수도, 스트레스의 원인이 될 수도 있습니다.`;
+  return `다양한 작용이 가능한 관계입니다.`;
+}
+
+function getTgPairDesc(tg12,tg21,g1,g2){
+  if(g1!==g2){
+    if((g1==='male'&&['정재','편재'].includes(tg12))||(g1==='female'&&['정관','편관'].includes(tg12))){
+      const adj=(tg12==='정재'||tg12==='정관')?'안정적이고 신뢰할 수 있는':'강하게 끌리는 매력적인';
+      return `본인 입장에서 상대가 ${adj} 인연으로 다가옵니다. 결혼 궁합으로 좋은 조합입니다.`;
+    }
+  }
+  const positive=['정재','정관','식신','정인'];
+  const passion=['편재','편관','상관','편인'];
+  if(positive.includes(tg12)&&positive.includes(tg21))return '서로를 안정적이고 긍정적으로 보는 조합입니다. 신뢰가 쉽게 쌓이는 관계입니다.';
+  if(passion.includes(tg12)||passion.includes(tg21))return '서로에게 강한 끌림과 자극이 있는 조합입니다. 열정적이지만 변화도 많을 수 있습니다.';
+  return '잔잔한 동반자형 관계로, 시간이 갈수록 깊어지는 인연이 될 수 있습니다.';
+}
+
+function getPersonalityCompat(dm1,dm2,e1,e2){
+  return `${dm1.n.split('(')[0]}의 ${dm1.pos[0]}과 ${dm2.n.split('(')[0]}의 ${dm2.pos[0]}이 만나는 조합으로, ${e1===e2?'비슷한 성향이라 편안하지만 새로움은 부족할 수 있고':'서로 다른 강점을 보완하는 만큼 처음에 적응 시간이 필요하지만 익숙해지면 든든합니다'}.`;
+}
+
+function getValueCompat(s1,s2,result){
+  if(result.isHap)return '일지의 합으로 가정·일상의 결이 잘 맞으며, 함께 있을 때 자연스러운 편안함을 느낍니다. 생활 리듬을 맞추기 쉬운 관계입니다.';
+  if(result.isCrash)return '일지의 충으로 생활 리듬이나 가치관에서 부딪히는 부분이 있을 수 있어요. 서로의 차이를 인정하는 자세와 합의된 규칙이 필요합니다.';
+  return '일지가 직접 합·충 관계는 아니므로, 두 분이 함께 가치관을 만들어가는 관계입니다. 대화를 통해 결을 맞춰가야 합니다.';
+}
+
+function getConflictPoint(s1,s2,result){
+  if(result.isCrash)return '일지 충으로 인한 갑작스러운 갈등 포인트가 있습니다. 평소 대화로 작은 불만을 풀어두는 게 큰 충돌을 막아줍니다.';
+  if(result.ohScore<60)return '오행 상극으로 가치관·생활 방식의 차이가 크게 느껴질 수 있어요. 서로의 영역을 존중하는 거리감이 필요합니다.';
+  return '큰 갈등 요소는 적은 편이지만, 익숙함이 무관심으로 변하지 않도록 의식적인 표현이 필요합니다.';
+}
+
+function getCompatTip(result,dm1,dm2){
+  if(result.score>=85)return '천생연분에 가까운 인연으로, 이 관계를 소중히 가꿔가시면 평생의 동반자가 됩니다. 가끔 새로운 자극을 함께 만들어 권태를 막으세요.';
+  if(result.score>=70)return '좋은 궁합입니다. 서로 다른 점을 약점이 아닌 보완점으로 받아들이면 관계가 더 깊어집니다.';
+  if(result.score>=55)return '노력이 더 필요한 궁합이지만, 사주는 인연의 가능성이지 결정이 아닙니다. 서로에 대한 진심과 이해가 점수보다 중요합니다.';
+  return '쉽지 않은 궁합으로 보일 수 있지만, 진정한 사랑은 사주를 넘어섭니다. 서로의 차이를 받아들이는 깊이 있는 사랑이라면 어떤 궁합도 극복할 수 있습니다.';
 }
 
 function getDajiHapDesc(b){
