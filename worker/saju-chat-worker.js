@@ -51,8 +51,8 @@ export default {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          // 신규 계정에서 Opus 권한 없을 수 있어 Sonnet 사용. Opus 권한 있다면 'claude-opus-4-7'로 변경.
-          model: 'claude-sonnet-4-6',
+          // 신규 계정 호환성을 위해 Haiku 사용. 권한 있는 계정은 'claude-sonnet-4-6' 또는 'claude-opus-4-7'로 변경 가능.
+          model: 'claude-haiku-4-5',
           max_tokens: 1500,
           system: [
             {
