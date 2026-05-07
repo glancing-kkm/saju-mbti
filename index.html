@@ -626,7 +626,7 @@ let _lastFlow='manse';   // 'manse' or 'saju' — which home card was tapped
 let _saju=null, _meta=null, _paidUnlocked=false;
 
 // ══════════════════════════════════════════════
-//  AI 채팅 설정 — Cloudflare Worker URL을 여기에 등록
+//  채팅 설정 — Cloudflare Worker URL을 여기에 등록
 // ══════════════════════════════════════════════
 const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5;
@@ -2245,6 +2245,29 @@ function chatResetCount(){
   if(log)log.innerHTML=`<div class="chat-empty">아직 질문이 없습니다. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) 올해 이직해도 괜찮을까요? / 결혼 시기는 언제쯤일까요? / 건강에서 주의할 점은?</div>`;
 }
 
+// 자세한 사주 패널(p2)에 표시된 텍스트를 추출해 컨텍스트로 사용
+function extractDetailedReadingText(){
+  const p2=document.getElementById('p2');
+  if(!p2)return '';
+  const clone=p2.cloneNode(true);
+  // 채팅 카드와 궁합 입력폼은 컨텍스트에서 제외
+  ['.chat-card','.gg-input','#ggResultBox','.lock-wrap','.mm-sin-row','.mm','.dx-wrap','.gg-wrap','.tl-pillars'].forEach(sel=>{
+    clone.querySelectorAll(sel).forEach(el=>el.remove());
+  });
+  // 블록 요소 뒤에 줄바꿈 추가 (가독성)
+  ['p','div','h1','h2','h3','h4','h5','li'].forEach(tag=>{
+    clone.querySelectorAll(tag).forEach(el=>el.insertAdjacentText('afterend','\n'));
+  });
+  let text=(clone.textContent||'')
+    .replace(/[ \t]+/g,' ')
+    .replace(/\n[ \t]+/g,'\n')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+  // 너무 길면 잘라서 보냄 (과한 토큰 방지)
+  if(text.length>15000)text=text.slice(0,15000)+'\n…(이하 생략)';
+  return text;
+}
+
 function buildSajuContextForChat(){
   if(!_saju||!_meta)return null;
   const oh=ohCount(_saju);
@@ -2283,6 +2306,7 @@ function buildSajuContextForChat(){
     daeun:`${curD.age}세부터 ${STEMS[curD.stem]}${BRCH[curD.branch]}(${STEMKO[curD.stem]}${BRCHKO[curD.branch]}) 대운`,
     year:cy,
     sewoon:`${STEMS[swStem]}${BRCH[swBranch]}(${STEMKO[swStem]}${BRCHKO[swBranch]})년`,
+    detailedReading:extractDetailedReadingText(),
   };
 }
 
@@ -2306,7 +2330,7 @@ function chatAppend(role,text){
 
 async function chatAsk(){
   if(!WORKER_URL){
-    alert('AI 채팅이 아직 설정되지 않았습니다.\n\n관리자가 worker/DEPLOY.md 의 절차를 따라 Cloudflare Worker를 배포한 뒤,\nindex.html 의 WORKER_URL 상수에 URL을 등록해야 합니다.');
+    alert('채팅이 아직 설정되지 않았습니다.\n\n관리자가 worker/DEPLOY.md 의 절차를 따라 Cloudflare Worker를 배포한 뒤,\nindex.html 의 WORKER_URL 상수에 URL을 등록해야 합니다.');
     return;
   }
   if(!_saju){alert('먼저 사주 분석을 진행해주세요.');return;}
@@ -2366,8 +2390,8 @@ function renderChatSection(){
   const isExhausted=remaining<=0;
   return `<div class="chat-card">
     <div class="chat-head">
-      <div class="chat-title">💬 사주에 대해 직접 물어보기 (AI)</div>
-      <div class="chat-sub">위 풀이만으로 부족하다면, 본인 사주를 알고 있는 AI 역술가에게<br>5가지 질문을 자유롭게 던져보세요.</div>
+      <div class="chat-title">💬 역술가에게 직접 물어보기</div>
+      <div class="chat-sub">위 풀이만으로 부족하다면, 본인 사주를 깊이 짚어 본 역술가에게<br>5가지 질문을 자유롭게 던져보세요.</div>
       <div class="chat-remaining" id="chatRemaining">${remaining}회 남음</div>
     </div>
     <div class="chat-log" id="chatLog">
@@ -2377,7 +2401,7 @@ function renderChatSection(){
       <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 모두 소진되었습니다':'궁금한 점을 입력하세요 (최대 500자)'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
-    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 본인 사주 정보가 자동 첨부되어 답변됩니다.</div>
+    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위에 풀이된 사주 내용을 바탕으로 답변됩니다.</div>
   </div>`;
 }
 
