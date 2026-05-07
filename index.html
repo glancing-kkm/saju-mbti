@@ -347,6 +347,30 @@ html,body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background
 /* ── 카테고리 mini-summary 박스 ── */
 .cat-where{padding:9px 12px;background:var(--earth-bg);border-left:3px solid var(--earth);border-radius:8px;margin:10px 0 12px;font-size:.78rem;line-height:1.65}
 .cat-where b{color:var(--earth)}
+
+/* ── AI 채팅 (자세한 사주 하단) ── */
+.chat-card{background:linear-gradient(135deg,#FFF8E1,#FDF6EC);border:2px solid var(--accent);border-radius:14px;padding:18px;margin-bottom:14px}
+.chat-head{text-align:center;margin-bottom:12px}
+.chat-title{font-size:1.05rem;font-weight:800;margin-bottom:4px}
+.chat-sub{font-size:.74rem;color:var(--sub);line-height:1.6}
+.chat-remaining{display:inline-block;margin-top:6px;padding:3px 10px;background:#fff;border:1px solid var(--border);border-radius:50px;font-size:.7rem;font-weight:700;color:var(--accent)}
+.chat-log{display:flex;flex-direction:column;gap:9px;margin:12px 0;max-height:400px;overflow-y:auto;padding:4px}
+.chat-msg{padding:11px 13px;border-radius:12px;font-size:.83rem;line-height:1.78;word-break:break-word}
+.chat-msg-user{background:#fff;border:1px solid var(--border);align-self:flex-end;max-width:85%;border-bottom-right-radius:3px}
+.chat-msg-ai{background:#fff;border:1.5px solid var(--accent);max-width:95%;border-bottom-left-radius:3px}
+.chat-msg-error{background:var(--fire-bg);border:1px solid var(--fire);color:var(--fire);max-width:95%;font-size:.78rem}
+.chat-msg-loading{background:#fff;border:1px dashed var(--border);max-width:80%;color:var(--sub);font-style:italic;font-size:.79rem}
+.chat-msg-lab{font-size:.65rem;font-weight:800;color:var(--sub);letter-spacing:.5px;margin-bottom:4px;text-transform:uppercase}
+.chat-msg-user .chat-msg-lab{color:var(--accent)}
+.chat-msg-ai .chat-msg-lab{color:var(--accent)}
+.chat-msg-body{white-space:pre-wrap}
+.chat-input-row{display:flex;gap:7px;margin-top:8px}
+.chat-input{flex:1;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:#fff;line-height:1.5;min-height:42px;max-height:90px}
+.chat-input:focus{border-color:var(--accent)}
+.chat-btn{padding:0 18px;background:linear-gradient(135deg,#6D3206,#B8860B);color:#fff;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.chat-btn:disabled{opacity:.55;cursor:not-allowed}
+.chat-tip{font-size:.7rem;color:var(--sub);margin-top:8px;text-align:center;line-height:1.5}
+.chat-empty{text-align:center;padding:18px 12px;color:var(--sub);font-size:.78rem;line-height:1.6;background:#fff;border:1px dashed var(--border);border-radius:10px}
 </style>
 </head>
 <body>
@@ -600,6 +624,13 @@ const MON_BRN = [2,3,4,5,6,7,8,9,10,11,0,1]; // branch for each month idx
 let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // 'manse' or 'saju' — which home card was tapped
 let _saju=null, _meta=null, _paidUnlocked=false;
+
+// ══════════════════════════════════════════════
+//  AI 채팅 설정 — Cloudflare Worker URL을 여기에 등록
+// ══════════════════════════════════════════════
+const WORKER_URL='';   // 예: 'https://saju-chat.your-subdomain.workers.dev'
+const CHAT_MAX_QUESTIONS=5;
+const CHAT_LS_KEY='saju_chat_count_v1';
 
 // 도시 → 경도 (시간 보정용). KST 기준자오선 = 135°E
 const CITY_LON={
@@ -1990,6 +2021,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=renderGunghapSection();
 
   // ═════════════════════════════════════
+  // AI 채팅 (5가지 질문)
+  // ═════════════════════════════════════
+  h+=renderChatSection();
+
+  // ═════════════════════════════════════
   // 마무리
   // ═════════════════════════════════════
   h+=`<div class="nb-card" style="background:linear-gradient(135deg,#FFF8E1,#FDF6EC);text-align:center">
@@ -2189,6 +2225,160 @@ function getDaeunSewoonCombo(saju,daeun,sewoon,ys){
     return `관성이 들어와 <b>책임·승진·도전</b>의 흐름이 강한 한 해`;
   }
   return `사주에 새로운 ${OHNAME[swStemOh]} 기운이 더해지며 다양한 변화가 가능한 한 해`;
+}
+
+// ═════════ AI 채팅 섹션 ═════════
+function chatGetCount(){
+  return parseInt(localStorage.getItem(CHAT_LS_KEY)||'0',10)||0;
+}
+function chatIncCount(){
+  localStorage.setItem(CHAT_LS_KEY, String(chatGetCount()+1));
+}
+function chatRemaining(){
+  return Math.max(0, CHAT_MAX_QUESTIONS-chatGetCount());
+}
+function chatResetCount(){
+  localStorage.removeItem(CHAT_LS_KEY);
+  const r=document.getElementById('chatRemaining');
+  if(r)r.textContent=`${CHAT_MAX_QUESTIONS}회 남음`;
+  const log=document.getElementById('chatLog');
+  if(log)log.innerHTML=`<div class="chat-empty">아직 질문이 없습니다. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) 올해 이직해도 괜찮을까요? / 결혼 시기는 언제쯤일까요? / 건강에서 주의할 점은?</div>`;
+}
+
+function buildSajuContextForChat(){
+  if(!_saju||!_meta)return null;
+  const oh=ohCount(_saju);
+  const dm=DM[_saju.dp.stem];
+  const gk=getGyeokguk(_saju);
+  const ys=getYongsin(oh);
+  const sins=findSinsal(_saju);
+  const dq=calcDaeun(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,gender);
+  const now=new Date(),age=now.getFullYear()-_meta.sy+1;
+  let curD=dq.daeuns[0];
+  for(let i=0;i<dq.daeuns.length;i++){
+    if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){curD=dq.daeuns[i];break;}
+  }
+  const cy=now.getFullYear();
+  const cyIdx=(cy-4+3600)%60;
+  const swStem=cyIdx%10,swBranch=cyIdx%12;
+  const tot=oh.reduce((a,b)=>a+b,0),me=oh[SOH[_saju.dp.stem]];
+  const isStrong=me>=tot/3;
+  const gm=emptyBranches(_saju.dp.stem,_saju.dp.branch);
+  const sinNames=[...new Set(sins.map(s=>s.n.split(' ')[0]))];
+  const cityName=document.querySelector('#iCity option[value="'+_meta.cityKey+'"]');
+  const t=_meta.hour<0?'시간 미상':`${String(_meta.hour).padStart(2,'0')}시 ${String(_meta.min).padStart(2,'0')}분`;
+  return{
+    birth:`${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일 ${t}`,
+    gender:gender==='male'?'남성':'여성',
+    birthplace:cityName?cityName.textContent:'미상',
+    pillars:`년주 ${STEMS[_saju.yp.stem]}${BRCH[_saju.yp.branch]}(${STEMKO[_saju.yp.stem]}${BRCHKO[_saju.yp.branch]}) · 월주 ${STEMS[_saju.mp.stem]}${BRCH[_saju.mp.branch]}(${STEMKO[_saju.mp.stem]}${BRCHKO[_saju.mp.branch]}) · 일주 ${STEMS[_saju.dp.stem]}${BRCH[_saju.dp.branch]}(${STEMKO[_saju.dp.stem]}${BRCHKO[_saju.dp.branch]})${_saju.hp?` · 시주 ${STEMS[_saju.hp.stem]}${BRCH[_saju.hp.branch]}(${STEMKO[_saju.hp.stem]}${BRCHKO[_saju.hp.branch]})`:''}`,
+    dayMaster:`${STEMS[_saju.dp.stem]}(${STEMKO[_saju.dp.stem]}) — ${dm.n.split('(')[0]}, ${dm.core}`,
+    daySpouse:`${BRCH[_saju.dp.branch]}(${BRCHKO[_saju.dp.branch]}) — ${ANIMAL[_saju.dp.branch]}, 오행 ${OHNAME[BOH[_saju.dp.branch]]}`,
+    gyeokguk:gk.name,
+    yongsin:OHNAME[ys.main],
+    ohaeng:`목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}`,
+    strength:isStrong?'신강':'신약',
+    sinsal:sinNames.length>0?sinNames.join(', '):'특별한 신살 없음',
+    gongmang:`${BRCH[gm[0]]}(${BRCHKO[gm[0]]}) · ${BRCH[gm[1]]}(${BRCHKO[gm[1]]})`,
+    daeun:`${curD.age}세부터 ${STEMS[curD.stem]}${BRCH[curD.branch]}(${STEMKO[curD.stem]}${BRCHKO[curD.branch]}) 대운`,
+    year:cy,
+    sewoon:`${STEMS[swStem]}${BRCH[swBranch]}(${STEMKO[swStem]}${BRCHKO[swBranch]})년`,
+  };
+}
+
+function chatEscape(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function chatAppend(role,text){
+  const log=document.getElementById('chatLog');
+  if(!log)return null;
+  const empty=log.querySelector('.chat-empty');
+  if(empty)empty.remove();
+  const cls=role==='user'?'chat-msg-user':role==='ai'?'chat-msg-ai':role==='loading'?'chat-msg-loading':'chat-msg-error';
+  const lab=role==='user'?'질문':role==='ai'?'🔮 역술가':role==='loading'?'생각하는 중':'⚠️ 오류';
+  const div=document.createElement('div');
+  div.className='chat-msg '+cls;
+  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${chatEscape(text)}</div>`;
+  log.appendChild(div);
+  log.scrollTop=log.scrollHeight;
+  return div;
+}
+
+async function chatAsk(){
+  if(!WORKER_URL){
+    alert('AI 채팅이 아직 설정되지 않았습니다.\n\n관리자가 worker/DEPLOY.md 의 절차를 따라 Cloudflare Worker를 배포한 뒤,\nindex.html 의 WORKER_URL 상수에 URL을 등록해야 합니다.');
+    return;
+  }
+  if(!_saju){alert('먼저 사주 분석을 진행해주세요.');return;}
+  if(chatRemaining()<=0){
+    alert(`${CHAT_MAX_QUESTIONS}회의 질문 한도를 모두 사용하셨습니다.\n다음 사용까지 캐시 초기화가 필요합니다.`);
+    return;
+  }
+  const input=document.getElementById('chatInput');
+  const question=input.value.trim();
+  if(!question)return;
+  if(question.length>500){alert('질문은 500자 이내로 입력해주세요.');return;}
+
+  const btn=document.getElementById('chatBtn');
+  btn.disabled=true;btn.textContent='⏳';
+  input.value='';input.style.height='42px';
+  chatAppend('user',question);
+  const loadingEl=chatAppend('loading','사주를 짚어가며 답변을 정리하고 있어요...');
+
+  try{
+    const ctx=buildSajuContextForChat();
+    const res=await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question,sajuContext:ctx}),
+    });
+    const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없습니다.'}));
+    if(loadingEl)loadingEl.remove();
+    if(!res.ok||data.error){
+      chatAppend('error',data.error||`오류 (${res.status})`);
+    }else{
+      chatAppend('ai',data.answer||'답변을 받지 못했습니다.');
+      chatIncCount();
+      const r=document.getElementById('chatRemaining');
+      if(r)r.textContent=`${chatRemaining()}회 남음`;
+      if(chatRemaining()===0){
+        chatAppend('error','🎟 무료 체험 5회 한도가 모두 소진되었습니다. 시간이 지난 후 다시 이용해주세요.');
+        document.getElementById('chatInput').disabled=true;
+        btn.disabled=true;btn.textContent='소진';
+        return;
+      }
+    }
+  }catch(e){
+    if(loadingEl)loadingEl.remove();
+    chatAppend('error','네트워크 오류가 발생했습니다: '+(e.message||'unknown'));
+  }finally{
+    if(chatRemaining()>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
+  }
+}
+
+function chatAutoresize(el){
+  el.style.height='42px';
+  el.style.height=Math.min(90,el.scrollHeight)+'px';
+}
+
+function renderChatSection(){
+  const remaining=chatRemaining();
+  const isExhausted=remaining<=0;
+  return `<div class="chat-card">
+    <div class="chat-head">
+      <div class="chat-title">💬 사주에 대해 직접 물어보기 (AI)</div>
+      <div class="chat-sub">위 풀이만으로 부족하다면, 본인 사주를 알고 있는 AI 역술가에게<br>5가지 질문을 자유롭게 던져보세요.</div>
+      <div class="chat-remaining" id="chatRemaining">${remaining}회 남음</div>
+    </div>
+    <div class="chat-log" id="chatLog">
+      <div class="chat-empty">아직 질문이 없습니다. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) 올해 이직해도 괜찮을까요? / 결혼 시기는 언제쯤일까요? / 건강에서 주의할 점은?</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 모두 소진되었습니다':'궁금한 점을 입력하세요 (최대 500자)'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
+      <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
+    </div>
+    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 본인 사주 정보가 자동 첨부되어 답변됩니다.</div>
+  </div>`;
 }
 
 // ═════════ 궁합 섹션 ═════════

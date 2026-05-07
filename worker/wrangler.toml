@@ -1,0 +1,6 @@
+name = "saju-chat"
+main = "saju-chat-worker.js"
+compatibility_date = "2025-04-01"
+
+# 환경변수는 wrangler 명령어로 설정합니다 (DEPLOY.md 참고)
+# wrangler secret put ANTHROPIC_API_KEY
