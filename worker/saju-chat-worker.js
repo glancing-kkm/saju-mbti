@@ -51,7 +51,8 @@ export default {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-7',
+          // 신규 계정에서 Opus 권한 없을 수 있어 Sonnet 사용. Opus 권한 있다면 'claude-opus-4-7'로 변경.
+          model: 'claude-sonnet-4-6',
           max_tokens: 1500,
           system: [
             {
