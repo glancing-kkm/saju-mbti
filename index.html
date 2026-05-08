@@ -417,7 +417,8 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .chat-input-row{display:flex;gap:7px;margin-top:10px}
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.chat-input::placeholder{color:var(--muted)}
+.chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
+@media (max-width:380px){.chat-input::placeholder{font-size:.72rem}}
 .chat-btn{padding:0 20px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border:none;border-radius:50px;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-family:inherit}
 .chat-btn:disabled{opacity:.45;cursor:not-allowed}
 .chat-tip{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;letter-spacing:.02em}
@@ -2600,7 +2601,7 @@ function renderChatSection(){
       <div class="chat-empty">아직 질문이 없습니다. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) 올해 이직해도 괜찮을까요? / 결혼 시기는 언제쯤일까요? / 건강에서 주의할 점은?</div>
     </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 모두 소진되었습니다':'궁금한 점을 입력하세요 (최대 500자)'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 소진되었습니다':'궁금한 점을 입력하세요 (500자 이내)'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
     <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위에 풀이된 사주 내용을 바탕으로 답변됩니다.</div>
@@ -4101,17 +4102,38 @@ function closeShareModal(){
   document.getElementById('shareOverlay').className='share-overlay';
 }
 
+function _capScale(){
+  // 폰 retina(2~3) 그대로 따라가되 너무 거대해지지 않게 상한
+  return Math.min(3,Math.max(2,Math.round(window.devicePixelRatio||2)));
+}
+function _captureOpts(){
+  return {backgroundColor:'#111415',scale:_capScale(),useCORS:true,logging:false,imageTimeout:0,windowWidth:document.documentElement.clientWidth};
+}
+function _canvasToBlob(canvas){
+  // PNG는 이미지 길이가 길면 10MB+가 되어 폰 갤러리가 자동 다운샘플 → 흐려 보임.
+  // JPEG 0.94로 저장하면 크기는 1/4~1/6, 텍스트 가독성은 거의 그대로 유지됨.
+  return new Promise(r=>canvas.toBlob(b=>r(b),'image/jpeg',0.94));
+}
+async function _downloadCanvas(canvas,filename){
+  const blob=await _canvasToBlob(canvas);
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.download=filename;
+  link.href=url;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
 async function saveAsImage(btn){
   if(!window.html2canvas){alert('이미지 저장 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');return;}
   const orig=btn.innerHTML;
   btn.innerHTML='⏳ 저장 중...';btn.disabled=true;
   try{
     const target=document.querySelector('.panel.on')||document.getElementById('p0');
-    const canvas=await html2canvas(target,{backgroundColor:'#FDF6EC',scale:2,useCORS:true,logging:false});
-    const link=document.createElement('a');
-    link.download=`사주팔자_${new Date().toISOString().slice(0,10)}.png`;
-    link.href=canvas.toDataURL('image/png');
-    link.click();
+    const canvas=await html2canvas(target,_captureOpts());
+    await _downloadCanvas(canvas,`사주팔자_${new Date().toISOString().slice(0,10)}.jpg`);
   }catch(e){alert('이미지 저장 중 오류가 발생했습니다.');}
   finally{btn.innerHTML=orig;btn.disabled=false;}
 }
@@ -4154,11 +4176,8 @@ async function shareToInstagram(){
   btn.innerHTML='⏳ 저장 중...';btn.disabled=true;
   try{
     const target=document.querySelector('.panel.on')||document.getElementById('p0');
-    const canvas=await html2canvas(target,{backgroundColor:'#FDF6EC',scale:2,useCORS:true,logging:false});
-    const link=document.createElement('a');
-    link.download=`사주팔자_인스타_${new Date().toISOString().slice(0,10)}.png`;
-    link.href=canvas.toDataURL('image/png');
-    link.click();
+    const canvas=await html2canvas(target,_captureOpts());
+    await _downloadCanvas(canvas,`사주팔자_인스타_${new Date().toISOString().slice(0,10)}.jpg`);
     setTimeout(()=>alert('✅ 이미지가 저장됐습니다!\n인스타그램 앱을 열고 [+] 버튼으로 이미지를 업로드해주세요.'),600);
   }catch(e){alert('이미지 생성 중 오류가 발생했습니다.');}
   finally{btn.innerHTML=orig;btn.disabled=false;}

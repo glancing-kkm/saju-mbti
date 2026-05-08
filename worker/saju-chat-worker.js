@@ -68,7 +68,18 @@ export default {
       if (!apiResp.ok) {
         const errText = await apiResp.text();
         console.error('Anthropic API error:', apiResp.status, errText);
-        return json({ error: '응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.' }, 502);
+        // Anthropic 에러를 그대로 노출하면 원인 파악이 쉬움 (모델 권한·키 문제·크레딧 등)
+        let detail = errText;
+        try {
+          const j = JSON.parse(errText);
+          detail = j.error?.message || j.message || errText;
+        } catch {}
+        return json(
+          {
+            error: `Anthropic API 오류 (${apiResp.status}): ${String(detail).slice(0, 240)}`,
+          },
+          502
+        );
       }
 
       const data = await apiResp.json();
