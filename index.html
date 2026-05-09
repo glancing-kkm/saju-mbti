@@ -481,30 +481,107 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .chat-btn:disabled{opacity:.45;cursor:not-allowed}
 .chat-tip{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;letter-spacing:.02em}
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
+
+/* ── 카테고리별 추가 입력 섹션 ── */
+.cat-extra{padding:14px 14px 4px;margin-top:6px;background:linear-gradient(135deg,var(--earth-bg),rgba(45,52,71,.4));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.cat-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.cat-extra-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.cat-extra-icon{font-size:1.2rem}
+.cat-extra-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);letter-spacing:-.01em}
+.cat-extra-desc{font-size:.72rem;color:var(--muted);margin-bottom:12px;line-height:1.7}
+
+/* ── 지정일/월별 풀이 결과 ── */
+.daypick-wrap,.monthly-wrap,.newyear-wrap{padding:12px 12px 24px;display:flex;flex-direction:column;gap:14px}
+.dp-card{background:var(--card);border:1px solid var(--border-strong);border-radius:14px;padding:18px 16px;position:relative;overflow:hidden}
+.dp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.dp-date{text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
+.dp-pillar{text-align:center;font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px}
+.dp-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
+.dp-grade{display:inline-block;padding:4px 14px;border-radius:50px;font-size:.74rem;font-weight:700;letter-spacing:.04em;margin:0 auto;display:block;width:fit-content}
+.dp-headline{text-align:center;font-size:.88rem;font-weight:700;color:var(--text);margin:10px 0 6px;letter-spacing:-.01em}
+.dp-body{font-size:.82rem;line-height:1.85;color:var(--sub);margin-top:10px}
+.dp-body p{margin-bottom:9px}
+.dp-tip{margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-left:3px solid var(--accent);border-radius:8px;font-size:.78rem;line-height:1.78;color:var(--sub)}
+.dp-tip b{color:var(--accent)}
+
+/* 월별 운세 - 월별 행 */
+.mo-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;margin-bottom:0}
+.mo-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.mo-row-month{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)}
+.mo-row-pillar{font-size:.74rem;color:var(--sub)}
+.mo-row-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
+.mo-row-score{display:inline-block;padding:2px 11px;border-radius:50px;font-size:.7rem;font-weight:700;border:1px solid}
+.mo-row-body{font-size:.78rem;line-height:1.8;color:var(--sub)}
+.mo-cats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+.mo-cat{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;font-size:.71rem}
+.mo-cat-name{color:var(--muted)}
+.mo-cat-score{color:var(--text);font-weight:700}
+
+/* 신년운세 */
+.ny-hero{background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
+.ny-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.ny-year{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
+.ny-pillar{font-size:.86rem;color:var(--sub);margin-bottom:6px}
+.ny-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
+.ny-headline{font-size:.95rem;font-weight:700;color:var(--text);margin-top:12px}
+.ny-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.ny-sec-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
+.ny-sec-body{font-size:.82rem;line-height:1.85;color:var(--sub)}
+.ny-sec-body p{margin-bottom:8px}
+.ny-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.ny-month{padding:9px 6px;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;text-align:center}
+.ny-month-name{font-size:.7rem;color:var(--muted);margin-bottom:3px}
+.ny-month-score{font-size:.86rem;font-weight:700}
+.ny-month-tag{font-size:.6rem;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ───── HOME (랜딩) ───── -->
+  <!-- ───── HOME (카테고리 메뉴) ───── -->
   <div class="view on" id="view-home">
     <div class="home-hero">
       <h1>천지인 사주</h1>
       <div class="h-sub">만세력으로 천성을 알고, 대운으로 흐름을 읽다</div>
       <div class="h-deco">天 · 地 · 人</div>
     </div>
-    <div class="home-cards">
-      <div class="home-card" onclick="goToInput('manse')">
-        <div class="hc-arrow">→</div>
-        <div class="hc-emoji">📜</div>
-        <div class="hc-title">만세력 보기 <span class="hc-tag tag-free">무료</span></div>
-        <div class="hc-desc">생년월일·시간·태어난 곳을 입력하면 사주팔자, 오행 분포, 대운, 세운 등 만세력 정보를 무료로 보여드립니다.</div>
+    <div class="menu-wrap">
+      <div class="menu-head">
+        <div class="menu-head-title">사주 보기</div>
+        <div class="menu-head-sub">원하는 풀이를 선택하세요</div>
       </div>
-      <div class="home-card" onclick="goToInput('saju')">
-        <div class="hc-arrow">→</div>
-        <div class="hc-emoji">🔮</div>
-        <div class="hc-title">사주 보기 <span class="hc-tag tag-free">무료</span> <span class="hc-tag tag-paid">유료</span></div>
-        <div class="hc-desc">만세력·일일운세는 무료로, 지정일·월별·신년·인생총운은 유료로 제공됩니다.</div>
+      <div class="menu-grid">
+        <button class="menu-card" onclick="goToInput('manse')">
+          <div class="mc-icon">📅</div>
+          <div class="mc-title">만세력</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card" onclick="goToInput('daily')">
+          <div class="mc-icon">✨</div>
+          <div class="mc-title">일일운세</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card" onclick="goToInput('daypick')">
+          <div class="mc-icon">🎯</div>
+          <div class="mc-title">지정일 운세</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card" onclick="goToInput('monthly')">
+          <div class="mc-icon">📆</div>
+          <div class="mc-title">월별 운세</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card" onclick="goToInput('newyear')">
+          <div class="mc-icon">🎉</div>
+          <div class="mc-title">신년운세</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card locked" onclick="goToInput('life')">
+          <div class="mc-lock">🔒</div>
+          <div class="mc-icon">🌼</div>
+          <div class="mc-title">인생총운</div>
+          <div class="mc-tag t-paid">유료</div>
+        </button>
       </div>
     </div>
     <div class="home-foot">
@@ -644,6 +721,71 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
         </div>
       </div>
 
+      <!-- 지정일 운세 추가 입력 -->
+      <div class="cat-extra" id="catExtraDaypick" style="display:none">
+        <div class="cat-extra-head">
+          <span class="cat-extra-icon">🎯</span>
+          <span class="cat-extra-title">지정일 운세 — 보고 싶은 날짜</span>
+        </div>
+        <div class="cat-extra-desc">중요한 약속·면접·계약·여행 등 특정 날짜를 입력하면 그날의 일진과 본인 사주의 상호작용을 풀어드립니다.</div>
+        <div class="row3">
+          <div class="ig" style="flex:2.2">
+            <label>년도</label>
+            <input type="number" id="dpY" placeholder="2026" min="1900" max="2100">
+          </div>
+          <div class="ig">
+            <label>월</label>
+            <input type="number" id="dpM" placeholder="월" min="1" max="12">
+          </div>
+          <div class="ig">
+            <label>일</label>
+            <input type="number" id="dpD" placeholder="일" min="1" max="31">
+          </div>
+        </div>
+      </div>
+
+      <!-- 월별 운세 추가 입력 -->
+      <div class="cat-extra" id="catExtraMonthly" style="display:none">
+        <div class="cat-extra-head">
+          <span class="cat-extra-icon">📆</span>
+          <span class="cat-extra-title">월별 운세 — 기간 선택</span>
+        </div>
+        <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 12개월).</div>
+        <div class="row3">
+          <div class="ig">
+            <label>시작 년</label>
+            <input type="number" id="moStartY" placeholder="2026" min="1900" max="2100">
+          </div>
+          <div class="ig">
+            <label>시작 월</label>
+            <input type="number" id="moStartM" placeholder="월" min="1" max="12">
+          </div>
+        </div>
+        <div class="row3" style="margin-top:8px">
+          <div class="ig">
+            <label>종료 년</label>
+            <input type="number" id="moEndY" placeholder="2026" min="1900" max="2100">
+          </div>
+          <div class="ig">
+            <label>종료 월</label>
+            <input type="number" id="moEndM" placeholder="월" min="1" max="12">
+          </div>
+        </div>
+      </div>
+
+      <!-- 신년운세 추가 입력 -->
+      <div class="cat-extra" id="catExtraNewyear" style="display:none">
+        <div class="cat-extra-head">
+          <span class="cat-extra-icon">🎉</span>
+          <span class="cat-extra-title">신년운세 — 보고 싶은 해</span>
+        </div>
+        <div class="cat-extra-desc">한 해의 흐름을 사주·세운·대운을 종합해 입체적으로 풀어드립니다.</div>
+        <div class="ig">
+          <label>연도 (예: 2026)</label>
+          <input type="number" id="nyY" placeholder="2026" min="1900" max="2100">
+        </div>
+      </div>
+
       <div class="err" id="errMsg"></div>
       <button class="analyze-btn" onclick="analyze()">✦ 사주 분석하기 ✦</button>
     </div>
@@ -659,51 +801,9 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
       </div>
     </div>
     <div class="share-bar">
-      <button class="share-bar-btn" onclick="goToInput(_lastFlow||'manse')">✏️ 다시 입력</button>
+      <button class="share-bar-btn" onclick="goToInput(_category||'manse')">✏️ 다시 입력</button>
       <button class="share-bar-btn" id="saveImgBtn" onclick="saveAsImage(this)">📥 이미지 저장</button>
       <button class="share-bar-btn primary" onclick="showShareModal()">🔗 공유</button>
-    </div>
-    <div class="menu-wrap" id="resultMenu">
-      <div class="menu-head">
-        <div class="menu-head-title">사주 보기</div>
-        <div class="menu-head-sub">원하는 풀이를 선택하세요</div>
-      </div>
-      <div class="menu-grid">
-        <button class="menu-card" onclick="gotoCard(0)">
-          <div class="mc-icon">📅</div>
-          <div class="mc-title">만세력</div>
-          <div class="mc-tag t-free">무료</div>
-        </button>
-        <button class="menu-card" onclick="gotoCard(1)">
-          <div class="mc-icon">✨</div>
-          <div class="mc-title">일일운세</div>
-          <div class="mc-tag t-free">무료</div>
-        </button>
-        <button class="menu-card locked" onclick="gotoCard(2)">
-          <div class="mc-lock">🔒</div>
-          <div class="mc-icon">🎯</div>
-          <div class="mc-title">지정일 운세</div>
-          <div class="mc-tag t-paid">유료</div>
-        </button>
-        <button class="menu-card locked" onclick="gotoCard(3)">
-          <div class="mc-lock">🔒</div>
-          <div class="mc-icon">📆</div>
-          <div class="mc-title">월별 운세</div>
-          <div class="mc-tag t-paid">유료</div>
-        </button>
-        <button class="menu-card locked" onclick="gotoCard(4)">
-          <div class="mc-lock">🔒</div>
-          <div class="mc-icon">🎉</div>
-          <div class="mc-title">신년운세</div>
-          <div class="mc-tag t-paid">유료</div>
-        </button>
-        <button class="menu-card locked" onclick="gotoCard(5)">
-          <div class="mc-lock">🔒</div>
-          <div class="mc-icon">🌼</div>
-          <div class="mc-title">인생총운</div>
-          <div class="mc-tag t-paid">유료</div>
-        </button>
-      </div>
     </div>
     <div class="panel" id="p0"></div>
     <div class="panel" id="p1"></div>
@@ -772,8 +872,12 @@ const MON_BRN = [2,3,4,5,6,7,8,9,10,11,0,1]; // branch for each month idx
 //  UI STATE
 // ══════════════════════════════════════════════
 let gender='male', calType='solar', isLeap=false;
-let _lastFlow='manse';   // 'manse' or 'saju' — which home card was tapped
+let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
+let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
 let _saju=null, _meta=null, _paidUnlocked=false;
+let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
+const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5};
+const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -989,39 +1093,106 @@ function showView(name){
   window.scrollTo(0,0);
 }
 function goHome(){showView('home');}
-function goToInput(flow){
-  _lastFlow=flow||'manse';
+function goToInput(cat){
+  _category=cat||'manse';
+  _lastFlow=(cat==='manse')?'manse':'saju';
   const sub=document.getElementById('inputSub');
-  if(sub)sub.textContent=flow==='saju'?'사주 풀이를 위해 정보를 입력해주세요':'만세력을 산출하기 위해 정보를 입력해주세요';
+  if(sub){
+    const subMap={
+      manse:'만세력을 산출하기 위해 정보를 입력해주세요',
+      daily:'오늘의 일진과 비교를 위해 정보를 입력해주세요',
+      daypick:'사주 정보와 보고 싶은 날짜를 입력해주세요',
+      monthly:'사주 정보와 기간을 입력해주세요',
+      newyear:'사주 정보와 보고 싶은 해를 입력해주세요',
+      life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요'
+    };
+    sub.textContent=subMap[cat]||subMap.manse;
+  }
+  // 헤더 타이틀 카테고리 라벨 반영
+  const ttl=document.querySelector('#view-input .hdr-back-title');
+  if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
+  // 카테고리별 추가 입력 섹션 표시
+  ['Daypick','Monthly','Newyear'].forEach(k=>{
+    const el=document.getElementById('catExtra'+k);
+    if(el)el.style.display='none';
+  });
+  if(cat==='daypick'){
+    const el=document.getElementById('catExtraDaypick');if(el)el.style.display='';
+    // 기본값: 오늘
+    const t=new Date();
+    if(!document.getElementById('dpY').value){
+      document.getElementById('dpY').value=t.getFullYear();
+      document.getElementById('dpM').value=t.getMonth()+1;
+      document.getElementById('dpD').value=t.getDate();
+    }
+  }else if(cat==='monthly'){
+    const el=document.getElementById('catExtraMonthly');if(el)el.style.display='';
+    const t=new Date();
+    if(!document.getElementById('moStartY').value){
+      document.getElementById('moStartY').value=t.getFullYear();
+      document.getElementById('moStartM').value=t.getMonth()+1;
+      const end=new Date(t.getFullYear(),t.getMonth()+5,1);
+      document.getElementById('moEndY').value=end.getFullYear();
+      document.getElementById('moEndM').value=end.getMonth()+1;
+    }
+  }else if(cat==='newyear'){
+    const el=document.getElementById('catExtraNewyear');if(el)el.style.display='';
+    if(!document.getElementById('nyY').value){
+      document.getElementById('nyY').value=new Date().getFullYear()+1;
+    }
+  }
+  // 캐시된 사주 정보 복원
+  restoreLastInputs();
   showView('input');
 }
-// ── 결과 메뉴/패널 라우팅 ──
+function restoreLastInputs(){
+  if(!_lastInputs)return;
+  const i=_lastInputs;
+  if(i.gender)setGender(i.gender);
+  if(i.calType)setCal(i.calType);
+  if(typeof i.isLeap==='boolean')setLeap(i.isLeap);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null&&v!=='')e.value=v;};
+  set('iY',i.year);set('iM',i.month);set('iD',i.day);
+  set('iH',i.hour);set('iMin',i.min);set('iCity',i.cityKey);
+}
+// ── 결과 패널 라우팅 ──
 function gotoCard(idx){
   const menu=document.getElementById('resultMenu');
   if(menu)menu.style.display='none';
   document.querySelectorAll('.panel').forEach((p,i)=>p.className='panel'+(i===idx?' on':''));
-  // 인생총운(5번) 진입 시 lazy-render
   if(idx===5)ensurePaidPanel();
   window.scrollTo({top:0,behavior:'instant'});
 }
-function gotoMenu(){
-  const menu=document.getElementById('resultMenu');
-  if(menu)menu.style.display='';
-  document.querySelectorAll('.panel').forEach(p=>p.className='panel');
-  window.scrollTo({top:0,behavior:'instant'});
-}
+// '메뉴로' 버튼 → 이제 홈(카테고리 메뉴)으로 복귀
+function gotoMenu(){goHome();}
 function ensurePaidPanel(){
   const p5=document.getElementById('p5');
   if(!p5||p5.dataset.rendered==='1'||!_saju||!_meta)return;
-  const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 메뉴로</button>';
+  const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
   p5.innerHTML=back+(_paidUnlocked
     ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
     :renderSajuLock(_saju));
   if(_paidUnlocked)enrichTerms(p5);
   p5.dataset.rendered='1';
 }
-// 호환성 유지: 기존 tab(n) 호출이 어딘가 남아 있을 경우 대비
-function tab(n){gotoCard(n>=2?5:n);}
+// 호환성: 만세력 결과의 '자세한 사주 풀이 보기' CTA → 인생총운 패널 lazy 렌더 후 전환
+function tab(n){
+  if(!_saju||!_meta)return goHome();
+  const targetIdx=(n>=2)?5:n;
+  if(targetIdx===5){
+    const p5=document.getElementById('p5');
+    if(p5&&p5.dataset.rendered!=='1'){
+      const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
+      p5.innerHTML=back+(_paidUnlocked
+        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
+        :renderSajuLock(_saju));
+      if(_paidUnlocked)enrichTerms(p5);
+      p5.dataset.rendered='1';
+    }
+    _category='life';
+  }
+  gotoCard(targetIdx);
+}
 function goBack(){goHome();}
 
 // ══════════════════════════════════════════════
@@ -1131,7 +1302,7 @@ function renderDailyFortune(saju){
   const dm=DM[saju.dp.stem];
   const grade=dailyGrade(f.total);
   const w=document.documentElement.clientWidth||360;
-  let h=`<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 메뉴로</button>
+  let h=`<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>
     <div class="daily-wrap">
       <div class="daily-card">
         <div class="daily-date">${f.dy}년 ${f.dm}월 ${f.dd}일 (${['일','월','화','수','목','금','토'][new Date(f.dy,f.dm-1,f.dd).getDay()]}요일)</div>
@@ -1185,7 +1356,7 @@ function renderFeeLock(kind){
     newyear:{icon:'🎉',title:'신년운세',desc:`${new Date().getFullYear()+1}년 한 해의 흐름을 사주·세운·대운을 종합해 입체적으로 풀어드립니다.`,features:['📍 신년 세운 글자 심층 분석','📍 12개월 운세 흐름 그래프','📍 분야별(재물·연애·건강·관계) 연간 운','📍 길월·흉월 + 결정적 시기 특정','📍 채팅 5회로 추가 질문 가능']}
   };
   const d=data[kind];
-  return `<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 메뉴로</button>
+  return `<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>
     <div class="fee-lock">
       <div class="fee-lock-icon">${d.icon}</div>
       <div class="fee-lock-title">${d.title}</div>
@@ -1194,6 +1365,245 @@ function renderFeeLock(kind){
       <div style="font-size:.72rem;color:var(--muted);margin-bottom:18px;line-height:1.7">곧 만나보실 수 있는 풀이입니다.<br>현재는 「인생총운」으로 깊이 있는 사주 풀이를 먼저 만나보세요.</div>
       <button class="lock-btn" onclick="gotoCard(5)">🌼 인생총운 보러가기</button>
     </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  지정일 운세 (DAYPICK)
+// ══════════════════════════════════════════════
+function renderDaypickFortune(saju,y,m,d){
+  // 날짜 유효성 (윤달 등) 보정
+  const test=new Date(y,m-1,d);
+  if(test.getFullYear()!==y||test.getMonth()!==m-1||test.getDate()!==d){
+    return `<div class="dp-card"><div class="dp-headline">존재하지 않는 날짜입니다.</div></div>`;
+  }
+  const f=calcDailyFortune(saju,test);
+  const grade=dailyGrade(f.total);
+  const wDay=['일','월','화','수','목','금','토'][test.getDay()];
+
+  // 시간대(시지) 추천: 합 들어오는 시지를 길시로
+  const myDayBranch=saju.dp.branch;
+  const hourGuide=[];
+  for(let bi=0;bi<12;bi++){
+    const r=brRel(myDayBranch,bi);
+    const tg=tenGod(saju.dp.stem,BR_MAIN_STEM[bi]);
+    if(r.kind==='합')hourGuide.push({bi,kind:'길시',tg,note:'본인과 합이 드는 시간대 — 약속·계약·만남에 길합니다.'});
+    else if(r.kind==='충')hourGuide.push({bi,kind:'주의',tg,note:'본인과 충이 드는 시간대 — 다툼·실수·결정 미루기.'});
+  }
+  const hourLabel=bi=>{
+    const ranges=['23:30~01:30','01:30~03:30','03:30~05:30','05:30~07:30','07:30~09:30','09:30~11:30','11:30~13:30','13:30~15:30','15:30~17:30','17:30~19:30','19:30~21:30','21:30~23:30'];
+    return `${BRCHKO[bi]}시(${ranges[bi]})`;
+  };
+
+  // 카테고리별 풀이
+  const catRow=(emoji,name,score,body)=>`<div class="mo-cat" style="padding:10px 12px"><span class="mo-cat-name">${emoji} ${name}</span><span class="mo-cat-score">${score}점</span></div><div class="dp-body" style="margin-top:-2px;margin-bottom:4px;font-size:.78rem">${body}</div>`;
+
+  let h=`<div class="daypick-wrap">
+    <div class="dp-card">
+      <div class="dp-date">${y}년 ${m}월 ${d}일 (${wDay}요일)</div>
+      <div class="dp-pillar">일진: <em>${STEMS[f.dp.stem]}${BRCH[f.dp.branch]}(${STEMKO[f.dp.stem]}${BRCHKO[f.dp.branch]})</em> · 본인 <span class="term">일간</span> <em>${STEMKO[saju.dp.stem]}</em> 기준 <em>${f.tg}</em>${f.rel.kind!=='평'?` · 일지 ${f.rel.kind}`:''}</div>
+      <div class="dp-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab} · ${f.total}점</div>
+      <div class="dp-headline">${TG_EMOJI[f.tg]||'🌟'} ${f.tg} 기운의 날</div>
+      <div class="dp-body">
+        <p>${_dailyMsg('총운',f.tg,f.rel)}</p>
+        <p><b>합·충 작용</b><br>${f.rel.desc||'일지에 특별한 합·충 작용은 없는 평이한 흐름입니다.'}</p>
+      </div>
+    </div>
+
+    <div class="dp-card">
+      <div class="ny-sec-title">📊 분야별 풀이</div>
+      ${catRow('💰','재물',f.wealth,_dailyMsg('재물',f.tg,f.rel))}
+      ${catRow('💕','연애',f.love,_dailyMsg('연애',f.tg,f.rel))}
+      ${catRow('🏛️','직업·관운',f.career,_dailyMsg('총운',f.tg,f.rel))}
+      ${catRow('🌿','건강',f.health,_dailyMsg('건강',f.tg,f.rel))}
+    </div>
+
+    <div class="dp-card">
+      <div class="ny-sec-title">⏰ 시간대별 가이드</div>
+      <div class="ny-sec-body">`;
+  if(hourGuide.length===0){
+    h+=`<p>이 날에는 본인 일지와 강한 합·충이 드는 시간대가 없어, 시간대별 큰 기복은 적습니다. 평소 리듬대로 움직이세요.</p>`;
+  }else{
+    hourGuide.forEach(g=>{
+      const color=g.kind==='길시'?'#6cbf7e':'#e57462';
+      h+=`<p><b style="color:${color}">${g.kind} · ${hourLabel(g.bi)}</b><br>${g.note}</p>`;
+    });
+  }
+  h+=`</div></div>
+
+    <div class="dp-card">
+      <div class="ny-sec-title">📜 오늘의 행동 처방</div>
+      <div class="dp-body">${dailyAdvice(saju,f)}</div>
+      <div class="dp-tip">💡 <b>사주 관점 팁</b> — 일진은 그날 하루의 외부 기운입니다. 본인 사주의 ${STEMKO[saju.dp.stem]}일간이 ${f.tg} 기운을 만나면 ${TG_EMOJI[f.tg]} 색채의 하루가 펼쳐지므로, 거스르기보다 흐름에 맞춰 한 가지 행동만 더하면 길이 열립니다.</div>
+    </div>
+  </div>`;
+  return h;
+}
+
+// ══════════════════════════════════════════════
+//  월별 운세 (MONTHLY)
+// ══════════════════════════════════════════════
+function _monthScore(saju,monthStem,monthBranch){
+  const tg=tenGod(saju.dp.stem,monthStem);
+  const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[monthBranch]);
+  const rel=brRel(saju.dp.branch,monthBranch);
+  let total=TG_SCORE[tg]||60;
+  total+=rel.mod;
+  if(btg==='정재'||btg==='정인'||btg==='식신')total+=4;
+  else if(btg==='편관'||btg==='겁재')total-=4;
+  total=Math.max(20,Math.min(98,Math.round(total)));
+  const isWealthTG=(tg==='편재'||tg==='정재'),isOfficerTG=(tg==='편관'||tg==='정관');
+  const isOutputTG=(tg==='식신'||tg==='상관'),isResourceTG=(tg==='편인'||tg==='정인');
+  const isSelfTG=(tg==='비견'||tg==='겁재');
+  const cs=(b,m)=>Math.max(20,Math.min(98,Math.round(b+m)));
+  return{
+    tg,btg,rel,total,
+    wealth:cs(total,(isWealthTG?12:0)+(tg==='겁재'?-12:0)+(rel.kind==='충'?-5:0)),
+    love  :cs(total,(rel.kind==='합'?14:rel.kind==='충'?-12:0)+(isSelfTG?-5:0)+(isOutputTG?5:0)),
+    career:cs(total,(isOfficerTG?10:0)+(tg==='상관'?-8:0)+(rel.kind==='충'?-4:0)),
+    health:cs(total,(rel.kind==='충'?-8:0)+(isResourceTG?6:0)+(tg==='편관'?-5:0))
+  };
+}
+function renderMonthlyFortune(saju,sy,sm,ey,em){
+  const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
+  let h=`<div class="monthly-wrap">
+    <div class="dp-card">
+      <div class="dp-date">📆 월별 운세</div>
+      <div class="dp-pillar">${sy}년 ${sm}월 ~ ${ey}년 ${em}월 · 총 ${endIdx-startIdx+1}개월</div>
+      <div class="dp-body" style="margin-top:8px"><p>매달 첫째 날(절기 기준 신월) 기준으로 산출한 월간 흐름입니다. 본인 일간 <em>${STEMKO[saju.dp.stem]}</em>을 기준으로 그 달의 천간·지지가 만들어내는 십신·합·충을 풀어드립니다.</p></div>
+    </div>`;
+
+  for(let idx=startIdx;idx<=endIdx;idx++){
+    const yy=Math.floor(idx/12), mm=(idx%12)+1;
+    // 그 달의 중간일(15일)을 기준으로 월주 계산
+    const yp=yearPillar(yy,mm,15,12,0);
+    const mi=monthIdx(yy,mm,15,12,0);
+    const mp=monthPillar(yp.stem,mi);
+    const sc=_monthScore(saju,mp.stem,mp.branch);
+    const grade=dailyGrade(sc.total);
+    const body=_dailyMsg('총운',sc.tg,sc.rel)||'';
+    let extra='';
+    if(sc.rel.kind==='충')extra=' 일지 충이 들어 변동·이동·결정 번복이 잦을 수 있습니다.';
+    else if(sc.rel.kind==='합')extra=' 일지 합이 들어 만남·계약·교섭이 부드럽게 풀립니다.';
+    h+=`<div class="mo-row">
+      <div class="mo-row-head">
+        <div>
+          <div class="mo-row-month">${yy}년 ${mm}월</div>
+          <div class="mo-row-pillar">월주 <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em> · ${TG_EMOJI[sc.tg]||'🌟'} ${sc.tg}${sc.rel.kind!=='평'?` · 일지 ${sc.rel.kind}`:''}</div>
+        </div>
+        <div class="mo-row-score" style="color:${grade.color};background:${grade.bg};border-color:${grade.color}55">${grade.lab} ${sc.total}</div>
+      </div>
+      <div class="mo-row-body">${body}${extra}</div>
+      <div class="mo-cats">
+        <div class="mo-cat"><span class="mo-cat-name">💰 재물</span><span class="mo-cat-score">${sc.wealth}</span></div>
+        <div class="mo-cat"><span class="mo-cat-name">💕 연애</span><span class="mo-cat-score">${sc.love}</span></div>
+        <div class="mo-cat"><span class="mo-cat-name">🏛️ 직업</span><span class="mo-cat-score">${sc.career}</span></div>
+        <div class="mo-cat"><span class="mo-cat-name">🌿 건강</span><span class="mo-cat-score">${sc.health}</span></div>
+      </div>
+    </div>`;
+  }
+  h+=`<div class="dp-card"><div class="dp-tip">💡 <b>읽는 법</b> — 점수가 높은 달은 새 시작·확장·계약에 길하고, 낮은 달은 정리·관망·내실 다지기에 적합합니다. 일지 합/충 표시는 만남·이동의 변수입니다.</div></div></div>`;
+  return h;
+}
+
+// ══════════════════════════════════════════════
+//  신년운세 (NEWYEAR)
+// ══════════════════════════════════════════════
+function renderNewyearFortune(saju,y){
+  // 신년 세운: 입춘 기준 그 해의 천간·지지
+  const yp=yearPillar(y,6,1,12,0); // 6월은 입춘 이후 안전 시점
+  const tg=tenGod(saju.dp.stem,yp.stem);
+  const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[yp.branch]);
+  const rel=brRel(saju.dp.branch,yp.branch);
+  let total=TG_SCORE[tg]||60;
+  total+=rel.mod;
+  if(btg==='정재'||btg==='정인'||btg==='식신')total+=4;
+  else if(btg==='편관'||btg==='겁재')total-=4;
+  total=Math.max(20,Math.min(98,Math.round(total)));
+  const grade=dailyGrade(total);
+
+  // 12개월 흐름 산출
+  const monthsArr=[];
+  for(let mm=1;mm<=12;mm++){
+    const ypM=yearPillar(y,mm,15,12,0);
+    const mi=monthIdx(y,mm,15,12,0);
+    const mp=monthPillar(ypM.stem,mi);
+    const sc=_monthScore(saju,mp.stem,mp.branch);
+    monthsArr.push({mm,mp,sc});
+  }
+  // 길월·흉월
+  const sorted=[...monthsArr].sort((a,b)=>b.sc.total-a.sc.total);
+  const lucky=sorted.slice(0,3).map(o=>o.mm).sort((a,b)=>a-b);
+  const tough=sorted.slice(-3).map(o=>o.mm).sort((a,b)=>a-b);
+
+  // 분야별 풀이
+  const wealthBody=_dailyMsg('재물',tg,rel)||'한 해 재물의 흐름은 본인의 행동 패턴에 크게 좌우됩니다.';
+  const loveBody=_dailyMsg('연애',tg,rel)||'관계의 결은 본인이 먼저 어떤 톤을 내느냐로 결정됩니다.';
+  const careerBody=tg==='정관'?'책임이 늘고 공식 자리가 열리는 해입니다. 사양보다 수락이 길합니다.':
+                   tg==='편관'?'압박과 경쟁이 늘어나는 해. 정면 돌파보다 측면 우회가 빛납니다.':
+                   tg==='상관'?'창의·표현·콘텐츠로 두각을 내기 좋은 해. 다만 조직 내 갈등은 톤 조절로 풀어가세요.':
+                   tg==='식신'?'편안하게 표현하고 나누기 좋은 해. 사람과 정성을 통해 기회가 옵니다.':
+                   '본인의 강점을 한 줄로 정리해 발신하는 해입니다.';
+  const healthBody=_dailyMsg('건강',tg,rel)||'생활 리듬을 살피는 해입니다.';
+
+  const monthLab=arr=>arr.map(m=>`${m}월`).join(', ');
+
+  let h=`<div class="newyear-wrap">
+    <div class="ny-hero">
+      <div class="ny-year">🎉 ${y}년 신년운세</div>
+      <div class="ny-pillar">세운 <em>${STEMS[yp.stem]}${BRCH[yp.branch]}(${STEMKO[yp.stem]}${BRCHKO[yp.branch]})</em> · 본인 <span class="term">일간</span> <em>${STEMKO[saju.dp.stem]}</em> 기준 <em>${tg}</em>${rel.kind!=='평'?` · 일지 ${rel.kind}`:''}</div>
+      <div class="dp-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55;margin-top:10px">${grade.lab} · ${total}점</div>
+      <div class="ny-headline">${TG_EMOJI[tg]||'🌟'} ${tg} 기운의 한 해</div>
+    </div>
+
+    <div class="ny-section">
+      <div class="ny-sec-title">🌅 한 해의 큰 그림</div>
+      <div class="ny-sec-body">
+        <p>${y}년은 본인 일간 <em>${STEMKO[saju.dp.stem]}</em>이 세운의 천간 <em>${STEMKO[yp.stem]}</em>을 만나 <b>${tg}</b>의 색채로 채워지는 해입니다. ${_dailyMsg('총운',tg,rel)}</p>
+        <p><b>일지 작용</b> · ${rel.desc||'일지와 평이한 관계로 큰 변동성은 적은 해입니다.'}</p>
+        <p>지지 정기 <em>${STEMKO[BR_MAIN_STEM[yp.branch]]}</em>은 본인 기준 <b>${btg}</b>으로 작용해, 한 해의 바닥 흐름을 ${btg==='정인'||btg==='정재'?'안정적':btg==='편관'||btg==='겁재'?'긴장된':'활동적'}으로 잡아줍니다.</p>
+      </div>
+    </div>
+
+    <div class="ny-section">
+      <div class="ny-sec-title">📅 12개월 흐름</div>
+      <div class="ny-month-grid">`;
+  monthsArr.forEach(o=>{
+    const g=dailyGrade(o.sc.total);
+    h+=`<div class="ny-month">
+      <div class="ny-month-name">${o.mm}월 · ${STEMKO[o.mp.stem]}${BRCHKO[o.mp.branch]}</div>
+      <div class="ny-month-score" style="color:${g.color}">${o.sc.total}</div>
+      <div class="ny-month-tag">${g.lab}</div>
+    </div>`;
+  });
+  h+=`</div>
+      <div class="ny-sec-body" style="margin-top:12px">
+        <p>🍀 <b>길월</b> — ${monthLab(lucky)}: 새 시작·계약·확장에 적기.</p>
+        <p>⚠️ <b>주의월</b> — ${monthLab(tough)}: 큰 결정은 미루고 내실·정리·휴식에 집중.</p>
+      </div>
+    </div>
+
+    <div class="ny-section">
+      <div class="ny-sec-title">💰 재물운</div>
+      <div class="ny-sec-body"><p>${wealthBody}</p></div>
+    </div>
+    <div class="ny-section">
+      <div class="ny-sec-title">💕 연애·관계운</div>
+      <div class="ny-sec-body"><p>${loveBody}</p></div>
+    </div>
+    <div class="ny-section">
+      <div class="ny-sec-title">🏛️ 직업·관운</div>
+      <div class="ny-sec-body"><p>${careerBody}</p></div>
+    </div>
+    <div class="ny-section">
+      <div class="ny-sec-title">🌿 건강운</div>
+      <div class="ny-sec-body"><p>${healthBody}</p></div>
+    </div>
+
+    <div class="dp-card">
+      <div class="dp-tip">💡 <b>한 해를 살아가는 결</b> — 세운은 그 해의 외부 기운입니다. 본인 사주가 가진 강점을 ${tg} 색채로 풀어내면 흐름과 맞아 길이 열리고, 거스르려 하면 작은 일이 크게 보입니다. 길월에 행동하고, 주의월에 정리하세요.</div>
+    </div>
+  </div>`;
+  return h;
 }
 
 // ══════════════════════════════════════════════
@@ -2061,7 +2471,7 @@ function tryUnlock(){
   if(validCodes.includes(code)){
     _paidUnlocked=true;
     const p5=document.getElementById('p5');
-    p5.innerHTML='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 메뉴로</button>'+renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);
+    p5.innerHTML='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>'+renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);
     enrichTerms(p5);
     p5.dataset.rendered='1';
     window.scrollTo({top:0,behavior:'smooth'});
@@ -4358,11 +4768,37 @@ function analyze(){
   let hour=parseInt(document.getElementById('iH').value);
   let min=parseInt(document.getElementById('iMin').value)||0;
   const cityKey=document.getElementById('iCity').value;
-  const mbti='';
 
   if(!year||year<1900||year>2050){return showErr('년도는 1900~2050 사이로 입력해주세요.');}
   if(!month||month<1||month>12){return showErr('월은 1~12로 입력해주세요.');}
   if(!day||day<1||day>31){return showErr('일은 1~31로 입력해주세요.');}
+
+  // 카테고리별 추가 입력 검증
+  const cat=_category||'manse';
+  let dpExtra=null,moExtra=null,nyExtra=null;
+  if(cat==='daypick'){
+    const y=parseInt(document.getElementById('dpY').value)||0;
+    const m=parseInt(document.getElementById('dpM').value)||0;
+    const d=parseInt(document.getElementById('dpD').value)||0;
+    if(!y||!m||!d)return showErr('지정일을 입력해주세요 (년·월·일).');
+    if(m<1||m>12||d<1||d>31)return showErr('지정일의 월/일이 올바르지 않습니다.');
+    dpExtra={y,m,d};
+  }else if(cat==='monthly'){
+    const sy=parseInt(document.getElementById('moStartY').value)||0;
+    const sm=parseInt(document.getElementById('moStartM').value)||0;
+    const ey=parseInt(document.getElementById('moEndY').value)||0;
+    const em=parseInt(document.getElementById('moEndM').value)||0;
+    if(!sy||!sm||!ey||!em)return showErr('월별 운세의 시작/종료 년·월을 입력해주세요.');
+    if(sm<1||sm>12||em<1||em>12)return showErr('월은 1~12로 입력해주세요.');
+    const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
+    if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.');
+    if(endIdx-startIdx+1>12)return showErr('월별 운세는 최대 12개월까지 가능합니다.');
+    moExtra={sy,sm,ey,em};
+  }else if(cat==='newyear'){
+    const y=parseInt(document.getElementById('nyY').value)||0;
+    if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.');
+    nyExtra={y};
+  }
 
   // 진태양시 보정 (시간 입력했을 때만)
   let tsoMin=0;
@@ -4370,7 +4806,6 @@ function analyze(){
     tsoMin=getTrueSolarOffsetMin(cityKey);
     if(tsoMin!==0){
       let totalMin=hour*60+min+Math.round(tsoMin);
-      // 자정 넘김 처리: 일자도 바뀔 수 있으나 사주에서는 시주 결정에만 영향
       let nh=Math.floor(totalMin/60), nm=totalMin%60;
       if(nm<0){nm+=60;nh-=1;}
       if(nh<0)nh+=24;
@@ -4379,7 +4814,17 @@ function analyze(){
     }
   }
 
-  // Show loading state
+  // 사주 입력 캐시 (다른 카테고리 진입 시 재사용)
+  _lastInputs={
+    gender,calType,isLeap,
+    year:document.getElementById('iY').value,
+    month:document.getElementById('iM').value,
+    day:document.getElementById('iD').value,
+    hour:document.getElementById('iH').value,
+    min:document.getElementById('iMin').value,
+    cityKey
+  };
+
   const btn=document.querySelector('.analyze-btn');
   btn.textContent='⏳ 만세력 계산 중...';
   btn.disabled=true;
@@ -4387,13 +4832,10 @@ function analyze(){
   setTimeout(()=>{
     try{
       let sy=year,sm=month,sd=day;
-
       if(calType==='lunar'){
         const s=l2s(year,month,day,isLeap);
         sy=s.y;sm=s.m;sd=s.d;
       }
-
-      // Validate solar date exists
       const testJD=gToJD(sy,sm,sd,12);
       const testG=jdToG(testJD);
       if(testG.month!==sm||testG.day!==sd){
@@ -4405,26 +4847,56 @@ function analyze(){
       _saju=saju;
       _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo};
 
-      // p0: 만세력, p1: 일일운세, p2~p4: 유료 잠금, p5: 인생총운(lazy)
-      document.getElementById('p0').innerHTML='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 메뉴로</button>'+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
-      const _p1=document.getElementById('p1');
-      _p1.innerHTML=renderDailyFortune(saju);
-      enrichTerms(_p1);
-      document.getElementById('p2').innerHTML=renderFeeLock('daypick');
-      document.getElementById('p3').innerHTML=renderFeeLock('monthly');
-      document.getElementById('p4').innerHTML=renderFeeLock('newyear');
-      const _p5=document.getElementById('p5');
-      _p5.innerHTML='';_p5.dataset.rendered='';
+      // 패널 초기화 (선택 카테고리만 렌더)
+      ['p0','p1','p2','p3','p4','p5'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el){el.innerHTML='';el.dataset.rendered='';}
+      });
+
+      const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
+      let targetIdx=0;
+      if(cat==='manse'){
+        document.getElementById('p0').innerHTML=back+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
+        targetIdx=0;
+      }else if(cat==='daily'){
+        const _p1=document.getElementById('p1');
+        _p1.innerHTML=renderDailyFortune(saju);
+        enrichTerms(_p1);
+        targetIdx=1;
+      }else if(cat==='daypick'){
+        const _p2=document.getElementById('p2');
+        _p2.innerHTML=back+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d);
+        enrichTerms(_p2);
+        targetIdx=2;
+      }else if(cat==='monthly'){
+        const _p3=document.getElementById('p3');
+        _p3.innerHTML=back+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em);
+        enrichTerms(_p3);
+        targetIdx=3;
+      }else if(cat==='newyear'){
+        const _p4=document.getElementById('p4');
+        _p4.innerHTML=back+renderNewyearFortune(saju,nyExtra.y);
+        enrichTerms(_p4);
+        targetIdx=4;
+      }else if(cat==='life'){
+        const _p5=document.getElementById('p5');
+        _p5.innerHTML=back+(_paidUnlocked
+          ?renderSajuPaid(saju,sy,sm,sd,hour,min)
+          :renderSajuLock(saju));
+        if(_paidUnlocked)enrichTerms(_p5);
+        _p5.dataset.rendered='1';
+        targetIdx=5;
+      }
 
       // 결과 헤더 sub-text
       const sub=document.getElementById('resultSub');
       if(sub){
         const t=hour<0?'시간 미상':`${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
-        sub.textContent=`${sy}.${String(sm).padStart(2,'0')}.${String(sd).padStart(2,'0')} ${t} · ${gender==='male'?'남':'여'}`;
+        const head=`${CAT_LABEL[cat]||''} · ${sy}.${String(sm).padStart(2,'0')}.${String(sd).padStart(2,'0')} ${t} · ${gender==='male'?'남':'여'}`;
+        sub.textContent=head;
       }
 
-      // 메뉴부터 보여주기
-      gotoMenu();
+      gotoCard(targetIdx);
       showView('result');
     }catch(e){
       showErr(e.message||'분석 중 오류가 발생했습니다. 입력값을 확인해주세요.');
