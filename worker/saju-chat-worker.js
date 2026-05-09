@@ -43,14 +43,9 @@ export default {
     const systemPrompt = buildSystemPrompt(sajuContext);
 
     try {
-      const apiResp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
+      const apiResp = await callAnthropicWithRetry({
+        apiKey: env.ANTHROPIC_API_KEY,
+        body: {
           model: 'claude-sonnet-4-6',
           max_tokens: 1500,
           system: [
@@ -62,7 +57,7 @@ export default {
             },
           ],
           messages: [{ role: 'user', content: question }],
-        }),
+        },
       });
 
       if (!apiResp.ok) {
@@ -105,6 +100,56 @@ function json(obj, status = 200) {
     status,
     headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
   });
+}
+
+// Anthropic API 호출 + 일시적 오류 자동 재시도
+// 재시도 대상: 403 (권한 캐시 미스), 408/425/429 (속도 제한·타임아웃), 5xx (서버 일시 장애), 네트워크 예외
+// 재시도 안 함: 400 (잘못된 요청), 401 (잘못된 키), 404 — 재시도해도 안 풀리는 영구 오류
+async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
+  const transientStatuses = new Set([403, 408, 425, 429, 500, 502, 503, 504, 524]);
+  const backoffsMs = [300, 800]; // 1차 실패 후 300ms, 2차 실패 후 800ms
+
+  let lastResp = null;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (resp.ok) {
+        if (attempt > 1) console.log(`Anthropic recovered on attempt ${attempt}`);
+        return resp;
+      }
+
+      lastResp = resp;
+      // 영구 오류이거나 마지막 시도면 그대로 반환
+      if (!transientStatuses.has(resp.status) || attempt === maxAttempts) {
+        return resp;
+      }
+      console.warn(`Anthropic transient ${resp.status}, retrying (attempt ${attempt}/${maxAttempts})`);
+    } catch (e) {
+      lastError = e;
+      if (attempt === maxAttempts) throw e;
+      console.warn(`Anthropic network error: ${e.message}, retrying (attempt ${attempt}/${maxAttempts})`);
+    }
+
+    // 백오프 + 지터(±20%)
+    const base = backoffsMs[attempt - 1] || backoffsMs[backoffsMs.length - 1];
+    const jitter = base * (0.8 + Math.random() * 0.4);
+    await new Promise((r) => setTimeout(r, jitter));
+  }
+
+  // 이론상 도달 안 함 — 마지막 응답 또는 예외 반환
+  if (lastResp) return lastResp;
+  throw lastError || new Error('Anthropic API 호출 실패 (재시도 한도 초과)');
 }
 
 function buildSystemPrompt(ctx) {
