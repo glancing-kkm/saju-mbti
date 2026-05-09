@@ -48,16 +48,16 @@
   --accent-soft:rgba(212,175,55,0.08);
 
   /* 오행 — muted celestial tones */
-  --wood:#a3c7a8;
-  --fire:#e0a8a0;
-  --earth:#d8c4a8;
-  --metal:#bfc6de;
-  --water:#a8b8d8;
-  --wood-bg:rgba(163,199,168,0.10);
-  --fire-bg:rgba(224,168,160,0.10);
-  --earth-bg:rgba(216,196,168,0.12);
-  --metal-bg:rgba(191,198,222,0.10);
-  --water-bg:rgba(168,184,216,0.10);
+  --wood:#6cbf7e;
+  --fire:#e57462;
+  --earth:#d4a849;
+  --metal:#b8c2dc;
+  --water:#6f88d8;
+  --wood-bg:rgba(108,191,126,0.18);
+  --fire-bg:rgba(229,116,98,0.18);
+  --earth-bg:rgba(212,168,73,0.18);
+  --metal-bg:rgba(184,194,220,0.18);
+  --water-bg:rgba(111,136,216,0.18);
 
   --radius:14px;
   --radius-lg:18px;
@@ -386,6 +386,14 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .cat-where{padding:10px 13px;background:var(--earth-bg);border-left:3px solid var(--accent);border-radius:8px;margin:10px 0 12px;font-size:.78rem;line-height:1.78;color:var(--sub)}
 .cat-where b{color:var(--accent)}
 
+/* ── 용어 안내 공지 카드 ── */
+.term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(216,196,168,.06));border:1px solid rgba(212,175,55,.32);border-radius:14px;position:relative;overflow:hidden}
+.term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.6}
+.term-notice-icon{font-size:1.4rem;flex-shrink:0;line-height:1.2}
+.term-notice-body{font-size:.79rem;line-height:1.78;color:var(--sub)}
+.term-notice-body b{color:var(--accent-bright);font-weight:700}
+.term-notice-demo{display:inline-block;color:var(--accent-bright);font-weight:700;text-decoration:underline dotted rgba(212,175,55,.85);text-decoration-thickness:2px;text-underline-offset:3px}
+
 /* ── 용어 점선 밑줄 + 설명 팝업 ── */
 .term{cursor:pointer;transition:background .15s,color .15s;padding:0 1px;border-radius:2px;-webkit-tap-highlight-color:transparent;text-decoration:underline dotted rgba(212,175,55,.85);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-text-decoration:underline dotted rgba(212,175,55,.85)}
 .term:hover{background:var(--accent-soft);color:var(--accent-bright);text-decoration-color:var(--accent-bright)}
@@ -510,7 +518,7 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
       <div>
         <div class="sec-label">태어난 시각 <span style="font-weight:400;text-transform:none;font-size:.7rem">(모르면 미상 선택)</span></div>
         <div class="row3">
-          <div class="ig" style="flex:1.5">
+          <div class="ig">
             <label>시 (時)</label>
             <select id="iH">
               <option value="-1">시간 미상</option>
@@ -1988,6 +1996,17 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   let h='';
 
   // ═════════════════════════════════════
+  // 용어 클릭 안내 (맨 처음 1회 노출)
+  // ═════════════════════════════════════
+  h+=`<div class="term-notice">
+    <div class="term-notice-icon">💡</div>
+    <div class="term-notice-body">
+      <b>용어가 어렵게 느껴지나요?</b><br>
+      본문 안에서 <span class="term-notice-demo">점선 밑줄</span>이 그어진 용어를 <b>탭(클릭)</b>하면 쉬운 설명이 팝업으로 나타나요. 사주를 처음 보시는 분도 막힘없이 읽으실 수 있도록 50여 개의 핵심 용어에 풀이를 달아두었습니다.
+    </div>
+  </div>`;
+
+  // ═════════════════════════════════════
   // 사주팔자 종합
   // ═════════════════════════════════════
   let sajuBody=`<p>당신의 사주팔자는 다음과 같습니다. 일간(日干)은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]}) — ${dm.n.split('(')[0]}</em>으로, ${dm.core}을 본질로 하는 기운입니다. 사주의 주인공이 되는 글자가 어떤 성정을 타고났는지가 모든 풀이의 출발점이 됩니다.</p>`;
@@ -2601,7 +2620,7 @@ function renderChatSection(){
       <div class="chat-empty">아직 질문이 없습니다. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) 올해 이직해도 괜찮을까요? / 결혼 시기는 언제쯤일까요? / 건강에서 주의할 점은?</div>
     </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 소진되었습니다':'궁금한 점을 입력하세요 (500자 이내)'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?'5회 한도가 소진되었습니다':'궁금한 점을 입력하세요'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
     <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위에 풀이된 사주 내용을 바탕으로 답변됩니다.</div>
@@ -2637,11 +2656,59 @@ function renderGunghapSection(){
         <div class="ig"><label>월</label><input type="number" id="g2M" placeholder="월" min="1" max="12"></div>
         <div class="ig"><label>일</label><input type="number" id="g2D" placeholder="일" min="1" max="31"></div>
       </div>
+      <div class="row3" style="margin-bottom:9px">
+        <div class="ig">
+          <label>시 (時)</label>
+          <select id="g2H">
+            <option value="-1">시간 미상</option>
+            ${[...Array(24)].map((_,i)=>`<option value="${i}">${String(i).padStart(2,'0')}시</option>`).join('')}
+          </select>
+        </div>
+        <div class="ig">
+          <label>분 (分)</label>
+          <select id="g2Min">
+            ${[0,5,10,15,20,25,30,35,40,45,50,55].map(m=>`<option value="${m}">${String(m).padStart(2,'0')}분</option>`).join('')}
+          </select>
+        </div>
+      </div>
       <div class="ig" style="margin-bottom:9px">
-        <label>태어난 시각 (선택)</label>
-        <select id="g2H" style="width:100%;padding:11px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);font-size:.94rem;-webkit-appearance:none;appearance:none">
-          <option value="-1">시간 미상</option>
-          ${[...Array(24)].map((_,i)=>`<option value="${i}">${String(i).padStart(2,'0')}시</option>`).join('')}
+        <label>태어난 곳 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(시간 보정용)</span></label>
+        <select id="g2City">
+          <optgroup label="── 대한민국 ──">
+            <option value="seoul">서울특별시</option>
+            <option value="busan">부산광역시</option>
+            <option value="daegu">대구광역시</option>
+            <option value="incheon">인천광역시</option>
+            <option value="gwangju">광주광역시</option>
+            <option value="daejeon">대전광역시</option>
+            <option value="ulsan">울산광역시</option>
+            <option value="sejong">세종특별자치시</option>
+            <option value="suwon">수원·경기도</option>
+            <option value="chuncheon">춘천·강원도</option>
+            <option value="cheongju">청주·충청북도</option>
+            <option value="jeonju">전주·전라북도</option>
+            <option value="mokpo">목포·전라남도</option>
+            <option value="pohang">포항·경상북도</option>
+            <option value="changwon">창원·경상남도</option>
+            <option value="jeju">제주특별자치도</option>
+            <option value="kr-other">기타 국내 (시간 미보정)</option>
+          </optgroup>
+          <optgroup label="── 해외 ──">
+            <option value="tokyo">도쿄 (일본)</option>
+            <option value="beijing">베이징 (중국)</option>
+            <option value="shanghai">상하이 (중국)</option>
+            <option value="hongkong">홍콩</option>
+            <option value="taipei">타이베이 (대만)</option>
+            <option value="bangkok">방콕 (태국)</option>
+            <option value="singapore">싱가포르</option>
+            <option value="newyork">뉴욕 (미국)</option>
+            <option value="losangeles">로스앤젤레스 (미국)</option>
+            <option value="vancouver">밴쿠버 (캐나다)</option>
+            <option value="london">런던 (영국)</option>
+            <option value="paris">파리 (프랑스)</option>
+            <option value="sydney">시드니 (호주)</option>
+            <option value="other">기타 해외 (시간 미보정)</option>
+          </optgroup>
         </select>
       </div>
       <div class="err" id="g2err"></div>
@@ -2657,14 +2724,26 @@ function analyzeGunghapDetail(){
   const y=parseInt(document.getElementById('g2Y').value)||0;
   const m=parseInt(document.getElementById('g2M').value)||0;
   const d=parseInt(document.getElementById('g2D').value)||0;
-  const h=parseInt(document.getElementById('g2H').value);
+  let h=parseInt(document.getElementById('g2H').value);
+  let mn=parseInt((document.getElementById('g2Min')||{}).value)||0;
+  const cityKey=(document.getElementById('g2City')||{}).value||'seoul';
   if(!y||y<1900||y>2050){errEl.textContent='년도를 확인해주세요.';errEl.className='err vis';return;}
   if(!m||m<1||m>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
   if(!d||d<1||d>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
+  // 진태양시 보정 (시간을 입력했을 때만)
+  if(h>=0){
+    const tso=getTrueSolarOffsetMin(cityKey);
+    if(tso!==0){
+      let total=h*60+mn+Math.round(tso);
+      while(total<0)total+=1440;
+      while(total>=1440)total-=1440;
+      h=Math.floor(total/60);mn=total%60;
+    }
+  }
   try{
     let sy=y,sm=m,sd=d;
     if(_g2cal==='lunar'){const s=l2s(y,m,d,_g2leap);sy=s.y;sm=s.m;sd=s.d;}
-    const saju2=calcSaju(sy,sm,sd,h,0);
+    const saju2=calcSaju(sy,sm,sd,h,mn);
     document.getElementById('ggResultBox').innerHTML=renderGunghapDetailFull(_saju,saju2,gender,_g2gender);
     document.getElementById('ggResultBox').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
