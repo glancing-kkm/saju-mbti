@@ -1343,6 +1343,15 @@ function renderDailyFortune(saju){
         <div class="daily-pillar">오늘의 일진은 <em>${STEMS[f.dp.stem]}${BRCH[f.dp.branch]}(${STEMKO[f.dp.stem]}${BRCHKO[f.dp.branch]})</em> ·
         본인 일간 <em>${STEMKO[saju.dp.stem]}</em> 기준 <em>${f.tg}</em>${f.rel.kind!=='평'?` · 일지 ${f.rel.kind}`:''}</div>
       </div>
+      <div class="daily-card" style="text-align:left;padding:16px 18px">
+        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 만나는 두 글자의 결</div>
+        <div style="font-size:.82rem;color:var(--sub);line-height:1.85">
+          <p style="margin-bottom:8px"><b>본인 일간</b> — ${stemRich(saju.dp.stem)}<br><span style="color:var(--muted);font-size:.78rem">${STEM_META[saju.dp.stem].body}</span></p>
+          <p style="margin-bottom:8px"><b>오늘 일진 천간</b> — ${stemRich(f.dp.stem)}<br><span style="color:var(--muted);font-size:.78rem">${STEM_META[f.dp.stem].body}</span></p>
+          <p style="margin-bottom:8px"><b>오늘 일진 지지</b> — ${branchRich(f.dp.branch)}<br><span style="color:var(--muted);font-size:.78rem">${BRANCH_META[f.dp.branch].body}</span></p>
+          <p>「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(f.dp.stem)}」을 만나는 결입니다. 본인 기준 십신은 <b>${f.tg}</b>이라, ${(TG_KEYWORD[f.tg]||[]).join('·')}의 색채로 하루가 펼쳐집니다.</p>
+        </div>
+      </div>
       <div class="daily-cats">
         <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✨</span><span class="daily-cat-name">총운</span><span class="daily-cat-score">${f.total}점</span></div><div class="daily-cat-body">${_dailyMsg('총운',f.tg,f.rel)}</div></div>
         <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${f.wealth}점</span></div><div class="daily-cat-body">${_dailyMsg('재물',f.tg,f.rel)}</div></div>
@@ -1488,6 +1497,40 @@ const ohEul=i=>eul(OH_SHORT[i]);
 const ohEun=i=>eun(OH_SHORT[i]);
 const ohRo=i=>ro(OH_SHORT[i]);
 
+// ── 천간 비유 사전 (10개) — 첫 등장 시 본질을 직관적으로 풀어주기 위함 ──
+const STEM_META=[
+  {ko:'갑',oh:'木',ohKo:'목',nick:'큰 나무·기둥',body:'하늘로 곧게 뻗은 큰 나무이자 들보. 우직한 추진력과 리더십, 솔직하고 보수적인 성품',keys:'곧음·강직·시작·성장·리더십'},
+  {ko:'을',oh:'木',ohKo:'목',nick:'풀잎·덩굴',body:'바람에 휘어지는 풀잎과 덩굴. 부드럽지만 끈질기고 환경에 적응하며 실속 있게 성장하는 성품',keys:'유연·조화·끈기·실리·지지'},
+  {ko:'병',oh:'火',ohKo:'화',nick:'태양',body:'하늘 위 태양. 밝고 열정적이며 모든 것을 비추는 활달하고 호방한 성품',keys:'열정·밝음·표현·확장·호방'},
+  {ko:'정',oh:'火',ohKo:'화',nick:'촛불·화롯불',body:'조용히 빛나는 촛불과 화롯불. 섬세하고 정성스러우며 깊이 있는 예술적 성품',keys:'섬세·따뜻함·정성·예술·내공'},
+  {ko:'무',oh:'土',ohKo:'토',nick:'큰 산·언덕',body:'우뚝 솟은 산과 너른 언덕. 듬직하고 신뢰감 있는 중심추 같은 성품',keys:'신중·중후·신뢰·포용·중심'},
+  {ko:'기',oh:'土',ohKo:'토',nick:'논밭·정원',body:'곡식이 자라는 논밭과 정원. 부드럽고 헌신적이며 사람·일을 키우는 성품',keys:'온화·헌신·실용·꼼꼼·키움'},
+  {ko:'경',oh:'金',ohKo:'금',nick:'바위·강철',body:'단단한 바위와 잘 벼린 강철. 결단력 있고 의리 있으며 강한 추진력의 성품',keys:'결단·의리·강직·추진·돌파'},
+  {ko:'신',oh:'金',ohKo:'금',nick:'보석·예리한 칼',body:'잘 다듬어진 보석과 예리한 칼날. 섬세하고 자존심 강하며 완벽주의의 성품',keys:'섬세·예리·자존·완성·정밀'},
+  {ko:'임',oh:'水',ohKo:'수',nick:'큰 바다·강',body:'깊고 넓은 큰 바다와 강. 포용력 있고 지혜로우며 변화에 능한 성품',keys:'지혜·포용·유연·변화·기획'},
+  {ko:'계',oh:'水',ohKo:'수',nick:'이슬비·옹달샘',body:'맑은 이슬비와 옹달샘 물. 깨끗하고 겸손하며 조용히 스며드는 섬세하고 총명한 성품',keys:'겸손·순수·섬세·총명·자정'}
+];
+// ── 지지 비유 사전 (12개) ──
+const BRANCH_META=[
+  {ko:'자',animal:'쥐',oh:'水',ohKo:'수',nick:'한밤중의 깊은 물',body:'자정·동지의 응축된 물. 지혜롭고 영민하며 잠재력이 풍부한 자리',keys:'지혜·계획·잠재·시작'},
+  {ko:'축',animal:'소',oh:'土',ohKo:'토',nick:'겨울 끝 얼어붙은 땅',body:'대한·겨울의 차가운 흙. 우직하고 인내력 있으며 묵묵히 쌓아가는 자리',keys:'인내·축적·꾸준함·고집'},
+  {ko:'인',animal:'호랑이',oh:'木',ohKo:'목',nick:'봄의 시작·새벽',body:'입춘 새벽·갓 자라기 시작한 나무. 도전적이고 진취적이며 새 시작에 강한 자리',keys:'도전·기개·시작·통솔'},
+  {ko:'묘',animal:'토끼',oh:'木',ohKo:'목',nick:'완연한 봄·푸른 잎',body:'경칩·완연한 봄의 풀잎. 섬세하고 예술적이며 매력 있는 자리',keys:'섬세·예술·매력·온화'},
+  {ko:'진',animal:'용',oh:'土',ohKo:'토',nick:'봄비 머금은 옥토',body:'청명·봄비를 머금은 비옥한 흙. 큰 그릇과 신비한 잠재력을 품은 자리',keys:'큰 그릇·신비·변화·창조'},
+  {ko:'사',animal:'뱀',oh:'火',ohKo:'화',nick:'한낮을 향한 불기운',body:'입하·불의 시작. 명석하고 직관적이며 야망 있는 자리',keys:'직관·총명·야망·세련'},
+  {ko:'오',animal:'말',oh:'火',ohKo:'화',nick:'한낮의 태양',body:'하지·정오의 강렬한 태양. 활달하고 열정적이며 사교성이 큰 자리',keys:'열정·활달·사교·표현'},
+  {ko:'미',animal:'양',oh:'土',ohKo:'토',nick:'여름 끝 마른 흙',body:'대서·뜨겁게 마른 흙. 따뜻하고 헌신적이며 예술적 감수성이 있는 자리',keys:'온정·예술·헌신·감수성'},
+  {ko:'신',animal:'원숭이',oh:'金',ohKo:'금',nick:'가을의 시작·바위',body:'입추·단단해지기 시작한 금. 영리하고 실리적이며 활동력이 큰 자리',keys:'영리·실리·활동·기지'},
+  {ko:'유',animal:'닭',oh:'金',ohKo:'금',nick:'가을의 정오·정련된 금',body:'추분·완성된 금. 정확하고 단정하며 완벽주의의 자리',keys:'정확·단정·완벽·결실'},
+  {ko:'술',animal:'개',oh:'土',ohKo:'토',nick:'늦가을 마른 흙',body:'한로·말라 단단해진 흙. 충직하고 책임감 있으며 보수적인 자리',keys:'충직·책임·보수·신의'},
+  {ko:'해',animal:'돼지',oh:'水',ohKo:'수',nick:'겨울 시작·큰 물',body:'입동·새로 차오르는 큰 물. 순수하고 인정 많으며 깊이 생각하는 자리',keys:'순수·인정·사색·풍요'}
+];
+// 비유 출력 헬퍼들
+function stemRich(idx){const s=STEM_META[idx];if(!s)return STEMKO[idx]||'';return `<b>${s.ko}${s.ohKo}</b>(<em>${s.nick}</em> · ${s.keys})`;}
+function branchRich(idx){const b=BRANCH_META[idx];if(!b)return BRCHKO[idx]||'';return `<b>${b.ko}(${b.animal})</b>(<em>${b.nick}</em> · ${b.keys})`;}
+function stemNick(idx){return STEM_META[idx]?STEM_META[idx].nick:'';}
+function branchNick(idx){return BRANCH_META[idx]?BRANCH_META[idx].nick:'';}
+
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
 function termNoticeHTML(){
   return `<div class="term-notice">
@@ -1595,6 +1638,8 @@ function renderDaypickFortune(saju,y,m,d){
   let totBody=`<p>${y}년 ${m}월 ${d}일은 ${y}년 ${m}월 ${d}일자 일진이 <em>${STEMS[dpStem]}${BRCH[dpBranch]}(${dpStemKo}${dpBrKo})</em>로 들어오는 날입니다. 본인 일간 <em>${myStemKo}</em>(${dm.n.split('(')[0]}, ${OHNAME[myStemOh]}) 기준 천간 십신은 <b>${stemTG}</b>(${TG_EMOJI[stemTG]||''}), 지지 정기 십신은 <b>${branchTG}</b>으로, 그날 외부 기운이 본인에게 「<b>${(TG_KEYWORD[stemTG]||[]).join(' · ')}</b>」의 색채로 다가옵니다.</p>`;
   totBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 본인 사주 4기둥 + 그날의 일진(日辰)을 함께 봅니다. 본인 일주(${STEMS[saju.dp.stem]}${BRCH[saju.dp.branch]})와 그날 일진(${STEMS[dpStem]}${BRCH[dpBranch]})의 천간·지지 작용이 그날의 결을 만듭니다.</div>`;
   totBody+=miniManseWithPointer(saju,'day','↑ 일주(본인) — 그날 일진과 가장 직접 만나는 자리');
+  // ▼ 두 글자(본인 일간 + 그날 일진)의 비유적 본질 풀이
+  totBody+=`<p>🪄 <b>두 글자의 결을 비유로 풀면</b><br>· <b>본인 일간</b> ${stemRich(myStem)} — ${STEM_META[myStem].body}<br>· <b>그날 천간</b> ${stemRich(dpStem)} — ${STEM_META[dpStem].body}<br>· <b>그날 지지</b> ${branchRich(dpBranch)} — ${BRANCH_META[dpBranch].body}<br>즉 「${stemNick(myStem)}」 같은 본인이 「${stemNick(dpStem)}」 + 「${branchNick(dpBranch)}」를 만나는 결이 오늘입니다.</p>`;
   totBody+=`<p><b>① 천간 십신 — ${stemTG}의 결</b><br>일간 ${myStemKo}${ip(myStemKo)} 그날 천간 ${dpStemKo}${eul(dpStemKo)} 만나 <b>${stemTG}</b>이 됩니다. ${stemTG==='정관'?'정관(正官)은 본인을 통제·관리하는 외부 권위로, 책임·공식·명예의 색채가 표면으로 드러납니다. 발표·계약·면접·승진 보고에 결이 좋습니다.':stemTG==='편관'?'편관(七煞)은 본인을 강하게 압박하는 기운으로, 도전·시험·경쟁·압박이 표면으로 드러납니다. 정면 돌파보다 측면 우회의 지혜가 빛나는 날입니다.':stemTG==='정재'?'정재(正財)는 안정적·정기적 재물 기운으로, 차분한 점검·예금·계약·지급 활동에 결이 좋습니다. 새 거래보다 기존 흐름의 정리에 길합니다.':stemTG==='편재'?'편재(偏財)는 큰 흐름의 활동 재물로, 영업·이동·새 거래·외근에 결이 좋습니다. 다만 예산은 미리 정해두세요.':stemTG==='식신'?'식신(食神)은 본인을 부드럽게 흘려보내는 기운으로, 표현·식사·관계·창작에 결이 좋습니다. 사람과 함께 무언가를 만드는 날입니다.':stemTG==='상관'?'상관(傷官)은 강한 표현 기운으로, 창작·아이디어·기획에 빛나지만 권위·규율과의 마찰이 일어납니다. 톤을 한 단계 부드럽게 가져가세요.':stemTG==='정인'?'정인(正印)은 본인을 받쳐주는 안정적 도움 기운으로, 학습·자료·문서·어른의 도움이 표면으로 드러납니다. 시험 준비·자격 학습에 매우 길합니다.':stemTG==='편인'?'편인(偏印)은 깊이 있는 직관·전문 학습 기운으로, 명상·연구·자기 점검·전문 분야 학습에 결이 좋습니다.':stemTG==='비견'?'비견(比肩)은 본인과 같은 기운의 만남으로, 동료·친구·자기 결정의 색채가 강해집니다. 협업이나 자기 사업의 결단에 길합니다.':'겁재(劫財)는 경쟁·충동의 기운으로, 동업 자금·도박성 투자·시비를 한 박자 미루는 것이 좋습니다.'}</p>`;
   totBody+=`<p>② <b>지지 정기 — ${branchTG}의 결</b><br>그날 일지 ${dpBrKo}의 정기(主氣) ${STEMKO[BR_MAIN_STEM[dpBranch]]}는 본인 기준 <b>${branchTG}</b>으로, 하루의 바닥 흐름을 잡아줍니다. 표면(천간 ${stemTG})과 내면(지지 ${branchTG})의 색채가 ${stemTG===branchTG?'같아 한 방향으로 일관되게 흐르는 날':'달라 두 가지 색채가 교차하는 날 — 표면적으로는 '+stemTG+'의 일이 들어오지만 그 결과는 '+branchTG+'의 결로 남는 하루'}입니다.</p>`;
   if(rel.kind==='합'){
@@ -1834,6 +1879,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em){
   let totBody=`<p>${sy}년 ${sm}월부터 ${ey}년 ${em}월까지의 ${totalMonths}개월을 본인 사주를 기준으로 종합하면, 평균 점수 <b>${avgTotal}점</b>(${avgGrade.lab})의 흐름입니다. 본인 일간 <em>${myStemKo}</em>(${dm.n.split('(')[0]}, ${OHNAME[myStemOh]})이 매달의 월주 천간·지지를 만나며 만들어내는 십신·합·충 작용을 절기 기준으로 정확히 산출했습니다.</p>`;
   totBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 매달 절기(입춘·경칩·청명…)를 기준으로 그 달의 월주(月柱)를 산출하고, 본인 일간과의 십신/합·충 작용을 분석합니다. 양력 1월 1일이 아니라 절기 진입일이 한 달의 시작입니다.</div>`;
   totBody+=miniManseWithPointer(saju,'month','↑ 본인 월주(격국 자리) — 매달 들어오는 월주가 이 자리와 어떻게 호응하는지가 핵심');
+  // ▼ 본인 일간을 비유로 풀어주기
+  totBody+=`<p>🪄 <b>본인 일간을 비유로 풀면</b><br>${stemRich(saju.dp.stem)} — ${STEM_META[saju.dp.stem].body}.<br>이 결을 가진 본인이 ${totalMonths}개월 동안 매달 다른 월주(月柱)를 만나면서 흐름이 바뀝니다. 본인이 원래 「${stemNick(saju.dp.stem)}」 같은 결이라는 점을 매달 풀이의 출발점으로 삼으세요.</p>`;
   totBody+=`<p><b>① 본인 사주의 결</b><br>본인 사주의 격국은 <em>${gk.name}</em>이고 용신은 <em>${OHNAME[ys.main]}</em>입니다. ${gk.desc} 본인 일간 ${myStemKo}${ip(myStemKo)} 가장 두텁게 가진 오행은 <em>${OHNAME[dom]}</em>이고 가장 부족한 오행은 <em>${OHNAME[weak]}</em>으로, 월별 흐름에서도 ${OHNAME[ys.main]}${ohEul(ys.main)} 보강하는 달에 결이 살아납니다.</p>`;
   totBody+=`<p><b>② 분야별 평균 흐름</b><br>· 💰 재물 ${avg('wealth')}점 — ${avg('wealth')>=70?'기간 내 재물 활동에 결이 좋음':avg('wealth')>=55?'평이한 재물 흐름':'정리·관망에 무게 둘 시기'}<br>· 💕 연애 ${avg('love')}점 — ${avg('love')>=70?'관계의 결이 부드럽게 흐름':avg('love')>=55?'평이한 관계 흐름':'관계의 변동·정리 가능성'}<br>· 🏛️ 직업 ${avg('career')}점 — ${avg('career')>=70?'직업·승진 결정에 결이 좋음':avg('career')>=55?'안정 흐름':'큰 결정은 미루는 게 안전'}<br>· 🌿 건강 ${avg('health')}점 — ${avg('health')>=70?'컨디션이 양호한 시기':avg('health')>=55?'평이한 건강 흐름':'무리한 일정은 줄여야 할 시기'}</p>`;
   totBody+=`<p><b>🍀 베스트 시기 — ${luckyMonths.join(', ')}월</b><br>새 시작·확장·계약·이직·결혼 진전·중요한 발표 등 본인이 큰 결정을 내려야 할 일을 이 시기에 배치하면 결실이 큽니다. 특히 <b>${decisive.yy}년 ${decisive.mm}월</b>은 ${totalMonths}개월 중 결이 가장 강한 결정적 시기로, 미뤄둔 가장 큰 결정을 이 시기에 내리는 게 좋습니다.</p>`;
@@ -1853,7 +1900,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em){
     const bdLabel=bestDays.filter(b=>b.total>=70).map(b=>`${mm}/${b.d}일(${dailyGrade(b.total).lab} ${b.total}점)`);
 
     let mBody=`<div style="margin-bottom:10px"><b>핵심 키워드</b> — ${keywords.map(k=>`<span style="display:inline-block;padding:2px 9px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.7rem;font-weight:700;margin-right:4px">${k}</span>`).join('')}</div>`;
-    mBody+=`<p>① <b>월주의 결</b> · <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em> ${termName}부터 시작 ${monKo}<br>본인 일간 ${myStemKo} 기준 천간 십신은 <b>${sc.tg}</b>(${TG_EMOJI[sc.tg]||''}), 지지 정기 십신은 <b>${sc.btg}</b>으로, 표면(${sc.tg})과 내면(${sc.btg})의 결이 ${sc.tg===sc.btg?'한 방향으로 일관되게':'다르게 교차하며'} 흐릅니다.</p>`;
+    mBody+=`<p>① <b>월주의 결</b> · <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em> ${termName}부터 시작 ${monKo}<br>· <b>월 천간</b> ${stemRich(mp.stem)} — ${STEM_META[mp.stem].body}<br>· <b>월 지지</b> ${branchRich(mp.branch)} — ${BRANCH_META[mp.branch].body}<br>본인 일간 ${myStemKo} 기준 천간 십신은 <b>${sc.tg}</b>(${TG_EMOJI[sc.tg]||''}), 지지 정기 십신은 <b>${sc.btg}</b>으로, 「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(mp.stem)}」 + 「${branchNick(mp.branch)}」를 만나는 결입니다. 표면(${sc.tg})과 내면(${sc.btg})의 결이 ${sc.tg===sc.btg?'한 방향으로 일관되게':'다르게 교차하며'} 흐릅니다.</p>`;
     mBody+=`<p>② <b>이 달의 색채</b><br>${sc.tg==='정관'?'정관(正官)의 달 — 외부에서 책임·공식·승진·면접 무게가 들어옵니다. 사양보다 수락이 길운입니다. 미뤄둔 공식 절차나 결재가 있다면 이 달에 처리하세요.':sc.tg==='편관'?'편관(七煞)의 달 — 도전·압박·경쟁·시험의 결입니다. 정면 돌파보다 측면 우회의 지혜가 빛나는 달이며, 강한 사람 앞에서는 한 걸음 양보가 진짜 승리입니다.':sc.tg==='정재'?'정재(正財)의 달 — 정기적·예측 가능한 재물 흐름이 표면으로 드러납니다. 큰 변동보다 차분한 정리·점검·꾸준함이 결실을 줍니다.':sc.tg==='편재'?'편재(偏財)의 달 — 외부 영업·이동·새 거래·외근에 결이 좋습니다. 발이 부지런할수록 기회가 들어오는 달입니다.':sc.tg==='식신'?'식신(食神)의 달 — 표현·식사·관계·창작이 풍부해지는 결입니다. 사람과 함께 일하면 결실이 큽니다.':sc.tg==='상관'?'상관(傷官)의 달 — 창의·기획·표현이 빛나지만 권위와의 마찰이 일어납니다. 톤을 한 단계 부드럽게 가져가세요.':sc.tg==='정인'?'정인(正印)의 달 — 학습·자료·인허가·문서 처리에 매우 길합니다. 어른·멘토에게 조언을 청하기 좋은 달입니다.':sc.tg==='편인'?'편인(偏印)의 달 — 전문 학습·연구·자기 점검·명상에 결이 좋은 달입니다.':sc.tg==='비견'?'비견(比肩)의 달 — 본인 색깔이 강해지고 동료·친구의 만남이 늘어나는 달.':'겁재(劫財)의 달 — 경쟁·충동·동업 자금 거래에 한 박자 살피는 게 좋은 달입니다.'}</p>`;
     if(sc.rel.kind==='합'){
       mBody+=`<p>③ <b>일지 합 — 관계의 결</b><br>본인 일지 <em>${myBrKo}</em>와 월지 <em>${BRCHKO[mp.branch]}</em> 사이에 <b style="color:#6cbf7e">육합(六合)</b>이 들어, 사람·교섭·관계·계약 활동에 부드러움이 깃듭니다. ${sc.rel.desc} — 결혼·약혼·소개팅·재회·가족 모임 등 「관계 한 발」의 결이 좋은 달입니다.</p>`;
@@ -2058,6 +2105,8 @@ function renderNewyearFortune(saju,y){
   let totBody=`<p>${y}년의 세운(歲運)은 <em>${STEMS[ypStem]}${BRCH[ypBranch]}(${ypStemKo}${ypBrKo})</em>입니다. 입춘부터 다음 해 입춘 직전까지, 본인 사주에 새로 더해지는 큰 기운입니다.</p>`;
   totBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 본인 사주 4기둥 + ${y}년 세운 글자를 함께 봅니다. 세운 천간과 본인 일간의 십신, 세운 지지와 본인 일지의 합·충·형 작용이 그 해의 결을 만듭니다.</div>`;
   totBody+=miniManseWithPointer(saju,'day','↑ 본인 일주 — 세운이 가장 직접 만나는 자리');
+  // ▼ 본인 일간 + 세운 천간 + 세운 지지의 비유 풀이
+  totBody+=`<p>🪄 <b>한 해를 만드는 세 글자의 결</b><br>· <b>본인 일간</b> ${stemRich(saju.dp.stem)} — ${STEM_META[saju.dp.stem].body}<br>· <b>세운 천간</b> ${stemRich(ypStem)} — ${STEM_META[ypStem].body}<br>· <b>세운 지지</b> ${branchRich(ypBranch)} — ${BRANCH_META[ypBranch].body}<br>즉 「${stemNick(saju.dp.stem)}」 같은 본인이 ${y}년 한 해 동안 「${stemNick(ypStem)}」 + 「${branchNick(ypBranch)}」 자리에서 살아갑니다. 두 글자가 만들어내는 결을 알면 한 해의 색채가 또렷이 보입니다.</p>`;
   totBody+=`<p>① <b>천간 ${ypStemKo} — ${tg}의 결</b><br>본인 일간 ${myStemKo}${ip(myStemKo)} 세운 천간 ${ypStemKo}${eul(ypStemKo)} 만나 <b>${tg}</b>(${TG_EMOJI[tg]||''})${ip(tg)} 됩니다. 한 해의 표면을 <b>「${(TG_KEYWORD[tg]||[]).join(' · ')}」</b>의 색채로 채우는 해이며, ${tg==='정관'?'책임·공식·승진의 무게가 외부에서 들어오는 해 — 사양보다 수락이 길운입니다.':tg==='편관'?'압박·도전·시험의 결로, 정면 돌파보다 측면 우회의 지혜가 빛나는 해입니다.':tg==='정재'?'안정적·정기적 재물 흐름이 표면화되는 해 — 큰 변동보다 차분한 정리·점검이 결실을 줍니다.':tg==='편재'?'활동·이동·새 거래·외부 영업의 결 — 발이 부지런할수록 기회가 들어오는 해입니다.':tg==='식신'?'표현·식사·관계·창작이 풍부해지는 해 — 사람과 함께 일하면 결실이 큽니다.':tg==='상관'?'창의·기획·표현으로 두각을 내기 좋은 해. 다만 권위와의 마찰은 톤 조절로 풀어가세요.':tg==='정인'?'학습·자료·인허가·문서·어른의 도움이 표면화되는 해 — 자격·시험에 매우 길합니다.':tg==='편인'?'전문 학습·연구·자기 점검·직관이 빛나는 해입니다.':tg==='비견'?'본인 색깔이 강해지는 해 — 자기 결정에 자신감을 가지는 해.':'겁재의 해 — 경쟁·충동·동업 자금에 한 박자 살피는 해입니다.'}</p>`;
   totBody+=`<p>② <b>지지 ${ypBrKo} — ${btg}의 결</b><br>지지 ${ypBrKo}의 정기(主氣) ${STEMKO[BR_MAIN_STEM[ypBranch]]}는 본인 기준 <b>${btg}</b>으로 작용해, 한 해의 바닥 흐름을 ${btg==='정인'||btg==='정재'?'<b>안정적이고 차분하게</b>':btg==='편관'||btg==='겁재'?'<b>긴장되고 활동적이게</b>':btg==='편재'||btg==='편인'?'<b>외부 활동과 학습으로</b>':'평이하게'} 잡아줍니다. 표면(${tg})과 내면(${btg})의 색채가 ${tg===btg?'한 방향으로 일관되게':'다르게 교차하며'} 흐릅니다.</p>`;
   if(rel.kind==='합'){
@@ -3352,10 +3401,13 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   let sajuBody=`<p>당신의 사주팔자는 다음과 같습니다. 일간(日干)은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]}) — ${dm.n.split('(')[0]}</em>으로, ${dm.core}을 본질로 하는 기운입니다. 사주의 주인공이 되는 글자가 어떤 성정을 타고났는지가 모든 풀이의 출발점이 됩니다.</p>`;
   sajuBody+=miniManse(saju);
+  // ▼ 비유로 풀어주는 본인 일간 도입부
+  sajuBody+=`<p style="margin-top:14px">🪄 <b>당신의 일간을 비유로 풀면</b><br>${stemRich(dp.stem)} — ${STEM_META[dp.stem].body}.<br>이 결을 가지고 태어난 분이 「${stemNick(dp.stem)}」 같은 본질로 인생을 살아가는 것이 모든 풀이의 출발점입니다.</p>`;
   // 일주
   sajuBody+=`<p style="margin-top:14px"><b>① 일주(日柱) — 「나」의 자리</b></p>`;
   sajuBody+=miniManseWithPointer(saju,'day','↑ 강조된 일주가 「나의 자리」입니다');
   sajuBody+=`<p>일간은 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]})</em>, 일지는 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) — ${ANIMAL[dp.branch]}</em>입니다. 일지는 사주에서 「나의 자리이자 배우자의 자리(配偶宮)」로, ${OHNAME[dStemOh]}인 일간이 ${OHNAME[BOH[dp.branch]]}의 일지 위에 앉아 있어 ${rel.desc}를 이룹니다.</p>`;
+  sajuBody+=`<p>· <b>일간 비유</b> — ${stemRich(dp.stem)}<br>· <b>일지 비유</b> — ${branchRich(dp.branch)}<br>두 글자가 만난다는 건 「${stemNick(dp.stem)}」 같은 본인이 「${branchNick(dp.branch)}」라는 자리에 앉아 있다는 결입니다.</p>`;
   sajuBody+=`<p>${rel.imp}</p>`;
   // 년주
   sajuBody+=`<p style="margin-top:14px"><b>② 년주(年柱) — 조상·뿌리·초년의 자리</b></p>`;
