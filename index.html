@@ -434,6 +434,61 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-badge-body{font-size:.82rem;color:var(--sub);line-height:1.78}
 .mbti-badge-body b{color:var(--text)}
 
+/* ── 사주 × MBTI 4지표 상세 분석 ── */
+.mbti-analysis{margin:14px 12px 18px;padding:18px 16px 16px;background:linear-gradient(135deg,var(--card),rgba(45,52,71,.55));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.mbti-analysis-head{margin-bottom:14px}
+.mbti-analysis-cat{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.62rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--border-strong);letter-spacing:.08em;margin-bottom:8px;text-transform:uppercase}
+.mbti-analysis h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.01em}
+.mbti-analysis-expl{font-size:.74rem;color:var(--muted);margin-top:6px}
+.mbti-analysis-expl summary{cursor:pointer;color:var(--accent);font-weight:700}
+.mbti-analysis-expl summary:hover{color:var(--accent-bright)}
+.mbti-analysis-expl p{margin:6px 0 0;line-height:1.7}
+.mbti-indicator-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px}
+@media (min-width:560px){.mbti-indicator-grid{grid-template-columns:1fr 1fr}}
+.mbti-indicator{padding:14px 14px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;position:relative}
+.mbti-indicator header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.mbti-indicator h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
+.mbti-ind-grade{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:50px;letter-spacing:.04em;text-transform:uppercase;border:1px solid}
+.mbti-indicator.match-strong{border-color:rgba(108,191,126,.5)}
+.mbti-indicator.match-strong .mbti-ind-grade{color:#6cbf7e;background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
+.mbti-indicator.match-good{border-color:rgba(163,199,168,.5)}
+.mbti-indicator.match-good .mbti-ind-grade{color:#a3c7a8;background:rgba(163,199,168,.12);border-color:rgba(163,199,168,.35)}
+.mbti-indicator.match-medium{border-color:rgba(212,168,73,.45)}
+.mbti-indicator.match-medium .mbti-ind-grade{color:#d4a849;background:rgba(212,168,73,.12);border-color:rgba(212,168,73,.4)}
+.mbti-indicator.match-mixed{border-color:rgba(229,116,98,.4)}
+.mbti-indicator.match-mixed .mbti-ind-grade{color:#e57462;background:rgba(229,116,98,.12);border-color:rgba(229,116,98,.4)}
+.mbti-indicator.match-mismatch{border-color:rgba(224,83,63,.5)}
+.mbti-indicator.match-mismatch .mbti-ind-grade{color:#e0533f;background:rgba(224,83,63,.16);border-color:rgba(224,83,63,.45)}
+.mbti-ind-reason{font-size:.78rem;line-height:1.78;color:var(--sub);margin:0 0 8px}
+.mbti-ind-reason em{color:var(--accent);font-style:normal;font-weight:700}
+.mbti-ind-example{font-size:.76rem;line-height:1.7;color:var(--muted);margin:0 0 6px;padding:8px 10px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0}
+.mbti-ind-advice{font-size:.76rem;line-height:1.7;color:var(--accent);margin:6px 0 0}
+.mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:1px solid var(--accent);border-radius:12px}
+.mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
+.mbti-analysis-synth p{font-size:.84rem;line-height:1.85;color:var(--sub);margin:0}
+
+/* ── TL;DR 카드 (결과 최상단 한 화면 요약) ── */
+.result-tldr{margin:8px 12px 16px;padding:18px 16px 14px;background:linear-gradient(135deg,var(--card),rgba(45,52,71,.65));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.result-tldr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.tldr-headline{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.tldr-tag{display:inline-block;padding:3px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border-strong);font-size:.7rem;font-weight:800;letter-spacing:.06em;margin-bottom:8px}
+.tldr-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0;line-height:1.55;letter-spacing:-.01em;word-break:keep-all}
+.tldr-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tldr-grid{grid-template-columns:1fr 1fr 1fr}}
+.tldr-card{padding:12px 14px;border-radius:10px;border:1px solid var(--border)}
+.tldr-strengths{background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(45,52,71,.5));border-color:rgba(108,191,126,.35)}
+.tldr-cautions{background:linear-gradient(135deg,rgba(229,116,98,.08),rgba(45,52,71,.5));border-color:rgba(229,116,98,.35)}
+.tldr-times{background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(45,52,71,.5));border-color:rgba(212,175,55,.35)}
+.tldr-card h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
+.tldr-strengths h3{color:#a3c7a8}
+.tldr-cautions h3{color:#e57462}
+.tldr-times h3{color:var(--accent-bright)}
+.tldr-card ol,.tldr-card ul{margin:0;padding-left:20px;font-size:.76rem;line-height:1.78;color:var(--sub)}
+.tldr-card li{margin-bottom:5px}
+.tldr-card li b{color:var(--text)}
+.tldr-disclaimer{margin:14px 0 0;font-size:.7rem;color:var(--muted);line-height:1.65;text-align:center;letter-spacing:.02em}
+
 /* ── 결과 헤더 SNS 후크 헤드라인 ── */
 .result-hero{margin:8px 12px 14px;padding:18px 18px 16px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;text-align:center;position:relative;overflow:hidden}
 .result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
@@ -1756,6 +1811,295 @@ function mbtiBadgeHTML(saju, mbti){
     <div class="mbti-badge-head">☯︎ ${m.headline}</div>
     <div class="mbti-badge-body">${m.body}</div>
   </div>`;
+}
+
+// ── MBTI 4지표 상세 분석 (I/N/T/J 각 점수·근거·일상 예시) ──
+// 일간/일지/오행/십신을 인용해 「왜 그렇게 나오는지」를 풀어줌
+function mbtiAnalysisHTML(saju, mbti){
+  if(!mbti||mbti.length!==4)return '';
+  const so=SOH[saju.dp.stem], bo=BOH[saju.dp.branch];
+  const dStemKo=STEMKO[saju.dp.stem], dBrKo=BRCHKO[saju.dp.branch];
+  const dm=DM[saju.dp.stem];
+  const oh=ohCount(saju);
+  const dom=oh.indexOf(Math.max(...oh)), weak=oh.indexOf(Math.min(...oh));
+  const yang=STEM_META[saju.dp.stem]&&['갑','병','무','경','임'].indexOf(dStemKo)>=0;
+  const stemNk=stemNick(saju.dp.stem)||'';
+  const brNk=branchNick(saju.dp.branch)||'';
+
+  // 4축 점수 (0~100) + 일치 방향 + 근거 텍스트
+  // I/E ────────────
+  const wantI=mbti[0]==='I';
+  let ieScore;
+  if(wantI){
+    // 본인이 I — 음간일수록 점수↑
+    ieScore=yang?40:88;
+  }else{
+    ieScore=yang?88:40;
+  }
+  // 추가: 일지가 음(자·축·해·묘)이면 I 가산 / 양(인·사·오·신)이면 E 가산
+  const yangBr=[2,5,6,8].includes(saju.dp.branch);
+  const yinBr=[0,1,3,11].includes(saju.dp.branch);
+  if(wantI&&yinBr)ieScore=Math.min(98,ieScore+8);
+  else if(!wantI&&yangBr)ieScore=Math.min(98,ieScore+8);
+  else if(wantI&&yangBr)ieScore=Math.max(30,ieScore-8);
+  else if(!wantI&&yinBr)ieScore=Math.max(30,ieScore-8);
+
+  // N/S ────────────
+  const wantN=mbti[1]==='N';
+  // 인성·식상이 강하면 N (목·수)
+  const inSikSeong=oh[0]+oh[4]; // 목+수
+  const jaeGwanSeong=oh[2]+oh[3]; // 토+금
+  let nsScore;
+  if(wantN){
+    nsScore=50+(inSikSeong-jaeGwanSeong)*6;
+  }else{
+    nsScore=50+(jaeGwanSeong-inSikSeong)*6;
+  }
+  nsScore=Math.max(35,Math.min(95,nsScore));
+
+  // T/F ────────────
+  const wantT=mbti[2]==='T';
+  // 관성·재성이 강하면 T (금·토 위주), 식상·인성이 강하면 F (수·화·목)
+  const tHeavy=oh[3]+oh[2]*0.5; // 금+토 절반
+  const fHeavy=oh[1]+oh[4]*0.7+oh[0]*0.3; // 화+수+목 일부
+  let tfScore;
+  if(wantT){
+    tfScore=50+(tHeavy-fHeavy)*7;
+  }else{
+    tfScore=50+(fHeavy-tHeavy)*7;
+  }
+  tfScore=Math.max(35,Math.min(95,tfScore));
+
+  // J/P ────────────
+  const wantJ=mbti[3]==='J';
+  // 정관·정인이 일간을 받쳐주면 J / 식상·편관 위주면 P
+  const jHeavy=oh[3]+oh[2]; // 금+토 (질서)
+  const pHeavy=oh[0]+oh[4]; // 목+수 (변화)
+  let jpScore;
+  if(wantJ){
+    jpScore=50+(jHeavy-pHeavy)*6;
+  }else{
+    jpScore=50+(pHeavy-jHeavy)*6;
+  }
+  jpScore=Math.max(35,Math.min(95,jpScore));
+
+  // 점수에 따른 라벨/색
+  const grade=s=>s>=85?{lab:'매우 일치',cls:'match-strong',ico:'✅'}:
+                 s>=70?{lab:'일치',cls:'match-good',ico:'✅'}:
+                 s>=55?{lab:'보통',cls:'match-medium',ico:'⚖️'}:
+                 s>=45?{lab:'혼재',cls:'match-mixed',ico:'⚖️'}:
+                       {lab:'어긋남',cls:'match-mismatch',ico:'⚠️'};
+
+  // 각 축 본문 — 사주 요소 인용
+  const ieBody=`일간 <em>${dStemKo}${OHNAME[so]}</em>은 ${yang?'양(陽)':'음(陰)'} 천간이며 「${stemNk}」의 결을 가집니다. ${wantI?(yang?'사회적으론 외향적으로 비치지만 본질은 내향(I) — 본인의 결과 다른 색채를 함께 사는 분':'본인의 결과 MBTI가 같은 방향으로 흐르는 분 — 깊이 들어가는 결이 자연스럽습니다.'):(yang?'본인의 결과 MBTI가 같은 방향으로 흐르는 분 — 외부로 발신하는 결이 자연스럽습니다.':'사회적으론 내향처럼 보이지만 본질은 외향(E) — 본인의 결과 다른 색채를 함께 사는 분')} 일지 <em>${dBrKo}</em>(${brNk})${yangBr?'는 양 지지로 외부 활동성을 보강':yinBr?'는 음 지지로 내면의 깊이를 보강':'는 평이한 자리'}합니다.`;
+  const ieEx=`💡 <b>일상 예시</b> — ${wantI?'"중요한 결정 전에 혼자만의 시간이 필요하다", "회식 후 산책으로 충전한다"':'"사람과 함께 있을 때 에너지가 살아난다", "토론·발표가 즐겁다"'}`;
+  const ieAdv=ieScore<60?`🎯 <b>보완 팁</b> — ${wantI?'양 천간의 결을 가진 분이라 외향적으로 비치지만, 본인의 진짜 결을 알아주는 한두 사람과의 깊은 시간이 필수입니다.':'음 천간의 결을 가진 분이라 사람들 사이에서 빠르게 지칠 수 있습니다. 외향 활동 후 반드시 회복 시간을 두세요.'}`:'';
+
+  const nsBody=`사주 오행 분포는 목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}로, ${wantN?(inSikSeong>jaeGwanSeong?'직관·창조의 결인 목·수가 두텁습니다. 큰 그림을 그리고 본질을 파고드는 결이 사주에서도 그대로 발현됩니다.':'감각·실리의 결인 토·금이 더 두텁습니다. MBTI의 N(직관)과는 다른 방향의 결이라, 사회적으론 직관적으로 보여도 행동은 감각적으로 풀어내는 분입니다.'):(jaeGwanSeong>inSikSeong?'감각·실리의 결인 토·금이 두텁습니다. 구체적 정보·현실 감각이 사주의 결과 잘 맞습니다.':'직관·창조의 결인 목·수가 더 두텁습니다. MBTI의 S(감각)와 다른 방향의 결이라, 현실감 있는 행동 뒤에 직관적 통찰이 함께 작동합니다.')}`;
+  const nsEx=`💡 <b>일상 예시</b> — ${wantN?'"디테일보다 큰 그림이 먼저 보인다", "패턴·연관성을 잘 잡아낸다"':'"구체적 사례와 데이터가 있어야 결정한다", "오감으로 직접 확인해야 안심"'}`;
+  const nsAdv=nsScore<60?`🎯 <b>보완 팁</b> — ${wantN?'사주에 감각의 결이 강해 일상에선 디테일에 강합니다. 본인의 직관을 신뢰하되 큰 결정 전엔 한 번 더 큰 그림을 점검하세요.':'사주에 직관의 결이 강해 본인이 인지하지 못한 통찰이 자주 옵니다. 결정 전에 직관을 한 번 들어보는 습관이 결을 살립니다.'}`:'';
+
+  const tfBody=`사주에서 관성·재성(${OHNAME[3]}+${OHNAME[2]}) 합계 ${oh[3]+oh[2]}, 식상·인성(${OHNAME[0]}+${OHNAME[1]}+${OHNAME[4]}) 합계 ${oh[0]+oh[1]+oh[4]}입니다. ${wantT?(tHeavy>=fHeavy?'관성·재성이 두터워 논리·원칙으로 결정하는 결이 사주와 일치합니다.':'식상·인성이 더 두터워 결정 과정에 감정·관계가 함께 들어옵니다. T로 보이지만 마지막 결정은 「이게 모두에게 좋은가」를 한 번 더 묻는 결입니다.'):(fHeavy>=tHeavy?'식상·인성이 두터워 사람·관계 중심으로 결정하는 결이 사주와 일치합니다.':'관성·재성이 더 두터워 감정형 MBTI지만 일에서는 의외로 단호한 결정을 내리는 분입니다.')}`;
+  const tfEx=`💡 <b>일상 예시</b> — ${wantT?'"원칙이 흐려지면 마음이 불편하다", "감정에 휩쓸리지 않으려 노력한다"':'"결정 전에 사람들이 어떻게 느낄지 먼저 생각한다", "관계의 조화가 중요하다"'}`;
+  const tfAdv=tfScore<60?`🎯 <b>보완 팁</b> — ${wantT?'사주의 부드러운 결이 본인을 균형 있게 만듭니다. 원칙을 지키되 마지막에 한 사람을 더 챙기는 한 마디가 결을 빛나게 합니다.':'사주의 단단한 결이 결정의 무게를 실어줍니다. 감정 우선이지만 결정 단계에선 한 번 더 사실을 점검하면 결과가 더 좋습니다.'}`:'';
+
+  const jpBody=`사주 오행에서 질서·구조의 결(토·금)은 ${jHeavy}, 변화·흐름의 결(목·수)은 ${pHeavy}입니다. ${wantJ?(jHeavy>=pHeavy?'정관·정인이 일간을 안정적으로 받쳐주는 결로, 계획·실행의 결이 사주와 그대로 일치합니다.':'식상·편관이 더 강해 계획대로 가다가도 즉흥적으로 변경하는 결이 함께 흐릅니다. J로 보이지만 P적 행동이 종종 나옵니다.'):(pHeavy>=jHeavy?'식상·편관의 결이 강해 흐름을 따라 살아가는 결이 사주와 그대로 일치합니다.':'정관·정인이 더 강해 P적 자유로움 뒤에 의외의 계획성·책임감이 작동하는 결입니다.')}`;
+  const jpEx=`💡 <b>일상 예시</b> — ${wantJ?'"계획이 있어야 안심된다", "마감 전에 미리 끝낸다"':'"옵션을 열어두는 게 편하다", "마감 직전에 집중력이 폭발한다"'}`;
+  const jpAdv=jpScore<60?`🎯 <b>보완 팁</b> — ${wantJ?'사주에 변화의 결이 강해 계획이 자주 흔들립니다. 목표를 「why」 중심으로 두면 J 성향이 강화됩니다.':'사주에 질서의 결이 강해 본인은 P지만 약속·마감을 잘 지키는 분입니다. 본인의 계획성을 신뢰하세요.'}`:'';
+
+  const indicators=[
+    {key:'IE',label:wantI?'I (내향)':'E (외향)',score:Math.round(ieScore),body:ieBody,ex:ieEx,adv:ieAdv},
+    {key:'NS',label:wantN?'N (직관)':'S (감각)',score:Math.round(nsScore),body:nsBody,ex:nsEx,adv:nsAdv},
+    {key:'TF',label:wantT?'T (사고)':'F (감정)',score:Math.round(tfScore),body:tfBody,ex:tfEx,adv:tfAdv},
+    {key:'JP',label:wantJ?'J (계획)':'P (인식)',score:Math.round(jpScore),body:jpBody,ex:jpEx,adv:jpAdv}
+  ];
+  const avg=Math.round(indicators.reduce((s,i)=>s+i.score,0)/4);
+
+  let h=`<section class="mbti-analysis" aria-label="사주 × MBTI 4지표 통합 분석">
+    <div class="mbti-analysis-head">
+      <div class="mbti-analysis-cat">SAJU × MBTI · 4지표 통합 분석</div>
+      <h2>${dStemKo}${dBrKo}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — ${avg}% 일치</h2>
+      <details class="mbti-analysis-expl">
+        <summary>이 점수는 어떻게 계산되나요?</summary>
+        <p>MBTI 4지표(I/N/T/J)와 사주 8자의 음양·오행·십신을 가중평균으로 산출합니다. I/E는 천간·지지의 음양 비율, N/S는 목·수 vs 토·금 분포, T/F는 관성·재성 vs 식상·인성, J/P는 정관·정인 vs 식상·편관의 강도로 매핑합니다.</p>
+      </details>
+    </div>
+    <div class="mbti-indicator-grid">`;
+  indicators.forEach(ind=>{
+    const g=grade(ind.score);
+    h+=`<article class="mbti-indicator ${g.cls}">
+      <header><h3>${ind.label} — ${ind.score}% 일치 ${g.ico}</h3><span class="mbti-ind-grade">${g.lab}</span></header>
+      <p class="mbti-ind-reason">${ind.body}</p>
+      <p class="mbti-ind-example">${ind.ex}</p>
+      ${ind.adv?`<p class="mbti-ind-advice">${ind.adv}</p>`:''}
+    </article>`;
+  });
+
+  // 종합 합성 코멘트
+  const stronger=indicators.filter(i=>i.score>=75).map(i=>i.label.split(' ')[0]);
+  const weaker=indicators.filter(i=>i.score<60).map(i=>i.label.split(' ')[0]);
+  const synthesis=stronger.length>=3
+    ? `당신은 「${mbti}」의 본질을 사주가 그대로 담아낸 분입니다. ${stronger.join('·')} 영역에서 본인의 결과 MBTI가 한 방향으로 흐르므로, 본인다움을 따라 살 때 가장 자연스럽고 큰 결실이 옵니다.`
+    : weaker.length>=2
+    ? `당신은 「${mbti}의 외형을 한 ${stemNk} 사주」입니다. ${stronger.length?stronger.join('·')+' 영역은 사주와 일치':'몇 영역은 일치'}하지만 ${weaker.join('·')} 영역은 사주가 다른 결을 가집니다. 「본인이 느끼는 자기」와 「세상이 보는 자기」가 다르게 흐르는 분이라, 본인의 진짜 결을 알아주는 사람과의 관계가 매우 중요합니다.`
+    : `당신은 「${mbti}」와 「${stemNk}」의 결이 적절히 섞인 균형형입니다. 두 결이 상황에 따라 번갈아 발현되며, 본인이 어느 결을 더 많이 살릴지를 의식적으로 선택하실 수 있는 자유도가 있습니다.`;
+  h+=`</div>
+    <div class="mbti-analysis-synth">
+      <h3>종합</h3>
+      <p>${synthesis}</p>
+    </div>
+  </section>`;
+  return h;
+}
+
+// ── 결과 상단 TL;DR 카드 — 강점 TOP3 / 주의 TOP3 / 핵심 시기 ──
+// 사주에서 자동 산출 (한 화면 안에 핵심이 다 들어오도록)
+function tldrCardHTML(saju, mbti, cat, meta){
+  const dStemKo=STEMKO[saju.dp.stem], dBrKo=BRCHKO[saju.dp.branch];
+  const dm=DM[saju.dp.stem]||{n:dStemKo,pos:[],neg:[]};
+  const stemNk=stemNick(saju.dp.stem)||dStemKo;
+  const oh=ohCount(saju);
+  const dom=oh.indexOf(Math.max(...oh)), weak=oh.indexOf(Math.min(...oh));
+  let ys, gk, sins=[];
+  try{ys=getYongsin(oh);}catch(e){}
+  try{gk=getGyeokguk(saju);}catch(e){}
+  try{sins=findSinsal(saju);}catch(e){}
+
+  // ── 강점 TOP3 ──
+  const strengths=[];
+  // 1) 격국 기반 강점
+  if(gk&&gk.name){
+    const gkStrengths={
+      '정관격':'책임·신뢰의 결로 공직·관리 자리에서 두각',
+      '편관격':'도전·돌파의 결로 군경·외과·창업에 강점',
+      '정재격':'안정 자산 형성, 꾸준한 재물 관리에 강점',
+      '편재격':'활동·영업·인맥의 결로 큰 흐름의 재물 운용',
+      '식신격':'표현·창작·풍요의 결로 사람과 함께 만드는 일',
+      '상관격':'창의·기획·강연의 결로 본인을 표현하는 일에 빛남',
+      '정인격':'학문·교육·자격의 결로 인덕과 정신적 후원',
+      '편인격':'전문 학문·연구·역학에 깊이 들어가는 결',
+      '건록격':'자립·전문직·1인 사업에 강한 자기 결정력',
+      '양인격':'결단·돌파·정밀 기술에 큰 그릇'
+    };
+    if(gkStrengths[gk.name])strengths.push(`${gk.name} — ${gkStrengths[gk.name]}`);
+  }
+  // 2) 길성 신살
+  const goodSin=sins.filter(s=>s.tag==='g'||s.tag==='y');
+  goodSin.slice(0,2).forEach(s=>{
+    const name=s.n.split(' ')[0];
+    const goodSinStrengths={
+      '천을귀인':'평생 위기마다 결정적 도움을 주는 인덕',
+      '문창귀인':'학문·시험·문서에 강한 두뇌·논리력',
+      '역마살':'활동·이동·해외에 결이 잘 맞는 활동성',
+      '화개살':'예술·종교·학문에 깊이 들어가는 정신력'
+    };
+    if(goodSinStrengths[name])strengths.push(`${name} — ${goodSinStrengths[name]}`);
+  });
+  // 3) 가장 강한 오행 → 본질 강점
+  const ohStrengthByDom=[
+    '곧고 우직한 추진력 — 큰 흐름을 한 길로 끌고 가는 결',
+    '열정과 표현력 — 사람과 활동에서 본인이 빛나는 결',
+    '신뢰와 중심추 — 조직·관계의 안정을 만드는 결',
+    '결단과 정밀함 — 한 분야의 전문성을 깊이 다지는 결',
+    '지혜와 유연함 — 변화에 능하고 깊이 사색하는 결'
+  ];
+  if(strengths.length<3)strengths.push(`${OHNAME[dom]} 기운 두터움 — ${ohStrengthByDom[dom]}`);
+  // 4) 일간 본질 (dm.pos 활용)
+  if(strengths.length<3&&dm.pos&&dm.pos.length){
+    strengths.push(`${dm.n.split('(')[0]} 본질 — ${dm.pos.slice(0,2).join('·')}의 강점`);
+  }
+
+  // ── 주의 영역 TOP3 ──
+  const cautions=[];
+  // 1) 약한 오행 → 보완 영역
+  const weakWarn=[
+    '간·담·근육·시력 영역(목 기운 부족) — 시력·간 건강과 성장 정체에 주의',
+    '심혈관·혈액순환(화 기운 부족) — 활력 저하·우울·표현 막힘에 주의',
+    '소화·면역·중심(토 기운 부족) — 불안정·우유부단·소화 트러블에 주의',
+    '결단·정리·호흡(금 기운 부족) — 마무리 약함·호흡기 약화에 주의',
+    '신장·잠재·지혜(수 기운 부족) — 회복력·집중력 저하에 주의'
+  ];
+  cautions.push(weakWarn[weak]);
+  // 2) 흉한 신살
+  const badSin=sins.filter(s=>s.tag==='r');
+  badSin.slice(0,1).forEach(s=>{
+    const name=s.n.split(' ')[0];
+    const badWarn={
+      '백호살':'급격한 변화·사고·구설 — 운전·운동·위험 작업에 안전 수칙 필수',
+      '양인살':'강한 결단의 그림자 — 부부 갈등·충돌에 의식적 부드러움 필요',
+      '도화살':'매력의 그림자 — 이성 문제의 씨앗이 될 수 있어 절제 필요',
+      '홍염살':'은밀한 매력 — 비밀스러운 관계의 유혹에 주의'
+    };
+    if(badWarn[name])cautions.push(`${name} — ${badWarn[name]}`);
+  });
+  // 3) 십신 과다·부족 패턴
+  const dStem=saju.dp.stem;
+  const sajuTGCount={비견:0,겁재:0,식신:0,상관:0,편재:0,정재:0,편관:0,정관:0,편인:0,정인:0};
+  [saju.yp.stem,saju.mp.stem,saju.hp&&saju.hp.stem].filter(s=>s!=null&&s!==undefined).forEach(s=>{
+    const tg=tenGod(dStem,s);if(sajuTGCount[tg]!==undefined)sajuTGCount[tg]++;
+  });
+  if(sajuTGCount['겁재']>=2)cautions.push('겁재 두터움 — 동업·금전 거래에 신중. 친한 사이일수록 명확한 기록 필요');
+  else if(sajuTGCount['상관']>=2)cautions.push('상관 두터움 — 권위·규율과의 마찰에 톤 조절 필요');
+  else if(sajuTGCount['편관']>=2)cautions.push('편관 두터움 — 책임 과부하·스트레스 누적에 정기적 회복 시간 필수');
+  if(cautions.length<3)cautions.push(`${OHNAME[dom]} 과다 — 본인의 강점이 과해지면 균형이 깨지므로 반대 오행 ${OHNAME[(dom+2)%5]}을 의식적으로 보강`);
+
+  // ── 인생 핵심 시기 ──
+  const keyTimes=[];
+  if(meta&&meta.sy&&ys){
+    try{
+      const dq=calcDaeun(saju,meta.sy,meta.sm,meta.sd,meta.hour||12,meta.min||0,gender);
+      // 용신 오행이 들어오는 대운을 best로
+      let best=null,bestAge=null,worst=null,worstAge=null;
+      dq.daeuns.forEach(du=>{
+        const duOh=SOH[du.stem];
+        if(duOh===ys.main&&!best){best=du;bestAge=du.age;}
+        if(duOh===((ys.main+2)%5)&&!worst){worst=du;worstAge=du.age;}
+      });
+      if(best)keyTimes.push(`최고의 시기: <b>${bestAge}~${bestAge+9}세</b> — 용신 ${OHNAME[ys.main]} 대운, 본인의 결이 가장 빛나는 10년`);
+      if(worst&&worstAge!==bestAge)keyTimes.push(`주의 시기: <b>${worstAge}~${worstAge+9}세</b> — 용신을 극하는 흐름, 큰 결정 신중`);
+      // 현재 대운
+      const now=new Date(),age=now.getFullYear()-meta.sy+1;
+      let curD=dq.daeuns[0];
+      for(let i=0;i<dq.daeuns.length;i++){
+        if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){curD=dq.daeuns[i];break;}
+      }
+      const curTG=tenGod(saju.dp.stem,curD.stem);
+      const curOh=SOH[curD.stem];
+      const curHint=curOh===ys.main?'길운의 한가운데':curOh===((ys.main+2)%5)?'한 박자 살피는 시기':'평이한 흐름';
+      keyTimes.push(`현재 대운(${curD.age}~${curD.age+9}세): ${STEMKO[curD.stem]}${BRCHKO[curD.branch]} — ${curTG}, ${curHint}`);
+    }catch(e){}
+  }
+  if(keyTimes.length===0){
+    keyTimes.push('정확한 시기 분석은 인생총운에서 — 대운 80년 흐름과 결정적 시기를 풀어드립니다');
+  }
+
+  // 헤드라인
+  const ilju=`${dStemKo}${dBrKo}일주`;
+  const headline=`「${stemNk}」 같은 ${ilju}${mbti?` × ${mbti}`:''}`;
+  const tagline=mbti?`${ilju} × ${mbti}`:ilju;
+
+  let h=`<section class="result-tldr" aria-label="결과 핵심 요약">
+    <header class="tldr-headline">
+      <div class="tldr-tag">${tagline}</div>
+      <h2 class="tldr-title">${headline}</h2>
+    </header>
+    <div class="tldr-grid">
+      <div class="tldr-card tldr-strengths">
+        <h3>🔥 강점 TOP 3</h3>
+        <ol>${strengths.slice(0,3).map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>
+      <div class="tldr-card tldr-cautions">
+        <h3>⚠️ 주의 영역 TOP 3</h3>
+        <ol>${cautions.slice(0,3).map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>
+      <div class="tldr-card tldr-times">
+        <h3>📅 인생 핵심 시기</h3>
+        <ul>${keyTimes.slice(0,3).map(s=>`<li>${s}</li>`).join('')}</ul>
+      </div>
+    </div>
+    <p class="tldr-disclaimer">※ 사주는 인생의 지도이지 정해진 운명이 아닙니다. 타고난 결을 인식하고 본인의 의지로 가꾸어 나가세요.</p>
+  </section>`;
+  return h;
 }
 
 // ── 결과 헤더 SNS 후크 헤드라인 ──
@@ -5858,8 +6202,12 @@ function analyze(){
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
       // 결과 헤더 SNS 후크 + MBTI 배지 (선택 시)
       const heroHTML=resultHeroHTML(saju, mbti, cat);
+      // TL;DR 카드 (강점/주의/시기 TOP3) — 모든 카테고리 결과 최상단
+      const tldrHTML=tldrCardHTML(saju, mbti, cat, _meta);
+      // MBTI 4지표 상세 분석 (MBTI 선택 시만)
+      const mbtiAnalysis=mbti?mbtiAnalysisHTML(saju, mbti):'';
       const mbtiBadge=mbti?mbtiBadgeHTML(saju, mbti):'';
-      const headerBlock=heroHTML+mbtiBadge;
+      const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
       let targetIdx=0;
       const unlocked=isUnlockedFor(cat);
       _paidUnlocked=unlocked;
