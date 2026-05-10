@@ -25,12 +25,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/infj.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://saju-mbti-9h1.pages.dev/blog/ilju-list/gapja.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -386,6 +380,102 @@
   </url>
   <url>
     <loc>https://saju-mbti-9h1.pages.dev/blog/ilju-list/gyehae.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/intj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/intp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/entj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/entp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/infj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/infp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/enfj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/enfp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/istj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/isfj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/estj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/esfj.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/istp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/isfp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/estp.html</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/blog/mbti-saju/esfp.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
