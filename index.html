@@ -517,6 +517,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-warn-lab{font-size:.66rem;font-weight:800;color:var(--fire);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
 .nb-gw-body{font-size:.82rem;line-height:1.75;color:var(--sub)}
 
+/* ── 행동 지침 3박스 (강점·해야 할 일·피할 일) ── */
+.action-guide{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.ag-block{padding:11px 14px;border-radius:10px;border-left:3px solid}
+.ag-block .ag-lab{font-size:.7rem;font-weight:800;letter-spacing:.06em;margin-bottom:6px;text-transform:uppercase}
+.ag-block ul{margin:0;padding-left:18px;font-size:.8rem;line-height:1.78;color:var(--sub)}
+.ag-block li{margin-bottom:3px}
+.ag-block li b{color:var(--text)}
+.ag-strengths{background:var(--wood-bg);border-left-color:var(--wood)}
+.ag-strengths .ag-lab{color:var(--wood)}
+.ag-todos{background:var(--accent-soft);border-left-color:var(--accent)}
+.ag-todos .ag-lab{color:var(--accent-bright)}
+.ag-avoids{background:var(--fire-bg);border-left-color:var(--fire)}
+.ag-avoids .ag-lab{color:var(--fire)}
+
 /* ── Timeline (대운×세운) ── */
 .tl{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .tl-item{padding:13px 15px;background:rgba(45,52,71,.3);border-left:3px solid var(--accent);border-radius:8px;border:1px solid var(--border);border-left-width:3px}
@@ -1143,7 +1157,38 @@ const TERM_DICT={
   '양인':'양인살의 줄임말. 강한 의지·결단력의 기운입니다.',
   // 대운·세운
   '대운':'10년마다 바뀌는 큰 흐름. 사주 4기둥에 새로 더해지는 글자가 그 10년의 결을 결정합니다.',
-  '세운':'1년 단위 운세 흐름. 매년 입춘(2월 4일경)을 기점으로 새 글자가 들어옵니다.'
+  '세운':'1년 단위 운세 흐름. 매년 입춘(2월 4일경)을 기점으로 새 글자가 들어옵니다.',
+  '월운':'한 달 단위의 흐름. 절기(입춘·경칩 등) 기준으로 바뀝니다.',
+  '일진':'그날 하루의 천간·지지. 하루 단위 외부 기운입니다.',
+  // 용신 체계
+  '희신':'용신을 도와주는 보조 오행. 함께 작동하면 길운이 더 또렷해집니다.',
+  '기신':'용신을 해치는 흉(凶) 오행. 이 기운이 강해지는 시기는 한 박자 살펴야 합니다.',
+  '한신':'용신을 직접 돕지도 해치지도 않는 중립 오행. 큰 작용은 없습니다.',
+  // 합·충·형·파·해
+  '합':'두 글자가 만나 부드럽게 결합하는 작용. 사람·계약·관계 활동에 길합니다.',
+  '충':'두 글자가 정면 충돌하는 작용. 변동·이동·재정립의 신호입니다.',
+  '형':'세 글자가 서로를 압박하는 작용. 송사·구설·시비 가능성을 시사합니다.',
+  '파':'두 글자가 서로의 결을 깨뜨리는 작용. 작은 마찰·소소한 손실의 결입니다.',
+  '해':'두 글자가 서로 어그러지는 작용. 인연의 결을 흔드는 결입니다.',
+  '육합':'두 지지 사이의 합. 자축·인해·묘술·진유·사신·오미 6쌍입니다.',
+  '삼합':'세 지지가 한 오행으로 묶이는 합. 신자진(수)·인오술(화)·사유축(금)·해묘미(목).',
+  '방합':'계절 방위 단위의 합. 인묘진(봄)·사오미(여름)·신유술(가을)·해자축(겨울).',
+  // 신살 추가
+  '괴강살':'강력한 통솔력과 카리스마의 별. 큰일을 이루는 그릇이지만 강한 만큼 부드러움이 필요합니다.',
+  '괴강':'괴강살의 줄임말. 통솔의 큰 그릇입니다.',
+  '효신살':'편인의 흉살 작용. 부모·어른과의 인연이 어그러지기 쉬운 결입니다.',
+  '공망':'사주에서 「비어 있는」 두 지지. 이 자리에 오는 글자는 작용이 약해집니다.',
+  '12신살':'겁살·재살·천살·지살·연살·월살·망신살·장성살·반안살·역마살·육해살·화개살. 일지 기준 12개 신살.',
+  // 절기·시간
+  '절기':'24절기. 입춘·경칩·청명 등 천문학적 태양 위치 기준의 시점.',
+  '진태양시':'실제 태양의 위치 기준 시간. 한국 표준시(135°)와 본인 출생지의 경도 차이로 보정.',
+  '입춘':'양력 2월 4일경. 사주에서 한 해의 시작이 되는 절기.',
+  // 격국 추가
+  '신살격':'정격에 들지 않고 신살이 강하게 자리 잡은 격국. 별격이라고도 합니다.',
+  '종격':'사주가 한 오행에 몰려 있어 그 오행을 따라가는 특수 격국.',
+  // 일주
+  '60갑자':'천간 10개와 지지 12개의 조합 60개. 사주의 각 기둥은 60갑자 중 하나입니다.',
+  '갑자':'60갑자의 첫 번째. 갑목 + 자수가 만난 일주의 결.'
 };
 const TERM_RE=new RegExp(Object.keys(TERM_DICT).sort((a,b)=>b.length-a.length).join('|'),'g');
 let _termPopup=null, _termAnchor=null;
@@ -2261,8 +2306,19 @@ function renderDaypickFortune(saju,y,m,d){
   }
   totBody+=`<p><b>④ 격국·용신 관점</b><br>본인 사주의 격국은 <em>${gk.name}</em>이고 용신은 <em>${OHNAME[ys.main]}</em>입니다. ${OHNAME[dpStemOh]===OHNAME[ys.main]||OHNAME[dpBrOh]===OHNAME[ys.main]?'그날 일진의 오행이 본인의 용신(${OHNAME[ys.main]})에 해당해, 한 해 중에서도 결이 잘 맞는 길일에 속합니다. 평소 미뤄둔 핵심 결정을 이 날에 배치하면 결실이 큽니다.':OHNAME[dpStemOh]===OHNAME[(ys.main+2)%5]||OHNAME[dpBrOh]===OHNAME[(ys.main+2)%5]?'그날 일진의 오행이 본인 용신을 극하는 결로, 큰 결정보다 정리·관망·휴식의 카드를 꺼내기 좋은 날입니다.':'그날 일진과 본인 용신은 평이한 관계로, 자기 페이스를 유지하기에 좋은 날입니다.'}</p>`;
   h+=paidWrapBody('TOTAL','✨','지정일 종합 진단',totBody,
-    {good:`${stemTG} 기운을 자기 결로 받아들이면 흐름과 결이 맞아 「${(TG_KEYWORD[stemTG]||[]).join('·')}」의 활동에서 결실이 큽니다. ${rel.kind==='합'?'특히 일지 합이 들어 사람과 관계 활동에 길운이 따릅니다.':rel.kind==='평'?'평이한 흐름이라 자기 페이스를 그대로 유지하세요.':''}`,
-     warn:`${stemTG==='겁재'||stemTG==='편관'?'표면 기운이 강해 충동·압박이 큰 날 — 큰 결정·동업·시비는 한 박자 미루세요.':rel.kind==='충'?'일지 충이 들어 큰 변동의 변수가 큽니다. 장거리 이동·결혼·계약 등 흔들리면 안 되는 일은 다른 날로.':'본인 결과 다른 색채가 들어오는 날이므로, 무리한 도전보다 평소 리듬을 유지하세요.'}`});
+    {strengths:[
+       `<b>${stemTG}</b> 기운 — 「${(TG_KEYWORD[stemTG]||[]).join('·')}」의 활동에서 결실`,
+       rel.kind==='합'?'<b>일지 합</b> — 사람과 관계 활동에 길운':rel.kind==='평'?'평이한 흐름 — 자기 페이스를 그대로':'본인 일간이 그날 외부 기운과 만나는 결정적 하루',
+       `점수 <b>${f.total}점</b> (${grade.lab}) — ${f.total>=70?'길운의 한가운데':f.total>=55?'평이한 흐름':'정리·내실의 카드'}`
+     ],todos:[
+       `${stemTG==='정관'?'발표·계약·면접·결재 처리':stemTG==='편관'?'경쟁·시험·도전 — 측면 우회 전략':stemTG==='편재'?'영업·미팅·새 거래·외근':stemTG==='정재'?'정리·점검·예산 정비':stemTG==='식신'?'관계·식사 자리·협업':stemTG==='상관'?'창작·기획·콘텐츠 작성':stemTG==='정인'||stemTG==='편인'?'학습·자료·문서 처리':'본인 페이스 유지'}`,
+       rel.kind==='합'?'<b>고백·소개팅·결혼 진전 대화</b> — 관계의 결이 부드러움':'미뤄둔 한 가지를 결단하기',
+       `시간대 가이드 — 본인 일지(${BRCHKO[saju.dp.branch]})와 합이 드는 시진을 핵심 활동에 활용`
+     ],avoids:[
+       stemTG==='겁재'?'<b>충동 결제·동업 자금·도박성 투자</b> — 24시간 룰':stemTG==='편관'?'<b>무리한 도전·정면 충돌·시비</b>':stemTG==='상관'?'<b>윗사람과의 마찰·반박</b> — 톤 한 단계 부드럽게':'평소보다 한 톤 신중하게',
+       rel.kind==='충'?'<b>장거리 이동·결혼·계약</b> — 충이 들어 변동성 큼':'큰 변동을 일으키는 결정 한 박자 미루기',
+       '본인 약한 오행 보강 식단 — 무리한 활동보다 회복 챙기기'
+     ]});
 
   // ── 재물
   let wBody=`<p>${y}/${m}/${d}의 재물 점수는 <b>${f.wealth}점</b>입니다. 본인 일간 ${myStemKo}${ip(myStemKo)} 그날 천간 ${dpStemKo}${eul(dpStemKo)} ${stemTG}${ro(stemTG)} 만나는 결에서, 재성(財星)의 색채는 ${stemTG==='정재'||stemTG==='편재'?'직접 표면에 드러나는':stemTG==='겁재'?'위협받는':'간접적으로 작용하는'} 흐름입니다.</p>`;
@@ -2494,8 +2550,19 @@ function renderMonthlyFortune(saju,sy,sm,ey,em){
   totBody+=`<p><b>🍀 베스트 시기 — ${luckyMonths.join(', ')}월</b><br>새 시작·확장·계약·이직·결혼 진전·중요한 발표 등 본인이 큰 결정을 내려야 할 일을 이 시기에 배치하면 결실이 큽니다. 특히 <b>${decisive.yy}년 ${decisive.mm}월</b>은 ${totalMonths}개월 중 결이 가장 강한 결정적 시기로, 미뤄둔 가장 큰 결정을 이 시기에 내리는 게 좋습니다.</p>`;
   totBody+=`<p><b>⚠️ 주의 시기 — ${toughMonths.join(', ')}월</b><br>큰 결정·확장·이동·새 거래는 미루고, 정리·내실·휴식·점검의 카드를 꺼내기 좋은 시기입니다. 흉이라기보다 <b>「잠시 멈추고 살피라는 신호의 달」</b>로 받아들이세요.</p>`;
   h+=paidWrapBody('TOTAL','✨','기간 종합 진단',totBody,
-    {good:`${avgTotal>=70?'기간 평균 점수가 높아 본인에게 우호적인 흐름':'평이한 흐름이지만'} — 베스트 시기(${luckyMonths.join(', ')}월)에 굵직한 행동을 배치하면 결실이 큽니다.`,
-     warn:`주의 시기(${toughMonths.join(', ')}월)에는 큰 결정을 미루고 정리·내실에 무게를 두세요. 모든 달이 평등하지 않으므로, 한 달이 아니라 ${totalMonths}개월의 큰 그림을 보고 행동을 배치하세요.`});
+    {strengths:[
+       `평균 <b>${avgTotal}점</b>(${avgGrade.lab}) — ${avgTotal>=70?'본인에게 우호적인 흐름':avgTotal>=55?'평이하고 자기 페이스 유지에 좋은 시기':'정리·내실에 무게 둘 시기'}`,
+       `베스트 시기 <b>${luckyMonths.join(', ')}월</b> — 큰 결정의 결이 가장 잘 맞는 시기`,
+       `${totalMonths}개월 흐름을 미리 보고 큰 그림으로 결정 배치 가능`
+     ],todos:[
+       `굵직한 결정(이직·창업·결혼·계약·이사)을 길월 ${luckyMonths.join(', ')}월에 배치`,
+       `각 월의 추천 활동 + 그달의 길일을 캘린더에 미리 등록`,
+       `본인 사주 약한 오행 ${OHNAME[weak]}을 보강하는 색·음식·활동을 ${totalMonths}개월간 꾸준히`
+     ],avoids:[
+       `주의 시기 <b>${toughMonths.join(', ')}월</b>에는 큰 결정 미루기 — 정리·관망·휴식의 카드`,
+       `한 달의 점수만 보고 결정 — 항상 ${totalMonths}개월 큰 그림에서 균형 잡기`,
+       `매달 모든 영역에 무리하기 — 분야별 평균이 다르므로 강한 영역에 집중`
+     ]});
 
   // ── 월별 카드 (각 paidWrapBody)
   monthsData.forEach(o=>{
@@ -2729,8 +2796,19 @@ function renderNewyearFortune(saju,y){
   totBody+=`<p>④ <b>오행 균형 측면</b><br>본인 사주는 <em>${OHNAME[dom]}</em>이 가장 두텁고 <em>${OHNAME[weak]}</em>이 부족한 구조입니다. 세운 천간 ${ypStemKo}(${OHNAME[ypStemOh]}) + 지지 ${ypBrKo}(${OHNAME[ypBrOh]})이 본인의 ${OHNAME[weak]===OHNAME[ypStemOh]||OHNAME[weak]===OHNAME[ypBrOh]?'<b>부족한 오행을 채워주는 결</b> — 보강과 균형의 해':OHNAME[dom]===OHNAME[ypStemOh]||OHNAME[dom]===OHNAME[ypBrOh]?'<b>이미 강한 기운을 더하는 결</b> — 균형을 한 번 더 살펴야 하는 해':'중화된 흐름의 해'}입니다.</p>`;
   totBody+=`<p>⑤ <b>격국·용신 관점</b><br>본인 격국 <em>${gkX.name}</em>, 용신 <em>${OHNAME[ysX.main]}</em>입니다. ${gkX.desc} ${OHNAME[ypStemOh]===OHNAME[ysX.main]||OHNAME[ypBrOh]===OHNAME[ysX.main]?'세운이 본인 용신을 직접 보강해, 한 해 중에서도 결이 잘 맞는 해입니다.':OHNAME[ypStemOh]===OHNAME[(ysX.main+2)%5]||OHNAME[ypBrOh]===OHNAME[(ysX.main+2)%5]?'세운이 본인 용신을 극하는 결로, 큰 변동보다 정리·관망의 해입니다.':'세운과 본인 용신은 평이한 관계로, 본인 페이스 유지에 좋은 해입니다.'}</p>`;
   h+=paidWrapBody('TOTAL','✨','세운(歲運)과 사주의 만남 — 심층 진단',totBody,
-    {good:`${tg} 기운을 자기 결로 받아들이면 「${(TG_KEYWORD[tg]||[]).join('·')}」의 활동에서 결실이 큽니다. ${rel.kind==='합'?'특히 일지 합이 들어 사람·관계 활동에 길운이 따릅니다.':'평이한 흐름이라 자기 페이스를 유지하세요.'}`,
-     warn:`${rel.kind==='충'?'일지 충이 들어 한 해 동안 변동·정리의 기운이 큽니다. 큰 결정은 길월에 배치하고 주의월에는 미루세요.':tg==='겁재'||tg==='편관'?'기운이 강한 해 — 무리한 도전·동업 자금·정면 돌파는 한 박자 미루세요.':'본인 결과 다른 색채가 들어오는 해이므로 무리한 확장보다 평소 리듬 유지'}`});
+    {strengths:[
+       `<b>${tg}</b> 기운으로 「${(TG_KEYWORD[tg]||[]).join('·')}」의 색채가 한 해를 채움`,
+       rel.kind==='합'?'일지 합 — 사람·관계·교섭 활동에 부드러운 결':rel.kind==='평'?'평이한 흐름 — 자기 페이스 유지에 좋은 해':'본인 일간의 결이 외부 기운과 만나는 해',
+       `세운 글자 ${ypStemKo}${ypBrKo}이 본인 사주에 새로 더해지는 ${y}년 한정 기운`
+     ],todos:[
+       `${tg==='정관'||tg==='편관'?'책임·공식 자리·승진 보고를 적극 수락':tg==='편재'?'활동·새 거래·외부 영업·이동을 한 발 더':tg==='식신'||tg==='상관'?'창작·표현·콘텐츠로 본인의 결을 발신':tg==='정인'||tg==='편인'?'학습·자격·시험·문서 처리를 이 해에 배치':tg==='정재'?'정리·점검·꾸준한 자산 관리에 시간 투자':'본인의 강점 한 가지를 한 줄로 정리해 발신'}`,
+       `길월(${monthLab(lucky)}월)에 굵직한 결정 배치 — 결혼·이직·창업·계약·이사`,
+       `결정적 시기 <b>${decisive}월</b>에 한 해 가장 큰 결정 한 가지를 반드시 내리기`
+     ],avoids:[
+       rel.kind==='충'?'<b>일지 충</b> — 큰 결정·이동·결혼·계약은 길월로 미루기':tg==='겁재'?'<b>겁재 해</b> — 동업 자금·충동 지출·도박성 투자':tg==='편관'?'<b>편관 해</b> — 무리한 도전·정면 돌파·시비':'무리한 확장보다 평소 리듬 유지',
+       `주의월 ${monthLab(tough)}월에는 큰 결정 미루고 정리·내실·휴식`,
+       `본인 약한 오행 ${OHNAME[weak]} 영역(${['간·시력','심혈관','소화·면역','폐·호흡','신장·생식기'][weak]}) 건강 무리`
+     ]});
 
   // 사계절 흐름
   let seasonHTML='';
@@ -4054,8 +4132,19 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   totBody+=`<p>용신은 <em>${OHNAME[ys.main]}</em>입니다. 용신은 사주 균형을 잡아주는 가장 도움이 되는 오행으로, 이 기운에 해당하는 색상·방향·음식·활동을 일상에 더 가까이 두면 운이 자연스럽게 풀립니다.</p>`;
   totBody+=`<p>${has('천을귀인')?'<em>천을귀인</em>이 사주에 들어 있어 위기마다 귀인의 도움을 받는 평생 길운입니다.':has('역마')?'<em>역마살</em>이 사주를 흔들어 변동과 이동의 기운이 강하며 활동 반경이 넓어집니다.':has('화개')?'<em>화개살</em>이 자리잡아 학문·예술·종교에 대한 깊은 끌림이 있습니다.':'사주에 강한 길흉살이 두드러지지 않아 잔잔한 흐름의 인생을 만들어갑니다.'} 이 결이 인생 전반의 색깔을 결정짓습니다.</p>`;
   h+=paidWrapBody('TOTAL','✨','총운 — 인생 흐름의 큰 그림',totBody,
-    {good:`타고난 ${dm.pos.slice(0,2).join('과 ')}을(를) 살리고, 용신 ${OHNAME[ys.main]} 기운(색상·방향·음식)을 의식적으로 가까이 하면 운이 자연스럽게 풀립니다.`,
-     warn:`${dm.neg.slice(0,2).join(', ')} 면이 그림자입니다. 특히 ${oh[0]>=4?'목 과다(고집·분노)':oh[1]>=4?'화 과다(성급·산만)':oh[2]>=4?'토 과다(고집·답답함)':oh[3]>=4?'금 과다(냉정·고립)':oh[4]>=4?'수 과다(우유부단·방황)':'균형 깨짐'}을 경계하고, 부족한 ${OHNAME[oh.indexOf(Math.min(...oh))]} 기운을 보강하는 노력이 필요합니다.`});
+    {strengths:[
+       `타고난 <b>${dm.pos.slice(0,2).join('·')}</b>의 결 — 본인의 본질이 사회적 자산이 됨`,
+       `용신 <b>${OHNAME[ys.main]}</b> 활용 — 색·방향·음식·활동을 가까이 두면 자연스럽게 결이 살아남`,
+       `격국 <b>${gk.name}</b>의 큰 틀 — 본인 인생관·진로의 핵심이 또렷함`
+     ],todos:[
+       `용신 ${OHNAME[ys.main]} 색의 옷·소품을 일상에 한 가지 추가`,
+       `용신 방향(${ys.main===0?'동쪽':ys.main===1?'남쪽':ys.main===2?'중앙·서남':ys.main===3?'서쪽':'북쪽'})의 자리·이동·여행을 의식적으로`,
+       `${dm.pos[0]||'본인의 강점'}을 살릴 수 있는 한 분야에 평생 깊이 들어가기`
+     ],avoids:[
+       `${oh[0]>=4?'<b>목 과다</b> — 고집·분노 폭주':oh[1]>=4?'<b>화 과다</b> — 성급함·산만':oh[2]>=4?'<b>토 과다</b> — 고집·답답함':oh[3]>=4?'<b>금 과다</b> — 냉정·고립':oh[4]>=4?'<b>수 과다</b> — 우유부단·방황':'<b>균형 깨짐</b>'}을 경계`,
+       `약한 오행 <b>${OHNAME[oh.indexOf(Math.min(...oh))]}</b> 영역 (${['간·근육·시력','심혈관·혈액','소화·면역','폐·대장·호흡','신장·생식기'][oh.indexOf(Math.min(...oh))]}) 의식적 보강`,
+       `${dm.neg[0]||'본인의 그림자 결'}이 깊어지지 않게 한 사람과 깊은 관계 유지`
+     ]});
 
   // ═════════════════════════════════════
   // 재물운
@@ -4265,8 +4354,26 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
     <div class="nb-title">${emoji} ${title}</div>
     <div class="nb-body">${bodyHtml}</div>`;
   if(goodWarn){
-    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${goodWarn.good}</div></div>`;
-    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${goodWarn.warn}</div></div>`;
+    // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
+    const has3=Array.isArray(goodWarn.strengths)||Array.isArray(goodWarn.todos)||Array.isArray(goodWarn.avoids);
+    if(has3){
+      const li=arr=>(arr||[]).filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+      h+=`<div class="action-guide">`;
+      if(goodWarn.strengths&&goodWarn.strengths.length){
+        h+=`<div class="ag-block ag-strengths"><div class="ag-lab">✅ 이 흐름의 강점</div><ul>${li(goodWarn.strengths)}</ul></div>`;
+      }
+      if(goodWarn.todos&&goodWarn.todos.length){
+        h+=`<div class="ag-block ag-todos"><div class="ag-lab">🎯 해야 할 일</div><ul>${li(goodWarn.todos)}</ul></div>`;
+      }
+      if(goodWarn.avoids&&goodWarn.avoids.length){
+        h+=`<div class="ag-block ag-avoids"><div class="ag-lab">⚠️ 피할 일</div><ul>${li(goodWarn.avoids)}</ul></div>`;
+      }
+      h+=`</div>`;
+    }else{
+      // 하위 호환 — 기존 good/warn 2박스
+      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${goodWarn.good}</div></div>`;
+      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${goodWarn.warn}</div></div>`;
+    }
   }
   h+='</div>';
   return h;
