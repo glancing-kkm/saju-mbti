@@ -65,8 +65,8 @@
   gtag('js', new Date());
   gtag('config', 'G-HTY72BCHHC');
 </script>
-<!-- html2canvas: 이미지 저장 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+<!-- html2canvas: 이미지 저장 (분석 후 사용자 상호작용 시점에만 필요 → defer) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" defer></script>
 <!-- Kakao SDK (앱 키 등록 필요: https://developers.kakao.com) -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -692,6 +692,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
     <div class="home-foot">
       ☯ 만세력은 천문 계산(절기·신월) 기반으로 정확하게 산출됩니다.<br>
       태어난 곳에 따라 진태양시(眞太陽時) 보정도 자동 적용됩니다.
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        📚 <a href="/blog/" style="color:var(--accent);text-decoration:none;font-weight:700;letter-spacing:.04em">사주 가이드 · 블로그 보기</a>
+        <span style="color:var(--muted);margin-left:6px">— 사주 보는 법 · 60갑자 일주 · MBTI×사주</span>
+      </div>
     </div>
   </div>
 

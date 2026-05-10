@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 검색엔진 사이트맵
+Sitemap: https://saju-mbti-9h1.pages.dev/sitemap.xml
