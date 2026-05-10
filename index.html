@@ -2,10 +2,58 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>사주팔자 & MBTI 분석</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 기본 SEO -->
+<title>천지인 사주 — 만세력 기반 사주팔자 & MBTI 무료 분석</title>
+<meta name="description" content="진태양시 자동 보정 만세력으로 정확한 사주팔자를 풀이하고, MBTI와 함께 입체적으로 해석합니다. 일일운세·신년운세·인생총운까지 한 곳에서.">
+<meta name="keywords" content="사주, 사주팔자, 만세력, MBTI 사주, 일일운세, 신년운세, 인생총운, 진태양시, 일주, 십신, 격국, 용신">
+<meta name="author" content="천지인 사주">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://saju-mbti-9h1.pages.dev/">
+
+<!-- Open Graph (카카오톡·페이스북 공유) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="천지인 사주">
+<meta property="og:title" content="천지인 사주 — 사주팔자 × MBTI 통합 분석">
+<meta property="og:description" content="만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다. 사주와 MBTI를 함께 풀어내는 새로운 해석.">
+<meta property="og:url" content="https://saju-mbti-9h1.pages.dev/">
+<meta property="og:locale" content="ko_KR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="천지인 사주 — 사주팔자 × MBTI 통합 분석">
+<meta name="twitter:description" content="만세력 기반 정확한 사주풀이와 MBTI 통합 해석.">
+
+<!-- 테마 색상 -->
+<meta name="theme-color" content="#0e1428">
+
+<!-- 파비콘 -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="shortcut icon" href="favicon.svg">
+
+<!-- 구조화 데이터 (WebApplication) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "천지인 사주",
+  "description": "만세력 기반 사주팔자 및 MBTI 통합 분석 서비스. 진태양시 자동 보정으로 정확한 사주를 풀이하고, 일일운세·신년운세·인생총운까지 한 곳에서.",
+  "url": "https://saju-mbti-9h1.pages.dev/",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "천지인 사주"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -353,6 +401,14 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .pay-prep-price{font-size:.78rem;color:var(--muted);letter-spacing:.02em;padding-top:8px;border-top:1px solid var(--border)}
 .pay-prep-price b{color:var(--accent);font-size:.92rem;font-weight:800}
 
+/* ── 사주 × MBTI 배지 (결과 헤로 아래) ── */
+.mbti-badge{margin:10px 12px 14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.5));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.mbti-badge-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
+.mbti-badge-head b{color:var(--accent-bright)}
+.mbti-badge-body{font-size:.82rem;color:var(--sub);line-height:1.78}
+.mbti-badge-body b{color:var(--text)}
+
 /* ── Narrative cards (유료 풀이) ── */
 .nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:14px;position:relative;overflow:hidden}
 .nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
@@ -549,7 +605,7 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
   <div class="view on" id="view-home">
     <div class="home-hero">
       <h1>천지인 사주</h1>
-      <div class="h-sub">만세력으로 천성을 알고, 대운으로 흐름을 읽다</div>
+      <div class="h-sub">사주팔자와 MBTI를 함께 풀어내는 새로운 해석<br><span style="opacity:.75;font-size:.92em">만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다</span></div>
       <div class="h-deco">天 · 地 · 人</div>
     </div>
     <div class="menu-wrap">
@@ -728,6 +784,41 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
               <option value="other">기타 해외 (시간 미보정)</option>
             </optgroup>
           </select>
+        </div>
+      </div>
+
+      <!-- MBTI (선택) -->
+      <div>
+        <div class="sec-label"><label for="iMbti" style="all:unset;cursor:pointer">MBTI</label> <span style="font-weight:400;text-transform:none;font-size:.7rem">(선택 — 사주와 비교 풀이가 추가됩니다)</span></div>
+        <div class="ig">
+          <select id="iMbti" aria-describedby="mbti-help">
+            <option value="">모름 / 건너뛰기</option>
+            <optgroup label="── 분석가 (NT) ──">
+              <option value="INTJ">INTJ — 전략가</option>
+              <option value="INTP">INTP — 논리술사</option>
+              <option value="ENTJ">ENTJ — 통솔자</option>
+              <option value="ENTP">ENTP — 변론가</option>
+            </optgroup>
+            <optgroup label="── 외교관 (NF) ──">
+              <option value="INFJ">INFJ — 옹호자</option>
+              <option value="INFP">INFP — 중재자</option>
+              <option value="ENFJ">ENFJ — 선도자</option>
+              <option value="ENFP">ENFP — 활동가</option>
+            </optgroup>
+            <optgroup label="── 관리자 (SJ) ──">
+              <option value="ISTJ">ISTJ — 청렴결백</option>
+              <option value="ISFJ">ISFJ — 수호자</option>
+              <option value="ESTJ">ESTJ — 경영자</option>
+              <option value="ESFJ">ESFJ — 집정관</option>
+            </optgroup>
+            <optgroup label="── 탐험가 (SP) ──">
+              <option value="ISTP">ISTP — 장인</option>
+              <option value="ISFP">ISFP — 모험가</option>
+              <option value="ESTP">ESTP — 사업가</option>
+              <option value="ESFP">ESFP — 연예인</option>
+            </optgroup>
+          </select>
+          <small id="mbti-help" style="display:block;margin-top:6px;font-size:.7rem;color:var(--muted);line-height:1.65">선택하시면 일주(日柱)와 MBTI의 결을 비교한 한 줄 풀이가 결과에 함께 노출됩니다.</small>
         </div>
       </div>
 
@@ -1180,6 +1271,7 @@ function restoreLastInputs(){
   const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null&&v!=='')e.value=v;};
   set('iY',i.year);set('iM',i.month);set('iD',i.day);
   set('iH',i.hour);set('iMin',i.min);set('iCity',i.cityKey);
+  set('iMbti',i.mbti);
 }
 // ── 결과 패널 라우팅 ──
 function gotoCard(idx){
@@ -1530,6 +1622,74 @@ function stemRich(idx){const s=STEM_META[idx];if(!s)return STEMKO[idx]||'';retur
 function branchRich(idx){const b=BRANCH_META[idx];if(!b)return BRCHKO[idx]||'';return `<b>${b.ko}(${b.animal})</b>(<em>${b.nick}</em> · ${b.keys})`;}
 function stemNick(idx){return STEM_META[idx]?STEM_META[idx].nick:'';}
 function branchNick(idx){return BRANCH_META[idx]?BRANCH_META[idx].nick:'';}
+
+// ── 사주(일간) × MBTI 매칭 — 일주와 MBTI의 결 비교 (선택했을 때만) ──
+// 일간 오행을 MBTI 4축에 매핑해 닮음 정도를 산출
+const MBTI_LABEL={INTJ:'전략가',INTP:'논리술사',ENTJ:'통솔자',ENTP:'변론가',
+  INFJ:'옹호자',INFP:'중재자',ENFJ:'선도자',ENFP:'활동가',
+  ISTJ:'청렴결백',ISFJ:'수호자',ESTJ:'경영자',ESFJ:'집정관',
+  ISTP:'장인',ISFP:'모험가',ESTP:'사업가',ESFP:'연예인'};
+// 일간 오행 → MBTI 4축 친화도 (각 축에서 어느 쪽이 더 잘 맞는지)
+// 木=N(직관), 火=E(외향), 土=S(감각), 金=T(사고), 水=N+P(직관·인식)
+function sajuMbtiMatch(saju, mbti){
+  if(!mbti||mbti.length!==4)return null;
+  const so=SOH[saju.dp.stem]; // 0목 1화 2토 3금 4수
+  const bo=BOH[saju.dp.branch];
+  const mE=mbti[0]==='E', mN=mbti[1]==='N', mT=mbti[2]==='T', mJ=mbti[3]==='J';
+  // 일간 본질의 각 축 친화도 (양수=일치, 음수=어긋남)
+  const stemMap=[
+    {E:0,N:1,T:0,J:0},  // 목 — 직관·창조 강함
+    {E:1,N:0,T:-1,J:0}, // 화 — 외향·표현·감정
+    {E:0,N:-1,T:0,J:1}, // 토 — 감각·안정·계획
+    {E:0,N:-1,T:1,J:1}, // 금 — 감각·논리·계획
+    {E:-1,N:1,T:0,J:-1} // 수 — 내향·직관·인식
+  ];
+  // 일지 보조 영향
+  const branchMap=[
+    {E:-1,N:1,T:0,J:0}, // 자(수)
+    {E:0,N:-1,T:0,J:1}, // 축(토)
+    {E:1,N:1,T:0,J:0},  // 인(목)
+    {E:0,N:1,T:0,J:0},  // 묘(목)
+    {E:0,N:-1,T:0,J:1}, // 진(토)
+    {E:1,N:0,T:-1,J:0}, // 사(화)
+    {E:1,N:0,T:-1,J:0}, // 오(화)
+    {E:0,N:-1,T:0,J:1}, // 미(토)
+    {E:0,N:-1,T:1,J:1}, // 신(금)
+    {E:0,N:-1,T:1,J:1}, // 유(금)
+    {E:0,N:-1,T:0,J:1}, // 술(토)
+    {E:-1,N:1,T:0,J:-1} // 해(수)
+  ];
+  const sm=stemMap[so], bm=branchMap[saju.dp.branch];
+  const score=(axis,mine)=>{
+    const sv=(sm[axis]||0)*0.7+(bm[axis]||0)*0.3;
+    return mine?sv:-sv; // 사용자 MBTI 방향과 일치하면 양수
+  };
+  const eAxis=score('E',mE), nAxis=score('N',mN), tAxis=score('T',mT), jAxis=score('J',mJ);
+  const sum=eAxis+nAxis+tAxis+jAxis; // -4 ~ +4
+  const pct=Math.round(50+sum*12); // 50% 기준 ±48%
+  const match=Math.max(35,Math.min(95,pct));
+  // 가장 결이 잘 맞는 축
+  const axes=[['외향(E)/내향(I)',eAxis,mE?'E':'I'],['직관(N)/감각(S)',nAxis,mN?'N':'S'],['사고(T)/감정(F)',tAxis,mT?'T':'F'],['계획(J)/인식(P)',jAxis,mJ?'J':'P']];
+  axes.sort((a,b)=>b[1]-a[1]);
+  const best=axes[0], worst=axes[3];
+  // 한 줄 요약
+  const dm=DM[saju.dp.stem];
+  const dStemKo=STEMKO[saju.dp.stem];
+  const dBrAnimal=ANIMAL[saju.dp.branch];
+  const headline=`${dStemKo}${BRCHKO[saju.dp.branch]}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — <b>${match}% 닮음</b>`;
+  let body=`「${stemNick(saju.dp.stem)}」 같은 ${dStemKo}일간`;
+  if(stemNick(saju.dp.stem))body+=`(${dm.n.split('(')[0]})`;
+  body+=`이 ${mbti}와 만나면 <b>${best[0].split('/')[best[2]==='E'||best[2]==='N'||best[2]==='T'||best[2]==='J'?0:1]}</b> 영역에서 결이 잘 맞고, <b>${worst[0].split('/')[worst[2]==='E'||worst[2]==='N'||worst[2]==='T'||worst[2]==='J'?0:1]}</b> 영역은 보완이 필요합니다.`;
+  return {match, headline, body, best, worst};
+}
+function mbtiBadgeHTML(saju, mbti){
+  const m=sajuMbtiMatch(saju,mbti);
+  if(!m)return '';
+  return `<div class="mbti-badge">
+    <div class="mbti-badge-head">☯︎ ${m.headline}</div>
+    <div class="mbti-badge-body">${m.body}</div>
+  </div>`;
+}
 
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
 function termNoticeHTML(){
@@ -5481,6 +5641,7 @@ function analyze(){
   let hour=parseInt(document.getElementById('iH').value);
   let min=parseInt(document.getElementById('iMin').value)||0;
   const cityKey=document.getElementById('iCity').value;
+  const mbti=(document.getElementById('iMbti')||{}).value||'';
 
   if(!year||year<1900||year>2050){return showErr('년도는 1900~2050 사이로 입력해주세요.');}
   if(!month||month<1||month>12){return showErr('월은 1~12로 입력해주세요.');}
@@ -5535,7 +5696,7 @@ function analyze(){
     day:document.getElementById('iD').value,
     hour:document.getElementById('iH').value,
     min:document.getElementById('iMin').value,
-    cityKey
+    cityKey,mbti
   };
 
   const btn=document.querySelector('.analyze-btn');
@@ -5558,7 +5719,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,mbti};
 
       // 패널 초기화 (선택 카테고리만 렌더)
       ['p0','p1','p2','p3','p4','p5'].forEach(id=>{
@@ -5567,20 +5728,28 @@ function analyze(){
       });
 
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
+      // MBTI 배지 — 사용자가 MBTI 선택했을 때만 헤로 영역 직후에 노출
+      const mbtiBadge=mbti?mbtiBadgeHTML(saju, mbti):'';
       let targetIdx=0;
       const unlocked=isUnlockedFor(cat);
       _paidUnlocked=unlocked;
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=back+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
+        document.getElementById('p0').innerHTML=back+mbtiBadge+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
         _p1.innerHTML=renderDailyFortune(saju);
+        // 일일운세는 자체 back 버튼 포함이라 mbti 배지를 그 다음에 삽입
+        if(mbtiBadge){
+          _p1.insertAdjacentHTML('beforeend','');
+          // 자체 back 버튼 직후에 배지 삽입
+          _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+mbtiBadge);
+        }
         enrichTerms(_p1);
         targetIdx=1;
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
-        _p2.innerHTML=back+(unlocked
+        _p2.innerHTML=back+mbtiBadge+(unlocked
           ?renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
           :renderPaidLock('daypick',saju));
         if(unlocked)enrichTerms(_p2);
@@ -5588,7 +5757,7 @@ function analyze(){
         targetIdx=2;
       }else if(cat==='monthly'){
         const _p3=document.getElementById('p3');
-        _p3.innerHTML=back+(unlocked
+        _p3.innerHTML=back+mbtiBadge+(unlocked
           ?renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
           :renderPaidLock('monthly',saju));
         if(unlocked)enrichTerms(_p3);
@@ -5596,7 +5765,7 @@ function analyze(){
         targetIdx=3;
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
-        _p4.innerHTML=back+(unlocked
+        _p4.innerHTML=back+mbtiBadge+(unlocked
           ?renderNewyearFortune(saju,nyExtra.y)
           :renderPaidLock('newyear',saju));
         if(unlocked)enrichTerms(_p4);
@@ -5604,7 +5773,7 @@ function analyze(){
         targetIdx=4;
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
-        _p5.innerHTML=back+(unlocked
+        _p5.innerHTML=back+mbtiBadge+(unlocked
           ?renderSajuPaid(saju,sy,sm,sd,hour,min)
           :renderPaidLock('life',saju));
         if(unlocked)enrichTerms(_p5);
