@@ -132,6 +132,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .form-body fieldset{border:0;padding:0;margin:0;min-width:0}
 .form-body legend{padding:0;font-size:.72rem;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:7px;text-transform:uppercase;display:block;width:100%}
 .form-body legend small{font-weight:400;text-transform:none;font-size:.7rem;letter-spacing:.02em;color:var(--muted)}
+.time-unknown-row{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:var(--card);border:1px solid var(--border);border-radius:50px;font-size:.82rem;color:var(--sub);cursor:pointer;user-select:none;transition:.18s}
+.time-unknown-row:hover{border-color:rgba(212,175,55,.45);color:var(--text)}
+.time-unknown-row input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;margin:0}
+/* 분석 중 스피너 */
+.ldspin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:ldspin .8s linear infinite;vertical-align:-2px;margin-right:6px;opacity:.85}
+@keyframes ldspin{to{transform:rotate(360deg)}}
+/* invalid 필드 — 잘못된 입력 강조 */
+.form-body input[aria-invalid="true"],.form-body select[aria-invalid="true"]{border-color:#e0533f;box-shadow:0 0 0 3px rgba(224,83,63,.18)}
 .sec-label{font-size:.72rem;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:7px;text-transform:uppercase}
 .tog-row{display:flex;gap:8px}
 .tog{flex:1;padding:10px 4px;border:1px solid var(--border);border-radius:50px;background:var(--card);font-size:.88rem;font-weight:600;color:var(--sub);cursor:pointer;transition:.22s ease;font-family:inherit}
@@ -421,6 +429,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-badge-head b{color:var(--accent-bright)}
 .mbti-badge-body{font-size:.82rem;color:var(--sub);line-height:1.78}
 .mbti-badge-body b{color:var(--text)}
+
+/* ── 결과 헤더 SNS 후크 헤드라인 ── */
+.result-hero{margin:8px 12px 14px;padding:18px 18px 16px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;text-align:center;position:relative;overflow:hidden}
+.result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.result-hero-tag{display:inline-block;padding:3px 14px;border-radius:50px;font-size:.7rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);letter-spacing:.04em;margin-bottom:10px}
+.result-hero-headline{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.5;margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
+.result-hero-match{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:50px;font-size:.74rem;font-weight:700;color:var(--accent-bright);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,215,124,.1));border:1px solid rgba(245,215,124,.4)}
+.result-hero-keys{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.result-hero-keys span{display:inline-block;padding:3px 10px;border-radius:50px;background:var(--bg-deep);border:1px solid var(--border);color:var(--sub);font-size:.7rem;font-weight:600;letter-spacing:-.01em}
+
+/* 캡처 워터마크 — 이미지 저장 시 우하단 고정 */
+.cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
 .nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:14px;position:relative;overflow:hidden}
@@ -728,29 +748,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
       </fieldset>
 
       <fieldset>
-        <legend>태어난 시각 <small>(모르면 미상 선택)</small></legend>
-        <div class="row3">
+        <legend>태어난 시각 <small>(시주 산출 — 정확하면 좋고 모르면 건너뛰기)</small></legend>
+        <label class="time-unknown-row">
+          <input type="checkbox" id="iTimeUnknown" onchange="setTimeUnknown(this.checked)" aria-controls="timeInputs">
+          <span>시간을 모릅니다</span>
+        </label>
+        <!-- 숨김 필드: -1=미상 / 0~23=시 — 기존 analyze() 호환 -->
+        <input type="hidden" id="iH" name="birthHour" value="12">
+        <div class="row3" id="timeInputs" style="margin-top:10px">
           <div class="ig">
-            <label for="iH">시 (時)</label>
-            <select id="iH" name="birthHour">
-              <option value="-1">시간 미상</option>
-              <option value="0">00시 자정</option>
-              <option value="1">01시</option><option value="2">02시</option>
-              <option value="3">03시</option><option value="4">04시</option>
-              <option value="5">05시</option><option value="6">06시</option>
-              <option value="7">07시</option><option value="8">08시</option>
-              <option value="9">09시</option><option value="10">10시</option>
-              <option value="11">11시</option><option value="12">12시 정오</option>
-              <option value="13">13시</option><option value="14">14시</option>
-              <option value="15">15시</option><option value="16">16시</option>
-              <option value="17">17시</option><option value="18">18시</option>
-              <option value="19">19시</option><option value="20">20시</option>
-              <option value="21">21시</option><option value="22">22시</option>
-              <option value="23">23시</option>
-            </select>
+            <label for="iHourInput">시 (0~23)</label>
+            <input type="number" id="iHourInput" name="birthHourInput" min="0" max="23" placeholder="예: 14" inputmode="numeric" autocomplete="off" oninput="syncHourInput(this.value)">
           </div>
           <div class="ig">
-            <label for="iMin">분 (分)</label>
+            <label for="iMin">분 (5분 단위)</label>
             <select id="iMin" name="birthMinute">
               <option value="0">00분</option><option value="5">05분</option>
               <option value="10">10분</option><option value="15">15분</option>
@@ -1194,6 +1205,28 @@ function getTrueSolarOffsetMin(cityKey){
   return (lon-tz)*4; // 분 단위
 }
 
+// 시간 미상 토글 + 시 입력 동기화
+function setTimeUnknown(unknown){
+  const wrap=document.getElementById('timeInputs');
+  const hourIn=document.getElementById('iHourInput');
+  const minIn=document.getElementById('iMin');
+  const hidden=document.getElementById('iH');
+  if(wrap)wrap.style.opacity=unknown?'.4':'1';
+  if(hourIn){hourIn.disabled=unknown;}
+  if(minIn){minIn.disabled=unknown;}
+  if(hidden){
+    if(unknown){hidden.value='-1';}
+    else{
+      const h=parseInt(hourIn&&hourIn.value);
+      hidden.value=isNaN(h)?'12':String(h);
+    }
+  }
+}
+function syncHourInput(v){
+  const hidden=document.getElementById('iH');
+  const n=parseInt(v);
+  if(hidden){hidden.value=isNaN(n)?'12':String(Math.max(0,Math.min(23,n)));}
+}
 function _setTog(id,on){
   const el=document.getElementById(id);
   if(!el)return;
@@ -1288,6 +1321,16 @@ function restoreLastInputs(){
   set('iY',i.year);set('iM',i.month);set('iD',i.day);
   set('iH',i.hour);set('iMin',i.min);set('iCity',i.cityKey);
   set('iMbti',i.mbti);
+  // 시간 입력 복원
+  const hr=parseInt(i.hour);
+  const tu=document.getElementById('iTimeUnknown');
+  const hi=document.getElementById('iHourInput');
+  if(hr<0||isNaN(hr)){
+    if(tu){tu.checked=true;setTimeUnknown(true);}
+  }else{
+    if(tu){tu.checked=false;setTimeUnknown(false);}
+    if(hi)hi.value=String(hr);
+  }
 }
 // ── 결과 패널 라우팅 ──
 function gotoCard(idx){
@@ -1705,6 +1748,43 @@ function mbtiBadgeHTML(saju, mbti){
     <div class="mbti-badge-head">☯︎ ${m.headline}</div>
     <div class="mbti-badge-body">${m.body}</div>
   </div>`;
+}
+
+// ── 결과 헤더 SNS 후크 헤드라인 ──
+// 카테고리별로 공유하고 싶은 한 줄 헤드라인을 생성
+function resultHeroHTML(saju, mbti, cat){
+  const dStem=saju.dp.stem, dBr=saju.dp.branch;
+  const dStemKo=STEMKO[dStem], dBrKo=BRCHKO[dBr];
+  const ilju=`${dStemKo}${dBrKo}일주`;
+  const stemNickStr=stemNick(dStem)||'';
+  const branchNickStr=branchNick(dBr)||'';
+  // 카테고리별 한 줄 헤드라인
+  const catHeadlines={
+    manse:`${ilju} — 「${stemNickStr}」 같은 본인의 사주 원국`,
+    daily:`「${stemNickStr}」 같은 ${ilju}의 오늘`,
+    daypick:`「${stemNickStr}」 같은 ${ilju}의 결정적 하루`,
+    monthly:`「${stemNickStr}」 같은 ${ilju}의 12개월 흐름`,
+    newyear:`「${stemNickStr}」 같은 ${ilju}의 한 해`,
+    life:`「${stemNickStr}」 같은 ${ilju}의 평생 결`
+  };
+  const headline=catHeadlines[cat]||catHeadlines.manse;
+
+  // MBTI가 있으면 매칭 점수 추가
+  let tag=ilju;
+  let extraLine='';
+  if(mbti){
+    const m=sajuMbtiMatch(saju,mbti);
+    if(m){
+      tag=`${ilju} × ${mbti}`;
+      extraLine=`<div class="result-hero-match">${m.match}% 닮음 — ${MBTI_LABEL[mbti]||''}</div>`;
+    }
+  }
+  return `<header class="result-hero">
+    <div class="result-hero-tag">${tag}</div>
+    <h2 class="result-hero-headline">${headline}</h2>
+    ${extraLine}
+    <div class="result-hero-keys">${(STEM_META[dStem]?STEM_META[dStem].keys:'').split('·').slice(0,4).map(k=>`<span>${k.trim()}</span>`).join('')}</div>
+  </header>`;
 }
 
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
@@ -5648,8 +5728,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
 //  MAIN
 // ══════════════════════════════════════════════
 function analyze(){
-  const errEl=document.getElementById('errMsg');
-  errEl.className='err';
+  clearErr();
 
   const year=parseInt(document.getElementById('iY').value)||0;
   const month=parseInt(document.getElementById('iM').value)||0;
@@ -5659,9 +5738,9 @@ function analyze(){
   const cityKey=document.getElementById('iCity').value;
   const mbti=(document.getElementById('iMbti')||{}).value||'';
 
-  if(!year||year<1900||year>2050){return showErr('년도는 1900~2050 사이로 입력해주세요.');}
-  if(!month||month<1||month>12){return showErr('월은 1~12로 입력해주세요.');}
-  if(!day||day<1||day>31){return showErr('일은 1~31로 입력해주세요.');}
+  if(!year||year<1900||year>2050)return showErr('년도는 1900~2050 사이로 입력해주세요.','iY');
+  if(!month||month<1||month>12)return showErr('월은 1~12로 입력해주세요.','iM');
+  if(!day||day<1||day>31)return showErr('일은 1~31로 입력해주세요.','iD');
 
   // 카테고리별 추가 입력 검증
   const cat=_category||'manse';
@@ -5670,23 +5749,26 @@ function analyze(){
     const y=parseInt(document.getElementById('dpY').value)||0;
     const m=parseInt(document.getElementById('dpM').value)||0;
     const d=parseInt(document.getElementById('dpD').value)||0;
-    if(!y||!m||!d)return showErr('지정일을 입력해주세요 (년·월·일).');
-    if(m<1||m>12||d<1||d>31)return showErr('지정일의 월/일이 올바르지 않습니다.');
+    if(!y)return showErr('지정일의 년도를 입력해주세요.','dpY');
+    if(!m||m<1||m>12)return showErr('지정일의 월(1~12)을 입력해주세요.','dpM');
+    if(!d||d<1||d>31)return showErr('지정일의 일(1~31)을 입력해주세요.','dpD');
     dpExtra={y,m,d};
   }else if(cat==='monthly'){
     const sy=parseInt(document.getElementById('moStartY').value)||0;
     const sm=parseInt(document.getElementById('moStartM').value)||0;
     const ey=parseInt(document.getElementById('moEndY').value)||0;
     const em=parseInt(document.getElementById('moEndM').value)||0;
-    if(!sy||!sm||!ey||!em)return showErr('월별 운세의 시작/종료 년·월을 입력해주세요.');
-    if(sm<1||sm>12||em<1||em>12)return showErr('월은 1~12로 입력해주세요.');
+    if(!sy)return showErr('시작 년도를 입력해주세요.','moStartY');
+    if(!sm||sm<1||sm>12)return showErr('시작 월(1~12)을 입력해주세요.','moStartM');
+    if(!ey)return showErr('종료 년도를 입력해주세요.','moEndY');
+    if(!em||em<1||em>12)return showErr('종료 월(1~12)을 입력해주세요.','moEndM');
     const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
-    if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.');
-    if(endIdx-startIdx+1>12)return showErr('월별 운세는 최대 12개월까지 가능합니다.');
+    if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.','moEndM');
+    if(endIdx-startIdx+1>12)return showErr('월별 운세는 최대 12개월까지 가능합니다.','moEndM');
     moExtra={sy,sm,ey,em};
   }else if(cat==='newyear'){
     const y=parseInt(document.getElementById('nyY').value)||0;
-    if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.');
+    if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.','nyY');
     nyExtra={y};
   }
 
@@ -5716,8 +5798,30 @@ function analyze(){
   };
 
   const btn=document.querySelector('.analyze-btn');
-  btn.textContent='⏳ 만세력 계산 중...';
   btn.disabled=true;
+  btn.setAttribute('aria-busy','true');
+  // 단계별 메시지 — 체감 대기 시간 단축
+  const stages=[
+    '⏳ 만세력 계산 중...',
+    '🌗 진태양시 보정 중...',
+    '🌀 천간·지지 산출 중...',
+    '🔮 십신·격국 분석 중...',
+    '✨ 풀이 완성 중...'
+  ];
+  btn.innerHTML=`<span class="ldspin" aria-hidden="true"></span> <span id="loadingMsg">${stages[0]}</span>`;
+  let _stageI=0;
+  const _stageTimer=setInterval(()=>{
+    _stageI=Math.min(_stageI+1,stages.length-1);
+    const m=document.getElementById('loadingMsg');
+    if(m)m.textContent=stages[_stageI];
+  },280);
+  // 분석 후 정리
+  const _restoreBtn=()=>{
+    clearInterval(_stageTimer);
+    btn.removeAttribute('aria-busy');
+    btn.textContent='✦ 사주 분석하기 ✦';
+    btn.disabled=false;
+  };
 
   setTimeout(()=>{
     try{
@@ -5744,28 +5848,26 @@ function analyze(){
       });
 
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
-      // MBTI 배지 — 사용자가 MBTI 선택했을 때만 헤로 영역 직후에 노출
+      // 결과 헤더 SNS 후크 + MBTI 배지 (선택 시)
+      const heroHTML=resultHeroHTML(saju, mbti, cat);
       const mbtiBadge=mbti?mbtiBadgeHTML(saju, mbti):'';
+      const headerBlock=heroHTML+mbtiBadge;
       let targetIdx=0;
       const unlocked=isUnlockedFor(cat);
       _paidUnlocked=unlocked;
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=back+mbtiBadge+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
+        document.getElementById('p0').innerHTML=back+headerBlock+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
         _p1.innerHTML=renderDailyFortune(saju);
-        // 일일운세는 자체 back 버튼 포함이라 mbti 배지를 그 다음에 삽입
-        if(mbtiBadge){
-          _p1.insertAdjacentHTML('beforeend','');
-          // 자체 back 버튼 직후에 배지 삽입
-          _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+mbtiBadge);
-        }
+        // 일일운세는 자체 back 버튼 포함이라 헤더 블록을 그 직후에 삽입
+        _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+headerBlock);
         enrichTerms(_p1);
         targetIdx=1;
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
-        _p2.innerHTML=back+mbtiBadge+(unlocked
+        _p2.innerHTML=back+headerBlock+(unlocked
           ?renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
           :renderPaidLock('daypick',saju));
         if(unlocked)enrichTerms(_p2);
@@ -5773,7 +5875,7 @@ function analyze(){
         targetIdx=2;
       }else if(cat==='monthly'){
         const _p3=document.getElementById('p3');
-        _p3.innerHTML=back+mbtiBadge+(unlocked
+        _p3.innerHTML=back+headerBlock+(unlocked
           ?renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
           :renderPaidLock('monthly',saju));
         if(unlocked)enrichTerms(_p3);
@@ -5781,7 +5883,7 @@ function analyze(){
         targetIdx=3;
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
-        _p4.innerHTML=back+mbtiBadge+(unlocked
+        _p4.innerHTML=back+headerBlock+(unlocked
           ?renderNewyearFortune(saju,nyExtra.y)
           :renderPaidLock('newyear',saju));
         if(unlocked)enrichTerms(_p4);
@@ -5789,7 +5891,7 @@ function analyze(){
         targetIdx=4;
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
-        _p5.innerHTML=back+mbtiBadge+(unlocked
+        _p5.innerHTML=back+headerBlock+(unlocked
           ?renderSajuPaid(saju,sy,sm,sd,hour,min)
           :renderPaidLock('life',saju));
         if(unlocked)enrichTerms(_p5);
@@ -5810,16 +5912,38 @@ function analyze(){
     }catch(e){
       showErr(e.message||'분석 중 오류가 발생했습니다. 입력값을 확인해주세요.');
     }finally{
-      btn.textContent='✦ 사주 분석하기 ✦';
-      btn.disabled=false;
+      _restoreBtn();
     }
   },60);
 }
 
-function showErr(msg){
+function showErr(msg, focusFieldId){
+  // 이전 invalid 표시 제거
+  document.querySelectorAll('.form-body [aria-invalid="true"]').forEach(el=>{
+    el.removeAttribute('aria-invalid');
+  });
   const el=document.getElementById('errMsg');
-  el.textContent=msg;
-  el.className='err vis';
+  if(el){
+    el.textContent=msg;
+    el.className='err vis';
+  }
+  if(focusFieldId){
+    const target=document.getElementById(focusFieldId);
+    if(target){
+      target.setAttribute('aria-invalid','true');
+      // 폼 위에 있을 때만 포커스 (다른 화면에선 무시)
+      if(document.getElementById('view-input')&&document.getElementById('view-input').classList.contains('on')){
+        try{target.focus({preventScroll:false});}catch(e){target.focus();}
+      }
+    }
+  }
+}
+function clearErr(){
+  document.querySelectorAll('.form-body [aria-invalid="true"]').forEach(el=>{
+    el.removeAttribute('aria-invalid');
+  });
+  const el=document.getElementById('errMsg');
+  if(el){el.textContent='';el.className='err';}
 }
 
 // ══════════════════════════════════════════════
@@ -5827,6 +5951,15 @@ function showErr(msg){
 // ══════════════════════════════════════════════
 // 카카오 앱 키 설정 (https://developers.kakao.com 에서 발급 후 여기에 입력)
 const KAKAO_APP_KEY='';
+
+// 공유 URL에 UTM 파라미터 자동 추가 (트래픽 트래킹)
+function shareURL(){
+  const base='https://saju-mbti-9h1.pages.dev/';
+  const utm='?utm_source=share&utm_medium=copy&utm_campaign=result_share';
+  // 카테고리도 추적
+  const catTag=_category?`&utm_content=${_category}`:'';
+  return base+utm+catTag;
+}
 
 function generateShareText(){
   if(!_saju)return'';
@@ -5839,7 +5972,16 @@ function generateShareText(){
     _saju.hp?STEMS[_saju.hp.stem]+BRCH[_saju.hp.branch]:'??',
   ].join(' ');
   const ohStr=['목','화','토','금','수'].map((n,i)=>`${n}${oh[i]}`).join(' ');
-  return `🔮 나의 사주팔자 분석 결과\n\n일간: ${dm.n}\n사주: ${pillars}\n오행: ${ohStr}\n\n타고난 기질: ${dm.core}\n강점: ${dm.pos.slice(0,3).join(' · ')}\n\n✨ 사주팔자 & MBTI 분석\n${window.location.href}`;
+  // SNS 후크 헤드라인 (MBTI 있을 때 강화)
+  const ilju=`${STEMKO[_saju.dp.stem]}${BRCHKO[_saju.dp.branch]}일주`;
+  const stemNickStr=stemNick(_saju.dp.stem);
+  let hookLine=`「${stemNickStr}」 같은 ${ilju}`;
+  const mbti=(_meta&&_meta.mbti)||'';
+  if(mbti){
+    const m=sajuMbtiMatch(_saju,mbti);
+    if(m)hookLine=`${ilju} × ${mbti} — ${m.match}% 닮음`;
+  }
+  return `🔮 ${hookLine}\n\n일간: ${dm.n}\n사주: ${pillars}\n오행: ${ohStr}\n\n타고난 기질: ${dm.core}\n강점: ${dm.pos.slice(0,3).join(' · ')}\n\n✨ 천지인 사주 — 사주팔자 × MBTI 통합 분석\n${shareURL()}`;
 }
 
 function showShareModal(){
@@ -5874,16 +6016,28 @@ async function _downloadCanvas(canvas,filename){
   setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 
+// 캡처 직전 워터마크 삽입 → 캡처 후 제거
+function _injectWatermark(target){
+  const wm=document.createElement('div');
+  wm.className='cap-watermark';
+  wm.innerHTML=`☯︎ 천지인 사주 · saju-mbti-9h1.pages.dev`;
+  target.appendChild(wm);
+  return wm;
+}
 async function saveAsImage(btn){
   if(!window.html2canvas){alert('이미지 저장 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');return;}
   const orig=btn.innerHTML;
   btn.innerHTML='⏳ 저장 중...';btn.disabled=true;
+  const target=document.querySelector('.panel.on')||document.getElementById('p0');
+  const wm=_injectWatermark(target);
   try{
-    const target=document.querySelector('.panel.on')||document.getElementById('p0');
     const canvas=await html2canvas(target,_captureOpts());
     await _downloadCanvas(canvas,`사주팔자_${new Date().toISOString().slice(0,10)}.jpg`);
   }catch(e){alert('이미지 저장 중 오류가 발생했습니다.');}
-  finally{btn.innerHTML=orig;btn.disabled=false;}
+  finally{
+    if(wm&&wm.parentNode)wm.parentNode.removeChild(wm);
+    btn.innerHTML=orig;btn.disabled=false;
+  }
 }
 
 function shareToKakao(){
@@ -5892,10 +6046,11 @@ function shareToKakao(){
   // Kakao SDK 사용
   if(KAKAO_APP_KEY&&window.Kakao){
     if(!Kakao.isInitialized())Kakao.init(KAKAO_APP_KEY);
+    const u=shareURL();
     Kakao.Share.sendDefault({
       objectType:'text',
       text:text.slice(0,200),
-      link:{mobileWebUrl:window.location.href,webUrl:window.location.href},
+      link:{mobileWebUrl:u,webUrl:u},
     });
     return;
   }
@@ -5910,7 +6065,7 @@ function shareToKakao(){
 function shareToBand(){
   closeShareModal();
   const text=generateShareText();
-  window.open('https://band.us/plugin/share?body='+encodeURIComponent(text)+'&route='+encodeURIComponent(window.location.href),'_blank','width=500,height=500,noopener');
+  window.open('https://band.us/plugin/share?body='+encodeURIComponent(text)+'&route='+encodeURIComponent(shareURL()),'_blank','width=500,height=500,noopener');
 }
 
 async function shareToInstagram(){
@@ -5922,18 +6077,22 @@ async function shareToInstagram(){
   const btn=document.getElementById('saveImgBtn');
   const orig=btn.innerHTML;
   btn.innerHTML='⏳ 저장 중...';btn.disabled=true;
+  const target=document.querySelector('.panel.on')||document.getElementById('p0');
+  const wm=_injectWatermark(target);
   try{
-    const target=document.querySelector('.panel.on')||document.getElementById('p0');
     const canvas=await html2canvas(target,_captureOpts());
     await _downloadCanvas(canvas,`사주팔자_인스타_${new Date().toISOString().slice(0,10)}.jpg`);
     setTimeout(()=>alert('✅ 이미지가 저장됐습니다!\n인스타그램 앱을 열고 [+] 버튼으로 이미지를 업로드해주세요.'),600);
   }catch(e){alert('이미지 생성 중 오류가 발생했습니다.');}
-  finally{btn.innerHTML=orig;btn.disabled=false;}
+  finally{
+    if(wm&&wm.parentNode)wm.parentNode.removeChild(wm);
+    btn.innerHTML=orig;btn.disabled=false;
+  }
 }
 
 function shareToFacebook(){
   closeShareModal();
-  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'_blank','width=600,height=400,noopener');
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareURL()),'_blank','width=600,height=400,noopener');
 }
 
 function shareToX(){
