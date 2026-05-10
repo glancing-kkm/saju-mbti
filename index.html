@@ -489,6 +489,43 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tldr-card li b{color:var(--text)}
 .tldr-disclaimer{margin:14px 0 0;font-size:.7rem;color:var(--muted);line-height:1.65;text-align:center;letter-spacing:.02em}
 
+/* ── 결과 끝 — 후속 행동 CTA ── */
+.next-actions{margin:24px 12px 18px;padding:18px 16px 16px;background:linear-gradient(135deg,var(--card),rgba(45,52,71,.55));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.next-actions::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.next-actions-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 14px;letter-spacing:-.01em;text-align:center}
+.next-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:540px){.next-actions-grid{grid-template-columns:1fr 1fr 1fr}}
+.next-action-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 10px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s;font-family:inherit;text-align:center;position:relative;min-height:118px}
+.next-action-card:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:0 6px 18px rgba(212,175,55,.1)}
+.next-action-card.highlight{background:linear-gradient(135deg,rgba(212,175,55,.14),var(--bg-deep));border-color:var(--accent)}
+.na-icon{font-size:1.6rem;line-height:1;margin-bottom:2px}
+.na-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.na-desc{font-size:.68rem;color:var(--muted);line-height:1.55;letter-spacing:-.01em;padding:0 4px}
+.na-tag{display:inline-block;padding:2px 8px;border-radius:50px;font-size:.56rem;font-weight:800;letter-spacing:.06em;border:1px solid;text-transform:uppercase;margin-top:2px}
+.na-tag.free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
+.na-tag.paid{color:var(--accent-bright);background:var(--accent-soft);border-color:rgba(212,175,55,.4)}
+.na-tag.signature{color:#f5d77c;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(245,215,124,.12));border-color:rgba(245,215,124,.55)}
+.na-tag.share,.na-tag.save,.na-tag.guide{color:var(--accent);background:var(--accent-soft);border-color:rgba(212,175,55,.4)}
+.next-actions-foot{margin:14px 0 0;font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6}
+
+/* ── 신살 미니 박스 ── */
+.sinsal-mini-wrap{margin-top:12px}
+.sinsal-mini-intro{font-size:.78rem;color:var(--sub);margin:0 0 10px;line-height:1.7}
+.sinsal-mini-grid{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:560px){.sinsal-mini-grid{grid-template-columns:1fr 1fr}}
+.sinsal-mini-card{padding:11px 13px;border-radius:10px;border:1px solid var(--border);background:var(--bg-deep);position:relative;overflow:hidden}
+.sinsal-mini-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:currentColor;opacity:.7}
+.sinsal-mini-card.sin-good{color:var(--wood);border-color:rgba(108,191,126,.4);background:linear-gradient(135deg,rgba(108,191,126,.08),var(--bg-deep))}
+.sinsal-mini-card.sin-bad{color:var(--fire);border-color:rgba(229,116,98,.4);background:linear-gradient(135deg,rgba(229,116,98,.08),var(--bg-deep))}
+.sinsal-mini-card.sin-neutral{color:var(--accent);border-color:rgba(212,175,55,.4);background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep))}
+.sinsal-mini-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.sinsal-mini-badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:.6rem;font-weight:800;color:currentColor;background:currentColor;letter-spacing:.06em}
+.sinsal-mini-card .sinsal-mini-badge{background:rgba(255,255,255,.04)}
+.sinsal-mini-loc{font-size:.66rem;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.sinsal-mini-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.01em}
+.sinsal-mini-hj{color:var(--muted);font-weight:400;font-size:.78rem;margin-left:3px}
+.sinsal-mini-desc{font-size:.74rem;color:var(--sub);line-height:1.7}
+
 /* ── 결과 헤더 SNS 후크 헤드라인 ── */
 .result-hero{margin:8px 12px 14px;padding:18px 18px 16px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;text-align:center;position:relative;overflow:hidden}
 .result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
@@ -2147,6 +2184,80 @@ function tldrCardHTML(saju, mbti, cat, meta){
   return h;
 }
 
+// ── 신살 미니 박스 헬퍼 — 길성/흉살/중성 배지 + 카드 스타일 ──
+function sinsalMiniHTML(activeSins, contextDesc){
+  if(!activeSins||!activeSins.length)return '';
+  const badge=tag=>tag==='g'?{lab:'길성',cls:'sin-good'}:tag==='r'?{lab:'흉살',cls:'sin-bad'}:{lab:'중성',cls:'sin-neutral'};
+  let h=`<div class="sinsal-mini-wrap">
+    <p class="sinsal-mini-intro">${contextDesc||'본인 사주에서 지금 활성화되는 신살입니다.'}</p>
+    <div class="sinsal-mini-grid">`;
+  activeSins.forEach(s=>{
+    const b=badge(s.tag);
+    const name=s.n.split(' ')[0];
+    const hanja=s.n.match(/\(([^)]+)\)/)?.[1]||'';
+    h+=`<div class="sinsal-mini-card ${b.cls}">
+      <div class="sinsal-mini-head">
+        <span class="sinsal-mini-badge">${b.lab}</span>
+        <span class="sinsal-mini-loc">${s.loc}</span>
+      </div>
+      <div class="sinsal-mini-name">${name}${hanja?`<span class="sinsal-mini-hj">(${hanja})</span>`:''}</div>
+      <div class="sinsal-mini-desc">${s.d}</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+// ── 후속 행동 CTA — 결과 페이지 끝, 다음 카테고리·공유 유도 ──
+function nextActionsHTML(currentCat){
+  // 현재 카테고리 외 추천 카드 3-4개 + 공유/저장
+  const allCats=[
+    {key:'manse',icon:'📅',title:'만세력',desc:'사주 8글자 정확 산출',price:'무료'},
+    {key:'daily',icon:'✨',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
+    {key:'daypick',icon:'🎯',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
+    {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 12개월 흐름',price:'프리미엄'},
+    {key:'newyear',icon:'🎉',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
+    {key:'life',icon:'🌼',title:'인생총운',desc:'대운 흐름 평생 풀이',price:'시그니처'}
+  ];
+  const others=allCats.filter(c=>c.key!==currentCat).slice(0,3);
+
+  let h=`<section class="next-actions" aria-label="다음 단계 안내">
+    <h3 class="next-actions-title">👉 이런 분석도 받아보세요</h3>
+    <div class="next-actions-grid">`;
+  others.forEach(c=>{
+    const priceClass=c.price==='무료'?'free':c.price==='시그니처'?'signature':'paid';
+    h+=`<button type="button" class="next-action-card" onclick="goToInput('${c.key}')" aria-label="${c.title} — ${c.desc}">
+      <div class="na-icon" aria-hidden="true">${c.icon}</div>
+      <div class="na-title">${c.title}</div>
+      <div class="na-desc">${c.desc}</div>
+      <div class="na-tag ${priceClass}">${c.price}</div>
+    </button>`;
+  });
+  // 공유 / 저장 / 가이드 카드
+  h+=`<button type="button" class="next-action-card highlight" onclick="showShareModal()" aria-label="결과를 친구에게 공유">
+      <div class="na-icon" aria-hidden="true">🎁</div>
+      <div class="na-title">친구에게 공유</div>
+      <div class="na-desc">「○○일주 × MBTI」 한 줄 요약을 공유하세요</div>
+      <div class="na-tag share">SHARE</div>
+    </button>
+    <button type="button" class="next-action-card" onclick="saveAsImage(this)" aria-label="결과를 이미지로 저장">
+      <div class="na-icon" aria-hidden="true">📥</div>
+      <div class="na-title">이미지로 저장</div>
+      <div class="na-desc">결과 카드를 갤러리에 보관 (워터마크 포함)</div>
+      <div class="na-tag save">SAVE</div>
+    </button>
+    <a class="next-action-card" href="/blog/" aria-label="사주 가이드 모음 보기">
+      <div class="na-icon" aria-hidden="true">📚</div>
+      <div class="na-title">사주 가이드 보기</div>
+      <div class="na-desc">60갑자·MBTI·신살·시기별 풀이 100+편</div>
+      <div class="na-tag guide">GUIDE</div>
+    </a>`;
+  h+=`</div>
+    <p class="next-actions-foot">※ 본인 사주는 한 번만 입력하면 다른 카테고리로 자유롭게 전환됩니다.</p>
+  </section>`;
+  return h;
+}
+
 // ── 결과 헤더 SNS 후크 헤드라인 ──
 // 카테고리별로 공유하고 싶은 한 줄 헤드라인을 생성
 function resultHeroHTML(saju, mbti, cat){
@@ -2419,13 +2530,11 @@ function renderDaypickFortune(saju,y,m,d){
   luckyBody+=`<p><b style="color:#e57462">⚡ 한 번 더 살필 띠</b><br>${badZ.length?badZ.join(' · '):'강한 충을 부르는 띠는 없습니다.'}<br><span style="color:var(--sub);font-size:.78rem">이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
   h+=paidWrapBody('LUCKY','🧭','길방위 · 길색 · 길수 · 만나면 좋은 띠',luckyBody);
 
-  // ── 활성 신살
+  // ── 활성 신살 (미니 박스로)
   if(activeSins.length>0){
     let sinBody=`<p>본인 사주의 신살 중, 그날 일진(${dpStemKo}${dpBrKo})의 지지와 같은 자리에 있는 신살이 활성화됩니다. 이 신살의 작용이 그날 평소보다 강하게 나타납니다.</p>`;
     sinBody+=miniManseWithSinsal(saju);
-    activeSins.forEach(s=>{
-      sinBody+=`<p><b>${s.n}</b> <span style="color:var(--sub);font-size:.78rem">[${s.loc}]</span><br>${s.d}</p>`;
-    });
+    sinBody+=sinsalMiniHTML(activeSins, '아래 신살의 작용이 그날 강하게 발현됩니다.');
     h+=paidWrapBody('SINSAL','⚡','그날 활성화되는 신살(神煞)',sinBody);
   }
 
@@ -2871,9 +2980,7 @@ function renderNewyearFortune(saju,y){
   if(activeYearSins.length>0){
     let sinBody=`<p>본인 사주의 신살 중, 세운 일지(${ypBrKo})와 만나며 ${y}년 한 해 동안 강하게 활성화되는 신살입니다.</p>`;
     sinBody+=miniManseWithSinsal(saju);
-    activeYearSins.forEach(s=>{
-      sinBody+=`<p><b>${s.n}</b> <span style="color:var(--sub);font-size:.78rem">[${s.loc}]</span><br>${s.d}</p>`;
-    });
+    sinBody+=sinsalMiniHTML(activeYearSins, `아래 신살의 작용이 ${y}년 한 해 동안 강하게 발현됩니다.`);
     h+=paidWrapBody('SINSAL','⚡',`${y}년 활성화되는 신살(神煞)`,sinBody);
   }
 
@@ -4948,6 +5055,60 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
   });
   h+=`</div></div>`;
 
+  // 산출 근거 + 보완 방법 표
+  const coupleOh=ohCount(s1).map((v,i)=>v+ohCount(s2)[i]);
+  const coupleWeak=coupleOh.indexOf(Math.min(...coupleOh));
+  const coupleDom=coupleOh.indexOf(Math.max(...coupleOh));
+  const fixByOh=[
+    {color:'녹색·청색',dir:'동쪽·동남쪽',food:'신맛·녹색 채소·견과',activity:'산책·등산·식물 키우기'},
+    {color:'붉은색·주황',dir:'남쪽',food:'쓴맛·붉은 식재료',activity:'운동·요가·표현 활동'},
+    {color:'노란색·베이지',dir:'중앙·서남',food:'단맛·뿌리채소',activity:'명상·정원 가꾸기'},
+    {color:'흰색·은색',dir:'서쪽',food:'매운맛·흰 식재료',activity:'호흡·필라테스'},
+    {color:'검정·남색',dir:'북쪽',food:'짠맛·검은 식재료',activity:'수영·독서'}
+  ];
+  const fix=fixByOh[coupleWeak];
+  h+=`<div class="couple-breakdown" style="margin-top:18px">
+    <div class="ny-sec-title">📋 점수 산출 근거 + 보완 방법</div>
+    <div class="ny-sec-body" style="font-size:.78rem;line-height:1.78">
+      <p><b>① 오행 상생·상극 ${result.ohScore}점</b> — ${getOhRelDesc(e1,e2).split('.')[0]}<br><span style="color:var(--accent)">💡 보완:</span> 두 분 모두 ${OHNAME[coupleWeak]} 부족 → ${fix.color} 인테리어, ${fix.dir} 방향 신혼집, ${fix.food} 식단</p>
+      <p><b>② 십신 관계 ${result.tgScore}점</b> — 본인↔상대 ${tg12}/${tg21}<br><span style="color:var(--accent)">💡 보완:</span> ${tg12==='정관'||tg12==='정재'?'안정형 관계 — 자연스러움 유지':tg12==='편관'||tg12==='편재'?'자극형 관계 — 강한 끌림을 일상의 안정으로 다듬기':'서로 보완형 — 차이를 강점으로 받아들이기'}</p>
+      <p><b>③ 일지 합·충 ${result.brScore}점</b> — ${result.isHap?'일지 합(合) 작용':result.isCrash?'일지 충(沖) 작용':'평이한 관계'}<br><span style="color:var(--accent)">💡 보완:</span> ${result.isHap?'이미 좋은 결 — 일상의 작은 정성이 결을 더 빛나게':result.isCrash?'갈등 시 24시간 룰(즉답 금지) + 정기 대화 시간 확보':'대화로 결을 함께 만들어가기'}</p>
+      <p><b>④ 오행 균형 ${result.balScore}점</b> — 두 사주 합산 시 가장 부족한 오행은 <em>${OHNAME[coupleWeak]}</em>, 가장 강한 오행은 <em>${OHNAME[coupleDom]}</em><br><span style="color:var(--accent)">💡 보완:</span> ${OHNAME[coupleWeak]} 영역(${fix.activity})을 함께하는 활동으로 부족함 채우기</p>
+    </div>
+  </div>`;
+
+  // 커플 실천 가이드
+  const seasonByWeak=['봄(3~5월)','여름(6~8월)','환절기(3·6·9·12월)','가을(9~11월)','겨울(12~2월)'];
+  h+=`<div class="couple-action-guide" style="margin-top:14px">
+    <div class="ny-sec-title">💑 이 커플의 실천 가이드</div>
+    <div class="action-guide">
+      <div class="ag-block ag-strengths">
+        <div class="ag-lab">✅ 함께하면 좋은 활동</div>
+        <ul>
+          <li>${fix.activity} — ${OHNAME[coupleWeak]} 부족 보강</li>
+          <li>${seasonByWeak[coupleWeak]} 결혼·이사·여행 — 결이 가장 잘 맞는 시기</li>
+          <li>${fix.dir} 방향 신혼집 — ${OHNAME[coupleWeak]} 기운 보강</li>
+        </ul>
+      </div>
+      <div class="ag-block ag-todos">
+        <div class="ag-lab">🎯 갈등 시 해결 패턴</div>
+        <ul>
+          <li>${result.isCrash?'일지 충 발현 시 즉답 금지 — 24시간 후 대화':'정기 대화 시간 확보(주 1회 30분)'}</li>
+          <li>${dm1.n.split('(')[0]}이 먼저 말 걸고, ${dm2.n.split('(')[0]}이 받아주기 (오행 ${e1<e2?'생':'극'} 흐름 활용)</li>
+          <li>${OHNAME[coupleDom]} 과다로 인한 마찰 시 ${OHNAME[(coupleDom+2)%5]} 활동으로 균형</li>
+        </ul>
+      </div>
+      <div class="ag-block ag-avoids">
+        <div class="ag-lab">⚠️ 이 커플이 피할 일</div>
+        <ul>
+          <li>${result.isCrash?'장거리 이동·큰 결정·시비 — 충 작용으로 변동성 큼':'일방적 희생 — 한쪽이 일방적으로 양보하면 결이 깨짐'}</li>
+          <li>${OHNAME[coupleDom]} 과다 환경(예: ${coupleDom===1?'너무 화려한 인테리어':coupleDom===3?'차가운 분위기':coupleDom===0?'정리 안 된 환경':coupleDom===4?'너무 어두운 공간':'단조로운 일상'}) 지속 노출</li>
+          <li>충동적 결정 — 큰 결정은 두 분이 함께 한 박자 살핀 후</li>
+        </ul>
+      </div>
+    </div>
+  </div>`;
+
   h+='</div>';
   return h;
 }
@@ -6315,24 +6476,28 @@ function analyze(){
       const mbtiAnalysis=mbti?mbtiAnalysisHTML(saju, mbti):'';
       const mbtiBadge=mbti?mbtiBadgeHTML(saju, mbti):'';
       const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
+      // 후속 행동 CTA — 모든 카테고리 결과 끝
+      const nextActions=nextActionsHTML(cat);
       let targetIdx=0;
       const unlocked=isUnlockedFor(cat);
       _paidUnlocked=unlocked;
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=back+headerBlock+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo);
+        document.getElementById('p0').innerHTML=back+headerBlock+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions;
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
         _p1.innerHTML=renderDailyFortune(saju);
         // 일일운세는 자체 back 버튼 포함이라 헤더 블록을 그 직후에 삽입
         _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+headerBlock);
+        // 끝에 후속 CTA 추가
+        _p1.innerHTML+=nextActions;
         enrichTerms(_p1);
         targetIdx=1;
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=back+headerBlock+(unlocked
           ?renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
-          :renderPaidLock('daypick',saju));
+          :renderPaidLock('daypick',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
         targetIdx=2;
@@ -6340,7 +6505,7 @@ function analyze(){
         const _p3=document.getElementById('p3');
         _p3.innerHTML=back+headerBlock+(unlocked
           ?renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
-          :renderPaidLock('monthly',saju));
+          :renderPaidLock('monthly',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
         targetIdx=3;
@@ -6348,7 +6513,7 @@ function analyze(){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=back+headerBlock+(unlocked
           ?renderNewyearFortune(saju,nyExtra.y)
-          :renderPaidLock('newyear',saju));
+          :renderPaidLock('newyear',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
         targetIdx=4;
@@ -6356,7 +6521,7 @@ function analyze(){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=back+headerBlock+(unlocked
           ?renderSajuPaid(saju,sy,sm,sd,hour,min)
-          :renderPaidLock('life',saju));
+          :renderPaidLock('life',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;
