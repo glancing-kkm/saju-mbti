@@ -1123,9 +1123,17 @@ let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
 let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 상태 — localStorage 영속 (추후 결제 시 카테고리별 결제 가능)
-function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v1`;}
+function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v2`;}
 function isUnlockedFor(cat){return localStorage.getItem(unlockKeyOf(cat))==='1';}
 function setUnlockedFor(cat){localStorage.setItem(unlockKeyOf(cat),'1');}
+// 이전 버전(v1) 잠금 해제 기록 일괄 정리 — 한 번만 실행됨
+(function _purgeOldUnlocks(){
+  try{
+    ['daypick','monthly','newyear','life'].forEach(c=>{
+      localStorage.removeItem(`saju_paid_unlocked_${c}_v1`);
+    });
+  }catch(e){}
+})();
 // 호환성: _paidUnlocked는 현재 카테고리의 잠금 상태를 반영
 let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
