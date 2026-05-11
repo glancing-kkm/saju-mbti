@@ -917,13 +917,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <fieldset>
         <legend>태어난 시각 <small>(시주 산출 — 정확하면 좋고 모르면 건너뛰기)</small></legend>
         <!-- 숨김 필드: -1=미상 / 0~23=시 — 기존 analyze() 호환 -->
-        <input type="hidden" id="iH" name="birthHour" value="12">
+        <input type="hidden" id="iH" name="birthHour" value="0">
         <div class="row3" id="timeInputs">
           <div class="ig">
             <label for="iHourInput">시</label>
             <select id="iHourInput" name="birthHourInput" onchange="syncHourInput(this.value)">
-              <option value="" disabled selected>시 선택</option>
-              <option value="0">00시</option><option value="1">01시</option>
+              <option value="0" selected>00시</option><option value="1">01시</option>
               <option value="2">02시</option><option value="3">03시</option>
               <option value="4">04시</option><option value="5">05시</option>
               <option value="6">06시</option><option value="7">07시</option>
