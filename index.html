@@ -700,8 +700,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
 
 /* ── 카테고리별 추가 입력 섹션 ── */
-.cat-extra{padding:14px 14px 4px;margin-top:6px;background:linear-gradient(135deg,var(--earth-bg),rgba(45,52,71,.4));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.cat-extra{padding:16px 14px 6px;margin-top:6px;background:var(--card);border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
 .cat-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+/* number input spinner 제거 (위·아래 화살표) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .cat-extra-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .cat-extra-icon{font-size:1.2rem}
 .cat-extra-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);letter-spacing:-.01em}
@@ -901,7 +905,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
         <legend>생년월일</legend>
         <div class="row3">
           <div class="ig" style="flex:2.2">
-            <label for="iY">년도 (예: 1990)</label>
+            <label for="iY">연도 (예: 1990)</label>
             <input type="number" id="iY" name="birthYear" placeholder="1900~2050" min="1900" max="2050" inputmode="numeric" autocomplete="off" aria-required="true">
           </div>
           <div class="ig">
@@ -917,16 +921,26 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
       <fieldset>
         <legend>태어난 시각 <small>(시주 산출 — 정확하면 좋고 모르면 건너뛰기)</small></legend>
-        <label class="time-unknown-row">
-          <input type="checkbox" id="iTimeUnknown" onchange="setTimeUnknown(this.checked)" aria-controls="timeInputs">
-          <span>시간을 모릅니다</span>
-        </label>
         <!-- 숨김 필드: -1=미상 / 0~23=시 — 기존 analyze() 호환 -->
         <input type="hidden" id="iH" name="birthHour" value="12">
-        <div class="row3" id="timeInputs" style="margin-top:10px">
+        <div class="row3" id="timeInputs">
           <div class="ig">
-            <label for="iHourInput">시 (0~23)</label>
-            <input type="number" id="iHourInput" name="birthHourInput" min="0" max="23" placeholder="예: 14" inputmode="numeric" autocomplete="off" oninput="syncHourInput(this.value)">
+            <label for="iHourInput">시</label>
+            <select id="iHourInput" name="birthHourInput" onchange="syncHourInput(this.value)">
+              <option value="" disabled selected>시 선택</option>
+              <option value="0">00시</option><option value="1">01시</option>
+              <option value="2">02시</option><option value="3">03시</option>
+              <option value="4">04시</option><option value="5">05시</option>
+              <option value="6">06시</option><option value="7">07시</option>
+              <option value="8">08시</option><option value="9">09시</option>
+              <option value="10">10시</option><option value="11">11시</option>
+              <option value="12">12시</option><option value="13">13시</option>
+              <option value="14">14시</option><option value="15">15시</option>
+              <option value="16">16시</option><option value="17">17시</option>
+              <option value="18">18시</option><option value="19">19시</option>
+              <option value="20">20시</option><option value="21">21시</option>
+              <option value="22">22시</option><option value="23">23시</option>
+            </select>
           </div>
           <div class="ig">
             <label for="iMin">분 (5분 단위)</label>
@@ -940,6 +954,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
             </select>
           </div>
         </div>
+        <label class="time-unknown-row" style="margin-top:12px">
+          <input type="checkbox" id="iTimeUnknown" onchange="setTimeUnknown(this.checked)" aria-controls="timeInputs">
+          <span>시간을 모릅니다</span>
+        </label>
       </fieldset>
 
       <fieldset>
@@ -1026,7 +1044,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
         <div class="cat-extra-desc">중요한 약속·면접·계약·여행 등 특정 날짜를 입력하면 그날의 일진과 본인 사주의 상호작용을 풀어드립니다.</div>
         <div class="row3">
           <div class="ig" style="flex:2.2">
-            <label for="dpY">년도</label>
+            <label for="dpY">연도</label>
             <input type="number" id="dpY" name="dpYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off">
           </div>
           <div class="ig">
@@ -1046,7 +1064,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
         <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 12개월).</div>
         <div class="row3">
           <div class="ig">
-            <label for="moStartY">시작 년</label>
+            <label for="moStartY">시작 연도</label>
             <input type="number" id="moStartY" name="moStartYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off">
           </div>
           <div class="ig">
@@ -1056,7 +1074,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
         </div>
         <div class="row3" style="margin-top:8px">
           <div class="ig">
-            <label for="moEndY">종료 년</label>
+            <label for="moEndY">종료 연도</label>
             <input type="number" id="moEndY" name="moEndYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off">
           </div>
           <div class="ig">
@@ -5133,7 +5151,7 @@ function renderGunghapSection(){
         </div>
       </div>
       <div class="row3" style="margin-bottom:9px">
-        <div class="ig" style="flex:2.2"><label>년도</label><input type="number" id="g2Y" placeholder="1990" min="1900" max="2050"></div>
+        <div class="ig" style="flex:2.2"><label>연도</label><input type="number" id="g2Y" placeholder="1990" min="1900" max="2050"></div>
         <div class="ig"><label>월</label><input type="number" id="g2M" placeholder="월" min="1" max="12"></div>
         <div class="ig"><label>일</label><input type="number" id="g2D" placeholder="일" min="1" max="31"></div>
       </div>
@@ -5208,7 +5226,7 @@ function analyzeGunghapDetail(){
   let h=parseInt(document.getElementById('g2H').value);
   let mn=parseInt((document.getElementById('g2Min')||{}).value)||0;
   const cityKey=(document.getElementById('g2City')||{}).value||'seoul';
-  if(!y||y<1900||y>2050){errEl.textContent='년도를 확인해주세요.';errEl.className='err vis';return;}
+  if(!y||y<1900||y>2050){errEl.textContent='연도를 확인해주세요.';errEl.className='err vis';return;}
   if(!m||m<1||m>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
   if(!d||d<1||d>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
   // 진태양시 보정 (시간을 입력했을 때만)
@@ -6149,7 +6167,7 @@ function renderGunghapForm(){
     <div style="margin-bottom:10px">
       <div class="sec-label">생년월일</div>
       <div class="row3">
-        <div class="ig" style="flex:2.2"><label>년도</label><input type="number" id="g2Y" placeholder="예: 1995" min="1900" max="2050"></div>
+        <div class="ig" style="flex:2.2"><label>연도</label><input type="number" id="g2Y" placeholder="예: 1995" min="1900" max="2050"></div>
         <div class="ig"><label>월</label><input type="number" id="g2M" placeholder="월" min="1" max="12"></div>
         <div class="ig"><label>일</label><input type="number" id="g2D" placeholder="일" min="1" max="31"></div>
       </div>
@@ -6174,7 +6192,7 @@ function analyzeGunghap(){
   const m2=parseInt(document.getElementById('g2M').value)||0;
   const d2=parseInt(document.getElementById('g2D').value)||0;
   const h2=parseInt(document.getElementById('g2H').value);
-  if(!y2||y2<1900||y2>2050){errEl.textContent='년도를 확인해주세요.';errEl.className='err vis';return;}
+  if(!y2||y2<1900||y2>2050){errEl.textContent='연도를 확인해주세요.';errEl.className='err vis';return;}
   if(!m2||m2<1||m2>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
   if(!d2||d2<1||d2>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
   try{
@@ -6609,7 +6627,7 @@ function analyze(){
   const cityKey=document.getElementById('iCity').value;
   const mbti=(document.getElementById('iMbti')||{}).value||'';
 
-  if(!year||year<1900||year>2050)return showErr('년도는 1900~2050 사이로 입력해주세요.','iY');
+  if(!year||year<1900||year>2050)return showErr('연도는 1900~2050 사이로 입력해주세요.','iY');
   if(!month||month<1||month>12)return showErr('월은 1~12로 입력해주세요.','iM');
   if(!day||day<1||day>31)return showErr('일은 1~31로 입력해주세요.','iD');
 
@@ -6620,7 +6638,7 @@ function analyze(){
     const y=parseInt(document.getElementById('dpY').value)||0;
     const m=parseInt(document.getElementById('dpM').value)||0;
     const d=parseInt(document.getElementById('dpD').value)||0;
-    if(!y)return showErr('지정일의 년도를 입력해주세요.','dpY');
+    if(!y)return showErr('지정일의 연도를 입력해주세요.','dpY');
     if(!m||m<1||m>12)return showErr('지정일의 월(1~12)을 입력해주세요.','dpM');
     if(!d||d<1||d>31)return showErr('지정일의 일(1~31)을 입력해주세요.','dpD');
     dpExtra={y,m,d};
@@ -6629,9 +6647,9 @@ function analyze(){
     const sm=parseInt(document.getElementById('moStartM').value)||0;
     const ey=parseInt(document.getElementById('moEndY').value)||0;
     const em=parseInt(document.getElementById('moEndM').value)||0;
-    if(!sy)return showErr('시작 년도를 입력해주세요.','moStartY');
+    if(!sy)return showErr('시작 연도를 입력해주세요.','moStartY');
     if(!sm||sm<1||sm>12)return showErr('시작 월(1~12)을 입력해주세요.','moStartM');
-    if(!ey)return showErr('종료 년도를 입력해주세요.','moEndY');
+    if(!ey)return showErr('종료 연도를 입력해주세요.','moEndY');
     if(!em||em<1||em>12)return showErr('종료 월(1~12)을 입력해주세요.','moEndM');
     const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
     if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.','moEndM');
