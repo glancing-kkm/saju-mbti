@@ -1,0 +1,19 @@
+name = "payment-worker"
+main = "payment-worker.js"
+compatibility_date = "2024-11-01"
+
+# 배포: wrangler deploy --config wrangler.payment.toml
+#
+# 시크릿 등록 (저장소에 커밋하지 말 것):
+#   wrangler secret put TOSS_SECRET_KEY --config wrangler.payment.toml
+#     → 토스 대시보드 > API 키 > 시크릿 키 (live_sk_... 또는 test_sk_...)
+#   wrangler secret put ALLOWED_ORIGIN --config wrangler.payment.toml
+#     → 예: https://saju-mbti-9h1.pages.dev (여러 개면 콤마 구분)
+#
+# (선택) KV 바인딩으로 중복 결제·승인 이력 방어
+# [[kv_namespaces]]
+# binding = "PAYMENT_KV"
+# id = "<wrangler kv:namespace create payment 결과>"
+
+[observability]
+enabled = true
