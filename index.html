@@ -526,6 +526,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .sinsal-mini-hj{color:var(--muted);font-weight:400;font-size:.78rem;margin-left:3px}
 .sinsal-mini-desc{font-size:.74rem;color:var(--sub);line-height:1.7}
 
+/* ── 인생 타임라인 SVG 차트 ── */
+.life-timeline{margin:14px 0 12px;padding:14px 12px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;position:relative;overflow:hidden}
+.life-timeline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.5}
+.lt-svg-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lt-svg-wrap svg{display:block;min-width:420px}
+.lt-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0 6px;font-size:.68rem;color:var(--muted)}
+.lt-legend span{display:inline-flex;align-items:center;gap:5px}
+.lt-legend i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.lt-note{font-size:.74rem;color:var(--sub);line-height:1.7;margin:8px 0 0;text-align:center}
+.lt-note b{color:var(--accent-bright)}
+
 /* ── 결과 헤더 SNS 후크 헤드라인 ── */
 .result-hero{margin:8px 12px 14px;padding:18px 18px 16px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;text-align:center;position:relative;overflow:hidden}
 .result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
@@ -2182,6 +2193,106 @@ function tldrCardHTML(saju, mbti, cat, meta){
     <p class="tldr-disclaimer">※ 사주는 인생의 지도이지 정해진 운명이 아닙니다. 타고난 결을 인식하고 본인의 의지로 가꾸어 나가세요.</p>
   </section>`;
   return h;
+}
+
+// ── 인생 타임라인 SVG 차트 — 8개 대운의 운세 강도 시각화 ──
+// 막대 높이 = 해당 대운 점수 / 색상 = 용신·희신·한신·기신 / 현재 나이 마커
+function lifeTimelineSVG(saju, daeuns, currentAge, ys){
+  if(!daeuns||!daeuns.length||!ys)return '';
+  const W=480, H=240, padL=14, padR=14, padT=46, padB=64;
+  const innerW=W-padL-padR;
+  const innerH=H-padT-padB;
+  const n=Math.min(daeuns.length,8); // 최대 8개 (80년)
+  const barW=Math.floor(innerW/n)-6;
+  const SHENG=[1,2,3,4,0], KE=[2,3,4,0,1];
+
+  // 점수 계산: 천간 십신 베이스 + 용신/기신 보정 → 0~100
+  function score(du){
+    const tg=tenGod(saju.dp.stem,du.stem);
+    const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
+    let s=(TG_SCORE[tg]||60)*0.6+(TG_SCORE[btg]||60)*0.4;
+    const duOh=SOH[du.stem];
+    if(duOh===ys.main)s+=10;          // 용신 — 가산
+    else if(SHENG[duOh]===ys.main)s+=5; // 희신 — 용신을 생
+    else if(KE[ys.main]===duOh)s-=8;   // 기신 — 용신을 극
+    return Math.max(30,Math.min(95,Math.round(s)));
+  }
+  function colorFor(du){
+    const duOh=SOH[du.stem];
+    if(duOh===ys.main)return '#52796f';        // 용신 — 청록
+    if(SHENG[duOh]===ys.main)return '#6cbf7e';  // 희신 — 녹
+    if(KE[ys.main]===duOh)return '#e57462';     // 기신 — 주
+    if(KE[duOh]===ys.main)return '#d4a849';     // 한신 보조 — 골드
+    return '#a8a29e';                            // 평이 — 회색
+  }
+  function starsFromScore(s){
+    return s>=85?5:s>=72?4:s>=58?3:s>=44?2:1;
+  }
+  // 시기별 라벨 (10년 단위 보편 키워드)
+  const stageLabels=['유년','학업','진로','직업','절정','확장','명예','노년'];
+
+  // 현재 대운 인덱스
+  let curIdx=-1;
+  for(let i=0;i<n;i++){
+    if(currentAge>=daeuns[i].age&&(i===n-1||currentAge<daeuns[i+1].age)){curIdx=i;break;}
+  }
+
+  // SVG 빌드
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="인생 타임라인 차트 — 8개 대운의 운세 강도">`;
+  // 배경 그리드 (4단계)
+  for(let g=1;g<=4;g++){
+    const y=padT+(innerH/4)*g;
+    svg+=`<line x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}" stroke="rgba(212,175,55,.1)" stroke-dasharray="2 4"/>`;
+  }
+  // 막대 + 별점 + 라벨
+  for(let i=0;i<n;i++){
+    const du=daeuns[i];
+    const sc=score(du);
+    const stars=starsFromScore(sc);
+    const x=padL+i*(barW+6)+3;
+    const barH=Math.max(20,Math.round((sc-30)/(95-30)*innerH));
+    const y=padT+innerH-barH;
+    const col=colorFor(du);
+    const isCur=i===curIdx;
+    // 막대
+    svg+=`<rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="6" fill="${col}" opacity="${isCur?'1':'.82'}" stroke="${isCur?'#f5d77c':'transparent'}" stroke-width="${isCur?2:0}"/>`;
+    // 별점
+    const cx=x+barW/2;
+    const starStr='★'.repeat(stars)+'☆'.repeat(5-stars);
+    svg+=`<text x="${cx}" y="${y-6}" font-size="9" fill="${col}" text-anchor="middle" font-weight="700" letter-spacing=".5">${starStr}</text>`;
+    // 점수
+    svg+=`<text x="${cx}" y="${y+barH/2+4}" font-size="11" fill="#0e1428" text-anchor="middle" font-weight="800">${sc}</text>`;
+    // 나이 라벨
+    svg+=`<text x="${cx}" y="${H-padB+16}" font-size="10" fill="${isCur?'#f5d77c':'#cbc7bd'}" text-anchor="middle" font-weight="${isCur?'700':'500'}">${du.age}~${du.age+9}</text>`;
+    // 시기 키워드
+    svg+=`<text x="${cx}" y="${H-padB+32}" font-size="9" fill="#8b8a83" text-anchor="middle">${stageLabels[i]||''}</text>`;
+    // 천간/지지 글자
+    svg+=`<text x="${cx}" y="${H-padB+50}" font-size="11" fill="${isCur?'#f5d77c':'#d4af37'}" text-anchor="middle" font-weight="700">${STEMS[du.stem]}${BRCH[du.branch]}</text>`;
+  }
+  // 현재 위치 마커 (↓ + 텍스트)
+  if(curIdx>=0){
+    const cx=padL+curIdx*(barW+6)+3+barW/2;
+    svg+=`<text x="${cx}" y="${padT-22}" font-size="11" fill="#f5d77c" text-anchor="middle" font-weight="800">현재 ${currentAge}세</text>`;
+    svg+=`<text x="${cx}" y="${padT-8}" font-size="14" fill="#f5d77c" text-anchor="middle">▼</text>`;
+  }
+  // 제목
+  svg+=`<text x="${padL}" y="22" font-size="12" fill="#d4af37" font-weight="700" letter-spacing=".5">인생 타임라인 — 운세 강도 (40~95)</text>`;
+  svg+=`</svg>`;
+
+  // 범례
+  let legend=`<div class="lt-legend" aria-hidden="true">
+    <span><i style="background:#52796f"></i>용신 대운</span>
+    <span><i style="background:#6cbf7e"></i>희신</span>
+    <span><i style="background:#d4a849"></i>한신</span>
+    <span><i style="background:#e57462"></i>기신</span>
+    <span><i style="background:#a8a29e"></i>평이</span>
+  </div>`;
+
+  return `<div class="life-timeline">
+    <div class="lt-svg-wrap">${svg}</div>
+    ${legend}
+    <p class="lt-note">막대 높이 = 그 10년의 운세 강도. <b style="color:var(--accent-bright)">금색 테두리</b>가 현재 대운입니다. 별점은 5단계 등급 (★★★★★ = 매우 길)이며, 색상은 본인 용신(${OHNAME[ys.main]})과의 관계를 보여줍니다.</p>
+  </div>`;
 }
 
 // ── 신살 미니 박스 헬퍼 — 길성/흉살/중성 배지 + 카드 스타일 ──
@@ -4392,6 +4503,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }
   let dBody=`<p>대운(大運)은 10년마다 바뀌는 큰 흐름입니다. 본인의 사주 4기둥에 새로운 글자(대운의 천간·지지)가 더해지면, 그 글자가 일간과 어떤 관계인지에 따라 10년의 결이 달라집니다.</p>`;
   dBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 4주 + <b>대운 1주</b>를 함께 보고, 대운의 글자가 사주에 어떤 영향을 주는지 분석합니다. 대운은 ${dq.forward?'순행':'역행'}이며 시작 나이는 ${dq.startYears}세${dq.startMonths>0?' '+dq.startMonths+'개월':''}부터입니다.</p></div>`;
+  // ▼ 인생 타임라인 SVG 차트 (대운 시각화)
+  dBody+=lifeTimelineSVG(saju, dq.daeuns, age, ys);
 
   let tlh='';
   dq.daeuns.forEach((du,i)=>{
