@@ -2,13 +2,15 @@
 
 ## 1. 개요
 
-- **PG**: 토스페이먼츠 (한국 신용카드·계좌이체·간편결제 통합)
+- **PG**: 토스페이먼츠 (간편결제 한정 — 카카오페이·네이버페이만 노출)
+- **결제 수단**: 카카오페이 / 네이버페이 (잠금 화면의 두 버튼 → 결제 동의 모달 → 토스 결제창)
 - **상품 구조**: 카테고리별 단건 결제 4종 (지정일 9,900 · 월별 19,900 · 신년 29,900 · 인생 49,900원)
 - **콘텐츠 제공 시점**: 결제 승인 즉시 디지털 풀이 공개 (서버 미저장, 사주 입력값은 브라우저 한정)
-- **잠금 상태 저장**: 브라우저 `localStorage` (`saju_paid_unlocked_<cat>_v3`)
+- **잠금 상태 저장**: 브라우저 `localStorage` (`saju_paid_unlocked_<cat>_v4`)
   - 디바이스 간 동기화는 추후 회원 도입 시 별도 추가
 - **법적 근거**: 「전자상거래법」 제17조 제2항 제5호 → 제공 시작된 디지털 콘텐츠의 청약 철회 제한
   - 결제 동의 화면에서 사전 동의 4종 필수 체크
+- **이전 코드 입력 방식 폐지**: TEST2025 등 임시 코드 잠금 해제 UI는 제거되었으며, `tryUnlock`도 `unlockAndRender(category)` 헬퍼로 대체됨
 
 ## 2. 시스템 구성
 
@@ -57,7 +59,8 @@
 ### ③ 토스 SDK 호출 — `startTossPayment()`
 - orderId 생성: `SMBT-<cat>-<YYYYMMDDhhmmss>-<rnd6>` (최대 64자)
 - requestPayment 파라미터:
-  - method: `'카드'` (간편결제 추가 시 `tp.requestPayment('카드')` 외에 분기)
+  - method: `'카드'`
+  - easyPay: `'카카오페이'` 또는 `'네이버페이'` (사용자가 선택한 버튼에 따라)
   - amount, orderId, orderName, successUrl, failUrl
 - successUrl: 현재 페이지 + `?pay=success&cat=<category>`
   - 토스가 자동으로 `paymentKey, orderId, amount` 쿼리를 부착

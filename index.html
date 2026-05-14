@@ -418,6 +418,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lock-info{margin-top:20px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.76rem;color:var(--sub);line-height:1.78;text-align:left}
 .lock-info b{color:var(--accent)}
 .lock-pay{margin-top:12px;width:100%;padding:14px;background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:50px;font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.05em;font-family:inherit;text-transform:uppercase}
+
+/* 간편결제 버튼 (카카오페이·네이버페이) */
+.easypay-row{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.easypay-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 16px;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;border:0;transition:.18s;letter-spacing:-.01em}
+.easypay-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.easypay-btn:active{transform:translateY(0)}
+.easypay-btn .ep-logo{display:inline-flex;align-items:center;justify-content:center;height:22px;font-weight:900;letter-spacing:-.02em}
+.easypay-kakao{background:#FEE500;color:#191919}
+.easypay-kakao .ep-logo{font-size:1.02rem}
+.easypay-naver{background:#03C75A;color:#FFFFFF}
+.easypay-naver .ep-logo{font-size:1.02rem}
+.easypay-price{font-weight:700;font-size:.92rem;opacity:.85}
+.easypay-foot{margin-top:12px;font-size:.7rem;color:var(--muted);text-align:center;line-height:1.7}
+.easypay-foot a{color:var(--sub);text-decoration:underline}
 .lock-err{color:var(--fire);font-size:.78rem;margin-top:8px;display:none}
 .lock-err.vis{display:block}
 .pay-prep{margin-top:22px;padding:18px 18px 16px;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.6));border:1px dashed var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
@@ -4281,63 +4295,64 @@ function renderPaidLock(category, saju){
     </div>
     <div class="pay-prep">
       <div class="pay-prep-badge">💳 안전 결제</div>
-      <div class="pay-prep-body">토스페이먼츠를 통한 카드·간편결제·계좌이체를 지원합니다. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.<br>이벤트 기간에는 아래 <b>이용 코드</b>로도 풀이가 열립니다.</div>
-      <div class="pay-prep-price">예정 가격 · <b>${m.price}</b></div>
+      <div class="pay-prep-body">카카오페이·네이버페이로 간편하게 결제하실 수 있습니다. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
+      <div class="pay-prep-price">결제 금액 · <b>${m.price}</b></div>
     </div>
-    <div style="margin-top:18px">
-      <div class="sec-label" style="margin-bottom:8px;text-align:left">🎟 코드 입력</div>
-      <div class="lock-input-row">
-        <input class="lock-input" id="lockInput" placeholder="UNLOCK CODE" maxlength="20" onkeypress="if(event.key==='Enter')tryUnlock()" autocomplete="off">
-        <button class="lock-btn" onclick="tryUnlock()">잠금 해제</button>
-      </div>
-      <div class="lock-err" id="lockErr">코드가 일치하지 않습니다.</div>
+    <div class="easypay-row">
+      <button type="button" class="easypay-btn easypay-kakao" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 결제">
+        <span class="ep-logo">kakao<span style="background:#191919;color:#FEE500;border-radius:4px;padding:1px 5px;margin-left:2px">pay</span></span>
+        <span class="easypay-price">${m.price}</span>
+      </button>
+      <button type="button" class="easypay-btn easypay-naver" onclick="openPaymentConsent('${category}','NAVERPAY')" aria-label="네이버페이로 결제">
+        <span class="ep-logo"><span style="background:#FFFFFF;color:#03C75A;border-radius:4px;padding:1px 5px;margin-right:2px;font-weight:900">N</span>Pay</span>
+        <span class="easypay-price">${m.price}</span>
+      </button>
     </div>
-    <button class="lock-pay" onclick="openPaymentConsent('${category}')">💳 결제하기 — ${m.price}</button>
+    <div class="easypay-foot">
+      결제 즉시 풀이가 열립니다. 청약 철회는 <a href="/legal/refund.html" target="_blank">환불 정책</a>의 기준에 따릅니다.
+    </div>
   </div>`;
 }
 
 // 하위 호환 — 기존 호출은 인생총운 잠금으로 위임
 function renderSajuLock(saju){return renderPaidLock('life',saju);}
 
-function tryUnlock(){
-  const code=document.getElementById('lockInput').value.trim().toUpperCase();
-  const errEl=document.getElementById('lockErr');
-  const validCodes=['TEST2025','SAJU2025','UNLOCK','DRAGON','OPEN','CHEONJI'];
-  if(validCodes.includes(code)){
-    // 현재 카테고리만 해제 (추후 결제 시에도 카테고리별로 해제됨)
-    setUnlockedFor(_category);
-    _paidUnlocked=true;
-    const cat=_category;
-    const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
-    // 헤더 블록 재구성 — 잠금 해제 후에도 hero·TL;DR·MBTI 분석이 보이도록
-    const mbti=(_meta&&_meta.mbti)||'';
-    const heroHTML=resultHeroHTML(_saju, mbti, cat);
-    const tldrHTML=tldrCardHTML(_saju, mbti, cat, _meta);
-    const mbtiAnalysis=mbti?mbtiAnalysisHTML(_saju, mbti):'';
-    const mbtiBadge=mbti?mbtiBadgeHTML(_saju, mbti):'';
-    const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
-    const nextActions=nextActionsHTML(cat);
-    const renderTarget=(panelId,html)=>{
-      const el=document.getElementById(panelId);
-      if(!el)return;
-      el.innerHTML=back+headerBlock+html+nextActions;
-      enrichTerms(el);
-      el.dataset.rendered='1';
-    };
-    if(cat==='daypick'&&_meta&&_meta.dpExtra){
-      renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d));
-    }else if(cat==='monthly'&&_meta&&_meta.moExtra){
-      renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em));
-    }else if(cat==='newyear'&&_meta&&_meta.nyExtra){
-      renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
-    }else{
-      renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
-    }
-    window.scrollTo({top:0,behavior:'smooth'});
-  }else{
-    errEl.className='lock-err vis';
-    setTimeout(()=>{errEl.className='lock-err';},2500);
+// 결제 완료 직후 패널을 잠금→유료 콘텐츠로 재렌더 (캐시된 _saju/_meta가 있을 때만)
+function unlockAndRender(category){
+  if(!category||!_saju||!_meta)return false;
+  setUnlockedFor(category);
+  _paidUnlocked=true;
+  _category=category;
+  const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
+  const mbti=(_meta&&_meta.mbti)||'';
+  const heroHTML=resultHeroHTML(_saju, mbti, category);
+  const tldrHTML=tldrCardHTML(_saju, mbti, category, _meta);
+  const mbtiAnalysis=mbti?mbtiAnalysisHTML(_saju, mbti):'';
+  const mbtiBadge=mbti?mbtiBadgeHTML(_saju, mbti):'';
+  const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
+  const nextActions=nextActionsHTML(category);
+  const renderTarget=(panelId,html)=>{
+    const el=document.getElementById(panelId);
+    if(!el)return;
+    el.innerHTML=back+headerBlock+html+nextActions;
+    enrichTerms(el);
+    el.dataset.rendered='1';
+  };
+  if(category==='daypick'&&_meta.dpExtra){
+    renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d));
+    gotoCard(2);
+  }else if(category==='monthly'&&_meta.moExtra){
+    renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em));
+    gotoCard(3);
+  }else if(category==='newyear'&&_meta.nyExtra){
+    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
+    gotoCard(4);
+  }else if(category==='life'){
+    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
+    gotoCard(5);
   }
+  window.scrollTo({top:0,behavior:'smooth'});
+  return true;
 }
 
 // ══════════════════════════════════════════════
@@ -4349,18 +4364,25 @@ function tryUnlock(){
 const TOSS_CLIENT_KEY='test_ck_REPLACE_WITH_LIVE_CLIENT_KEY';
 const PAYMENT_CONFIRM_URL='https://payment.example.workers.dev/confirm'; // 배포 후 교체
 const PAY_PRICE={daypick:9900,monthly:19900,newyear:29900,life:49900};
+// 토스페이먼츠 v1 SDK 간편결제 provider — easyPay 값은 한글 라벨 그대로 전달
+const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이',NAVERPAY:'네이버페이'};
 let _payCategory=null;
+let _payMethod=null; // 'KAKAOPAY' | 'NAVERPAY'
 
-function openPaymentConsent(category){
+function openPaymentConsent(category,method){
   _payCategory=category;
+  _payMethod=method||'KAKAOPAY';
   const m=PAID_META[category]; if(!m){return;}
   document.getElementById('payProductName').textContent=`${m.icon} ${m.title}`;
   const descPlain=m.desc.replace(/<br>/g,' · ').replace(/<[^>]+>/g,'');
   document.getElementById('payProductDesc').textContent=descPlain;
   document.getElementById('payProductPrice').textContent=m.price;
+  // 선택한 결제 수단 표시
+  const cta=document.getElementById('payCtaGo');
+  cta.textContent=`${PAY_METHOD_LABEL[_payMethod]||'간편결제'}로 결제하기`;
   // 동의 체크 초기화
   document.querySelectorAll('#payAgree input[type="checkbox"]').forEach(c=>c.checked=false);
-  document.getElementById('payCtaGo').disabled=true;
+  cta.disabled=true;
   document.getElementById('payStatus').className='pay-status';
   document.getElementById('payStatus').textContent='';
   document.getElementById('payOverlay').className='pay-overlay vis';
@@ -4388,6 +4410,7 @@ function _genOrderId(category){
 }
 async function startTossPayment(){
   const cat=_payCategory; if(!cat){return;}
+  const method=_payMethod||'KAKAOPAY';
   const m=PAID_META[cat]; const amount=PAY_PRICE[cat];
   const statusEl=document.getElementById('payStatus');
   if(typeof TossPayments==='undefined'){
@@ -4397,15 +4420,18 @@ async function startTossPayment(){
   }
   if(TOSS_CLIENT_KEY.startsWith('test_ck_REPLACE')){
     statusEl.className='pay-status err';
-    statusEl.textContent='결제 키가 아직 등록되지 않았습니다. 운영자 설정이 필요합니다.';
+    statusEl.textContent='결제 키가 아직 등록되지 않았습니다. 운영자 설정 후 이용해주세요.';
     return;
   }
   const orderId=_genOrderId(cat);
+  const easyPayLabel=PAY_METHOD_LABEL[method]||'카카오페이';
   try{
-    // 결제 시도 정보 임시 저장 (success 콜백에서 카테고리 식별용)
-    sessionStorage.setItem('pendingPayment',JSON.stringify({orderId,category:cat,amount,startedAt:Date.now()}));
+    // 결제 시도 정보 임시 저장 (success 콜백에서 카테고리·결제수단 식별용)
+    sessionStorage.setItem('pendingPayment',JSON.stringify({orderId,category:cat,method,amount,startedAt:Date.now()}));
     const tp=TossPayments(TOSS_CLIENT_KEY);
+    // 토스 v1 SDK: 간편결제는 method='카드' + easyPay에 한글 라벨 ('카카오페이'·'네이버페이')
     await tp.requestPayment('카드',{
+      easyPay:easyPayLabel,
       amount:amount,
       orderId:orderId,
       orderName:`천지인 사주 ${m.title}`,
@@ -4452,9 +4478,14 @@ async function _handlePaymentReturn(){
         setUnlockedFor(cat);
         sessionStorage.removeItem('pendingPayment');
         history.replaceState({},'',location.pathname);
-        alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 카테고리에서 사주를 다시 입력하시면 풀이가 바로 열립니다.\n\n주문번호: '+orderId);
-        // 결제한 카테고리 입력 화면으로 이동 (사용자가 바로 분석)
-        try{ goToInput(cat); }catch(e){}
+        // 캐시된 사주가 있으면 바로 잠금 해제된 결과로 재렌더, 없으면 입력 화면으로 안내
+        const rendered=unlockAndRender(cat);
+        if(rendered){
+          alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 풀이가 열립니다.\n\n주문번호: '+orderId);
+        }else{
+          alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 카테고리에서 사주를 입력하시면 풀이가 바로 열립니다.\n\n주문번호: '+orderId);
+          try{ goToInput(cat); }catch(e){}
+        }
       }else{
         throw new Error((data&&data.message)||'승인 실패');
       }
