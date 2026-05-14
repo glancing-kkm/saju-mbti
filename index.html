@@ -213,6 +213,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .menu-card .mc-tag.t-free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
 .menu-card .mc-tag.t-paid{color:var(--accent-bright);background:var(--accent-soft);border-color:rgba(212,175,55,.4)}
 .menu-card .mc-tag.t-signature{color:#f5d77c;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(245,215,124,.12));border-color:rgba(245,215,124,.55)}
+.menu-card .mc-price{display:inline-block;margin-top:4px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:800;color:var(--accent-bright);letter-spacing:-.01em}
 .menu-card .mc-lock{position:absolute;top:8px;right:10px;font-size:.78rem;color:var(--accent);opacity:.85}
 .menu-back{display:flex;align-items:center;gap:6px;padding:10px 14px 8px;font-size:.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;letter-spacing:.02em}
 .menu-back:hover{color:var(--accent-bright)}
@@ -870,33 +871,37 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">오늘의 일진과 내 사주의 상호작용을 매일 새롭게</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 프리미엄" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 9,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🎯</div>
           <div class="mc-title">지정일 운세</div>
           <div class="mc-desc">중요한 면접·계약·여행 날의 일진을 깊이 있게 풀이</div>
           <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">9,900원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 프리미엄" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 19,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">📆</div>
           <div class="mc-title">월별 운세</div>
           <div class="mc-desc">최대 12개월의 운세 흐름을 연속적으로 추적</div>
           <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">19,900원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 프리미엄" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 29,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🎉</div>
           <div class="mc-title">신년운세</div>
           <div class="mc-desc">사주·세운·대운을 종합한 한 해의 입체 분석</div>
           <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">29,900원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 시그니처" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 49,900원" role="listitem">
           <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🌼</div>
           <div class="mc-title">인생총운</div>
           <div class="mc-desc">대운 흐름으로 보는 평생의 시기별 길흉화복</div>
           <div class="mc-tag t-signature">시그니처</div>
+          <div class="mc-price">49,900원</div>
         </button>
       </div>
     </div>
