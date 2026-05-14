@@ -1126,21 +1126,21 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3">
           <div class="ig">
             <label for="moStartY">시작 연도</label>
-            <input type="number" id="moStartY" name="moStartYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off" oninput="onMonthlyRangeChange('start')">
+            <input type="number" id="moStartY" name="moStartYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off" oninput="onMonthlyPreview()" onchange="onMonthlyClamp('start')">
           </div>
           <div class="ig">
             <label for="moStartM">시작 월</label>
-            <input type="number" id="moStartM" name="moStartMonth" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" oninput="onMonthlyRangeChange('start')">
+            <input type="number" id="moStartM" name="moStartMonth" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" oninput="onMonthlyPreview()" onchange="onMonthlyClamp('start')">
           </div>
         </div>
         <div class="row3" style="margin-top:8px">
           <div class="ig">
             <label for="moEndY">종료 연도</label>
-            <input type="number" id="moEndY" name="moEndYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off" oninput="onMonthlyRangeChange('end')">
+            <input type="number" id="moEndY" name="moEndYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off" oninput="onMonthlyPreview()" onchange="onMonthlyClamp('end')">
           </div>
           <div class="ig">
             <label for="moEndM">종료 월</label>
-            <input type="number" id="moEndM" name="moEndMonth" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" oninput="onMonthlyRangeChange('end')">
+            <input type="number" id="moEndM" name="moEndMonth" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" oninput="onMonthlyPreview()" onchange="onMonthlyClamp('end')">
           </div>
         </div>
         <div id="moPreview" class="mo-preview" aria-live="polite">기간을 입력하면 결제 예상 금액이 표시됩니다.</div>
@@ -1647,7 +1647,7 @@ function goToInput(cat){
       document.getElementById('moEndY').value=end.getFullYear();
       document.getElementById('moEndM').value=end.getMonth()+1;
     }
-    onMonthlyRangeChange('init');
+    onMonthlyPreview();
   }else if(cat==='newyear'){
     const el=document.getElementById('catExtraNewyear');if(el)el.style.display='';
     if(!document.getElementById('nyY').value){
@@ -1668,35 +1668,57 @@ function goToInput(cat){
   restoreLastInputs();
   showView('input');
 }
-// 월별 운세 — 입력 변경 시 라이브 미리보기 + 6개월 초과 자동 클램프
-function onMonthlyRangeChange(source){
-  const sy=parseInt(document.getElementById('moStartY').value)||0;
-  const sm=parseInt(document.getElementById('moStartM').value)||0;
-  let ey=parseInt(document.getElementById('moEndY').value)||0;
-  let em=parseInt(document.getElementById('moEndM').value)||0;
+// 월별 운세 — 입력 중에는 값은 그대로 두고 미리보기 텍스트만 갱신
+function onMonthlyPreview(){
   const prev=document.getElementById('moPreview');
   if(!prev)return;
-  // 시작이 비었거나 월 범위 밖이면 미리보기 안내만
+  const sy=parseInt(document.getElementById('moStartY').value)||0;
+  const sm=parseInt(document.getElementById('moStartM').value)||0;
+  const ey=parseInt(document.getElementById('moEndY').value)||0;
+  const em=parseInt(document.getElementById('moEndM').value)||0;
   if(!sy||!sm||sm<1||sm>12){
     prev.className='mo-preview';
     prev.innerHTML='시작 연도·월을 입력하면 결제 예상 금액이 표시됩니다.';
     return;
   }
-  // 종료가 비어 있으면 시작과 동일하게 가정
   if(!ey||!em||em<1||em>12){
     prev.className='mo-preview';
     prev.innerHTML='종료 연도·월도 입력해 주세요.';
     return;
   }
+  const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
+  if(endIdx<startIdx){
+    prev.className='mo-preview err';
+    prev.innerHTML='종료가 시작보다 빠릅니다. 입력 후 다른 칸을 누르면 자동으로 조정됩니다.';
+    return;
+  }
+  const months=endIdx-startIdx+1;
+  if(months>MONTHLY_MAX){
+    prev.className='mo-preview err';
+    prev.innerHTML=`현재 <b>${months}개월</b>이 선택되었습니다. 최대 ${MONTHLY_MAX}개월까지만 가능하며 입력 후 다른 칸을 누르면 종료가 자동 조정됩니다.`;
+    return;
+  }
+  const amount=PAY_BASE_PRICE.monthly*months;
+  prev.className='mo-preview';
+  prev.innerHTML=`<b>${months}개월</b> 선택됨 · 결제 예상 금액 <b>${formatWon(amount)}</b><br><span style="font-size:.75rem;color:var(--muted)">월당 1,500원 × ${months} = ${formatWon(amount)}</span>`;
+}
+// 입력 완료(블러·Enter) 시점에만 값 보정 — 입력 중 자동 변경 방지
+function onMonthlyClamp(source){
+  const sy=parseInt(document.getElementById('moStartY').value)||0;
+  const sm=parseInt(document.getElementById('moStartM').value)||0;
+  let ey=parseInt(document.getElementById('moEndY').value)||0;
+  let em=parseInt(document.getElementById('moEndM').value)||0;
+  if(!sy||!sm||sm<1||sm>12||!ey||!em||em<1||em>12){
+    onMonthlyPreview();
+    return;
+  }
   const startIdx=sy*12+(sm-1);
   let endIdx=ey*12+(em-1);
-  // 종료가 시작보다 빠르면 시작과 같게 보정
   if(endIdx<startIdx){
     ey=sy; em=sm; endIdx=startIdx;
     document.getElementById('moEndY').value=ey;
     document.getElementById('moEndM').value=em;
   }
-  // 6개월 초과면 종료를 자동으로 +5개월로 클램프
   const cnt=endIdx-startIdx+1;
   if(cnt>MONTHLY_MAX){
     const maxIdx=startIdx+(MONTHLY_MAX-1);
@@ -1704,17 +1726,8 @@ function onMonthlyRangeChange(source){
     const nm=(maxIdx%12)+1;
     document.getElementById('moEndY').value=ny;
     document.getElementById('moEndM').value=nm;
-    ey=ny; em=nm; endIdx=maxIdx;
-    prev.className='mo-preview err';
-    prev.innerHTML=`최대 ${MONTHLY_MAX}개월까지만 가능해 종료를 <b>${ny}년 ${nm}월</b>로 자동 조정했습니다.`;
-    // 한 박자 후 정상 미리보기로 갱신
-    setTimeout(()=>onMonthlyRangeChange('clamp'),1600);
-    return;
   }
-  const months=endIdx-startIdx+1;
-  const amount=PAY_BASE_PRICE.monthly*months;
-  prev.className='mo-preview';
-  prev.innerHTML=`<b>${months}개월</b> 선택됨 · 결제 예상 금액 <b>${formatWon(amount)}</b><br><span style="font-size:.75rem;color:var(--muted)">월당 1,500원 × ${months} = ${formatWon(amount)}</span>`;
+  onMonthlyPreview();
 }
 function restoreLastInputs(){
   if(!_lastInputs)return;
