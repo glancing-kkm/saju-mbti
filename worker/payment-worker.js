@@ -19,12 +19,24 @@
 //    4) 토스 API 호출 결과의 status === 'DONE' 확인
 //    5) 동일 orderId 중복 승인 방지를 위해 KV 또는 D1에 처리 이력 저장 (권장)
 
+// 카테고리당 단가 (원). monthly는 월당 단가이며 실제 결제 금액은 1~6개월 ×1500
 const CATEGORY_PRICE = {
-  daypick: 9900,
-  monthly: 19900,
-  newyear: 29900,
-  life: 49900,
+  daypick: 1500,
+  monthly: 1500, // 월당 — 1500/3000/4500/6000/7500/9000 중 하나여야 함
+  newyear: 19000,
+  life: 24000,
 };
+const MONTHLY_MAX = 6;
+const MONTHLY_UNIT = 1500;
+// 카테고리·금액 위조 방지 — 월별은 월당 단가의 1~6배수 허용
+function isAmountValid(category, amount) {
+  if (category === 'monthly') {
+    if (amount % MONTHLY_UNIT !== 0) return false;
+    const cnt = amount / MONTHLY_UNIT;
+    return cnt >= 1 && cnt <= MONTHLY_MAX;
+  }
+  return CATEGORY_PRICE[category] === amount;
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -56,12 +68,14 @@ export default {
     }
 
     // 1) 카테고리·금액 일관성 검증 — 클라이언트 위조 방지
-    const expected = CATEGORY_PRICE[category];
-    if (!expected) {
+    if (!CATEGORY_PRICE[category]) {
       return json({ ok: false, code: 'UNKNOWN_CATEGORY', message: `Unknown category: ${category}` }, 400, corsHeaders);
     }
-    if (expected !== amount) {
-      return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Expected ${expected}, got ${amount}` }, 400, corsHeaders);
+    if (!isAmountValid(category, amount)) {
+      const hint = category === 'monthly'
+        ? `monthly amount must be ${MONTHLY_UNIT} × 1~${MONTHLY_MAX}`
+        : `expected ${CATEGORY_PRICE[category]}`;
+      return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `${hint}, got ${amount}` }, 400, corsHeaders);
     }
 
     // 2) (권장) 동일 orderId 중복 승인 방지 — KV 사용 시 활성화

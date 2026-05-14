@@ -871,37 +871,37 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">오늘의 일진과 내 사주의 상호작용을 매일 새롭게</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 9,900원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 1,500원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🎯</div>
           <div class="mc-title">지정일 운세</div>
           <div class="mc-desc">중요한 면접·계약·여행 날의 일진을 깊이 있게 풀이</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">9,900원</div>
+          <div class="mc-price">1,500원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 19,900원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 월당 1,500원, 최대 9,000원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">📆</div>
           <div class="mc-title">월별 운세</div>
-          <div class="mc-desc">최대 12개월의 운세 흐름을 연속적으로 추적</div>
+          <div class="mc-desc">최대 6개월의 운세 흐름을 연속적으로 추적</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">19,900원</div>
+          <div class="mc-price">월당 1,500원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 9,000원 (6개월)</span></div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 29,900원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 19,000원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🎉</div>
           <div class="mc-title">신년운세</div>
           <div class="mc-desc">사주·세운·대운을 종합한 한 해의 입체 분석</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">29,900원</div>
+          <div class="mc-price">19,000원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 49,900원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
           <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🌼</div>
           <div class="mc-title">인생총운</div>
           <div class="mc-desc">대운 흐름으로 보는 평생의 시기별 길흉화복</div>
           <div class="mc-tag t-signature">시그니처</div>
-          <div class="mc-price">49,900원</div>
+          <div class="mc-price">24,000원</div>
         </button>
       </div>
     </div>
@@ -1118,7 +1118,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 월별 운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraMonthly" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">📆</span><span class="cat-extra-title">월별 운세 — 기간 선택</span></div></legend>
-        <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 12개월).</div>
+        <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 6개월 · 월당 1,500원).</div>
         <div class="row3">
           <div class="ig">
             <label for="moStartY">시작 연도</label>
@@ -1638,7 +1638,7 @@ function goToInput(cat){
     if(!document.getElementById('moStartY').value){
       document.getElementById('moStartY').value=t.getFullYear();
       document.getElementById('moStartM').value=t.getMonth()+1;
-      const end=new Date(t.getFullYear(),t.getMonth()+5,1);
+      const end=new Date(t.getFullYear(),t.getMonth()+2,1);
       document.getElementById('moEndY').value=end.getFullYear();
       document.getElementById('moEndM').value=end.getMonth()+1;
     }
@@ -2521,7 +2521,7 @@ function nextActionsHTML(currentCat){
     {key:'manse',icon:'📅',title:'만세력',desc:'사주 8글자 정확 산출',price:'무료'},
     {key:'daily',icon:'✨',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
     {key:'daypick',icon:'🎯',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
-    {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 12개월 흐름',price:'프리미엄'},
+    {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
     {key:'newyear',icon:'🎉',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
     {key:'life',icon:'🌼',title:'인생총운',desc:'대운 흐름 평생 풀이',price:'시그니처'}
   ];
@@ -4233,7 +4233,7 @@ const PAID_META={
       '· 그날 활성화되는 신살(神煞) 풀이',
       '· 명리 고전 인용과 함께하는 행동 처방'
     ],
-    price:'9,900원'
+    price:'1,500원'
   },
   monthly:{
     icon:'📆',title:'월별 운세',
@@ -4245,9 +4245,9 @@ const PAID_META={
       '· 추천 활동 / 주의 활동 / 그달의 길일 추천',
       '· 기간 통합 베스트 시기 / 주의 시기',
       '· 본인 사주 일간 기반 맞춤 조언',
-      '· 최대 12개월 연속 풀이'
+      '· 최대 6개월 연속 풀이'
     ],
-    price:'19,900원'
+    price:'월당 1,500원 (최대 9,000원)'
   },
   newyear:{
     icon:'🎉',title:'신년운세',
@@ -4261,7 +4261,7 @@ const PAID_META={
       '· 양력 별자리 보강 풀이',
       '· 분기별 행동 지침 + 연간 키워드 3개'
     ],
-    price:'29,900원'
+    price:'19,000원'
   },
   life:{
     icon:'🌼',title:'인생총운',
@@ -4274,9 +4274,21 @@ const PAID_META={
       '· 대운(10년)별 시기별 풀이',
       '· 카테고리당 본문 4~6문단의 깊이'
     ],
-    price:'49,900원'
+    price:'24,000원'
   }
 };
+// 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
+const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,life:24000};
+// 월별 최대 개월
+const MONTHLY_MAX=6;
+// 카테고리 실제 결제 금액 계산 — _meta·인자에서 월별 개월수 도출
+function computePayAmount(category, meta){
+  if(category!=='monthly')return PAY_BASE_PRICE[category]||0;
+  const e=meta&&meta.moExtra; if(!e)return PAY_BASE_PRICE.monthly;
+  const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));
+  return PAY_BASE_PRICE.monthly*cnt;
+}
+function formatWon(n){return n.toLocaleString('ko-KR')+'원';}
 
 // 통합 잠금 화면 — 모든 유료 카테고리에서 사용
 function renderPaidLock(category, saju){
@@ -4302,16 +4314,16 @@ function renderPaidLock(category, saju){
     <div class="pay-prep">
       <div class="pay-prep-badge">💳 안전 결제</div>
       <div class="pay-prep-body">카카오페이·네이버페이로 간편하게 결제하실 수 있습니다. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
-      <div class="pay-prep-price">결제 금액 · <b>${m.price}</b></div>
+      <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 1,500원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
     </div>
     <div class="easypay-row">
       <button type="button" class="easypay-btn easypay-kakao" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 결제">
         <span class="ep-logo">kakao<span style="background:#191919;color:#FEE500;border-radius:4px;padding:1px 5px;margin-left:2px">pay</span></span>
-        <span class="easypay-price">${m.price}</span>
+        <span class="easypay-price">${formatWon(computePayAmount(category,_meta))}</span>
       </button>
       <button type="button" class="easypay-btn easypay-naver" onclick="openPaymentConsent('${category}','NAVERPAY')" aria-label="네이버페이로 결제">
         <span class="ep-logo"><span style="background:#FFFFFF;color:#03C75A;border-radius:4px;padding:1px 5px;margin-right:2px;font-weight:900">N</span>Pay</span>
-        <span class="easypay-price">${m.price}</span>
+        <span class="easypay-price">${formatWon(computePayAmount(category,_meta))}</span>
       </button>
     </div>
     <div class="easypay-foot">
@@ -4369,7 +4381,6 @@ function unlockAndRender(category){
 //   PAYMENT_CONFIRM_URL: 결제 승인 처리 워커 엔드포인트 (worker/payment-worker.js 배포 후)
 const TOSS_CLIENT_KEY='test_ck_REPLACE_WITH_LIVE_CLIENT_KEY';
 const PAYMENT_CONFIRM_URL='https://payment.example.workers.dev/confirm'; // 배포 후 교체
-const PAY_PRICE={daypick:9900,monthly:19900,newyear:29900,life:49900};
 // 토스페이먼츠 v1 SDK 간편결제 provider — easyPay 값은 한글 라벨 그대로 전달
 const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이',NAVERPAY:'네이버페이'};
 let _payCategory=null;
@@ -4380,9 +4391,15 @@ function openPaymentConsent(category,method){
   _payMethod=method||'KAKAOPAY';
   const m=PAID_META[category]; if(!m){return;}
   document.getElementById('payProductName').textContent=`${m.icon} ${m.title}`;
-  const descPlain=m.desc.replace(/<br>/g,' · ').replace(/<[^>]+>/g,'');
+  let descPlain=m.desc.replace(/<br>/g,' · ').replace(/<[^>]+>/g,'');
+  if(category==='monthly'&&_meta&&_meta.moExtra){
+    const e=_meta.moExtra;
+    const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));
+    descPlain+=` · ${cnt}개월 (${e.sy}.${String(e.sm).padStart(2,'0')} ~ ${e.ey}.${String(e.em).padStart(2,'0')})`;
+  }
   document.getElementById('payProductDesc').textContent=descPlain;
-  document.getElementById('payProductPrice').textContent=m.price;
+  const amount=computePayAmount(category,_meta);
+  document.getElementById('payProductPrice').textContent=formatWon(amount);
   // 선택한 결제 수단 표시
   const cta=document.getElementById('payCtaGo');
   cta.textContent=`${PAY_METHOD_LABEL[_payMethod]||'간편결제'}로 결제하기`;
@@ -4417,7 +4434,7 @@ function _genOrderId(category){
 async function startTossPayment(){
   const cat=_payCategory; if(!cat){return;}
   const method=_payMethod||'KAKAOPAY';
-  const m=PAID_META[cat]; const amount=PAY_PRICE[cat];
+  const m=PAID_META[cat]; const amount=computePayAmount(cat,_meta);
   const statusEl=document.getElementById('payStatus');
   if(typeof TossPayments==='undefined'){
     statusEl.className='pay-status err';
@@ -6927,7 +6944,7 @@ function analyze(){
     if(!em||em<1||em>12)return showErr('종료 월(1~12)을 입력해주세요.','moEndM');
     const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
     if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.','moEndM');
-    if(endIdx-startIdx+1>12)return showErr('월별 운세는 최대 12개월까지 가능합니다.','moEndM');
+    if(endIdx-startIdx+1>MONTHLY_MAX)return showErr('월별 운세는 최대 '+MONTHLY_MAX+'개월까지 가능합니다.','moEndM');
     moExtra={sy,sm,ey,em};
   }else if(cat==='newyear'){
     const y=parseInt(document.getElementById('nyY').value)||0;
