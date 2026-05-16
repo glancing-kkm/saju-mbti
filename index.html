@@ -1503,9 +1503,9 @@ function showTermPopup(el){
   if(!desc)return;
   const pop=document.createElement('div');
   pop.className='term-pop';
-  pop.innerHTML=`<button class="term-pop-close" type="button" aria-label="닫기">×</button>
+  pop.innerHTML=fixKoreanJosa(`<button class="term-pop-close" type="button" aria-label="닫기">×</button>
     <div class="term-pop-name">${term}</div>
-    <div class="term-pop-body">${desc}</div>`;
+    <div class="term-pop-body">${desc}</div>`);
   document.body.appendChild(pop);
   const popW=Math.min(280,window.innerWidth-24);
   pop.style.width=popW+'px';
@@ -1801,9 +1801,9 @@ function ensurePaidPanel(){
   const p5=document.getElementById('p5');
   if(!p5||p5.dataset.rendered==='1'||!_saju||!_meta)return;
   const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
-  p5.innerHTML=back+(_paidUnlocked
+  p5.innerHTML=fixKoreanJosa(back+(_paidUnlocked
     ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
-    :renderSajuLock(_saju));
+    :renderSajuLock(_saju)));
   if(_paidUnlocked)enrichTerms(p5);
   p5.dataset.rendered='1';
 }
@@ -1818,9 +1818,9 @@ function tab(n){
     const p5=document.getElementById('p5');
     if(p5){
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
-      p5.innerHTML=back+(lifeUnlocked
+      p5.innerHTML=fixKoreanJosa(back+(lifeUnlocked
         ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
-        :renderPaidLock('life',_saju));
+        :renderPaidLock('life',_saju)));
       if(lifeUnlocked)enrichTerms(p5);
       p5.dataset.rendered='1';
     }
@@ -2096,6 +2096,51 @@ const eul=s=>_hasJong(s)?'을':'를';
 const gwa=s=>_hasJong(s)?'과':'와';
 const ro=s=>(!_hasJong(s)||_hasJongRieul(s))?'로':'으로';
 const ina=s=>_hasJong(s)?'이나':'나';
+// 사후 보정 — 렌더된 HTML 전체에서 「체언 + 잘못된 조사」 패턴을 한글 발음 받침 기준으로 교정.
+// 한자(괄호) 표기·사이에 들어간 HTML 태그(<em>·<b> 등)·영문(MBTI 등)·숫자도 통과해
+// 마지막 글자의 한국어 발음 끝소리를 보고 은/는·이/가·을/를·과/와·으로/로 를 자동 분기한다.
+function fixKoreanJosa(text){
+  if(!text)return text;
+  // 영문 1글자의 한국어 끝소리가 자음으로 끝나는 글자(F·H·L·M·N·R·S·X)
+  const ENG_CONS=new Set(['F','H','L','M','N','R','S','X']);
+  // 숫자 1글자의 한국어 끝소리가 자음으로 끝나는 글자(0·1·3·6·7·8)
+  const NUM_CONS=new Set(['0','1','3','6','7','8']);
+  const hasJongOf=(ch)=>{
+    if(!ch)return false;
+    const c=ch.charCodeAt(0);
+    if(c>=0xAC00&&c<=0xD7A3)return ((c-0xAC00)%28)!==0;
+    if(c>=65&&c<=90)return ENG_CONS.has(ch);
+    if(c>=97&&c<=122)return ENG_CONS.has(ch.toUpperCase());
+    if(c>=48&&c<=57)return NUM_CONS.has(ch);
+    return false;
+  };
+  const isRieulOf=(ch)=>{
+    if(!ch)return false;
+    const c=ch.charCodeAt(0);
+    if(c>=0xAC00&&c<=0xD7A3)return ((c-0xAC00)%28)===8;
+    if((c>=65&&c<=90)||(c>=97&&c<=122))return ch.toUpperCase()==='L'; // L(엘)은 ㄹ 받침
+    return false;
+  };
+  // 패턴: (한글 1자 | 영문 연속 | 숫자 연속) + 선택 한자(괄호) + 선택 HTML 태그들 + 조사 + 경계
+  return text.replace(
+    /([가-힣]|[A-Z]+|[a-z]+|\d+)((?:\([^)\n]*\))?(?:<\/?[a-zA-Z][^>]*>)*)(은|는|이|가|을|를|과|와|으로|로)(?=[\s,\.\?!:;)」』】〕<>·\-—…「『』《》＞]|$)/g,
+    (m,noun,middle,p)=>{
+      const lastCh=noun[noun.length-1];
+      const hasJong=hasJongOf(lastCh);
+      const isRieul=isRieulOf(lastCh);
+      let fixed;
+      switch(p){
+        case '은':case '는':fixed=hasJong?'은':'는';break;
+        case '이':case '가':fixed=hasJong?'이':'가';break;
+        case '을':case '를':fixed=hasJong?'을':'를';break;
+        case '과':case '와':fixed=hasJong?'과':'와';break;
+        case '으로':case '로':fixed=(!hasJong||isRieul)?'로':'으로';break;
+        default:fixed=p;
+      }
+      return noun+middle+fixed;
+    }
+  );
+}
 // 오행(OHNAME)은 '목(木)'처럼 괄호로 끝나므로, 짧은 이름 기반으로 조사 분기
 const OH_SHORT=['목','화','토','금','수'];
 const ohIp=i=>ip(OH_SHORT[i]);
@@ -4501,7 +4546,7 @@ function unlockAndRender(category){
   const renderTarget=(panelId,html)=>{
     const el=document.getElementById(panelId);
     if(!el)return;
-    el.innerHTML=back+headerBlock+termNoticeHTML()+html+nextActions;
+    el.innerHTML=fixKoreanJosa(back+headerBlock+termNoticeHTML()+html+nextActions);
     enrichTerms(el);
     el.dataset.rendered='1';
   };
@@ -5695,7 +5740,7 @@ function analyzeGunghapDetail(){
     let sy=y,sm=m,sd=d;
     if(_g2cal==='lunar'){const s=l2s(y,m,d,_g2leap);sy=s.y;sm=s.m;sd=s.d;}
     const saju2=calcSaju(sy,sm,sd,h,mn);
-    document.getElementById('ggResultBox').innerHTML=renderGunghapDetailFull(_saju,saju2,gender,_g2gender);
+    document.getElementById('ggResultBox').innerHTML=fixKoreanJosa(renderGunghapDetailFull(_saju,saju2,gender,_g2gender));
     document.getElementById('ggResultBox').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
 }
@@ -6652,7 +6697,7 @@ function analyzeGunghap(){
     if(_g2cal==='lunar'){const s=l2s(y2,m2,d2,_g2leap);sy2=s.y;sm2=s.m;sd2=s.d;}
     const saju2=calcSaju(sy2,sm2,sd2,h2,0);
     const result=calcGunghap(_saju,saju2,gender,_g2gender);
-    document.getElementById('gunghapResult').innerHTML=renderGunghapResult(_saju,saju2,result);
+    document.getElementById('gunghapResult').innerHTML=fixKoreanJosa(renderGunghapResult(_saju,saju2,result));
     document.getElementById('gunghapResult').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
 }
@@ -7210,46 +7255,44 @@ function analyze(){
       // 용어 안내 — 모든 카테고리 결과 상단(헤더 직후)에 일괄 노출. 잠금 화면에서는 미노출.
       const termTip=termNoticeHTML();
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=back+headerFull+termTip+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions;
+        document.getElementById('p0').innerHTML=fixKoreanJosa(back+headerFull+termTip+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions);
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
         _p1.innerHTML=renderDailyFortune(saju);
         // 일일운세는 자체 back 버튼 포함이라 헤더 블록을 그 직후에 삽입
-        _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+headerFull+termTip);
-        // 끝에 후속 CTA 추가
-        _p1.innerHTML+=nextActions;
+        _p1.innerHTML=fixKoreanJosa(_p1.innerHTML.replace('</button>','</button>'+headerFull+termTip)+nextActions);
         enrichTerms(_p1);
         targetIdx=1;
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
-        _p2.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
+        _p2.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
-          :renderPaidLock('daypick',saju))+(unlocked?nextActions:'');
+          :renderPaidLock('daypick',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
         targetIdx=2;
       }else if(cat==='monthly'){
         const _p3=document.getElementById('p3');
-        _p3.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
+        _p3.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
-          :renderPaidLock('monthly',saju))+(unlocked?nextActions:'');
+          :renderPaidLock('monthly',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
         targetIdx=3;
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
-        _p4.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
+        _p4.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderNewyearFortune(saju,nyExtra.y)
-          :renderPaidLock('newyear',saju))+(unlocked?nextActions:'');
+          :renderPaidLock('newyear',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
         targetIdx=4;
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
-        _p5.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
+        _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
-          :renderPaidLock('life',saju))+(unlocked?nextActions:'');
+          :renderPaidLock('life',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;
