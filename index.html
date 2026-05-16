@@ -511,7 +511,33 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-ind-advice{font-size:.95rem;line-height:1.85;color:var(--accent);margin:6px 0 0}
 .mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:1px solid var(--accent);border-radius:14px}
 .mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
-.mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0}
+.mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0 0 10px}
+.mbti-analysis-synth p:last-child{margin-bottom:0}
+.mbti-synth-head{font-weight:700;color:var(--text)}
+/* 새 내러티브 레이아웃 (타고난 기질 × 학습된 성격) */
+.mbti-intro{margin:6px 0 16px;padding:14px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:12px}
+.mbti-intro p{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px}
+.mbti-intro p:last-child{margin-bottom:0}
+.mbti-intro b{color:var(--accent-bright);font-weight:700}
+.mbti-indicator-block{padding:16px 0 14px;border-top:1px solid var(--border)}
+.mbti-indicator-block:first-of-type{border-top:0;padding-top:6px}
+.mbti-indicator-block header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.mbti-indicator-block h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
+.mbti-match-badge{font-size:.66rem;font-weight:800;padding:3px 10px;border-radius:50px;letter-spacing:.04em;border:1px solid}
+.mbti-match-aligned{color:#6cbf7e;background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
+.mbti-match-misaligned{color:#e57462;background:rgba(229,116,98,.14);border-color:rgba(229,116,98,.42)}
+.mbti-axis{display:flex;flex-direction:column;gap:10px}
+.mbti-axis-row{padding:12px 13px;background:var(--card);border:1px solid var(--border);border-radius:10px}
+.mbti-axis-row.row-innate{background:linear-gradient(135deg,rgba(108,191,126,.06),var(--card));border-color:rgba(108,191,126,.3)}
+.mbti-axis-row.row-learned{background:linear-gradient(135deg,rgba(212,175,55,.06),var(--card));border-color:rgba(212,175,55,.3)}
+.mbti-axis-row.row-evolution{background:linear-gradient(135deg,rgba(120,140,180,.06),var(--card));border-color:rgba(120,140,180,.3)}
+.mbti-axis-tag{font-size:.72rem;font-weight:800;letter-spacing:.02em;margin-bottom:6px;color:var(--accent)}
+.mbti-axis-row.row-innate .mbti-axis-tag{color:#6cbf7e}
+.mbti-axis-row.row-learned .mbti-axis-tag{color:var(--accent-bright)}
+.mbti-axis-row.row-evolution .mbti-axis-tag{color:#a3b8d4}
+.mbti-axis-body{font-size:.95rem;line-height:1.85;color:var(--sub)}
+.mbti-axis-body em{color:var(--accent);font-style:normal;font-weight:700}
+.mbti-axis-body b{color:var(--text);font-weight:700}
 
 /* ── TL;DR 카드 (결과 최상단 한 화면 요약) ── */
 .result-tldr{margin:8px 12px 16px;padding:18px 16px 14px;background:linear-gradient(135deg,var(--card),rgba(45,52,71,.65));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
@@ -2168,140 +2194,185 @@ function mbtiBadgeHTML(saju, mbti){
   </div>`;
 }
 
-// ── MBTI 4지표 상세 분석 (I/N/T/J 각 점수·근거·일상 예시) ──
-// 일간/일지/오행/십신을 인용해 「왜 그렇게 나오는지」를 풀어줌
+// ── MBTI 4지표 상세 분석 — 「타고난 기질(사주) × 학습된 성격(MBTI)」 내러티브 ──
+// 각 지표별로 ① 사주의 본래 결, ② 현재 MBTI로 비치는 모습, ③ 변화의 배경(환경·경험+사주 요소)을 풀어줌
 function mbtiAnalysisHTML(saju, mbti){
   if(!mbti||mbti.length!==4)return '';
   const so=SOH[saju.dp.stem], bo=BOH[saju.dp.branch];
   const dStemKo=STEMKO[saju.dp.stem], dBrKo=BRCHKO[saju.dp.branch];
   const dm=DM[saju.dp.stem];
   const oh=ohCount(saju);
-  const dom=oh.indexOf(Math.max(...oh)), weak=oh.indexOf(Math.min(...oh));
-  const yang=STEM_META[saju.dp.stem]&&['갑','병','무','경','임'].indexOf(dStemKo)>=0;
-  const stemNk=stemNick(saju.dp.stem)||'';
-  const brNk=branchNick(saju.dp.branch)||'';
+  const yangStems=['갑','병','무','경','임'];
+  const yangStem=yangStems.includes(dStemKo);
+  const yangBranches=[2,5,6,8];   // 인·사·오·신
+  const yinBranches=[0,1,3,11];   // 자·축·해·묘
+  const yangBr=yangBranches.includes(saju.dp.branch);
+  const yinBr=yinBranches.includes(saju.dp.branch);
+  const stemNk=stemNick(saju.dp.stem)||dStemKo;
+  const brNk=branchNick(saju.dp.branch)||dBrKo;
 
-  // 4축 점수 (0~100) + 일치 방향 + 근거 텍스트
-  // I/E ────────────
-  const wantI=mbti[0]==='I';
-  let ieScore;
-  if(wantI){
-    // 본인이 I — 음간일수록 점수↑
-    ieScore=yang?40:88;
-  }else{
-    ieScore=yang?88:40;
+  // 일간 기준 십신 강도 (오행 카운트로 근사 — 5요소 순환)
+  // 비겁: 같은 오행 / 식상: 일간이 생 / 재성: 일간이 극 / 관성: 일간을 극 / 인성: 일간을 생
+  const sipsin={
+    bigeop:   Math.max(0, oh[so] - 1),  // 일간 자신 제외
+    siksang:  oh[(so+1)%5],
+    jaesung:  oh[(so+2)%5],
+    gwansung: oh[(so+3)%5],
+    insung:   oh[(so+4)%5]
+  };
+  const SS_LABEL={bigeop:'비겁',siksang:'식상',jaesung:'재성',gwansung:'관성',insung:'인성'};
+  // 가장 두터운 십신(일간 자신 제외 후 비교) — 어긋남 설명에서 인용
+  const ssRank=Object.entries(sipsin).sort((a,b)=>b[1]-a[1]);
+  const dominantSS=ssRank[0][0];
+  const dominantSSCount=ssRank[0][1];
+
+  // ── 지표별 빌더 ──
+  function buildIE(){
+    const wantI=mbti[0]==='I';
+    const innateE=yangStem; // 양 천간 = 타고난 외향
+    const aligned=(wantI && !innateE) || (!wantI && innateE);
+    const innate=yangStem
+      ? `당신의 일간 <em>${dStemKo}</em>은 <b>양(陽) 천간</b>으로, 「${stemNk}」처럼 기운을 밖으로 펼치며 사람·움직임·새 자극 속에서 본래의 생기가 살아나는 기질을 타고났습니다. 일지 <em>${dBrKo}</em>${yangBr?'(양 지지)도 같은 방향으로 외부 활동성을 더 두텁게 받쳐줍니다':yinBr?'(음 지지)가 안으로 균형을 잡아 발산을 조절해 줍니다':'(중성 지지)가 본인의 페이스를 일정하게 유지해 줍니다'}. 본질적으로는 「혼자 있을 때보다 사람·환경 속에서 머리가 잘 돌아가고 마음이 가라앉지 않는」 발산형 결입니다.`
+      : `당신의 일간 <em>${dStemKo}</em>은 <b>음(陰) 천간</b>으로, 「${stemNk}」처럼 기운을 안으로 모으며 혼자만의 정리와 사색 속에서 본래의 결이 충전되는 기질을 타고났습니다. 일지 <em>${dBrKo}</em>${yinBr?'(음 지지)도 같은 방향으로 내면의 깊이를 더 두텁게 받쳐줍니다':yangBr?'(양 지지)가 바깥쪽으로 적당한 활력을 보태줍니다':'(중성 지지)가 본인의 페이스를 일정하게 유지해 줍니다'}. 본질적으로는 「사람과의 시간이 즐겁더라도 길어지면 빠르게 닳아 혼자만의 회복 시간을 반드시 필요로 하는」 수렴형 결입니다.`;
+    const learned=wantI
+      ? `현재 MBTI는 <b>I(내향)</b>로, 사람들과 함께 있을 때도 시간이 길어지면 에너지가 빠지고, 회복을 위해서는 혼자만의 공간(산책·독서·음악·잠시의 침묵) 같은 「조용한 시간」이 반드시 있어야 하는 사람으로 굳어져 있습니다. 깊이 있는 한두 사람과의 대화가 얕은 다수와의 만남보다 훨씬 만족스럽게 느껴지고, 갑작스러운 모임이나 즉흥적 사교에는 마음의 준비 시간이 필요한 편입니다.`
+      : `현재 MBTI는 <b>E(외향)</b>로, 사람과 활동 속에 있을 때 머리가 잘 돌아가고 아이디어가 떠오르며, 혼자 너무 오래 있으면 가라앉는 사람으로 굳어져 있습니다. 머릿속 생각도 말로 꺼내야 정리가 되고, 약속·모임·새로운 만남이 끊기지 않는 환경에서 안정감을 느끼는 편입니다.`;
+    let evolution;
+    if(aligned){
+      evolution=`타고난 기질과 현재 살아가는 방식이 같은 방향으로 흐릅니다. 「${wantI?'혼자만의 시간이 곧 회복':'사람 속에서 에너지가 충전'}」이라는 결이 본인에게 자연스럽고, 굳이 의식적으로 노력하지 않아도 그 결이 흘러나옵니다. 이렇게 사주와 MBTI가 일치하는 영역은 본인이 「이게 진짜 나야」라고 느끼는 부분이라, 강점으로 의식적으로 활용할수록 큰 무기가 됩니다.`;
+    }else if(innateE && wantI){
+      evolution=`타고난 결은 발산형이지만 살아오는 과정에서 후천적으로 내면을 가꾸는 방향으로 옮겨왔을 가능성이 큽니다. 어린 시절 가정에서 본인의 활달함·큰 목소리가 충분히 받아들여지지 않았거나, 학창 시절 또래 관계에서 받은 미세한 상처가 표현을 안으로 거두게 만들었거나, 사회에 나와서는 혼자 집중해야 하는 업무 환경·감정 노동의 피로·사람 관계의 반복된 실망 경험이 「밖으로 나가는 것보다 안에서 정리하는 것이 더 안전하다」는 결론을 굳혀 왔을 수 있습니다. 사주에서 보면 ${sipsin.insung>=sipsin.siksang?`<b>인성</b>(${sipsin.insung})이 <b>식상</b>(${sipsin.siksang})보다 두텁게 자리잡아, 본래의 양적 발산력보다 「받아들이고 흡수해 정리하는」 결이 더 자주 발현되었습니다. 책·자료·사색이 본인을 충전시키는 가장 효율적인 채널이 된 이유입니다.`:`<b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 타고난 발산력에 한 겹의 다른 옷을 입혀온 흐름입니다.`}`;
+    }else{
+      evolution=`타고난 결은 안으로 모으는 수렴형이지만 살아오는 과정에서 후천적으로 외부로 나서는 법을 익혀왔을 가능성이 큽니다. 형제 중 장남·장녀의 책임을 일찍 떠안았거나, 가정에서 본인이 의사 표현을 분명히 해야 살아남는 분위기였거나, 영업·서비스·교육·발표가 잦은 직무에서 오래 일하며 「사람을 다루는 근육」이 강해졌을 가능성이 있습니다. 사주에서 보면 ${sipsin.siksang>=sipsin.insung?`<b>식상</b>(${sipsin.siksang})이 <b>인성</b>(${sipsin.insung})보다 두텁게 자리잡아, 본래의 음적 수렴력 위에 「말과 표현으로 풀어내는」 결이 자연스럽게 덧입혀졌습니다. 머릿속 생각을 입 밖으로 꺼내는 능력이 후천적으로 잘 발달한 이유입니다.`:`<b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 본래의 내향성 위에 다른 색을 덧입혀, 사회적으로는 외향적인 사람으로 보이는 모습이 자리잡았습니다.`}`;
+    }
+    return {key:'IE',label:wantI?'I (내향)':'E (외향)',aligned,innate,learned,evolution};
   }
-  // 추가: 일지가 음(자·축·해·묘)이면 I 가산 / 양(인·사·오·신)이면 E 가산
-  const yangBr=[2,5,6,8].includes(saju.dp.branch);
-  const yinBr=[0,1,3,11].includes(saju.dp.branch);
-  if(wantI&&yinBr)ieScore=Math.min(98,ieScore+8);
-  else if(!wantI&&yangBr)ieScore=Math.min(98,ieScore+8);
-  else if(wantI&&yangBr)ieScore=Math.max(30,ieScore-8);
-  else if(!wantI&&yinBr)ieScore=Math.max(30,ieScore-8);
 
-  // N/S ────────────
-  const wantN=mbti[1]==='N';
-  // 인성·식상이 강하면 N (목·수)
-  const inSikSeong=oh[0]+oh[4]; // 목+수
-  const jaeGwanSeong=oh[2]+oh[3]; // 토+금
-  let nsScore;
-  if(wantN){
-    nsScore=50+(inSikSeong-jaeGwanSeong)*6;
-  }else{
-    nsScore=50+(jaeGwanSeong-inSikSeong)*6;
+  function buildNS(){
+    const wantN=mbti[1]==='N';
+    // 직관 = 인성+식상, 감각 = 재성+관성
+    const intuitive=sipsin.insung+sipsin.siksang;
+    const sensing=sipsin.jaesung+sipsin.gwansung;
+    const innateN=intuitive>sensing;
+    const aligned=(wantN && innateN) || (!wantN && !innateN);
+    const innate=innateN
+      ? `당신의 사주에서는 <b>인성</b>(${sipsin.insung})·<b>식상</b>(${sipsin.siksang})의 결이 두텁습니다(합계 ${intuitive}). 인성은 「의미를 흡수하고 본질을 길어 올리는」 결이고, 식상은 「내면의 생각을 새로운 형태로 풀어내는」 결입니다. 두 결이 함께 흐를 때 사람은 눈앞의 사실보다 그 너머의 가능성·연관성·패턴을 먼저 읽어내고, 「이건 결국 무엇과 연결되어 있을까」를 묻는 직관형 기질을 타고나게 됩니다.`
+      : `당신의 사주에서는 <b>재성</b>(${sipsin.jaesung})·<b>관성</b>(${sipsin.gwansung})의 결이 두텁습니다(합계 ${sensing}). 재성은 「현실의 자원을 정확하게 측정하고 다루는」 결이고, 관성은 「세상의 질서·규칙을 받아들이고 행동의 기준선을 세우는」 결입니다. 두 결이 함께 흐를 때 사람은 추상보다 손에 잡히는 사실·검증된 데이터·오감의 경험을 신뢰하는 감각형 기질을 타고나게 됩니다.`;
+    const learned=wantN
+      ? `현재 MBTI는 <b>N(직관)</b>로, 정보를 받아들일 때 「이게 무엇과 연결되어 있을까, 앞으로 어떻게 흘러갈까, 본질은 무엇일까」를 먼저 묻는 사람으로 굳어져 있습니다. 디테일은 큰 그림이 잡힌 뒤에야 들여다보는 편이고, 가능성·가설·은유를 다루는 대화가 가장 활기차게 느껴집니다.`
+      : `현재 MBTI는 <b>S(감각)</b>로, 정보를 받아들일 때 「실제로 있었던 일은 무엇인가, 지금 눈에 보이는 것은 어떤가, 검증된 사례는 무엇인가」를 먼저 묻는 사람으로 굳어져 있습니다. 추상적 비유보다 구체적 사실·검증된 단계가 의사결정의 토대가 됩니다.`;
+    let evolution;
+    if(aligned){
+      evolution=`타고난 인식 방식과 현재 사용하는 방식이 같은 방향으로 흐릅니다. ${innateN?'추상과 본질을 다루는':'사실과 디테일을 다루는'} 일이 본인에게는 「숨 쉬는 것처럼 자연스러운 결」이고, 굳이 의식하지 않아도 그쪽 방향으로 머리가 먼저 움직입니다. 같은 일을 해도 본인은 덜 지치고 결과의 품질도 일정합니다.`;
+    }else if(innateN && !wantN){
+      evolution=`타고난 직관의 결이 있음에도 현재는 감각 중심의 사고가 더 익숙해진 상태입니다. 어린 시절 안정·예측 가능성이 부족한 환경에서 자라 「현실을 잘 챙겨야 살아남는다」는 학습이 일찍 새겨졌거나, 생계·실무·서비스 중심의 직업 환경에서 오래 일하며 「검증되지 않은 직관은 위험하다」는 결론이 굳어졌을 수 있습니다. 직관이 떠오를 때마다 한 번 더 데이터·근거를 확인하는 습관이 자리잡으면서, 본래의 통찰력이 충분히 발휘되지 못하고 있을 가능성이 큽니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 인성·식상이 「쓰이지 못한 채 잠겨 있는」 상태가 만들어졌습니다. 직관을 안전하게 풀어주는 작은 실험(글쓰기·아이디어 메모·창작 활동)부터 시작하면 본래의 결이 점점 회복됩니다.`;
+    }else{
+      evolution=`타고난 감각의 결이 있음에도 현재는 직관 중심의 사고가 더 익숙해진 상태입니다. 어린 시절 예술·인문·종교적 분위기에서 자랐거나, 큰 변화·여행·이주 경험이 잦아 「하나의 답이 아니라 여러 가능성을 동시에 보는 법」이 일찍 학습되었거나, 기획·전략·창의 분야에서 오래 일하며 패턴 인식 근육이 강해졌을 수 있습니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 재성·관성 위에 「가능성을 먼저 보는」 다른 색이 덧입혀졌습니다. 직관으로 풀어낸 가설을 사주의 타고난 현실 감각으로 한 번 더 검증하는 흐름이 본인만의 차별점이 됩니다.`;
+    }
+    return {key:'NS',label:wantN?'N (직관)':'S (감각)',aligned,innate,learned,evolution};
   }
-  nsScore=Math.max(35,Math.min(95,nsScore));
 
-  // T/F ────────────
-  const wantT=mbti[2]==='T';
-  // 관성·재성이 강하면 T (금·토 위주), 식상·인성이 강하면 F (수·화·목)
-  const tHeavy=oh[3]+oh[2]*0.5; // 금+토 절반
-  const fHeavy=oh[1]+oh[4]*0.7+oh[0]*0.3; // 화+수+목 일부
-  let tfScore;
-  if(wantT){
-    tfScore=50+(tHeavy-fHeavy)*7;
-  }else{
-    tfScore=50+(fHeavy-tHeavy)*7;
+  function buildTF(){
+    const wantT=mbti[2]==='T';
+    // T = 관성+재성, F = 식상+인성
+    const tStrength=sipsin.gwansung+sipsin.jaesung;
+    const fStrength=sipsin.siksang+sipsin.insung;
+    const innateT=tStrength>fStrength;
+    const aligned=(wantT && innateT) || (!wantT && !innateT);
+    const innate=innateT
+      ? `당신의 사주에서는 <b>관성</b>(${sipsin.gwansung})·<b>재성</b>(${sipsin.jaesung})의 결이 두텁습니다(합계 ${tStrength}). 관성은 「규칙·권위를 받아들이고 행동의 기준선을 세우는」 결, 재성은 「현실의 자원을 정확히 측정하고 분배하는」 결입니다. 두 결이 함께 흐르면 의사결정 앞에서 감정보다 「이 결정이 합리적인가, 결과는 어떻게 측정되는가」를 먼저 묻는 논리형 기질을 타고나게 됩니다.`
+      : `당신의 사주에서는 <b>식상</b>(${sipsin.siksang})·<b>인성</b>(${sipsin.insung})의 결이 두텁습니다(합계 ${fStrength}). 식상은 「내면을 표현하고 사람·세상과 결을 나누는」 결, 인성은 「상대를 받아들이고 품어주는」 결입니다. 두 결이 함께 흐르면 결정 앞에서 「이 선택이 사람들에게 어떻게 닿을까, 관계의 결은 어떻게 흘러갈까」를 먼저 묻는 감정형 기질을 타고나게 됩니다.`;
+    const learned=wantT
+      ? `현재 MBTI는 <b>T(사고)</b>로, 결정 앞에서 「논리적으로 옳은가, 객관적 근거는 무엇인가」를 먼저 점검합니다. 감정에 휩쓸리지 않으려는 의식적 자제가 깔려 있고, 비판을 들었을 때 내용을 먼저 보고 감정은 뒤로 미루는 사람으로 굳어져 있습니다.`
+      : `현재 MBTI는 <b>F(감정)</b>로, 결정 앞에서 「관계는 어떻게 되는가, 사람들의 마음은 어떨까」를 먼저 살핍니다. 조화·공감·배려가 자연스럽게 우선순위에 오르고, 비판은 내용보다 어조에서 먼저 상처가 남는 사람으로 굳어져 있습니다.`;
+    let evolution;
+    if(aligned){
+      evolution=`타고난 의사결정 방식과 현재 사용하는 방식이 같은 방향으로 흐릅니다. ${innateT?'원칙과 논리로 풀어가는':'관계와 공감으로 풀어가는'} 결이 자연스럽고, 결정 이후 「그때 그렇게 하지 말 걸」 하는 후회가 적은 영역입니다. 본인이 신뢰할 수 있는 본인만의 결정 기준이 이미 단단합니다.`;
+    }else if(innateT && !wantT){
+      evolution=`타고난 논리의 결이 있음에도 현재는 감정·관계 중심의 의사결정이 더 익숙해진 상태입니다. 가정에서 감정 표현·돌봄이 우선시되는 분위기 속에 자랐거나, 의료·교육·서비스·돌봄 분야에서 오래 일하며 「상대의 감정을 먼저 읽는 근육」이 강하게 발달했거나, 본래는 단호한 결정이 가능하지만 「누군가를 상하게 할까」 망설이는 시간이 길어진 패턴이 누적되어 있을 수 있습니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 관·재 위에 부드러운 옷이 덧입혀졌습니다. 큰 의사결정 자리에서는 본인의 타고난 논리력을 신뢰해도 충분하며, 오히려 망설임 때문에 결정이 늦어지지 않도록 「내 첫 판단을 한 번 더 믿는」 연습이 도움이 됩니다.`;
+    }else{
+      evolution=`타고난 감정·관계의 결이 있음에도 현재는 논리 중심의 의사결정이 더 익숙해진 상태입니다. 학업·연구·기술·법무·금융 같은 「감정을 배제해야 정확해지는」 분야에서 오래 훈련 받았거나, 어린 시절 감정 표현이 약점으로 비치는 환경에서 자라 「감정을 누르는 법」을 일찍 익혔을 수 있습니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 식·인 위에 단단한 옷이 덧입혀졌습니다. 일·공적 자리에서는 그 단단함이 본인의 강점이지만, 가까운 관계와 회복의 시간에는 본래의 따뜻한 결을 의식적으로 풀어줄 때 본인도 상대도 훨씬 편안해집니다.`;
+    }
+    return {key:'TF',label:wantT?'T (사고)':'F (감정)',aligned,innate,learned,evolution};
   }
-  tfScore=Math.max(35,Math.min(95,tfScore));
 
-  // J/P ────────────
-  const wantJ=mbti[3]==='J';
-  // 정관·정인이 일간을 받쳐주면 J / 식상·편관 위주면 P
-  const jHeavy=oh[3]+oh[2]; // 금+토 (질서)
-  const pHeavy=oh[0]+oh[4]; // 목+수 (변화)
-  let jpScore;
-  if(wantJ){
-    jpScore=50+(jHeavy-pHeavy)*6;
-  }else{
-    jpScore=50+(pHeavy-jHeavy)*6;
+  function buildJP(){
+    const wantJ=mbti[3]==='J';
+    // J = 관성+인성 (질서·체계), P = 식상+비겁 (흐름·자기 속도)
+    const jStrength=sipsin.gwansung+sipsin.insung;
+    const pStrength=sipsin.siksang+sipsin.bigeop;
+    const innateJ=jStrength>pStrength;
+    const aligned=(wantJ && innateJ) || (!wantJ && !innateJ);
+    const innate=innateJ
+      ? `당신의 사주에서는 <b>관성</b>(${sipsin.gwansung})·<b>인성</b>(${sipsin.insung})의 결이 두텁습니다(합계 ${jStrength}). 관성은 「외부의 질서를 받아들이고 책임을 수행하는」 결, 인성은 「학습과 자료로 본인을 단단하게 다지는」 결입니다. 두 결이 만나면 일을 계획하고, 마감 전에 결과를 만들어내고, 약속·시간을 지키는 것이 「당연한 정서」가 되는 계획형 기질을 타고나게 됩니다.`
+      : `당신의 사주에서는 <b>식상</b>(${sipsin.siksang})·<b>비겁</b>(${sipsin.bigeop})의 결이 두텁습니다(합계 ${pStrength}). 식상은 「상황의 흐름을 읽고 즉흥적으로 표현·확장하는」 결, 비겁은 「자기 결정·자기 속도」를 우선하는 결입니다. 두 결이 우세하면 정해진 틀보다 흐름을 타며 옵션을 열어두는 인식형 기질을 타고나게 됩니다.`;
+    const learned=wantJ
+      ? `현재 MBTI는 <b>J(계획)</b>로, 일이 들어오면 마감 전에 미리 끝내야 마음이 편하고, 일정·체크리스트·우선순위가 있어야 안심하는 사람으로 굳어져 있습니다. 갑작스러운 일정 변경은 작은 스트레스가 되고, 결정은 빠르게 닫는 편이 미루는 것보다 편하다고 느낍니다.`
+      : `현재 MBTI는 <b>P(인식)</b>로, 옵션을 열어두는 게 편하고, 일이 펼쳐지는 과정 자체를 즐기는 사람으로 굳어져 있습니다. 마감 직전에 집중력이 폭발하는 패턴, 즉흥적으로 결정을 바꾸는 자유가 본인의 동력이 됩니다.`;
+    let evolution;
+    if(aligned){
+      evolution=`타고난 시간·결정 방식과 현재 사용하는 방식이 같은 방향으로 흐릅니다. ${innateJ?'계획하고 닫아가는':'열어두고 흐름을 타는'} 결이 본인에게 자연스럽고, 본인만의 속도가 곧 본인의 강점이 되는 영역입니다. 같은 일을 해도 본인은 덜 지치고 결과의 안정성이 높습니다.`;
+    }else if(innateJ && !wantJ){
+      evolution=`타고난 질서·계획의 결이 있음에도 현재는 유연한 흐름을 더 편하게 느끼는 상태입니다. 잦은 이사·전학·이직으로 「계획대로 되는 일이 별로 없다」는 학습이 누적되었거나, 창의·기획·예술 분야에서 오래 일하며 「열어두는 것이 오히려 더 잘 풀린다」는 경험이 쌓였을 수 있습니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 정관·정인 위에 유연한 색이 덧입혀졌습니다. 다만 중요한 약속·마감을 다루는 자리에서는 본인이 사실 「겉으로 보이는 P보다 훨씬 더 J에 가까운 사람」이라는 점을 기억해 두면, 본인의 진짜 강점이 무엇인지 보입니다.`;
+    }else{
+      evolution=`타고난 흐름의 결이 있음에도 현재는 계획·구조 속에서 사는 것이 더 익숙한 상태입니다. 학교·군대·대기업 같은 「마감과 시스템이 강한 환경」에서 오랜 기간 훈련 받았거나, 책임 있는 자리(리더·부모·관리자)를 일찍 맡으며 계획성 근육이 크게 발달했을 수 있습니다. 사주에서 보면 <b>${SS_LABEL[dominantSS]}</b>(${dominantSSCount})의 결이 가장 두텁게 흘러, 본래의 식·비 위에 단단한 옷이 덧입혀졌습니다. 일·책임의 영역에서는 본인이 충분히 J처럼 살고 있으니, 사적인 시간과 회복의 자리에서는 본래의 흐름형 자유를 의식적으로 풀어줄 때 균형이 잡힙니다.`;
+    }
+    return {key:'JP',label:wantJ?'J (계획)':'P (인식)',aligned,innate,learned,evolution};
   }
-  jpScore=Math.max(35,Math.min(95,jpScore));
 
-  // 점수에 따른 라벨/색
-  const grade=s=>s>=85?{lab:'매우 일치',cls:'match-strong',ico:'✅'}:
-                 s>=70?{lab:'일치',cls:'match-good',ico:'✅'}:
-                 s>=55?{lab:'보통',cls:'match-medium',ico:'⚖️'}:
-                 s>=45?{lab:'혼재',cls:'match-mixed',ico:'⚖️'}:
-                       {lab:'어긋남',cls:'match-mismatch',ico:'⚠️'};
+  const indicators=[buildIE(),buildNS(),buildTF(),buildJP()];
+  const alignedList=indicators.filter(i=>i.aligned).map(i=>i.label.split(' ')[0]);
+  const misalignedList=indicators.filter(i=>!i.aligned).map(i=>i.label.split(' ')[0]);
 
-  // 각 축 본문 — 사주 요소 인용
-  const ieBody=`일간 <em>${dStemKo}${OHNAME[so]}</em>은 ${yang?'양(陽)':'음(陰)'} 천간이며 「${stemNk}」의 결을 가집니다. ${wantI?(yang?'사회적으론 외향적으로 비치지만 본질은 내향(I) — 본인의 결과 다른 색채를 함께 사는 분':'본인의 결과 MBTI가 같은 방향으로 흐르는 분 — 깊이 들어가는 결이 자연스럽습니다.'):(yang?'본인의 결과 MBTI가 같은 방향으로 흐르는 분 — 외부로 발신하는 결이 자연스럽습니다.':'사회적으론 내향처럼 보이지만 본질은 외향(E) — 본인의 결과 다른 색채를 함께 사는 분')} 일지 <em>${dBrKo}</em>(${brNk})${yangBr?'는 양 지지로 외부 활동성을 보강':yinBr?'는 음 지지로 내면의 깊이를 보강':'는 평이한 자리'}합니다.`;
-  const ieEx=`💡 <b>일상 예시</b> — ${wantI?'"중요한 결정 전에 혼자만의 시간이 필요하다", "회식 후 산책으로 충전한다"':'"사람과 함께 있을 때 에너지가 살아난다", "토론·발표가 즐겁다"'}`;
-  const ieAdv=ieScore<60?`🎯 <b>보완 팁</b> — ${wantI?'양 천간의 결을 가진 분이라 외향적으로 비치지만, 본인의 진짜 결을 알아주는 한두 사람과의 깊은 시간이 필수입니다.':'음 천간의 결을 가진 분이라 사람들 사이에서 빠르게 지칠 수 있습니다. 외향 활동 후 반드시 회복 시간을 두세요.'}`:'';
+  // ── 종합 ──
+  let synthHead;
+  if(alignedList.length>=3){
+    synthHead=`사주의 타고난 결과 MBTI의 학습된 성격이 <b>${alignedList.length}가지 영역</b>(${alignedList.join('·')})에서 일치합니다. 「본인이 느끼는 자기」와 「세상이 보는 자기」 사이의 거리가 짧아, 본인다움을 따라 살수록 결이 자연스럽게 풀리는 분입니다. 인생 전반에 걸쳐 무리하지 않아도 일정한 결과가 나오는 까닭이 여기에 있습니다.`;
+  }else if(alignedList.length===2){
+    synthHead=`사주와 MBTI가 <b>${alignedList.length}가지 영역</b>(${alignedList.join('·')})에서는 같은 방향, <b>${misalignedList.length}가지 영역</b>(${misalignedList.join('·')})에서는 다른 방향으로 흐릅니다. 두 결이 함께 작동하는 「복합형」 성격으로, 상황에 따라 두 모습이 번갈아 나오며 본인 안에서 두 개의 결을 다 살릴 수 있는 자유도가 있는 분입니다.`;
+  }else if(alignedList.length===1){
+    synthHead=`사주와 MBTI가 <b>1가지 영역</b>(${alignedList[0]})에서만 일치하고 <b>${misalignedList.length}가지 영역</b>(${misalignedList.join('·')})에서는 어긋납니다. 「본래의 나」와 「살아오며 만들어진 나」 사이의 거리가 크다는 뜻으로, 본인이 자주 느끼는 「뭔가 익숙하면서도 낯선」 이질감의 근원이 여기에 있습니다. 다만 그만큼 본인은 두 개의 결을 모두 다룰 수 있는 분이기도 합니다.`;
+  }else{
+    synthHead=`사주의 타고난 결과 MBTI의 학습된 성격이 <b>4가지 영역 모두</b>에서 어긋나는 보기 드문 분입니다. 환경·경험·관계의 영향이 본래의 결을 거의 다른 색으로 덧칠해 온 흐름으로, 본인 안에 「본래의 나」와 「세상이 보는 나」가 거의 다른 사람처럼 자리잡고 있을 수 있습니다. 본래의 결을 다시 만나는 작은 의식(혼자만의 시간·일기·명상)이 인생의 균형을 회복하는 가장 큰 열쇠가 됩니다.`;
+  }
 
-  const nsBody=`사주 오행 분포는 목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}로, ${wantN?(inSikSeong>jaeGwanSeong?'직관·창조의 결인 목·수가 두텁습니다. 큰 그림을 그리고 본질을 파고드는 결이 사주에서도 그대로 발현됩니다.':'감각·실리의 결인 토·금이 더 두텁습니다. MBTI의 N(직관)과는 다른 방향의 결이라, 사회적으론 직관적으로 보여도 행동은 감각적으로 풀어내는 분입니다.'):(jaeGwanSeong>inSikSeong?'감각·실리의 결인 토·금이 두텁습니다. 구체적 정보·현실 감각이 사주의 결과 잘 맞습니다.':'직관·창조의 결인 목·수가 더 두텁습니다. MBTI의 S(감각)와 다른 방향의 결이라, 현실감 있는 행동 뒤에 직관적 통찰이 함께 작동합니다.')}`;
-  const nsEx=`💡 <b>일상 예시</b> — ${wantN?'"디테일보다 큰 그림이 먼저 보인다", "패턴·연관성을 잘 잡아낸다"':'"구체적 사례와 데이터가 있어야 결정한다", "오감으로 직접 확인해야 안심"'}`;
-  const nsAdv=nsScore<60?`🎯 <b>보완 팁</b> — ${wantN?'사주에 감각의 결이 강해 일상에선 디테일에 강합니다. 본인의 직관을 신뢰하되 큰 결정 전엔 한 번 더 큰 그림을 점검하세요.':'사주에 직관의 결이 강해 본인이 인지하지 못한 통찰이 자주 옵니다. 결정 전에 직관을 한 번 들어보는 습관이 결을 살립니다.'}`:'';
-
-  const tfBody=`사주에서 관성·재성(${OHNAME[3]}+${OHNAME[2]}) 합계 ${oh[3]+oh[2]}, 식상·인성(${OHNAME[0]}+${OHNAME[1]}+${OHNAME[4]}) 합계 ${oh[0]+oh[1]+oh[4]}입니다. ${wantT?(tHeavy>=fHeavy?'관성·재성이 두터워 논리·원칙으로 결정하는 결이 사주와 일치합니다.':'식상·인성이 더 두터워 결정 과정에 감정·관계가 함께 들어옵니다. T로 보이지만 마지막 결정은 「이게 모두에게 좋은가」를 한 번 더 묻는 결입니다.'):(fHeavy>=tHeavy?'식상·인성이 두터워 사람·관계 중심으로 결정하는 결이 사주와 일치합니다.':'관성·재성이 더 두터워 감정형 MBTI지만 일에서는 의외로 단호한 결정을 내리는 분입니다.')}`;
-  const tfEx=`💡 <b>일상 예시</b> — ${wantT?'"원칙이 흐려지면 마음이 불편하다", "감정에 휩쓸리지 않으려 노력한다"':'"결정 전에 사람들이 어떻게 느낄지 먼저 생각한다", "관계의 조화가 중요하다"'}`;
-  const tfAdv=tfScore<60?`🎯 <b>보완 팁</b> — ${wantT?'사주의 부드러운 결이 본인을 균형 있게 만듭니다. 원칙을 지키되 마지막에 한 사람을 더 챙기는 한 마디가 결을 빛나게 합니다.':'사주의 단단한 결이 결정의 무게를 실어줍니다. 감정 우선이지만 결정 단계에선 한 번 더 사실을 점검하면 결과가 더 좋습니다.'}`:'';
-
-  const jpBody=`사주 오행에서 질서·구조의 결(토·금)은 ${jHeavy}, 변화·흐름의 결(목·수)은 ${pHeavy}입니다. ${wantJ?(jHeavy>=pHeavy?'정관·정인이 일간을 안정적으로 받쳐주는 결로, 계획·실행의 결이 사주와 그대로 일치합니다.':'식상·편관이 더 강해 계획대로 가다가도 즉흥적으로 변경하는 결이 함께 흐릅니다. J로 보이지만 P적 행동이 종종 나옵니다.'):(pHeavy>=jHeavy?'식상·편관의 결이 강해 흐름을 따라 살아가는 결이 사주와 그대로 일치합니다.':'정관·정인이 더 강해 P적 자유로움 뒤에 의외의 계획성·책임감이 작동하는 결입니다.')}`;
-  const jpEx=`💡 <b>일상 예시</b> — ${wantJ?'"계획이 있어야 안심된다", "마감 전에 미리 끝낸다"':'"옵션을 열어두는 게 편하다", "마감 직전에 집중력이 폭발한다"'}`;
-  const jpAdv=jpScore<60?`🎯 <b>보완 팁</b> — ${wantJ?'사주에 변화의 결이 강해 계획이 자주 흔들립니다. 목표를 「why」 중심으로 두면 J 성향이 강화됩니다.':'사주에 질서의 결이 강해 본인은 P지만 약속·마감을 잘 지키는 분입니다. 본인의 계획성을 신뢰하세요.'}`:'';
-
-  const indicators=[
-    {key:'IE',label:wantI?'I (내향)':'E (외향)',score:Math.round(ieScore),body:ieBody,ex:ieEx,adv:ieAdv},
-    {key:'NS',label:wantN?'N (직관)':'S (감각)',score:Math.round(nsScore),body:nsBody,ex:nsEx,adv:nsAdv},
-    {key:'TF',label:wantT?'T (사고)':'F (감정)',score:Math.round(tfScore),body:tfBody,ex:tfEx,adv:tfAdv},
-    {key:'JP',label:wantJ?'J (계획)':'P (인식)',score:Math.round(jpScore),body:jpBody,ex:jpEx,adv:jpAdv}
-  ];
-  const avg=Math.round(indicators.reduce((s,i)=>s+i.score,0)/4);
+  let synthDetail='';
+  if(alignedList.length>0){
+    synthDetail+=`<p><b class="mbti-synth-head">✓ 일치 영역 — ${alignedList.join('·')}</b><br>이 영역은 타고난 기질이 현재의 패턴으로 그대로 흘러나오는 결입니다. 의식적 노력 없이도 자연스럽게 발휘되며, 본인이 「이게 진짜 나야」라고 느끼는 부분입니다. 사회·일·관계에서 본인이 가장 적은 에너지로 가장 좋은 결과를 만들어내는 자리이기도 합니다. 다만 너무 당연하게 여겨져서 강점으로 「쓴다」는 자각이 약할 수 있으니, 본인의 차별점으로 의식해서 살려내실 때 큰 무기가 됩니다.</p>`;
+  }
+  if(misalignedList.length>0){
+    synthDetail+=`<p><b class="mbti-synth-head">↹ 차이 영역 — ${misalignedList.join('·')}</b><br>이 영역은 타고난 결과 살아오며 굳어진 패턴이 다른 방향으로 흐르는 결입니다. 본인이 가끔 「왜 나는 이런 상황에서 자꾸 무리하게 되지?」 또는 「겉으로는 잘하고 있는데 속은 왜 이렇게 지치지?」라고 느낀다면, 그 피로의 정체가 바로 이 어긋남에서 옵니다. 사회·관계·일에서 보여주는 모습과 본래의 결이 다르기 때문에 같은 일을 해도 에너지를 두 배로 쓰게 되는 영역인 셈입니다.<br><br>해결의 방향은 「둘 중 하나를 버리는 것」이 아니라 「두 결이 언제 켜지고 꺼져야 하는지 의식적으로 구분하는 것」입니다. 사회·일의 공적 자리에서는 학습된 결을 그대로 사용하시고, 가까운 관계·회복의 시간·혼자만의 자리에서는 타고난 결을 풀어주는 식으로 분리하시면 이질감이 점점 옅어집니다. 본인이 두 결을 다 다룰 수 있는 사람이라는 점이 약점이 아니라 자산임을 잊지 마세요.</p>`;
+  }
 
   let h=`<section class="mbti-analysis" aria-label="사주 × MBTI 4지표 통합 분석">
     <div class="mbti-analysis-head">
-      <div class="mbti-analysis-cat">SAJU × MBTI · 4지표 통합 분석</div>
-      <h2>${dStemKo}${dBrKo}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — ${avg}% 일치</h2>
-      <details class="mbti-analysis-expl">
-        <summary>이 점수는 어떻게 계산되나요?</summary>
-        <p>MBTI 4지표(I/N/T/J)와 사주 8자의 음양·오행·십신을 가중평균으로 산출합니다. I/E는 천간·지지의 음양 비율, N/S는 목·수 vs 토·금 분포, T/F는 관성·재성 vs 식상·인성, J/P는 정관·정인 vs 식상·편관의 강도로 매핑합니다.</p>
-      </details>
-    </div>
-    <div class="mbti-indicator-grid">`;
-  indicators.forEach(ind=>{
-    const g=grade(ind.score);
-    h+=`<article class="mbti-indicator ${g.cls}">
-      <header><h3>${ind.label} — ${ind.score}% 일치 ${g.ico}</h3><span class="mbti-ind-grade">${g.lab}</span></header>
-      <p class="mbti-ind-reason">${ind.body}</p>
-      <p class="mbti-ind-example">${ind.ex}</p>
-      ${ind.adv?`<p class="mbti-ind-advice">${ind.adv}</p>`:''}
+      <div class="mbti-analysis-cat">SAJU(타고난 기질) × MBTI(학습된 성격)</div>
+      <h2>${dStemKo}${dBrKo}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — 4지표 통합 풀이</h2>
+      <div class="mbti-intro">
+        <p><b>사주</b>는 태어날 때 받은 천간·지지 8글자에 새겨진 <b>본래의 결</b>입니다. 환경이 바뀌어도 변하지 않는 「타고난 기질」이며, 본인이 자연스럽게 끌리는 방향·회복하는 방식·관계 맺는 결이 모두 여기에 담겨 있습니다.</p>
+        <p><b>MBTI</b>는 살아오는 과정에서 환경·경험·관계를 통해 굳어진 <b>학습된 성격</b>입니다. 가정 분위기·학교·직업·중요한 관계 같은 요인들이 본인이 「실제로 사용하는」 사고·감정·행동의 패턴을 만들어 왔습니다.</p>
+        <p>두 결이 <b>같은 방향</b>으로 흐르는 영역은 본인이 「이게 나답다」고 느끼며 가장 적은 에너지로 가장 좋은 결과를 내는 부분입니다. 반대로 <b>다른 방향</b>으로 흐르는 영역은 「본래의 나」와 「세상이 보는 나」 사이에 미세한 이질감·피로가 따라오는 부분이며, 이 글에서는 그 이질감이 어떤 환경·경험에서 생겼는지, 사주의 어떤 글자가 영향을 미쳤는지를 함께 풀어드립니다.</p>
+      </div>
+    </div>`;
+
+  indicators.forEach((ind,idx)=>{
+    const badge=ind.aligned
+      ? `<span class="mbti-match-badge mbti-match-aligned">✓ 일치</span>`
+      : `<span class="mbti-match-badge mbti-match-misaligned">↹ 차이</span>`;
+    h+=`<article class="mbti-indicator-block">
+      <header><h3>${idx+1}. ${ind.label}</h3>${badge}</header>
+      <div class="mbti-axis">
+        <div class="mbti-axis-row row-innate"><div class="mbti-axis-tag">🌱 타고난 기질 (사주의 결)</div><div class="mbti-axis-body">${ind.innate}</div></div>
+        <div class="mbti-axis-row row-learned"><div class="mbti-axis-tag">🧭 학습된 성격 (지금의 MBTI)</div><div class="mbti-axis-body">${ind.learned}</div></div>
+        <div class="mbti-axis-row row-evolution"><div class="mbti-axis-tag">📖 변화의 흐름 (환경·경험과 사주의 영향)</div><div class="mbti-axis-body">${ind.evolution}</div></div>
+      </div>
     </article>`;
   });
 
-  // 종합 합성 코멘트
-  const stronger=indicators.filter(i=>i.score>=75).map(i=>i.label.split(' ')[0]);
-  const weaker=indicators.filter(i=>i.score<60).map(i=>i.label.split(' ')[0]);
-  const synthesis=stronger.length>=3
-    ? `당신은 「${mbti}」의 본질을 사주가 그대로 담아낸 분입니다. ${stronger.join('·')} 영역에서 본인의 결과 MBTI가 한 방향으로 흐르므로, 본인다움을 따라 살 때 가장 자연스럽고 큰 결실이 옵니다.`
-    : weaker.length>=2
-    ? `당신은 「${mbti}의 외형을 한 ${stemNk} 사주」입니다. ${stronger.length?stronger.join('·')+' 영역은 사주와 일치':'몇 영역은 일치'}하지만 ${weaker.join('·')} 영역은 사주가 다른 결을 가집니다. 「본인이 느끼는 자기」와 「세상이 보는 자기」가 다르게 흐르는 분이라, 본인의 진짜 결을 알아주는 사람과의 관계가 매우 중요합니다.`
-    : `당신은 「${mbti}」와 「${stemNk}」의 결이 적절히 섞인 균형형입니다. 두 결이 상황에 따라 번갈아 발현되며, 본인이 어느 결을 더 많이 살릴지를 의식적으로 선택하실 수 있는 자유도가 있습니다.`;
-  h+=`</div>
-    <div class="mbti-analysis-synth">
-      <h3>종합</h3>
-      <p>${synthesis}</p>
+  h+=`<div class="mbti-analysis-synth">
+      <h3>종합 — 타고난 결과 지금의 결 사이의 거리</h3>
+      <p>${synthHead}</p>
+      ${synthDetail}
     </div>
   </section>`;
   return h;
@@ -2844,7 +2915,7 @@ function renderDaypickFortune(saju,y,m,d){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${f.career}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div></div>
   </div>
-  ${termNoticeHTML()}`;
+  `;
 
   // ── 종합 진단 (TOTAL)
   let totBody=`<p>${y}년 ${m}월 ${d}일은 ${y}년 ${m}월 ${d}일자 일진이 <em>${STEMS[dpStem]}${BRCH[dpBranch]}(${dpStemKo}${dpBrKo})</em>로 들어오는 날입니다. 본인 일간 <em>${myStemKo}</em>(${dm.n.split('(')[0]}, ${OHNAME[myStemOh]}) 기준 천간 십신은 <b>${stemTG}</b>(${TG_EMOJI[stemTG]||''}), 지지 정기 십신은 <b>${branchTG}</b>으로, 그날 외부 기운이 본인에게 「<b>${(TG_KEYWORD[stemTG]||[]).join(' · ')}</b>」의 색채로 다가옵니다.</p>`;
@@ -3096,7 +3167,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업 평균</span><span class="daily-cat-score">${avg('career')}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강 평균</span><span class="daily-cat-score">${avg('health')}점</span></div></div>
   </div>
-  ${termNoticeHTML()}`;
+  `;
 
   // ── 기간 종합 진단
   let totBody=`<p>${sy}년 ${sm}월부터 ${ey}년 ${em}월까지의 ${totalMonths}개월을 본인 사주를 기준으로 종합하면, 평균 점수 <b>${avgTotal}점</b>(${avgGrade.lab})의 흐름입니다. 본인 일간 <em>${myStemKo}</em>(${dm.n.split('(')[0]}, ${OHNAME[myStemOh]})이 매달의 월주 천간·지지를 만나며 만들어내는 십신·합·충 작용을 절기 기준으로 정확히 산출했습니다.</p>`;
@@ -3335,7 +3406,7 @@ function renderNewyearFortune(saju,y){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${careerYr}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${healthYr}점</span></div></div>
   </div>
-  ${termNoticeHTML()}`;
+  `;
 
   // 세운과 사주의 만남 — 심층 진단
   let totBody=`<p>${y}년의 세운(歲運)은 <em>${STEMS[ypStem]}${BRCH[ypBranch]}(${ypStemKo}${ypBrKo})</em>입니다. 입춘부터 다음 해 입춘 직전까지, 본인 사주에 새로 더해지는 큰 기운입니다.</p>`;
@@ -4419,7 +4490,7 @@ function unlockAndRender(category){
   const renderTarget=(panelId,html)=>{
     const el=document.getElementById(panelId);
     if(!el)return;
-    el.innerHTML=back+headerBlock+html+nextActions;
+    el.innerHTML=back+headerBlock+termNoticeHTML()+html+nextActions;
     enrichTerms(el);
     el.dataset.rendered='1';
   };
@@ -4822,16 +4893,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   let h='';
 
-  // ═════════════════════════════════════
-  // 용어 클릭 안내 (맨 처음 1회 노출)
-  // ═════════════════════════════════════
-  h+=`<div class="term-notice">
-    <div class="term-notice-icon">💡</div>
-    <div class="term-notice-body">
-      <b>용어가 어렵게 느껴지나요?</b><br>
-      본문 안에서 <span class="term-notice-demo">점선 밑줄</span>이 그어진 용어를 <b>탭(클릭)</b>하면 쉬운 설명이 팝업으로 나타나요. 사주를 처음 보시는 분도 막힘없이 읽으실 수 있도록 50여 개의 핵심 용어에 풀이를 달아두었습니다.
-    </div>
-  </div>`;
+  // 용어 안내(💡)는 결과 헤더 직후에 일괄 삽입됨 — 본문에서는 제거
 
   // ═════════════════════════════════════
   // 사주팔자 종합
@@ -7134,14 +7196,16 @@ function analyze(){
       let targetIdx=0;
       const unlocked=isUnlockedFor(cat);
       _paidUnlocked=unlocked;
+      // 용어 안내 — 모든 카테고리 결과 상단(헤더 직후)에 일괄 노출. 잠금 화면에서는 미노출.
+      const termTip=termNoticeHTML();
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=back+headerFull+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions;
+        document.getElementById('p0').innerHTML=back+headerFull+termTip+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions;
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
         _p1.innerHTML=renderDailyFortune(saju);
         // 일일운세는 자체 back 버튼 포함이라 헤더 블록을 그 직후에 삽입
-        _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+headerFull);
+        _p1.innerHTML=_p1.innerHTML.replace('</button>','</button>'+headerFull+termTip);
         // 끝에 후속 CTA 추가
         _p1.innerHTML+=nextActions;
         enrichTerms(_p1);
@@ -7149,7 +7213,7 @@ function analyze(){
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
+          ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
           :renderPaidLock('daypick',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
@@ -7157,7 +7221,7 @@ function analyze(){
       }else if(cat==='monthly'){
         const _p3=document.getElementById('p3');
         _p3.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
+          ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
           :renderPaidLock('monthly',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
@@ -7165,7 +7229,7 @@ function analyze(){
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?renderNewyearFortune(saju,nyExtra.y)
+          ?termTip+renderNewyearFortune(saju,nyExtra.y)
           :renderPaidLock('newyear',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
@@ -7173,7 +7237,7 @@ function analyze(){
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?renderSajuPaid(saju,sy,sm,sd,hour,min)
+          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
           :renderPaidLock('life',saju))+(unlocked?nextActions:'');
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
