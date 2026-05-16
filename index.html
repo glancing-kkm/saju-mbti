@@ -4370,7 +4370,7 @@ function renderPaidLock(category, saju){
     preview=`당신의 일간은 <b>${dm.n}</b>으로, 사주 전체 흐름과 ${m.title}의 기운이 만나는 결을 깊이 풀어드립니다…`;
   }
   return `<div class="lock-wrap">
-    <div class="lock-icon">🔒</div>
+    <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
     <div class="lock-title">${m.icon} ${m.title}</div>
     <div class="lock-desc">${m.desc}</div>
     <div class="lock-preview">${preview}</div>
@@ -4438,6 +4438,29 @@ function unlockAndRender(category){
   }
   window.scrollTo({top:0,behavior:'smooth'});
   return true;
+}
+
+// 운영자용 — 잠금 자물쇠 5회 탭 시 코드 입력창을 띄워 'open' 입력 시 결제 없이 해제
+let _secretTapCount=0;
+let _secretTapTimer=null;
+function _secretUnlockTap(category){
+  _secretTapCount++;
+  if(_secretTapTimer)clearTimeout(_secretTapTimer);
+  _secretTapTimer=setTimeout(()=>{_secretTapCount=0;_secretTapTimer=null;},1500);
+  if(_secretTapCount<5)return;
+  _secretTapCount=0;
+  if(_secretTapTimer){clearTimeout(_secretTapTimer);_secretTapTimer=null;}
+  const code=window.prompt('운영자 코드를 입력하세요');
+  if(code===null)return;
+  if(code.trim().toLowerCase()!=='open'){
+    alert('코드가 올바르지 않습니다.');
+    return;
+  }
+  const rendered=unlockAndRender(category);
+  if(rendered)return;
+  setUnlockedFor(category);
+  if(_category===category)_paidUnlocked=true;
+  alert('잠금이 해제되었습니다. 사주를 입력하시면 풀이가 바로 열립니다.');
 }
 
 // ══════════════════════════════════════════════
