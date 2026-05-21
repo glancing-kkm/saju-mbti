@@ -758,6 +758,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-pillar{text-align:center;padding:6px 2px 5px;background:#fff8e8;border:1px solid #c8a888;border-radius:5px}
 .a4-pillar-lab{font-size:9px;color:#888;letter-spacing:.05em;font-weight:700}
 .a4-pillar-h{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:800;color:#1a1c1d;line-height:1.1;margin:2px 0}
+.a4-pillar-glyph{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:800;line-height:1;margin:3px auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1.5px solid;border-radius:6px}
 .a4-pillar-ko{font-size:9px;color:#666}
 .a4-pillar-oh{font-size:9px;color:#a8732e;margin-top:3px;font-weight:600}
 .a4-pillar-ten{font-size:9px;color:#5a7a8a;margin-top:1px}
@@ -4524,7 +4525,7 @@ function findBranchRelations(saju){
     YUKHAP.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x)){
         const k=`${Math.min(x,y)},${Math.max(x,y)}`;
-        list.push({type:'육합',tag:'g',
+        list.push({type:'육합',tag:'g',places:[br[i].name,br[j].name],
           d:`${br[i].name}와 ${br[j].name}가 ${YUKHAP_NAME[k]} 기운으로 어우러집니다. 친밀하고 협조적인 관계가 자연스럽게 만들어지는 결입니다.`});
       }
     });
@@ -4533,46 +4534,47 @@ function findBranchRelations(saju){
   Object.entries(SAMHAP).forEach(([key,grp])=>{
     const m=br.filter(p=>grp.includes(p.b));
     const distinct=new Set(m.map(p=>p.b)).size;
-    if(distinct>=3)list.push({type:'삼합',tag:'g',
+    if(distinct>=3)list.push({type:'삼합',tag:'g',places:m.map(x=>x.name),
       d:`${m.map(x=>x.name).join('·')}가 만나 ${SAMHAP_NAME[key]} 기운을 완성합니다. 큰 일을 함께 이루는 강력한 통합의 결입니다.`});
-    else if(distinct===2)list.push({type:'반합',tag:'g',
+    else if(distinct===2)list.push({type:'반합',tag:'g',places:m.map(x=>x.name),
       d:`${m.map(x=>x.name).join('·')}가 만나 ${SAMHAP_NAME[key]} 기운을 부분적으로 이룹니다. 같은 방향을 바라보는 협력의 결이 잔잔하게 작용해요.`});
   });
   // 방합
   BANGHAP.forEach((grp,i)=>{
     const m=br.filter(p=>grp.includes(p.b));
     const distinct=new Set(m.map(p=>p.b)).size;
-    if(distinct>=3)list.push({type:'방합',tag:'g',
+    if(distinct>=3)list.push({type:'방합',tag:'g',places:m.map(x=>x.name),
       d:`${m.map(x=>x.name).join('·')}가 ${BANGHAP_NAME[i]} 기운으로 묶여 매우 강하게 작용합니다.`});
   });
   // 충
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     CHUNG_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'충',tag:'r',
+        list.push({type:'충',tag:'r',places:[br[i].name,br[j].name],
           d:`${br[i].name}와 ${br[j].name}가 정면으로 부딪치는 결. 충돌과 갈등이 잦지만, 동시에 큰 변화를 이끌어내는 동력이 됩니다.`});
     });
   }
   // 형
   const insashin=br.filter(p=>[2,5,8].includes(p.b));
-  if(insashin.length>=2)list.push({type:'형살',tag:'y',
+  if(insashin.length>=2)list.push({type:'형살',tag:'y',places:insashin.map(x=>x.name),
     d:`인·사·신 세 글자가 만나는 형살이 ${insashin.length===3?'완성':'부분 형성'}된 결입니다. 갈등·분쟁·법적 문제에 주의가 필요하지만, 무관·법조·의료처럼 「깎고 다듬는」 직업에서는 오히려 성취로 풀립니다.`});
   const csm=br.filter(p=>[1,7,10].includes(p.b));
-  if(csm.length>=2)list.push({type:'형살',tag:'y',
+  if(csm.length>=2)list.push({type:'형살',tag:'y',places:csm.map(x=>x.name),
     d:`축·술·미 세 글자가 만나는 형살이 ${csm.length===3?'완성':'부분 형성'}된 결입니다. 신뢰가 깨지거나 형제·동료와 갈등이 생기기 쉬워, 관계의 거리감을 조절할 필요가 있습니다.`});
   const jamyo=br.filter(p=>[0,3].includes(p.b));
   if(jamyo.length>=2&&new Set(jamyo.map(p=>p.b)).size===2)
-    list.push({type:'형살',tag:'y',d:`자(쥐 자리)와 묘(토끼 자리)가 만나는 형살. 가족이나 가까운 사람과의 갈등이 자주 일어나기 쉬운 결입니다.`});
+    list.push({type:'형살',tag:'y',places:jamyo.map(x=>x.name),
+      d:`자(쥐 자리)와 묘(토끼 자리)가 만나는 형살. 가족이나 가까운 사람과의 갈등이 자주 일어나기 쉬운 결입니다.`});
   [4,6,9,11].forEach(b=>{
-    const cnt=br.filter(p=>p.b===b).length;
-    if(cnt>=2)list.push({type:'자형',tag:'y',
+    const matches=br.filter(p=>p.b===b);
+    if(matches.length>=2)list.push({type:'자형',tag:'y',places:matches.map(m=>m.name),
       d:`${BRCHKO[b]} 글자가 둘 이상 겹쳐 만드는 자형. 내면의 모순과 갈등이 일어나기 쉬워, 본인 마음을 다스리는 노력이 필요한 결입니다.`});
   });
   // 파
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     PA_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'파',tag:'y',
+        list.push({type:'파',tag:'y',places:[br[i].name,br[j].name],
           d:`${br[i].name}와 ${br[j].name}가 만드는 파. 시작은 좋아도 마무리나 약속 이행에서 어긋남이 생기기 쉬운 결입니다.`});
     });
   }
@@ -4580,7 +4582,7 @@ function findBranchRelations(saju){
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     HAE_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'해',tag:'y',
+        list.push({type:'해',tag:'y',places:[br[i].name,br[j].name],
           d:`${br[i].name}와 ${br[j].name}가 만드는 해. 미세한 방해와 구설이 따라붙어 불편한 인연이 되기 쉬운 결입니다.`});
     });
   }
@@ -4588,7 +4590,7 @@ function findBranchRelations(saju){
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     WONJIN_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'원진살',tag:'r',
+        list.push({type:'원진살',tag:'r',places:[br[i].name,br[j].name],
           d:`${br[i].name}와 ${br[j].name}가 만드는 원진살. 충처럼 깨지진 않지만 속이 미묘하게 거슬리고 원망이 쌓이는 결이라, 가까울수록 작은 말투에 예민해지기 쉬워 의식적인 거리감이 필요합니다.`});
     });
   }
@@ -5636,6 +5638,78 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 // 사주 데이터를 임시로 보관해 두는 변수 — 버튼 클릭 시 A4 생성에 사용
 let _lifeSummaryData=null;
 
+// 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
+function getRelLifeMessage(places,type){
+  if(!places||places.length<2){
+    if(type==='자형'&&places&&places.length>=1)return `${places[0]}에 자형이 들어 본인 내면의 모순·집착이 일어나기 쉬운 결. 외부 자극(취미·운동·새 환경)을 의식적으로 들여오면 결을 풀 수 있습니다.`;
+    return '';
+  }
+  // 2개 자리 짝
+  if(places.length===2){
+    const pair=[...places].sort().join('-');
+    const goodMap={
+      '년지-월지':'집안 뿌리와 청년기·사회 환경이 자연스럽게 어우러져, 가족의 도움 속에서 사회로 나가는 결',
+      '년지-일지':'집안 뿌리와 본인·결혼 생활이 함께 흐릅니다. 가족의 응원이 결혼과 본인 인생에 든든한 후원이 됨',
+      '년지-시지':'집안 뿌리의 결이 자녀·말년까지 자연스럽게 이어져, 후반 인생이 가족의 결과 어우러짐',
+      '월지-일지':'직장·사회 활동과 가정·결혼 생활의 결이 잘 맞아, 일과 사랑이 함께 풀리는 균형 잡힌 사주',
+      '월지-시지':'청년기에 다진 기반이 자녀·말년의 결실로 자연스럽게 이어짐',
+      '일지-시지':'본인의 결이 자녀·말년에 그대로 흘러가 후반 인생이 안정적으로 풀림'
+    };
+    const chungMap={
+      '년지-월지':'집안 가치관과 청년기 사회 활동이 정면으로 부딪침. 가족 기대와 본인 길의 균형이 평생 과제',
+      '년지-일지':'집안 뿌리와 본인·결혼 생활이 부딪힘. 결혼 후 가족과의 거리감 조절이 큰 과제',
+      '년지-시지':'집안 뿌리와 자녀·말년이 다른 방향을 향함. 세대 간 가치관 차이가 후반 인생에 드러남',
+      '월지-일지':'직장·사회와 가정·결혼이 정면으로 부딪침. 일과 사랑의 우선순위 충돌이 평생 과제',
+      '월지-시지':'청년기 기반과 자녀·말년이 다른 방향. 후반 인생에 진로 재정립이 필요',
+      '일지-시지':'본인과 자녀·말년 가치관 차이가 자주 드러남. 자녀와의 거리감 조절이 후반 인생 과제'
+    };
+    const wonjinMap={
+      '년지-월지':'집안과 청년기 환경 사이에 「말 못 할 미묘한 거슬림」이 누적되기 쉬움. 가족과 사회 활동의 분리 의식이 필요',
+      '년지-일지':'집안 뿌리와 본인·결혼 사이에 미묘한 불편함이 쌓일 수 있음. 가족 모임의 사소한 말투에 예민해지지 말기',
+      '년지-시지':'집안과 자녀·말년 사이에 미묘한 거슬림이 따라옴. 세대 간 거리감 조절이 핵심',
+      '월지-일지':'직장과 가정 사이에 「말 못 할 불편함」이 자주. 직장 스트레스를 가정으로 가져오지 않는 분리가 필요',
+      '월지-시지':'청년기와 자녀·말년 사이에 미묘한 어긋남. 자기 시간 확보와 거리감 조절 필요',
+      '일지-시지':'본인과 자녀 사이에 「딱히 이유 없는 거슬림」이 자주. 짧고 자주 있는 솔직한 소통이 결을 풀어줌'
+    };
+    const hyeongMap={
+      '년지-월지':'집안과 사회 환경 사이에 시비·갈등이 자주. 가족 기대를 부담으로 끌어안지 않는 자기 경계 필요',
+      '년지-일지':'집안과 본인·결혼 생활 사이에 갈등이 자주. 결혼 후 가족 개입의 선을 분명히',
+      '년지-시지':'집안 뿌리와 자녀·말년 사이에 시비가 일어나기 쉬움',
+      '월지-일지':'직장과 가정 사이에 충돌이 잦은 결. 무관·법조·의료처럼 「깎고 다듬는」 직업에서는 오히려 성취',
+      '월지-시지':'청년기와 자녀·말년 사이에 갈등이 자주 들어옴',
+      '일지-시지':'본인과 자녀 사이에 시비가 자주. 자녀와의 거리감 조절이 평생 과제'
+    };
+    const paMap={
+      '년지-월지':'집안과 청년기 사이의 약속·기대가 어긋나기 쉬움',
+      '년지-일지':'집안 기대와 본인·결혼이 마무리 단계에서 어긋날 수 있음',
+      '년지-시지':'집안과 자녀·말년 사이의 약속이 흔들리기 쉬움',
+      '월지-일지':'직장·사회 일과 가정 사이의 마무리에서 어긋남',
+      '월지-시지':'청년기 기반과 자녀·말년의 마무리 단계 어긋남',
+      '일지-시지':'본인과 자녀 사이의 약속 이행에 어긋남이 자주'
+    };
+    const haeMap={
+      '년지-월지':'집안과 청년기 사이에 미세한 방해·구설',
+      '년지-일지':'집안과 본인·결혼 사이에 은근한 방해와 구설',
+      '년지-시지':'집안과 자녀·말년 사이에 미세 갈등이 누적',
+      '월지-일지':'직장·사회와 가정 사이에 은근한 방해·구설',
+      '월지-시지':'청년기와 자녀·말년 사이의 미세 방해',
+      '일지-시지':'본인과 자녀 사이에 미세한 방해와 구설'
+    };
+    const map=(type==='육합'||type==='삼합'||type==='반합'||type==='방합')?goodMap:
+              (type==='충')?chungMap:
+              (type==='원진살')?wonjinMap:
+              (type==='형살')?hyeongMap:
+              (type==='파')?paMap:
+              (type==='해')?haeMap:null;
+    if(map&&map[pair])return map[pair];
+  }
+  // 3자리 이상 (삼합·방합·삼형 등) — 일반 메시지
+  const placesStr=places.join('·');
+  if(type==='삼합'||type==='방합')return `${placesStr} 세 자리가 같은 방향으로 묶여 강한 통합의 결을 만듭니다. 인생의 큰 줄기가 한 방향으로 흐르는 사주`;
+  if(type==='형살')return `${placesStr} 세 자리가 만드는 형살. 갈등·시비가 잦지만 무관·법조·의료처럼 「깎고 다듬는」 일에서는 오히려 성취로 풀림`;
+  return '';
+}
+
 function getDaeunNarrative(tg,du,saju,ys){
   const stage=du.age<28?'청년기 초입':du.age<38?'청년기 후반':du.age<48?'중년기 초입':du.age<58?'중년기 후반':du.age<68?'장년기':du.age<78?'장년기 후반':'노년기';
   const tgOpener={
@@ -5669,13 +5743,13 @@ function getDaeunNarrative(tg,du,saju,ys){
   return (tgOpener[tg]||`${du.age}세부터 ${du.age+9}세까지의 ${tg} 대운은 ${stage}입니다.`)+' '+(tgCaution[tg]||'')+yongsinNote;
 }
 
-// 음양오행 생/극 5각형 SVG — 초보 친화 (한글 비유 라벨)
+// 음양오행 생/극 5각형 SVG — 초보 친화
 function buildOhSangsaengSvg(oh){
   const cx=100,cy=110,r=68;
   // 0:목 1:화 2:토 3:금 4:수 — 시계방향 (top → right → ...)
-  const colors=['#5fa969','#d96b5a','#c89860','#a8a8b5','#5b7ca0'];
-  const bgs=['#e8f4eb','#fde8e3','#f6ecd9','#ececf0','#e0e8ef'];
-  const names=['나무','불','흙','쇠','물'];
+  const colors=['#5fa969','#d96b5a','#c89860','#7a7d85','#3a6090'];
+  const bgs=['#eaf6ec','#fbe9e3','#f6ecd9','#eeeef0','#e2eaf2'];
+  const names=['목','화','토','금','수'];
   const positions=[0,1,2,3,4].map(i=>{
     const angle=(-90+i*72)*Math.PI/180;
     return{x:cx+r*Math.cos(angle),y:cy+r*Math.sin(angle)};
@@ -5704,7 +5778,7 @@ function buildOhSangsaengSvg(oh){
   // 노드
   positions.forEach((p,i)=>{
     svg+=`<circle cx="${p.x}" cy="${p.y}" r="${nodeR}" fill="${bgs[i]}" stroke="${colors[i]}" stroke-width="2"/>`;
-    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="11" font-weight="800" fill="${colors[i]}" font-family="sans-serif">${names[i]}</text>`;
+    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="13" font-weight="800" fill="${colors[i]}" font-family="Noto Serif KR, serif">${names[i]}</text>`;
     svg+=`<text x="${p.x}" y="${p.y+12}" text-anchor="middle" font-size="10" font-weight="700" fill="${colors[i]}" font-family="sans-serif">${oh[i]}개</text>`;
   });
   // 범례
@@ -5713,9 +5787,11 @@ function buildOhSangsaengSvg(oh){
   return svg;
 }
 
-// 4기둥 도식 — A4용 (십신을 풀어쓰기 라벨로)
+// 4기둥 도식 — A4용 (오행 색 + 십신 풀어쓰기)
 function buildA4Pillars(saju,gender){
-  const ohKo=['나무','불','흙','쇠','물'];
+  const ohKo=['목','화','토','금','수'];
+  const ohColors=['#5fa969','#d96b5a','#c89860','#7a7d85','#3a6090']; // 목 화 토 금 수
+  const ohBgs=['#eaf6ec','#fbe9e3','#f6ecd9','#eeeef0','#e2eaf2'];
   const tgPlain={
     '비견':'동료·라이벌','겁재':'경쟁자',
     '식신':'표현·풍요','상관':'독창·재능',
@@ -5734,15 +5810,16 @@ function buildA4Pillars(saju,gender){
     if(p.stem===null){
       h+=`<div class="a4-pillar"><div class="a4-pillar-lab">${p.lab}</div><div class="a4-pillar-h" style="color:#aaa">時</div><div class="a4-pillar-ko">시간 미상</div></div>`;
     }else{
+      const stemOh=SOH[p.stem],brOh=BOH[p.branch];
       const stemTg=p.isDay?'(나 자신)':(tgPlain[tenGod(saju.dp.stem,p.stem)]||'');
       const brTg=p.isDay?'(앉은 자리)':(tgPlain[tenGod(saju.dp.stem,BR_MAIN_STEM[p.branch])]||'');
       h+=`<div class="a4-pillar${p.isDay?' day':''}">
         <div class="a4-pillar-lab">${p.lab}</div>
-        <div class="a4-pillar-h">${STEMS[p.stem]}</div>
-        <div class="a4-pillar-ko">${STEMKO[p.stem]} · ${ohKo[SOH[p.stem]]}</div>
+        <div class="a4-pillar-glyph" style="background:${ohBgs[stemOh]};color:${ohColors[stemOh]};border-color:${ohColors[stemOh]}">${STEMS[p.stem]}</div>
+        <div class="a4-pillar-ko" style="color:${ohColors[stemOh]}">${STEMKO[p.stem]} · ${ohKo[stemOh]}</div>
         <div class="a4-pillar-ten">${stemTg}</div>
-        <div class="a4-pillar-h" style="margin-top:4px">${BRCH[p.branch]}</div>
-        <div class="a4-pillar-ko">${BRCHKO[p.branch]} · ${ohKo[BOH[p.branch]]}</div>
+        <div class="a4-pillar-glyph" style="background:${ohBgs[brOh]};color:${ohColors[brOh]};border-color:${ohColors[brOh]};margin-top:4px">${BRCH[p.branch]}</div>
+        <div class="a4-pillar-ko" style="color:${ohColors[brOh]}">${BRCHKO[p.branch]} · ${ohKo[brOh]}</div>
         <div class="a4-pillar-ten">${brTg}</div>
       </div>`;
     }
@@ -5753,11 +5830,11 @@ function buildA4Pillars(saju,gender){
 
 function buildA4OhBars(oh){
   const ohData=[
-    {emoji:'🌳',name:'나무',color:'#5fa969'},
-    {emoji:'🔥',name:'불',color:'#d96b5a'},
-    {emoji:'⛰️',name:'흙',color:'#c89860'},
-    {emoji:'⚒️',name:'쇠',color:'#a8a8b5'},
-    {emoji:'💧',name:'물',color:'#5b7ca0'}
+    {emoji:'🌳',name:'목',color:'#5fa969'},
+    {emoji:'🔥',name:'화',color:'#d96b5a'},
+    {emoji:'⛰️',name:'토',color:'#c89860'},
+    {emoji:'⚒️',name:'금',color:'#7a7d85'},
+    {emoji:'💧',name:'수',color:'#3a6090'}
   ];
   const max=Math.max(...oh,1);
   let h='<div class="a4-oh-bars">';
@@ -5813,13 +5890,12 @@ function buildLifeSummaryA4Html(){
   const goodSinsals=sins.filter(s=>s.tag==='g');
   const badSinsals=sins.filter(s=>s.tag==='r'||s.tag==='y');
   const ohNames=['목','화','토','금','수'];
-  const ohPlain=['나무','불','흙','쇠','물'];
   const date=new Date().toISOString().slice(0,10);
 
   let h=`<div class="a4-page">
     <div class="a4-header">
       <div class="a4-title">📋 인생총운 요약본</div>
-      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohPlain[ys.main]} · 기운 강약 ${isStrong?'신강(두터움)':'신약(약함)'} (본인 일간이 사주의 ${Math.round(me/tot*100)}%)</div>
+      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'신강(두터움)':'신약(약함)'} (본인 일간이 사주의 ${Math.round(me/tot*100)}%)</div>
     </div>
     <div class="a4-body">
       <div class="a4-col-left">
@@ -5836,25 +5912,25 @@ function buildLifeSummaryA4Html(){
             ${buildOhSangsaengSvg(oh)}
             ${buildA4OhBars(oh)}
           </div>
-          <div class="a4-oh-legend">본인 사주에 가장 많은 기운은 <b>${ohPlain[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohPlain[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>입니다. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 나무→불, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 나무→흙, 나무 뿌리가 흙을 헤침)으로 연결돼 있어요.</div>
+          <div class="a4-oh-legend">본인 사주에 가장 많은 기운은 <b>${ohNames[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohNames[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>입니다. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 목→화, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 목→토, 나무 뿌리가 흙을 헤침)으로 연결돼 있어요.</div>
         </div>
 
         <div class="a4-section">
-          <div class="a4-h">🔗 사주 글자 사이에 작용하는 관계</div>
+          <div class="a4-h">🔗 사주 자리 사이에 작용하는 핵심 관계</div>
           <div class="a4-rel">
             <div class="a4-rel-col good">
-              <div class="a4-rel-lab">✅ 좋게 작용하는 관계</div>
+              <div class="a4-rel-lab">✅ 좋게 작용 — 본인 인생에 도움이 되는 결</div>
               ${goodRels.length>0?
-                goodRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 길성 관계는 없습니다. 본인 결대로 잔잔히 흐르는 사주예요.</div>'}
-              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
+                goodRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                '<div class="a4-rel-none">두드러진 길성 관계는 없습니다 — 본인 결대로 잔잔히 흐르는 사주예요.</div>'}
+              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].join('·')+' (위기 때 귀인이 나타나는 결)</div>':''}
             </div>
             <div class="a4-rel-col bad">
-              <div class="a4-rel-lab">⚠️ 주의해야 할 관계</div>
+              <div class="a4-rel-lab">⚠️ 주의 — 본인 인생의 평생 과제가 되는 결</div>
               ${badRels.length>0?
-                badRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 흉성 관계는 없습니다. 큰 굴곡 없이 흐르는 사주예요.</div>'}
-              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
+                badRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                '<div class="a4-rel-none">두드러진 흉성 관계는 없습니다 — 큰 굴곡 없이 흐르는 사주예요.</div>'}
+              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].join('·')+' (의식적인 다스림이 평생 과제)</div>':''}
             </div>
           </div>
         </div>
