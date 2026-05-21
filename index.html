@@ -729,6 +729,48 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lead-card em{font-style:normal;color:var(--accent);font-weight:700}
 .body-q{font-weight:700;color:var(--accent);font-size:.88rem;letter-spacing:.02em}
 
+/* ── 인생총운 요약 카드 ── */
+.summary-card{background:linear-gradient(135deg,rgba(212,175,55,.06),rgba(45,52,71,.4));border:2px solid var(--accent-bright)}
+.summary-content{padding:8px 2px}
+.summary-h{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent-bright);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(212,175,55,.25)}
+.summary-h:first-child{margin-top:6px}
+.summary-key-info{margin-top:10px;padding:10px 12px;background:rgba(45,52,71,.4);border-radius:8px;font-size:.82rem;line-height:1.9;color:var(--text)}
+.summary-key-info b{color:var(--accent-bright)}
+.summary-rel-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}
+.rel-col{padding:11px 13px;border-radius:9px;border-left:3px solid}
+.rel-good{background:rgba(108,191,126,.1);border-left-color:var(--wood)}
+.rel-bad{background:rgba(229,116,98,.1);border-left-color:#e57462}
+.rel-lab{font-size:.72rem;font-weight:800;letter-spacing:.04em;margin-bottom:6px}
+.rel-good .rel-lab{color:var(--wood)}
+.rel-bad .rel-lab{color:#e57462}
+.rel-item{font-size:.78rem;line-height:1.7;color:var(--sub);margin-bottom:3px}
+.rel-item:last-child{margin-bottom:0}
+.rel-none{color:var(--muted);font-style:italic}
+.summary-sinsal{margin-top:10px;padding:8px 12px;background:rgba(212,175,55,.08);border-radius:8px;font-size:.76rem;color:var(--accent);text-align:center}
+.summary-daeun-grid{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.daeun-mini{padding:10px 12px;background:rgba(45,52,71,.35);border:1px solid var(--border);border-radius:8px;font-size:.76rem;line-height:1.6}
+.daeun-mini.cur{background:rgba(212,175,55,.12);border-color:var(--accent-bright);box-shadow:0 0 12px rgba(212,175,55,.15)}
+.daeun-mini .daeun-age{font-size:.78rem;font-weight:800;color:var(--accent);margin-bottom:3px}
+.daeun-mini.cur .daeun-age{color:var(--accent-bright)}
+.daeun-mini .daeun-pil{font-family:'Noto Serif KR',serif;font-size:.78rem;color:var(--text);margin-bottom:5px}
+.daeun-mini .daeun-pil em{font-style:normal;color:var(--accent);font-weight:700;margin-left:6px}
+.daeun-mini .daeun-sum-good{color:var(--wood);margin-bottom:2px}
+.daeun-mini .daeun-sum-bad{color:#e57462}
+.daeun-mini .daeun-sum-warn{color:#d4a849}
+.summary-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)}
+.summary-btn{flex:1;padding:11px 14px;background:var(--accent-bright);color:#1a1c1d;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.summary-btn:hover{background:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,175,55,.3)}
+.summary-btn:active{transform:translateY(0)}
+.summary-btn.secondary{background:transparent;color:var(--accent-bright);border:1px solid var(--accent-bright)}
+.summary-btn.secondary:hover{background:rgba(212,175,55,.1)}
+@media print{
+  body *{visibility:hidden}
+  .summary-card,.summary-card *{visibility:visible}
+  .summary-card{position:absolute;left:0;top:0;width:100%;background:#fff!important;color:#000!important;border:1px solid #000!important}
+  .summary-card *{color:#000!important}
+  .summary-actions{display:none!important}
+}
+
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(216,196,168,.06));border:1px solid rgba(212,175,55,.32);border-radius:14px;position:relative;overflow:hidden}
 .term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.6}
@@ -5536,6 +5578,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=paidWrapBody('SEWOON','🗓','세운 — 올해의 흐름',swBody);
 
   // ═════════════════════════════════════
+  // 인생총운 요약 카드 (한 장에 정리 + 저장)
+  // ═════════════════════════════════════
+  h+=renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames);
+
+  // ═════════════════════════════════════
   // 궁합 (배우자 입력)
   // ═════════════════════════════════════
   h+=renderGunghapSection();
@@ -5554,6 +5601,154 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
 
   return h;
+}
+
+// ══════════════════════════════════════════════
+//  인생총운 요약 카드 — 한 장으로 보는 평생의 결 + 저장
+// ══════════════════════════════════════════════
+function getDaeunMiniSummary(tg,btg,du,saju,ys){
+  const tgGood={
+    '비견':'자기 결정에 자신감 · 동료·친구 인연',
+    '겁재':'추진력·경쟁심 살아남 · 도전 활력',
+    '식신':'표현·창작·풍요로움 · 사람과 협업',
+    '상관':'독창성·아이디어 빛남 · 콘텐츠·강의',
+    '편재':'활동·영업·새 기회 · 외부 인맥 확장',
+    '정재':'성실·축적·안정 재물 · 결혼·가정 결',
+    '편관':'도전·승부·강한 추진 · 큰 자리 도전',
+    '정관':'명예·승진·공식 자리 · 책임 무게',
+    '편인':'직관·전문성·깊은 학습 · 연구 결실',
+    '정인':'학문·자격·인복 · 어른·스승 도움'
+  };
+  const tgBad={
+    '비견':'독선·동업 갈등 주의',
+    '겁재':'충동 지출·동업 자금 손실 주의',
+    '식신':'나태·과식·의욕 저하 주의',
+    '상관':'권위와 마찰·말 실수 주의',
+    '편재':'분산·과욕·한순간 잃음 주의',
+    '정재':'큰 변동 부담·답답함 주의',
+    '편관':'과로·스트레스·갈등 주의',
+    '정관':'책임 과부하·정체감 주의',
+    '편인':'고립·우울 경향 주의',
+    '정인':'안일함·결정 미루기 주의'
+  };
+  const duOh=SOH[du.stem];
+  let yongsinTip='';
+  if(duOh===ys.main)yongsinTip=' · <b>도움 기운 들어옴 — 길운 시기</b>';
+  else if(duOh===(ys.main+2)%5)yongsinTip=' · <b>도움 기운 극 — 정리·관망 시기</b>';
+  return{
+    good:(tgGood[tg]||'평이한 흐름')+yongsinTip,
+    bad:tgBad[tg]||'큰 위험 없음'
+  };
+}
+
+function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames){
+  const ohEmojis=['🌳','🔥','⛰️','⚒️','💧'];
+  const dom=oh.indexOf(Math.max(...oh));
+  const weak=oh.indexOf(Math.min(...oh));
+  const relations=findBranchRelations(saju);
+  const goodRels=relations.filter(r=>r.tag==='g');
+  const badRels=relations.filter(r=>r.tag==='r'||r.tag==='y');
+  const tot=oh.reduce((a,b)=>a+b,0);
+  const me=oh[dStemOh],isStrong=me>=tot/3;
+
+  const goodSinsals=sins.filter(s=>s.tag==='g');
+  const badSinsals=sins.filter(s=>s.tag==='r'||s.tag==='y');
+
+  let html=`<div class="nb-card summary-card">
+    <div class="nb-cat">🎯 SUMMARY</div>
+    <div class="nb-title">📋 한 장으로 보는 평생의 결</div>
+    <div class="nb-body" id="lifeSummaryCapture">
+      <div class="summary-content">
+
+        <h4 class="summary-h">📊 사주팔자 한눈에</h4>
+        ${miniManse(saju)}
+        <div class="summary-key-info">
+          <div>· 일간 <b>${dm.n.split('(')[0]}</b> (${OHNAME[dStemOh]} · ${isStrong?'신강':'신약'})</div>
+          <div>· 유형 <b>${gk.name}</b>${gk.nick?' · '+gk.nick:''}</div>
+          <div>· 도움 기운(용신) <b>${OHNAME[ys.main]}</b></div>
+          <div>· 두터운 오행 <b>${ohEmojis[dom]} ${OHNAME[dom]}</b> ${oh[dom]}개 → 강점이 두드러짐</div>
+          <div>· 부족한 오행 <b>${ohEmojis[weak]} ${OHNAME[weak]}</b> ${oh[weak]}개 → 의식적으로 채워야 함</div>
+        </div>
+
+        <h4 class="summary-h">🔗 사주의 핵심 관계</h4>
+        <div class="summary-rel-grid">
+          <div class="rel-col rel-good">
+            <div class="rel-lab">✅ 좋게 작용하는 관계</div>
+            ${goodRels.length>0?
+              goodRels.slice(0,4).map(r=>`<div class="rel-item">· <b>${r.type}</b> — ${(r.d.split('→')[1]||r.d).trim()}</div>`).join(''):
+              '<div class="rel-item rel-none">두드러진 길성 관계 없음 — 본인 결로 잔잔히 흐르는 사주</div>'}
+            ${goodSinsals.length>0?'<div class="rel-item" style="margin-top:6px">· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].join(' · ')+'</div>':''}
+          </div>
+          <div class="rel-col rel-bad">
+            <div class="rel-lab">⚠️ 주의해야 할 관계</div>
+            ${badRels.length>0?
+              badRels.slice(0,4).map(r=>`<div class="rel-item">· <b>${r.type}</b> — ${(r.d.split('→')[1]||r.d).trim()}</div>`).join(''):
+              '<div class="rel-item rel-none">두드러진 흉성 관계 없음 — 큰 굴곡 없는 사주</div>'}
+            ${badSinsals.length>0?'<div class="rel-item" style="margin-top:6px">· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].join(' · ')+'</div>':''}
+          </div>
+        </div>
+
+        <h4 class="summary-h">📅 대운 흐름 (10년 단위 요약)</h4>
+        <div class="summary-daeun-grid">
+          ${dq.daeuns.map((du,i)=>{
+            const tg=tenGod(saju.dp.stem,du.stem);
+            const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
+            const summary=getDaeunMiniSummary(tg,btg,du,saju,ys);
+            const isCur=i===curDIdx;
+            return `<div class="daeun-mini${isCur?' cur':''}">
+              <div class="daeun-age">${du.age}세~${du.age+9}세${isCur?' · 현재 대운':''}</div>
+              <div class="daeun-pil">${STEMS[du.stem]}${BRCH[du.branch]} (${STEMKO[du.stem]}${BRCHKO[du.branch]})<em>${tg}</em></div>
+              <div class="daeun-sum-good">✅ ${summary.good}</div>
+              <div class="daeun-sum-bad">⚠️ ${summary.bad}</div>
+            </div>`;
+          }).join('')}
+        </div>
+
+        <h4 class="summary-h">🌱 평생의 한 줄</h4>
+        <div class="summary-key-info">
+          <div>· <b>강점 살리기</b> — ${dm.pos.slice(0,3).join(' · ')}</div>
+          <div>· <b>그림자 다스리기</b> — ${dm.neg.slice(0,2).join(' · ')}</div>
+          <div>· <b>일상 한 가지</b> — ${OHNAME[ys.main]} 기운 색(${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]})을 옷·소품에 하나씩 가까이</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="summary-actions">
+      <button class="summary-btn" onclick="saveLifeSummaryAsImage()">📷 이미지로 저장</button>
+      <button class="summary-btn secondary" onclick="window.print()">📄 PDF·인쇄</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+async function saveLifeSummaryAsImage(){
+  const node=document.getElementById('lifeSummaryCapture');
+  if(!node){alert('요약 카드를 찾을 수 없습니다.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
+  // 버튼 클릭 직후 시각적 피드백
+  const btns=document.querySelectorAll('.summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origText=btns[0]?btns[0].textContent:'';
+  if(btns[0])btns[0].textContent='⏳ 이미지 생성 중...';
+  try{
+    const canvas=await html2canvas(node,{
+      backgroundColor:'#1a1c1d',
+      scale:2,
+      useCORS:true,
+      logging:false
+    });
+    const link=document.createElement('a');
+    const date=new Date().toISOString().slice(0,10);
+    link.download=`인생총운_요약_${date}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }catch(e){
+    console.error(e);
+    alert('이미지 생성에 실패했습니다. 다시 시도하시거나, PDF·인쇄 버튼을 이용해 주세요.');
+  }finally{
+    btns.forEach(b=>{b.disabled=false;});
+    if(btns[0])btns[0].textContent=origText;
+  }
 }
 
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
