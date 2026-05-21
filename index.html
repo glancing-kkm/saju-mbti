@@ -787,16 +787,16 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-rel-item{font-size:9.5px;color:#1a1c1d;line-height:1.5;margin-bottom:1px;word-break:keep-all;overflow-wrap:anywhere}
 .a4-rel-none{color:#999;font-style:italic;font-size:9.5px}
 /* 대운 (오른쪽) — 8칸이 우측 영역을 자연스럽게 채우도록 폰트·간격 조정 */
-.a4-daeun-list{flex:1;display:flex;flex-direction:column;gap:6px;overflow:hidden}
-.a4-daeun{padding:7px 10px;background:#fff8e8;border-left:3px solid #c8a888;border-radius:4px;line-height:1.5;flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+.a4-daeun-list{flex:1;display:flex;flex-direction:column;gap:4px;overflow:hidden;min-height:0}
+.a4-daeun{padding:5px 9px;background:#fff8e8;border-left:3px solid #c8a888;border-radius:4px;line-height:1.5;flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .a4-daeun.cur{background:#fff0c8;border-left-color:#d4a849;box-shadow:0 0 0 1.5px #d4a849}
-.a4-daeun-head{font-weight:800;color:#8b6f47;font-size:11.5px;margin-bottom:3px;display:grid;grid-template-columns:96px 1fr 64px;align-items:center;gap:8px}
-.a4-daeun-head .age{font-size:11.5px;display:flex;align-items:center;gap:4px}
-.a4-daeun-head .age .cur-mark{font-size:8.5px;color:#fff;background:#d4a849;padding:1px 5px;border-radius:6px;font-weight:700;letter-spacing:.02em}
-.a4-daeun-head .pil{font-size:11.5px;color:#1a1c1d;font-family:'Noto Serif KR',serif;text-align:center}
-.a4-daeun-head .tg{font-size:10.5px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 6px;border-radius:8px;text-align:center}
+.a4-daeun-head{font-weight:800;color:#8b6f47;font-size:11px;margin-bottom:2px;display:grid;grid-template-columns:92px 1fr 60px;align-items:center;gap:8px}
+.a4-daeun-head .age{font-size:11px;display:flex;align-items:center;gap:4px}
+.a4-daeun-head .age .cur-mark{font-size:8px;color:#fff;background:#d4a849;padding:1px 5px;border-radius:6px;font-weight:700;letter-spacing:.02em}
+.a4-daeun-head .pil{font-size:11px;color:#1a1c1d;font-family:'Noto Serif KR',serif;text-align:center}
+.a4-daeun-head .tg{font-size:10px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 6px;border-radius:8px;text-align:center}
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
-.a4-daeun-body{color:#1a1c1d;font-size:10.5px;line-height:1.65;letter-spacing:.01em}
+.a4-daeun-body{color:#1a1c1d;font-size:10px;line-height:1.55;letter-spacing:.01em;overflow:hidden}
 .a4-footer{text-align:center;font-size:9px;color:#999;margin-top:6px;border-top:1px dashed #c8a888;padding-top:5px}
 
 /* ── 용어 안내 공지 카드 ── */
@@ -6012,15 +6012,14 @@ function stageLabelOf(age){
 }
 
 function getDaeunNarrative(tg,du,saju,ys){
+  // A4 요약본 우측 칸은 폭·높이가 좁아 한 칸당 본문 ~2줄 내외로만 풀이
+  // (헤더에 이미 나이대·간지·십신이 표기되므로 본문은 핵심 메시지만)
   const opener=getTgAgeOpener(tg,du.age);
-  const caution=getTgAgeCaution(tg,du.age);
-  const stageLabel=LIFE_STAGE_LABEL[lifeStageOf(du.age)];
-  const head=`${du.age}~${du.age+9}세 ${stageLabel}의 ${tg} 대운 — ${opener}.`;
   const duOh=SOH[du.stem];
   let yongsinNote='';
-  if(duOh===ys.main)yongsinNote=` 본인 도움 기운(${OHNAME[ys.main]})이 직접 들어오는 길운의 10년이라, 미뤄둔 큰 결정을 이때 배치하면 결실이 가장 큽니다.`;
-  else if(duOh===(ys.main+2)%5)yongsinNote=` 다만 본인 도움 기운(${OHNAME[ys.main]})을 극하는 결이라, 큰 변동보다 정리·관망·내실 다지기에 시간을 쓰는 게 안전합니다.`;
-  return `${head} ${caution}${yongsinNote}`;
+  if(duOh===ys.main)yongsinNote=` (용신 ${OHNAME[ys.main]} 직접 들어옴 — 길운)`;
+  else if(duOh===(ys.main+2)%5)yongsinNote=` (용신 극 — 정리·관망기)`;
+  return `${opener}.${yongsinNote}`;
 }
 
 // 음양오행 생/극 5각형 SVG — 초보 친화
