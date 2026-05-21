@@ -789,10 +789,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-daeun-list{flex:1;display:flex;flex-direction:column;gap:4px;overflow:hidden}
 .a4-daeun{padding:5px 9px;background:#fff8e8;border-left:3px solid #c8a888;border-radius:4px;line-height:1.45}
 .a4-daeun.cur{background:#fff0c8;border-left-color:#d4a849;box-shadow:0 0 0 1.5px #d4a849}
-.a4-daeun-head{font-weight:800;color:#8b6f47;font-size:10.5px;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.a4-daeun-head .age{font-size:10.5px}
-.a4-daeun-head .pil{font-size:10.5px;color:#1a1c1d;font-family:'Noto Serif KR',serif}
-.a4-daeun-head .tg{font-size:9.5px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 6px;border-radius:8px}
+.a4-daeun-head{font-weight:800;color:#8b6f47;font-size:10.5px;margin-bottom:2px;display:grid;grid-template-columns:90px 1fr 60px;align-items:center;gap:8px}
+.a4-daeun-head .age{font-size:10.5px;display:flex;align-items:center;gap:4px}
+.a4-daeun-head .age .cur-mark{font-size:8px;color:#fff;background:#d4a849;padding:1px 5px;border-radius:6px;font-weight:700;letter-spacing:.02em}
+.a4-daeun-head .pil{font-size:10.5px;color:#1a1c1d;font-family:'Noto Serif KR',serif;text-align:center}
+.a4-daeun-head .tg{font-size:9.5px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 6px;border-radius:8px;text-align:center}
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
 .a4-daeun-body{color:#1a1c1d;font-size:9.5px;line-height:1.55}
 .a4-footer{text-align:center;font-size:9px;color:#999;margin-top:6px;border-top:1px dashed #c8a888;padding-top:5px}
@@ -4523,72 +4524,72 @@ function findBranchRelations(saju){
     YUKHAP.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x)){
         const k=`${Math.min(x,y)},${Math.max(x,y)}`;
-        list.push({type:'육합 (六合)',tag:'g',
-          d:`${br[i].name}-${br[j].name} 육합 → ${YUKHAP_NAME[k]}으로 화합. 친밀하고 협조적 관계, 긍정적 변화의 기운.`});
+        list.push({type:'육합',tag:'g',
+          d:`${br[i].name}와 ${br[j].name}가 ${YUKHAP_NAME[k]} 기운으로 어우러집니다. 친밀하고 협조적인 관계가 자연스럽게 만들어지는 결입니다.`});
       }
     });
   }
-  // 삼합 (distinct branches required)
+  // 삼합
   Object.entries(SAMHAP).forEach(([key,grp])=>{
     const m=br.filter(p=>grp.includes(p.b));
     const distinct=new Set(m.map(p=>p.b)).size;
-    if(distinct>=3)list.push({type:'삼합 (三合)',tag:'g',
-      d:`${m.map(x=>x.name).join('·')} 삼합 완성 → ${SAMHAP_NAME[key]}. 강력한 통합과 큰 일의 결실.`});
-    else if(distinct===2)list.push({type:'반합 (半合)',tag:'g',
-      d:`${m.map(x=>x.name).join('·')} 반합 (${SAMHAP_NAME[key]} 부분 형성) — 부분적 협력과 결합의 기운.`});
+    if(distinct>=3)list.push({type:'삼합',tag:'g',
+      d:`${m.map(x=>x.name).join('·')}가 만나 ${SAMHAP_NAME[key]} 기운을 완성합니다. 큰 일을 함께 이루는 강력한 통합의 결입니다.`});
+    else if(distinct===2)list.push({type:'반합',tag:'g',
+      d:`${m.map(x=>x.name).join('·')}가 만나 ${SAMHAP_NAME[key]} 기운을 부분적으로 이룹니다. 같은 방향을 바라보는 협력의 결이 잔잔하게 작용해요.`});
   });
-  // 방합 (distinct branches required)
+  // 방합
   BANGHAP.forEach((grp,i)=>{
     const m=br.filter(p=>grp.includes(p.b));
     const distinct=new Set(m.map(p=>p.b)).size;
-    if(distinct>=3)list.push({type:'방합 (方合)',tag:'g',
-      d:`${m.map(x=>x.name).join('·')} 방합 → ${BANGHAP_NAME[i]} 기운이 매우 강합니다.`});
+    if(distinct>=3)list.push({type:'방합',tag:'g',
+      d:`${m.map(x=>x.name).join('·')}가 ${BANGHAP_NAME[i]} 기운으로 묶여 매우 강하게 작용합니다.`});
   });
   // 충
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     CHUNG_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'충 (沖)',tag:'r',
-          d:`${br[i].name}-${br[j].name} 충 — 충돌과 변화. 갈등이 있지만 동시에 변혁의 동력이 됩니다.`});
+        list.push({type:'충',tag:'r',
+          d:`${br[i].name}와 ${br[j].name}가 정면으로 부딪치는 결. 충돌과 갈등이 잦지만, 동시에 큰 변화를 이끌어내는 동력이 됩니다.`});
     });
   }
   // 형
   const insashin=br.filter(p=>[2,5,8].includes(p.b));
-  if(insashin.length>=2)list.push({type:'형 (刑)',tag:'y',
-    d:`인사신 삼형 ${insashin.length===3?'완성':'부분'} — 갈등·분쟁·법적 문제 주의. 무관·법조계는 오히려 길.`});
+  if(insashin.length>=2)list.push({type:'형살',tag:'y',
+    d:`인·사·신 세 글자가 만나는 형살이 ${insashin.length===3?'완성':'부분 형성'}된 결입니다. 갈등·분쟁·법적 문제에 주의가 필요하지만, 무관·법조·의료처럼 「깎고 다듬는」 직업에서는 오히려 성취로 풀립니다.`});
   const csm=br.filter(p=>[1,7,10].includes(p.b));
-  if(csm.length>=2)list.push({type:'형 (刑)',tag:'y',
-    d:`축술미 삼형 ${csm.length===3?'완성':'부분'} — 신뢰 깨짐, 형제·동료 갈등에 주의.`});
+  if(csm.length>=2)list.push({type:'형살',tag:'y',
+    d:`축·술·미 세 글자가 만나는 형살이 ${csm.length===3?'완성':'부분 형성'}된 결입니다. 신뢰가 깨지거나 형제·동료와 갈등이 생기기 쉬워, 관계의 거리감을 조절할 필요가 있습니다.`});
   const jamyo=br.filter(p=>[0,3].includes(p.b));
   if(jamyo.length>=2&&new Set(jamyo.map(p=>p.b)).size===2)
-    list.push({type:'형 (刑)',tag:'y',d:`자묘 무례지형 — 가족·인간관계 갈등에 주의가 필요합니다.`});
+    list.push({type:'형살',tag:'y',d:`자(쥐 자리)와 묘(토끼 자리)가 만나는 형살. 가족이나 가까운 사람과의 갈등이 자주 일어나기 쉬운 결입니다.`});
   [4,6,9,11].forEach(b=>{
     const cnt=br.filter(p=>p.b===b).length;
-    if(cnt>=2)list.push({type:'자형 (自刑)',tag:'y',
-      d:`${BRCH[b]}${BRCH[b]} 자형 — 자기 모순과 내적 갈등. 내면을 다스리는 노력이 필요합니다.`});
+    if(cnt>=2)list.push({type:'자형',tag:'y',
+      d:`${BRCHKO[b]} 글자가 둘 이상 겹쳐 만드는 자형. 내면의 모순과 갈등이 일어나기 쉬워, 본인 마음을 다스리는 노력이 필요한 결입니다.`});
   });
   // 파
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     PA_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'파 (破)',tag:'y',
-          d:`${br[i].name}-${br[j].name} 파 — 깨짐과 분리의 약한 기운. 관계나 일이 흔들릴 수 있어요.`});
+        list.push({type:'파',tag:'y',
+          d:`${br[i].name}와 ${br[j].name}가 만드는 파. 시작은 좋아도 마무리나 약속 이행에서 어긋남이 생기기 쉬운 결입니다.`});
     });
   }
   // 해
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     HAE_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'해 (害)',tag:'y',
-          d:`${br[i].name}-${br[j].name} 해 — 미세한 방해와 갈등의 기운. 불편한 인연이 되기 쉽습니다.`});
+        list.push({type:'해',tag:'y',
+          d:`${br[i].name}와 ${br[j].name}가 만드는 해. 미세한 방해와 구설이 따라붙어 불편한 인연이 되기 쉬운 결입니다.`});
     });
   }
-  // 원진 (怨嗔) — 미묘하게 거슬리고 원망이 쌓이는 6쌍 (子未·丑午·寅酉·卯辰·巳戌·申亥)
+  // 원진
   for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){
     WONJIN_PAIRS.forEach(([x,y])=>{
       if((br[i].b===x&&br[j].b===y)||(br[i].b===y&&br[j].b===x))
-        list.push({type:'원진 (怨嗔)',tag:'r',
-          d:`${br[i].name}-${br[j].name} 원진살 — 충처럼 깨지진 않지만 속이 거슬리는 결. 가까운 사이일수록 작은 일에서 원망이 쌓이기 쉬워, 의식적인 거리감과 「말하지 않아도 알아주겠지」를 내려놓는 자세가 필요합니다.`});
+        list.push({type:'원진살',tag:'r',
+          d:`${br[i].name}와 ${br[j].name}가 만드는 원진살. 충처럼 깨지진 않지만 속이 미묘하게 거슬리고 원망이 쌓이는 결이라, 가까울수록 작은 말투에 예민해지기 쉬워 의식적인 거리감이 필요합니다.`});
     });
   }
   // 천간합 (天干合) — 4기둥 천간 사이
@@ -5668,19 +5669,19 @@ function getDaeunNarrative(tg,du,saju,ys){
   return (tgOpener[tg]||`${du.age}세부터 ${du.age+9}세까지의 ${tg} 대운은 ${stage}입니다.`)+' '+(tgCaution[tg]||'')+yongsinNote;
 }
 
-// 음양오행 생/극 5각형 SVG — 초보 친화
+// 음양오행 생/극 5각형 SVG — 초보 친화 (한글 비유 라벨)
 function buildOhSangsaengSvg(oh){
-  const cx=100,cy=105,r=70;
+  const cx=100,cy=110,r=68;
   // 0:목 1:화 2:토 3:금 4:수 — 시계방향 (top → right → ...)
   const colors=['#5fa969','#d96b5a','#c89860','#a8a8b5','#5b7ca0'];
   const bgs=['#e8f4eb','#fde8e3','#f6ecd9','#ececf0','#e0e8ef'];
-  const names=['목','화','토','금','수'];
+  const names=['나무','불','흙','쇠','물'];
   const positions=[0,1,2,3,4].map(i=>{
     const angle=(-90+i*72)*Math.PI/180;
     return{x:cx+r*Math.cos(angle),y:cy+r*Math.sin(angle)};
   });
-  const nodeR=22;
-  let svg=`<svg class="a4-oh-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs>
+  const nodeR=24;
+  let svg=`<svg class="a4-oh-svg" viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg"><defs>
     <marker id="arrG" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="#5fa969"/></marker>
     <marker id="arrR" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#c44"/></marker>
   </defs>`;
@@ -5703,22 +5704,29 @@ function buildOhSangsaengSvg(oh){
   // 노드
   positions.forEach((p,i)=>{
     svg+=`<circle cx="${p.x}" cy="${p.y}" r="${nodeR}" fill="${bgs[i]}" stroke="${colors[i]}" stroke-width="2"/>`;
-    svg+=`<text x="${p.x}" y="${p.y-2}" text-anchor="middle" font-size="14" font-weight="800" fill="${colors[i]}" font-family="Noto Serif KR, serif">${names[i]}</text>`;
+    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="11" font-weight="800" fill="${colors[i]}" font-family="sans-serif">${names[i]}</text>`;
     svg+=`<text x="${p.x}" y="${p.y+12}" text-anchor="middle" font-size="10" font-weight="700" fill="${colors[i]}" font-family="sans-serif">${oh[i]}개</text>`;
   });
   // 범례
-  svg+=`<text x="100" y="200" text-anchor="middle" font-size="9" fill="#555"><tspan fill="#5fa969" font-weight="700">→ 상생</tspan>(돕는 흐름) <tspan dx="6" fill="#c44" font-weight="700">⇢ 상극</tspan>(누르는 흐름)</text>`;
+  svg+=`<text x="100" y="210" text-anchor="middle" font-size="9" fill="#555"><tspan fill="#5fa969" font-weight="700">→ 돕는 흐름</tspan>  <tspan dx="6" fill="#c44" font-weight="700">⇢ 누르는 흐름</tspan></text>`;
   svg+='</svg>';
   return svg;
 }
 
-// 4기둥 도식 — A4용
+// 4기둥 도식 — A4용 (십신을 풀어쓰기 라벨로)
 function buildA4Pillars(saju,gender){
-  const ohKo=['목','화','토','금','수'];
+  const ohKo=['나무','불','흙','쇠','물'];
+  const tgPlain={
+    '비견':'동료·라이벌','겁재':'경쟁자',
+    '식신':'표현·풍요','상관':'독창·재능',
+    '편재':'활동 재물','정재':'안정 재물',
+    '편관':'외부 도전','정관':'명예·책임',
+    '편인':'전문 학습','정인':'학문·인덕'
+  };
   const ps=[
-    {key:'year',lab:'年 (조상)',stem:saju.yp.stem,branch:saju.yp.branch},
+    {key:'year',lab:'年 (조상·초년)',stem:saju.yp.stem,branch:saju.yp.branch},
     {key:'month',lab:'月 (부모·청년)',stem:saju.mp.stem,branch:saju.mp.branch},
-    {key:'day',lab:'日 (본인)',stem:saju.dp.stem,branch:saju.dp.branch,isDay:true},
+    {key:'day',lab:'日 (본인·배우자)',stem:saju.dp.stem,branch:saju.dp.branch,isDay:true},
     {key:'hour',lab:'時 (자녀·말년)',stem:saju.hp?saju.hp.stem:null,branch:saju.hp?saju.hp.branch:null}
   ];
   let h='<div class="a4-pillars">';
@@ -5726,15 +5734,15 @@ function buildA4Pillars(saju,gender){
     if(p.stem===null){
       h+=`<div class="a4-pillar"><div class="a4-pillar-lab">${p.lab}</div><div class="a4-pillar-h" style="color:#aaa">時</div><div class="a4-pillar-ko">시간 미상</div></div>`;
     }else{
-      const stemTg=p.isDay?'(나)':tenGod(saju.dp.stem,p.stem);
-      const brTg=p.isDay?'':tenGod(saju.dp.stem,BR_MAIN_STEM[p.branch]);
+      const stemTg=p.isDay?'(나 자신)':(tgPlain[tenGod(saju.dp.stem,p.stem)]||'');
+      const brTg=p.isDay?'(앉은 자리)':(tgPlain[tenGod(saju.dp.stem,BR_MAIN_STEM[p.branch])]||'');
       h+=`<div class="a4-pillar${p.isDay?' day':''}">
         <div class="a4-pillar-lab">${p.lab}</div>
         <div class="a4-pillar-h">${STEMS[p.stem]}</div>
-        <div class="a4-pillar-ko">${STEMKO[p.stem]}(${ohKo[SOH[p.stem]]})</div>
+        <div class="a4-pillar-ko">${STEMKO[p.stem]} · ${ohKo[SOH[p.stem]]}</div>
         <div class="a4-pillar-ten">${stemTg}</div>
         <div class="a4-pillar-h" style="margin-top:4px">${BRCH[p.branch]}</div>
-        <div class="a4-pillar-ko">${BRCHKO[p.branch]}(${ohKo[BOH[p.branch]]})</div>
+        <div class="a4-pillar-ko">${BRCHKO[p.branch]} · ${ohKo[BOH[p.branch]]}</div>
         <div class="a4-pillar-ten">${brTg}</div>
       </div>`;
     }
@@ -5745,11 +5753,11 @@ function buildA4Pillars(saju,gender){
 
 function buildA4OhBars(oh){
   const ohData=[
-    {emoji:'🌳',name:'목',color:'#5fa969'},
-    {emoji:'🔥',name:'화',color:'#d96b5a'},
-    {emoji:'⛰️',name:'토',color:'#c89860'},
-    {emoji:'⚒️',name:'금',color:'#a8a8b5'},
-    {emoji:'💧',name:'수',color:'#5b7ca0'}
+    {emoji:'🌳',name:'나무',color:'#5fa969'},
+    {emoji:'🔥',name:'불',color:'#d96b5a'},
+    {emoji:'⛰️',name:'흙',color:'#c89860'},
+    {emoji:'⚒️',name:'쇠',color:'#a8a8b5'},
+    {emoji:'💧',name:'물',color:'#5b7ca0'}
   ];
   const max=Math.max(...oh,1);
   let h='<div class="a4-oh-bars">';
@@ -5805,46 +5813,48 @@ function buildLifeSummaryA4Html(){
   const goodSinsals=sins.filter(s=>s.tag==='g');
   const badSinsals=sins.filter(s=>s.tag==='r'||s.tag==='y');
   const ohNames=['목','화','토','금','수'];
+  const ohPlain=['나무','불','흙','쇠','물'];
   const date=new Date().toISOString().slice(0,10);
 
   let h=`<div class="a4-page">
     <div class="a4-header">
       <div class="a4-title">📋 인생총운 요약본</div>
-      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · ${gk.name}${gk.nick?' · '+gk.nick:''} · 도움 기운 ${ohNames[ys.main]} · ${isStrong?'신강':'신약'} (일간 ${Math.round(me/tot*100)}%)</div>
+      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohPlain[ys.main]} · 기운 강약 ${isStrong?'신강(두터움)':'신약(약함)'} (본인 일간이 사주의 ${Math.round(me/tot*100)}%)</div>
     </div>
     <div class="a4-body">
       <div class="a4-col-left">
 
         <div class="a4-section">
-          <div class="a4-h">📊 사주팔자 4기둥 도식</div>
+          <div class="a4-h">📊 사주팔자 4기둥 — 본인 사주의 「뼈대」</div>
           ${buildA4Pillars(saju,gender)}
+          <div class="a4-oh-legend" style="margin-top:6px">각 기둥 위는 천간(겉으로 드러나는 기운), 아래는 지지(속에 자리잡은 기운). 본인 자리는 <b>일주(가운데 강조 칸)</b>입니다.</div>
         </div>
 
         <div class="a4-section">
-          <div class="a4-h">🔄 음양오행 분포 + 생·극 관계</div>
+          <div class="a4-h">🔄 다섯 기운(오행) 분포와 관계</div>
           <div class="a4-oh-row">
             ${buildOhSangsaengSvg(oh)}
             ${buildA4OhBars(oh)}
           </div>
-          <div class="a4-oh-legend">두터운 <b>${ohNames[dom]}</b>은 본인의 강점, 부족한 <b>${ohNames[weak]}</b>은 의식적으로 채워야 할 영역. 화살표는 <b class="lg-g">상생</b>(돕는 흐름) · <b class="lg-r">상극</b>(누르는 흐름)입니다.</div>
+          <div class="a4-oh-legend">본인 사주에 가장 많은 기운은 <b>${ohPlain[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohPlain[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>입니다. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 나무→불, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 나무→흙, 나무 뿌리가 흙을 헤침)으로 연결돼 있어요.</div>
         </div>
 
         <div class="a4-section">
-          <div class="a4-h">🔗 사주 글자 사이 관계</div>
+          <div class="a4-h">🔗 사주 글자 사이에 작용하는 관계</div>
           <div class="a4-rel">
             <div class="a4-rel-col good">
-              <div class="a4-rel-lab">✅ 좋게 작용</div>
+              <div class="a4-rel-lab">✅ 좋게 작용하는 관계</div>
               ${goodRels.length>0?
-                goodRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> ${(r.d.split('→')[0]||'').replace(/\s+/g,' ').trim()}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 길성 관계 없음</div>'}
-              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:3px">· <b>길성</b> '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
+                goodRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                '<div class="a4-rel-none">두드러진 길성 관계는 없습니다. 본인 결대로 잔잔히 흐르는 사주예요.</div>'}
+              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
             </div>
             <div class="a4-rel-col bad">
-              <div class="a4-rel-lab">⚠️ 주의해야 할</div>
+              <div class="a4-rel-lab">⚠️ 주의해야 할 관계</div>
               ${badRels.length>0?
-                badRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> ${(r.d.split('→')[0]||'').replace(/\s+/g,' ').trim()}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 흉성 관계 없음</div>'}
-              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:3px">· <b>주의 신살</b> '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
+                badRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                '<div class="a4-rel-none">두드러진 흉성 관계는 없습니다. 큰 굴곡 없이 흐르는 사주예요.</div>'}
+              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].join('·')+'</div>':''}
             </div>
           </div>
         </div>
@@ -5859,7 +5869,7 @@ function buildLifeSummaryA4Html(){
             const isCur=i===curDIdx;
             return `<div class="a4-daeun${isCur?' cur':''}">
               <div class="a4-daeun-head">
-                <span class="age">${du.age}~${du.age+9}세${isCur?' · 현재':''}</span>
+                <span class="age">${du.age}~${du.age+9}세${isCur?'<span class="cur-mark">현재</span>':''}</span>
                 <span class="pil">${STEMS[du.stem]}${BRCH[du.branch]} (${STEMKO[du.stem]}${BRCHKO[du.branch]})</span>
                 <span class="tg">${tg}</span>
               </div>
