@@ -627,7 +627,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
-.nb-body{font-size:.95rem;line-height:1.855;color:var(--sub)}
+.nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .nb-body p{margin-bottom:11px}
 .nb-body p:last-child{margin-bottom:0}
 .nb-body b{color:var(--text)}
@@ -636,13 +636,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-good-lab{font-size:.66rem;font-weight:800;color:var(--wood);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
 .nb-warn{margin-top:8px;padding:12px 14px;background:var(--fire-bg);border-radius:9px;border-left:3px solid var(--fire)}
 .nb-warn-lab{font-size:.66rem;font-weight:800;color:var(--fire);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
-.nb-gw-body{font-size:.82rem;line-height:1.75;color:var(--sub)}
+.nb-gw-body{font-size:.82rem;line-height:1.75;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 
 /* ── 행동 지침 3박스 (강점·해야 할 일·피할 일) ── */
 .action-guide{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .ag-block{padding:11px 14px;border-radius:10px;border-left:3px solid}
 .ag-block .ag-lab{font-size:.7rem;font-weight:800;letter-spacing:.06em;margin-bottom:6px;text-transform:uppercase}
-.ag-block ul{margin:0;padding-left:18px;font-size:.8rem;line-height:1.78;color:var(--sub)}
+.ag-block ul{margin:0;padding-left:18px;font-size:.8rem;line-height:1.78;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .ag-block li{margin-bottom:3px}
 .ag-block li b{color:var(--text)}
 .ag-strengths{background:var(--wood-bg);border-left-color:var(--wood)}
@@ -775,7 +775,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-oh-bar-track{flex:1;height:9px;background:#f0e8d8;border-radius:5px;overflow:hidden;position:relative}
 .a4-oh-bar-fill{height:100%;border-radius:5px}
 .a4-oh-bar-cnt{width:32px;text-align:right;font-weight:700;font-size:10px;color:#6b574a}
-.a4-oh-legend{font-size:9.5px;color:#888;line-height:1.5;margin-top:6px;text-align:left}
+.a4-oh-legend{font-size:9.5px;color:#888;line-height:1.5;margin-top:6px;text-align:left;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .a4-oh-legend b.lg-g{color:#2e7d32}
 .a4-oh-legend b.lg-r{color:#c44}
 /* 관계도 */
@@ -798,7 +798,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-daeun-head .pil{font-size:10px;color:#1a1c1d;font-family:'Noto Serif KR',serif;text-align:center}
 .a4-daeun-head .tg{font-size:9px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 5px;border-radius:8px;text-align:center}
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
-.a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden}
+.a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .a4-footer{text-align:left;font-size:9px;color:#999;margin-top:6px;border-top:1px dashed #c8a888;padding-top:5px}
 
 /* ── 용어 안내 공지 카드 ── */
@@ -828,7 +828,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-sub{font-size:.74rem;color:var(--sub);line-height:1.7}
 .chat-remaining{display:inline-block;margin-top:8px;padding:3px 12px;background:var(--accent-soft);border:1px solid var(--border-strong);border-radius:50px;font-size:.66rem;font-weight:700;color:var(--accent);letter-spacing:.05em;text-transform:uppercase}
 .chat-log{display:flex;flex-direction:column;gap:9px;margin:14px 0;max-height:400px;overflow-y:auto;padding:4px}
-.chat-msg{padding:12px 14px;border-radius:12px;font-size:.84rem;line-height:1.8;word-break:break-word}
+.chat-msg{padding:12px 14px;border-radius:12px;font-size:.84rem;line-height:1.8;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .chat-msg-user{background:var(--bg-mid);border:1px solid var(--border);align-self:flex-end;max-width:85%;border-bottom-right-radius:3px;color:var(--text)}
 .chat-msg-ai{background:var(--bg-deep);border:1px solid var(--border-strong);max-width:95%;border-bottom-left-radius:3px;color:var(--text)}
 .chat-msg-error{background:var(--fire-bg);border:1px solid var(--fire);color:var(--fire);max-width:95%;font-size:.78rem}
@@ -2312,6 +2312,49 @@ function fixKoreanJosa(text){
     }
   );
 }
+// ─────────────────────────────────────────────────────────────
+// preventOrphan(html) — 고아글자 방지
+// 모든 사주풀이 텍스트(웹·A4 요약본·PDF)에 적용하는 줄바꿈 규칙(AGENTS.md §10).
+// 마지막 줄에 3자 이하만 남으면 마지막 공백을 비분리 공백(&nbsp;)으로 바꿔
+// 윗줄에 끌어붙인다. 4자 이상이면 그대로 둔다.
+// HTML 태그를 보존하며 동작하고, 블록 경계(<br>·</p>·</div>·</li>·</h*>)마다 분리해
+// 단락 단위로 처리한다.
+// ─────────────────────────────────────────────────────────────
+function preventOrphan(html){
+  if(html==null)return html;
+  if(typeof html!=='string')return html;
+  const BLOCK_RE=/(<br\s*\/?>|<\/(?:p|div|li|h\d|ul|ol|tr|td|blockquote)>)/gi;
+  const parts=html.split(BLOCK_RE);
+  for(let i=0;i<parts.length;i++){
+    const seg=parts[i];
+    if(!seg||BLOCK_RE.test(seg)||!seg.includes(' '))continue;
+    parts[i]=_glueOrphanSegment(seg);
+  }
+  return parts.join('');
+}
+function _glueOrphanSegment(text){
+  let result=text;
+  // 최대 3회 반복 — 한 번 붙인 뒤 새 끝 단어가 다시 3자 이하면 추가로 붙임
+  for(let iter=0;iter<3;iter++){
+    // HTML 태그 바깥의 마지막 일반 공백 위치 찾기
+    let lastSpaceIdx=-1,inTag=false;
+    for(let i=0;i<result.length;i++){
+      const c=result.charAt(i);
+      if(c==='<')inTag=true;
+      else if(c==='>')inTag=false;
+      else if(!inTag&&(c===' '||c==='\t'))lastSpaceIdx=i;
+    }
+    if(lastSpaceIdx<0)break;
+    // 공백 직후부터 끝까지의 가시 글자 수 (HTML 태그·엔티티 제외)
+    const suffixRaw=result.substring(lastSpaceIdx+1);
+    const suffixVisible=suffixRaw.replace(/<[^>]*>/g,'').replace(/&[a-z0-9#]+;/gi,'x');
+    const visibleLen=Array.from(suffixVisible).length;
+    if(visibleLen===0||visibleLen>3)break;
+    result=result.substring(0,lastSpaceIdx)+' '+result.substring(lastSpaceIdx+1);
+  }
+  return result;
+}
+
 // 오행(OHNAME)은 '목'처럼 괄호로 끝나므로, 짧은 이름 기반으로 조사 분기
 const OH_SHORT=['목','화','토','금','수'];
 const ohIp=i=>ip(OH_SHORT[i]);
@@ -5264,14 +5307,14 @@ function getTenGodMeaning(tg){
 }
 
 function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
-  let body=paragraphs.map(p=>`<p>${p}</p>`).join('');
+  let body=paragraphs.map(p=>`<p>${preventOrphan(p)}</p>`).join('');
   let h=`<div class="nb-card">
     <div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}</div>
     <div class="nb-body">${body}</div>`;
   if(goodWarn){
-    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${goodWarn.good}</div></div>`;
-    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${goodWarn.warn}</div></div>`;
+    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
+    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
   }
   h+='</div>';
   return h;
@@ -5343,7 +5386,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=`<div class="nb-card">
     <div class="nb-cat">SAJU PALJA</div>
     <div class="nb-title">🌱 사주팔자 종합 풀이</div>
-    <div class="nb-body">${sajuBody}</div>
+    <div class="nb-body">${preventOrphan(sajuBody)}</div>
   </div>`;
 
   // ═════════════════════════════════════
@@ -5586,7 +5629,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=`<div class="nb-card">
     <div class="nb-cat">DAEUN × 10년</div>
     <div class="nb-title">📅 대운 시기별 풀이 — 인생의 큰 흐름</div>
-    <div class="nb-body">${dBody}</div>
+    <div class="nb-body">${preventOrphan(dBody)}</div>
   </div>`;
 
   // ═════════════════════════════════════
@@ -6194,7 +6237,7 @@ function buildLifeSummaryA4Html(){
             ${buildOhSangsaengSvg(oh)}
             ${buildA4OhBars(oh)}
           </div>
-          <div class="a4-oh-legend">본인 사주에 가장 많은 기운은 <b>${ohNames[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohNames[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>입니다. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 목→화, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 목→토, 나무 뿌리가 흙을 헤침)으로 연결돼 있어요.</div>
+          <div class="a4-oh-legend">${preventOrphan(`본인 사주에 가장 많은 기운은 <b>${ohNames[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohNames[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>입니다. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 목→화, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 목→토, 나무 뿌리가 흙을 헤침)으로 이어집니다.`)}</div>
         </div>
 
         <div class="a4-section">
@@ -6203,16 +6246,16 @@ function buildLifeSummaryA4Html(){
             <div class="a4-rel-col good">
               <div class="a4-rel-lab">✅ 좋게 작용 — 본인 인생에 도움이 되는 결</div>
               ${goodRels.length>0?
-                goodRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                goodRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
                 '<div class="a4-rel-none">두드러진 길성 관계는 없습니다 — 본인 결대로 잔잔히 흐르는 사주예요.</div>'}
-              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (귀인의 결)</div>':''}
+              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (귀인의 결)')+'</div>':''}
             </div>
             <div class="a4-rel-col bad">
               <div class="a4-rel-lab">⚠️ 주의 — 본인 인생의 평생 과제가 되는 결</div>
               ${badRels.length>0?
-                badRels.map(r=>`<div class="a4-rel-item">· <b>${r.type}</b> — ${getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()}</div>`).join(''):
+                badRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
                 '<div class="a4-rel-none">두드러진 흉성 관계는 없습니다 — 큰 굴곡 없이 흐르는 사주예요.</div>'}
-              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (의식적 다스림이 과제)</div>':''}
+              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (의식적 다스림이 과제)')+'</div>':''}
             </div>
           </div>
         </div>
@@ -6231,7 +6274,7 @@ function buildLifeSummaryA4Html(){
                 <span class="pil">${STEMS[du.stem]}${BRCH[du.branch]} (${STEMKO[du.stem]}${BRCHKO[du.branch]})</span>
                 <span class="tg">${tg}</span>
               </div>
-              <div class="a4-daeun-body">${narrative}</div>
+              <div class="a4-daeun-body">${preventOrphan(narrative)}</div>
             </div>`;
           }).join('')}
         </div>
@@ -6239,7 +6282,7 @@ function buildLifeSummaryA4Html(){
     </div>
     <div class="a4-footer">${date} · saju-mbti.pages.dev · 사주는 인생의 지도이지 운명의 족쇄가 아닙니다</div>
   </div>`;
-  return h;
+  return preventOrphan(h);
 }
 
 async function downloadLifeSummary(fmt){
@@ -6300,12 +6343,12 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
   let h=`<div class="nb-card">
     <div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}</div>
-    <div class="nb-body">${bodyHtml}</div>`;
+    <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
     const has3=Array.isArray(goodWarn.strengths)||Array.isArray(goodWarn.todos)||Array.isArray(goodWarn.avoids);
     if(has3){
-      const li=arr=>(arr||[]).filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+      const li=arr=>(arr||[]).filter(Boolean).map(s=>`<li>${preventOrphan(s)}</li>`).join('');
       h+=`<div class="action-guide">`;
       if(goodWarn.strengths&&goodWarn.strengths.length){
         h+=`<div class="ag-block ag-strengths"><div class="ag-lab">✅ 이 흐름의 강점</div><ul>${li(goodWarn.strengths)}</ul></div>`;
@@ -6319,8 +6362,8 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
       h+=`</div>`;
     }else{
       // 하위 호환 — 기존 good/warn 2박스
-      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${goodWarn.good}</div></div>`;
-      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${goodWarn.warn}</div></div>`;
+      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
+      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
     }
   }
   h+='</div>';
@@ -6636,7 +6679,7 @@ function chatAppend(role,text){
   const lab=role==='user'?'질문':role==='ai'?'🔮 역술가':role==='loading'?'생각하는 중':'⚠️ 오류';
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
-  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${chatEscape(text)}</div>`;
+  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
   log.appendChild(div);
   log.scrollTop=log.scrollHeight;
   return div;
