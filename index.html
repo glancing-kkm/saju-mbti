@@ -848,6 +848,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
 
 /* ── 카테고리별 추가 입력 섹션 ── */
+/* 옵션 C — 카테고리별 고민 선택 입력 */
+.ctx-wrap{margin-top:14px;padding:12px 14px 14px;background:var(--bg-deep);border-radius:10px;border:1px dashed var(--border)}
+.ctx-lab{font-size:.82rem;font-weight:700;color:var(--accent);margin-bottom:4px;letter-spacing:-.01em}
+.ctx-lab small{font-size:.66rem;font-weight:400;color:var(--muted);margin-left:4px}
+.ctx-desc{font-size:.68rem;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.ctx-options{display:flex;flex-wrap:wrap;gap:6px}
+.ctx-btn{padding:7px 12px;font-size:.74rem;font-weight:600;border:1px solid var(--border);border-radius:50px;background:var(--card);color:var(--sub);cursor:pointer;font-family:inherit;transition:.15s;letter-spacing:-.01em}
+.ctx-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctx-btn.on{background:var(--accent);border-color:var(--accent);color:var(--bg-mid)}
+.ctx-custom-wrap{margin-top:10px}
+.ctx-custom-input{width:100%;padding:11px 13px;border:1px solid var(--accent);border-radius:8px;font-size:.82rem;font-family:inherit;background:var(--card);color:var(--text);outline:none;transition:.15s}
+.ctx-custom-input:focus{box-shadow:0 0 0 3px var(--accent-soft)}
+.ctx-custom-input::placeholder{color:var(--muted);font-size:.74rem}
 .cat-extra{padding:16px 14px 6px;margin-top:6px;background:transparent;border:1px solid var(--accent);border-radius:0;position:relative;overflow:visible}
 .cat-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 /* number input spinner 제거 (위·아래 화살표) */
@@ -1221,6 +1234,22 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <input type="number" id="dpD" name="dpDay" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off">
           </div>
         </div>
+        <!-- 옵션 C — 고민 선택 (선택사항) -->
+        <div class="ctx-wrap">
+          <div class="ctx-lab">💭 그날 가장 알고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-desc">선택하시면 풀이 첫 문단이 본인의 결에 맞춰 분기됩니다. 선택하지 않아도 풀이는 그대로 진행됩니다.</div>
+          <div class="ctx-options" id="ctxOptionsDaypick">
+            <button type="button" class="ctx-btn" data-tag="job" onclick="setContextTag('daypick','job')">일·직장</button>
+            <button type="button" class="ctx-btn" data-tag="meet" onclick="setContextTag('daypick','meet')">사람·만남</button>
+            <button type="button" class="ctx-btn" data-tag="money" onclick="setContextTag('daypick','money')">돈·투자</button>
+            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('daypick','health')">건강</button>
+            <button type="button" class="ctx-btn" data-tag="move" onclick="setContextTag('daypick','move')">이동·여행</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('daypick','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomDaypickWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomDaypick" placeholder="예: 면접이 있어요 / 가족 행사가 있어요 (60자 이내)" maxlength="60" autocomplete="off">
+          </div>
+        </div>
       </fieldset>
 
       <!-- 월별 운세 추가 입력 -->
@@ -1248,6 +1277,22 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           </div>
         </div>
         <div id="moPreview" class="mo-preview" aria-live="polite">기간을 입력하면 결제 예상 금액이 표시됩니다.</div>
+        <!-- 옵션 C — 고민 선택 (선택사항) -->
+        <div class="ctx-wrap">
+          <div class="ctx-lab">💭 그 기간에 가장 알고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-desc">선택하시면 매달 풀이의 첫 문단이 본인의 결에 맞춰 분기됩니다. 선택하지 않아도 풀이는 그대로 진행됩니다.</div>
+          <div class="ctx-options" id="ctxOptionsMonthly">
+            <button type="button" class="ctx-btn" data-tag="job" onclick="setContextTag('monthly','job')">직장·이직</button>
+            <button type="button" class="ctx-btn" data-tag="love" onclick="setContextTag('monthly','love')">연애·결혼</button>
+            <button type="button" class="ctx-btn" data-tag="money" onclick="setContextTag('monthly','money')">재물·투자</button>
+            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('monthly','health')">건강</button>
+            <button type="button" class="ctx-btn" data-tag="relation" onclick="setContextTag('monthly','relation')">관계·가족</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('monthly','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomMonthlyWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomMonthly" placeholder="예: 이직 준비 중이에요 / 결혼 준비를 시작했어요 (60자 이내)" maxlength="60" autocomplete="off">
+          </div>
+        </div>
       </fieldset>
 
       <!-- 신년운세 추가 입력 -->
@@ -1689,6 +1734,24 @@ function syncHourInput(v){
   const hidden=document.getElementById('iH');
   const n=parseInt(v);
   if(hidden){hidden.value=isNaN(n)?'12':String(Math.max(0,Math.min(23,n)));}
+}
+// 옵션 C — 카테고리별 고민 태그 선택. cat: 'daypick'|'monthly', tag: 'job'|... |'custom'|''
+function setContextTag(cat,tag){
+  const capCat=cat.charAt(0).toUpperCase()+cat.slice(1);
+  const opts=document.getElementById('ctxOptions'+capCat);
+  const customWrap=document.getElementById('ctxCustom'+capCat+'Wrap');
+  if(opts){
+    opts.querySelectorAll('.ctx-btn').forEach(b=>{
+      b.classList.toggle('on',b.getAttribute('data-tag')===tag);
+    });
+  }
+  if(customWrap){
+    customWrap.style.display=tag==='custom'?'block':'none';
+    if(tag==='custom'){
+      const inp=document.getElementById('ctxCustom'+capCat);
+      if(inp)setTimeout(()=>inp.focus(),50);
+    }
+  }
 }
 function _setTog(id,on){
   const el=document.getElementById(id);
@@ -3139,9 +3202,42 @@ const TG_KEYWORD={
 };
 
 // ══════════════════════════════════════════════
+//  옵션 C — 카테고리별 고민 맥락 분기
+// ══════════════════════════════════════════════
+const CONTEXT_OPENER={
+  daypick:{
+    job:{label:'일·직장',body:'직장에서의 큰 결정·면접·보고·승진 자리에 그날 일진이 어떻게 받쳐주는지가 본인이 가장 알고 싶은 결이에요. 아래 「직업·관운」 카드에서 그날 천간 십신과 본인 격국의 만남을 자세히 풀어드릴게요.'},
+    meet:{label:'사람·만남',body:'그날의 사람·만남·소개·재회의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 그날 일지의 합·충·원진 작용이 핵심이에요. 아래 「연애·관계」 카드에서 자세히 풀어드릴게요.'},
+    money:{label:'돈·투자',body:'그날 돈·계약·투자의 결을 보고 싶으시군요. 본인 일간 기준 그날 천간이 어떤 십신으로 들어오는지(재성·관성 등)가 핵심이에요. 아래 「직업·관운」과 「공부·문서」 카드를 함께 살피세요.'},
+    health:{label:'건강',body:'그날의 컨디션과 건강을 가장 염두에 두고 있으시군요. 본인 사주의 약한 오행을 그날 일진이 보강하는지가 핵심이에요. 아래 「건강·컨디션」 카드에서 자세히 풀어드릴게요.'},
+    move:{label:'이동·여행',body:'그날 이동·여행·약속 동선이 주된 관심사이시군요. 본인 일간과 그날 일진의 결, 그리고 시간대별 합·충 작용이 중요해요. 아래 「연애·관계」와 시간대 흐름을 함께 보세요.'}
+  },
+  monthly:{
+    job:{label:'직장·이직',body:'이 기간 직장에서의 결정·이직·승진의 결을 보고 싶으시군요. 매달 월주의 천간 십신이 관성·식상으로 어떻게 들어오는지가 핵심이에요. 아래 매월 카드의 「직업·관운」 영역을 집중해 살피세요.'},
+    love:{label:'연애·결혼',body:'이 기간 연애·결혼의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 매달 월지의 합·충 작용, 그리고 ' + '재성·관성 기운이 어느 달에 강하게 들어오는지가 핵심이에요.'},
+    money:{label:'재물·투자',body:'이 기간 재물·투자의 결을 보고 싶으시군요. 매달 재성 기운이 들어오는 시점과 본인 격국의 결을 함께 봐드릴게요.'},
+    health:{label:'건강',body:'이 기간 건강과 컨디션을 가장 염두에 두고 있으시군요. 매달 일진의 오행이 본인 약한 오행을 보강하는지가 핵심이에요.'},
+    relation:{label:'관계·가족',body:'이 기간 관계·가족 사이의 결을 보고 싶으시군요. 매달 월주가 본인의 일지·월지와 어떤 관계(합·충·원진)를 이루는지가 핵심이에요.'}
+  }
+};
+function getContextOpener(cat,tag,note){
+  if(!tag)return '';
+  let label,body;
+  if(tag==='custom'){
+    if(!note||!note.trim())return '';
+    label=note.trim().slice(0,60);
+    body='본인의 고민에 가장 잘 맞는 결을 사주 전반에서 짚어드릴게요. 아래 각 카드에서 본인 일간·격국·용신의 흐름이 본인의 고민에 어떻게 작용하는지 함께 살피시면 됩니다.';
+  }else{
+    const m=CONTEXT_OPENER[cat]&&CONTEXT_OPENER[cat][tag];
+    if(!m)return '';
+    label=m.label;body=m.body;
+  }
+  return `<div class="lead-card" style="background:linear-gradient(135deg,var(--accent-soft),var(--bg-deep));border-left:3px solid var(--accent-bright);margin-bottom:14px"><b>💭 본인이 가장 알고 싶은 것 — ${label}</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">${body}</span></div>`;
+}
+// ══════════════════════════════════════════════
 //  지정일 운세 (DAYPICK) — 확장판
 // ══════════════════════════════════════════════
-function renderDaypickFortune(saju,y,m,d){
+function renderDaypickFortune(saju,y,m,d,extra){
   const test=new Date(y,m-1,d);
   if(test.getFullYear()!==y||test.getMonth()!==m-1||test.getDate()!==d){
     return `<div class="dp-card"><div class="dp-headline">존재하지 않는 날짜입니다.</div></div>`;
@@ -3191,8 +3287,12 @@ function renderDaypickFortune(saju,y,m,d){
     hourCards.push({bi,kind,accent,hourTG,note});
   }
 
+  // 옵션 C — 사용자가 입력한 고민 맥락이 있으면 최상단에 노출
+  const _ctxTag=(extra&&extra.contextTag)||'';
+  const _ctxNote=(extra&&extra.contextNote)||'';
+  const _ctxHtml=getContextOpener('daypick',_ctxTag,_ctxNote);
   // 점수 링 헤로 카드 (일일운세 스타일)
-  let h=`<div class="daily-card">
+  let h=_ctxHtml+`<div class="daily-card">
     <div class="daily-date">${y}년 ${m}월 ${d}일 (${wDay}요일)</div>
     <div class="daily-score-ring" style="border-color:${grade.color};background:${grade.bg}">
       <div class="daily-score-num" style="color:${grade.color}">${f.total}</div>
@@ -3449,7 +3549,7 @@ function _bestDayInMonth(saju,yy,mm){
   return [best,second];
 }
 
-function renderMonthlyFortune(saju,sy,sm,ey,em){
+function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
   const totalMonths=endIdx-startIdx+1;
   const dm=DM[saju.dp.stem];
@@ -3480,8 +3580,12 @@ function renderMonthlyFortune(saju,sy,sm,ey,em){
   const avgTotal=avg('total');
   const avgGrade=dailyGrade(avgTotal);
 
+  // 옵션 C — 사용자가 입력한 고민 맥락이 있으면 최상단에 노출
+  const _ctxTag=(extra&&extra.contextTag)||'';
+  const _ctxNote=(extra&&extra.contextNote)||'';
+  const _ctxHtml=getContextOpener('monthly',_ctxTag,_ctxNote);
   // 점수 링 헤로 (기간 평균 점수)
-  let h=`<div class="daily-card">
+  let h=_ctxHtml+`<div class="daily-card">
     <div class="daily-date">📆 ${sy}년 ${sm}월 ~ ${ey}년 ${em}월</div>
     <div class="daily-score-ring" style="border-color:${avgGrade.color};background:${avgGrade.bg}">
       <div class="daily-score-num" style="color:${avgGrade.color}">${avgTotal}</div>
@@ -4519,6 +4623,25 @@ const STAGE12_DESC={
   '태':'잉태와 가능성. 호기심이 많고 의존적 는 결입니다.',
   '양':'양육과 보살핌의 기운. 따뜻하지만 의지가 약할 수 있어요.'
 };
+// 십이운성 자리별 풀이 매트릭스 — 12단계 × 4자리(년주·월주·일지·시주)
+// 같은 단계라도 어느 기둥에 있느냐로 인생 영역별 의미가 달라짐
+const STAGE_LOC_IMPACT={
+  '장생':{'년주':'어린 시절부터 호기심·생기가 풍부한 결. 새로운 환경에 빠르게 적응함.','월주':'직장·청년기에 새 출발이 잘 어울리는 결. 한 분야가 막 자라나는 시기에 강함.','일지':'배우자와의 만남이 새로운 결을 만드는 자리. 둘이 함께 성장하는 관계.','시주':'자녀가 본인에게 새 활기를 주는 결. 말년이 시작의 결로 채워짐.'},
+  '목욕':{'년주':'어린 시절부터 매력·끼가 두드러진 결. 또래의 시선을 끄는 자리.','월주':'직장·청년기에 변동·이동이 잦은 결. 매력으로 사회적 입지를 만듦.','일지':'배우자가 매력적인 사람·또는 부부 사이 변동성이 큰 자리. 도화의 결.','시주':'자녀가 매력적인 사람, 말년에도 인기와 변동이 함께 있는 결.'},
+  '관대':{'년주':'어린 시절부터 자존심·책임감이 강한 결. 모범생 기질의 자리.','월주':'직장·청년기에 사회적 입지가 빠르게 잡히는 결. 책임 자리에 일찍 오름.','일지':'배우자가 자존심 강하고 사회적 신뢰가 있는 사람. 부부가 책임을 나누는 결.','시주':'자녀가 자기 자리를 빨리 잡는 결, 말년에 사회적 책임이 새로 들어옴.'},
+  '임관':{'년주':'어린 시절부터 자기 결이 또렷한 결. 자립심이 일찍 자라남.','월주':'직장·청년기에 전문성·입지가 단단히 잡히는 결. 한 분야의 핵심 자리.','일지':'배우자가 자기 결이 또렷한 사람. 부부가 각자의 영역에서 단단함.','시주':'자녀가 전문성 강한 사람, 말년에 본인의 전문성이 결실로 이어짐.'},
+  '제왕':{'년주':'어린 시절부터 카리스마·리더십이 두드러진 결. 또래의 중심.','월주':'직장·청년기에 기운이 정점인 결. 강한 추진력으로 큰 자리를 만듦.','일지':'배우자가 강한 사람·또는 본인이 부부의 주도권을 쥐는 자리. 의식적 부드러움 필요.','시주':'자녀가 강한 리더십을 가진 사람, 말년에도 기운이 꺾이지 않는 결.'},
+  '쇠':{'년주':'어린 시절 환경이 차분하고 조용한 결. 활기보다 안정의 자리.','월주':'직장·청년기에 한 박자 늦은 듯해도 안정적인 결. 신중함이 자산.','일지':'배우자가 차분하고 안정적인 사람. 부부가 잔잔히 흐르는 결.','시주':'자녀가 차분한 사람, 말년이 잔잔히 흐르는 결.'},
+  '병':{'년주':'어린 시절부터 예민·사색적인 결. 외향적 활동보다 내면 풍부.','월주':'직장·청년기에 정신적 깊이가 자산인 결. 체력 관리가 핵심.','일지':'배우자가 예민하고 사색적인 사람. 부부가 정신적으로 깊이 통하는 결.','시주':'자녀가 사색적인 사람, 말년에 정신적·예술적 활동으로 깊어지는 결.'},
+  '사':{'년주':'어린 시절부터 종교·철학·연구에 끌리는 결. 외향성보다 내면 자라남.','월주':'직장·청년기에 연구·학문·종교 분야에 깊이 빠지는 결. 한 분야 전문성.','일지':'배우자가 종교·철학·연구에 관심 깊은 사람. 부부가 정신적 공유를 중시.','시주':'자녀가 학자·연구자 기질, 말년에 종교·철학에 깊이 천착하는 결.'},
+  '묘':{'년주':'어린 시절부터 갈무리·저장의 결. 조용히 쌓아가는 자리.','월주':'직장·청년기에 결실을 안으로 모으는 결. 외부 표현은 적지만 내실이 깊음.','일지':'배우자가 안으로 다지는 사람. 부부가 외부보다 가정의 결을 중시.','시주':'자녀가 안으로 다지는 사람, 말년에 본인이 갈무리하고 정리하는 결.'},
+  '절':{'년주':'어린 시절 단절·재시작의 결. 환경 변화가 잦았거나 가족과의 거리감.','월주':'직장·청년기에 단절·재시작의 결. 변화가 잦지만 매번 새로 일어섬.','일지':'배우자와의 관계에 단절·재시작의 결. 부부가 한 번 큰 변화를 겪을 가능성.','시주':'자녀와의 인연이 단절·재시작의 결, 말년에 큰 변화의 결.'},
+  '태':{'년주':'어린 시절 호기심·가능성이 풍부한 결. 의존적 결로 자라남.','월주':'직장·청년기에 가능성을 품고 시작하는 결. 한 분야가 막 잉태되는 시기.','일지':'배우자가 가능성·호기심이 풍부한 사람. 부부가 함께 새로운 결을 잉태.','시주':'자녀가 가능성이 풍부한 사람, 말년에 새 결을 잉태하는 자리.'},
+  '양':{'년주':'어린 시절 따뜻한 보살핌을 받은 결. 양육 환경이 자산.','월주':'직장·청년기에 양육·돌봄·서비스 분야와 잘 맞는 결.','일지':'배우자가 따뜻하고 보살피는 사람. 부부가 서로를 양육하는 결.','시주':'자녀가 따뜻한 사람, 말년에 양육·돌봄 활동으로 결실을 만듦.'}
+};
+function getStageLocReading(stage,loc){
+  return (STAGE_LOC_IMPACT[stage]&&STAGE_LOC_IMPACT[stage][loc])||'';
+}
 
 // 공망 (空亡)
 function emptyBranches(dStem,dBr){
@@ -4531,6 +4654,32 @@ function findGongmangLoc(saju,gm){
   if(gm.includes(saju.mp.branch))locs.push('월지(부모·청년·직장)');
   if(saju.hp&&gm.includes(saju.hp.branch))locs.push('시지(자녀·말년)');
   return locs;
+}
+// 공망 자리별 풀이 매트릭스 — 빈 자리가 어디냐에 따라 인생 영역별로 다른 의미
+const GONGMANG_LOC_IMPACT={
+  '년지':{label:'조상·초년',msg:'조상의 음덕이 약하거나 어린 시절 결핍을 느끼기 쉬워요. 가족의 도움보다 본인의 힘으로 길을 여는 결이며, 초년의 외로움이 오히려 자립심의 자산이 됩니다.'},
+  '월지':{label:'부모·청년기·직장',msg:'부모와의 정서적 거리감, 청년기 진로 방황, 직장에서의 무상감을 느낄 수 있어요. 격이 잡히기 전까지 시행착오가 따르지만 결국 본인만의 길을 찾는 결입니다.'},
+  '시지':{label:'자녀·말년',msg:'자녀와의 인연이 옅거나 말년 결실이 물질로 잘 보이지 않을 수 있어요. 그 자리는 정신적·종교적·예술적 깊이로 채우는 결이라, 후반 인생의 내공이 깊어집니다.'}
+};
+// 공망 본문 생성 — 4기둥 어디에 공망이 들어왔는지 위치별로 풀어줌
+function getGongmangReading(saju,gm){
+  const gmAtYear=gm.includes(saju.yp.branch);
+  const gmAtMonth=gm.includes(saju.mp.branch);
+  const gmAtHour=saju.hp&&gm.includes(saju.hp.branch);
+  const positions=[];
+  if(gmAtYear)positions.push('년지');
+  if(gmAtMonth)positions.push('월지');
+  if(gmAtHour)positions.push('시지');
+  const gmText=`${BRCH[gm[0]]}(${BRCHKO[gm[0]]})·${BRCH[gm[1]]}(${BRCHKO[gm[1]]})`;
+  if(positions.length===0){
+    return `<p style="margin-top:14px"><span class="body-q">공망(${gmText})은 본인 사주에 어떻게 작용하나요?</span><br>본인 사주의 4지지 중 공망 자리는 없어요. <b>결실을 빠짐없이 거두는 결</b>입니다. 본인이 노력한 만큼 가시적 성과로 돌아오는 흐름이라, 한 분야에 깊이 천착하기 좋은 사주예요.</p>`;
+  }
+  let h=`<p style="margin-top:14px"><span class="body-q">공망(${gmText})이 본인 사주에 어떻게 작용하나요?</span><br>본인 사주에서 <b>${positions.join('·')}</b>가 공망 자리예요. 공망은 「비어 있는」 자리라 그 영역에서 노력 대비 결실이 약하게 느껴지지만, 그만큼 <b>정신적·종교적 깊이</b>로 채우는 결이 됩니다.</p>`;
+  positions.forEach(pos=>{
+    const m=GONGMANG_LOC_IMPACT[pos];
+    h+=`<p style="margin-top:6px">· <b>${pos} 공망 (${m.label})</b> — ${m.msg}</p>`;
+  });
+  return h;
 }
 
 // 격국 (格局)
@@ -4684,6 +4833,38 @@ function findBranchRelations(saju){
     });
   }
   return list;
+}
+
+// 자리별 관계 풀이 — 특정 영역(연애/직업/인간관계)에 의미 있는 관계만 필터
+// scope: 'love' → 일지 관련, 'career' → 월지·시지 관련, 'human' → 모두
+function getRelevantRelations(saju,scope){
+  const all=findBranchRelations(saju);
+  if(!all||all.length===0)return [];
+  if(scope==='love'){
+    return all.filter(r=>r.places&&r.places.includes('일지')).slice(0,2);
+  }
+  if(scope==='career'){
+    return all.filter(r=>r.places&&(r.places.includes('월지')||r.places.includes('시지')))
+              .filter(r=>!(r.places.includes('일지'))).slice(0,2); // 일지 관련은 연애로 양보
+  }
+  if(scope==='human'){
+    return all.slice(0,3); // 인간관계는 전반적 흐름
+  }
+  return [];
+}
+// 자리별 관계를 한 문단으로 포맷
+function getRelevantRelationsHtml(saju,scope){
+  const rels=getRelevantRelations(saju,scope);
+  if(rels.length===0)return '';
+  const intro=scope==='love'?'본인의 일지(배우자궁)에서 보이는 결':
+              scope==='career'?'본인의 월지·시지(직장·자녀궁)에서 보이는 결':
+              '본인 사주 4지지 사이에서 보이는 관계 결';
+  let body=rels.map(r=>{
+    const cleanType=r.type.replace(/\s*\([^)]*\)\s*/g,'');
+    const msg=getRelLifeMessage(r.places,cleanType)||r.d.replace(/\s+/g,' ').trim();
+    return `· <b>${r.places.join('-')} ${cleanType}</b> — ${msg}`;
+  }).join('<br>');
+  return `<p style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:8px;border-left:3px solid var(--accent)"><span style="font-size:.78rem;color:var(--accent);font-weight:700">📍 본인 사주만의 자리별 결</span><br><span style="font-size:.82rem;line-height:1.7">${intro}이에요.<br>${body}</span></p>`;
 }
 
 // ══════════════════════════════════════════════
@@ -4966,10 +5147,10 @@ function unlockAndRender(category){
     el.dataset.rendered='1';
   };
   if(category==='daypick'&&_meta.dpExtra){
-    renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d));
+    renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d,_meta.dpExtra));
     gotoCard(2);
   }else if(category==='monthly'&&_meta.moExtra){
-    renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em));
+    renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra));
     gotoCard(3);
   }else if(category==='newyear'&&_meta.nyExtra){
     renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
@@ -5329,6 +5510,23 @@ function getTenGodMeaning(tg){
   };
   return m[tg]||'';
 }
+// 십신 자리별 풀이 매트릭스 — 같은 십신이라도 어느 기둥에 있느냐로 의미가 달라짐
+// 10십신 × 4자리(년주·월주·일지·시주) = 40셀
+const TENGOD_LOC_IMPACT={
+  '비견':{'년주':'조상·집안에 본인과 비슷한 결의 형제·친구 관계가 자리잡았던 결. 어린 시절 또래의 영향이 본인을 빚어냄.','월주':'직장·청년기에 동료·라이벌과 부딪치며 본인을 다듬는 결. 동기 관계가 평생의 자산.','일지':'배우자가 본인과 비슷한 결의 사람. 너무 닮아서 부딪치기도 쉬워 적당한 거리감이 핵심.','시주':'자녀가 본인과 비슷한 결의 사람이거나, 말년에 친구·동료가 많은 결.'},
+  '겁재':{'년주':'어린 시절 형제·친구와의 경쟁·갈등으로 본인 주장이 일찍 자라남.','월주':'직장·청년기에 경쟁·이직·동업 갈등이 잦은 결. 충동 지출과 동업 주의.','일지':'배우자와의 주도권 다툼이 잦은 자리. 같은 일을 두고도 본인 결과 배우자 결이 자주 부딪침.','시주':'자녀와 경쟁 구도·말년 동료와의 마찰. 자녀에게 본인 결을 강요하지 않는 게 핵심.'},
+  '식신':{'년주':'어린 시절 환경이 따뜻하고 풍족했거나, 어머니의 살뜰한 보살핌이 있었던 결.','월주':'직업이 표현·창작·요식·교육·돌봄 영역과 잘 맞고, 청년기에 본인 결로 빛남.','일지':'배우자가 본인을 따뜻하게 풀어주는 결. 부부가 함께 무언가를 만들어가는 결이 잘 어울림.','시주':'자녀가 본인을 따뜻하게 풀어주는 결, 말년이 풍족하고 여유로움.'},
+  '상관':{'년주':'어린 시절부터 톡톡 튀는 표현력·반항기. 학교·집안 규율과의 갈등이 본인 결을 빚어냄.','월주':'직업이 강의·미디어·기술·예술처럼 독창적 표현을 요구하는 분야. 윗사람과 마찰 잦음.','일지':'배우자가 본인의 결과 다른 톤을 가진 사람. 본인이 표현을 너무 강하게 내면 부부 사이 마찰이 생김.','시주':'자녀가 표현력 강한 사람, 말년에 강의·창작·교육 활동으로 본인을 푸는 결.'},
+  '편재':{'년주':'조상·아버지가 큰 사업·이동·외부 활동을 했거나 그 영향이 어린 시절에 깊이 남은 결.','월주':'직업이 사업·영업·이동·외부 활동 중심. 청년기부터 돈을 다루는 감각이 자라남.','일지':'배우자가 사업가 기질·외향적 활동가. 본인의 활동 무대가 곧 배우자가 되는 결.','시주':'자녀가 사업가 기질, 말년에 부동산·사업·해외 활동으로 돈이 움직이는 결.'},
+  '정재':{'년주':'조상·집안이 검소하고 안정적인 결. 어린 시절부터 절약·꾸준함의 가치가 몸에 배인 결.','월주':'직업이 월급·정기 수입·관리·회계 영역과 잘 맞고, 청년기부터 꾸준히 자산을 쌓는 결.','일지':'배우자가 성실하고 알뜰한 사람. 부부가 함께 안정적인 가정을 쌓아가는 결.','시주':'자녀가 성실한 사람, 말년에 정기적 수입(연금·임대)이 든든히 받쳐주는 결.'},
+  '편관':{'년주':'조상·집안에 권위·군경·법조·의료 인물이 있었거나, 어린 시절 강한 규율 환경.','월주':'직업이 무관·법조·경영·운동처럼 강한 도전과 책임을 요구하는 분야. 청년기에 큰 시련이 본인을 단단하게 만듦.','일지':'배우자가 강한 사람·또는 부부 관계에 긴장감이 있는 결. 의식적인 부드러움이 필요.','시주':'자녀가 강한 사람·또는 말년에 큰 책임을 새로 맡는 결. 건강 관리가 핵심.'},
+  '정관':{'년주':'조상·집안의 명예·권위가 본인의 자존감 기반. 어린 시절 모범생 결이 있었던 결.','월주':'직업이 공직·대기업·관리직처럼 신뢰와 책임이 핵심인 분야. 청년기부터 사회적 신뢰가 자연스럽게 쌓임.','일지':'배우자가 사회적으로 안정된 사람. 본인에게 배우자는 「권위와 안정감」의 원천이 됨.','시주':'자녀가 사회적으로 안정된 사람, 말년에 자녀의 권위가 본인의 자산이 됨.'},
+  '편인':{'년주':'조상·집안에 종교·역학·예술·기술 분야 사람이 있었거나, 어린 시절 독특한 학습 환경.','월주':'직업이 연구·종교·역학·기술처럼 깊이 천착하는 분야. 청년기에 한 분야에 깊이 빠지는 결.','일지':'배우자가 독특한 결의 사람·또는 정신적·종교적 결이 짙은 사람. 일반적 결혼관과 거리감 있음.','시주':'자녀가 독창적인 사람, 말년에 종교·철학·전문 분야 학습으로 깊어지는 결.'},
+  '정인':{'년주':'조상·집안에 학자·교육자가 있거나, 어린 시절 어머니의 헌신적 보살핌과 학습 환경.','월주':'직업이 교육·문화·복지·문서·자격 영역과 잘 맞고, 청년기에 학문·자격이 본인 자산이 됨.','일지':'배우자가 학구적·자상한 사람. 본인에게 배우자는 「부모처럼 보살펴주는」 결이 됨.','시주':'자녀가 학구적인 사람, 말년에 학습·문서·자격으로 결실을 만드는 결.'}
+};
+function getTenGodLocReading(tg,loc){
+  return (TENGOD_LOC_IMPACT[tg]&&TENGOD_LOC_IMPACT[tg][loc])||'';
+}
 
 function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
   let body=paragraphs.map(p=>`<p>${preventOrphan(p)}</p>`).join('');
@@ -5385,20 +5583,28 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   sajuBody+=miniManseWithPointer(saju,'day','↑ 강조된 일주가 「나의 자리」입니다');
   sajuBody+=`<p>일간 <em>${STEMS[dp.stem]}(${STEMKO[dp.stem]})</em>이 일지 <em>${BRCH[dp.branch]}(${BRCHKO[dp.branch]}) · ${ANIMAL[dp.branch]}</em> 위에 앉아 ${rel.desc}를 이룹니다. 일지는 「본인 자리이자 배우자가 앉는 자리」예요.</p>`;
   sajuBody+=`<p>「${stemNick(dp.stem)}」 같은 본인이 「${branchNick(dp.branch)}」라는 자리에 앉아 있는 결입니다. ${rel.imp}</p>`;
+  { const _dpBrTG=tenGod(dp.stem,BR_MAIN_STEM[dp.branch]); const _r=getTenGodLocReading(_dpBrTG,'일지'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인의 ${_dpBrTG}가 일지(배우자궁)에 있어</b> — ${_r}</p>`; }
+  { const _st=twelveStage(dp.stem,dp.branch); const _r=getStageLocReading(_st,'일지'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>일지의 12단계는 「${_st}」</b> — ${_r}</p>`; }
   // ③ 년주
   sajuBody+=`<p style="margin-top:14px"><b>② 년주 — 「조상·뿌리·어린 시절」의 자리</b></p>`;
   sajuBody+=miniManseWithPointer(saju,'year','↑ 강조된 년주가 「뿌리·초년」 자리입니다');
   sajuBody+=`<p>태어난 해의 글자 <em>${STEMS[yp.stem]}${BRCH[yp.branch]}(${STEMKO[yp.stem]}${BRCHKO[yp.branch]})</em>의 위쪽 글자 <em>${STEMKO[yp.stem]}</em>는 본인 일간 기준 「${yTG}」 자리예요. ${getTenGodMeaning(yTG)} 어린 시절의 환경·집안 분위기·뿌리가 되는 가치관이 본인이 자라며 받아들인 결의 출발점이 됩니다.</p>`;
+  { const _r=getTenGodLocReading(yTG,'년주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인의 ${yTG}가 년주에 있어</b> — ${_r}</p>`; }
+  { const _st=twelveStage(dp.stem,yp.branch); const _r=getStageLocReading(_st,'년주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>년지의 12단계는 「${_st}」</b> — ${_r}</p>`; }
   // ④ 월주
   sajuBody+=`<p style="margin-top:14px"><b>③ 월주 — 「청년기·직업·사주의 유형」을 결정하는 핵심 자리</b></p>`;
   sajuBody+=miniManseWithPointer(saju,'month','↑ 강조된 월주가 「격국·직업」을 결정하는 핵심 자리');
   sajuBody+=`<p>태어난 달의 글자 <em>${STEMS[mp.stem]}${BRCH[mp.branch]}(${STEMKO[mp.stem]}${BRCHKO[mp.branch]})</em>의 위쪽 글자 <em>${STEMKO[mp.stem]}</em>는 본인 일간 기준 「${mTG}」 자리예요. ${getTenGodMeaning(mTG)}</p>`;
+  { const _r=getTenGodLocReading(mTG,'월주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인의 ${mTG}가 월주에 있어</b> — ${_r}</p>`; }
+  { const _st=twelveStage(dp.stem,mp.branch); const _r=getStageLocReading(_st,'월주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>월지의 12단계는 「${_st}」</b> — ${_r}</p>`; }
   sajuBody+=`<p>이 자리에서 본인 사주의 <span class="term">유형(격국)</span> <em>${gk.name}${gk.nick?' · '+gk.nick:''}</em>이 정해졌습니다. ${gk.desc}</p>`;
   // ⑤ 시주
   sajuBody+=`<p style="margin-top:14px"><b>④ 시주 — 「자녀·말년」의 자리</b></p>`;
   sajuBody+=miniManseWithPointer(saju,'hour','↑ 강조된 시주가 「자녀·말년」 자리입니다');
   if(hp){
     sajuBody+=`<p>태어난 시간의 글자 <em>${STEMS[hp.stem]}${BRCH[hp.branch]}(${STEMKO[hp.stem]}${BRCHKO[hp.branch]})</em>의 위쪽 글자 <em>${STEMKO[hp.stem]}</em>는 본인 일간 기준 「${hTG}」 자리예요. ${getTenGodMeaning(hTG)} 시주는 인생 후반의 모습·자녀와의 관계·말년의 풍경을 보여주는 자리입니다.</p>`;
+    { const _r=getTenGodLocReading(hTG,'시주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인의 ${hTG}가 시주에 있어</b> — ${_r}</p>`; }
+    { const _st=twelveStage(dp.stem,hp.branch); const _r=getStageLocReading(_st,'시주'); if(_r)sajuBody+=`<p style="margin-top:6px;font-size:.86rem;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>시지의 12단계는 「${_st}」</b> — ${_r}</p>`; }
   }else{
     sajuBody+=`<p>시주는 태어난 시간이 확인되지 않아 정확한 풀이는 어렵습니다. 시간 정보가 들어오면 자녀운과 말년운까지 더 정밀하게 풀어드릴 수 있어요.</p>`;
   }
@@ -5503,6 +5709,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ③ 어떻게
   cBody+=`<p><span class="body-q">그래서 어떤 분야가 잘 맞을까요?</span><br>${careerDetail.gkc.length>0?'· <b>유형 추천</b> — '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>일간 적성</b> — ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· <b>도움 오행 활용</b> — ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
   cBody+=`<p><b>${_userStage==='school'?'학업·진학·진로':_userStage==='youth'?'진학·취업·진로 결정':_userStage==='senior1'||_userStage==='senior2'?'은퇴 설계·인생 2막·자문':'승진·이직'}이 잘 풀리는 시기 — ${_userStageLabel} 기준</b><br>본인 사주에 <em>${OHNAME[officerOh]}</em>(관성·책임 자리) 기운이 새로 들어오는 해. ${_userStage==='school'?'학생기에는 학업 성적·명문고 진학·자격 시험에 결이 좋고':_userStage==='youth'?'청년 초기에는 대학 진학·전공 자격·국가고시에 결이 좋고':'<em>'+OHNAME[outputOh]+'</em>(식상·표현) 강한 시기는 창업·프리랜서 전향이'}, <em>${OHNAME[resourceOh]}</em>(인성·학문) 강한 시기는 자격증·학위·전문성 강화에 시간을 쓰는 게 결에 맞아요.</p>`;
+  cBody+=getRelevantRelationsHtml(saju,'career');
   h+=paidWrapBody('CAREER','💼','직업·사업운',cBody,
     {good:`${gk.name}의 강점이 발현되는 시기(대운에서 격국을 돕는 글자가 들어올 때)에 큰 도약을 만들 수 있습니다. 지금 ${_userStageLabel}이라면 이 시기에 <em>${stageActionOf('career',_userAge)}</em>을 적극 추진하세요.`,
      warn:`관성이 너무 강하면 책임 과부하로, 식상이 너무 강하면 권위와 충돌로 ${_userStage==='school'||_userStage==='youth'?'학교·진학':'직장'} 갈등이 생기기 쉽습니다. ${has('상관')?'특히 상관 기운이 있으니 '+(_userStage==='school'||_userStage==='youth'?'선생님·규율':'상사·규율')+'과의 마찰을 의식적으로 관리하세요.':'본인의 성향과 조직 문화의 결을 미리 살펴 선택하세요.'}`});
@@ -5524,6 +5731,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=`<p>${has('도화')?'<b>도화살</b>이 있어 이성에게 호감을 끌어당기는 힘이 강합니다. 다양한 인연 속에서 진중한 만남을 의식적으로 선택해야 하고, 잘 쓰면 매력의 큰 자산·잘못 쓰면 이성 문제의 씨앗이 되는 양날의 결입니다.':has('홍염')?'<b>홍염살</b>이 있어 은밀하고 깊은 매력이 있습니다. 표면적 끌림보다 한번 빠지면 깊어지는 인연이 잘 어울리고, 진정성이 관계의 핵심입니다.':'강한 매력의 살은 두드러지지 않아요. <em>'+dm.pos[0]+'</em> 같은 본연의 성품으로 인연을 만들어가는 결입니다.'}</p>`;
   // ③ 어떻게
   lBody+=`<p><span class="body-q">${_userStage==='school'?'첫 호감·또래 관계의 결':_userStage==='youth'?'첫 연애·진지한 인연이 시작되는 시기':_userStage==='young'||_userStage==='prime'?'결혼·진지한 만남이 결실로 이어지는 시기':_userStage==='mid'?'부부 관계 점검과 자녀 독립 시기':'동반자와 함께하는 인생 2막의 시기'}는?</span><br>본인 사주에 <em>${OHNAME[gender==='male'?wealthOh:officerOh]}</em>(${gender==='male'?'재성·아내 자리':'관성·남편 자리'}) 기운이 새로 들어오는 해. 본인의 일지와 <em>육합</em>(자석처럼 끌리는 글자 짝)을 이루는 <em>${getDajiHapDesc(dp.branch)}</em> 글자의 해에도 ${_userStage==='school'?'좋은 친구·이성 호감':_userStage==='youth'?'진지한 첫 인연':'좋은 인연'}이 맺어지기 쉽습니다. 지금 ${_userStageLabel}이라면 <em>${stageActionOf('love',_userAge)}</em>에 가장 큰 결이 들어옵니다.</p>`;
+  lBody+=getRelevantRelationsHtml(saju,'love');
   h+=paidWrapBody('LOVE','💕','연애·결혼운',lBody,
     {good:`배우자궁(일지)이 ${rel.desc.includes('비화')?'동질적이라 닮은꼴 인연이 편안':rel.desc.includes('인성')?'인성으로 작용해 배우자가 정신적·물질적 후원자가':rel.desc.includes('식상')?'식상으로 작용해 배우자에게 표현·돌봄을 주는 관계가':rel.desc.includes('재성')?'재성으로 작용해 배우자가 활동의 무대가':'관성으로 작용해 배우자에게서 추진력·자극을 받는 관계가'} 됩니다.`,
      warn:`${has('도화')?'도화 활용은 좋지만 삼각관계·외도 유혹에 휘말리지 않도록 자기 절제가 필요합니다.':has('백호')?'백호살의 급격한 변화 기운이 부부 사이의 충돌로 나타날 수 있으니, 평소에 대화로 갈등을 풀어내는 습관이 중요합니다.':'배우자와 가치관이 충돌할 때 자기 입장만 고집하지 말고 한 발짝 물러서서 상대를 이해해 보세요.'}`});
@@ -5584,6 +5792,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   huBody+=`<p>${has('천을귀인')?'<b>천을귀인</b>이 자리잡고 있어 위기 때마다 귀인이 나타나 도와주는 가장 강한 인덕의 길성이 있습니다.':'천을귀인은 없지만, 본인의 <em>'+dm.pos[0]+'</em> 같은 성품이 자연스러운 인덕을 만들어줘요.'} ${has('역마')?'<b>역마살</b>이 강해 새로운 환경에서 빠르게 적응하고 인맥을 넓혀가는 능력이 본인의 큰 자산입니다.':''} ${has('상관')?'다만 <b>상관</b> 기운이 있어 권위·규율과의 마찰이 생기기 쉬우니, 윗사람과의 관계에서 의식적인 톤 조절이 필요해요.':''}</p>`;
   // ③ 어떻게
   huBody+=`<p><span class="body-q">관계망은 어떻게 만들어가면 좋을까요? — ${_userStageLabel} 기준</span><br>지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('relation',_userAge)}</em>이 본인 관계망의 중심입니다. ${oh[dStemOh]>=3?(_userStage==='school'||_userStage==='youth'?'친구·또래가 많고 본인 주장이 또렷한 결이라, 단체 활동 속에서도 본인 페이스를 지키는 자세가 필요합니다.':'형제·친구가 많고 본인 주장이 또렷한 사주라, <b>1인 직업·자기 사업</b> 쪽이 잘 맞습니다. 동업·금전 거래는 친한 사이일수록 명확한 계약과 기록을 남기세요.'):(_userStage==='school'||_userStage==='youth'?'학교·동아리·동기 모임을 통해 관계망이 자연스럽게 만들어집니다. 일대일 깊은 친구 몇 명이 본인의 든든한 자산이 됩니다.':'외부 인맥(<b>직장·동호회·온라인 커뮤니티</b>)을 통해 관계망을 넓혀가는 편이 본인에게 좋습니다. 일대일 깊은 관계 몇 개를 평소에 가꿔두면, 어려울 때 그것이 가장 든든한 자산이 됩니다.')}</p>`;
+  huBody+=getRelevantRelationsHtml(saju,'human');
   h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
     {good:'타고난 인덕을 살리고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일 깊은 관계 몇 개가 넓은 인맥보다 든든합니다.',
      warn:`${has('겁재')?'겁재 기운으로 동업·금전 거래에서 신뢰를 잃기 쉬우니 친한 사이일수록 명확한 계약과 기록이 중요합니다.':'관계에서 자기 주장과 경청의 균형을 의식적으로 잡아주세요.'}`});
@@ -5615,7 +5824,10 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }else{
     sinBody+=`<p>본인 사주에는 두드러진 신살이 없습니다. 신살이 없다는 게 나쁜 의미는 아니에요. 사주 본연의 흐름이 큰 굴곡 없이 잔잔하게 진행된다는 뜻입니다.</p>`;
   }
-  h+=paidWrapBody('SINSAL','⚡','신살 종합 분석',sinBody);
+  // ④ 공망(空亡) — 신살이 없어도 사람마다 다르게 나오는 차별화 지점
+  const gmList=emptyBranches(saju.dp.stem,saju.dp.branch);
+  sinBody+=getGongmangReading(saju,gmList);
+  h+=paidWrapBody('SINSAL','⚡','신살 · 공망 종합 분석',sinBody);
 
   // ═════════════════════════════════════
   // 대운 시기별 (시각화 + 상세)
@@ -8431,6 +8643,19 @@ function analyze(){
   // 카테고리별 추가 입력 검증
   const cat=_category||'manse';
   let dpExtra=null,moExtra=null,nyExtra=null;
+  // 옵션 C — 활성화된 ctx-btn에서 태그 추출
+  const readCtx=(cap)=>{
+    const opts=document.getElementById('ctxOptions'+cap);
+    if(!opts)return {tag:'',note:''};
+    const on=opts.querySelector('.ctx-btn.on');
+    const tag=on?on.getAttribute('data-tag')||'':'';
+    let note='';
+    if(tag==='custom'){
+      const inp=document.getElementById('ctxCustom'+cap);
+      if(inp)note=(inp.value||'').trim().slice(0,60);
+    }
+    return {tag,note};
+  };
   if(cat==='daypick'){
     const y=parseInt(document.getElementById('dpY').value)||0;
     const m=parseInt(document.getElementById('dpM').value)||0;
@@ -8438,7 +8663,8 @@ function analyze(){
     if(!y)return showErr('지정일의 연도를 입력해주세요.','dpY');
     if(!m||m<1||m>12)return showErr('지정일의 월(1~12)을 입력해주세요.','dpM');
     if(!d||d<1||d>31)return showErr('지정일의 일(1~31)을 입력해주세요.','dpD');
-    dpExtra={y,m,d};
+    const ctx=readCtx('Daypick');
+    dpExtra={y,m,d,contextTag:ctx.tag,contextNote:ctx.note};
   }else if(cat==='monthly'){
     const sy=parseInt(document.getElementById('moStartY').value)||0;
     const sm=parseInt(document.getElementById('moStartM').value)||0;
@@ -8451,7 +8677,8 @@ function analyze(){
     const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
     if(endIdx<startIdx)return showErr('종료가 시작보다 빠릅니다.','moEndM');
     if(endIdx-startIdx+1>MONTHLY_MAX)return showErr('월별 운세는 최대 '+MONTHLY_MAX+'개월까지 가능합니다.','moEndM');
-    moExtra={sy,sm,ey,em};
+    const ctx=readCtx('Monthly');
+    moExtra={sy,sm,ey,em,contextTag:ctx.tag,contextNote:ctx.note};
   }else if(cat==='newyear'){
     const y=parseInt(document.getElementById('nyY').value)||0;
     if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.','nyY');
@@ -8565,7 +8792,7 @@ function analyze(){
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d)
+          ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d,dpExtra)
           :renderPaidLock('daypick',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
@@ -8573,7 +8800,7 @@ function analyze(){
       }else if(cat==='monthly'){
         const _p3=document.getElementById('p3');
         _p3.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em)
+          ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em,moExtra)
           :renderPaidLock('monthly',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
