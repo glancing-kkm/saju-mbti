@@ -2290,27 +2290,51 @@ function fixKoreanJosa(text){
     if((c>=65&&c<=90)||(c>=97&&c<=122))return ch.toUpperCase()==='L'; // L(엘)은 ㄹ 받침
     return false;
   };
-  // 패턴: (한글 2자+ | 영문 연속 | 숫자 연속) + 선택 한자(괄호) + 선택 인라인 HTML 태그들 + 조사 + 경계
+  // 보정 분기 — 한글 끝소리 → 조사 매핑
+  const pickJosa=(lastCh,p)=>{
+    const hasJong=hasJongOf(lastCh);
+    const isRieul=isRieulOf(lastCh);
+    switch(p){
+      case '은':case '는':return hasJong?'은':'는';
+      case '이':case '가':return hasJong?'이':'가';
+      case '을':case '를':return hasJong?'을':'를';
+      case '과':case '와':return hasJong?'과':'와';
+      case '으로':case '로':return (!hasJong||isRieul)?'로':'으로';
+      default:return p;
+    }
+  };
+  // 부사 보호 — 정규식 백트래킹으로 "가까이→가까가" 같이 잘못 변환되는 부사들을 임시 마커로 치환
+  // 마지막 글자가 조사 후보(이/가/을/를/은/는/과/와/로)인 자주 쓰이는 부사·관형사·접속사
+  const ADV_PROTECT=['가까이','깊이','같이','멀리','일찍이','서로','그대로','새로','주로','바로','함부로','따로','참으로','정말로','진실로','저절로','이대로','한꺼번에','오히려','이제'];
+  const markers=[];
+  ADV_PROTECT.forEach(adv=>{
+    // 부사 뒤에 한글이 아닌 경계(공백·구두점·태그 등)가 와야만 보호
+    const re=new RegExp(adv+'(?=[\\s,\\.\\?!:;)」』】〕<>·\\-—…「『』《》＞]|$)','g');
+    text=text.replace(re,()=>{
+      const i=markers.length;
+      markers.push(adv);
+      return 'A'+i+'';
+    });
+  });
+  // 1차 — (한글 2자+ | 영문 연속 | 숫자 연속) + 선택 한자(괄호) + 선택 인라인 HTML 태그들 + 조사 + 경계
   // 한글 1자 매칭 금지 — "차이"의 "차"+"이"가 명사 1자+조사로 잘못 분리되어 "차가"로 둔갑하는 버그 방지
   // 줄바꿈/블록 태그(<br>·<p>·<div>·<li>·<h\d>) 제외 — "F·J<br>이 영역은"의 "이"가 조사로 오인되는 버그 방지
-  return text.replace(
+  text=text.replace(
     /([가-힣]{2,}|[A-Z]+|[a-z]+|\d+)((?:\([^)\n]*\))?(?:<\/?(?!br\b|p\b|div\b|li\b|h\d\b|ul\b|ol\b|table\b|tr\b|td\b)[a-zA-Z][^>]*>)*)(은|는|이|가|을|를|과|와|으로|로)(?=[\s,\.\?!:;)」』】〕<>·\-—…「『』《》＞]|$)/g,
-    (m,noun,middle,p)=>{
-      const lastCh=noun[noun.length-1];
-      const hasJong=hasJongOf(lastCh);
-      const isRieul=isRieulOf(lastCh);
-      let fixed;
-      switch(p){
-        case '은':case '는':fixed=hasJong?'은':'는';break;
-        case '이':case '가':fixed=hasJong?'이':'가';break;
-        case '을':case '를':fixed=hasJong?'을':'를';break;
-        case '과':case '와':fixed=hasJong?'과':'와';break;
-        case '으로':case '로':fixed=(!hasJong||isRieul)?'로':'으로';break;
-        default:fixed=p;
-      }
-      return noun+middle+fixed;
-    }
+    (m,noun,middle,p)=>noun+middle+pickJosa(noun[noun.length-1],p)
   );
+  // 2차 — 인라인 태그(<b>·<em>·<strong>·<i>·<span>)로 감싼 단음절 한글 + 조사
+  // 오행(목·화·토·금·수)·신살 약식 표기 등 단음절 명사는 태그 컨텍스트로 명사임을 식별
+  // 「<b>화</b>이」→「<b>화</b>가」, 「<em>토</em>은」→「<em>토</em>는」, 「<b>수</b>으로」→「<b>수</b>로」
+  text=text.replace(
+    /(<(b|em|strong|i|span)\b[^>]*>)([가-힣])(<\/\2>)(은|는|이|가|을|를|과|와|으로|로)(?=[\s,\.\?!:;)」』】〕<>·\-—…「『』《》＞]|$)/g,
+    (m,openTag,tagName,noun,closeTag,p)=>openTag+noun+closeTag+pickJosa(noun,p)
+  );
+  // 부사 보호 마커 복원
+  markers.forEach((adv,i)=>{
+    text=text.replace('A'+i+'',adv);
+  });
+  return text;
 }
 // ─────────────────────────────────────────────────────────────
 // preventOrphan(html) — 고아글자 방지
