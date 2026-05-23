@@ -748,13 +748,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .summary-btn.secondary:hover{background:rgba(212,175,55,.1)}
 
 /* ── A4 가로 요약본 (오프스크린 캡처용) ── */
-.a4-page{width:1123px;height:794px;background:#fdfaf0;color:#1a1c1d;font-family:'Kakao Small Sans','Noto Sans KR','Malgun Gothic',sans-serif;padding:22px 28px;box-sizing:border-box;display:flex;flex-direction:column;position:relative;text-align:left}
-.a4-header{text-align:center;border-bottom:2px solid #8b6f47;padding-bottom:8px;margin-bottom:12px}
+.a4-page{width:1123px;height:794px;background:#fdfaf0;color:#1a1c1d;font-family:'Kakao Small Sans','Noto Sans KR','Malgun Gothic',sans-serif;padding:14px 24px;box-sizing:border-box;display:flex;flex-direction:column;position:relative;text-align:left}
+.a4-header{text-align:center;border-bottom:2px solid #8b6f47;padding-bottom:6px;margin-bottom:8px}
 .a4-title{font-size:22px;font-weight:800;color:#8b6f47;letter-spacing:.04em;font-family:'Noto Serif KR','Malgun Gothic',serif}
 .a4-subtitle{font-size:12px;color:#6b574a;margin-top:3px}
-.a4-body{flex:1;display:flex;gap:20px;overflow:hidden}
-.a4-col-left{flex:1;padding-right:18px;border-right:1.5px dashed #b8a075;display:flex;flex-direction:column;gap:12px}
-.a4-col-right{flex:1;display:flex;flex-direction:column;gap:5px;overflow:hidden}
+.a4-body{flex:1;display:flex;gap:20px;overflow:hidden;min-height:0}
+.a4-col-left{flex:1;padding-right:18px;border-right:1.5px dashed #b8a075;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0}
+.a4-col-right{flex:1;display:flex;flex-direction:column;gap:5px;overflow:hidden;min-width:0;min-height:0}
 .a4-h{font-size:13px;font-weight:800;color:#8b6f47;margin:0 0 5px;letter-spacing:.02em;border-bottom:1px solid #d4b88a;padding-bottom:3px}
 /* 사주팔자 도식 */
 .a4-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -781,7 +781,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-oh-legend b.lg-r{color:#c44}
 /* 관계도 */
 .a4-rel{font-size:10px;line-height:1.55;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
-.a4-rel-col{padding:7px 9px;border-radius:6px;min-width:0;overflow:hidden}
+.a4-rel-col{padding:7px 9px;border-radius:6px;min-width:0;overflow:visible}
 .a4-rel-col.good{background:#eaf6ec;border-left:3px solid #6cbf7e}
 .a4-rel-col.bad{background:#fceae6;border-left:3px solid #e57462}
 .a4-rel-lab{font-size:10px;font-weight:800;margin-bottom:3px;word-break:keep-all}
@@ -800,7 +800,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-daeun-head .tg{font-size:9px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 5px;border-radius:8px;text-align:center}
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
 .a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.a4-footer{text-align:left;font-size:9px;color:#999;margin-top:6px;border-top:1px dashed #c8a888;padding-top:5px}
+.a4-footer{text-align:left;font-size:9px;color:#999;margin-top:4px;border-top:1px dashed #c8a888;padding-top:4px}
 
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(216,196,168,.06));border:1px solid rgba(212,175,55,.32);border-radius:14px;position:relative;overflow:hidden}
@@ -6525,16 +6525,30 @@ function buildLifeSummaryA4Html(){
 
 // A4 자동 축소 — 콘텐츠가 페이지를 넘치면 비율을 측정해 transform:scale로 1페이지 안에 들어가게 함
 // 사주마다 풀이 분량이 달라도 항상 한 장에 담기도록 보장
+//
+// 측정 핵심: .a4-body가 flex:1 + overflow:hidden이라 단순 scrollHeight로는
+// 좌측 컬럼 콘텐츠가 잘려도 visible과 같게 나옴. 따라서 height/overflow 제약을
+// 일시 해제해서 자연 콘텐츠 높이(naturalH)를 측정한 뒤 복구한다.
 async function autoFitA4(a4){
   await new Promise(r=>requestAnimationFrame(r));
   const body=a4.querySelector('.a4-body');
   if(!body)return null;
-  const overflowH=body.scrollHeight;
-  const visibleH=body.clientHeight;
-  if(overflowH<=visibleH+2)return null; // 안 넘치면 그대로
-  // 최소 55% 축소 — 그 이하로 줄이면 가독성 너무 떨어짐
-  const scale=Math.max(0.55,visibleH/overflowH);
-  // 1123×794 외부 wrap을 만들어 html2canvas가 정확히 잡도록 함
+  // 1) 자연 높이 측정 — height·overflow 제약 일시 해제
+  const origPageH=a4.style.height;
+  const origBodyOverflow=body.style.overflow;
+  a4.style.height='auto';
+  body.style.overflow='visible';
+  await new Promise(r=>requestAnimationFrame(r));
+  const naturalH=a4.offsetHeight;
+  // 2) 원래 상태 복구
+  a4.style.height=origPageH||'794px';
+  body.style.overflow=origBodyOverflow||'hidden';
+  await new Promise(r=>requestAnimationFrame(r));
+  const target=794;
+  if(naturalH<=target+2)return null; // 안 넘치면 그대로
+  // 3) 비례 축소 (최소 0.55까지 — 그 이하는 가독성 너무 떨어짐)
+  const scale=Math.max(0.55,target/naturalH);
+  // 4) 1123×794 외부 wrap을 만들어 html2canvas가 정확히 잡도록
   const wrap=document.createElement('div');
   wrap.style.cssText='width:1123px;height:794px;overflow:hidden;background:#fdfaf0;position:relative';
   const parent=a4.parentNode;
