@@ -1453,19 +1453,66 @@ let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
 let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
 let _saju=null, _meta=null;
-// 카테고리별 잠금 해제 — 메모리(Set) 한정. 결과 화면을 떠나면(goHome) 모두 초기화되어
-// 다음에 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함.
-// 잠금 해제 상태 — 세션 메모리에만 유지 (새로고침하면 다시 잠금)
-// 1회 결제 = 1회 풀이 노출. 코드 입력도 동일한 효력.
-// 이전 영속화 버전에서 저장됐던 localStorage 값이 있으면 마이그레이션 차원에서 제거.
+// 카테고리별 잠금 해제 — 메모리(Set) + 사주별 24시간 영속화 정책
+//
+// 정책:
+//   - 결제(또는 운영자 코드)로 잠금을 풀면 그 사주(4기둥+성별) 기준으로 24시간 동안
+//     localStorage에 토큰이 보관됨. 같은 사주로 다시 들어오면 자동으로 잠금 해제 복원.
+//   - 다른 사주를 입력하면 토큰이 일치하지 않아 다시 결제·코드 입력 필요.
+//   - 24시간 지나면 토큰 만료 → 같은 사주라도 다시 결제 필요.
+//   - _unlockedCats 자체는 메모리 Set. 페이지 로드 시 restore로 채우고, 결제/코드 시 토큰을 같이 저장.
+//
+// 이전 정책(`saju_unlocked_cats_v1` 등)의 localStorage 잔재는 마이그레이션 차원에서 제거.
 const _UNLOCKED_LS_KEY='saju_unlocked_cats_v1';
 try{localStorage.removeItem(_UNLOCKED_LS_KEY);}catch(e){}
+const _PAID_TOKEN_LS_KEY='saju_paid_tokens_v1';
+const _PAID_TOKEN_TTL_MS=24*60*60*1000; // 24시간
 const _unlockedCats=new Set();
-function _persistUnlocked(){/* 영속화 비활성 — 세션 단위 잠금 정책 */}
 function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v4`;} // (호환용 — 이제 사용처 없음)
 function isUnlockedFor(cat){return _unlockedCats.has(cat);}
-function setUnlockedFor(cat){_unlockedCats.add(cat);_persistUnlocked();}
-function clearAllUnlocks(){_unlockedCats.clear();_persistUnlocked();}
+// 사주 식별자 — 성별 + 4기둥(년/월/일/시) 한글 표기. 같은 사주면 같은 식별자.
+function sajuIdOf(saju,meta){
+  if(!saju)return '';
+  const g=(meta&&meta.gender)||(typeof gender==='string'?gender:'?');
+  const cell=(p)=>p?STEMKO[p.stem]+BRCHKO[p.branch]:'XX';
+  return g+'_'+cell(saju.yp)+cell(saju.mp)+cell(saju.dp)+cell(saju.hp);
+}
+// 유효(만료 안 됨) 토큰만 반환. 만료된 항목은 자동 정리.
+function _loadValidPaidTokens(){
+  let arr=[];
+  try{const raw=localStorage.getItem(_PAID_TOKEN_LS_KEY);if(raw)arr=JSON.parse(raw)||[];}catch(e){arr=[];}
+  if(!Array.isArray(arr))return [];
+  const now=Date.now();
+  const valid=arr.filter(t=>t&&t.cat&&t.sajuId&&typeof t.exp==='number'&&t.exp>now);
+  if(valid.length!==arr.length){
+    try{localStorage.setItem(_PAID_TOKEN_LS_KEY,JSON.stringify(valid));}catch(e){}
+  }
+  return valid;
+}
+function _savePaidToken(cat,sajuId){
+  if(!cat||!sajuId)return;
+  const tokens=_loadValidPaidTokens().filter(t=>!(t.cat===cat&&t.sajuId===sajuId));
+  tokens.push({cat,sajuId,exp:Date.now()+_PAID_TOKEN_TTL_MS});
+  try{localStorage.setItem(_PAID_TOKEN_LS_KEY,JSON.stringify(tokens));}catch(e){}
+}
+// 현재 _saju 기준으로 유효 토큰들을 메모리 _unlockedCats에 복원
+function restorePaidUnlocksForCurrentSaju(){
+  if(!_saju)return;
+  const sid=sajuIdOf(_saju,_meta);
+  if(!sid)return;
+  _loadValidPaidTokens().forEach(t=>{
+    if(t.sajuId===sid)_unlockedCats.add(t.cat);
+  });
+}
+function setUnlockedFor(cat){
+  _unlockedCats.add(cat);
+  // 현재 사주가 있으면 토큰도 같이 저장 (24h 영속화 — 같은 사주만 자동 복원)
+  if(_saju){
+    const sid=sajuIdOf(_saju,_meta);
+    if(sid)_savePaidToken(cat,sid);
+  }
+}
+function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 유지 */}
 // 영속 잠금 정책 폐지 — 이전 버전 localStorage 기록 일괄 정리 (재방문 시에도 잠금 유지)
 (function _purgeOldUnlocks(){
   try{
@@ -8819,7 +8866,11 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,mbti};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,mbti,gender};
+      // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
+      restorePaidUnlocksForCurrentSaju();
+      // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
+      { const _sid=sajuIdOf(_saju,_meta); if(_sid)_unlockedCats.forEach(c=>_savePaidToken(c,_sid)); }
 
       // 패널 초기화 (선택 카테고리만 렌더)
       ['p0','p1','p2','p3','p4','p5'].forEach(id=>{
