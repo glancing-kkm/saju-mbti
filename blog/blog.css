@@ -99,3 +99,21 @@ body{
 .blog-foot{padding:28px 16px;text-align:center;color:var(--muted);font-size:.74rem;border-top:1px solid var(--border);background:var(--bg-mid);margin-top:60px}
 .blog-foot a{color:var(--sub);text-decoration:none;margin:0 6px}
 .blog-foot a:hover{color:var(--accent)}
+
+/* ── 관련 콘텐츠 그래프 (1.5 SEO 내부 링크) ── */
+.related-links{margin:40px auto 0;max-width:880px;padding:28px 22px 22px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--border);border-radius:14px;position:relative;overflow:hidden}
+.related-links::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.6}
+.related-links .rl-heading{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0 0 18px;letter-spacing:-.01em;text-align:center;padding-bottom:14px;border-bottom:1px dashed var(--border)}
+.related-links .rl-group{margin-bottom:18px}
+.related-links .rl-group:last-child{margin-bottom:0}
+.related-links .rl-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent-bright);margin:0 0 10px;letter-spacing:-.01em}
+.related-links .rl-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.related-links .rl-list li{margin:0}
+.related-links .rl-list a{display:block;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--sub);text-decoration:none;font-size:.82rem;line-height:1.5;transition:.15s;letter-spacing:-.01em}
+.related-links .rl-list a:hover{border-color:var(--accent);color:var(--accent-bright);background:var(--accent-soft);transform:translateY(-1px)}
+@media (max-width:560px){
+  .related-links{padding:22px 16px 18px;margin-top:32px}
+  .related-links .rl-heading{font-size:1.02rem;margin-bottom:14px}
+  .related-links .rl-list{grid-template-columns:1fr;gap:6px}
+  .related-links .rl-list a{padding:11px 13px;font-size:.84rem}
+}
