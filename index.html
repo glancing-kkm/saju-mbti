@@ -848,6 +848,29 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-tip{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;letter-spacing:.02em}
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
 
+/* ── AI 한도 초과 → 결제 유도 모달 ── */
+.upsell-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s;pointer-events:none}
+.upsell-overlay.on{opacity:1;pointer-events:auto}
+.upsell-modal{background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:22px 22px 18px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.65);position:relative;transform:translateY(8px);transition:transform .2s}
+.upsell-overlay.on .upsell-modal{transform:translateY(0)}
+.upsell-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.8}
+.upsell-close{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--sub);font-size:1rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:.15s}
+.upsell-close:hover{color:var(--accent);border-color:var(--accent)}
+.upsell-head{text-align:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px dashed var(--border)}
+.upsell-icon{font-size:2rem;line-height:1;margin-bottom:8px}
+.upsell-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
+.upsell-sub{font-size:.84rem;color:var(--sub);line-height:1.65}
+.upsell-list{display:flex;flex-direction:column;gap:10px}
+.upsell-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:.18s;font-family:inherit;text-align:left;width:100%}
+.upsell-card:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+.upsell-card-icon{font-size:1.5rem;flex-shrink:0;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:var(--card);border-radius:50%;border:1px solid var(--border)}
+.upsell-card-body{flex:1;min-width:0}
+.upsell-card-title{font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-.01em}
+.upsell-card-desc{font-size:.72rem;color:var(--muted);line-height:1.55;letter-spacing:-.01em}
+.upsell-card-price{font-size:.82rem;font-weight:800;color:var(--accent-bright);flex-shrink:0;letter-spacing:-.01em}
+.upsell-none{padding:18px 14px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.65;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
+.upsell-foot{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.6;margin-top:14px;padding-top:10px;border-top:1px dashed var(--border)}
+
 /* ── 카테고리별 추가 입력 섹션 ── */
 /* 옵션 C — 카테고리별 고민 선택 입력 */
 .ctx-wrap{margin-top:14px;padding:12px 14px 14px;background:var(--bg-deep);border-radius:10px;border:1px dashed var(--border)}
@@ -6941,6 +6964,59 @@ function chatRemaining(cat){
   const c=cat||_category||'life';
   return Math.max(0, chatMaxOf(c)-chatGetCount(c));
 }
+// AI 한도 초과 시 결제 안 한 다른 카테고리를 권하는 모달
+// — PAID_META에서 메타 정보 가져와 카드 형태로 노출, openPaymentConsent로 결제 흐름 연결
+function showChatLimitUpsell(currentCat){
+  // 모든 유료 카테고리에서 (1) 현재 카테고리 제외, (2) 이미 잠금 해제된 것 제외
+  const allCats=['life','newyear','monthly','daypick'];
+  const remaining=allCats.filter(c=>c!==currentCat&&!isUnlockedFor(c));
+  // 기존 모달이 있으면 제거
+  const old=document.getElementById('chatLimitUpsell');
+  if(old)old.remove();
+  const overlay=document.createElement('div');
+  overlay.id='chatLimitUpsell';
+  overlay.className='upsell-overlay';
+  const close=()=>{overlay.classList.remove('on');setTimeout(()=>overlay.remove(),220);};
+  overlay.onclick=(e)=>{if(e.target===overlay)close();};
+  const curMeta=PAID_META[currentCat]||PAID_META.life;
+  let cardsHtml='';
+  if(remaining.length===0){
+    cardsHtml=`<div class="upsell-none">다른 모든 유료 풀이도 이미 열어보셨네요! 24시간 후 채팅 한도가 자동으로 초기화됩니다.</div>`;
+  }else{
+    cardsHtml='<div class="upsell-list">'+remaining.map(c=>{
+      const m=PAID_META[c]||{};
+      const price=typeof computePayAmount==='function'?(formatWon(computePayAmount(c,_meta||{}))):'';
+      const shortDesc=(m.desc||'').replace(/<br>/g,' · ').replace(/<[^>]+>/g,'').split('·')[0].trim();
+      return `<button type="button" class="upsell-card" onclick="window._chatUpsellGo('${c}')">
+        <div class="upsell-card-icon">${m.icon||'✨'}</div>
+        <div class="upsell-card-body">
+          <div class="upsell-card-title">${m.title||c}</div>
+          <div class="upsell-card-desc">${shortDesc}</div>
+        </div>
+        <div class="upsell-card-price">${price}</div>
+      </button>`;
+    }).join('')+'</div>';
+  }
+  overlay.innerHTML=`<div class="upsell-modal">
+    <button type="button" class="upsell-close" onclick="document.getElementById('chatLimitUpsell')&&(document.getElementById('chatLimitUpsell').classList.remove('on'),setTimeout(()=>document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove(),220))" aria-label="닫기">×</button>
+    <div class="upsell-head">
+      <div class="upsell-icon">🎟</div>
+      <div class="upsell-title">AI 질문 한도 도달</div>
+      <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>${remaining.length>0?'다른 풀이를 열어 더 깊은 통찰을 받아보세요.':''}</div>
+    </div>
+    ${cardsHtml}
+    <div class="upsell-foot">24시간이 지나면 같은 사주에 대한 잠금 해제와 채팅 한도가 자동으로 초기화됩니다.</div>
+  </div>`;
+  document.body.appendChild(overlay);
+  // 카드 클릭 → 결제 흐름 진입 (모달 닫고 결제 동의 모달 열기)
+  window._chatUpsellGo=function(targetCat){
+    close();
+    if(typeof openPaymentConsent==='function'){
+      try{openPaymentConsent(targetCat,'KAKAOPAY');}catch(e){alert('결제 화면을 열 수 없습니다: '+e.message);}
+    }
+  };
+  requestAnimationFrame(()=>overlay.classList.add('on'));
+}
 function chatResetCount(cat){
   const c=cat||_category||'life';
   localStorage.removeItem(chatLsKeyOf(c));
@@ -7044,7 +7120,7 @@ async function chatAsk(){
   const curCat=_category||'life';
   const curMax=chatMaxOf(curCat);
   if(chatRemaining(curCat)<=0){
-    alert(`${curMax}회의 질문 한도를 모두 사용하셨습니다.\n다음 사용까지 캐시 초기화가 필요합니다.`);
+    showChatLimitUpsell(curCat);
     return;
   }
   const input=document.getElementById('chatInput');
@@ -7075,9 +7151,11 @@ async function chatAsk(){
       const r=document.getElementById('chatRemaining');
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
       if(chatRemaining(curCat)===0){
-        chatAppend('error',`🎟 ${curMax}회 질문 한도가 모두 소진되었습니다. 다른 카테고리에서 추가 질문이 가능합니다.`);
+        chatAppend('error',`🎟 ${curMax}회 질문 한도가 모두 소진되었습니다. 다른 카테고리에서 추가 풀이를 열어보세요.`);
         document.getElementById('chatInput').disabled=true;
         btn.disabled=true;btn.textContent='소진';
+        // 한도 마지막 답변 직후 결제 유도 모달도 자동 표출
+        setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},700);
         return;
       }
     }
