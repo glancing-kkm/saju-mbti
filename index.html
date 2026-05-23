@@ -263,8 +263,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .pcol{display:flex;flex-direction:column;gap:3px}
 .plabel{font-size:.62rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.06em;text-transform:uppercase}
-.pstem,.pbranch{padding:9px 2px;border-radius:8px;font-weight:700;font-size:1rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent}
-.pstem .sm,.pbranch .sm{font-size:.58rem;font-weight:500;opacity:.7}
+.pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:1.35rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
+.pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
 .ew{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.2)}
 .ef{background:var(--fire-bg);color:var(--fire);border-color:rgba(224,168,160,.2)}
 .ee{background:var(--earth-bg);color:var(--earth);border-color:rgba(216,196,168,.25)}
@@ -684,8 +684,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mm-col.hl::after{content:'★';position:absolute;top:-9px;right:-5px;color:var(--accent-bright);font-size:.95rem;text-shadow:0 0 6px rgba(212,175,55,.5)}
 .mm-lab{font-size:.6rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
-.mm-cell{padding:10px 2px;font-size:1.15rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
-.mm-cell .mm-sub{font-size:.6rem;font-weight:500;opacity:.7;margin-top:1px}
+.mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.mm-cell .mm-sub{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
 .mm-stem{margin-bottom:2px}
 .mm-pointer{font-size:.7rem;color:var(--accent);margin:4px 0 10px;text-align:center;font-weight:600;letter-spacing:.02em}
 
@@ -6523,12 +6523,16 @@ function buildLifeSummaryA4Html(){
   return preventOrphan(h);
 }
 
-// A4 자동 축소 — 콘텐츠가 페이지를 넘치면 비율을 측정해 transform:scale로 1페이지 안에 들어가게 함
-// 사주마다 풀이 분량이 달라도 항상 한 장에 담기도록 보장
+// A4 자동 맞춤 — 사주마다 콘텐츠 길이가 달라도 항상 1123×794 페이지에 가득 차게 보장
 //
-// 측정 핵심: .a4-body가 flex:1 + overflow:hidden이라 단순 scrollHeight로는
-// 좌측 컬럼 콘텐츠가 잘려도 visible과 같게 나옴. 따라서 height/overflow 제약을
-// 일시 해제해서 자연 콘텐츠 높이(naturalH)를 측정한 뒤 복구한다.
+// 동작:
+//   1) 자연 높이 측정 — height·overflow 제약을 일시 해제해서 콘텐츠의 실제 높이 측정
+//   2) 콘텐츠가 짧을 때(naturalH < 794): 콘텐츠를 위로 확장(stretch)해서 빈 공간 없애기
+//      → .a4-page는 이미 height:794로 고정이고 .a4-body가 flex:1이라 자동으로 채움.
+//        단 좌·우 컬럼이 자식이 짧으면 빈 공간이 생기므로 align-items:flex-start와
+//        flex 분배 조정이 필요. 이건 CSS에서 처리.
+//   3) 콘텐츠가 길 때(naturalH > 794): transform:scale + width/height 보정으로
+//      시각적으로 정확히 1123×794에 가득 차도록 압축. 우측·하단 빈 공간 없음.
 async function autoFitA4(a4){
   await new Promise(r=>requestAnimationFrame(r));
   const body=a4.querySelector('.a4-body');
@@ -6545,15 +6549,19 @@ async function autoFitA4(a4){
   body.style.overflow=origBodyOverflow||'hidden';
   await new Promise(r=>requestAnimationFrame(r));
   const target=794;
-  if(naturalH<=target+2)return null; // 안 넘치면 그대로
-  // 3) 비례 축소 (최소 0.55까지 — 그 이하는 가독성 너무 떨어짐)
-  const scale=Math.max(0.55,target/naturalH);
-  // 4) 1123×794 외부 wrap을 만들어 html2canvas가 정확히 잡도록
+  if(naturalH<=target+2)return null; // 안 넘치면 그대로 (페이지가 이미 1123×794로 채워짐)
+  // 3) 콘텐츠가 길 때 — 비례 축소
+  const scale=Math.max(0.5,target/naturalH);
+  // 4) 1123×794 외부 wrap을 만들고, a4 내부를 (1123/scale × 794/scale) 영역으로 확장
+  //    → scale 적용 후 시각 크기가 정확히 1123×794가 됨 (우/하 빈 공간 없음)
   const wrap=document.createElement('div');
   wrap.style.cssText='width:1123px;height:794px;overflow:hidden;background:#fdfaf0;position:relative';
   const parent=a4.parentNode;
   parent.appendChild(wrap);
   wrap.appendChild(a4);
+  // width/height 보정 — 큰 영역에서 자연스럽게 배치되도록
+  a4.style.width=(1123/scale)+'px';
+  a4.style.height=(794/scale)+'px';
   a4.style.transform='scale('+scale+')';
   a4.style.transformOrigin='top left';
   await new Promise(r=>requestAnimationFrame(r));
