@@ -1455,11 +1455,25 @@ let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 — 메모리(Set) 한정. 결과 화면을 떠나면(goHome) 모두 초기화되어
 // 다음에 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함.
-const _unlockedCats=new Set();
+// 잠금 해제 상태 — 새로고침 후에도 유지되도록 localStorage에 영속화
+const _UNLOCKED_LS_KEY='saju_unlocked_cats_v1';
+const _unlockedCats=(()=>{
+  try{
+    const raw=localStorage.getItem(_UNLOCKED_LS_KEY);
+    if(raw){
+      const arr=JSON.parse(raw);
+      if(Array.isArray(arr))return new Set(arr);
+    }
+  }catch(e){}
+  return new Set();
+})();
+function _persistUnlocked(){
+  try{localStorage.setItem(_UNLOCKED_LS_KEY,JSON.stringify([..._unlockedCats]));}catch(e){}
+}
 function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v4`;} // (호환용 — 이제 사용처 없음)
 function isUnlockedFor(cat){return _unlockedCats.has(cat);}
-function setUnlockedFor(cat){_unlockedCats.add(cat);}
-function clearAllUnlocks(){_unlockedCats.clear();}
+function setUnlockedFor(cat){_unlockedCats.add(cat);_persistUnlocked();}
+function clearAllUnlocks(){_unlockedCats.clear();_persistUnlocked();}
 // 영속 잠금 정책 폐지 — 이전 버전 localStorage 기록 일괄 정리 (재방문 시에도 잠금 유지)
 (function _purgeOldUnlocks(){
   try{
@@ -5130,6 +5144,11 @@ function renderSajuLock(saju){return renderPaidLock('life',saju);}
 // 결제 완료 직후 패널을 잠금→유료 콘텐츠로 재렌더 (캐시된 _saju/_meta가 있을 때만)
 function unlockAndRender(category){
   if(!category||!_saju||!_meta)return false;
+  // 카테고리별 필수 추가 데이터 검증 — 없으면 false 반환 (호출자가 입력 폼으로 안내)
+  // 이 가드가 없으면 분기를 다 통과 못 한 채 return true가 되어 화면 전환 실패가 거짓 성공으로 처리됨
+  if(category==='daypick'&&!_meta.dpExtra)return false;
+  if(category==='monthly'&&!_meta.moExtra)return false;
+  if(category==='newyear'&&!_meta.nyExtra)return false;
   setUnlockedFor(category);
   _paidUnlocked=true;
   _category=category;
@@ -5148,18 +5167,21 @@ function unlockAndRender(category){
     enrichTerms(el);
     el.dataset.rendered='1';
   };
-  if(category==='daypick'&&_meta.dpExtra){
+  if(category==='daypick'){
     renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d,_meta.dpExtra));
     gotoCard(2);
-  }else if(category==='monthly'&&_meta.moExtra){
+  }else if(category==='monthly'){
     renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra));
     gotoCard(3);
-  }else if(category==='newyear'&&_meta.nyExtra){
+  }else if(category==='newyear'){
     renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
     gotoCard(4);
   }else if(category==='life'){
     renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
     gotoCard(5);
+  }else{
+    // 알 수 없는 카테고리는 거짓 성공 방지
+    return false;
   }
   window.scrollTo({top:0,behavior:'smooth'});
   return true;
@@ -5183,9 +5205,12 @@ function _secretUnlockTap(category){
   }
   const rendered=unlockAndRender(category);
   if(rendered)return;
+  // 사주 또는 카테고리별 추가 데이터가 부족해서 즉시 렌더 불가
+  // → 잠금만 풀어두고 사용자를 입력 폼으로 안내 (입력 완료 후 결과 페이지에서 잠금 해제 상태로 풀이 노출)
   setUnlockedFor(category);
   if(_category===category)_paidUnlocked=true;
-  alert('잠금이 해제되었습니다. 사주를 입력하시면 풀이가 바로 열립니다.');
+  alert('잠금이 해제되었습니다. 사주 정보를 입력하시면 풀이가 바로 열립니다.');
+  if(typeof goToInput==='function')goToInput(category);
 }
 
 // ══════════════════════════════════════════════
