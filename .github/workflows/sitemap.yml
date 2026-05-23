@@ -1,0 +1,46 @@
+name: sitemap 자동 갱신
+
+# 블로그·메인·약관 페이지나 sitemap 생성 스크립트가 바뀌면 자동 실행.
+# sitemap.xml 자체 변경은 paths-ignore로 제외해 무한 루프 방지.
+# 커밋 메시지 끝에 [skip ci]를 붙여 GitHub Actions의 자기 트리거도 차단.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'blog/**/*.html'
+      - 'legal/**/*.html'
+      - 'tools/generate_sitemap.py'
+  workflow_dispatch: {}
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: sitemap.xml 재생성
+        run: python3 tools/generate_sitemap.py
+
+      - name: 변경 사항이 있으면 커밋·푸시
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if [[ -z $(git status --porcelain sitemap.xml) ]]; then
+            echo "sitemap 변경 없음 — skip"
+            exit 0
+          fi
+          git add sitemap.xml
+          git commit -m "chore: sitemap.xml 자동 갱신 [skip ci]"
+          git push
