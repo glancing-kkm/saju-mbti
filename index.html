@@ -484,7 +484,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .mbti-badge-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
 .mbti-badge-head b{color:var(--accent-bright)}
-.mbti-badge-body{font-size:.95rem;color:var(--sub);line-height:1.85}
+.mbti-badge-body{font-size:.95rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-badge-body b{color:var(--text)}
 
 /* ── 사주 × MBTI 4지표 상세 분석 ── */
@@ -508,18 +508,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-indicator.match-medium .mbti-ind-grade{color:#d4a849;background:rgba(212,168,73,.12);border-color:rgba(212,168,73,.4)}
 .mbti-indicator.match-mixed .mbti-ind-grade{color:#e57462;background:rgba(229,116,98,.12);border-color:rgba(229,116,98,.4)}
 .mbti-indicator.match-mismatch .mbti-ind-grade{color:#e0533f;background:rgba(224,83,63,.16);border-color:rgba(224,83,63,.45)}
-.mbti-ind-reason{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px}
+.mbti-ind-reason{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-ind-reason em{color:var(--accent);font-style:normal;font-weight:700}
-.mbti-ind-example{font-size:.95rem;line-height:1.85;color:var(--muted);margin:0 0 6px;padding:10px 12px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0}
-.mbti-ind-advice{font-size:.95rem;line-height:1.85;color:var(--accent);margin:6px 0 0}
+.mbti-ind-example{font-size:.95rem;line-height:1.85;color:var(--muted);margin:0 0 6px;padding:10px 12px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.mbti-ind-advice{font-size:.95rem;line-height:1.85;color:var(--accent);margin:6px 0 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:1px solid var(--accent);border-radius:14px}
 .mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
-.mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0 0 10px}
+.mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0 0 10px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth p:last-child{margin-bottom:0}
 .mbti-synth-head{font-weight:700;color:var(--text)}
 /* 새 내러티브 레이아웃 (타고난 기질 × 학습된 성격) */
 .mbti-intro{margin:6px 0 16px;padding:14px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:12px}
-.mbti-intro p{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px}
+.mbti-intro p{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-intro p:last-child{margin-bottom:0}
 .mbti-intro b{color:var(--accent-bright);font-weight:700}
 .mbti-indicator-block{padding:16px 0 14px;border-top:1px solid var(--border)}
@@ -538,7 +538,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-axis-row.row-innate .mbti-axis-tag{color:#6cbf7e}
 .mbti-axis-row.row-learned .mbti-axis-tag{color:var(--accent-bright)}
 .mbti-axis-row.row-evolution .mbti-axis-tag{color:#a3b8d4}
-.mbti-axis-body{font-size:.95rem;line-height:1.85;color:var(--sub)}
+.mbti-axis-body{font-size:.95rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-axis-body em{color:var(--accent);font-style:normal;font-weight:700}
 .mbti-axis-body b{color:var(--text);font-weight:700}
 
@@ -684,8 +684,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mm-col.hl::after{content:'★';position:absolute;top:-9px;right:-5px;color:var(--accent-bright);font-size:.95rem;text-shadow:0 0 6px rgba(212,175,55,.5)}
 .mm-lab{font-size:.6rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
-.mm-cell{padding:4px 2px;font-size:.86rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
-.mm-cell .mm-sub{font-size:.55rem;font-weight:500;opacity:.7;margin-top:1px}
+.mm-cell{padding:10px 2px;font-size:1.15rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.mm-cell .mm-sub{font-size:.6rem;font-weight:500;opacity:.7;margin-top:1px}
 .mm-stem{margin-bottom:2px}
 .mm-pointer{font-size:.7rem;color:var(--accent);margin:4px 0 10px;text-align:center;font-weight:600;letter-spacing:.02em}
 
@@ -2547,10 +2547,10 @@ function sajuMbtiMatch(saju, mbti){
 function mbtiBadgeHTML(saju, mbti){
   const m=sajuMbtiMatch(saju,mbti);
   if(!m)return '';
-  return `<div class="mbti-badge">
+  return preventOrphan(`<div class="mbti-badge">
     <div class="mbti-badge-head">☯︎ ${m.headline}</div>
     <div class="mbti-badge-body">${m.body}</div>
-  </div>`;
+  </div>`);
 }
 
 // ── MBTI 4지표 상세 분석 — 「타고난 기질(사주) × 학습된 성격(MBTI)」 내러티브 ──
@@ -2734,7 +2734,7 @@ function mbtiAnalysisHTML(saju, mbti){
       ${synthDetail}
     </div>
   </section>`;
-  return h;
+  return preventOrphan(h);
 }
 
 // ── 결과 상단 TL;DR 카드 — 강점 TOP3 / 주의 TOP3 / 핵심 시기 ──
@@ -3133,7 +3133,7 @@ function mbtiSajuFusionParagraph(saju, mbti, contextHint){
     h+=`<p><b>③ 두 결이 다른 영역 — 함께 사는 자리</b><br>`+diverges.map(s=>`⚖️ ${s}`).join('<br>')+`</p>`;
   }
   h+=`<p><b>④ 통합 행동 처방</b><br>${fusionAdvice}</p>`;
-  return h;
+  return preventOrphan(h);
 }
 
 // ── 결과 헤더 SNS 후크 헤드라인 ──
@@ -5090,7 +5090,7 @@ function renderPaidLock(category, saju){
   let preview;
   try{
     const rel=getStemBranchRelation(saju.dp.stem,saju.dp.branch);
-    preview=`당신의 일간은 <b>${dm.n}</b>으로, 일지 <b>${saju.dp.branch}</b> 위에 앉아 있습니다. 일지의 ${BRCHKO[saju.dp.branch]}는 오행으로 <b>${OHNAME[dBrOh]}</b>에 해당하여, 일간 <b>${OHNAME[dStemOh]}</b>와 ${rel.desc}을 이룹니다. ${(rel.imp||'').split('.')[0]}…`;
+    preview=`당신의 일간은 <b>${dm.n}</b>으로, 일지 <b>${BRCHKO[saju.dp.branch]}</b> 위에 앉아 있습니다. 일지의 ${BRCHKO[saju.dp.branch]}는 오행으로 <b>${OHNAME[dBrOh]}</b>에 해당하여, 일간 <b>${OHNAME[dStemOh]}</b>와 ${rel.desc}을 이룹니다. ${(rel.imp||'').split('.')[0]}…`;
   }catch(e){
     preview=`당신의 일간은 <b>${dm.n}</b>으로, 사주 전체 흐름과 ${m.title}의 기운이 만나는 결을 깊이 풀어드립니다…`;
   }
@@ -5577,13 +5577,13 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   let sajuBody='';
   // ① 한 줄 결론
-  sajuBody+=`<div class="lead-card">당신은 <b>${dp.stem} · ${dm.n.split('(')[0]}</b> 일간 — ${stemNick(dp.stem)} 같은 본질을 타고난 사람입니다. 사주의 유형은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>이고, 도움이 되는 기운(<span class="term">용신</span>)은 <em>${OHNAME[ys.main]}</em>이에요.</div>`;
+  sajuBody+=`<div class="lead-card">당신은 <b>${STEMKO[dp.stem]} · ${dm.n.split('(')[0]}</b> 일간 — ${stemNick(dp.stem)} 같은 본질을 타고난 사람입니다. 사주의 유형은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>이고, 도움이 되는 기운(<span class="term">용신</span>)은 <em>${OHNAME[ys.main]}</em>이에요.</div>`;
   sajuBody+=miniManse(saju);
   sajuBody+=`<p>🪄 <b>본인 일간을 비유로 풀면</b><br>${stemRich(dp.stem)} — ${STEM_META[dp.stem].body}.</p>`;
   // ② 일주
   sajuBody+=`<p style="margin-top:14px"><b>① 일주 — 「나」의 자리</b></p>`;
   sajuBody+=miniManseWithPointer(saju,'day','↑ 강조된 일주가 「나의 자리」입니다');
-  sajuBody+=`<p>일간 <em>${dp.stem}</em>이 일지 <em>${dp.branch} · ${ANIMAL[dp.branch]}</em> 위에 앉아 ${rel.desc}를 이룹니다. 일지는 「본인 자리이자 배우자가 앉는 자리」예요.</p>`;
+  sajuBody+=`<p>일간 <em>${STEMKO[dp.stem]}</em>이 일지 <em>${BRCHKO[dp.branch]} · ${ANIMAL[dp.branch]}</em> 위에 앉아 ${rel.desc}를 이룹니다. 일지는 「본인 자리이자 배우자가 앉는 자리」예요.</p>`;
   sajuBody+=`<p>「${stemNick(dp.stem)}」 같은 본인이 「${branchNick(dp.branch)}」라는 자리에 앉아 있는 결입니다. ${rel.imp}</p>`;
   { const _dpBrTG=tenGod(dp.stem,BR_MAIN_STEM[dp.branch]); const _r=getTenGodLocReading(_dpBrTG,'일지'); if(_r)sajuBody+=`<p style="margin-top:6px;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인의 ${_dpBrTG}가 일지(배우자궁)에 있어</b> — ${_r}</p>`; }
   { const _st=twelveStage(dp.stem,dp.branch); const _r=getStageLocReading(_st,'일지'); if(_r)sajuBody+=`<p style="margin-top:6px;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>일지의 12단계는 「${_st}」</b> — ${_r}</p>`; }
@@ -5859,7 +5859,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     tlh+=`<div class="tl-item${isCur?' cur':''}">
       <div class="tl-age">${du.age}세 ~ ${du.age+9}세${isCur?' · 현재 대운':''}</div>`;
     tlh+=pillarPlusRow(saju,du,null);
-    tlh+=`<div class="tl-pil">대운 글자 → 천간 ${du.stem} = <em>${tg}</em> · 지지 ${du.branch} = <em>${btg}</em></div>
+    tlh+=`<div class="tl-pil">대운 글자 → 천간 ${STEMKO[du.stem]} = <em>${tg}</em> · 지지 ${BRCHKO[du.branch]} = <em>${btg}</em></div>
       <div class="tl-body">${desc}</div>
     </div>`;
   });
@@ -6915,8 +6915,8 @@ function buildSajuContextForChat(){
     gender:gender==='male'?'남성':'여성',
     birthplace:cityName?cityName.textContent:'미상',
     pillars:`년주 ${STEMKO[_saju.yp.stem]}${BRCHKO[_saju.yp.branch]} · 월주 ${STEMKO[_saju.mp.stem]}${BRCHKO[_saju.mp.branch]} · 일주 ${STEMKO[_saju.dp.stem]}${BRCHKO[_saju.dp.branch]}${_saju.hp?` · 시주 ${STEMKO[_saju.hp.stem]}${BRCHKO[_saju.hp.branch]}`:''}`,
-    dayMaster:`${_saju.dp.stem} — ${dm.n.split('(')[0]}, ${dm.core}`,
-    daySpouse:`${_saju.dp.branch} — ${ANIMAL[_saju.dp.branch]}, 오행 ${OHNAME[BOH[_saju.dp.branch]]}`,
+    dayMaster:`${STEMKO[_saju.dp.stem]} — ${dm.n.split('(')[0]}, ${dm.core}`,
+    daySpouse:`${BRCHKO[_saju.dp.branch]} — ${ANIMAL[_saju.dp.branch]}, 오행 ${OHNAME[BOH[_saju.dp.branch]]}`,
     gyeokguk:gk.name,
     yongsin:OHNAME[ys.main],
     ohaeng:`목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}`,
@@ -7226,7 +7226,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     '자형':'<em>자형</em> 관계 — 같은 글자가 겹쳐 내면 모순이 공명하는 결입니다. 외부 자극(취미·운동)을 함께 들여오면 풀립니다.',
     '충':'<em style="color:var(--fire)">충</em> 관계 — 정반대에서 정면으로 부딪치는 결. 끌림은 강렬하지만 충돌·이동·변동도 잦습니다. 충 부부는 오히려 함께 큰 변화를 해내는 케이스도 통계적으로 많습니다.'
   };
-  h+=`<p><b>② 일지 배우자궁 관계</b><br>본인의 일지 <em>${s1.dp.branch}</em>와 상대의 일지 <em>${s2.dp.branch}</em>는 ${_brBodyMap[_brK]||_brBodyMap['평']}</p>`;
+  h+=`<p><b>② 일지 배우자궁 관계</b><br>본인의 일지 <em>${BRCHKO[s1.dp.branch]}</em>와 상대의 일지 <em>${BRCHKO[s2.dp.branch]}</em>는 ${_brBodyMap[_brK]||_brBodyMap['평']}</p>`;
   // 천간합·천간충 — 일간 사이
   if(result.dayStemRel&&result.dayStemRel.kind==='합'){
     h+=`<p><b>②-1 일간 천간합</b><br>두 분의 일간이 <em style="color:var(--wood)">${STEMKO[s1.dp.stem]}${STEMKO[s2.dp.stem]} 합</em>으로 묶입니다. 「부부 합」으로 부르며 서로 끌어당기는 결속력이 매우 강한 자리입니다.</p>`;
@@ -7452,7 +7452,7 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
     <div class="irow"><span class="ikey">입춘 시각 (KST)</span><span class="ival" style="font-size:.78rem">${ipStr}</span></div>
     ${saju.yp.beforeIp?`<div class="irow"><span class="ikey" style="color:var(--fire)">⚡ 입춘 전 출생</span><span class="ival" style="color:var(--fire)">${saju.yp.year}년 기준 적용</span></div>`:''}
     <div class="irow"><span class="ikey">월주 기준 절기</span><span class="ival">${JIEQI_NAMES[saju.mi]} ${JIEQI_CH[saju.mi]}</span></div>
-    <div class="irow"><span class="ikey">일간</span><span class="ival">${saju.dp.stem} · ${DM[saju.dp.stem].n}</span></div>
+    <div class="irow"><span class="ikey">일간</span><span class="ival">${STEMKO[saju.dp.stem]} · ${DM[saju.dp.stem].n}</span></div>
     <div class="irow"><span class="ikey">성별</span><span class="ival">${gender==='male'?'남성':'여성'}</span></div>
     <div class="irow"><span class="ikey">육십갑자 일주</span><span class="ival">${dayJDN}번째 · ${STEMS[(dayJDN-1)%10]}${BRCH[(dayJDN-1)%12]}일</span></div>
   </div>`;
