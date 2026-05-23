@@ -5144,12 +5144,26 @@ const PAID_META={
       '· 카테고리당 본문 4~6문단의 깊이'
     ],
     price:'24,000원'
-  }
+  },
+  // AI 채팅 추가 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
+  chatpack1:{icon:'💬',title:'AI 질문 1회 추가',desc:'현재 풀이에 대한 AI 채팅 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
+  chatpack3:{icon:'💬',title:'AI 질문 3회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'2,500원'},
+  chatpack5:{icon:'💬',title:'AI 질문 5회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'4,000원'},
+  chatpack10:{icon:'💬',title:'AI 질문 10회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,life:24000};
+const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,life:24000,
+  // AI 채팅 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
+  chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
+// 채팅 패키지 수량 매핑 — 결제 confirm 후 chatBonus에 더할 횟수
+const CHAT_PACKS=[
+  {cat:'chatpack1', count:1,  price:1000,  label:'1회'},
+  {cat:'chatpack3', count:3,  price:2500,  label:'3회',  badge:'17% 할인'},
+  {cat:'chatpack5', count:5,  price:4000,  label:'5회',  badge:'20% 할인'},
+  {cat:'chatpack10',count:10, price:7000,  label:'10회', badge:'30% 할인 · 인기'}
+];
 // 카테고리 실제 결제 금액 계산 — _meta·인자에서 월별 개월수 도출
 function computePayAmount(category, meta){
   if(category!=='monthly')return PAY_BASE_PRICE[category]||0;
@@ -5401,10 +5415,28 @@ async function _handlePaymentReturn(){
       if(!res.ok)throw new Error('확인 요청 실패 ('+res.status+')');
       const data=await res.json();
       if(data&&data.ok){
-        setUnlockedFor(cat);
         sessionStorage.removeItem('pendingPayment');
         history.replaceState({},'',location.pathname);
-        // 캐시된 사주가 있으면 바로 잠금 해제된 결과로 재렌더, 없으면 입력 화면으로 안내
+        // 채팅 추가 패키지(chatpack*) — 잠금 해제가 아닌 현재 사주·카테고리의 채팅 보너스 충전
+        const pack=CHAT_PACKS.find(p=>p.cat===cat);
+        if(pack){
+          // 현재 채팅이 열린 카테고리(_category) 기준 보너스 추가
+          const targetCat=_category||'life';
+          addChatBonus(targetCat, pack.count);
+          // 채팅 UI 갱신: 잠금 입력 해제 + 남은 횟수 라벨 즉시 반영
+          try{
+            const r=document.getElementById('chatRemaining');
+            if(r)r.textContent=`${chatRemaining(targetCat)}회 남음`;
+            const inp=document.getElementById('chatInput');
+            if(inp)inp.disabled=false;
+            const btn=document.getElementById('chatBtn');
+            if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
+          }catch(e){}
+          alert(`✅ 결제가 완료되었습니다.\nAI 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
+          return;
+        }
+        // 일반 카테고리 — 잠금 해제 + 풀이 노출
+        setUnlockedFor(cat);
         const rendered=unlockAndRender(cat);
         if(rendered){
           alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 풀이가 열립니다.\n\n주문번호: '+orderId);
@@ -6960,17 +6992,39 @@ function chatIncCount(cat){
   const k=chatLsKeyOf(cat||_category||'life');
   localStorage.setItem(k, String((parseInt(localStorage.getItem(k)||'0',10)||0)+1));
 }
+// ── 채팅 보너스 (질문 추가 패키지 결제로 충전) ──
+// localStorage 구조: { '<sajuId>_<cat>': N } — 같은 사주·카테고리 단위로 누적
+const _CHAT_BONUS_LS_KEY='saju_chat_bonus_v1';
+function _loadChatBonusMap(){
+  try{const r=localStorage.getItem(_CHAT_BONUS_LS_KEY);return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+}
+function _saveChatBonusMap(m){
+  try{localStorage.setItem(_CHAT_BONUS_LS_KEY,JSON.stringify(m||{}));}catch(e){}
+}
+function _chatBonusKey(cat){
+  if(!_saju)return '';
+  const sid=sajuIdOf(_saju,_meta);
+  if(!sid)return '';
+  return sid+'_'+(cat||_category||'life');
+}
+function getChatBonus(cat){
+  const k=_chatBonusKey(cat); if(!k)return 0;
+  const m=_loadChatBonusMap();
+  return parseInt(m[k]||0,10)||0;
+}
+function addChatBonus(cat,n){
+  const k=_chatBonusKey(cat); if(!k||!n)return;
+  const m=_loadChatBonusMap();
+  m[k]=(parseInt(m[k]||0,10)||0)+n;
+  _saveChatBonusMap(m);
+}
 function chatRemaining(cat){
   const c=cat||_category||'life';
-  return Math.max(0, chatMaxOf(c)-chatGetCount(c));
+  return Math.max(0, chatMaxOf(c)+getChatBonus(c)-chatGetCount(c));
 }
-// AI 한도 초과 시 결제 안 한 다른 카테고리를 권하는 모달
-// — PAID_META에서 메타 정보 가져와 카드 형태로 노출, openPaymentConsent로 결제 흐름 연결
+// AI 한도 초과 시 — 현재 풀이에 대한 채팅 질문 추가 패키지 결제 유도 모달
+// 카드: 1회/3회/5회/10회 (CHAT_PACKS 정의), 결제 성공 시 현재 사주·카테고리의 chatBonus 증가
 function showChatLimitUpsell(currentCat){
-  // 모든 유료 카테고리에서 (1) 현재 카테고리 제외, (2) 이미 잠금 해제된 것 제외
-  const allCats=['life','newyear','monthly','daypick'];
-  const remaining=allCats.filter(c=>c!==currentCat&&!isUnlockedFor(c));
-  // 기존 모달이 있으면 제거
   const old=document.getElementById('chatLimitUpsell');
   if(old)old.remove();
   const overlay=document.createElement('div');
@@ -6979,40 +7033,33 @@ function showChatLimitUpsell(currentCat){
   const close=()=>{overlay.classList.remove('on');setTimeout(()=>overlay.remove(),220);};
   overlay.onclick=(e)=>{if(e.target===overlay)close();};
   const curMeta=PAID_META[currentCat]||PAID_META.life;
-  let cardsHtml='';
-  if(remaining.length===0){
-    cardsHtml=`<div class="upsell-none">다른 모든 유료 풀이도 이미 열어보셨네요! 24시간 후 채팅 한도가 자동으로 초기화됩니다.</div>`;
-  }else{
-    cardsHtml='<div class="upsell-list">'+remaining.map(c=>{
-      const m=PAID_META[c]||{};
-      const price=typeof computePayAmount==='function'?(formatWon(computePayAmount(c,_meta||{}))):'';
-      const shortDesc=(m.desc||'').replace(/<br>/g,' · ').replace(/<[^>]+>/g,'').split('·')[0].trim();
-      return `<button type="button" class="upsell-card" onclick="window._chatUpsellGo('${c}')">
-        <div class="upsell-card-icon">${m.icon||'✨'}</div>
-        <div class="upsell-card-body">
-          <div class="upsell-card-title">${m.title||c}</div>
-          <div class="upsell-card-desc">${shortDesc}</div>
-        </div>
-        <div class="upsell-card-price">${price}</div>
-      </button>`;
-    }).join('')+'</div>';
-  }
+  const cardsHtml='<div class="upsell-list">'+CHAT_PACKS.map(p=>{
+    const unitPrice=Math.round(p.price/p.count);
+    const badge=p.badge?`<span style="display:inline-block;margin-left:6px;font-size:.62rem;font-weight:700;color:var(--accent-bright);background:var(--accent-soft);padding:2px 7px;border-radius:50px;letter-spacing:-.02em">${p.badge}</span>`:'';
+    return `<button type="button" class="upsell-card" onclick="window._chatUpsellGo('${p.cat}')">
+      <div class="upsell-card-icon">💬</div>
+      <div class="upsell-card-body">
+        <div class="upsell-card-title">AI 질문 ${p.label} 추가${badge}</div>
+        <div class="upsell-card-desc">현재 풀이에 즉시 사용 · 회당 ${formatWon(unitPrice)}</div>
+      </div>
+      <div class="upsell-card-price">${formatWon(p.price)}</div>
+    </button>`;
+  }).join('')+'</div>';
   overlay.innerHTML=`<div class="upsell-modal">
     <button type="button" class="upsell-close" onclick="document.getElementById('chatLimitUpsell')&&(document.getElementById('chatLimitUpsell').classList.remove('on'),setTimeout(()=>document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove(),220))" aria-label="닫기">×</button>
     <div class="upsell-head">
       <div class="upsell-icon">🎟</div>
       <div class="upsell-title">AI 질문 한도 도달</div>
-      <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>${remaining.length>0?'다른 풀이를 열어 더 깊은 통찰을 받아보세요.':''}</div>
+      <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하시면 같은 풀이에서 바로 추가 질문이 가능합니다.</div>
     </div>
     ${cardsHtml}
-    <div class="upsell-foot">24시간이 지나면 같은 사주에 대한 잠금 해제와 채팅 한도가 자동으로 초기화됩니다.</div>
+    <div class="upsell-foot">결제 즉시 현재 사주의 ${curMeta.title||'풀이'} 채팅 횟수에 추가됩니다.</div>
   </div>`;
   document.body.appendChild(overlay);
-  // 카드 클릭 → 결제 흐름 진입 (모달 닫고 결제 동의 모달 열기)
-  window._chatUpsellGo=function(targetCat){
+  window._chatUpsellGo=function(packCat){
     close();
     if(typeof openPaymentConsent==='function'){
-      try{openPaymentConsent(targetCat,'KAKAOPAY');}catch(e){alert('결제 화면을 열 수 없습니다: '+e.message);}
+      try{openPaymentConsent(packCat,'KAKAOPAY');}catch(e){alert('결제 화면을 열 수 없습니다: '+e.message);}
     }
   };
   requestAnimationFrame(()=>overlay.classList.add('on'));
