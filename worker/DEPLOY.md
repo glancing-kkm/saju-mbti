@@ -142,8 +142,8 @@ Anthropic 콘솔 → **Settings → Limits** 에서 월별 한도(예: $50) 설�
 
 | 증상 | 원인 / 해결 |
 |------|-------------|
-| "AI 채팅이 아직 설정되지 않았습니다" | `index.html` 의 `WORKER_URL` 미입력. 3단계 다시 확인. |
-| "AI 응답을 받지 못했습니다" | Worker 로그 확인 → Anthropic API 키 잘못됨 / 크레딧 부족 / 모델 ID 오타 |
+| "채팅이 아직 설정되지 않았습니다" | `index.html` 의 `WORKER_URL` 미입력. 3단계 다시 확인. |
+| "역술가 응답을 받지 못했습니다" | Worker 로그 확인 → 외부 모델 API 키 잘못됨 / 크레딧 부족 / 모델 ID 오타 |
 | CORS 에러 | Worker 의 `CORS_HEADERS` 의 Origin 이 사이트 도메인과 다름 |
 | 401 Unauthorized | `ANTHROPIC_API_KEY` 환경변수 미등록 또는 오타 |
 | "5회 한도 소진" | 정상 동작. 캐시 삭제 시 초기화. |

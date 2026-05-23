@@ -839,12 +839,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-log{display:flex;flex-direction:column;gap:9px;margin:14px 0;max-height:400px;overflow-y:auto;padding:4px}
 .chat-msg{padding:12px 14px;border-radius:12px;font-size:.84rem;line-height:1.8;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .chat-msg-user{background:var(--bg-mid);border:1px solid var(--border);align-self:flex-end;max-width:85%;border-bottom-right-radius:3px;color:var(--text)}
-.chat-msg-ai{background:var(--bg-deep);border:1px solid var(--border-strong);max-width:95%;border-bottom-left-radius:3px;color:var(--text)}
+.chat-msg-reply{background:var(--bg-deep);border:1px solid var(--border-strong);max-width:95%;border-bottom-left-radius:3px;color:var(--text)}
 .chat-msg-error{background:var(--fire-bg);border:1px solid var(--fire);color:var(--fire);max-width:95%;font-size:.78rem}
 .chat-msg-loading{background:var(--bg-deep);border:1px dashed var(--border);max-width:80%;color:var(--muted);font-style:italic;font-size:.79rem}
 .chat-msg-lab{font-size:.6rem;font-weight:800;color:var(--muted);letter-spacing:.08em;margin-bottom:5px;text-transform:uppercase}
 .chat-msg-user .chat-msg-lab{color:var(--accent)}
-.chat-msg-ai .chat-msg-lab{color:var(--accent-bright)}
+.chat-msg-reply .chat-msg-lab{color:var(--accent-bright)}
 .chat-msg-body{white-space:pre-wrap}
 .chat-input-row{display:flex;gap:7px;margin-top:10px}
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
@@ -859,7 +859,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-addbuy-btn:hover{background:var(--accent-soft);border-style:solid;color:var(--accent-bright)}
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
 
-/* ── AI 한도 초과 → 결제 유도 모달 ── */
+/* ── 질문 한도 초과 → 결제 유도 모달 ── */
 .upsell-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s;pointer-events:none}
 .upsell-overlay.on{opacity:1;pointer-events:auto}
 .upsell-modal{background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:22px 22px 18px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.65);position:relative;transform:translateY(8px);transition:transform .2s}
@@ -5156,15 +5156,15 @@ const PAID_META={
     ],
     price:'24,000원'
   },
-  // AI 채팅 추가 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
-  chatpack1:{icon:'💬',title:'AI 질문 1회 추가',desc:'현재 풀이에 대한 AI 채팅 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
-  chatpack3:{icon:'💬',title:'AI 질문 3회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'2,500원'},
-  chatpack5:{icon:'💬',title:'AI 질문 5회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'4,000원'},
-  chatpack10:{icon:'💬',title:'AI 질문 10회 패키지',desc:'현재 풀이에 대한 AI 채팅 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
+  // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
+  chatpack1:{icon:'💬',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
+  chatpack3:{icon:'💬',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'2,500원'},
+  chatpack5:{icon:'💬',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'4,000원'},
+  chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
 const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,life:24000,
-  // AI 채팅 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
+  // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
@@ -5194,8 +5194,8 @@ function getUsageGuide(category){
   if(category==='life'){
     items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있습니다.`);
   }
-  items.push(`<b>AI 질문</b> — 풀이에 대한 궁금한 점을 AI 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전됩니다. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>합니다.`);
-  items.push(`<b>공유 보너스</b> — 친구에게 사이트를 공유하시면 AI 질문 2회가 추가됩니다.`);
+  items.push(`<b>역술가 질문</b> — 풀이에 대한 궁금한 점을 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전됩니다. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>합니다.`);
+  items.push(`<b>공유 보너스</b> — 친구에게 사이트를 공유하시면 추가 질문 2회가 추가됩니다.`);
   return `<div class="usage-guide">
     <div class="usage-head">📖 이용방법 안내</div>
     <ol class="usage-list">${items.map(t=>`<li>${t}</li>`).join('')}</ol>
@@ -5451,7 +5451,7 @@ async function _handlePaymentReturn(){
             const btn=document.getElementById('chatBtn');
             if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
           }catch(e){}
-          alert(`✅ 결제가 완료되었습니다.\nAI 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
+          alert(`✅ 결제가 완료되었습니다.\n추가 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
           return;
         }
         // 일반 카테고리 — 잠금 해제 + 풀이 노출
@@ -6043,7 +6043,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=renderGunghapSection();
 
   // ═════════════════════════════════════
-  // AI 채팅 (5가지 질문)
+  // 역술가 채팅 (5가지 질문)
   // ═════════════════════════════════════
   h+=renderChatSection();
 
@@ -7003,7 +7003,7 @@ function getDaeunSewoonCombo(saju,daeun,sewoon,ys){
   return `사주에 새로운 ${OHNAME[swStemOh]} 기운이 더해지며 다양한 변화가 가능한 한 해`;
 }
 
-// ═════════ AI 채팅 섹션 (카테고리별) ═════════
+// ═════════ 역술가 채팅 섹션 (카테고리별) ═════════
 function chatGetCount(cat){
   return parseInt(localStorage.getItem(chatLsKeyOf(cat||_category||'life'))||'0',10)||0;
 }
@@ -7041,7 +7041,7 @@ function chatRemaining(cat){
   const c=cat||_category||'life';
   return Math.max(0, chatMaxOf(c)+getChatBonus(c)-chatGetCount(c));
 }
-// AI 한도 초과 시 — 현재 풀이에 대한 채팅 질문 추가 패키지 결제 유도 모달
+// 질문 한도 초과 시 — 추가 질문 패키지 결제 유도 모달
 // 카드: 1회/3회/5회/10회 (CHAT_PACKS 정의), 결제 성공 시 현재 사주·카테고리의 chatBonus 증가
 function showChatLimitUpsell(currentCat){
   const old=document.getElementById('chatLimitUpsell');
@@ -7058,7 +7058,7 @@ function showChatLimitUpsell(currentCat){
     return `<button type="button" class="upsell-card" onclick="window._chatUpsellGo('${p.cat}')">
       <div class="upsell-card-icon">💬</div>
       <div class="upsell-card-body">
-        <div class="upsell-card-title">AI 질문 ${p.label} 추가${badge}</div>
+        <div class="upsell-card-title">추가 질문 ${p.label} 추가${badge}</div>
         <div class="upsell-card-desc">현재 풀이에 즉시 사용 · 회당 ${formatWon(unitPrice)}</div>
       </div>
       <div class="upsell-card-price">${formatWon(p.price)}</div>
@@ -7068,7 +7068,7 @@ function showChatLimitUpsell(currentCat){
     <button type="button" class="upsell-close" onclick="document.getElementById('chatLimitUpsell')&&(document.getElementById('chatLimitUpsell').classList.remove('on'),setTimeout(()=>document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove(),220))" aria-label="닫기">×</button>
     <div class="upsell-head">
       <div class="upsell-icon">🎟</div>
-      <div class="upsell-title">AI 질문 한도 도달</div>
+      <div class="upsell-title">추가 질문 한도 도달</div>
       <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하시면 같은 풀이에서 바로 추가 질문이 가능합니다.</div>
     </div>
     ${cardsHtml}
@@ -7167,8 +7167,8 @@ function chatAppend(role,text){
   if(!log)return null;
   const empty=log.querySelector('.chat-empty');
   if(empty)empty.remove();
-  const cls=role==='user'?'chat-msg-user':role==='ai'?'chat-msg-ai':role==='loading'?'chat-msg-loading':'chat-msg-error';
-  const lab=role==='user'?'질문':role==='ai'?'🔮 역술가':role==='loading'?'생각하는 중':'⚠️ 오류';
+  const cls=role==='user'?'chat-msg-user':role==='reply'?'chat-msg-reply':role==='loading'?'chat-msg-loading':'chat-msg-error';
+  const lab=role==='user'?'질문':role==='reply'?'🔮 역술가':role==='loading'?'생각하는 중':'⚠️ 오류';
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
   div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
@@ -7212,7 +7212,7 @@ async function chatAsk(){
     if(!res.ok||data.error){
       chatAppend('error',data.error||`오류 (${res.status})`);
     }else{
-      chatAppend('ai',data.answer||'답변을 받지 못했습니다.');
+      chatAppend('reply',data.answer||'답변을 받지 못했습니다.');
       chatIncCount(curCat);
       const r=document.getElementById('chatRemaining');
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
@@ -7263,7 +7263,7 @@ function renderChatSection(catOpt){
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
     <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 컨텍스트로 답변됩니다.<br>이 카테고리의 무료 질문은 <b>${max}회</b>까지 가능합니다.</div>
-    <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ AI 질문 추가 구매</button>
+    <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;
 }
 
@@ -9031,10 +9031,10 @@ function analyze(){
       // MBTI 4지표 상세 분석 (MBTI 선택 시만) — 잠금 해제 후에만 노출
       const mbtiAnalysis=mbti?mbtiAnalysisHTML(saju, mbti):'';
       const mbtiBadge=mbti?mbtiBadgeHTML(saju, mbti):'';
-      // 프리미엄 카테고리는 잠금 전에는 mbtiBadge(맛보기)만 보여주고
-      // 해제 후 mbtiAnalysis(4지표 상세)까지 노출. 만세력/일일은 mbti=''라 둘 다 빈 문자열.
+      // 해제 후엔 hero + tldr + mbti 분석/배지 모두 노출 (만세력·일일은 mbti=''라 빈 문자열)
       const headerFull=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
-      const headerTeaser=heroHTML+tldrHTML+mbtiBadge;
+      // 잠금 화면(유료 미해제)에서는 사주 풀이 콘텐츠 일체 비공개 — 잠금 박스만 노출
+      const headerTeaser='';
       // 후속 행동 CTA — 모든 카테고리 결과 끝
       const nextActions=nextActionsHTML(cat);
       let targetIdx=0;

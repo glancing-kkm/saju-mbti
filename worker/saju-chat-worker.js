@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────────────────────────
-//  사주 채팅 Cloudflare Worker
+//  사주 채팅 Cloudflare Worker — 역술가 1:1 질의응답 백엔드
 //  배포 후 받은 URL을 index.html 의 WORKER_URL 상수에 등록하세요.
-//  Anthropic API 키는 Worker 환경변수 ANTHROPIC_API_KEY 로 보관됩니다.
+//  외부 모델 API 키는 Worker 환경변수 ANTHROPIC_API_KEY 로 보관됩니다.
 // ──────────────────────────────────────────────────────────────────
 
 const CORS_HEADERS = {
@@ -19,7 +19,7 @@ export default {
       return json({ error: 'POST only' }, 405);
     }
     if (!env.ANTHROPIC_API_KEY) {
-      return json({ error: 'ANTHROPIC_API_KEY 가 설정되지 않았습니다.' }, 500);
+      return json({ error: '서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.' }, 500);
     }
 
     let body;
@@ -62,8 +62,7 @@ export default {
 
       if (!apiResp.ok) {
         const errText = await apiResp.text();
-        console.error('Anthropic API error:', apiResp.status, errText);
-        // Anthropic 에러를 그대로 노출하면 원인 파악이 쉬움 (모델 권한·키 문제·크레딧 등)
+        console.error('Upstream API error:', apiResp.status, errText);
         let detail = errText;
         try {
           const j = JSON.parse(errText);
@@ -71,7 +70,7 @@ export default {
         } catch {}
         return json(
           {
-            error: `Anthropic API 오류 (${apiResp.status}): ${String(detail).slice(0, 240)}`,
+            error: `역술가 서비스 일시 오류 (${apiResp.status}): ${String(detail).slice(0, 240)}`,
           },
           502
         );
@@ -149,7 +148,7 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
 
   // 이론상 도달 안 함 — 마지막 응답 또는 예외 반환
   if (lastResp) return lastResp;
-  throw lastError || new Error('Anthropic API 호출 실패 (재시도 한도 초과)');
+  throw lastError || new Error('역술가 서비스 호출 실패 (재시도 한도 초과)');
 }
 
 function buildSystemPrompt(ctx) {
