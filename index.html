@@ -4839,12 +4839,12 @@ function findBranchRelations(saju){
   for(let i=0;i<stems.length;i++)for(let j=i+1;j<stems.length;j++){
     STEM_HAP_LOCAL.forEach(([a,b,oh])=>{
       if((stems[i].s===a&&stems[j].s===b)||(stems[i].s===b&&stems[j].s===a))
-        list.push({type:'천간합',tag:'g',
+        list.push({type:'천간합',tag:'g',places:[stems[i].name,stems[j].name],
           d:`${stems[i].name}-${stems[j].name} ${STEMKO[a]}${STEMKO[b]}합화 ${oh} — 두 기운이 묶여 ${oh} 기운으로 변하는 결. 본인 색이 한 결 부드러워지거나 묶이는 자리.`});
     });
     STEM_CHUNG_LOCAL.forEach(([a,b])=>{
       if((stems[i].s===a&&stems[j].s===b)||(stems[i].s===b&&stems[j].s===a))
-        list.push({type:'천간충',tag:'r',
+        list.push({type:'천간충',tag:'r',places:[stems[i].name,stems[j].name],
           d:`${stems[i].name}-${stems[j].name} ${STEMKO[a]}${STEMKO[b]} 천간충 — 두 기운이 정면 충돌해 마음의 결정과 관점이 흔들리는 결.`});
     });
   }
@@ -4857,27 +4857,28 @@ function getRelevantRelations(saju,scope){
   const all=findBranchRelations(saju);
   if(!all||all.length===0)return [];
   if(scope==='love'){
-    return all.filter(r=>r.places&&r.places.includes('일지')).slice(0,2);
+    return all.filter(r=>r&&r.places&&r.places.includes('일지')).slice(0,2);
   }
   if(scope==='career'){
-    return all.filter(r=>r.places&&(r.places.includes('월지')||r.places.includes('시지')))
+    return all.filter(r=>r&&r.places&&(r.places.includes('월지')||r.places.includes('시지')))
               .filter(r=>!(r.places.includes('일지'))).slice(0,2); // 일지 관련은 연애로 양보
   }
   if(scope==='human'){
-    return all.slice(0,3); // 인간관계는 전반적 흐름
+    // 인간관계는 전반적 흐름 — places가 있는 것만 (천간합 등이 places 없이 push되는 경우 방어)
+    return all.filter(r=>r&&Array.isArray(r.places)&&r.places.length>0).slice(0,3);
   }
   return [];
 }
 // 자리별 관계를 한 문단으로 포맷
 function getRelevantRelationsHtml(saju,scope){
-  const rels=getRelevantRelations(saju,scope);
+  const rels=getRelevantRelations(saju,scope).filter(r=>r&&Array.isArray(r.places)&&r.places.length>0);
   if(rels.length===0)return '';
   const intro=scope==='love'?'본인의 일지(배우자궁)에서 보이는 결':
               scope==='career'?'본인의 월지·시지(직장·자녀궁)에서 보이는 결':
               '본인 사주 4지지 사이에서 보이는 관계 결';
   let body=rels.map(r=>{
     const cleanType=r.type.replace(/\s*\([^)]*\)\s*/g,'');
-    const msg=getRelLifeMessage(r.places,cleanType)||r.d.replace(/\s+/g,' ').trim();
+    const msg=getRelLifeMessage(r.places,cleanType)||(r.d||'').replace(/\s+/g,' ').trim();
     return `· <b>${r.places.join('-')} ${cleanType}</b> — ${msg}`;
   }).join('<br>');
   return `<p style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:8px;border-left:3px solid var(--accent)"><span style="font-size:.78rem;color:var(--accent);font-weight:700">📍 본인 사주만의 자리별 결</span><br><span style="font-size:.82rem;line-height:1.7">${intro}이에요.<br>${body}</span></p>`;
