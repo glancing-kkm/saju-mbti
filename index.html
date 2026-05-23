@@ -1455,21 +1455,13 @@ let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 — 메모리(Set) 한정. 결과 화면을 떠나면(goHome) 모두 초기화되어
 // 다음에 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함.
-// 잠금 해제 상태 — 새로고침 후에도 유지되도록 localStorage에 영속화
+// 잠금 해제 상태 — 세션 메모리에만 유지 (새로고침하면 다시 잠금)
+// 1회 결제 = 1회 풀이 노출. 코드 입력도 동일한 효력.
+// 이전 영속화 버전에서 저장됐던 localStorage 값이 있으면 마이그레이션 차원에서 제거.
 const _UNLOCKED_LS_KEY='saju_unlocked_cats_v1';
-const _unlockedCats=(()=>{
-  try{
-    const raw=localStorage.getItem(_UNLOCKED_LS_KEY);
-    if(raw){
-      const arr=JSON.parse(raw);
-      if(Array.isArray(arr))return new Set(arr);
-    }
-  }catch(e){}
-  return new Set();
-})();
-function _persistUnlocked(){
-  try{localStorage.setItem(_UNLOCKED_LS_KEY,JSON.stringify([..._unlockedCats]));}catch(e){}
-}
+try{localStorage.removeItem(_UNLOCKED_LS_KEY);}catch(e){}
+const _unlockedCats=new Set();
+function _persistUnlocked(){/* 영속화 비활성 — 세션 단위 잠금 정책 */}
 function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v4`;} // (호환용 — 이제 사용처 없음)
 function isUnlockedFor(cat){return _unlockedCats.has(cat);}
 function setUnlockedFor(cat){_unlockedCats.add(cat);_persistUnlocked();}
