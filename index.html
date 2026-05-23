@@ -421,6 +421,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lock-btn:disabled{opacity:.5;cursor:not-allowed}
 .lock-info{margin-top:20px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.76rem;color:var(--sub);line-height:1.78;text-align:left}
 .lock-info b{color:var(--accent)}
+/* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
+.usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
+.usage-guide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.7}
+.usage-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
+.usage-list{margin:0;padding-left:20px;font-size:.85rem;line-height:1.78;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.usage-list li{margin-bottom:8px}
+.usage-list li:last-child{margin-bottom:0}
+.usage-list li b{color:var(--text);font-weight:700}
 .lock-pay{margin-top:12px;width:100%;padding:14px;background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:50px;font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.05em;font-family:inherit;text-transform:uppercase}
 
 /* 간편결제 버튼 (카카오페이·네이버페이) */
@@ -846,6 +854,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-btn{padding:0 20px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border:none;border-radius:50px;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-family:inherit}
 .chat-btn:disabled{opacity:.45;cursor:not-allowed}
 .chat-tip{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;letter-spacing:.02em}
+/* 채팅 카드 하단 — 추가 구매 버튼 (한도 남아있어도 미리 충전 가능) */
+.chat-addbuy-btn{display:block;width:100%;margin-top:12px;padding:11px 14px;background:transparent;border:1px dashed var(--accent);color:var(--accent);border-radius:10px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.01em;transition:.15s}
+.chat-addbuy-btn:hover{background:var(--accent-soft);border-style:solid;color:var(--accent-bright)}
 .chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
 
 /* ── AI 한도 초과 → 결제 유도 모달 ── */
@@ -5173,23 +5184,31 @@ function computePayAmount(category, meta){
 }
 function formatWon(n){return n.toLocaleString('ko-KR')+'원';}
 
+// 카테고리별 이용방법 안내 — 잠금 화면에 노출 (결제 전 사용자에게 서비스 가치·정책 명확화)
+function getUsageGuide(category){
+  const chatCount=chatMaxOf(category);
+  const items=[
+    `<b>결제 영속화</b> — 결제 후 같은 사주는 <b>24시간 동안 무제한 재조회</b>가 가능합니다. 단, 다른 사주를 조회하시려면 다시 결제가 필요해요.`,
+    `<b>이미지 저장</b> — 풀이 결과를 PNG 이미지로 저장하실 수 있습니다 (상단 「이미지 저장」 버튼).`
+  ];
+  if(category==='life'){
+    items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있습니다.`);
+  }
+  items.push(`<b>AI 질문</b> — 풀이에 대한 궁금한 점을 AI 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전됩니다. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>합니다.`);
+  items.push(`<b>공유 보너스</b> — 친구에게 사이트를 공유하시면 AI 질문 2회가 추가됩니다.`);
+  return `<div class="usage-guide">
+    <div class="usage-head">📖 이용방법 안내</div>
+    <ol class="usage-list">${items.map(t=>`<li>${t}</li>`).join('')}</ol>
+  </div>`;
+}
 // 통합 잠금 화면 — 모든 유료 카테고리에서 사용
 function renderPaidLock(category, saju){
   const m=PAID_META[category]||PAID_META.life;
-  const dm=DM[saju.dp.stem];
-  const dStemOh=SOH[saju.dp.stem],dBrOh=BOH[saju.dp.branch];
-  let preview;
-  try{
-    const rel=getStemBranchRelation(saju.dp.stem,saju.dp.branch);
-    preview=`당신의 일간은 <b>${dm.n}</b>으로, 일지 <b>${BRCHKO[saju.dp.branch]}</b> 위에 앉아 있습니다. 일지의 ${BRCHKO[saju.dp.branch]}는 오행으로 <b>${OHNAME[dBrOh]}</b>에 해당하여, 일간 <b>${OHNAME[dStemOh]}</b>와 ${rel.desc}을 이룹니다. ${(rel.imp||'').split('.')[0]}…`;
-  }catch(e){
-    preview=`당신의 일간은 <b>${dm.n}</b>으로, 사주 전체 흐름과 ${m.title}의 기운이 만나는 결을 깊이 풀어드립니다…`;
-  }
   return `<div class="lock-wrap">
     <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
     <div class="lock-title">${m.icon} ${m.title}</div>
     <div class="lock-desc">${m.desc}</div>
-    <div class="lock-preview">${preview}</div>
+    ${getUsageGuide(category)}
     <div class="lock-info">
       📋 <b>제공되는 풀이</b><br>
       ${m.features.join('<br>')}
@@ -7243,7 +7262,8 @@ function renderChatSection(catOpt){
       <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었습니다':'궁금한 점을 입력하세요'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
-    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 컨텍스트로 답변됩니다.<br>이 카테고리의 질문은 <b>${max}회</b>까지 가능합니다.</div>
+    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 컨텍스트로 답변됩니다.<br>이 카테고리의 무료 질문은 <b>${max}회</b>까지 가능합니다.</div>
+    <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ AI 질문 추가 구매</button>
   </div>`;
 }
 
