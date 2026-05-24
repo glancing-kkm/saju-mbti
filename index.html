@@ -2347,59 +2347,63 @@ function calcDailyFortune(saju,date){
   return{dy,dm,dd,dp,tg,branchTG,rel,total,wealth,love,career,health};
 }
 function _dailyMsg(cat,tg,rel){
+  // 이야기형 톤 — 조건 + 행동 + 친근한 단서 한 흐름으로
   const bank={
     총운:{
-      비견:'동료·친구와 어울리기 좋은 날. 자기 주장이 또렷해지는 흐름.',
-      겁재:'경쟁심·충동 소비를 경계하세요. 지출 결정은 하루 미루는 게 좋아요.',
-      식신:'먹고·말하고·표현하는 모든 활동이 잘 풀립니다. 사람을 만나기 좋은 날.',
-      상관:'창의력이 솟지만 윗사람과 마찰 가능. 표현 톤만 부드럽게 가져가세요.',
-      편재:'활동·이동·기회를 잡기 좋은 날. 큰 흐름의 돈 결정에 적기.',
-      정재:'성실히 쌓아둔 것이 결실로 돌아오는 안정의 흐름.',
-      편관:'압박·도전이 들어오는 날. 정면 돌파보다 절제된 한 수가 빛납니다.',
-      정관:'질서·책임의 기운. 공식 자리·발표·서류 처리에 길해요.',
-      편인:'직관과 영감의 날. 다만 결정은 천천히, 행동은 무리 없이.',
-      정인:'학습·자료 정리·조언 받는 일에 길한 도움받는 흐름.'
+      비견:'오늘은 친구·동료와 어울리기 좋은 날이에요. 미뤄둔 모임이나 동료와의 점심 약속이 있다면 오늘 잡아보세요. 자기 주장이 또렷해지는 흐름이라, 본인 의견은 부드럽게 표현하시면 더 잘 통해요.',
+      겁재:'오늘은 경쟁심이 평소보다 살짝 올라오는 날이에요. 큰 지출 결정이나 충동 소비는 24시간 미루시는 게 좋아요. 운동이나 게임 같은 자리에서 에너지를 풀어주시면 흐름이 자연스러워져요.',
+      식신:'오늘은 표현하고 풍요롭게 누리기 좋은 날이에요. 맛집·여행·사람 만남 같은 즐거움의 활동에 결이 잘 맞아요. 평소 미뤄둔 데이트가 있다면 오늘 한번 잡아보세요.',
+      상관:'오늘은 머릿속 아이디어가 빛나는 창의의 날이에요. 글·콘텐츠·기획 작업에 결이 좋으니 노트에 한 줄이라도 정리해두세요. 다만 윗사람과 대화할 때는 톤만 한 단계 부드럽게 가시면 결이 살아나요.',
+      편재:'오늘은 활동하고 이동할수록 운이 따라오는 날이에요. 외근·미팅·새 거래·짧은 출장에 결이 잘 맞으니 발이 부지런할수록 좋아요. 큰 결정이라면 오늘 추진해도 흐름이 받쳐줘요.',
+      정재:'오늘은 본인이 쌓아둔 것들이 자연스럽게 결실로 돌아오는 안정의 날이에요. 평소 꾸준히 해온 일에서 작은 성과가 보이니, 그동안의 노력을 스스로 살짝 자축해 보셔도 좋아요.',
+      편관:'오늘은 압박이나 도전이 들어올 수 있는 날이에요. 정면 돌파보다 한 박자 쉬었다가 측면으로 풀어가는 게 결이에요. 강한 사람 앞에서는 한 걸음 양보가 진짜 승리예요.',
+      정관:'오늘은 책임지고 공식적으로 처리할 일에 결이 잘 맞는 날이에요. 발표·결재·면접·서류 같은 일을 오늘 처리하시면 평소보다 깔끔하게 풀려요. 미뤄둔 공식 절차가 있다면 오늘 마무리하세요.',
+      편인:'오늘은 직관과 영감이 맑은 날이에요. 책 한 권 펼치거나 명상 한 번, 평소 안 들었던 강연 한 편 들으시면 작은 통찰이 와요. 큰 결정은 며칠 더 묵혔다가 내리시는 게 좋아요.',
+      정인:'오늘은 누군가의 도움이 자연스럽게 흘러들어오는 날이에요. 어른·멘토·선배에게 조언을 청하기 좋은 날이고, 책·자료를 정리하기에도 결이 잘 맞아요. 작은 감사 인사 한 통이 더 큰 인연을 만들어줘요.'
     },
     재물:{
-      비견:'동업·금전 거래는 신중. 친한 사이일수록 기록이 중요합니다.',
-      겁재:'예상치 못한 지출 주의. 충동 결제·도박성 투자는 금물.',
-      식신:'작은 부수입이나 식사 자리에서 좋은 정보가 들어올 수 있어요.',
-      상관:'창작·콘텐츠 수익 호조. 다만 계약서 조항은 꼼꼼히 살피세요.',
-      편재:'큰 흐름의 재물 활동에 길. 계약·계산 시 하루 종일 활기차요.',
-      정재:'정기 수입·예금·꾸준한 저축이 빛나는 안정의 날.',
-      편관:'스트레스성 지출이 늘 수 있음. 감정 소비를 분리해 보세요.',
-      정관:'공적인 돈(세금·수수료·공식 송금)을 처리하기 좋은 날.',
-      편인:'전문 분야 학습·자격 투자에는 적기. 그 외 큰 결정은 보류.',
-      정인:'부모·후원자에게 도움받기 좋은 날. 작은 선물·인사가 풀리게 해줘요.'
+      비견:'오늘은 동업·금전 거래에 평소보다 신중하셔야 하는 날이에요. 친한 사이일수록 영수증·메모 같은 기록이 중요해요. 큰 지출 결정은 하루만 미뤄도 후회가 줄어요.',
+      겁재:'오늘은 충동 결제·동업 자금·도박성 투자를 가장 경계해야 하는 날이에요. 평소 안 쓰던 카드 한도가 자꾸 손짓해도 24시간 룰을 적용해주세요. 운동이나 산책으로 에너지 풀면 흐름이 부드러워져요.',
+      식신:'오늘은 작은 부수입이 들어오거나 식사 자리에서 좋은 정보가 흘러나올 수 있는 날이에요. 미뤄둔 모임이 있다면 오늘 가시고, 영업이나 거래 미팅도 식사 자리를 곁들이면 결실이 커져요.',
+      상관:'오늘은 본인의 창작·콘텐츠·기획이 돈으로 바뀌기 좋은 날이에요. 강의·영상·글·디자인 같은 본인 표현이 호조이니, 미뤄둔 작품을 마무리하셔도 좋아요. 다만 계약서 조항은 한 번 더 꼼꼼히 살피세요.',
+      편재:'오늘은 본인 운을 돋아주는 활동 재물 기운이 강한 날이에요. 특히 영업·외근·새 거래 같은 활동에서 운이 좋으니 미뤄둔 미팅이 있다면 잡아보세요. 만약 그런 일이 없다면, 가벼운 마음으로 로또라도 한 번 사보셔도 재미예요.',
+      정재:'오늘은 안정 재물이 차분하게 쌓이는 결의 날이에요. 정기 수입·예금·정리·문서 처리에 결이 좋고, 가계부·예산 점검에도 알맞아요. 새로 도전하기보다 그동안의 흐름을 다지는 날로 쓰세요.',
+      편관:'오늘은 스트레스성 지출이 평소보다 늘기 쉬운 날이에요. 감정 소비와 필요 지출을 잠깐 분리해 적어보시면 흐름이 깔끔해져요. 큰 결정은 다른 날로 미루는 게 안전해요.',
+      정관:'오늘은 공적인 돈을 처리하기 좋은 날이에요. 세금·수수료·공식 송금·법적 정산 같은 일을 오늘 마무리하시면 깔끔하게 풀려요. 미뤄둔 공식 입금이 있다면 오늘 처리하세요.',
+      편인:'오늘은 전문 학습이나 자격 투자에는 결이 잘 맞는 날이에요. 책·강의·자격증 등록처럼 본인 실력에 쓰는 돈은 결이 좋고, 그 외 큰 지출 결정은 며칠 묵혀두시는 게 좋아요.',
+      정인:'오늘은 부모·후원자·선배에게 도움받기 좋은 날이에요. 작은 선물이나 따뜻한 인사 한 통이 의외로 큰 흐름을 열어줘요. 그동안 신세진 분이 있다면 오늘 안부를 전해보세요.'
     },
     연애:{
-      비견:'친구처럼 편안한 만남이 잘 어울리는 날.',
-      겁재:'질투·경쟁심을 경계. 솔직함보다 한 박자 부드럽게.',
-      식신:'데이트·식사·여행에 길. 함께 즐기는 활동에 인연이 깃들어요.',
-      상관:'표현은 풍부하지만 말 한 마디가 날카로울 수 있어요. 칭찬 우선.',
-      편재:'활동적인 만남에 길. 짧은 여행·외부 활동이 분위기를 살립니다.',
-      정재:'안정된 관계라면 깊어지기 좋은 날. 새 인연도 진중한 상대가 어울려요.',
-      편관:'끌림은 강하지만 갈등도 쉽게 생김. 본 모습보다 한 톤 누그러뜨려요.',
-      정관:'공식적·진중한 자리에 길. 결혼·약혼 등 단계 진입에 적기.',
-      편인:'혼자만의 시간이 의외의 인연을 부릅니다. 무리해서 만들지 말 것.',
-      정인:'어른·소개로 연결되는 인연이 좋은 날. 기존 관계는 따뜻해집니다.'
+      비견:'오늘은 친구처럼 편안한 만남이 잘 어울리는 날이에요. 깊은 진지함보다 가볍게 밥 한 끼나 산책 한 번 같은 일상의 결이 잘 맞아요. 새 인연이라면 친구 모임에서 자연스럽게 만나는 자리가 좋아요.',
+      겁재:'오늘은 질투심이나 경쟁심이 평소보다 살짝 올라오는 날이에요. 솔직한 표현도 좋지만 오늘은 한 박자 부드럽게 가시는 게 결을 지켜요. 큰 갈등이 생기면 즉답하지 말고 24시간 후에 답하세요.',
+      식신:'오늘은 데이트·식사·짧은 여행이 잘 어울리는 날이에요. 함께 즐기는 활동에 자연스럽게 인연이 깃들어요. 미뤄둔 약속이나 새 만남이 있다면 오늘 잡으시고, 맛있는 음식 한 끼가 결을 살려줘요.',
+      상관:'오늘은 본인의 매력과 표현이 풍부해지는 날이에요. 다만 말 한 마디가 평소보다 날카로워질 수 있으니, 칭찬 먼저 한 다음 본론으로 가시면 결이 부드러워져요. 분위기 있는 자리가 가장 잘 맞아요.',
+      편재:'오늘은 활동적인 만남에 결이 좋은 날이에요. 짧은 외출·드라이브·새로운 곳 탐방 같은 일정이 분위기를 살려요. 새 인연이라면 외부 활동을 함께하는 자리에서 자연스럽게 가까워져요.',
+      정재:'오늘은 안정된 관계라면 한 단계 더 깊어지기 좋은 날이에요. 미래 이야기·결혼 진전·동거 같은 진중한 대화가 자연스럽게 풀려요. 새 인연이라면 차분하고 신중한 상대와 결이 잘 맞아요.',
+      편관:'오늘은 끌림은 강한데 갈등도 같이 일어나기 쉬운 날이에요. 본인 모습 그대로보다 한 톤 누그러뜨리면 결이 부드러워져요. 큰 결정(헤어짐·고백·결혼)은 다른 날로 미루세요.',
+      정관:'오늘은 공식적이고 진중한 자리에 결이 좋은 날이에요. 결혼 진전·약혼 절차·부모님 인사 같은 단계 진입에 알맞아요. 새 인연이라면 점잖고 책임감 있는 분이 다가올 가능성이 커요.',
+      편인:'오늘은 혼자만의 시간이 의외의 인연을 부르는 날이에요. 무리해서 자리를 만들기보다 본인 결을 다지면, 자연스러운 자리에서 깊은 대화가 생겨요. 책·전시·여행 같은 활동도 결이 잘 맞아요.',
+      정인:'오늘은 어른이나 지인 소개로 연결되는 인연이 좋은 날이에요. 기존 관계는 조금 더 따뜻해지는 흐름이니, 평소 못한 작은 표현(메시지 한 통·따뜻한 손길)이 큰 결을 만들어줘요.'
     },
     건강:{
-      비견:'운동·근력에 좋은 날. 무리한 도전은 다음 날 후유증.',
-      겁재:'다툼·사고 주의. 운전·격한 운동은 한 박자 천천히.',
-      식신:'식욕·소화 기능 양호. 균형잡힌 식사가 컨디션을 살립니다.',
-      상관:'두뇌 회전 빠름. 대신 신경 과민·불면이 올 수 있으니 명상 추천.',
-      편재:'활동량이 많아져요. 수분 보충과 휴식의 균형이 중요.',
-      정재:'규칙적인 생활 리듬이 잘 맞는 안정의 날.',
-      편관:'스트레스성 두통·근육 긴장 주의. 짧은 산책으로 풀어주세요.',
-      정관:'규율·습관이 잘 지켜지는 날. 검진·치료 시작에 길해요.',
-      편인:'정신적 피로 가능. 일찍 잠들고 가공식품은 줄여주세요.',
-      정인:'면역·회복력 좋은 날. 병문안·간호의 기운이 함께 합니다.'
+      비견:'오늘은 운동·근력에 결이 좋은 날이에요. 평소 미뤄둔 운동을 시작하시거나 기록을 한 단계 올려보기 좋아요. 다만 너무 무리하면 다음 날 후유증이 클 수 있으니 적정선에서 멈추세요.',
+      겁재:'오늘은 다툼·사고에 평소보다 주의가 필요한 날이에요. 운전·격한 운동·날카로운 도구는 한 박자 천천히 다루세요. 짧은 산책이 에너지를 부드럽게 풀어줘요.',
+      식신:'오늘은 식욕과 소화 기능이 양호한 날이에요. 균형 잡힌 식사와 따뜻한 차 한 잔이 컨디션을 살려줘요. 좋아하는 음식 한 가지로 자신에게 작은 보상을 주셔도 좋아요.',
+      상관:'오늘은 두뇌 회전이 평소보다 빠른 날이에요. 다만 신경이 과민해지거나 잠이 잘 안 올 수 있으니, 자기 전 명상이나 차분한 음악을 추천해요. 카페인은 오후 이후엔 줄여보세요.',
+      편재:'오늘은 활동량이 평소보다 많아지는 날이에요. 수분 보충과 적절한 휴식의 균형이 중요해요. 외부 일정이 많다면 중간중간 5분 쉬는 시간을 만들어보세요.',
+      정재:'오늘은 규칙적인 생활 리듬이 가장 잘 맞는 안정의 날이에요. 평소 식사·수면 시간을 그대로 지키시면 컨디션이 자연스럽게 좋아져요. 새 다이어트·운동 계획 시작에도 결이 좋아요.',
+      편관:'오늘은 스트레스성 두통이나 근육 긴장이 평소보다 잦을 수 있는 날이에요. 짧은 산책·심호흡·스트레칭으로 풀어주시면 결이 부드러워져요. 무리한 일정은 한 박자 미루세요.',
+      정관:'오늘은 규율과 습관이 잘 지켜지는 안정의 날이에요. 미뤄둔 건강 검진·치료 시작·약 복용 시작에 결이 좋아요. 평소 미뤄둔 병원 예약도 오늘 잡아보세요.',
+      편인:'오늘은 정신적 피로가 평소보다 살짝 올라올 수 있는 날이에요. 일찍 잠들고 가공식품은 줄여보세요. 명상·요가·따뜻한 차 같은 깊은 휴식이 회복을 빠르게 해줘요.',
+      정인:'오늘은 면역력과 회복력이 좋은 안정의 날이에요. 병문안·간호·보살핌의 기운이 함께하니, 가족이나 가까운 이의 건강을 챙겨주는 결도 잘 맞아요.'
     }
   };
   let txt=bank[cat]&&bank[cat][tg]||'';
-  if(rel.kind==='충')txt+=' 일지의 충이 있어 평소보다 변동·충돌이 잦습니다.';
-  if(rel.kind==='합')txt+=' 일지의 합이 들어 만남·교섭이 부드럽게 풀립니다.';
+  if(rel.kind==='충')txt+=' 다만 오늘 일지에 충이 들어 평소보다 변동·다툼·번복이 잦으니, 큰 결정은 다른 날로 미루세요.';
+  if(rel.kind==='합')txt+=' 게다가 오늘 일지에 합이 들어 만남·교섭·약속이 평소보다 부드럽게 풀려요.';
+  if(rel.kind==='반합'||rel.kind==='반합약')txt+=' 오늘 일지에 반합이 들어 같은 방향 협력·팀 작업에 결이 잘 맞는 날이에요.';
+  if(rel.kind==='원진')txt+=' 다만 오늘 일지에 원진살이 들어 가까운 사람의 사소한 말에 거슬릴 수 있으니, 즉답을 한 박자 늦추는 습관이 도움이 돼요.';
+  if(rel.kind==='형')txt+=' 다만 오늘 일지에 형살이 들어 시비·갈등이 잦을 수 있으니, 상대 약점을 말로 짚지 마세요.';
   return txt;
 }
 function renderDailyFortune(saju){
@@ -2422,12 +2426,11 @@ function renderDailyFortune(saju){
         ${f.rel.kind!=='평'&&f.rel.desc?`<div style="font-size:.74rem;color:var(--muted);margin-top:6px;line-height:1.6">↪ ${f.rel.desc}</div>`:''}
       </div>
       <div class="daily-card" style="text-align:left;padding:16px 18px">
-        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 만나는 두 글자의 결</div>
-        <div style="font-size:.82rem;color:var(--sub);line-height:1.85">
-          <p style="margin-bottom:8px"><b>본인 일간</b> — ${stemRich(saju.dp.stem)}<br><span style="color:var(--muted);font-size:.78rem">${STEM_META[saju.dp.stem].body}</span></p>
-          <p style="margin-bottom:8px"><b>오늘 일진 천간</b> — ${stemRich(f.dp.stem)}<br><span style="color:var(--muted);font-size:.78rem">${STEM_META[f.dp.stem].body}</span></p>
-          <p style="margin-bottom:8px"><b>오늘 일진 지지</b> — ${branchRich(f.dp.branch)}<br><span style="color:var(--muted);font-size:.78rem">${BRANCH_META[f.dp.branch].body}</span></p>
-          <p>「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(f.dp.stem)}」을 만나는 결입니다. 본인 기준 십신은 <b>${f.tg}</b>이라, ${(TG_KEYWORD[f.tg]||[]).join('·')}의 색채로 하루가 펼쳐집니다.</p>
+        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘의 결을 한 흐름으로</div>
+        <div style="font-size:.82rem;color:var(--sub);line-height:1.95">
+          <p style="margin-bottom:10px">본인은 <b>${STEMKO[saju.dp.stem]}(${stemNick(saju.dp.stem)||STEMKO[saju.dp.stem]})</b> 일간을 타고난 분이에요. 오늘은 본인 위로 <b>${STEMKO[f.dp.stem]}${BRCHKO[f.dp.branch]}(${stemNick(f.dp.stem)||STEMKO[f.dp.stem]})</b> 일진이 지나가요. 두 글자가 만나는 결을 한 흐름으로 풀어드릴게요.</p>
+          <p style="margin-bottom:10px">본인 기준으로 오늘 일진의 천간은 <b>${f.tg}</b> 기운이에요. 「${(TG_KEYWORD[f.tg]||[]).slice(0,3).join('·')}」의 색채로 하루가 펼쳐지니, ${f.tg==='정관'||f.tg==='편관'?'책임 있는 자리·공식 절차':f.tg==='정재'||f.tg==='편재'?'재물·거래·이동':f.tg==='식신'||f.tg==='상관'?'표현·창작·사람 만남':f.tg==='정인'||f.tg==='편인'?'학습·자료 정리·내면 다지기':'자기 결정·동료 활동'}에 결이 잘 맞아요.</p>
+          <p>${f.rel.kind==='합'||f.rel.kind==='반합'||f.rel.kind==='반합약'?'특히 오늘은 본인 일지와 오늘 일지가 자석처럼 끌어당기는 결이라, 사람 만남·교섭·약속이 평소보다 부드럽게 풀려요. 미뤄둔 약속이 있다면 오늘 잡아보세요.':f.rel.kind==='충'?'다만 본인 일지와 오늘 일지가 정면으로 부딪히는 결이라, 변동·이동·번복이 잦은 날이에요. 큰 결정은 한 박자 미루는 게 안전해요.':f.rel.kind==='원진'?'다만 오늘 본인 일지와 원진살 관계라, 가까운 사람의 사소한 말투에 거슬릴 수 있어요. 즉답을 한 박자 늦추는 습관이 결을 지켜줘요.':f.rel.kind==='형'?'다만 본인 일지와 형살 관계라, 시비나 갈등이 잦은 날이에요. 상대 약점을 말로 짚지 않는 자제가 필요해요.':'본인 일지와 오늘 일지는 평이한 결이라 큰 변동 없는 잔잔한 흐름이에요. 미뤄둔 작업을 차분히 처리하기 좋은 날이에요.'}</p>
         </div>
       </div>
       <div class="daily-cats">
@@ -2464,7 +2467,7 @@ function _dailyHourCard(saju, f){
     else{note='평이한 시간대 — 본인 페이스로 보내세요';}
     cards.push({bi,kind,accent,note});
   }
-  let body=`<p style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px">12지지 시간대(시진)별 결이에요. 본인 일지(${BRCHKO[myBranch]})와 오늘 일지(${BRCHKO[dpBranch]})의 합·충 작용으로 시간대마다 결이 다르니, 중요한 활동은 길시에 배치해 보세요.</p>`;
+  let body=`<p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">하루를 12개 시간대로 나눠보면 시간마다 결이 조금씩 달라요. 본인 일지(<b>${BRCHKO[myBranch]}</b>)와 오늘 일지(<b>${BRCHKO[dpBranch]}</b>)가 시간대별로 합이 되거나 충이 되거나에 따라 길시·주의시가 갈려요. 중요한 일정은 길시에 배치하시고, 주의시엔 한 박자 쉬어가시면 결이 부드러워져요.</p>`;
   cards.forEach(g=>{
     body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.74rem;line-height:1.55"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.7rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
   });
@@ -2488,6 +2491,7 @@ function _dailyLuckCard(saju, f){
   const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
     <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
+    <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘의 일진 오행을 바탕으로 오늘만의 행운 색·방향·숫자·음식을 정리해드렸어요. 옷이나 액세서리 색, 점심 메뉴 같은 일상 선택에 살짝 반영해보시면 결이 더 풀려요.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🎨 행운 색</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckColor}</div></div>
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🧭 행운 방향</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckDir}</div></div>
@@ -2495,7 +2499,7 @@ function _dailyLuckCard(saju, f){
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🍽 도움 음식</div><div style="font-size:.78rem;color:var(--text);font-weight:600;line-height:1.4">${luckFood}</div></div>
     </div>
     ${goodZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">🤝 오늘 만나면 좋은 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${goodZs.join(' · ')}</div></div>`:''}
-    <div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.74rem;color:var(--sub);line-height:1.7">💡 본인을 가장 도와주는 기운은 <b style="color:var(--accent)">${OHNAME[ys.main]}(${yongsinColor})</b>이에요. 일상에서 이 색·기운을 가까이 두시면 결이 더 부드럽게 풀려요.</div>
+    <div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.74rem;color:var(--sub);line-height:1.8">💡 본인을 평생 가장 든든히 받쳐주는 기운은 <b style="color:var(--accent)">${OHNAME[ys.main]} (${yongsinColor})</b>이에요. 일상에서 이 색·기운을 가까이 두시면 운의 결이 자연스럽게 풀려요.</div>
   </div>`;
 }
 
@@ -2525,12 +2529,13 @@ function _dailyActionCard(saju, f){
   if(avoid.length===0)avoid.push('🤚 평소보다 한 톤 신중한 정도면 충분');
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
     <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🎯 오늘 하기 좋은 일 / 피할 일</div>
+    <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘 일진(<b>${f.tg}</b>)과 본인 사주의 작용을 바탕으로, 오늘 하루 결이 잘 풀리는 활동과 한 박자 미루는 게 좋은 활동을 정리해드렸어요. 일정을 잡거나 결정을 미루실 때 참고하세요.</p>
     <div style="margin-bottom:10px">
-      <div style="font-size:.74rem;color:var(--wood);font-weight:700;margin-bottom:6px">✅ 추천 활동</div>
+      <div style="font-size:.74rem;color:var(--wood);font-weight:700;margin-bottom:6px">✅ 오늘 결이 잘 풀리는 활동</div>
       <div style="display:flex;flex-direction:column;gap:5px">${rec.map(r=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(108,191,126,.08);border-left:3px solid var(--wood);border-radius:5px">${r}</div>`).join('')}</div>
     </div>
     <div>
-      <div style="font-size:.74rem;color:var(--fire);font-weight:700;margin-bottom:6px">⚠️ 회피 활동</div>
+      <div style="font-size:.74rem;color:var(--fire);font-weight:700;margin-bottom:6px">⚠️ 한 박자 미루는 게 좋은 활동</div>
       <div style="display:flex;flex-direction:column;gap:5px">${avoid.map(a=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(229,116,98,.08);border-left:3px solid var(--fire);border-radius:5px">${a}</div>`).join('')}</div>
     </div>
   </div>`;
