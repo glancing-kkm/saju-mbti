@@ -1451,12 +1451,27 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 이름풀이·작명 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraName" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">✒️</span><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
-        <div class="cat-extra-desc">위에 본인 사주를 입력하고, 아래에 본인 이름을 입력하시면 사주와 이름의 결을 종합 풀이해드려요. 자녀 작명을 원하시면 자녀의 사주를 위에 입력해 주세요.</div>
+        <div class="cat-extra-desc">한글 발음 + 한자 + 획수까지 입력하면 정통 성명학 기준 4격(원형이정)·81수리 길흉까지 함께 풀어드려요. 한자를 모르시면 한글만 입력하셔도 한글 자모 오행으로 분석돼요.</div>
         <div class="row3">
-          <div class="ig" style="flex:1"><label for="nmSurname">성씨</label><input type="text" id="nmSurname" placeholder="김 / 이 / 박 등" maxlength="2" autocomplete="off"></div>
-          <div class="ig" style="flex:2"><label for="nmGiven">이름 (2~3글자)</label><input type="text" id="nmGiven" placeholder="민지 / 서연 등" maxlength="4" autocomplete="off"></div>
+          <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off"></div>
+          <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off"></div>
         </div>
-        <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.65">※ 한글 자모(초성·종성)의 오행으로 분석돼요. 한자 이름이어도 한글 발음만 입력하시면 됩니다.</div>
+        <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
+          <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:8px">한자 입력 <small style="color:var(--muted);font-weight:400">(선택사항 · 정확한 풀이를 위해 권장)</small></div>
+          <div class="row3" style="margin-bottom:6px">
+            <div class="ig" style="flex:1"><label for="nmSurnameHan">성씨 한자</label><input type="text" id="nmSurnameHan" placeholder="金" maxlength="2" autocomplete="off" oninput="onHanInput('nmSurnameHan','nmSurnameStroke')"></div>
+            <div class="ig" style="flex:1"><label for="nmSurnameStroke">획수</label><input type="text" id="nmSurnameStroke" placeholder="8" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          </div>
+          <div class="row3" style="margin-bottom:6px">
+            <div class="ig" style="flex:1"><label for="nmGiven1Han">이름1 한자</label><input type="text" id="nmGiven1Han" placeholder="敏" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven1Han','nmGiven1Stroke')"></div>
+            <div class="ig" style="flex:1"><label for="nmGiven1Stroke">획수</label><input type="text" id="nmGiven1Stroke" placeholder="11" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          </div>
+          <div class="row3">
+            <div class="ig" style="flex:1"><label for="nmGiven2Han">이름2 한자</label><input type="text" id="nmGiven2Han" placeholder="智" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven2Han','nmGiven2Stroke')"></div>
+            <div class="ig" style="flex:1"><label for="nmGiven2Stroke">획수</label><input type="text" id="nmGiven2Stroke" placeholder="12" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          </div>
+          <div style="font-size:.66rem;color:var(--muted);margin-top:8px;line-height:1.6">※ 흔한 인명용 한자 280자는 자동으로 획수가 채워져요. 매핑이 없는 한자는 수동 입력. 이름이 2글자면 이름2는 비워두세요.</div>
+        </div>
       </fieldset>
 
       <!-- 궁합 추가 입력 - 상대방 사주 -->
@@ -8914,6 +8929,117 @@ function renderGunghapResult(saju1,saju2,result){
 // ══════════════════════════════════════════════
 //  이름풀이·작명 카테고리
 // ══════════════════════════════════════════════
+// 인명용 한자 → 획수 매핑 (가장 흔한 280자) — 자동 채움용
+// 매핑 없는 한자는 사용자가 수동으로 획수 입력
+const HAN_STROKES={
+  // 성씨 흔한 한자
+  '金':8,'李':7,'朴':6,'崔':11,'鄭':19,'姜':9,'趙':14,'尹':4,'張':11,'林':8,
+  '韓':17,'吳':7,'申':5,'徐':10,'權':22,'黃':12,'安':6,'宋':7,'柳':9,'洪':10,
+  '田':5,'高':10,'文':4,'梁':11,'孫':10,'裵':14,'白':5,'許':11,'劉':15,'南':9,
+  '沈':8,'盧':16,'河':9,'丁':2,'成':7,'郭':15,'車':7,'兪':9,'潘':16,'閔':12,
+  '魏':18,'廉':13,'卞':4,'呂':7,'秋':9,'都':16,'魚':11,'蔣':17,'范':11,'明':8,
+  '邵':12,'石':5,'馬':10,'昔':8,'吉':6,'周':8,'延':7,'方':4,'孔':4,'玄':5,
+  // 자주 쓰이는 인명용 한자
+  '民':5,'敏':11,'美':9,'美':9,'智':12,'知':8,'地':6,'志':7,'之':4,'枝':8,
+  '俊':9,'雋':13,'峻':10,'駿':17,'蜍':13,'峙':9,'振':11,'眞':10,'珍':10,'璡':16,
+  '宇':6,'佑':7,'祐':10,'雨':8,'禹':9,'友':4,'右':5,'憂':15,
+  '修':10,'秀':7,'壽':14,'守':6,'樹':16,'琇':12,'洙':10,'銖':14,'修':10,'袖':10,
+  '賢':15,'炫':9,'弦':8,'絃':11,'眩':10,'峴':10,'顯':23,'玹':10,'絢':12,
+  '善':12,'宣':9,'仙':5,'禪':17,'瑄':14,'璇':16,'銑':14,
+  '美':9,'尾':7,'味':8,'未':5,'米':6,'眉':9,'梶':11,'尾':7,
+  '東':8,'童':12,'桐':10,'動':11,'同':6,'凍':10,'棟':12,'瞳':17,
+  '英':11,'瑛':14,'映':9,'榮':14,'營':17,'永':5,'泳':9,'詠':12,
+  '靜':16,'貞':9,'晶':12,'淨':12,'政':9,'井':4,'庭':10,'呈':7,'廷':7,
+  '銀':14,'恩':10,'隱':22,'垠':9,'殷':10,'誾':15,
+  '書':10,'瑞':14,'徐':10,'抒':8,'敍':11,'胥':9,'墅':14,
+  '允':4,'昀':8,'潤':16,'潤':16,'閏':12,'尹':4,'倫':10,'胤':9,
+  '佳':8,'嘉':14,'家':10,'歌':14,'柯':9,'伽':7,'迦':9,'珂':10,
+  '誠':14,'成':7,'城':10,'盛':11,'省':9,'醒':16,'星':9,'晟':11,'晠':10,
+  '雅':12,'娥':10,'峨':10,'我':7,'兒':8,'阿':8,
+  '基':11,'其':8,'起':10,'氣':10,'機':16,'琪':13,'圻':7,'淇':12,'璣':16,'冀':16,
+  '建':9,'乾':11,'健':11,'件':6,'巾':3,
+  '正':5,'政':9,'貞':9,'征':8,'淨':12,'晶':12,'珵':12,
+  '勳':16,'訓':10,'勛':12,'熏':14,'壎':17,'勳':16,
+  '泰':9,'太':4,'兌':7,'台':5,'胎':9,'颱':14,
+  '寶':20,'保':9,'步':7,'譜':19,'菩':14,'褓':14,
+  '京':8,'敬':13,'慶':15,'景':12,'璟':16,'璥':17,'瓊':19,
+  '秀':7,'琇':12,'修':10,'袖':10,
+  '熙':13,'希':7,'喜':12,'禧':17,'晞':11,'姬':9,'姫':9,
+  '河':9,'夏':10,'霞':17,'瑕':13,'荷':10,
+  '雪':11,'說':14,'設':11,'雪':11,'卨':14,
+  '元':4,'原':10,'源':13,'圓':13,'院':10,'園':13,'轅':17,'瑗':13,
+  '海':10,'解':13,'楷':13,'諧':16,
+  '春':9,'純':10,'淳':11,'順':12,'循':12,'醇':15,'盾':9,'舜':12,
+  '世':5,'歲':13,'勢':13,'細':11,'洗':9,'稅':12,
+  '銀':14,'恩':10,'隱':22,'垠':9,
+  // 추가 인명 흔한 한자
+  '光':6,'冠':9,'郡':10,'國':11,'君':7,'群':13,'軍':9,'勳':16,'規':11,'圭':6,
+  '丹':4,'湛':12,'澹':16,'端':14,'達':13,'潭':15,
+  '里':7,'梨':11,'理':11,'利':7,'裡':13,'裏':13,'璃':15,
+  '蓮':14,'憐':15,'年':6,'連':11,'戀':23,
+  '末':5,'孟':8,'冕':11,'勉':9,'眠':10,'明':8,
+  '伯':7,'柏':9,'拍':8,'帛':8,
+  '思':9,'士':3,'史':5,'四':5,'絲':12,'寺':6,'巳':3,
+  '安':6,'眼':11,'雁':12,'按':9,
+  '良':7,'兩':8,'量':12,'亮':9,'梁':11,'樑':15,
+  '溫':13,'瑥':14,'穩':19,
+  '宥':9,'裕':12,'有':6,'柔':9,'幼':5,'酉':7,'游':12,'佑':7,'庾':12,
+  '志':7,'紙':10,'指':9,'池':6,'摯':15,
+  '辰':7,'晉':10,'璡':16,'進':11,'眞':10,'振':11,'瑱':15,
+  '燦':17,'瓚':23,'璨':17,'贊':19,'澯':16,'欑':23,
+  '哲':10,'喆':12,'澈':15,'徹':15,'撤':15,'凸':5,
+  '彬':11,'斌':12,'濱':17,'賓':14,'頻':16
+};
+
+// 81수리 영동수 길흉표 — true=길수, false=흉수
+// (정통 성명학 81수리)
+const SURI_81_GOOD=new Set([1,3,5,6,7,8,11,13,15,16,17,18,21,23,24,25,29,31,32,33,35,37,38,39,41,45,47,48,52,57,61,63,65,67,68,73,75,78,81]);
+// 81수리 의미 (요약) — 길수만 라벨, 흉수는 fallback
+const SURI_81_LABEL={
+  1:'태초·창업의 결',3:'명예·발전의 결',5:'복덕·통솔의 결',6:'덕망·재운의 결',7:'독립·강건의 결',
+  8:'발달·근면의 결',11:'중흥·재흥의 결',13:'지모·총명의 결',15:'덕망·통솔의 결',16:'덕망·인덕의 결',
+  17:'건강·강건의 결',18:'발전·진취의 결',21:'우두머리·지도자의 결',23:'융창·왕성의 결',24:'입신·축재의 결',
+  25:'안전·평온의 결',29:'성공·재물의 결',31:'흥기·자립의 결',32:'요행·길운의 결',33:'승천·왕성의 결',
+  35:'평안·온화의 결',37:'인덕·충성의 결',38:'예술·문학의 결',39:'장수·왕성의 결',41:'대공·고귀의 결',
+  45:'순풍·발달의 결',47:'재복·발달의 결',48:'유덕·공명의 결',52:'선견지명의 결',57:'노력·결실의 결',
+  61:'명리·재명의 결',63:'순성·자손번영의 결',65:'흥가·평안의 결',67:'천복·성취의 결',68:'발명·창의의 결',
+  73:'평길·점진의 결',75:'평안·온건의 결',78:'평길·후덕의 결',81:'환원·만길의 결',
+  // 흉수 (대표 몇 개만 라벨)
+  2:'분리·고독의 결',4:'파괴·역경의 결',9:'궁박·고난의 결',10:'공허·종말의 결',12:'박약·실패의 결',
+  14:'이별·고독의 결',19:'고난·다재다능하나 단명의 결',20:'공허·실의의 결',22:'중절·박약의 결',
+  26:'시비·영웅의 결(파란만장)',27:'중절·박약의 결',28:'파란·이별의 결',30:'부침·불안의 결',
+  34:'파란·재난의 결',36:'영웅·풍파의 결',40:'파괴·고난의 결',42:'고난·박약의 결',43:'산만·박약의 결',
+  44:'파멸·역경의 결',46:'미운·고난의 결',49:'길흉반반의 결',50:'중도좌절의 결',51:'길흉반반의 결',
+  53:'길흉반반의 결',54:'무공·파란의 결',55:'미달·파괴의 결',56:'좌절·박약의 결',58:'부침·재기의 결',
+  59:'실의·재난의 결',60:'동요·박약의 결',62:'쇠퇴·고독의 결',64:'침체·파멸의 결',66:'표류·박약의 결',
+  69:'쇠멸·정지의 결',70:'공허·암흑의 결',71:'반길반흉의 결',72:'후흉·중단의 결',74:'미달·박약의 결',
+  76:'후패·이별의 결',77:'중도좌절의 결',79:'부정·종말의 결',80:'종말·박약의 결'
+};
+function suri81Reading(num){
+  if(num<=0)return {good:null,label:'-'};
+  let n=num;
+  while(n>81)n-=81;
+  if(n===0)n=81;
+  return {good:SURI_81_GOOD.has(n), label:SURI_81_LABEL[n]||(SURI_81_GOOD.has(n)?'평길의 결':'평탄하지 않은 결'), num:n};
+}
+// 수리오행 — 끝수 기준 1·2=목, 3·4=화, 5·6=토, 7·8=금, 9·0=수
+function suriOhaeng(num){
+  const last=num%10;
+  const ohIdx=last===1||last===2?0:last===3||last===4?1:last===5||last===6?2:last===7||last===8?3:4;
+  return ohIdx;
+}
+
+// 한자 입력 시 자동 획수 매핑
+function onHanInput(hanId, strokeId){
+  const han=(document.getElementById(hanId).value||'').trim();
+  const strokeEl=document.getElementById(strokeId);
+  if(!han||!strokeEl)return;
+  // 첫 글자만 매핑 (한 칸당 한 글자가 원칙)
+  const ch=han.charAt(0);
+  const s=HAN_STROKES[ch];
+  if(s&&!strokeEl.value){strokeEl.value=String(s);}
+}
+
 // 한글 자모 오행 매핑 — 초성·종성 자음을 5행으로 분류
 // (정통 성명학 한글파 분류 기준)
 const HANGUL_CONS_OH={
@@ -9007,7 +9133,40 @@ function renderNamePaid(saju, nmExtra){
   const span=Math.max(...combined)-Math.min(...combined);
   if(span<=4)nameScore+=5;
   else if(span>=7)nameScore-=5;
-  nameScore=Math.max(45,Math.min(98,nameScore));
+
+  // 5) 한자 수리오행 4격 (원·형·이·정) + 81수리 길흉
+  const strokes=nmExtra.strokes||{surname:0,given1:0,given2:0};
+  const han=nmExtra.han||{surname:'',given1:'',given2:''};
+  const hasHan=(strokes.surname>0)&&(strokes.given1>0); // 최소 성+이름1 획수 있어야 4격 산출
+  let suri=null;
+  if(hasHan){
+    const sS=strokes.surname, sG1=strokes.given1, sG2=strokes.given2||0;
+    // 정통 4격 (사격) 산출
+    //  원격(元) = 이름 합 (given1+given2)  → 초년·만년
+    //  형격(亨) = 성+이름1                 → 청년·주운
+    //  이격(利) = 성+이름2 (이름2 없으면 성+1)  → 사회·인덕
+    //  정격(貞) = 성+이름1+이름2 (전체 합)   → 총운·말년
+    const wonGyeok = sG1 + (sG2||0);
+    const hyeongGyeok = sS + sG1;
+    const iGyeok = sG2 ? (sS + sG2) : (sS + 1); // 이름2 없으면 가획법으로 +1
+    const jeongGyeok = sS + sG1 + (sG2||0);
+    suri={
+      won:{stroke:wonGyeok, ...suri81Reading(wonGyeok), oh:suriOhaeng(wonGyeok)},
+      hyeong:{stroke:hyeongGyeok, ...suri81Reading(hyeongGyeok), oh:suriOhaeng(hyeongGyeok)},
+      i:{stroke:iGyeok, ...suri81Reading(iGyeok), oh:suriOhaeng(iGyeok)},
+      jeong:{stroke:jeongGyeok, ...suri81Reading(jeongGyeok), oh:suriOhaeng(jeongGyeok)}
+    };
+    // 점수 보정 — 4격의 길수/흉수 비율 반영
+    const goods=[suri.won,suri.hyeong,suri.i,suri.jeong].filter(g=>g.good).length;
+    nameScore+=(goods-2)*6; // 4길 +12, 3길 +6, 2길 0, 1길 -6, 0길 -12
+    // 정격(말년·총운)이 길수면 추가 보너스
+    if(suri.jeong.good)nameScore+=4;
+    // 수리오행이 용신과 일치하는 격이 있으면 가산
+    [suri.won,suri.hyeong,suri.i,suri.jeong].forEach(g=>{
+      if(g.oh===ys.main)nameScore+=2;
+    });
+  }
+  nameScore=Math.max(35,Math.min(98,nameScore));
 
   let grade,gradeColor;
   if(nameScore>=85){grade='사주와 잘 어울리는 이름';gradeColor='var(--wood)';}
@@ -9020,11 +9179,13 @@ function renderNamePaid(saju, nmExtra){
   // ── 카드 ①: 종합 점수 + 등급
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
+  const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}</div>`:'';
   h+=`<div class="card">
     <div class="ctitle big">✒️ 이름풀이 종합</div>
     <div style="text-align:center;margin:6px 0 10px">
       <div style="font-family:'Noto Serif KR',serif;font-size:1.6rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
-      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">성씨 ${surname} · 이름 ${given}</div>
+      ${hanDisplay}
+      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">성씨 ${surname} · 이름 ${given}${hasHan?` · 한자 ${strokes.surname}+${strokes.given1}${strokes.given2?'+'+strokes.given2:''}획`:''}</div>
     </div>
     <div class="score-ring-wrap">
       <div class="score-ring ${ringCls}">
@@ -9033,7 +9194,48 @@ function renderNamePaid(saju, nmExtra){
       </div>
       <div style="font-size:.95rem;font-weight:700;color:${gradeColor}">${grade}</div>
     </div>
+    ${hasHan?'':'<div style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth);font-size:.74rem;color:var(--sub);line-height:1.7">💡 한자와 획수까지 입력하시면 정통 성명학 기준 <b>4격(원·형·이·정) + 81수리 길흉</b>까지 함께 풀어드려요. 다시 입력 화면으로 돌아가서 한자 칸을 채워보세요.</div>'}
   </div>`;
+
+  // ── 카드 ①.5: 한자 수리오행 4격 + 81수리 (한자 입력 시만)
+  if(hasHan){
+    const ohNamesShort=['목','화','토','금','수'];
+    const ohColors2=['var(--wood)','var(--fire)','var(--earth)','var(--metal)','var(--water)'];
+    const gyeokTable=[
+      {k:'원격',sub:'초년·만년',data:suri.won},
+      {k:'형격',sub:'청년·주운',data:suri.hyeong},
+      {k:'이격',sub:'사회·인덕',data:suri.i},
+      {k:'정격',sub:'총운·말년',data:suri.jeong}
+    ];
+    const goodCount=gyeokTable.filter(g=>g.data.good).length;
+    let suriSummary='';
+    if(goodCount===4)suriSummary=`4격이 모두 <b>길수</b>로 잡혔어요. 정통 성명학 기준 <b>매우 좋은 작명</b>이에요.`;
+    else if(goodCount===3)suriSummary=`4격 중 3개가 길수예요. 한 곳을 빼고는 흐름이 좋은 이름이에요.`;
+    else if(goodCount===2)suriSummary=`4격 중 2개가 길수, 2개가 흉수예요. 시기별로 길흉이 갈리는 이름이라, 인생 단계에서 의식적인 보완이 필요해요.`;
+    else if(goodCount===1)suriSummary=`4격 중 1개만 길수예요. 같은 발음의 이름이라도 한자를 바꾸면 결이 달라질 수 있어요.`;
+    else suriSummary=`4격이 모두 흉수로 잡혔어요. 같은 발음이라도 한자(획수) 조합을 바꾸면 결이 크게 달라져요. 아래 추천 이름을 참고해보세요.`;
+
+    h+=`<div class="card">
+      <div class="ctitle big">㊗ 한자 수리오행 4격 · 81수리 길흉</div>
+      <div class="abody" style="margin-bottom:10px">${suriSummary}</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">`;
+    gyeokTable.forEach(g=>{
+      const goodColor=g.data.good?'var(--wood)':'var(--fire)';
+      const goodIcon=g.data.good?'✓':'⚠';
+      h+=`<div style="padding:11px 13px;background:var(--card);border-left:3px solid ${goodColor};border-radius:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <span style="font-weight:700;color:var(--accent);font-size:.86rem">${g.k} <small style="color:var(--muted);font-weight:400;margin-left:4px">${g.sub}</small></span>
+          <span style="font-size:.78rem;color:${goodColor};font-weight:700">${goodIcon} ${g.data.num}수 · ${ohEmojis[g.data.oh]} ${ohNamesShort[g.data.oh]}</span>
+        </div>
+        <div style="font-size:.76rem;color:var(--sub);line-height:1.65">${g.data.label}</div>
+      </div>`;
+    });
+    h+=`</div>
+      <div class="asec" style="margin-top:12px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)">
+        <div class="abody" style="font-size:.74rem;line-height:1.75">📖 <b>4격이란?</b> 한자 획수를 정통 작명학의 4가지 기둥으로 풀어본 결이에요. 원격(어린 시절·말년), 형격(청년기·중심운), 이격(사회 인덕), 정격(총운·말년 결실)이 각각 81수리의 길수·흉수로 구분돼요.</div>
+      </div>
+    </div>`;
+  }
 
   // ── 카드 ②: 이름 글자별 오행 분포
   h+=`<div class="card">
@@ -9124,6 +9326,40 @@ function renderNamePaid(saju, nmExtra){
     recommended.push({name, reason:`${ohNames[secondaryOh]} 기운 보강 (사주의 약한 결 채움)`});
     used.add(name);
   }
+  // 한자 입력했고 성씨 획수가 있으면 길수 한자 획수 조합 가이드
+  let suriGuide='';
+  if(hasHan&&strokes.surname>0){
+    const sS=strokes.surname;
+    // 형격(성+이름1)이 길수인 이름1 획수 후보 (1~24획 범위)
+    const goodHyeong=[];
+    for(let s1=1;s1<=24;s1++){
+      if(SURI_81_GOOD.has(sS+s1))goodHyeong.push(s1);
+    }
+    // 정격(성+이름1+이름2)도 길수인 (s1,s2) 후보 — 가장 안전한 조합 4개만
+    const goodCombos=[];
+    for(const s1 of goodHyeong){
+      for(let s2=1;s2<=24;s2++){
+        if(SURI_81_GOOD.has(sS+s1+s2)&&SURI_81_GOOD.has(s1+s2)){
+          goodCombos.push({s1,s2,total:sS+s1+s2});
+          if(goodCombos.length>=5)break;
+        }
+      }
+      if(goodCombos.length>=5)break;
+    }
+    if(goodCombos.length){
+      suriGuide=`<div class="asec" style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright)">
+        <div class="atitle" style="color:var(--accent);font-size:.84rem">㊗ 성씨 ${han.surname||'(한자 미입력)'} (${sS}획) 기준 길수 한자 획수 조합</div>
+        <div class="abody" style="font-size:.74rem;line-height:1.85;margin-top:6px">
+          본인 성씨 획수와 합쳐 4격이 모두 길수가 되는 추천 한자 획수 조합:
+          <div style="margin-top:6px;display:flex;flex-direction:column;gap:4px">
+            ${goodCombos.map((c,i)=>`<div>· 이름1 <b>${c.s1}획</b> + 이름2 <b>${c.s2}획</b> (정격 ${c.total}수 길수)</div>`).join('')}
+          </div>
+          <div style="margin-top:8px;color:var(--muted);font-size:.7rem">위 획수에 해당하는 한자 중 본인 사주의 용신 오행을 반영한 글자를 고르시면 됩니다.</div>
+        </div>
+      </div>`;
+    }
+  }
+
   h+=`<div class="card">
     <div class="ctitle big">🪷 본인 사주에 어울리는 추천 이름</div>
     <div class="abody" style="margin-bottom:12px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>예요. 이 결을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요.</div>
@@ -9139,6 +9375,7 @@ function renderNamePaid(saju, nmExtra){
     </div>`;
   });
   h+=`</div>
+    ${suriGuide}
     <div class="asec" style="margin-top:12px;padding:10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)">
       <div class="abody" style="font-size:.76rem;line-height:1.75">💡 실제 출생 신고·개명 시에는 같은 한글 발음의 다양한 한자가 있으니, 한자 획수·뜻까지 함께 보시는 것을 권해드려요. 위 이름은 본인 사주의 오행 결을 보강하는 한글 발음 추천이에요.</div>
     </div>
@@ -9795,7 +10032,22 @@ function analyze(){
     if(!surname||surname.length<1||surname.length>2)return showErr('성씨를 한글 1~2자로 입력해주세요.','nmSurname');
     if(!given||given.length<1||given.length>4)return showErr('이름을 한글 1~4자로 입력해주세요.','nmGiven');
     if(!/^[가-힣]+$/.test(surname+given))return showErr('이름은 한글만 입력해주세요.','nmSurname');
-    window._nmExtra={surname,given};
+    // 한자·획수 수집 (선택사항)
+    const han={
+      surname:(document.getElementById('nmSurnameHan').value||'').trim().charAt(0)||'',
+      given1:(document.getElementById('nmGiven1Han').value||'').trim().charAt(0)||'',
+      given2:(document.getElementById('nmGiven2Han').value||'').trim().charAt(0)||''
+    };
+    const strokes={
+      surname:parseInt(document.getElementById('nmSurnameStroke').value)||0,
+      given1:parseInt(document.getElementById('nmGiven1Stroke').value)||0,
+      given2:parseInt(document.getElementById('nmGiven2Stroke').value)||0
+    };
+    // 한자 입력했는데 획수 빠진 경우 자동 매핑 시도
+    ['surname','given1','given2'].forEach(k=>{
+      if(han[k]&&!strokes[k]&&HAN_STROKES[han[k]])strokes[k]=HAN_STROKES[han[k]];
+    });
+    window._nmExtra={surname,given,han,strokes};
   }
 
   // 진태양시 보정 (시간 입력했을 때만)
