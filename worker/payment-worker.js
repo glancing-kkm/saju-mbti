@@ -25,6 +25,7 @@ const CATEGORY_PRICE = {
   daypick: 1500,
   monthly: 1500, // 월당 — 1500/3000/4500/6000/7500/9000 중 하나여야 함
   newyear: 19000,
+  gunghap: 5900,
   life: 24000,
   chatpack1: 1000,
   chatpack3: 2500,

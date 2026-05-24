@@ -1051,6 +1051,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">19,000원</div>
         </button>
+        <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
+          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
+          <div class="mc-icon" aria-hidden="true">💑</div>
+          <div class="mc-title">궁합</div>
+          <div class="mc-desc">본인과 상대의 사주를 나란히 비교해 8영역 풀이</div>
+          <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">5,900원</div>
+        </button>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
           <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🌼</div>
@@ -1340,6 +1348,43 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         </div>
       </fieldset>
 
+      <!-- 궁합 추가 입력 - 상대방 사주 -->
+      <fieldset class="cat-extra" id="catExtraGunghap" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">💑</span><span class="cat-extra-title">궁합 — 상대방 정보</span></div></legend>
+        <div class="cat-extra-desc">위에 본인 사주를 입력하고, 아래에 상대(배우자·연인)의 사주를 입력하면 두 사람의 사주팔자를 나란히 비교해서 8영역 궁합을 풀어드려요.</div>
+        <div class="tog-row" style="margin-bottom:9px">
+          <button type="button" class="tog on" id="gnGm" onclick="setGnGender('male')">남성</button>
+          <button type="button" class="tog" id="gnGf" onclick="setGnGender('female')">여성</button>
+        </div>
+        <div class="tog-row" style="margin-bottom:9px">
+          <button type="button" class="tog on" id="gnCs" onclick="setGnCal('solar')">양력</button>
+          <button type="button" class="tog" id="gnCl" onclick="setGnCal('lunar')">음력</button>
+        </div>
+        <div class="leap-sec" id="gnLeapSec">
+          <div class="tog-row" style="margin-bottom:9px">
+            <button type="button" class="tog on" id="gnLr" onclick="setGnLeap(false)">평달</button>
+            <button type="button" class="tog" id="gnLp" onclick="setGnLeap(true)">윤달</button>
+          </div>
+        </div>
+        <div class="row3" style="margin-bottom:9px">
+          <div class="ig" style="flex:2.2"><label for="gnY">연도</label><input type="number" id="gnY" placeholder="1990" min="1900" max="2050" inputmode="numeric" autocomplete="off"></div>
+          <div class="ig"><label for="gnM">월</label><input type="number" id="gnM" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off"></div>
+          <div class="ig"><label for="gnD">일</label><input type="number" id="gnD" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off"></div>
+        </div>
+        <div class="row3">
+          <div class="ig">
+            <label for="gnH">시</label>
+            <select id="gnH">
+              <option value="-1">시간 미상</option>
+            </select>
+          </div>
+          <div class="ig">
+            <label for="gnMin">분</label>
+            <select id="gnMin"></select>
+          </div>
+        </div>
+      </fieldset>
+
       <div class="err" id="errMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="analyze-btn" onclick="analyze()">✦ 사주 분석하기 ✦</button>
     </form>
@@ -1365,6 +1410,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="panel" id="p3"></div>
     <div class="panel" id="p4"></div>
     <div class="panel" id="p5"></div>
+    <div class="panel" id="p6"></div>
   </div>
 </div>
 
@@ -1485,7 +1531,7 @@ const MON_BRN = [2,3,4,5,6,7,8,9,10,11,0,1]; // branch for each month idx
 // ══════════════════════════════════════════════
 let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
-let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'life'
+let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'life'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 — 메모리(Set) + 사주별 24시간 영속화 정책
 //
@@ -1550,7 +1596,7 @@ function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 �
 // 영속 잠금 정책 폐지 — 이전 버전 localStorage 기록 일괄 정리 (재방문 시에도 잠금 유지)
 (function _purgeOldUnlocks(){
   try{
-    ['daypick','monthly','newyear','life'].forEach(c=>{
+    ['daypick','monthly','newyear','gunghap','life'].forEach(c=>{
       ['v1','v2','v3','v4'].forEach(v=>localStorage.removeItem(`saju_paid_unlocked_${c}_${v}`));
     });
   }catch(e){}
@@ -1559,8 +1605,8 @@ function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 �
 let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
-const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5};
-const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운'};
+const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6};
+const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -1569,7 +1615,7 @@ const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
-const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,life:5};
+const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,life:5};
 function chatLsKeyOf(cat){return `saju_chat_count_${cat||'life'}_v2`;}
 function chatMaxOf(cat){return CHAT_MAX_BY_CAT[cat||'life']||5;}
 
@@ -1865,6 +1911,21 @@ function setLeap(b){
   _setTog('blp',b);
 }
 
+// 궁합 — 상대방 입력 상태
+let _gnGender='male', _gnCal='solar', _gnLeap=false;
+function setGnGender(g){_gnGender=g;_setTog('gnGm',g==='male');_setTog('gnGf',g==='female');}
+function setGnCal(t){_gnCal=t;_setTog('gnCs',t==='solar');_setTog('gnCl',t==='lunar');const el=document.getElementById('gnLeapSec');if(el)el.className='leap-sec'+(t==='lunar'?' vis':'');}
+function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);}
+function ensureGnTimeSelects(){
+  const h=document.getElementById('gnH'), mi=document.getElementById('gnMin');
+  if(h&&h.options.length<=1){
+    for(let i=0;i<24;i++){const o=document.createElement('option');o.value=i;o.textContent=String(i).padStart(2,'0')+'시';h.appendChild(o);}
+  }
+  if(mi&&!mi.options.length){
+    [0,5,10,15,20,25,30,35,40,45,50,55].forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=String(m).padStart(2,'0')+'분';mi.appendChild(o);});
+  }
+}
+
 // ── View Router ──
 function showView(name){
   ['home','input','result'].forEach(v=>{
@@ -1878,7 +1939,7 @@ function goHome(){
   // 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함
   clearAllUnlocks();
   _paidUnlocked=false;
-  ['p0','p1','p2','p3','p4','p5'].forEach(id=>{
+  ['p0','p1','p2','p3','p4','p5','p6'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){el.innerHTML='';el.dataset.rendered='';}
   });
@@ -1895,6 +1956,7 @@ function goToInput(cat){
       daypick:'사주 정보와 보고 싶은 날짜를 입력해주세요',
       monthly:'사주 정보와 기간을 입력해주세요',
       newyear:'사주 정보와 보고 싶은 해를 입력해주세요',
+      gunghap:'본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요',
       life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요'
     };
     sub.textContent=subMap[cat]||subMap.manse;
@@ -1903,7 +1965,7 @@ function goToInput(cat){
   const ttl=document.querySelector('#view-input .hdr-back-title');
   if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
   // 카테고리별 추가 입력 섹션 표시
-  ['Daypick','Monthly','Newyear'].forEach(k=>{
+  ['Daypick','Monthly','Newyear','Gunghap'].forEach(k=>{
     const el=document.getElementById('catExtra'+k);
     if(el)el.style.display='none';
   });
@@ -1932,6 +1994,9 @@ function goToInput(cat){
     if(!document.getElementById('nyY').value){
       document.getElementById('nyY').value=new Date().getFullYear()+1;
     }
+  }else if(cat==='gunghap'){
+    const el=document.getElementById('catExtraGunghap');if(el)el.style.display='';
+    ensureGnTimeSelects();
   }
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
@@ -3108,6 +3173,7 @@ function nextActionsHTML(currentCat){
     {key:'daypick',icon:'🎯',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
     {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
     {key:'newyear',icon:'🎉',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
+    {key:'gunghap',icon:'💑',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
     {key:'life',icon:'🌼',title:'인생총운',desc:'대운 흐름 평생 풀이',price:'시그니처'}
   ];
   const others=allCats.filter(c=>c.key!==currentCat).slice(0,3);
@@ -3239,6 +3305,7 @@ function resultHeroHTML(saju, mbti, cat){
     daypick:`「${stemNickStr}」 같은 ${ilju}의 결정적 하루`,
     monthly:`「${stemNickStr}」 같은 ${ilju}의 12개월 흐름`,
     newyear:`「${stemNickStr}」 같은 ${ilju}의 한 해`,
+    gunghap:`「${stemNickStr}」 같은 ${ilju}의 인연 궁합`,
     life:`「${stemNickStr}」 같은 ${ilju}의 평생 결`
   };
   const headline=catHeadlines[cat]||catHeadlines.manse;
@@ -5160,6 +5227,21 @@ const PAID_META={
     ],
     price:'24,000원'
   },
+  gunghap:{
+    icon:'💑',title:'궁합',
+    desc:'본인과 상대(배우자·연인)의 사주를 나란히 비교해 결혼·연애·동업·가족 결을 풀어드립니다.<br>두 사주의 8글자가 만나는 16개 자리를 모두 들여다봅니다.',
+    features:[
+      '· 종합 궁합 점수 + 등급 (천생연분~노력형)',
+      '· 4축 세부 점수 (오행 상생·십신·일지 합충·오행 균형)',
+      '· 일지(배우자궁) 작용 12가지 케이스 풀이',
+      '· 일간 천간합/충 + 4기둥 16칸 교차 작용',
+      '· 두 사람의 일주 비교 + 십신 관계',
+      '· 연애·데이트 결 / 결혼 생활 결',
+      '· 동업·동거 결 / 가족·자녀 결',
+      '· 갈등 해소 행동 처방'
+    ],
+    price:'5,900원'
+  },
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack1:{icon:'💬',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
   chatpack3:{icon:'💬',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'2,500원'},
@@ -5167,7 +5249,7 @@ const PAID_META={
   chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,life:24000,
+const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,gunghap:5900,life:24000,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
@@ -5249,6 +5331,7 @@ function unlockAndRender(category){
   if(category==='daypick'&&!_meta.dpExtra)return false;
   if(category==='monthly'&&!_meta.moExtra)return false;
   if(category==='newyear'&&!_meta.nyExtra)return false;
+  if(category==='gunghap'&&!_meta.gnExtra)return false;
   setUnlockedFor(category);
   _paidUnlocked=true;
   _category=category;
@@ -5279,6 +5362,9 @@ function unlockAndRender(category){
   }else if(category==='life'){
     renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
     gotoCard(5);
+  }else if(category==='gunghap'){
+    renderTarget('p6',renderGunghapPaid(_saju,_meta.gnExtra));
+    gotoCard(6);
   }else{
     // 알 수 없는 카테고리는 거짓 성공 방지
     return false;
@@ -8677,6 +8763,133 @@ function renderGunghapResult(saju1,saju2,result){
 }
 
 // ══════════════════════════════════════════════
+//  궁합 카테고리 — 유료 결과 본문 (8카드)
+// ══════════════════════════════════════════════
+function renderGunghapPaid(saju1, gnExtra){
+  if(!gnExtra)return '<div class="card"><div class="abody">상대방 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</div></div>';
+  // 상대 사주 계산
+  let sy2=gnExtra.gy, sm2=gnExtra.gm, sd2=gnExtra.gd;
+  if(gnExtra.cal==='lunar'){
+    const s=l2s(gnExtra.gy,gnExtra.gm,gnExtra.gd,!!gnExtra.leap);
+    sy2=s.y; sm2=s.m; sd2=s.d;
+  }
+  const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
+  const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
+
+  let h='';
+  // 1) 종합 점수 + 4축 세부 점수 + 종합 해석 + 일주 비교 — 기존 풍부한 결과
+  h+=renderGunghapResult(saju1, saju2, result);
+
+  // 2) 추가 4카드 — 연애·결혼·동업·가족 결
+  h+=renderGunghapLoveCard(saju1, saju2, result);
+  h+=renderGunghapMarriageCard(saju1, saju2, result);
+  h+=renderGunghapPartnerCard(saju1, saju2, result);
+  h+=renderGunghapFamilyCard(saju1, saju2, result);
+  return h;
+}
+
+// ── 연애·데이트 결 ──
+function renderGunghapLoveCard(s1,s2,r){
+  const sc=r.score, br=r.dayBrRel&&r.dayBrRel.kind||'평';
+  let body='';
+  if(br==='합'||br==='반합'||br==='반합약'){
+    body=`두 분의 일지가 자연스럽게 끌어당기는 결이에요. 데이트 자리에서 말이 통하고, 침묵도 어색하지 않은 사이가 되기 쉬워요. 함께 새로운 곳을 다니거나 작은 취미를 같이 시작하는 활동이 잘 어울려요.`;
+  }else if(br==='충'){
+    body=`서로 강하게 끌리는 결이지만 감정 기복도 함께 커요. 한쪽이 흥분하면 다른 쪽이 가라앉히는 방식보다, <b>「24시간 룰」</b>처럼 즉답을 미루는 습관이 관계를 지켜줘요. 큰 결정(이사·결혼)은 둘 다 차분한 날에.`;
+  }else if(br==='원진'){
+    body=`겉으론 평이해 보이지만 속에서 「말로 표현 안 되는 거슬림」이 쌓이는 결이에요. 일주일에 한 번이라도 「요즘 어떤 점이 불편했어?」를 짧게 묻는 정기 대화 시간이 결정적이에요.`;
+  }else if(br==='형'||br==='자형'||br==='해'||br==='파'){
+    body=`작은 갈등이나 마무리 어긋남이 잦은 결이에요. 약속·계획은 둘 다 메모로 남기는 습관이 도움이 되고, 큰 결정은 한 박자 쉬고 다시 확인하면 결이 부드러워져요.`;
+  }else{
+    body=`평이한 연애 결이라, <b>두 분이 어떻게 가꿔가느냐</b>에 따라 색이 달라져요. 매일 짧은 안부와 가끔의 깜짝 이벤트가 결을 살려요.`;
+  }
+  // 십신 보강
+  const tgHint={
+    '편재':'서로에게 「설레는 사람」으로 보이는 결 — 데이트 자리에선 활기와 재미가 잘 살아요.',
+    '정재':'서로에게 「믿음직한 사람」으로 보이는 결 — 함께 미래를 그리는 대화가 자연스러워요.',
+    '정관':'서로에게 「존중하는 사람」으로 보이는 결 — 격식 있는 자리에서 가장 빛나요.',
+    '편관':'강한 끌림이 있지만 충돌도 잦은 결 — 의식적인 부드러움이 필요해요.',
+    '식신':'함께 있으면 「편안하고 즐거운」 결 — 맛집·여행·취미 공유가 잘 어울려요.',
+    '상관':'서로에게 자극을 주는 창의적 결 — 다만 말이 강해질 때 한 박자 부드럽게.',
+    '비견':'친구처럼 편안한 결 — 데이트 분위기는 잔잔하고 격식 없는 자리가 잘 맞아요.',
+    '겁재':'경쟁심·승부욕이 올라오는 결 — 게임·운동 같은 활동은 한쪽이 양보해야 좋아요.',
+    '정인':'한쪽이 다른 쪽을 돌봐주는 결 — 일상 디테일을 챙겨주는 표현이 잘 통해요.',
+    '편인':'독특한 세계관을 공유하는 결 — 둘만의 깊은 대화·예술·여행이 잘 맞아요.'
+  };
+  const hint=tgHint[r.tg12]||'';
+  return `<div class="card">
+    <div class="ctitle big">💕 연애·데이트 결</div>
+    <div class="asec"><div class="atitle">두 분 사이의 연애 결</div><div class="abody">${body}</div></div>
+    ${hint?`<div class="asec" style="margin-top:10px"><div class="atitle">상대가 본인에게 보이는 결 (${r.tg12})</div><div class="abody">${hint}</div></div>`:''}
+    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.79rem">💡 ${sc>=75?'서로의 결을 그대로 인정해주는 것이 가장 큰 사랑 표현이에요.':sc>=60?'사소한 차이는 서로의 매력으로 받아들이는 자세가 관계를 키워요.':'서로 다른 결을 한 번 더 듣고 묻는 습관이 관계를 단단하게 만들어요.'}</div></div>
+  </div>`;
+}
+
+// ── 결혼 생활 결 ──
+function renderGunghapMarriageCard(s1,s2,r){
+  const sc=r.score, oh=r.ohRelType;
+  const stRel=r.dayStemRel&&r.dayStemRel.kind||'평';
+  let body='';
+  if(oh==='상생'){
+    body=`두 분의 결은 서로 도와주는 자리예요. 결혼 생활에서 한쪽이 힘들 때 다른 쪽이 자연스럽게 받쳐주는 결이라, 일상 리듬이 안정적으로 흘러요. 큰 결정은 함께 의논하면서 결정해도 부딪힘이 적어요.`;
+  }else if(oh==='비화'){
+    body=`두 분이 닮은 결이라 빨리 친해지고 함께 있으면 편안해요. 다만 「내가 못하는 것을 상대도 못 한다」는 한계가 가끔 나타나서, 약점은 외부 도움(전문가·친구)을 같이 구하는 자세가 필요해요.`;
+  }else if(oh==='상극'){
+    body=`서로 자극을 주는 결이라 함께 있으면 성장 속도가 빨라요. 다만 갈등도 잦으니, 「논리로 이기려 하지 말고 감정을 먼저 받아주기」가 결혼 생활의 핵심 습관이 돼요.`;
+  }else{
+    body=`평이한 결이라 결혼 생활의 색은 둘이 함께 만들어가는 자리예요. 매주 정기적인 「우리 시간」(외식·산책·여행) 1회를 정해두면 결혼 결이 단단해져요.`;
+  }
+  const stemBonus=stRel==='합'?'<br><br>특히 두 분의 일간이 <b>천간합 — 부부 합</b>을 이뤄, 결혼 생활에서 서로를 끌어당기는 결속력이 매우 강한 자리예요.':stRel==='충'?'<br><br>두 분의 일간이 천간충 — 가치관·결정 방식에서 부딪힐 수 있어요. 큰 결정 전에 「각자의 입장 1분씩 말하기」 룰을 두면 결이 부드러워져요.':'';
+  return `<div class="card">
+    <div class="ctitle big">💍 결혼 생활 결</div>
+    <div class="asec"><div class="atitle">두 분이 함께 살 때의 결</div><div class="abody">${body}${stemBonus}</div></div>
+    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)"><div class="abody" style="font-size:.79rem">💡 ${sc>=75?'결혼 생활은 두 분 모두에게 안정과 성장을 주는 자리가 돼요.':sc>=60?'결혼 후 「작은 약속을 꼭 지키는」 습관이 신뢰를 두텁게 만들어요.':'결혼 결정 전에 둘이 함께 「3개월 동거」 같은 충분한 시간을 갖는 게 좋아요.'}</div></div>
+  </div>`;
+}
+
+// ── 동업·동거 결 ──
+function renderGunghapPartnerCard(s1,s2,r){
+  const cr=r.crossRel||{};
+  const goodCnt=(cr.합||0)+(cr.반합||0);
+  const badCnt=(cr.충||0)+(cr.원진||0)+(cr.형||0);
+  let body='';
+  if(goodCnt>badCnt){
+    body=`두 분의 사주 8글자가 만나는 16칸에서 화합 작용이 우세해요. 함께 일하거나 같이 생활할 때 시너지가 나는 결이라, 동업·공동 사업·동거에 잘 어울려요. 역할 분담만 명확히 하면 큰 갈등 없이 흘러가요.`;
+  }else if(badCnt>goodCnt){
+    body=`충·원진·형 작용이 많아 함께 일하거나 같이 살면 작은 마찰이 잦은 결이에요. 동업보다는 각자 영역을 분명히 나누고 「계약서·약속 메모」를 꼼꼼히 두는 게 결을 지켜요.`;
+  }else{
+    body=`화합과 충돌이 비슷한 비중이라 균형 잡힌 결이에요. 동업·동거 모두 가능하지만, 시작 전에 「3개월 시범 기간」을 두고 서로의 결을 확인하는 게 안전해요.`;
+  }
+  return `<div class="card">
+    <div class="ctitle big">🤝 동업·동거 결</div>
+    <div class="asec"><div class="atitle">함께 일하거나 같이 살 때의 결</div><div class="abody">${body}</div></div>
+    <div class="asec" style="margin-top:10px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 16칸 교차에서 화합 <b>${goodCnt}건</b> / 갈등 <b>${badCnt}건</b>. ${goodCnt>=badCnt?'시너지 우세':'갈등 우세'}.</div></div>
+  </div>`;
+}
+
+// ── 가족·자녀 결 ──
+function renderGunghapFamilyCard(s1,s2,r){
+  const oh1=r.oh1||[0,0,0,0,0], oh2=r.oh2||[0,0,0,0,0];
+  const combined=oh1.map((v,i)=>v+oh2[i]);
+  const maxIdx=combined.indexOf(Math.max(...combined));
+  const minIdx=combined.indexOf(Math.min(...combined));
+  const ohNames=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
+  let body='';
+  if(r.balScore>=80){
+    body=`두 분의 오행이 합쳐졌을 때 가장 균형 잡힌 결이에요. 자녀가 생기면 다양한 결의 환경에서 자라기 좋고, 부모로서 서로의 부족한 부분을 자연스럽게 채워주는 자리예요.`;
+  }else if(r.balScore>=65){
+    body=`두 분의 오행이 합쳐졌을 때 어느 정도 균형이 있는 결이에요. <b>${ohNames[maxIdx]}</b> 기운이 강하고 <b>${ohNames[minIdx]}</b> 기운이 약하니, 자녀에게 약한 기운(${ohNames[minIdx]}) 쪽 환경을 의식적으로 더 노출시켜 주면 좋아요.`;
+  }else{
+    body=`두 분의 오행이 합쳐졌을 때 <b>${ohNames[maxIdx]}</b> 기운이 많이 치우친 결이에요. 자녀가 생기면 <b>${ohNames[minIdx]}</b> 기운 쪽 환경(색·음식·취미·방향)을 의식적으로 더해주는 게 양육의 핵심이 돼요.`;
+  }
+  return `<div class="card">
+    <div class="ctitle big">👨‍👩‍👧 가족·자녀 결</div>
+    <div class="asec"><div class="atitle">두 분이 가족을 이뤘을 때의 결</div><div class="abody">${body}</div></div>
+    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.79rem">💡 자녀운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
 //  ADVANCED: 12개월 세운 / 직업·재물·건강 / 개운법
 // ══════════════════════════════════════════════
 function calc12MonthFortune(saju,year){
@@ -9028,6 +9241,17 @@ function analyze(){
     const y=parseInt(document.getElementById('nyY').value)||0;
     if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.','nyY');
     nyExtra={y};
+  }else if(cat==='gunghap'){
+    const gy=parseInt(document.getElementById('gnY').value)||0;
+    const gm=parseInt(document.getElementById('gnM').value)||0;
+    const gd=parseInt(document.getElementById('gnD').value)||0;
+    let gh=parseInt(document.getElementById('gnH').value);
+    let gmin=parseInt(document.getElementById('gnMin').value)||0;
+    if(!gy||gy<1900||gy>2050)return showErr('상대방 연도(1900~2050)를 입력해주세요.','gnY');
+    if(!gm||gm<1||gm>12)return showErr('상대방 월(1~12)을 입력해주세요.','gnM');
+    if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
+    if(isNaN(gh))gh=-1;
+    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap};
   }
 
   // 진태양시 보정 (시간 입력했을 때만)
@@ -9097,14 +9321,14 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,mbti,gender};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
       { const _sid=sajuIdOf(_saju,_meta); if(_sid)_unlockedCats.forEach(c=>_savePaidToken(c,_sid)); }
 
       // 패널 초기화 (선택 카테고리만 렌더)
-      ['p0','p1','p2','p3','p4','p5'].forEach(id=>{
+      ['p0','p1','p2','p3','p4','p5','p6'].forEach(id=>{
         const el=document.getElementById(id);
         if(el){el.innerHTML='';el.dataset.rendered='';}
       });
@@ -9170,6 +9394,14 @@ function analyze(){
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;
+      }else if(cat==='gunghap'){
+        const _p6=document.getElementById('p6');
+        _p6.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
+          ?termTip+renderGunghapPaid(saju,_meta.gnExtra)
+          :renderPaidLock('gunghap',saju))+(unlocked?nextActions:''));
+        if(unlocked)enrichTerms(_p6);
+        _p6.dataset.rendered='1';
+        targetIdx=6;
       }
 
       // 결과 헤더 sub-text
@@ -9183,7 +9415,7 @@ function analyze(){
       gotoCard(targetIdx);
       showView('result');
       // 프리미엄 카테고리 + 잠금 상태 → 잠금 영역으로 부드럽게 스크롤
-      if(!unlocked&&['daypick','monthly','newyear','life'].includes(cat)){
+      if(!unlocked&&['daypick','monthly','newyear','gunghap','life'].includes(cat)){
         setTimeout(()=>{
           const lock=document.querySelector('.panel.on .lock-wrap');
           if(lock&&lock.scrollIntoView)lock.scrollIntoView({behavior:'smooth',block:'start'});
