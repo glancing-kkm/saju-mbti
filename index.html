@@ -2406,13 +2406,104 @@ function renderDailyFortune(saju){
         <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${f.love}점</span></div><div class="daily-cat-body">${_dailyMsg('연애',f.tg,f.rel)}</div></div>
         <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div><div class="daily-cat-body">${_dailyMsg('건강',f.tg,f.rel)}</div></div>
       </div>
+      ${_dailyHourCard(saju, f)}
+      ${_dailyLuckCard(saju, f)}
+      ${_dailyActionCard(saju, f)}
       <div class="daily-card" style="text-align:left;padding:18px">
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
       </div>
-      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요.</div>
+      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(24,000원)을 보세요.</div>
     </div>`;
   return h;
+}
+
+// ── 일일운세 강화 카드 3장
+function _dailyHourCard(saju, f){
+  const myBranch=saju.dp.branch;
+  const dpBranch=f.dp.branch;
+  const cards=[];
+  for(let bi=0;bi<12;bi++){
+    const r=brRel(myBranch,bi);
+    const stRel=brRel(dpBranch,bi);
+    let kind='평시', accent='var(--sub)', note='';
+    if(r.kind==='합'){kind='길시';accent='#6cbf7e';note='본인 일지와 합이라 협의·만남에 결이 부드러워요';}
+    else if(r.kind==='충'){kind='주의';accent='#e57462';note='본인 일지와 충 — 결정·운전·논쟁은 한 박자 미루세요';}
+    else if(stRel.kind==='합'){kind='길시';accent='#6cbf7e';note='오늘 일진과 합으로 외부 기운과 잘 맞아 일이 풀려요';}
+    else if(stRel.kind==='충'){kind='주의';accent='#e57462';note='오늘 일진과 충 — 변동·번복이 일어나기 쉬운 시간';}
+    else{note='평이한 시간대 — 본인 페이스로 보내세요';}
+    cards.push({bi,kind,accent,note});
+  }
+  let body=`<p style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px">12지지 시간대(시진)별 결이에요. 본인 일지(${BRCHKO[myBranch]})와 오늘 일지(${BRCHKO[dpBranch]})의 합·충 작용으로 시간대마다 결이 다르니, 중요한 활동은 길시에 배치해 보세요.</p>`;
+  cards.forEach(g=>{
+    body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.74rem;line-height:1.55"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.7rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
+  });
+  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 결 (12시진)</div>
+    ${body}
+  </div>`;
+}
+
+function _dailyLuckCard(saju, f){
+  // 행운 4종 — 오늘 일진 천간 오행 + 본인 용신 보강
+  const luckOh=SOH[f.dp.stem];
+  const ys=getYongsin(ohCount(saju));
+  const luckColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][luckOh];
+  const luckDir=['동쪽','남쪽','중앙','서쪽','북쪽'][luckOh];
+  const luckNum=['3·8','2·7','5·10','4·9','1·6'][luckOh];
+  const luckFood=['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][luckOh];
+  // 좋은 띠
+  const goodZs=luckyZodiacsForBranch(f.dp.branch).map(b=>`${ZODIAC_EMOJI[b]}${ZODIAC_KO[b]}띠`).slice(0,3);
+  // 용신 보강 한 줄
+  const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
+  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
+      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🎨 행운 색</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckColor}</div></div>
+      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🧭 행운 방향</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckDir}</div></div>
+      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🔢 행운 숫자</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckNum}</div></div>
+      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🍽 도움 음식</div><div style="font-size:.78rem;color:var(--text);font-weight:600;line-height:1.4">${luckFood}</div></div>
+    </div>
+    ${goodZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">🤝 오늘 만나면 좋은 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${goodZs.join(' · ')}</div></div>`:''}
+    <div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.74rem;color:var(--sub);line-height:1.7">💡 본인을 가장 도와주는 기운은 <b style="color:var(--accent)">${OHNAME[ys.main]}(${yongsinColor})</b>이에요. 일상에서 이 색·기운을 가까이 두시면 결이 더 부드럽게 풀려요.</div>
+  </div>`;
+}
+
+function _dailyActionCard(saju, f){
+  const tg=f.tg;
+  const rec=[], avoid=[];
+  // 십신별 권장 활동
+  if(tg==='정관')rec.push('🎤 발표·결재·면접·승진 보고');
+  if(tg==='편관')rec.push('💪 도전적 미팅·시험·운동');
+  if(tg==='정재')rec.push('📋 정리·점검·예산 정비·문서 처리');
+  if(tg==='편재')rec.push('💼 영업·외근·새 거래·이동');
+  if(tg==='식신')rec.push('🤝 식사 자리·팀 미팅·소통');
+  if(tg==='상관')rec.push('🎨 창작·기획·콘텐츠 제작');
+  if(tg==='정인'||tg==='편인')rec.push('📚 학습·자격·자료 정리·연구');
+  if(tg==='비견')rec.push('👥 동료 만남·자기 결정·자기 페이스');
+  if(tg==='겁재')rec.push('🏃 운동·경쟁·승부 — 단, 충동 결정 X');
+  // 일지 작용별 추천
+  if(f.rel.kind==='합'||f.rel.kind==='반합')rec.push('💕 고백·소개팅·결혼 진전·재회 대화');
+  if(rec.length===0)rec.push('📓 평이한 흐름 — 자기 페이스 유지');
+  // 회피 활동
+  if(tg==='겁재')avoid.push('💸 충동 결제·동업 자금·도박성 투자');
+  if(tg==='편관')avoid.push('⚔️ 무리한 도전·정면 충돌·시비');
+  if(tg==='상관')avoid.push('👔 권위와의 마찰 — 톤 한 단계 부드럽게');
+  if(f.rel.kind==='충')avoid.push('🚗 장거리 이동·큰 결정·이별·계약');
+  if(f.rel.kind==='원진')avoid.push('🌀 가까운 사람과 사소한 시비·즉답');
+  if(f.rel.kind==='형')avoid.push('⚠️ 시비·과거 들춤·격한 운동');
+  if(avoid.length===0)avoid.push('🤚 평소보다 한 톤 신중한 정도면 충분');
+  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🎯 오늘 하기 좋은 일 / 피할 일</div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:.74rem;color:var(--wood);font-weight:700;margin-bottom:6px">✅ 추천 활동</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${rec.map(r=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(108,191,126,.08);border-left:3px solid var(--wood);border-radius:5px">${r}</div>`).join('')}</div>
+    </div>
+    <div>
+      <div style="font-size:.74rem;color:var(--fire);font-weight:700;margin-bottom:6px">⚠️ 회피 활동</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${avoid.map(a=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(229,116,98,.08);border-left:3px solid var(--fire);border-radius:5px">${a}</div>`).join('')}</div>
+    </div>
+  </div>`;
 }
 function dailyAdvice(saju,f){
   const dm=DM[saju.dp.stem];
