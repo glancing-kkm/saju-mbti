@@ -480,6 +480,34 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lock-btn:disabled{opacity:.5;cursor:not-allowed}
 .lock-info{margin-top:20px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.76rem;color:var(--sub);line-height:1.78;text-align:left}
 .lock-info b{color:var(--accent)}
+
+/* ── A1 체험판 미리보기 카드 (잠금 화면 뒤 노출) ── */
+.teaser-card{margin:18px 14px 20px;padding:18px 16px 16px;border-radius:18px;background:linear-gradient(135deg,#1d2330 0%,#241a2e 40%,#2a1f1a 100%);border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 28px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}
+.teaser-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);pointer-events:none}
+.teaser-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;position:relative;z-index:1}
+.teaser-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 9px;border-radius:99px;font-weight:800;text-transform:uppercase;box-shadow:0 2px 8px rgba(212,175,55,.4)}
+.teaser-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:#f4d36b;letter-spacing:.04em;text-shadow:0 1px 6px rgba(212,175,55,.25);position:relative;z-index:1}
+.teaser-score-row{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:12px;background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.2);border-radius:14px;position:relative;z-index:1}
+.teaser-score-num{font-family:'Do Hyeon',serif;font-size:2.4rem;font-weight:700;color:#f4d36b;line-height:1;text-shadow:0 2px 12px rgba(212,175,55,.4)}
+.teaser-score-meta{flex:1}
+.teaser-score-label{font-size:.7rem;color:#c8c8d0;letter-spacing:.04em;margin-bottom:3px}
+.teaser-score-grade{font-size:.85rem;font-weight:700;color:#f4d36b}
+.teaser-headline{font-family:'Do Hyeon',serif;font-size:1.02rem;color:#f4d36b;line-height:1.55;margin-bottom:8px;font-weight:700;letter-spacing:.02em;position:relative;z-index:1}
+.teaser-leadline{font-size:.86rem;color:#e6e6ec;line-height:1.85;margin-bottom:14px;padding:10px 12px;background:rgba(212,175,55,.05);border-left:3px solid rgba(212,175,55,.4);border-radius:8px;position:relative;z-index:1}
+.teaser-leadline b{color:#f4d36b}
+.teaser-blur-area{position:relative;margin:10px 0 14px;border-radius:12px;overflow:hidden;min-height:180px;z-index:1}
+.teaser-blurred{filter:blur(5px);user-select:none;pointer-events:none;opacity:.55}
+.teaser-blur-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(20,15,30,.1) 0%,rgba(20,15,30,.78) 100%);z-index:2}
+.teaser-blur-overlay-text{background:rgba(0,0,0,.75);border:1px solid #d4af37;padding:11px 18px;border-radius:99px;font-weight:700;font-size:.78rem;color:#f4d36b;box-shadow:0 4px 16px rgba(0,0,0,.4);letter-spacing:.04em;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.teaser-fake-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.teaser-fake-title{font-size:.86rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.teaser-fake-line{height:9px;background:linear-gradient(90deg,var(--border) 30%,var(--bg-deep) 70%);border-radius:4px;margin-bottom:6px}
+.teaser-fake-line.short{width:65%}
+.teaser-fake-line.mid{width:88%}
+.teaser-cta{display:block;width:calc(100% - 28px);margin:6px 14px 4px;padding:13px 16px;background:linear-gradient(135deg,#f4d36b 0%,#d4af37 60%,#b8902b 100%);color:#0a0c0d;border:none;border-radius:11px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.96rem;font-weight:700;letter-spacing:.08em;cursor:pointer;box-shadow:0 4px 18px rgba(212,175,55,.35),inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;text-align:center}
+.teaser-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(212,175,55,.5),inset 0 1px 0 rgba(255,255,255,.3)}
+.teaser-cta:active{transform:translateY(0)}
+
 /* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
 .usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
 .usage-guide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.7}
@@ -5530,6 +5558,221 @@ function renderPaidLock(category, saju){
 // 하위 호환 — 기존 호출은 인생총운 잠금으로 위임
 function renderSajuLock(saju){return renderPaidLock('life',saju);}
 
+// ══════════════════════════════════════════════
+//  A1 체험판 미리보기 (잠금 화면 뒤 노출 — 결제 후엔 사라짐)
+// ══════════════════════════════════════════════
+// 결제 CTA 버튼 — 잠금 화면 결제 영역으로 부드럽게 스크롤
+function _teaserCta(category){
+  const m=PAID_META[category]||PAID_META.life;
+  const priceText=m.price||'결제';
+  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">💳 ${priceText} 결제하고 전체 풀이 보기 →</button>`;
+}
+// 블러 영역 — 본문 카드 placeholder
+function _teaserBlurArea(fakeTitles){
+  const fakeCards=fakeTitles.map(t=>`<div class="teaser-fake-card">
+    <div class="teaser-fake-title">${t}</div>
+    <div class="teaser-fake-line mid"></div>
+    <div class="teaser-fake-line"></div>
+    <div class="teaser-fake-line short"></div>
+    <div class="teaser-fake-line mid"></div>
+  </div>`).join('');
+  return `<div class="teaser-blur-area">
+    <div class="teaser-blurred">${fakeCards}</div>
+    <div class="teaser-blur-overlay">
+      <div class="teaser-blur-overlay-text">🔒 결제하면 이 아래 전체 풀이가 펼쳐져요</div>
+    </div>
+  </div>`;
+}
+// 디스패처
+function renderTeaserCard(category, saju, meta){
+  if(!saju)return '';
+  try{
+    const m={
+      daypick:()=>renderDaypickTeaser(saju, meta&&meta.dpExtra),
+      monthly:()=>renderMonthlyTeaser(saju, meta&&meta.moExtra),
+      newyear:()=>renderNewyearTeaser(saju, (meta&&meta.nyExtra&&meta.nyExtra.y)||new Date().getFullYear()+1),
+      life:   ()=>renderLifeTeaser(saju),
+      gunghap:()=>renderGunghapTeaser(saju, meta&&meta.gnExtra),
+      name:   ()=>renderNameTeaser(saju, meta&&meta.nmExtra)
+    };
+    return (m[category]&&m[category]())||'';
+  }catch(e){console.warn('teaser failed',e);return '';}
+}
+
+// ── 지정일 체험판
+function renderDaypickTeaser(saju, dpExtra){
+  if(!dpExtra)return '';
+  const y=dpExtra.y, m=dpExtra.m, d=dpExtra.d;
+  const test=new Date(y,m-1,d);
+  if(test.getFullYear()!==y||test.getMonth()!==m-1||test.getDate()!==d)return '';
+  const f=calcDailyFortune(saju,test);
+  const grade=dailyGrade(f.total);
+  const tg=f.tg;
+  const tgHead={'비견':'본인 색깔이 또렷해지는 날','겁재':'경쟁심·승부욕이 올라오는 날','식신':'협업·소통이 빛나는 날','상관':'창의·표현이 빛나는 날','편재':'영업·이동·새 거래의 날','정재':'정리·점검이 결이 좋은 날','편관':'도전·압박이 들어오는 날','정관':'공식 자리에 길한 날','편인':'전문 학습이 깊어지는 날','정인':'학습·자격에 빛나는 날'};
+  const headline=tgHead[tg]||'평이한 하루';
+  const lead=`${y}년 ${m}월 ${d}일은 본인 일간 <b>${STEMKO[saju.dp.stem]}</b> 기준으로 그날 일진과 만나 <b>${headline}</b>이에요. ${f.total>=75?'미뤄둔 결정을 이날에 배치하면 결실이 커요.':f.total>=60?'평이한 흐름 — 본인 페이스 유지에 좋은 날이에요.':'한 박자 천천히 — 정리·내실의 카드로 활용하세요.'}`;
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">이 날의 결 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num">${f.total}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">${y}.${String(m).padStart(2,'0')}.${String(d).padStart(2,'0')} 점수</div>
+        <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'✦'} ${tg} 기운</div>
+      </div>
+    </div>
+    <div class="teaser-headline">🌟 ${headline}</div>
+    <div class="teaser-leadline">${lead}</div>
+    ${_teaserBlurArea(['💰 재물 흐름','💕 연애·관계','🏛️ 직업·관운','⏰ 12지지 시간대 가이드'])}
+    ${_teaserCta('daypick')}
+  </div>`;
+}
+
+// ── 월별 체험판
+function renderMonthlyTeaser(saju, moExtra){
+  if(!moExtra)return '';
+  const {sy,sm,ey,em}=moExtra;
+  const totalMonths=(ey-sy)*12+(em-sm)+1;
+  const startIdx=sy*12+(sm-1), endIdx=ey*12+(em-1);
+  const data=[];
+  for(let idx=startIdx;idx<=endIdx;idx++){
+    const yy=Math.floor(idx/12), mm=(idx%12)+1;
+    const yp=yearPillar(yy,mm,15,12,0);
+    const mi=monthIdx(yy,mm,15,12,0);
+    const mp=monthPillar(yp.stem,mi);
+    const sc=_monthScore(saju,mp.stem,mp.branch);
+    data.push({yy,mm,sc});
+  }
+  const sorted=[...data].sort((a,b)=>b.sc.total-a.sc.total);
+  const best=sorted[0];
+  const avgTotal=Math.round(data.reduce((s,o)=>s+o.sc.total,0)/data.length);
+  const grade=dailyGrade(avgTotal);
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">${totalMonths}개월 흐름 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num">${avgTotal}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">${sy}.${String(sm).padStart(2,'0')} ~ ${ey}.${String(em).padStart(2,'0')} 평균</div>
+        <div class="teaser-score-grade">${grade.lab} · ${totalMonths}개월</div>
+      </div>
+    </div>
+    <div class="teaser-headline">📅 결정적 시기 — ${best.yy}년 ${best.mm}월</div>
+    <div class="teaser-leadline">이 기간 중 본인에게 결이 가장 잘 맞는 시기는 <b>${best.yy}년 ${best.mm}월(${best.sc.total}점)</b>이에요. 큰 결정·계약·결혼 진전·이직 같은 굵직한 행동을 이 시기에 배치하시면 결실이 커요.</div>
+    ${_teaserBlurArea(['📊 매월 상세 풀이 ('+totalMonths+'개월)','💰 재물 흐름 평균','💕 연애·관계 평균','🎯 결정적 시기 + 길월·흉월'])}
+    ${_teaserCta('monthly')}
+  </div>`;
+}
+
+// ── 신년운세 체험판
+function renderNewyearTeaser(saju, y){
+  const yp=yearPillar(y,6,1,12,0);
+  const tg=tenGod(saju.dp.stem,yp.stem);
+  const tgHead={'정관':'책임과 신뢰가 자라는 해','편관':'도전과 압박이 들어오는 해','정재':'꾸준한 재물이 쌓이는 해','편재':'활동·이동·새 거래의 해','정인':'학습·자격이 빛나는 해','편인':'깊이 천착하는 해','식신':'표현과 풍요의 해','상관':'창의·기획이 빛나는 해','비견':'본인 결이 또렷해지는 해','겁재':'경쟁과 자극의 해'};
+  const headline=tgHead[tg]||'새 흐름의 해';
+  // 간이 점수 — 세운 천간 십신 기반
+  const tgScoreMap={'정관':82,'편관':68,'정재':80,'편재':75,'정인':78,'편인':70,'식신':80,'상관':72,'비견':68,'겁재':60};
+  const yearScore=tgScoreMap[tg]||70;
+  const grade=dailyGrade(yearScore);
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">${y}년의 결 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num">${yearScore}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">${y}년 종합 점수</div>
+        <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'🎉'} ${tg} 기운</div>
+      </div>
+    </div>
+    <div class="teaser-headline">🎉 ${y}년은 ${headline}</div>
+    <div class="teaser-leadline">본인 일간 <b>${STEMKO[saju.dp.stem]}</b> 기준 ${y}년 세운 천간이 <b>${tg}</b>이라 ${tg.includes('관')?'사회적 책임과 결단의 결':tg.includes('재')?'재물의 결':tg.includes('인')?'학습·정인의 결':tg.includes('식')||tg.includes('상')?'표현·창의의 결':'본인 색깔의 결'}이 한 해 전반에 흐릅니다. 결정적 시기는 12개월 카드에서 확인하세요.</div>
+    ${_teaserBlurArea(['🌸 사계절 흐름 (봄·여름·가을·겨울)','📆 12개월 상세 풀이','💰 재물 / 💕 연애 / 🏛️ 직업 / 🌿 건강 (8분야)','🎯 길월·흉월·결정적 시기'])}
+    ${_teaserCta('newyear')}
+  </div>`;
+}
+
+// ── 인생총운 체험판
+function renderLifeTeaser(saju){
+  const oh=ohCount(saju);
+  const ys=getYongsin(oh);
+  const gk=getGyeokguk(saju);
+  const dm=DM[saju.dp.stem];
+  const stemNk=stemNick(saju.dp.stem)||STEMKO[saju.dp.stem];
+  const branchNk=branchNick(saju.dp.branch)||BRCHKO[saju.dp.branch];
+  const ilju=`${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}일주`;
+  const lead=`본인은 <b>${ilju}</b> — 「${stemNk}」 같은 결을 타고난 분이세요. 사주 유형은 <b>${gk.name||'평이한 결'}</b>이고, 본인을 가장 도와주는 기운은 <b>${OHNAME[ys.main]}</b>입니다. ${dm&&dm.pos?'타고난 강점은 「'+(dm.pos.slice(0,2).join('·'))+'」이고, 의식해야 할 부분은 「'+(dm.neg?dm.neg.slice(0,1).join(','):'균형')+'」이에요.':''}`;
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">본인 사주 평생 결 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num" style="font-size:1.6rem;line-height:1.2">${ilju}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">본인의 사주 유형</div>
+        <div class="teaser-score-grade">${gk.name||'평이한 결'} · 용신 ${OHNAME[ys.main]}</div>
+      </div>
+    </div>
+    <div class="teaser-headline">🌼 「${stemNk}」 × 「${branchNk}」의 결</div>
+    <div class="teaser-leadline">${lead}</div>
+    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (4기둥 글자 단위)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 대운 10년 단위 흐름 + 올해 세운'])}
+    ${_teaserCta('life')}
+  </div>`;
+}
+
+// ── 궁합 체험판
+function renderGunghapTeaser(saju1, gnExtra){
+  if(!gnExtra)return '';
+  let sy2=gnExtra.gy, sm2=gnExtra.gm, sd2=gnExtra.gd;
+  if(gnExtra.cal==='lunar'){const s=l2s(gnExtra.gy,gnExtra.gm,gnExtra.gd,!!gnExtra.leap);sy2=s.y;sm2=s.m;sd2=s.d;}
+  const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
+  const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
+  const grade=dailyGrade(result.score);
+  const lead=`본인 일주 <b>${STEMKO[saju1.dp.stem]}${BRCHKO[saju1.dp.branch]}</b>과 상대 일주 <b>${STEMKO[saju2.dp.stem]}${BRCHKO[saju2.dp.branch]}</b>이 만나는 결입니다. 오행 관계는 <b>${result.ohRelType}</b>, 일지(배우자궁) 작용은 <b>${result.brLabel||'중립'}</b>이에요. ${result.score>=75?'두 분 결이 자연스럽게 맞물리는 인연이에요.':result.score>=60?'서로 다른 결이지만 노력으로 잘 가꿔갈 수 있는 인연이에요.':'서로 의식적으로 결을 맞춰가야 하는 인연이에요.'}`;
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">두 분 궁합 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num">${result.score}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">종합 궁합 점수</div>
+        <div class="teaser-score-grade">${result.grade} · ${grade.lab}</div>
+      </div>
+    </div>
+    <div class="teaser-headline">💑 「${stemNick(saju1.dp.stem)||STEMKO[saju1.dp.stem]}」 × 「${stemNick(saju2.dp.stem)||STEMKO[saju2.dp.stem]}」 인연</div>
+    <div class="teaser-leadline">${lead}</div>
+    ${_teaserBlurArea(['📊 4축 세부 점수 (오행·십신·일지·균형)','💬 12케이스 일지 작용 + 천간합/충','💕 연애·데이트 결 / 💍 결혼 생활 결','🤝 동업·동거 결 / 👨‍👩‍👧 가족·자녀 결'])}
+    ${_teaserCta('gunghap')}
+  </div>`;
+}
+
+// ── 이름풀이 체험판
+function renderNameTeaser(saju, nmExtra){
+  if(!nmExtra||!nmExtra.surname||!nmExtra.given)return '';
+  const full=nmExtra.surname+nmExtra.given;
+  const nameOh=analyzeNameOh(full);
+  const sajuOh=ohCount(saju);
+  const ys=getYongsin(sajuOh);
+  // 간이 점수 (renderNamePaid와 유사 — 한자 보정 제외)
+  let score=70;
+  if(nameOh.oh[ys.main]>0)score+=Math.min(15,nameOh.oh[ys.main]*5);
+  if(nameOh.oh[(ys.main+2)%5]>0)score-=Math.min(10,nameOh.oh[(ys.main+2)%5]*3);
+  const sajuMinIdx=sajuOh.indexOf(Math.min(...sajuOh));
+  if(sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0)score+=Math.min(8,nameOh.oh[sajuMinIdx]*3);
+  score=Math.max(45,Math.min(98,score));
+  const grade=score>=85?'사주와 잘 어울리는 이름':score>=72?'좋은 이름':score>=60?'보통 이름':'보완이 필요한 이름';
+  const ohNames=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
+  const lead=`「${full}」은 한글 자모 오행으로 풀면 본인 사주를 ${nameOh.oh[ys.main]>0?'잘 받쳐주는':sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0?'약점을 채워주는':'평이하게 받는'} 결이에요. 본인을 가장 도와주는 기운 <b>${ohNames[ys.main]}</b>${nameOh.oh[ys.main]>0?'을 이름이 보강해 줘요.':'은 이름에 직접 들어오지 않지만, 다른 결로 균형을 맞추면 돼요.'}`;
+  return `<div class="teaser-card">
+    <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">본인 이름 살짝 보기</span></div>
+    <div class="teaser-score-row">
+      <div class="teaser-score-num">${score}</div>
+      <div class="teaser-score-meta">
+        <div class="teaser-score-label">「${full}」 종합 점수</div>
+        <div class="teaser-score-grade">${grade}</div>
+      </div>
+    </div>
+    <div class="teaser-headline">✒️ ${full} 사주 궁합</div>
+    <div class="teaser-leadline">${lead}</div>
+    ${_teaserBlurArea(['🪷 이름 글자별 오행 풀이 (초성·종성·음양)','㊗ 한자 수리오행 4격 · 81수리 길흉','⚖ 사주 + 이름 종합 오행 분포','🪷 본인 사주에 어울리는 추천 이름 5개'])}
+    ${_teaserCta('name')}
+  </div>`;
+}
+
+
 // 결제 완료 직후 패널을 잠금→유료 콘텐츠로 재렌더 (캐시된 _saju/_meta가 있을 때만)
 function unlockAndRender(category){
   if(!category||!_saju||!_meta)return false;
@@ -10214,7 +10457,7 @@ function analyze(){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d,dpExtra)
-          :renderPaidLock('daypick',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('daypick',saju)+renderTeaserCard('daypick',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
         targetIdx=2;
@@ -10222,7 +10465,7 @@ function analyze(){
         const _p3=document.getElementById('p3');
         _p3.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em,moExtra)
-          :renderPaidLock('monthly',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('monthly',saju)+renderTeaserCard('monthly',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
         targetIdx=3;
@@ -10230,7 +10473,7 @@ function analyze(){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderNewyearFortune(saju,nyExtra.y)
-          :renderPaidLock('newyear',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('newyear',saju)+renderTeaserCard('newyear',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
         targetIdx=4;
@@ -10238,7 +10481,7 @@ function analyze(){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
-          :renderPaidLock('life',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('life',saju)+renderTeaserCard('life',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;
@@ -10246,7 +10489,7 @@ function analyze(){
         const _p6=document.getElementById('p6');
         _p6.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderGunghapPaid(saju,_meta.gnExtra)
-          :renderPaidLock('gunghap',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('gunghap',saju)+renderTeaserCard('gunghap',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p6);
         _p6.dataset.rendered='1';
         targetIdx=6;
@@ -10254,7 +10497,7 @@ function analyze(){
         const _p7=document.getElementById('p7');
         _p7.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderNamePaid(saju,_meta.nmExtra)
-          :renderPaidLock('name',saju))+(unlocked?nextActions:''));
+          :renderPaidLock('name',saju)+renderTeaserCard('name',saju,_meta))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p7);
         _p7.dataset.rendered='1';
         targetIdx=7;
