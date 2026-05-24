@@ -3685,33 +3685,32 @@ function renderDaypickFortune(saju,y,m,d,extra){
   </div>
   `;
 
-  // ── 종합 진단 (TOTAL)
-  const _stemTGDescMap={
-    '정관':'발표·계약·면접·승진 보고에 결이 좋은 「공식 자리의 날」',
-    '편관':'도전·시험·경쟁·압박이 들어오는 날 — 정면 돌파보다 측면 우회의 지혜가 빛나는 날',
-    '정재':'차분한 점검·예금·계약·지급에 결이 좋은 「정리의 날」',
-    '편재':'영업·이동·새 거래·외근에 결이 좋은 「활동의 날」 (예산은 미리)',
-    '식신':'표현·식사·관계·창작 — 사람과 함께 무언가 만드는 날',
-    '상관':'창작·아이디어·기획에 빛나지만 권위·규율과의 마찰 주의',
-    '정인':'학습·자료·문서·어른의 도움 — 시험 준비·자격 학습에 매우 길',
-    '편인':'명상·연구·자기 점검·전문 분야 학습에 결이 좋은 날',
-    '비견':'동료·친구·자기 결정 — 협업이나 자기 사업의 결단에 길',
-    '겁재':'경쟁·충동의 기운 — 동업 자금·도박성 투자·시비를 한 박자 미루기'
+  // ── 종합 진단 (TOTAL) — 이야기형 톤
+  const _stemTGStory={
+    '정관':'책임감 있게 공식적으로 처리할 일에 결이 잘 맞는 날이에요. 발표·결재·면접·승진 보고처럼 격식이 필요한 자리가 평소보다 깔끔하게 풀려요',
+    '편관':'도전·시험·경쟁·압박이 동시에 들어오는 날이에요. 정면으로 부딪히기보다 한 박자 쉬었다가 측면으로 풀어가는 게 결이에요',
+    '정재':'차분히 점검하고 정리하기 좋은 날이에요. 예금·계약·지급·문서 처리 같은 안정적 활동에 결이 잘 맞아요',
+    '편재':'바깥으로 나가서 움직일수록 운이 따라오는 날이에요. 영업·이동·새 거래·외근에 결이 좋으니 발이 부지런할수록 좋아요',
+    '식신':'사람과 함께 무언가 만들고 표현하는 날이에요. 식사 자리·팀 미팅·창작 활동이 자연스럽게 풀리는 결이에요',
+    '상관':'창의력과 아이디어가 빛나는 날이에요. 글·기획·콘텐츠 작업에 결이 좋지만 윗사람·권위 앞에서는 톤을 한 단계 부드럽게',
+    '정인':'학습과 도움받기에 가장 결이 좋은 날이에요. 시험 준비·자격 학습·문서 처리는 물론 어른·멘토의 조언을 청하기에도 알맞아요',
+    '편인':'깊이 파고드는 학습과 자기 점검에 결이 좋은 날이에요. 명상·연구·전문 분야 책 한 권이 통찰을 줘요',
+    '비견':'동료·친구와 함께하거나 자기 결정을 내리기 좋은 날이에요. 협업이나 자기 사업의 결단에 결이 잘 맞아요',
+    '겁재':'경쟁심·충동의 기운이 평소보다 진해지는 날이에요. 동업 자금·도박성 투자·시비는 한 박자 미루시는 게 안전해요'
   };
-  const _yongsinTG=OHNAME[dpStemOh]===OHNAME[ys.main]||OHNAME[dpBrOh]===OHNAME[ys.main]?{tone:'길일',msg:`그날의 기운이 본인을 도와주는 ${OHNAME[ys.main]} 기운과 같아 한 해 중에서도 결이 가장 잘 맞는 길일이에요. 미뤄둔 핵심 결정을 이 날에 배치하시면 결실이 커요.`}:OHNAME[dpStemOh]===OHNAME[(ys.main+2)%5]||OHNAME[dpBrOh]===OHNAME[(ys.main+2)%5]?{tone:'정리일',msg:'그날의 기운이 본인을 도와주는 기운과 부딪치는 결이라, 큰 결정보다 정리·관망·휴식의 카드를 꺼내기 좋은 날이에요.'}:{tone:'평이한 날',msg:'그날의 기운과 본인을 도와주는 기운이 특별한 작용을 만들지 않아요. 본인 페이스를 유지하기에 좋은 날입니다.'};
-  const _relSummary=rel.kind==='합'?'사람·만남·교섭·계약에 부드러운 결':rel.kind==='반합'||rel.kind==='반합약'?'동맹·팀워크·협업에 결이 좋은 날':rel.kind==='동'?'본인 색깔이 진하게 발휘되는 자기 페이스의 날':rel.kind==='충'?'변동·이동·번복의 변수가 큰 날 — 큰 결정은 한 박자 멈추세요':rel.kind==='원진'?'가까운 사람과의 미세한 거슬림이 누적되기 쉬운 날':rel.kind==='형'?'시비·서로의 약점이 드러나기 쉬운 날':rel.kind==='파'?'시작은 좋아도 마무리에서 어긋남이 생기기 쉬운 날':rel.kind==='해'?'은근한 방해·구설·제3자 개입이 들어오는 날':'평이한 흐름 — 본인 페이스를 유지하기 좋은 날';
+  const _yongsinTG=OHNAME[dpStemOh]===OHNAME[ys.main]||OHNAME[dpBrOh]===OHNAME[ys.main]?{tone:'길일',msg:`오늘은 본인을 가장 든든히 받쳐주는 ${OHNAME[ys.main]} 기운이 그대로 들어오는 결이라, 한 해 중에서도 가장 결이 잘 맞는 길일이에요. 미뤄둔 핵심 결정이 있다면 오늘 처리하시면 결실이 커요.`}:OHNAME[dpStemOh]===OHNAME[(ys.main+2)%5]||OHNAME[dpBrOh]===OHNAME[(ys.main+2)%5]?{tone:'정리하는 날',msg:'오늘은 본인을 도와주는 기운과 부딪치는 결이라, 큰 결정이나 새 도전보다 정리·관망·휴식의 카드를 꺼내기 좋은 날이에요. 무리하지 않으셔도 충분해요.'}:{tone:'평이한 날',msg:'오늘은 본인을 도와주는 기운과 특별한 작용이 없어요. 평소 페이스로 흘러가는 잔잔한 결이라, 일상 리듬을 그대로 지키시면 돼요.'};
+  const _relStory=rel.kind==='합'?'본인 일지와 오늘 일지가 자석처럼 끌어당기는 결이라, 사람 만남·교섭·계약이 평소보다 부드럽게 풀려요':rel.kind==='반합'||rel.kind==='반합약'?'본인 일지와 오늘 일지가 같은 방향으로 묶이는 결이라, 동맹·팀워크·협업에 결이 잘 맞는 날이에요':rel.kind==='동'?'본인 일지와 오늘 일지가 같은 글자라 본인 색깔이 평소의 두 배로 진해지는 자기 페이스의 날이에요':rel.kind==='충'?'본인 일지와 오늘 일지가 정면으로 부딪히는 결이라, 변동·이동·번복의 변수가 큰 날이에요. 큰 결정은 한 박자 멈추세요':rel.kind==='원진'?'본인 일지와 오늘 일지가 원진살 관계라, 가까운 사람의 사소한 말투에 미세한 거슬림이 누적되기 쉬운 날이에요':rel.kind==='형'?'본인 일지와 오늘 일지가 형살 관계라, 시비나 서로의 약점이 드러나기 쉬운 날이에요':rel.kind==='파'?'본인 일지와 오늘 일지가 파 관계라, 시작은 좋아도 마무리에서 어긋남이 생기기 쉬운 날이에요':rel.kind==='해'?'본인 일지와 오늘 일지가 해 관계라, 은근한 방해·구설·제3자 개입이 들어오는 날이에요':'본인 일지와 오늘 일지는 평이한 결이라 큰 변동 없는 잔잔한 흐름이에요';
   let totBody='';
-  // ① 한 줄 결론
-  totBody+=`<div class="lead-card"><b>${y}.${m}.${d} · ${TG_EMOJI[stemTG]||'🌟'} ${plainTG(stemTG)}의 결로 들어오는 날 (${grade.lab} ${f.total}점)</b><br>본인에게 <em>${_stemTGDescMap[stemTG]||'평이한 흐름의 날'}</em>입니다. ${_relSummary}이에요.</div>`;
-  // ② 왜
+  // ① 이야기형 한 단락 결론 (lead-card)
+  totBody+=`<div class="lead-card"><b>${y}년 ${m}월 ${d}일 · ${TG_EMOJI[stemTG]||'🌟'} ${grade.lab} ${f.total}점</b><br><br>오늘은 본인에게 <b>${plainTG(stemTG)}</b>의 결이 들어오는 날이에요. ${_stemTGStory[stemTG]||'평이한 흐름의 결이에요'}. ${_relStory}.</div>`;
+  // ② 왜 이런 결이 나오나
   totBody+=miniManseWithPointer(saju,'day','↑ 일주(본인) — 그날 들어오는 기운과 가장 직접 만나는 자리');
-  totBody+=`<p><span class="body-q">왜 이렇게 작용할까요?</span><br>· <b>본인</b> ${stemRich(myStem)} — ${stemNick(myStem)} 같은 본질<br>· <b>그날의 글자</b> <em>${STEMKO[dpStem]}${BRCHKO[dpBranch]}</em> — ${stemNick(dpStem)} + ${branchNick(dpBranch)}</p>`;
-  totBody+=`<p>이 두 글자가 만나 본인에게 <b>${plainTG(stemTG)}</b>의 색채로 다가와요.</p>`;
+  totBody+=`<p><span class="body-q">왜 이런 결이 나오는 걸까요?</span><br>본인은 <b>${STEMKO[myStem]}(${stemNick(myStem)||STEMKO[myStem]})</b> 일간으로 태어난 분인데, 오늘은 본인 위로 <b>${STEMKO[dpStem]}${BRCHKO[dpBranch]}(${stemNick(dpStem)||STEMKO[dpStem]} + ${branchNick(dpBranch)||BRCHKO[dpBranch]})</b> 일진이 흘러가요. 본인 기준으로 이 글자가 <b>${plainTG(stemTG)}</b>의 색채로 다가오니, 위에서 풀어드린 결이 그대로 펼쳐져요.</p>`;
   if(stemTG!==branchTG){
-    totBody+=`<p>표면(위쪽 글자 <b>${plainTG(stemTG)}</b>)과 내면(아래쪽 글자 <b>${plainTG(branchTG)}</b>)의 색채가 달라요. 표면적으로는 ${plainTG(stemTG)}의 일이 들어오지만, 그 결과는 ${plainTG(branchTG)}의 결로 남는 하루입니다.</p>`;
+    totBody+=`<p>한 가지 흥미로운 점은, 표면(위쪽 글자 <b>${plainTG(stemTG)}</b>)과 내면(아래쪽 글자 <b>${plainTG(branchTG)}</b>)의 결이 살짝 다르다는 거예요. 겉으로는 ${plainTG(stemTG)}의 일이 들어오지만, 그 결과가 마음 속에 남기는 결은 ${plainTG(branchTG)}의 색깔이에요. 그래서 같은 일도 두 가지 의미로 다가올 수 있어요.</p>`;
   }
-  // ③ 어떻게
-  totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 도움 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 이 날은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
+  // ③ 어떻게 보내면 좋을까
+  totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 도움 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 오늘은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만)
   totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `이 지정일을 본인의 「선천적 사주」와 「후천적 MBTI」를 함께 보면, 그날의 결을 더 풍부하게 읽을 수 있어요.`);
   h+=paidWrapBody('TOTAL','✨','지정일 종합 진단',totBody,
