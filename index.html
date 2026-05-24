@@ -1464,6 +1464,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <select id="gnMin"></select>
           </div>
         </div>
+        <div class="ig" style="margin-top:9px">
+          <label for="gnCity">태어난 곳 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(시간 보정용)</span></label>
+          <select id="gnCity"></select>
+        </div>
+        <div class="ig" style="margin-top:9px">
+          <label for="gnMbti">상대방 MBTI <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
+          <select id="gnMbti"></select>
+        </div>
       </fieldset>
 
       <div class="err" id="errMsg" role="alert" aria-live="polite"></div>
@@ -2006,6 +2014,11 @@ function ensureGnTimeSelects(){
   if(mi&&!mi.options.length){
     [0,5,10,15,20,25,30,35,40,45,50,55].forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=String(m).padStart(2,'0')+'분';mi.appendChild(o);});
   }
+  // 도시·MBTI select 옵션 — 본인 iCity·iMbti 옵션 그대로 복제
+  const gnCity=document.getElementById('gnCity'), iCity=document.getElementById('iCity');
+  if(gnCity&&iCity&&!gnCity.options.length){gnCity.innerHTML=iCity.innerHTML;}
+  const gnMbti=document.getElementById('gnMbti'), iMbti=document.getElementById('iMbti');
+  if(gnMbti&&iMbti&&!gnMbti.options.length){gnMbti.innerHTML=iMbti.innerHTML;}
 }
 
 // ── View Router ──
@@ -7982,6 +7995,36 @@ function renderGunghapSection(){
           </optgroup>
         </select>
       </div>
+      <div class="ig" style="margin-bottom:9px">
+        <label>상대방 MBTI <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항 — 입력 시 MBTI 궁합도 함께 봐드려요)</span></label>
+        <select id="g2Mbti">
+          <option value="">선택 안 함</option>
+          <optgroup label="── 분석가 (NT) ──">
+            <option value="INTJ">INTJ — 전략가</option>
+            <option value="INTP">INTP — 논리술사</option>
+            <option value="ENTJ">ENTJ — 통솔자</option>
+            <option value="ENTP">ENTP — 변론가</option>
+          </optgroup>
+          <optgroup label="── 외교관 (NF) ──">
+            <option value="INFJ">INFJ — 옹호자</option>
+            <option value="INFP">INFP — 중재자</option>
+            <option value="ENFJ">ENFJ — 선도자</option>
+            <option value="ENFP">ENFP — 활동가</option>
+          </optgroup>
+          <optgroup label="── 관리자 (SJ) ──">
+            <option value="ISTJ">ISTJ — 현실주의자</option>
+            <option value="ISFJ">ISFJ — 수호자</option>
+            <option value="ESTJ">ESTJ — 경영자</option>
+            <option value="ESFJ">ESFJ — 집정관</option>
+          </optgroup>
+          <optgroup label="── 탐험가 (SP) ──">
+            <option value="ISTP">ISTP — 장인</option>
+            <option value="ISFP">ISFP — 모험가</option>
+            <option value="ESTP">ESTP — 사업가</option>
+            <option value="ESFP">ESFP — 연예인</option>
+          </optgroup>
+        </select>
+      </div>
       <div class="err" id="g2err"></div>
       <button class="lock-btn" style="width:100%;margin-top:6px" onclick="analyzeGunghapDetail()">💕 궁합 분석하기</button>
     </div>
@@ -8015,7 +8058,11 @@ function analyzeGunghapDetail(){
     let sy=y,sm=m,sd=d;
     if(_g2cal==='lunar'){const s=l2s(y,m,d,_g2leap);sy=s.y;sm=s.m;sd=s.d;}
     const saju2=calcSaju(sy,sm,sd,h,mn);
-    document.getElementById('ggResultBox').innerHTML=fixKoreanJosa(renderGunghapDetailFull(_saju,saju2,gender,_g2gender));
+    const myMbti=(_meta&&_meta.mbti)||'';
+    const g2MbtiEl=document.getElementById('g2Mbti');
+    const g2Mbti=(g2MbtiEl&&g2MbtiEl.value)||'';
+    // 별도 궁합 카테고리(renderGunghapPaid)와 동일한 본문 사용 — 점수·내용 일치 보장
+    document.getElementById('ggResultBox').innerHTML=fixKoreanJosa(renderGunghapBody(_saju,saju2,gender,_g2gender,myMbti,g2Mbti));
     document.getElementById('ggResultBox').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했습니다.';errEl.className='err vis';}
 }
@@ -9110,113 +9157,114 @@ function renderGunghapResult(saju1,saju2,result){
   const ringCls=sc>=75?'sring-h':sc>=60?'sring-m':'sring-l';
   const numCls=sc>=75?'snum-h':sc>=60?'snum-m':'snum-l';
 
-  let h=`<div class="card">
-    <div class="ctitle big">💑 궁합 분석 결과</div>
-    <div class="score-ring-wrap">
-      <div class="score-ring ${ringCls}">
-        <div class="score-num ${numCls}">${sc}</div>
-        <div class="score-grade">/ 100</div>
-      </div>
+  let h='';
+
+  // ── ① 종합 점수 카드
+  let summaryBody=`<div class="score-ring-wrap">
+      <div class="score-ring ${ringCls}"><div class="score-num ${numCls}">${sc}</div><div class="score-grade">/ 100</div></div>
       <div style="font-size:.95rem;font-weight:700;color:${result.gradeColor}">${result.grade}</div>
     </div>
-    <div class="compat-grid">
-      <div class="compat-cell"><div class="compat-cell-label">오행 관계</div><div class="compat-cell-val" style="font-size:.75rem">${result.ohRelType}</div></div>
+    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">두 분의 사주팔자를 4가지 기준(오행·십신·일지 관계·오행 균형)으로 비교한 종합 점수예요. 100점에 가까울수록 서로 자연스럽게 잘 맞는 결이에요.</p>
+    <div class="compat-grid" style="margin-top:10px">
+      <div class="compat-cell"><div class="compat-cell-label">오행 관계</div><div class="compat-cell-val" style="font-size:.78rem">${result.ohRelType}</div></div>
       <div class="compat-cell"><div class="compat-cell-label">일지 관계</div><div class="compat-cell-val" style="font-size:.78rem">${result.brLabel||'중립'}</div></div>
       <div class="compat-cell"><div class="compat-cell-label">오행 균형</div><div class="compat-cell-val" style="font-size:.78rem">${result.balScore>=80?'좋음':result.balScore>=65?'보통':'부족'}</div></div>
-    </div>
-  </div>`;
+    </div>`;
+  h+=paidWrapBody('GUNGHAP','💑','궁합 분석 결과',summaryBody);
 
-  h+=`<div class="card"><div class="ctitle big">📊 세부 점수</div><div class="bars">`;
-  [{label:'오행 상생·상극',score:result.ohScore},
-   {label:'십신 관계',score:result.tgScore},
-   {label:'일지 합·충',score:result.brScore},
-   {label:'오행 균형',score:result.balScore}].forEach(cat=>{
+  // ── ② 세부 점수 카드
+  let detailBody=`<p style="margin-bottom:12px">종합 점수가 어떻게 나왔는지 4가지 영역별로 풀어봤어요.</p><div class="bars">`;
+  [{label:'오행 상생·상극',score:result.ohScore,desc:'두 분의 일간 오행이 서로 도와주는 결인지'},
+   {label:'십신 관계',score:result.tgScore,desc:'서로에게 어떤 역할로 보이는지 (배우자·동료·스승 등)'},
+   {label:'일지 합·충',score:result.brScore,desc:'배우자 자리(일지)가 어떤 작용을 만드는지'},
+   {label:'오행 균형',score:result.balScore,desc:'두 분 오행을 합쳤을 때 균형이 잡히는지'}].forEach(cat=>{
     const color=cat.score>=80?'var(--wood)':cat.score>=65?'var(--earth)':'var(--fire)';
-    h+=`<div class="bar-row">
-      <div class="bar-name" style="font-size:.67rem;width:82px;color:var(--sub)">${cat.label}</div>
+    detailBody+=`<div class="bar-row">
+      <div class="bar-name" style="font-size:.72rem;width:90px;color:var(--sub)">${cat.label}</div>
       <div class="bar-bg"><div class="bar-fill" style="width:${cat.score}%;background:${color}"></div></div>
       <div class="bar-cnt" style="color:${color};width:28px">${cat.score}</div>
-    </div>`;
+    </div>
+    <div style="font-size:.7rem;color:var(--muted);margin:-4px 0 8px;padding-left:96px;line-height:1.5">${cat.desc}</div>`;
   });
-  h+=`</div></div>`;
+  detailBody+=`</div>`;
+  h+=paidWrapBody('DETAIL','📊','4가지 영역별 세부 점수',detailBody);
 
-  const ohDescs={'상생':'두 사람의 오행이 서로 생해주는 관계입니다. 자연스럽게 서로를 보완하고 성장을 돕는 이상적인 관계입니다.',
-    '비화':'두 사람의 오행이 같습니다. 서로를 잘 이해하고 공감하지만 때로는 경쟁 구도가 형성될 수 있어요.',
-    '상극':'두 사람의 오행이 서로 극하는 관계입니다. 갈등이 생길 수 있지만 서로 자극을 주고 성장할 수 있는 관계이기도 합니다.',
-    '중립':'두 사람의 오행이 직접적인 상생·상극 관계가 아닙니다. 노력에 따라 다양한 방향으로 발전할 수 있어요.'};
-  const tgDescs={'편재':'강한 끌림과 설레임이 있는 관계입니다. 서로에게 흥미롭고 매력적으로 보이며 열정적인 연애를 즐길 수 있어요.',
-    '정재':'안정적이고 신뢰할 수 있는 관계입니다. 함께 미래를 설계하기에 좋은 파트너이며 결혼 궁합으로도 훌륭합니다.',
-    '정관':'서로 책임감 있고 존중하는 관계입니다. 공식적 관계로 발전하기 좋으며 사회적으로 인정받는 커플이 될 수 있어요.',
-    '편관':'강렬하고 역동적인 관계입니다. 서로를 자극하고 변화시키는 힘이 있지만 충돌도 잦습니다.',
-    '식신':'편안하고 즐거운 관계입니다. 함께 있으면 행복하고 자연스러운 표현이 가능합니다.',
-    '상관':'창의적이고 독창적인 관계입니다. 서로에게 자극을 주지만 언쟁이나 오해가 생길 수 있어요.',
-    '비견':'대등한 동반자 관계입니다. 서로 독립적이고 경쟁도 하지만 든든한 지지자가 돼요.',
-    '겁재':'경쟁과 자극이 강한 관계입니다. 서로의 의지를 끌어올리지만 재물이나 감정 갈등에 주의가 필요해요.',
-    '정인':'배우고 성장하는 관계입니다. 한쪽이 돌봄과 지혜를 제공하며 안정적인 신뢰가 형성돼요.',
-    '편인':'독특하고 개성 있는 관계입니다. 서로를 통해 새로운 세계를 경험하며 특별한 유대감을 형성합니다.'};
+  // ── ③ 궁합 해석 카드 — 일상어 강화
+  const ohDescs={'상생':'두 분의 본질(오행)이 <b>서로 도와주는 결</b>이에요. 한쪽이 힘들 때 자연스럽게 다른 쪽이 받쳐주는 자리라, 함께 있으면 결이 풀려요. 작명학·사주학에서 가장 이상적인 짝이라고 보는 형태예요.',
+    '비화':'두 분의 본질이 <b>같은 결</b>이에요. 서로를 잘 이해하고 공감하지만, 때로는 「내가 못하는 걸 상대도 못 한다」는 한계가 드러나요. 부족한 부분은 외부 도움(친구·전문가)으로 의식적으로 채우세요.',
+    '상극':'두 분의 본질이 <b>서로 부딪히는 결</b>이에요. 갈등이 생길 수 있지만, 동시에 서로를 자극해 함께 성장하는 결이기도 해요. 부부가 함께 큰 변화·창업·이주를 해내는 케이스가 많아요.',
+    '중립':'두 분의 본질이 직접 도와주거나 부딪히는 결은 아니에요. 노력에 따라 다양한 방향으로 풀릴 수 있는 자리라, 두 분이 어떻게 가꿔가느냐가 핵심이에요.'};
+  const tgDescs={'편재':'서로에게 <b>「설레는 사람」</b>으로 보이는 결이에요. 처음 만났을 때 흥미롭고 매력적이라 열정적인 연애로 시작해요.',
+    '정재':'서로에게 <b>「믿음직한 사람」</b>으로 보이는 결이에요. 함께 미래를 그리기 좋은 짝이라 결혼 궁합으로 가장 안정적이에요.',
+    '정관':'서로에게 <b>「존중하는 사람」</b>으로 보이는 결이에요. 격식 있는 자리에서 가장 빛나는 짝으로, 사회적으로도 인정받는 커플이 돼요.',
+    '편관':'<b>강한 끌림</b>이 있는 결이에요. 서로를 자극하고 변화시키는 힘이 강하지만 충돌도 잦아요. 의식적인 부드러움이 필요해요.',
+    '식신':'함께 있으면 <b>「편안하고 즐거운」</b> 결이에요. 맛집·여행·취미를 같이하는 일상이 자연스럽게 즐거워요.',
+    '상관':'서로에게 <b>창의적 자극</b>을 주는 결이에요. 다만 말이 강해질 때가 있으니 한 박자 부드럽게.',
+    '비견':'<b>친구처럼 편안한</b> 결이에요. 서로 독립적이지만 든든한 지지자가 돼요.',
+    '겁재':'경쟁심·자극이 강한 결이에요. 서로의 의지를 끌어올리지만, 돈·감정 갈등에는 의식적인 거리감이 필요해요.',
+    '정인':'<b>한쪽이 다른 쪽을 돌봐주는</b> 결이에요. 일상 디테일을 챙겨주는 표현이 잘 통하는 짝이에요.',
+    '편인':'<b>독특한 세계관을 공유하는</b> 결이에요. 둘만의 깊은 대화·예술·여행이 잘 어울려요.'};
 
   let advice='';
-  if(sc>=85)advice='두 사람의 궁합이 매우 좋습니다! 서로의 장점이 잘 맞으며 자연스럽게 성장할 수 있는 인연입니다. 이 인연을 소중히 가꾸어 나가세요.';
-  else if(sc>=70)advice='좋은 궁합입니다. 서로 보완하는 부분이 많아 함께 성장할 수 있어요. 서로의 차이점을 인정하고 존중하는 자세가 관계를 더욱 풍요롭게 만들어요.';
-  else if(sc>=55)advice='보통 궁합입니다. 서로 노력한다면 좋은 관계를 만들 수 있어요. 상대방의 다른 점을 자신과 다름으로 이해하고 수용하는 것이 핵심입니다.';
-  else advice='어려운 궁합입니다. 하지만 사주팔자가 전부는 아닙니다. 서로에 대한 깊은 이해와 진심 어린 노력으로 어떤 궁합도 극복할 수 있어요.';
+  if(sc>=85)advice='두 분 궁합이 매우 좋아요. 서로의 장점이 자연스럽게 맞물려 함께 성장할 수 있는 인연이에요. 이 결을 소중히 가꿔가세요.';
+  else if(sc>=70)advice='좋은 궁합이에요. 서로 보완하는 부분이 많아 함께 자랄 수 있는 짝이에요. 서로의 차이점을 매력으로 받아들이는 자세가 관계를 더 깊게 만들어요.';
+  else if(sc>=55)advice='평이한 궁합이에요. 두 분이 노력하시면 충분히 좋은 관계가 돼요. 「상대가 나와 다른 사람」이라는 인정과 자주 묻는 습관이 핵심이에요.';
+  else advice='쉽지 않은 궁합이지만, 사주가 인연의 전부는 아니에요. 서로에 대한 깊은 이해와 진심이 어떤 결이든 다듬어가요.';
 
-  // ── 일지 작용별 풀이 텍스트 (전통 명리 전 작용) ──
   const dayBr=result.dayBrRel||{kind:'평',desc:''};
   const brDetailDescs={
-    '합':{title:'일지 육합 ✓ — 매우 좋음',body:'두 사람의 일지(배우자궁)가 서로 <b>육합</b>을 이룹니다. 자석처럼 자연스럽게 끌어당기는 결로, 함께 있을 때 마음이 편안해지고 일상 리듬이 잘 맞는 천생연분의 자리입니다. 화합·결합의 기운이 두텁습니다.'},
-    '반합':{title:'일지 반합 ✓ — 좋음',body:'두 사람의 일지가 <b>삼합의 일부</b>를 이루는 반합 관계입니다. 같은 오행 「국」으로 묶여, 한 방향을 함께 바라보며 협력하는 결입니다. 큰 목표·사업·가정 운영을 함께할 때 시너지가 커요.'},
-    '반합약':{title:'일지 약반합 — 잔잔한 협력',body:'삼합의 양옆 글자가 만나는 약한 반합입니다. 강렬한 끌림은 아니지만, 같은 방향성을 공유하는 잔잔하고 안정적인 결이에요.'},
-    '동':{title:'일지 비화 — 닮은꼴 인연',body:'두 사람의 일지가 같은 글자(비화)입니다. 닮은꼴이라 빨리 친해지고 서로를 잘 이해하지만, 때로는 같은 약점을 함께 가져 「내가 못하는 것을 상대도 못 한다」는 한계가 드러나기도 합니다. 부족한 부분은 서로 채워주려는 의식적 노력이 필요해요.'},
-    '평':{title:'일지 평이한 관계 — 중립',body:'특별한 합·충·원진 작용 없이 평이한 결입니다. 다른 자리(년지·월지·시지)의 작용과 십신·오행 관계로 궁합이 결정돼요. 큰 끌림도 큰 충돌도 없는 만큼, 두 사람이 어떻게 가꿔가느냐에 따라 결이 달라지는 자리예요.'},
-    '해':{title:'일지 해 — 은근한 방해',body:'두 사람의 일지가 <b>해</b> 관계입니다. 큰 충돌은 아니지만 미세한 어긋남·시기·구설이 따라붙기 쉬운 결입니다. 「작은 일에서 자꾸 어긋난다」는 느낌이 들 때는 즉답하지 말고 한 박자 쉬는 습관이 도움이 돼요.'},
-    '파':{title:'일지 파 — 마무리가 흔들리는 결',body:'두 사람의 일지가 <b>파</b> 관계입니다. 시작은 좋지만 마무리·약속 이행 단계에서 어긋남이 생기기 쉬운 결입니다. 큰 계약·이사·결혼 등의 중요 결정은 한 번 더 확인하는 자세가 관계를 지킵니다.'},
-    '원진':{title:'일지 원진살 ⚠ — 미묘하게 거슬리는 결',body:'두 사람의 일지가 전통 명리에서 가장 미묘한 살로 꼽히는 <b>원진살</b> 관계입니다. 충처럼 정면으로 깨지진 않지만, <b>「말로는 표현되지 않는 거슬림과 원망이 속에서 쌓여가는」</b> 결입니다. 가까운 부부·연인 사이일수록 사소한 습관·말투에서 자꾸 신경이 쓰이고, 이유 없이 짜증이 올라오는 일이 반복될 수 있어요.<br><br>다만 원진은 「피할 수 없는 흉」이 아니라 <b>「자기 인식으로 풀리는 살」</b>입니다. 「말하지 않아도 알아주겠지」를 내려놓고, 거슬리는 부분이 쌓이기 전에 짧고 자주 소통하는 습관이 결정적입니다. 의식적인 거리감(혼자만의 시간 확보)과 「상대가 나와 다른 사람」이라는 전제를 잊지 않으면, 원진 부부도 평생을 함께 가는 깊은 인연으로 다듬어집니다.'},
-    '형':{title:'일지 형살 ⚠ — 깎임의 결',body:'두 사람의 일지가 <b>형살</b> 관계입니다. 갈등·시비·서로의 약점을 건드리는 결로, 부부 사이에 「깎이는」 작용이 들어와요. 다만 무관·법조·의료처럼 「깎아서 다듬는 직종」 종사자에게는 오히려 직업적 성취로 풀리기도 합니다.'},
-    '자형':{title:'일지 자형 — 자기 내면의 모순',body:'두 사람의 일지가 같은 글자(진오유해 자형)입니다. 닮았기에 서로의 약점도 같이 가지고 있어, 한쪽이 내면 갈등에 빠지면 다른 쪽도 같이 가라앉기 쉬운 결입니다. 의식적으로 외부 자극(취미·운동·외출)을 함께 들여오면 결이 풀립니다.'},
-    '충':{title:'일지 충 ⚡ — 정면 충돌의 결',body:'두 사람의 일지가 <b>충</b> 관계입니다. 정반대에서 정면으로 부딪치는 결로, 끌림은 강렬하지만 충돌·이동·변동도 잦은 자리입니다. 「24시간 룰」(감정적 즉답 금지) + 정기 대화 시간 확보가 핵심이며, 충 관계 부부는 오히려 함께 큰 변화·이주·창업을 해내는 케이스도 통계적으로 많습니다.'}
+    '합':{title:'일지가 자석처럼 끌어당기는 결 ✓',body:'두 분의 배우자 자리(일지)가 서로 <b>육합</b>을 이뤄요. 자석처럼 자연스럽게 끌어당기는 결이라, 함께 있을 때 마음이 편안해지고 일상 리듬이 잘 맞아요. 천생연분이라 부르는 자리예요.'},
+    '반합':{title:'같은 방향으로 협력하는 결 ✓',body:'두 분의 배우자 자리가 <b>삼합의 일부(반합)</b>를 이뤄요. 같은 큰 흐름으로 묶여 한 방향을 함께 바라보는 결이라, 큰 목표·사업·가정 운영에 시너지가 커요.'},
+    '반합약':{title:'잔잔하게 협력하는 결',body:'삼합의 양옆 글자가 만나는 약한 반합이에요. 강렬한 끌림은 아니지만, 같은 방향성을 공유하는 잔잔하고 안정적인 결이에요.'},
+    '동':{title:'닮은꼴 인연 — 빨리 친해지는 결',body:'두 분의 배우자 자리가 같은 글자예요(비화). 닮은꼴이라 빨리 친해지고 서로를 잘 이해하지만, 때로는 같은 약점을 함께 가져 「내가 못하는 걸 상대도 못 한다」는 한계가 나타나요. 부족한 부분은 서로 채워주려는 의식적 노력이 필요해요.'},
+    '평':{title:'평이한 결 — 두 분이 만들어가는 자리',body:'특별한 합·충 작용 없이 평이한 결이에요. 큰 끌림도 큰 충돌도 없는 만큼, 두 분이 어떻게 가꿔가느냐에 따라 결이 달라져요. 매일 짧은 안부 한 통이 결을 키워요.'},
+    '해':{title:'은근한 방해가 따라붙는 결',body:'두 분의 배우자 자리가 <b>해</b> 관계예요. 큰 충돌은 아니지만 미세한 어긋남·구설이 따라붙기 쉬워요. 「작은 일에서 자꾸 어긋난다」는 느낌이 들 때는 즉답 미루는 습관이 도움이 돼요.'},
+    '파':{title:'마무리가 흔들리는 결',body:'두 분의 배우자 자리가 <b>파</b> 관계예요. 시작은 좋지만 마무리·약속 이행 단계에서 어긋남이 생기기 쉬워요. 큰 계약·이사·결혼 등 중요 결정은 한 번 더 확인하는 자세가 결을 지켜줘요.'},
+    '원진':{title:'이유 없는 거슬림이 쌓이는 결 ⚠',body:'두 분의 배우자 자리가 <b>원진살</b> 관계예요. 정면 충돌은 아니지만 <b>「말로는 표현 안 되는 거슬림과 원망이 속에서 쌓여가는」</b> 결이에요. 가까운 사이일수록 사소한 말투·습관에 자꾸 신경이 쓰여요.<br><br>다만 원진은 <b>「자기 인식으로 풀리는 결」</b>이에요. 「말하지 않아도 알아주겠지」를 내려놓고, 거슬리는 게 쌓이기 전에 짧고 자주 소통하는 습관이 결정적이에요. 의식적인 혼자만의 시간 + 「상대가 나와 다른 사람」이라는 인정이 평생 가는 깊은 인연을 만들어요.'},
+    '형':{title:'서로의 약점을 건드리는 결 ⚠',body:'두 분의 배우자 자리가 <b>형살</b> 관계예요. 갈등·시비·서로 아픈 자리를 건드리는 결이라, 부부 사이에 「깎이는」 작용이 들어와요. 다만 무관·법조·의료처럼 「깎아서 다듬는 직종」 종사자에게는 오히려 직업 성취로 풀려요.'},
+    '자형':{title:'내면의 모순이 함께 흔들리는 결',body:'두 분의 배우자 자리가 같은 자형 글자예요. 닮았기에 서로의 약점도 같이 가지고 있어, 한쪽이 내면 갈등에 빠지면 다른 쪽도 같이 가라앉기 쉬워요. 의식적으로 외부 자극(취미·운동·외출)을 함께 들여오면 결이 풀려요.'},
+    '충':{title:'정면으로 부딪히는 결 ⚡',body:'두 분의 배우자 자리가 <b>충</b> 관계예요. 정반대에서 정면으로 부딪치는 결이라, 끌림은 강렬하지만 충돌·이동·변동도 잦아요. <b>「24시간 룰」(감정적 즉답 금지) + 정기 대화 시간</b>이 핵심이에요. 충 관계 부부는 오히려 함께 큰 변화·이주·창업을 해내는 케이스가 많아요.'}
   };
   const brDetail=brDetailDescs[dayBr.kind]||brDetailDescs['평'];
 
-  // 천간합·천간충 풀이
   const stRel=result.dayStemRel||{kind:'평'};
   const stemDetail=stRel.kind==='합'
-    ? `<div class="asec" style="margin-top:10px"><div class="atitle">일간 천간합 ✓</div><div class="abody">두 사람의 일간이 ${stRel.desc.split('—')[0].trim()} 천간합을 이룹니다. 「부부 합」으로 부르며, 서로 끌어당기는 결속력이 매우 강한 자리입니다.</div></div>`
+    ? `<div class="asec" style="margin-top:12px"><div class="atitle">🔗 일간이 천간합 — 부부 합</div><div class="abody">두 분의 일간이 <b>천간합</b>을 이뤄요. 「부부 합」이라 부르는 매우 특별한 자리로, 서로 끌어당기는 결속력이 가장 강한 형태예요.</div></div>`
     : stRel.kind==='충'
-    ? `<div class="asec" style="margin-top:10px"><div class="atitle">일간 천간충 ⚠</div><div class="abody">두 사람의 일간이 정면으로 충을 이룹니다. 가치관·결정 방식에서 부딪힐 수 있으니, 큰 결정 전에 서로의 입장을 한 번 더 듣는 자세가 필요해요.</div></div>`
+    ? `<div class="asec" style="margin-top:12px"><div class="atitle">⚡ 일간이 천간충</div><div class="abody">두 분의 일간이 정면으로 충을 이뤄요. 가치관·결정 방식에서 부딪힐 수 있으니, 큰 결정 전에 서로의 입장을 한 번 더 듣는 자세가 필요해요.</div></div>`
     : '';
 
-  // 4기둥 교차 작용 요약
   const cr=result.crossRel||{};
   const crossNotes=[];
-  if(cr.합)crossNotes.push(`육합 <b>${cr.합}건</b>`);
-  if(cr.반합)crossNotes.push(`삼합·반합 <b>${cr.반합}건</b>`);
-  if(cr.충)crossNotes.push(`충 <b style="color:#e57462">${cr.충}건</b>`);
-  if(cr.원진)crossNotes.push(`원진 <b style="color:#e57462">${cr.원진}건</b>`);
-  if(cr.형)crossNotes.push(`형 <b style="color:#d4a849">${cr.형}건</b>`);
-  if(cr.파)crossNotes.push(`파 <b style="color:#d4a849">${cr.파}건</b>`);
-  if(cr.해)crossNotes.push(`해 <b style="color:#d4a849">${cr.해}건</b>`);
-  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:10px"><div class="atitle">4기둥 전체 교차 작용</div><div class="abody">두 사람의 8글자 지지가 만나는 16개 자리에서 ${crossNotes.join(' · ')}이 검출돼요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌·원진보다 우세</b>하여 전반적으로 부드러운 결이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충·원진·형 기운이 합보다 우세</b>하여 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 결이에요.'}</div></div>`:'';
+  if(cr.합)crossNotes.push(`자석처럼 끌어당김 <b>${cr.합}건</b>`);
+  if(cr.반합)crossNotes.push(`같은 방향 협력 <b>${cr.반합}건</b>`);
+  if(cr.충)crossNotes.push(`정면 부딪힘 <b style="color:#e57462">${cr.충}건</b>`);
+  if(cr.원진)crossNotes.push(`이유 없는 거슬림 <b style="color:#e57462">${cr.원진}건</b>`);
+  if(cr.형)crossNotes.push(`서로 깎임 <b style="color:#d4a849">${cr.형}건</b>`);
+  if(cr.파)crossNotes.push(`마무리 어긋남 <b style="color:#d4a849">${cr.파}건</b>`);
+  if(cr.해)crossNotes.push(`은근한 방해 <b style="color:#d4a849">${cr.해}건</b>`);
+  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:12px"><div class="atitle">🔄 두 분 8글자가 만드는 16개 자리 작용</div><div class="abody">두 분의 8글자 자리가 만나는 16개 교차에서 ${crossNotes.join(' · ')}이 검출돼요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌보다 우세</b>해 전반적으로 부드러운 결이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충돌·거슬림 기운이 화합보다 우세</b>해 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 결이에요.'}</div></div>`:'';
 
-  h+=`<div class="card">
-    <div class="ctitle big">💬 궁합 해석</div>
-    <div class="asec"><div class="atitle">오행 관계: ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
-    <div class="asec" style="margin-top:10px"><div class="atitle">${brDetail.title}</div><div class="abody">${brDetail.body}</div></div>
+  let interpBody=`<p style="margin-bottom:12px">두 분의 사주를 5가지 각도로 풀어드릴게요. 각 영역을 함께 보시면 인연의 전체 그림이 보여요.</p>
+    <div class="asec"><div class="atitle">🌳 오행 관계 — ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
+    <div class="asec" style="margin-top:12px"><div class="atitle">💞 ${brDetail.title}</div><div class="abody">${brDetail.body}</div></div>
     ${stemDetail}
     ${crossSummary}
-    <div class="asec" style="margin-top:10px"><div class="atitle">십신으로 본 관계: ${result.tg12}</div><div class="abody">${tgDescs[result.tg12]||''}</div></div>
-    <div class="asec" style="margin-top:10px;padding:10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)"><div class="abody">${advice}</div></div>
-  </div>`;
+    <div class="asec" style="margin-top:12px"><div class="atitle">👁 서로를 바라보는 결 — ${result.tg12}</div><div class="abody">${tgDescs[result.tg12]||''}</div></div>
+    <div class="asec" style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${advice}</div></div>`;
+  h+=paidWrapBody('INTERP','💬','두 분 궁합 종합 해석',interpBody);
 
-  h+=`<div class="card"><div class="ctitle big">👁 두 사람의 일주 비교</div>
+  // ── ④ 일주 비교 카드
+  let compareBody=`<p style="margin-bottom:12px">두 분의 일주(본인을 가리키는 핵심 자리)를 나란히 비교해보면 이래요.</p>
     <div class="compare-pillars">
       ${pillarHTML('나',saju1.dp.stem,saju1.dp.branch)}
       <div class="compare-arrow">↔</div>
       ${pillarHTML('상대',saju2.dp.stem,saju2.dp.branch)}
     </div>
-    <div class="irow" style="margin-top:8px"><span class="ikey">내가 상대에게</span><span class="ival">${result.tg12}</span></div>
-    <div class="irow"><span class="ikey">상대가 나에게</span><span class="ival">${result.tg21}</span></div>
-  </div>`;
+    <div class="irow" style="margin-top:12px"><span class="ikey">내가 상대에게 보이는 결</span><span class="ival">${result.tg12}</span></div>
+    <div class="irow"><span class="ikey">상대가 나에게 보이는 결</span><span class="ival">${result.tg21}</span></div>
+    <p style="margin-top:12px;font-size:.78rem;color:var(--sub);line-height:1.85">두 분이 서로를 어떻게 「인식」하는지를 보여주는 결이에요. 같을 수도 있고 다를 수도 있는데, 다르면 그게 매력 포인트이자 갈등 지점이 돼요.</p>`;
+  h+=paidWrapBody('COMPARE','👁','두 분 일주 비교',compareBody);
 
   return h;
 }
@@ -10056,27 +10104,102 @@ function renderNamePaid(saju, nmExtra){
   return h;
 }
 
+// ── MBTI 궁합 점수 + 카드 ──
+function mbtiCompatScore(m1, m2){
+  if(!m1||!m2||m1.length!==4||m2.length!==4)return null;
+  // 4축 비교 — 일치(같은 글자)는 +25, 보완(반대)는 +20 (반대도 좋은 궁합 가능), 차이는 +15
+  // 단순화: 같으면 친화/유사, 다르면 보완/이해 필요
+  const axes=['E/I','N/S','T/F','J/P'];
+  const axeDetails=[];
+  let total=0;
+  for(let i=0;i<4;i++){
+    const same=m1[i]===m2[i];
+    let axScore, axLabel;
+    if(same){axScore=22; axLabel='유사형 (서로 잘 이해)';}
+    else{axScore=18; axLabel='보완형 (서로 부족함을 채움)';}
+    total+=axScore;
+    axeDetails.push({axis:axes[i], m1:m1[i], m2:m2[i], same, score:axScore, label:axLabel});
+  }
+  // 보너스: 「ㅇNㅇㅇ + ㅇNㅇㅇ」 같이 직관·감각이 둘 다 직관이면 잘 통함 → +가산
+  if(m1[1]===m2[1])total+=4; // 정보 인식 방식 같음 (대화 잘 통함)
+  if(m1[2]===m2[2])total+=4; // 판단 방식 같음 (가치관 비슷)
+  total=Math.max(50,Math.min(98,total));
+  return {score:total, axes:axeDetails};
+}
+
+function renderGunghapMbtiCard(mbti1, mbti2){
+  if(!mbti1||!mbti2)return '';
+  const compat=mbtiCompatScore(mbti1, mbti2);
+  if(!compat)return '';
+  const grade=compat.score>=85?'천생연분형':compat.score>=72?'좋은 케미':compat.score>=60?'균형형':'노력형';
+  const gradeColor=compat.score>=72?'var(--wood)':compat.score>=60?'var(--earth)':'var(--fire)';
+  const axNames={'E/I':'외향/내향','N/S':'직관/감각','T/F':'사고/감정','J/P':'계획/유연'};
+  const sameCount=compat.axes.filter(a=>a.same).length;
+  let body=`<p style="margin-bottom:12px">두 분의 MBTI <b>${mbti1}</b>와 <b>${mbti2}</b>를 4지표로 비교한 결과예요. 사주 궁합과는 별개로, <b>현재 성격·소통 스타일</b>이 얼마나 잘 맞는지를 봐요.</p>
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-family:'Do Hyeon',serif;font-size:2.2rem;color:${gradeColor};font-weight:700">${compat.score}점</div>
+      <div style="font-size:.86rem;font-weight:700;color:${gradeColor};margin-top:4px">${grade}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">4지표 중 ${sameCount}개 일치 · ${4-sameCount}개 보완</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">`;
+  compat.axes.forEach(a=>{
+    const color=a.same?'var(--wood)':'var(--earth)';
+    const icon=a.same?'✓':'⚖';
+    body+=`<div style="padding:10px 12px;background:var(--bg-deep);border-left:3px solid ${color};border-radius:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-weight:700;color:var(--accent);font-size:.84rem">${a.axis} <small style="color:var(--muted);font-weight:400;margin-left:4px">${axNames[a.axis]}</small></span>
+        <span style="font-size:.78rem;color:${color};font-weight:700">${icon} ${a.m1} × ${a.m2}</span>
+      </div>
+      <div style="font-size:.76rem;color:var(--sub);line-height:1.7">${a.label}</div>
+    </div>`;
+  });
+  // 종합 풀이
+  let summary='';
+  if(sameCount>=3)summary=`<p>4지표 중 ${sameCount}개가 같은 결이라 <b>대화가 잘 통하고 가치관이 비슷한</b> 케미예요. 함께 있으면 편안하고 자연스러워요. 다만 너무 비슷해서 같은 약점도 함께 가질 수 있으니, 부족한 부분은 외부 도움(친구·전문가)으로 채우세요.</p>`;
+  else if(sameCount===2)summary=`<p>2개는 같고 2개는 다른 결이라 <b>균형 잡힌 보완형</b>이에요. 서로 다른 부분에서 배울 게 많고, 같은 부분에서 깊이 통해요. 작명학·사주 궁합과 함께 보면 장기 인연 가능성이 가장 높은 케미예요.</p>`;
+  else if(sameCount===1)summary=`<p>대부분 다른 결이라 <b>서로를 통해 새로운 세계를 발견하는</b> 케미예요. 처음엔 신선하고 매력적이지만, 시간이 지나면 「왜 저렇게 생각하지?」 하는 순간이 잦을 수 있어요. 의식적인 대화와 「상대가 나와 다른 사람」이라는 인정이 결을 지켜요.</p>`;
+  else summary=`<p>4지표가 모두 다른 <b>완전 보완형 (정반대) 케미</b>예요. 강한 끌림과 신선함이 있지만, 일상에서는 갈등도 자주 일어나요. 「24시간 룰」(즉답 미루기) + 정기 대화 시간 확보가 결정적이에요.</p>`;
+  body+=`</div>${summary}
+    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.76rem;color:var(--sub);line-height:1.85">💡 MBTI 궁합은 <b>현재 성격</b>의 친화도이고, 사주 궁합은 <b>타고난 본질</b>의 결이에요. 두 가지를 함께 보면 두 분 인연의 전체 그림이 보여요.</div>`;
+  return paidWrapBody('MBTICOMPAT','🧬',`MBTI 궁합 — ${mbti1} × ${mbti2}`, body);
+}
+
+// ── 궁합 공통 본문 ── (별도 카테고리 + 인생총운 안 두 곳 모두에서 사용)
+function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
+  const result=calcGunghap(saju1, saju2, gen1, gen2);
+  let h='';
+  h+=renderGunghapResult(saju1, saju2, result);
+  h+=renderGunghapLoveCard(saju1, saju2, result);
+  h+=renderGunghapMarriageCard(saju1, saju2, result);
+  h+=renderGunghapPartnerCard(saju1, saju2, result);
+  h+=renderGunghapFamilyCard(saju1, saju2, result);
+  // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
+  if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
+  return h;
+}
+
 function renderGunghapPaid(saju1, gnExtra){
-  if(!gnExtra)return '<div class="card"><div class="abody">상대방 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</div></div>';
-  // 상대 사주 계산
+  if(!gnExtra)return paidWrapBody('GUNGHAP','💑','궁합','<p>상대방 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</p>');
+  // 상대 사주 계산 (진태양시 보정 포함)
   let sy2=gnExtra.gy, sm2=gnExtra.gm, sd2=gnExtra.gd;
   if(gnExtra.cal==='lunar'){
     const s=l2s(gnExtra.gy,gnExtra.gm,gnExtra.gd,!!gnExtra.leap);
     sy2=s.y; sm2=s.m; sd2=s.d;
   }
-  const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
-  const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
-
-  let h='';
-  // 1) 종합 점수 + 4축 세부 점수 + 종합 해석 + 일주 비교 — 기존 풍부한 결과
-  h+=renderGunghapResult(saju1, saju2, result);
-
-  // 2) 추가 4카드 — 연애·결혼·동업·가족 결
-  h+=renderGunghapLoveCard(saju1, saju2, result);
-  h+=renderGunghapMarriageCard(saju1, saju2, result);
-  h+=renderGunghapPartnerCard(saju1, saju2, result);
-  h+=renderGunghapFamilyCard(saju1, saju2, result);
-  return h;
+  // 상대 진태양시 보정
+  let gh=gnExtra.gh, gmin=gnExtra.gmin||0;
+  if(gh>=0&&gnExtra.cityKey){
+    const tso=getTrueSolarOffsetMin(gnExtra.cityKey);
+    if(tso!==0){
+      let total=gh*60+gmin+Math.round(tso);
+      while(total<0)total+=1440;
+      while(total>=1440)total-=1440;
+      gh=Math.floor(total/60); gmin=total%60;
+    }
+  }
+  const saju2=calcSaju(sy2,sm2,sd2,gh,gmin);
+  const myMbti=(_meta&&_meta.mbti)||'';
+  return renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
 }
 
 // ── 연애·데이트 결 ──
@@ -10108,12 +10231,10 @@ function renderGunghapLoveCard(s1,s2,r){
     '편인':'독특한 세계관을 공유하는 결 — 둘만의 깊은 대화·예술·여행이 잘 맞아요.'
   };
   const hint=tgHint[r.tg12]||'';
-  return `<div class="card">
-    <div class="ctitle big">💕 연애·데이트 결</div>
-    <div class="asec"><div class="atitle">두 분 사이의 연애 결</div><div class="abody">${body}</div></div>
-    ${hint?`<div class="asec" style="margin-top:10px"><div class="atitle">상대가 본인에게 보이는 결 (${r.tg12})</div><div class="abody">${hint}</div></div>`:''}
-    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.79rem">💡 ${sc>=75?'서로의 결을 그대로 인정해주는 것이 가장 큰 사랑 표현이에요.':sc>=60?'사소한 차이는 서로의 매력으로 받아들이는 자세가 관계를 키워요.':'서로 다른 결을 한 번 더 듣고 묻는 습관이 관계를 단단하게 만들어요.'}</div></div>
-  </div>`;
+  const loveBody=`<div class="asec"><div class="atitle">두 분 사이의 연애 결</div><div class="abody">${body}</div></div>
+    ${hint?`<div class="asec" style="margin-top:12px"><div class="atitle">상대가 본인에게 보이는 결 (${r.tg12})</div><div class="abody">${hint}</div></div>`:''}
+    <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${sc>=75?'서로의 결을 그대로 인정해주는 것이 가장 큰 사랑 표현이에요.':sc>=60?'사소한 차이는 서로의 매력으로 받아들이는 자세가 관계를 키워요.':'서로 다른 결을 한 번 더 듣고 묻는 습관이 관계를 단단하게 만들어요.'}</div></div>`;
+  return paidWrapBody('LOVE','💕','연애·데이트 결',loveBody);
 }
 
 // ── 결혼 생활 결 ──
@@ -10131,11 +10252,9 @@ function renderGunghapMarriageCard(s1,s2,r){
     body=`평이한 결이라 결혼 생활의 색은 둘이 함께 만들어가는 자리예요. 매주 정기적인 「우리 시간」(외식·산책·여행) 1회를 정해두면 결혼 결이 단단해져요.`;
   }
   const stemBonus=stRel==='합'?'<br><br>특히 두 분의 일간이 <b>천간합 — 부부 합</b>을 이뤄, 결혼 생활에서 서로를 끌어당기는 결속력이 매우 강한 자리예요.':stRel==='충'?'<br><br>두 분의 일간이 천간충 — 가치관·결정 방식에서 부딪힐 수 있어요. 큰 결정 전에 「각자의 입장 1분씩 말하기」 룰을 두면 결이 부드러워져요.':'';
-  return `<div class="card">
-    <div class="ctitle big">💍 결혼 생활 결</div>
-    <div class="asec"><div class="atitle">두 분이 함께 살 때의 결</div><div class="abody">${body}${stemBonus}</div></div>
-    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)"><div class="abody" style="font-size:.79rem">💡 ${sc>=75?'결혼 생활은 두 분 모두에게 안정과 성장을 주는 자리가 돼요.':sc>=60?'결혼 후 「작은 약속을 꼭 지키는」 습관이 신뢰를 두텁게 만들어요.':'결혼 결정 전에 둘이 함께 「3개월 동거」 같은 충분한 시간을 갖는 게 좋아요.'}</div></div>
-  </div>`;
+  const marBody=`<div class="asec"><div class="atitle">두 분이 함께 살 때의 결</div><div class="abody">${body}${stemBonus}</div></div>
+    <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--earth)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${sc>=75?'결혼 생활은 두 분 모두에게 안정과 성장을 주는 자리가 돼요.':sc>=60?'결혼 후 「작은 약속을 꼭 지키는」 습관이 신뢰를 두텁게 만들어요.':'결혼 결정 전에 둘이 함께 「3개월 동거」 같은 충분한 시간을 갖는 게 좋아요.'}</div></div>`;
+  return paidWrapBody('MARRIAGE','💍','결혼 생활 결',marBody);
 }
 
 // ── 동업·동거 결 ──
@@ -10151,11 +10270,9 @@ function renderGunghapPartnerCard(s1,s2,r){
   }else{
     body=`화합과 충돌이 비슷한 비중이라 균형 잡힌 결이에요. 동업·동거 모두 가능하지만, 시작 전에 「3개월 시범 기간」을 두고 서로의 결을 확인하는 게 안전해요.`;
   }
-  return `<div class="card">
-    <div class="ctitle big">🤝 동업·동거 결</div>
-    <div class="asec"><div class="atitle">함께 일하거나 같이 살 때의 결</div><div class="abody">${body}</div></div>
-    <div class="asec" style="margin-top:10px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 16칸 교차에서 화합 <b>${goodCnt}건</b> / 갈등 <b>${badCnt}건</b>. ${goodCnt>=badCnt?'시너지 우세':'갈등 우세'}.</div></div>
-  </div>`;
+  const partBody=`<div class="asec"><div class="atitle">함께 일하거나 같이 살 때의 결</div><div class="abody">${body}</div></div>
+    <div class="asec" style="margin-top:12px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 8글자가 만나는 16칸 교차에서 <b>화합 ${goodCnt}건</b> / <b>갈등 ${badCnt}건</b>이 검출됐어요. ${goodCnt>=badCnt?'시너지가 우세한 결':'갈등이 우세한 결'}이에요.</div></div>`;
+  return paidWrapBody('PARTNER','🤝','동업·동거 결',partBody);
 }
 
 // ── 가족·자녀 결 ──
@@ -10173,11 +10290,9 @@ function renderGunghapFamilyCard(s1,s2,r){
   }else{
     body=`두 분의 오행이 합쳐졌을 때 <b>${ohNames[maxIdx]}</b> 기운이 많이 치우친 결이에요. 자녀가 생기면 <b>${ohNames[minIdx]}</b> 기운 쪽 환경(색·음식·취미·방향)을 의식적으로 더해주는 게 양육의 핵심이 돼요.`;
   }
-  return `<div class="card">
-    <div class="ctitle big">👨‍👩‍👧 가족·자녀 결</div>
-    <div class="asec"><div class="atitle">두 분이 가족을 이뤘을 때의 결</div><div class="abody">${body}</div></div>
-    <div class="asec" style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.79rem">💡 자녀운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>
-  </div>`;
+  const famBody=`<div class="asec"><div class="atitle">두 분이 가족을 이뤘을 때의 결</div><div class="abody">${body}</div></div>
+    <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 자녀운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>`;
+  return paidWrapBody('FAMILY','👨‍👩‍👧','가족·자녀 결',famBody);
 }
 
 // ══════════════════════════════════════════════
@@ -10542,7 +10657,11 @@ function analyze(){
     if(!gm||gm<1||gm>12)return showErr('상대방 월(1~12)을 입력해주세요.','gnM');
     if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
     if(isNaN(gh))gh=-1;
-    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap};
+    const gnCityEl=document.getElementById('gnCity');
+    const gnCityKey=(gnCityEl&&gnCityEl.value)||'seoul';
+    const gnMbtiEl=document.getElementById('gnMbti');
+    const gnMbtiVal=(gnMbtiEl&&gnMbtiEl.value)||'';
+    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,cityKey:gnCityKey,mbti:gnMbtiVal};
   }else if(cat==='name'){
     const surname=(document.getElementById('nmSurname').value||'').trim();
     const given=(document.getElementById('nmGiven').value||'').trim();
