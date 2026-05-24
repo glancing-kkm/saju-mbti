@@ -1151,6 +1151,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">5,900원</div>
         </button>
+        <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이·작명 — 4,900원" role="listitem">
+          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
+          <div class="mc-icon" aria-hidden="true">✒️</div>
+          <div class="mc-title">이름풀이·작명</div>
+          <div class="mc-desc">본인 이름의 오행 결 분석 + 사주에 어울리는 추천 이름 5개</div>
+          <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">4,900원</div>
+        </button>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
           <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🌼</div>
@@ -1440,6 +1448,17 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         </div>
       </fieldset>
 
+      <!-- 이름풀이·작명 추가 입력 -->
+      <fieldset class="cat-extra" id="catExtraName" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">✒️</span><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
+        <div class="cat-extra-desc">위에 본인 사주를 입력하고, 아래에 본인 이름을 입력하시면 사주와 이름의 결을 종합 풀이해드려요. 자녀 작명을 원하시면 자녀의 사주를 위에 입력해 주세요.</div>
+        <div class="row3">
+          <div class="ig" style="flex:1"><label for="nmSurname">성씨</label><input type="text" id="nmSurname" placeholder="김 / 이 / 박 등" maxlength="2" autocomplete="off"></div>
+          <div class="ig" style="flex:2"><label for="nmGiven">이름 (2~3글자)</label><input type="text" id="nmGiven" placeholder="민지 / 서연 등" maxlength="4" autocomplete="off"></div>
+        </div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.65">※ 한글 자모(초성·종성)의 오행으로 분석돼요. 한자 이름이어도 한글 발음만 입력하시면 됩니다.</div>
+      </fieldset>
+
       <!-- 궁합 추가 입력 - 상대방 사주 -->
       <fieldset class="cat-extra" id="catExtraGunghap" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">💑</span><span class="cat-extra-title">궁합 — 상대방 정보</span></div></legend>
@@ -1503,6 +1522,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="panel" id="p4"></div>
     <div class="panel" id="p5"></div>
     <div class="panel" id="p6"></div>
+    <div class="panel" id="p7"></div>
   </div>
 </div>
 
@@ -1623,7 +1643,7 @@ const MON_BRN = [2,3,4,5,6,7,8,9,10,11,0,1]; // branch for each month idx
 // ══════════════════════════════════════════════
 let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
-let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'life'
+let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'name'|'life'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 — 메모리(Set) + 사주별 24시간 영속화 정책
 //
@@ -1688,7 +1708,7 @@ function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 �
 // 영속 잠금 정책 폐지 — 이전 버전 localStorage 기록 일괄 정리 (재방문 시에도 잠금 유지)
 (function _purgeOldUnlocks(){
   try{
-    ['daypick','monthly','newyear','gunghap','life'].forEach(c=>{
+    ['daypick','monthly','newyear','gunghap','name','life'].forEach(c=>{
       ['v1','v2','v3','v4'].forEach(v=>localStorage.removeItem(`saju_paid_unlocked_${c}_${v}`));
     });
   }catch(e){}
@@ -1697,8 +1717,8 @@ function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 �
 let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
-const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6};
-const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합'};
+const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7};
+const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -1707,7 +1727,7 @@ const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
-const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,life:5};
+const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5};
 function chatLsKeyOf(cat){return `saju_chat_count_${cat||'life'}_v2`;}
 function chatMaxOf(cat){return CHAT_MAX_BY_CAT[cat||'life']||5;}
 
@@ -2042,7 +2062,7 @@ function goHome(){
   // 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함
   clearAllUnlocks();
   _paidUnlocked=false;
-  ['p0','p1','p2','p3','p4','p5','p6'].forEach(id=>{
+  ['p0','p1','p2','p3','p4','p5','p6','p7'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){el.innerHTML='';el.dataset.rendered='';}
   });
@@ -2060,6 +2080,7 @@ function goToInput(cat){
       monthly:'사주 정보와 기간을 입력해주세요',
       newyear:'사주 정보와 보고 싶은 해를 입력해주세요',
       gunghap:'본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요',
+      name:'본인 사주와 본인 이름을 함께 입력해주세요',
       life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요'
     };
     sub.textContent=subMap[cat]||subMap.manse;
@@ -2068,7 +2089,7 @@ function goToInput(cat){
   const ttl=document.querySelector('#view-input .hdr-back-title');
   if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
   // 카테고리별 추가 입력 섹션 표시
-  ['Daypick','Monthly','Newyear','Gunghap'].forEach(k=>{
+  ['Daypick','Monthly','Newyear','Gunghap','Name'].forEach(k=>{
     const el=document.getElementById('catExtra'+k);
     if(el)el.style.display='none';
   });
@@ -2100,6 +2121,8 @@ function goToInput(cat){
   }else if(cat==='gunghap'){
     const el=document.getElementById('catExtraGunghap');if(el)el.style.display='';
     ensureGnTimeSelects();
+  }else if(cat==='name'){
+    const el=document.getElementById('catExtraName');if(el)el.style.display='';
   }
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
@@ -3277,6 +3300,7 @@ function nextActionsHTML(currentCat){
     {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
     {key:'newyear',icon:'🎉',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
     {key:'gunghap',icon:'💑',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
+    {key:'name',icon:'✒️',title:'이름풀이·작명',desc:'이름 오행 + 추천 이름 5개',price:'프리미엄'},
     {key:'life',icon:'🌼',title:'인생총운',desc:'대운 흐름 평생 풀이',price:'시그니처'}
   ];
   const others=allCats.filter(c=>c.key!==currentCat).slice(0,3);
@@ -3409,6 +3433,7 @@ function resultHeroHTML(saju, mbti, cat){
     monthly:`「${stemNickStr}」 같은 ${ilju}의 12개월 흐름`,
     newyear:`「${stemNickStr}」 같은 ${ilju}의 한 해`,
     gunghap:`「${stemNickStr}」 같은 ${ilju}의 인연 궁합`,
+    name:`「${stemNickStr}」 같은 ${ilju}의 이름 결`,
     life:`「${stemNickStr}」 같은 ${ilju}의 평생 결`
   };
   const headline=catHeadlines[cat]||catHeadlines.manse;
@@ -5345,6 +5370,20 @@ const PAID_META={
     ],
     price:'5,900원'
   },
+  name:{
+    icon:'✒️',title:'이름풀이·작명',
+    desc:'본인 이름을 한글 자모 오행으로 분석하고, 사주(특히 용신·기신)와의 궁합을 풀어드립니다.<br>본인 사주에 어울리는 추천 이름 5개도 함께 받아보세요.',
+    features:[
+      '· 이름 글자별 한글 자모 오행 분석 (목·화·토·금·수)',
+      '· 이름 전체 오행 분포 + 음양 균형',
+      '· 본인 사주 용신·기신과의 궁합 점수',
+      '· 이름의 결·울림 (소리·발음 인상)',
+      '· 이름의 강점과 보완점',
+      '· 사주에 가장 잘 어울리는 추천 이름 5개',
+      '· 자녀 작명에도 활용 가능 (자녀 사주 입력 시)'
+    ],
+    price:'4,900원'
+  },
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack1:{icon:'💬',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
   chatpack3:{icon:'💬',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'2,500원'},
@@ -5352,7 +5391,7 @@ const PAID_META={
   chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,gunghap:5900,life:24000,
+const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,gunghap:5900,name:4900,life:24000,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
@@ -5435,6 +5474,7 @@ function unlockAndRender(category){
   if(category==='monthly'&&!_meta.moExtra)return false;
   if(category==='newyear'&&!_meta.nyExtra)return false;
   if(category==='gunghap'&&!_meta.gnExtra)return false;
+  if(category==='name'&&!_meta.nmExtra)return false;
   setUnlockedFor(category);
   _paidUnlocked=true;
   _category=category;
@@ -5468,6 +5508,9 @@ function unlockAndRender(category){
   }else if(category==='gunghap'){
     renderTarget('p6',renderGunghapPaid(_saju,_meta.gnExtra));
     gotoCard(6);
+  }else if(category==='name'){
+    renderTarget('p7',renderNamePaid(_saju,_meta.nmExtra));
+    gotoCard(7);
   }else{
     // 알 수 없는 카테고리는 거짓 성공 방지
     return false;
@@ -8869,6 +8912,242 @@ function renderGunghapResult(saju1,saju2,result){
 //  궁합 카테고리 — 유료 결과 본문 (8카드)
 // ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
+//  이름풀이·작명 카테고리
+// ══════════════════════════════════════════════
+// 한글 자모 오행 매핑 — 초성·종성 자음을 5행으로 분류
+// (정통 성명학 한글파 분류 기준)
+const HANGUL_CONS_OH={
+  'ㄱ':0,'ㄲ':0,'ㅋ':0,                        // 木 (어금닛소리)
+  'ㄴ':1,'ㄷ':1,'ㄸ':1,'ㄹ':1,'ㅌ':1,            // 火 (혓소리)
+  'ㅇ':2,'ㅎ':2,                                // 土 (목구멍소리)
+  'ㅅ':3,'ㅆ':3,'ㅈ':3,'ㅉ':3,'ㅊ':3,            // 金 (잇소리)
+  'ㅁ':4,'ㅂ':4,'ㅃ':4,'ㅍ':4                    // 水 (입술소리)
+};
+const HANGUL_CONS_LIST=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+// 한글 음절 → 초성/중성/종성 분해
+function hangulDecompose(ch){
+  const code=ch.charCodeAt(0)-0xAC00;
+  if(code<0||code>=11172)return null;
+  const cho=Math.floor(code/588);
+  const jung=Math.floor((code%588)/28);
+  const jong=code%28;
+  return {cho:HANGUL_CONS_LIST[cho], jung:jung, jong:jong>0?_jongToCons(jong):null};
+}
+function _jongToCons(jong){
+  // 종성 인덱스 → 자음 매핑 (복자음 첫 글자만)
+  const map=['','ㄱ','ㄲ','ㄱ','ㄴ','ㄴ','ㄴ','ㄷ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㅁ','ㅂ','ㅂ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  return map[jong]||null;
+}
+// 음양 — 중성(모음)으로 판정 (양: ㅏㅑㅗㅛ 등, 음: ㅓㅕㅜㅠㅡㅣ 등)
+const HANGUL_VOWEL_YANG=[0,2,4,7,8]; // ㅏㅐㅑㅒ → 양 / 단순화
+function jungToYinYang(j){
+  // 0:ㅏ 1:ㅐ 2:ㅑ 3:ㅒ 4:ㅓ 5:ㅔ 6:ㅕ 7:ㅖ 8:ㅗ 9:ㅘ 10:ㅙ 11:ㅚ 12:ㅛ 13:ㅜ 14:ㅝ 15:ㅞ 16:ㅟ 17:ㅠ 18:ㅡ 19:ㅢ 20:ㅣ
+  const yang=new Set([0,1,2,3,8,9,10,11,12]); // ㅏㅐㅑㅒㅗㅘㅙㅚㅛ → 양
+  return yang.has(j)?'양':'음';
+}
+// 이름 분석 — 글자별 오행 분포 + 음양 균형
+function analyzeNameOh(fullName){
+  const oh=[0,0,0,0,0];
+  const yinYang={양:0,음:0};
+  const perChar=[];
+  for(const ch of fullName){
+    const d=hangulDecompose(ch);
+    if(!d){perChar.push({ch,cho:null,jong:null,chos:null,jongs:null,yinyang:null});continue;}
+    const chos=HANGUL_CONS_OH[d.cho];
+    const jongs=d.jong?HANGUL_CONS_OH[d.jong]:null;
+    if(chos!=null)oh[chos]++;
+    if(jongs!=null)oh[jongs]++;
+    const yy=jungToYinYang(d.jung);
+    yinYang[yy]++;
+    perChar.push({ch,cho:d.cho,jong:d.jong,chos,jongs,yinyang:yy});
+  }
+  return {oh,yinYang,perChar};
+}
+
+// 이름 추천 풀 — 한국에서 흔히 쓰이는 좋은 의미의 이름 (오행별 분류)
+// 각 이름은 [이름, 주요오행 인덱스] — 보강해야 할 오행에 따라 추천
+const NAME_POOL={
+  0:['민준','지원','서윤','유진','수현','경준','규민','광호','국현','권우'], // 木 (ㄱㅋ)
+  1:['도윤','지율','다은','태민','도현','두빈','단아','로은','로하','라온'], // 火 (ㄴㄷㄹㅌ)
+  2:['아인','윤서','은서','예린','연우','이안','우진','은우','유나','하은'], // 土 (ㅇㅎ)
+  3:['시우','준서','지호','수아','지유','채원','정우','진우','승현','세린'], // 金 (ㅅㅈㅊ)
+  4:['민서','보윤','보경','민지','보라','문영','별이','부영','범준','반석']  // 水 (ㅁㅂㅍ)
+};
+// 이름 풀이 — 본인 사주 + 이름의 결을 종합 분석
+function renderNamePaid(saju, nmExtra){
+  if(!nmExtra||!nmExtra.surname||!nmExtra.given){
+    return '<div class="card"><div class="abody">이름 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</div></div>';
+  }
+  const surname=nmExtra.surname, given=nmExtra.given;
+  const full=surname+given;
+  const ohNames=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
+  const ohEmojis=['🌱','🔥','🪨','⚙️','💧'];
+
+  // 1) 이름 오행 분석
+  const nameOh=analyzeNameOh(full);
+  // 2) 사주 오행
+  const sajuOh=ohCount(saju); // [목,화,토,금,수]
+  const sajuTotal=sajuOh.reduce((a,b)=>a+b,0);
+  const sajuMaxIdx=sajuOh.indexOf(Math.max(...sajuOh));
+  const sajuMinIdx=sajuOh.indexOf(Math.min(...sajuOh));
+  // 3) 용신 (이미 있는 함수 사용)
+  const ys=getYongsin(sajuOh);
+
+  // 4) 사주-이름 궁합 점수
+  // 이름이 사주의 약한 오행(용신)을 보강하면 +가산, 강한 오행(기신)을 더 강화하면 -감산
+  let nameScore=70;
+  const nameTotalOh=nameOh.oh.reduce((a,b)=>a+b,0)||1;
+  // 용신 보강 효과
+  if(nameOh.oh[ys.main]>0)nameScore+=Math.min(15,nameOh.oh[ys.main]*5);
+  if(nameOh.oh[(ys.main+2)%5]>0)nameScore-=Math.min(10,nameOh.oh[(ys.main+2)%5]*3); // 기신 강화
+  // 사주에 가장 약한 오행 보강 효과
+  if(sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0)nameScore+=Math.min(8,nameOh.oh[sajuMinIdx]*3);
+  // 균형 — 이름 오행이 사주 약점을 채우는가?
+  const combined=sajuOh.map((v,i)=>v+nameOh.oh[i]);
+  const span=Math.max(...combined)-Math.min(...combined);
+  if(span<=4)nameScore+=5;
+  else if(span>=7)nameScore-=5;
+  nameScore=Math.max(45,Math.min(98,nameScore));
+
+  let grade,gradeColor;
+  if(nameScore>=85){grade='사주와 잘 어울리는 이름';gradeColor='var(--wood)';}
+  else if(nameScore>=72){grade='좋은 이름';gradeColor='var(--wood)';}
+  else if(nameScore>=60){grade='보통 이름';gradeColor='var(--earth)';}
+  else{grade='보완이 필요한 이름';gradeColor='var(--fire)';}
+
+  let h='';
+
+  // ── 카드 ①: 종합 점수 + 등급
+  const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
+  const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
+  h+=`<div class="card">
+    <div class="ctitle big">✒️ 이름풀이 종합</div>
+    <div style="text-align:center;margin:6px 0 10px">
+      <div style="font-family:'Noto Serif KR',serif;font-size:1.6rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">성씨 ${surname} · 이름 ${given}</div>
+    </div>
+    <div class="score-ring-wrap">
+      <div class="score-ring ${ringCls}">
+        <div class="score-num ${numCls}">${nameScore}</div>
+        <div class="score-grade">/ 100</div>
+      </div>
+      <div style="font-size:.95rem;font-weight:700;color:${gradeColor}">${grade}</div>
+    </div>
+  </div>`;
+
+  // ── 카드 ②: 이름 글자별 오행 분포
+  h+=`<div class="card">
+    <div class="ctitle big">🪷 이름 글자별 오행 풀이</div>
+    <div class="abody" style="margin-bottom:10px">한글 자모의 소리 기운으로 이름을 풀면 이렇게 나와요. 초성과 종성 자음이 각각 다섯 가지 기운(목·화·토·금·수)으로 흘러요.</div>
+    <div style="display:flex;flex-direction:column;gap:8px">`;
+  nameOh.perChar.forEach(p=>{
+    if(!p.cho){h+=`<div style="padding:8px;background:var(--bg-deep);border-radius:8px;color:var(--muted)">${p.ch} — 한글이 아니라 분석 생략</div>`;return;}
+    const chosName=p.chos!=null?ohNames[p.chos]:'없음';
+    const jongsName=p.jongs!=null?ohNames[p.jongs]:'없음';
+    const chosColor=p.chos!=null?OHCOLOR[p.chos]:'var(--muted)';
+    h+=`<div style="padding:9px 11px;background:var(--card);border-left:3px solid ${chosColor};border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-family:'Noto Serif KR',serif;font-size:1.2rem;font-weight:700;color:var(--accent)">${p.ch}</span>
+        <span style="font-size:.7rem;color:var(--sub)">${p.yinyang==='양'?'☯︎ 양':'☯︎ 음'}</span>
+      </div>
+      <div style="font-size:.74rem;color:var(--sub);line-height:1.7">
+        초성 <b>${p.cho}</b> → ${ohEmojis[p.chos]||''} <b style="color:${chosColor}">${chosName}</b>${p.jong?` / 종성 <b>${p.jong}</b> → ${ohEmojis[p.jongs]||''} <b>${jongsName}</b>`:''}
+      </div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+
+  // ── 카드 ③: 이름 + 사주 종합 오행 (보강·과잉)
+  let combinedDesc='';
+  const newSpan=Math.max(...combined)-Math.min(...combined);
+  if(newSpan<=3){
+    combinedDesc=`이름과 사주의 오행을 합치면 다섯 기운이 매우 균형 잡힌 결이에요. 이름이 본인 사주의 약점을 자연스럽게 채워주는 자리예요.`;
+  }else if(newSpan<=5){
+    combinedDesc=`이름과 사주의 오행이 어느 정도 균형 있는 결이에요. 다만 <b>${ohNames[sajuMaxIdx]}</b> 기운이 약간 두텁고 <b>${ohNames[sajuMinIdx]}</b> 기운이 부족하니, 일상에서 약한 쪽을 의식적으로 채워주세요.`;
+  }else{
+    combinedDesc=`이름과 사주가 합쳐졌을 때도 <b>${ohNames[sajuMaxIdx]}</b> 기운이 많이 치우친 결이에요. <b>${ohNames[sajuMinIdx]}</b> 기운 쪽 색·방향·음식·취미를 일상에서 의식적으로 더해 주시면 결이 한층 부드러워져요.`;
+  }
+  h+=`<div class="card">
+    <div class="ctitle big">⚖ 사주 + 이름 종합 오행</div>
+    <div class="abody" style="margin-bottom:10px">${combinedDesc}</div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">`;
+  combined.forEach((v,i)=>{
+    const sa=sajuOh[i], na=nameOh.oh[i];
+    const maxV=Math.max(...combined);
+    const pct=Math.round(v/maxV*100);
+    h+=`<div style="display:flex;align-items:center;gap:8px">
+      <div style="width:62px;font-size:.74rem;color:${OHCOLOR[i]};font-weight:700">${ohNames[i]}</div>
+      <div style="flex:1;background:var(--bg-deep);height:14px;border-radius:7px;overflow:hidden;position:relative">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:${OHCOLOR[i]};opacity:.7;border-radius:7px"></div>
+      </div>
+      <div style="font-size:.7rem;color:var(--sub);width:62px;text-align:right">사주 ${sa} + 이름 ${na}</div>
+    </div>`;
+  });
+  h+=`</div></div>`;
+
+  // ── 카드 ④: 이름의 강점·보완점
+  const strongPoints=[];
+  const weakPoints=[];
+  if(nameOh.oh[ys.main]>0)strongPoints.push(`<b>${ohNames[ys.main]}</b> 기운 보강 — 본인을 가장 도와주는 결을 이름이 채워줘요.`);
+  if(nameOh.oh[sajuMinIdx]>0&&sajuMinIdx!==ys.main)strongPoints.push(`사주에서 약한 <b>${ohNames[sajuMinIdx]}</b> 기운 보강 — 균형이 잡혀요.`);
+  if(nameOh.yinYang['양']>0&&nameOh.yinYang['음']>0)strongPoints.push(`음양이 모두 들어가 균형 있는 이름이에요.`);
+  if(nameOh.oh[(ys.main+2)%5]>0)weakPoints.push(`본인 결을 거스르는 <b>${ohNames[(ys.main+2)%5]}</b> 기운이 약간 들어가 있어요. 일상에서 ${ohNames[ys.main]} 색·방향을 보충하면 결이 부드러워져요.`);
+  if(nameOh.yinYang['양']===0)weakPoints.push(`이름이 음 기운으로만 이뤄져 있어요. 밝은 활동·외부 모임을 의식적으로 늘리세요.`);
+  if(nameOh.yinYang['음']===0)weakPoints.push(`이름이 양 기운으로만 이뤄져 있어요. 차분한 시간·내면 정리를 의식적으로 늘리세요.`);
+  if(!strongPoints.length)strongPoints.push(`평이한 결의 이름이에요. 큰 강점도 큰 약점도 없는 자리예요.`);
+  if(!weakPoints.length)weakPoints.push(`특별한 약점이 보이지 않는 균형 잡힌 이름이에요.`);
+  h+=`<div class="card">
+    <div class="ctitle big">💎 이 이름의 강점·보완점</div>
+    <div class="asec"><div class="atitle" style="color:var(--wood)">✓ 강점</div><div class="abody"><ul style="margin:4px 0 0;padding-left:18px;line-height:1.85">${strongPoints.map(s=>`<li>${s}</li>`).join('')}</ul></div></div>
+    <div class="asec" style="margin-top:10px"><div class="atitle" style="color:var(--earth)">△ 보완점</div><div class="abody"><ul style="margin:4px 0 0;padding-left:18px;line-height:1.85">${weakPoints.map(s=>`<li>${s}</li>`).join('')}</ul></div></div>
+  </div>`;
+
+  // ── 카드 ⑤: 추천 이름 5개 — 본인 사주 약한 오행 보강 자음 가진 이름
+  const recommendOh=ys.main; // 용신 오행
+  const secondaryOh=sajuMinIdx!==ys.main?sajuMinIdx:(ys.main+1)%5;
+  const primaryPool=NAME_POOL[recommendOh]||[];
+  const secondaryPool=NAME_POOL[secondaryOh]||[];
+  // 정렬: 첫 글자가 약한 오행 자음이면 +가중치, 같은 이름 중복 제거
+  const recommended=[];
+  const used=new Set();
+  // 우선 풀에서 3개
+  for(const name of primaryPool){
+    if(recommended.length>=3)break;
+    if(used.has(name))continue;
+    recommended.push({name, reason:`${ohNames[recommendOh]} 기운 보강 (본인을 가장 도와주는 결)`});
+    used.add(name);
+  }
+  // 보조 풀에서 2개
+  for(const name of secondaryPool){
+    if(recommended.length>=5)break;
+    if(used.has(name))continue;
+    recommended.push({name, reason:`${ohNames[secondaryOh]} 기운 보강 (사주의 약한 결 채움)`});
+    used.add(name);
+  }
+  h+=`<div class="card">
+    <div class="ctitle big">🪷 본인 사주에 어울리는 추천 이름</div>
+    <div class="abody" style="margin-bottom:12px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>예요. 이 결을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요.</div>
+    <div style="display:flex;flex-direction:column;gap:8px">`;
+  recommended.forEach((r,i)=>{
+    const candidateName=surname+r.name;
+    h+=`<div style="padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card));border-radius:9px;border:1px solid rgba(212,175,55,.2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}</span>
+        <span style="font-size:.7rem;color:var(--muted)">추천</span>
+      </div>
+      <div style="font-size:.74rem;color:var(--sub);line-height:1.6">↪ ${r.reason}</div>
+    </div>`;
+  });
+  h+=`</div>
+    <div class="asec" style="margin-top:12px;padding:10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)">
+      <div class="abody" style="font-size:.76rem;line-height:1.75">💡 실제 출생 신고·개명 시에는 같은 한글 발음의 다양한 한자가 있으니, 한자 획수·뜻까지 함께 보시는 것을 권해드려요. 위 이름은 본인 사주의 오행 결을 보강하는 한글 발음 추천이에요.</div>
+    </div>
+  </div>`;
+
+  return h;
+}
+
+// ══════════════════════════════════════════════
 //  오늘의 운세 위젯 — 홈 메인 1분 미리보기
 // ══════════════════════════════════════════════
 function analyzeTodayWidget(){
@@ -9510,6 +9789,13 @@ function analyze(){
     if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
     if(isNaN(gh))gh=-1;
     window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap};
+  }else if(cat==='name'){
+    const surname=(document.getElementById('nmSurname').value||'').trim();
+    const given=(document.getElementById('nmGiven').value||'').trim();
+    if(!surname||surname.length<1||surname.length>2)return showErr('성씨를 한글 1~2자로 입력해주세요.','nmSurname');
+    if(!given||given.length<1||given.length>4)return showErr('이름을 한글 1~4자로 입력해주세요.','nmGiven');
+    if(!/^[가-힣]+$/.test(surname+given))return showErr('이름은 한글만 입력해주세요.','nmSurname');
+    window._nmExtra={surname,given};
   }
 
   // 진태양시 보정 (시간 입력했을 때만)
@@ -9579,14 +9865,14 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,mbti,gender};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
       { const _sid=sajuIdOf(_saju,_meta); if(_sid)_unlockedCats.forEach(c=>_savePaidToken(c,_sid)); }
 
       // 패널 초기화 (선택 카테고리만 렌더)
-      ['p0','p1','p2','p3','p4','p5','p6'].forEach(id=>{
+      ['p0','p1','p2','p3','p4','p5','p6','p7'].forEach(id=>{
         const el=document.getElementById(id);
         if(el){el.innerHTML='';el.dataset.rendered='';}
       });
@@ -9660,6 +9946,14 @@ function analyze(){
         if(unlocked)enrichTerms(_p6);
         _p6.dataset.rendered='1';
         targetIdx=6;
+      }else if(cat==='name'){
+        const _p7=document.getElementById('p7');
+        _p7.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
+          ?termTip+renderNamePaid(saju,_meta.nmExtra)
+          :renderPaidLock('name',saju))+(unlocked?nextActions:''));
+        if(unlocked)enrichTerms(_p7);
+        _p7.dataset.rendered='1';
+        targetIdx=7;
       }
 
       // 결과 헤더 sub-text
@@ -9673,7 +9967,7 @@ function analyze(){
       gotoCard(targetIdx);
       showView('result');
       // 프리미엄 카테고리 + 잠금 상태 → 잠금 영역으로 부드럽게 스크롤
-      if(!unlocked&&['daypick','monthly','newyear','gunghap','life'].includes(cat)){
+      if(!unlocked&&['daypick','monthly','newyear','gunghap','name','life'].includes(cat)){
         setTimeout(()=>{
           const lock=document.querySelector('.panel.on .lock-wrap');
           if(lock&&lock.scrollIntoView)lock.scrollIntoView({behavior:'smooth',block:'start'});
