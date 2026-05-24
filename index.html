@@ -692,6 +692,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* ── Narrative cards (유료 풀이) ── */
 .nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:14px;position:relative;overflow:hidden}
 .nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+.nb-card.primary{background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card) 60%);border:2px solid var(--accent-bright);box-shadow:0 4px 16px rgba(212,175,55,.18)}
+.nb-card.primary::before{height:3px;opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright) 30%,var(--accent-bright) 70%,transparent)}
+.nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
+.nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 .nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -1446,41 +1450,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <label for="nyY">연도 (예: 2026)</label>
           <input type="number" id="nyY" name="nyYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off">
         </div>
-        <div class="ctx-wrap">
-          <div class="ctx-lab">💭 올해 가장 알고 싶은 것은? <small>(선택사항)</small></div>
-          <div class="ctx-desc">선택하시면 풀이의 핵심 단락이 본인의 결에 맞춰 분기돼요. 선택하지 않아도 풀이는 그대로 진행돼요.</div>
-          <div class="ctx-options" id="ctxOptionsNewyear">
-            <button type="button" class="ctx-btn" data-tag="job" onclick="setContextTag('newyear','job')">이직·승진</button>
-            <button type="button" class="ctx-btn" data-tag="love" onclick="setContextTag('newyear','love')">연애·결혼</button>
-            <button type="button" class="ctx-btn" data-tag="money" onclick="setContextTag('newyear','money')">재물·투자</button>
-            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('newyear','health')">건강</button>
-            <button type="button" class="ctx-btn" data-tag="study" onclick="setContextTag('newyear','study')">학업·시험</button>
-            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('newyear','custom')">직접 입력</button>
-          </div>
-          <div class="ctx-custom-wrap" id="ctxCustomNewyearWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomNewyear" placeholder="예: 새 사업을 시작해요 / 자녀 입학이 있어요 (60자 이내)" maxlength="60" autocomplete="off">
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 인생총운 - 옵션 C 맥락 -->
-      <fieldset class="cat-extra" id="catExtraLife" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">🌼</span><span class="cat-extra-title">인생총운 — 맥락 선택</span></div></legend>
-        <div class="cat-extra-desc">사주 정보만 있으면 풀이는 그대로 진행돼요. 아래 맥락을 선택하시면 해당 영역의 풀이가 더 깊이 강조돼요.</div>
-        <div class="ctx-wrap" style="margin-top:0">
-          <div class="ctx-lab">💭 지금 인생에서 가장 풀고 싶은 것은? <small>(선택사항)</small></div>
-          <div class="ctx-options" id="ctxOptionsLife">
-            <button type="button" class="ctx-btn" data-tag="career" onclick="setContextTag('life','career')">진로·직업</button>
-            <button type="button" class="ctx-btn" data-tag="spouse" onclick="setContextTag('life','spouse')">배우자·결혼</button>
-            <button type="button" class="ctx-btn" data-tag="children" onclick="setContextTag('life','children')">자녀</button>
-            <button type="button" class="ctx-btn" data-tag="business" onclick="setContextTag('life','business')">사업·재물</button>
-            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('life','health')">건강</button>
-            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('life','custom')">직접 입력</button>
-          </div>
-          <div class="ctx-custom-wrap" id="ctxCustomLifeWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomLife" placeholder="예: 인생의 큰 전환점에 서 있어요 (60자 이내)" maxlength="60" autocomplete="off">
-          </div>
-        </div>
       </fieldset>
 
       <!-- 이름풀이·작명 추가 입력 -->
@@ -1490,19 +1459,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3">
           <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off"></div>
           <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off"></div>
-        </div>
-        <div class="ctx-wrap" style="margin-top:10px">
-          <div class="ctx-lab">💭 이름이 본인 인생에 미치는 결 중 가장 알고 싶은 것은? <small>(선택사항)</small></div>
-          <div class="ctx-options" id="ctxOptionsName">
-            <button type="button" class="ctx-btn" data-tag="career" onclick="setContextTag('name','career')">직장운</button>
-            <button type="button" class="ctx-btn" data-tag="love" onclick="setContextTag('name','love')">연애·결혼운</button>
-            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('name','health')">건강운</button>
-            <button type="button" class="ctx-btn" data-tag="total" onclick="setContextTag('name','total')">총운</button>
-            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('name','custom')">직접 입력</button>
-          </div>
-          <div class="ctx-custom-wrap" id="ctxCustomNameWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomName" placeholder="예: 자녀 작명 중이에요 (60자 이내)" maxlength="60" autocomplete="off">
-          </div>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
           <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:8px">한자 입력 <small style="color:var(--muted);font-weight:400">(선택사항 · 정확한 풀이를 위해 권장)</small></div>
@@ -1555,19 +1511,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="ig">
             <label for="gnMin">분</label>
             <select id="gnMin"></select>
-          </div>
-        </div>
-        <div class="ctx-wrap" style="margin-top:14px">
-          <div class="ctx-lab">💭 이 인연에서 가장 알고 싶은 것은? <small>(선택사항)</small></div>
-          <div class="ctx-options" id="ctxOptionsGunghap">
-            <button type="button" class="ctx-btn" data-tag="marriage" onclick="setContextTag('gunghap','marriage')">결혼 가능성</button>
-            <button type="button" class="ctx-btn" data-tag="conflict" onclick="setContextTag('gunghap','conflict')">갈등 해소</button>
-            <button type="button" class="ctx-btn" data-tag="future" onclick="setContextTag('gunghap','future')">장기 전망</button>
-            <button type="button" class="ctx-btn" data-tag="partner" onclick="setContextTag('gunghap','partner')">동업·동거</button>
-            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('gunghap','custom')">직접 입력</button>
-          </div>
-          <div class="ctx-custom-wrap" id="ctxCustomGunghapWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomGunghap" placeholder="예: 부모님 반대가 있어요 (60자 이내)" maxlength="60" autocomplete="off">
           </div>
         </div>
       </fieldset>
@@ -2165,7 +2108,7 @@ function goToInput(cat){
   const ttl=document.querySelector('#view-input .hdr-back-title');
   if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
   // 카테고리별 추가 입력 섹션 표시
-  ['Daypick','Monthly','Newyear','Gunghap','Name','Life'].forEach(k=>{
+  ['Daypick','Monthly','Newyear','Gunghap','Name'].forEach(k=>{
     const el=document.getElementById('catExtra'+k);
     if(el)el.style.display='none';
   });
@@ -2199,8 +2142,6 @@ function goToInput(cat){
     ensureGnTimeSelects();
   }else if(cat==='name'){
     const el=document.getElementById('catExtraName');if(el)el.style.display='';
-  }else if(cat==='life'){
-    const el=document.getElementById('catExtraLife');if(el)el.style.display='';
   }
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
@@ -2313,7 +2254,7 @@ function ensurePaidPanel(){
   if(!p5||p5.dataset.rendered==='1'||!_saju||!_meta)return;
   const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
   p5.innerHTML=fixKoreanJosa(back+(_paidUnlocked
-    ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra)
+    ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
     :renderSajuLock(_saju)));
   if(_paidUnlocked)enrichTerms(p5);
   p5.dataset.rendered='1';
@@ -2330,7 +2271,7 @@ function tab(n){
     if(p5){
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
       p5.innerHTML=fixKoreanJosa(back+(lifeUnlocked
-        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra)
+        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
         :renderPaidLock('life',_saju)));
       if(lifeUnlocked)enrichTerms(p5);
       p5.dataset.rendered='1';
@@ -3581,32 +3522,6 @@ const CONTEXT_OPENER={
     money:{label:'재물·투자',body:'이 기간 재물·투자의 결을 보고 싶으시군요. 매달 재물의 결이 들어오는 시점과 본인 사주 유형의 결을 함께 봐드릴게요.'},
     health:{label:'건강',body:'이 기간 건강과 컨디션을 가장 염두에 두고 있으시군요. 매달 일진의 오행이 본인 약한 오행을 보강하는지가 핵심이에요.'},
     relation:{label:'관계·가족',body:'이 기간 관계·가족 사이의 결을 보고 싶으시군요. 매달 월주가 본인의 일지·월지와 어떤 관계(합·충·원진)를 이루는지가 핵심이에요.'}
-  },
-  newyear:{
-    job:{label:'이직·승진',body:'올해 직장에서의 결정·이직·승진을 가장 알고 싶으시군요. 세운 천간이 본인 일간 기준 관성으로 들어오는 달과 12개월 카드의 「직업·관운」 영역을 집중해 살피세요.'},
-    love:{label:'연애·결혼',body:'올해 연애·결혼의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 세운 일지의 합·충 작용, 그리고 재성·관성이 강한 달이 결정 시기예요.'},
-    money:{label:'재물·투자',body:'올해 재물·투자의 결을 보고 싶으시군요. 세운에 재성이 들어오는지, 일간의 강약과 함께 봐야 큰돈을 다룰 시기가 보여요.'},
-    health:{label:'건강',body:'올해 건강을 가장 염두에 두고 있으시군요. 세운 오행이 본인 약한 오행을 보강하는지, 그리고 12운성 변화를 함께 살피세요.'},
-    study:{label:'학업·시험',body:'올해 학업·자격·시험의 결을 보고 싶으시군요. 세운에 인성·식상이 들어오는 달이 결정적이에요.'}
-  },
-  gunghap:{
-    marriage:{label:'결혼 가능성',body:'두 분의 결혼 가능성을 가장 알고 싶으시군요. 일지(배우자궁) 합·충 작용과 천간합 여부, 그리고 4기둥 교차의 화합·갈등 비중이 결정적이에요. 아래 「결혼 생활 결」 카드를 집중해 살피세요.'},
-    conflict:{label:'갈등 해소',body:'두 분 사이의 갈등을 어떻게 풀지가 가장 큰 고민이시군요. 원진·형·충 작용이 들어오는 자리와 그 자리에 맞는 행동 처방을 아래에서 풀어드릴게요.'},
-    future:{label:'장기 전망',body:'두 분 인연의 장기 전망을 알고 싶으시군요. 오행 균형과 정격(말년) 비율을 함께 보면 결혼 후 30년의 결이 보여요.'},
-    partner:{label:'동업·동거',body:'두 분이 함께 일하거나 같이 살 수 있는지가 핵심이시군요. 아래 「동업·동거 결」 카드의 4기둥 교차 작용을 집중해 살피세요.'}
-  },
-  name:{
-    career:{label:'직장운',body:'이름이 본인 직장운에 미치는 결을 알고 싶으시군요. 형격(청년·주운)과 정격(총운)의 길흉이 핵심이에요. 한자 획수를 입력하시면 더 정확해요.'},
-    love:{label:'연애·결혼운',body:'이름이 본인 연애·결혼운에 미치는 결을 알고 싶으시군요. 이름의 음양 균형과 정격 길수 여부가 결혼 결을 좌우해요.'},
-    health:{label:'건강운',body:'이름이 본인 건강운에 미치는 결을 알고 싶으시군요. 본인 사주 약한 오행을 이름이 보강하는지가 핵심이에요.'},
-    total:{label:'총운',body:'이름이 본인 평생 결에 미치는 영향을 보고 싶으시군요. 4격(원·형·이·정)이 모두 길수인지가 작명학 기준 가장 중요한 평가예요.'}
-  },
-  life:{
-    career:{label:'진로·직업',body:'본인 인생에서 가장 풀고 싶은 게 진로·직업이시군요. 본인 일간·격국·용신이 어떤 직업 결과 맞는지를 「직업·관운」 카드에서 깊이 풀어드릴게요. 대운에서 관성이 들어오는 시기도 함께 살피세요.'},
-    spouse:{label:'배우자·결혼',body:'본인 인생에서 배우자·결혼이 가장 큰 화두시군요. 본인 일지(배우자궁)와 대운 흐름 속 재성·관성 기운을 「연애·결혼」 카드에서 집중해 풀어드릴게요.'},
-    children:{label:'자녀',body:'자녀 관련 결을 가장 알고 싶으시군요. 본인 시주(자녀궁)와 식상·관성 기운, 그리고 자녀 관련 대운 시기를 깊이 풀어드릴게요.'},
-    business:{label:'사업·재물',body:'사업·재물이 본인 인생의 가장 큰 관심사시군요. 본인 사주의 재성 강약과 신강·신약, 그리고 재물 운이 활짝 펴지는 대운 시기를 「재물운」 카드에서 깊이 풀어드릴게요.'},
-    health:{label:'건강',body:'건강·장수가 가장 큰 화두시군요. 본인 사주의 약한 오행과 12운성 변화, 그리고 건강 결이 약해지는 대운 시기를 「건강운」 카드에서 깊이 풀어드릴게요.'}
   }
 };
 function getContextOpener(cat,tag,note){
@@ -3621,7 +3536,21 @@ function getContextOpener(cat,tag,note){
     if(!m)return '';
     label=m.label;body=m.body;
   }
-  return `<div class="lead-card" style="background:linear-gradient(135deg,var(--accent-soft),var(--bg-deep));border-left:3px solid var(--accent-bright);margin-bottom:14px"><b>💭 본인이 가장 알고 싶은 것 — ${label}</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">${body}</span></div>`;
+  // 호명형 — 사용자의 선택을 도입부에서 직접 호명
+  const callOut=tag==='custom'?`「${label}」가 가장 큰 화두시군요.`:`<b>${label}</b>이 가장 알고 싶으시군요. 그 결을 중심으로 풀어드릴게요.`;
+  return `<div class="lead-card" style="background:linear-gradient(135deg,var(--accent-soft),var(--bg-deep));border-left:3px solid var(--accent-bright);margin-bottom:14px"><b>💭 ${callOut}</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">${body}<br><br>↓ 결과 본문에서 ★ <b>본인이 가장 알고 싶은 영역</b> 표시가 붙은 카드를 우선으로 보세요.</span></div>`;
+}
+
+// 사용자 선택 영역 카드 본문 도입부에 호명 한 줄 prepend
+function ctxCallOut(cat,tag,note){
+  if(!tag)return '';
+  if(tag==='custom'){
+    if(!note||!note.trim())return '';
+    return `<div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent-bright);border-radius:6px;margin-bottom:10px;font-size:.78rem;color:var(--sub);line-height:1.7">📍 <b style="color:var(--accent)">「${note.trim().slice(0,60)}」</b>가 가장 큰 화두시죠. 본인의 그 결을 이 카드에서 깊이 풀어드려요.</div>`;
+  }
+  const m=CONTEXT_OPENER[cat]&&CONTEXT_OPENER[cat][tag];
+  if(!m)return '';
+  return `<div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent-bright);border-radius:6px;margin-bottom:10px;font-size:.78rem;color:var(--sub);line-height:1.7">📍 <b style="color:var(--accent)">${m.label}</b>이 가장 알고 싶으시죠. 본인의 그 결을 이 카드에서 깊이 풀어드려요.</div>`;
 }
 // ══════════════════════════════════════════════
 //  지정일 운세 (DAYPICK) — 확장판
@@ -3680,6 +3609,11 @@ function renderDaypickFortune(saju,y,m,d,extra){
   const _ctxTag=(extra&&extra.contextTag)||'';
   const _ctxNote=(extra&&extra.contextNote)||'';
   const _ctxHtml=getContextOpener('daypick',_ctxTag,_ctxNote);
+  // 사용자 선택 태그 → 강조할 카드 매핑 (daypick)
+  const _dpCardTag={
+    job:'CAREER', meet:'LOVE', money:'WEALTH', health:'HEALTH', move:'HOUR'
+  };
+  const _primaryDpCard=_dpCardTag[_ctxTag]||'';
   // 점수 링 헤로 카드 (일일운세 스타일)
   let h=_ctxHtml+`<div class="daily-card">
     <div class="daily-date">${y}년 ${m}월 ${d}일 (${wDay}요일)</div>
@@ -3742,17 +3676,17 @@ function renderDaypickFortune(saju,y,m,d,extra){
        stemTG==='겁재'?'<b>충동 결제·동업 자금·도박성 투자</b> — 24시간 룰':stemTG==='편관'?'<b>무리한 도전·정면 충돌·시비</b>':stemTG==='상관'?'<b>윗사람과의 마찰·반박</b> — 톤 한 단계 부드럽게':'평소보다 한 톤 신중하게',
        (()=>{const k=rel.kind;if(k==='충')return '<b>장거리 이동·결혼·계약</b> — 충이 들어 변동성 큼';if(k==='원진')return '<b>가까운 사람과의 사소한 시비·고백·민감한 대화</b> — 원진은 미묘하게 거슬리는 결';if(k==='형')return '<b>시비·법적 마찰·과거 들춤</b> — 형살이 들어 갈등 확대';if(k==='파')return '<b>마무리·잔금·약속 변경</b> — 파 작용으로 어긋남';if(k==='해')return '<b>구설·말 옮김·제3자 개입</b> — 해 작용으로 지연·방해';if(k==='자형')return '<b>혼자 갇혀 우울·집착에 빠지는 일</b> — 자형 작용으로 내면 모순 공명';return '큰 변동을 일으키는 결정 한 박자 미루기';})(),
        '본인 약한 오행 보강 식단 — 무리한 활동보다 회복 챙기기'
-     ]});
+     ]}, _primaryDpCard==='TOTAL');
 
   // ── 재물
-  let wBody=`<p>${y}/${m}/${d}의 재물 점수는 <b>${f.wealth}점</b>입니다. 본인 일간 ${myStemKo}${ip(myStemKo)} 그날 천간 ${dpStemKo}${eul(dpStemKo)} ${stemTG}${ro(stemTG)} 만나는 결에서, 재성의 색채는 ${stemTG==='정재'||stemTG==='편재'?'직접 표면에 드러나는':stemTG==='겁재'?'위협받는':'간접적으로 작용하는'} 흐름입니다.</p>`;
+  let wBody=(_primaryDpCard==='WEALTH'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 재물 점수는 <b>${f.wealth}점</b>입니다. 본인 일간 ${myStemKo}${ip(myStemKo)} 그날 천간 ${dpStemKo}${eul(dpStemKo)} ${stemTG}${ro(stemTG)} 만나는 결에서, 재성의 색채는 ${stemTG==='정재'||stemTG==='편재'?'직접 표면에 드러나는':stemTG==='겁재'?'위협받는':'간접적으로 작용하는'} 흐름입니다.</p>`;
   wBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 일진의 천간이 본인 일간 기준 재물의 결인지, 그리고 일지 합·충 작용이 어떤 결을 만드는지를 봅니다.</div>`;
   wBody+=`<p>${stemTG==='정재'?'정재의 날 — 정기적·예측 가능한 재물 활동에 매우 길해요. 월급·예금·정기 지급·꾸준히 쌓아온 거래의 결실이 들어오는 날이며, 가계부 정리·예산 점검·세금 정산·정기 결제 점검에 알맞은 결이에요.':stemTG==='편재'?'편재의 날 — 큰 흐름의 활동 재물에 결이 좋아요. 영업·미팅·새로운 거래·이동을 동반한 비즈니스에 길해요. 다만 큰 흐름의 돈인 만큼 한 번에 결정하지 말고 한도를 미리 정해두세요.':stemTG==='겁재'?'겁재의 날 — 충동 결제·동업 자금 거래·고가품 구매·도박성 투자를 가장 경계해야 하는 날입니다. 한 번 더 생각하는 24시간 룰을 적용하세요. 친한 사이의 금전 거래일수록 명확한 기록이 필요해요.':stemTG==='비견'?'비견의 날 — 동료·친구와의 금전 거래보다 자기 자산 점검에 무게를 두세요. 동업 미팅이라면 본인 입장과 한도를 미리 정리하고 들어가세요.':stemTG==='식신'||stemTG==='상관'?'식상의 날 — 본인의 표현·창작·재능을 통한 수입에 결이 좋아요. 콘텐츠·강연·작품 발표 등 자기 표현으로 돈이 생기는 통로를 활용하세요.':stemTG==='정관'||stemTG==='편관'?'관성의 날 — 직접 재물보다 책임·공식 자리·승진의 결과로서 재물이 따라오는 결입니다. 공식 결재·세금·공적 지출 처리에 길해요.':'인성의 날 — 직접 재물보다 학습·자격·전문성 투자에 결이 좋은 날입니다. 단기 수익보다 장기 자산을 다지는 데 시간을 쓰세요.'}</p>`;
   wBody+=`<p>${(()=>{const k=rel.kind;if(k==='합'||k==='반합'||k==='반합약')return '일지 '+(k==='합'?'육합':'반합')+'으로 거래·계약·교섭에 부드러움이 깃들어, 미뤄둔 협상이나 정리가 필요한 거래를 진행하기에 적합해요.';if(k==='충')return '일지 충으로 큰 거래·자산 매각·이동을 동반한 결정은 변동성이 큰 날입니다. 큰 흐름의 돈은 다른 날로 미루는 게 안전합니다.';if(k==='원진')return '일지 원진살이 들어, 가까운 사람과의 금전 거래에서 「말 못 할 거슬림」이 누적될 수 있는 날입니다. 동업 자금·친분 거래는 명확한 기록과 한 박자 거리감이 필요해요.';if(k==='형')return '일지 형살이 들어, 시비·법적 마찰·소송성 거래에 매우 주의해야 하는 날입니다. 계약서 조항을 한 번 더 검토하세요.';if(k==='파')return '일지 파가 들어, 마무리·잔금 처리에서 어긋남이 생기기 쉬운 날입니다. 결제·송금은 한 번 더 확인하세요.';if(k==='해')return '일지 해가 들어, 은근한 방해·구설로 거래가 늦어질 수 있는 날입니다. 마진 시간을 넉넉히 두고 진행하세요.';return '일지에 강한 합·충이 없어 평이한 재물 흐름의 날 — 평소 패턴대로 움직이세요.';})()}</p>`;
   wBody+=`<p>본인 사주에서 가장 강한 오행은 <em>${OHNAME[dom]}</em>이고 가장 약한 오행은 <em>${OHNAME[weak]}</em>입니다. ${OHNAME[weak]} 영역(${weak===0?'친환경·식품·교육':weak===1?'에너지·미디어·디자인':weak===2?'부동산·서비스':weak===3?'금융·기계·의료':'유체·물류·해외'})과 연결된 거래일수록 본인 결에 맞아 결실이 커요.</p>`;
   h+=paidWrapBody('WEALTH','💰','재물 흐름',wBody,
     {good:`${stemTG==='정재'||stemTG==='편재'?'재성이 직접 들어오는 날이므로 미뤄둔 거래·계약·미팅을 적극 진행':stemTG==='식신'||stemTG==='상관'?'본인의 재능·표현으로 수익을 만드는 활동에 무게':'평이한 흐름이므로 자기 패턴을 유지하되, 정리·점검에 시간을 투자'}하면 결실이 커요.`,
-     warn:`${stemTG==='겁재'?'충동 결제·동업 자금·고가품 구매를 가장 경계 — 24시간 룰 적용':rel.kind==='충'?'일지 충이 들어 큰 거래·자산 매각·이동 동반 결정은 미루기':rel.kind==='원진'?'일지 원진 — 친분 거래·동업 자금은 명확한 기록과 거리감 유지':rel.kind==='형'?'일지 형살 — 계약 조항·법적 분쟁 가능성 한 번 더 검토':rel.kind==='파'?'일지 파 — 잔금·결제·송금에서 어긋남 주의':rel.kind==='해'?'일지 해 — 은근한 방해·구설로 지연 가능, 마진 시간 확보':'평이한 흐름이지만 한도와 예산은 미리 정해두세요'}`});
+     warn:`${stemTG==='겁재'?'충동 결제·동업 자금·고가품 구매를 가장 경계 — 24시간 룰 적용':rel.kind==='충'?'일지 충이 들어 큰 거래·자산 매각·이동 동반 결정은 미루기':rel.kind==='원진'?'일지 원진 — 친분 거래·동업 자금은 명확한 기록과 거리감 유지':rel.kind==='형'?'일지 형살 — 계약 조항·법적 분쟁 가능성 한 번 더 검토':rel.kind==='파'?'일지 파 — 잔금·결제·송금에서 어긋남 주의':rel.kind==='해'?'일지 해 — 은근한 방해·구설로 지연 가능, 마진 시간 확보':'평이한 흐름이지만 한도와 예산은 미리 정해두세요'}`}, _primaryDpCard==='WEALTH');
 
   // ── 연애·관계
   const lBody2=(()=>{
@@ -3770,7 +3704,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
       '파':'<b style="color:#d4a849">파</b> — 마무리가 흔들리는 결',
       '해':'<b style="color:#d4a849">해</b> — 은근한 방해·구설의 결'
     };
-    let b=`<p>${y}/${m}/${d}의 연애·관계 점수는 <b>${f.love}점</b>입니다. 본인 일지 <em>${myBrKo}</em>(배우자궁)와 그날 일지 <em>${dpBrKo}</em>의 관계가 ${kindLabelMap[k]||'평이한 결'}입니다.</p>`;
+    let b=(_primaryDpCard==='LOVE'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 연애·관계 점수는 <b>${f.love}점</b>입니다. 본인 일지 <em>${myBrKo}</em>(배우자궁)와 그날 일지 <em>${dpBrKo}</em>의 관계가 ${kindLabelMap[k]||'평이한 결'}입니다.</p>`;
     b+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 일지(배우자궁)와 그날 일지의 합·충·원진·형·파·해 관계를 모두 살핍니다. 또한 그날 천간 십신이 ${gender==='male'?'재성(아내)':'관성(남편)'}인지도 함께 봅니다.</div>`;
     b+=miniManseWithPointer(saju,'day','↑ 일주의 지지(일지)가 배우자궁 — 그날 일지와 직접 만남');
     if(k==='합'||k==='반합'||k==='반합약'){
@@ -3802,27 +3736,27 @@ function renderDaypickFortune(saju,y,m,d,extra){
   const _warnLoveMap={'충':'큰 결정(이별·결혼·동거)은 다른 날로. 다툼이 생기면 즉답하지 말고 24시간 룰 적용.','원진':'민감한 대화·고백·결정은 미루기. 가까운 사람의 사소한 말투에 예민해지지 말 것.','형':'시비·과거 들춤·언쟁 주의 — 상대의 아픈 자리는 절대 말로 짚지 않기.','파':'약속 변경·잔금·정산 어긋남 주의 — 동선을 단순하게.','해':'구설·말 옮김 주의 — 입조심·말조심으로 풀리는 결.','자형':'본인 컨디션 살피기 — 외부 자극으로 내면 결 풀어주기.'};
   h+=paidWrapBody('LOVE','💕','연애·관계',lBody2,
     {good:_goodLove,
-     warn:_warnLoveMap[_kk]||'관계에서 본인의 자기 주장만 고집하지 말고 한 톤 부드럽게.'});
+     warn:_warnLoveMap[_kk]||'관계에서 본인의 자기 주장만 고집하지 말고 한 톤 부드럽게.'}, _primaryDpCard==='LOVE');
 
   // ── 직업·관운
-  let cBody2=`<p>${y}/${m}/${d}의 직업·관운 점수는 <b>${f.career}점</b>입니다. 본인 일간 ${myStemKo} 기준 그날 천간 ${dpStemKo}${ip(dpStemKo)} <b>${stemTG}</b>이라는 건, ${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어오는 결 — 책임·공식·승진·면접 무게가 표면화':stemTG==='상관'?'창의·표현이 강해지는 결 — 두각은 보이지만 권위와의 마찰 가능':stemTG==='식신'?'사람과 함께 일하는 자리에 결이 좋은 날':stemTG==='정인'||stemTG==='편인'?'학습·자료 정리·인허가 처리에 결이 좋은 날':'평이한 직업 흐름의 날'}입니다.</p>`;
+  let cBody2=(_primaryDpCard==='CAREER'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 직업·관운 점수는 <b>${f.career}점</b>입니다. 본인 일간 ${myStemKo} 기준 그날 천간 ${dpStemKo}${ip(dpStemKo)} <b>${stemTG}</b>이라는 건, ${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어오는 결 — 책임·공식·승진·면접 무게가 표면화':stemTG==='상관'?'창의·표현이 강해지는 결 — 두각은 보이지만 권위와의 마찰 가능':stemTG==='식신'?'사람과 함께 일하는 자리에 결이 좋은 날':stemTG==='정인'||stemTG==='편인'?'학습·자료 정리·인허가 처리에 결이 좋은 날':'평이한 직업 흐름의 날'}입니다.</p>`;
   cBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 천간 십신이 관성·식상·인성 중 어느 결인지를 핵심으로 봅니다. 본인 사주 유형 ${gk.name}의 결도 함께 작용해요.</div>`;
   cBody2+=`<p>${stemTG==='정관'?'<b>① 공식 자리에 길한 날</b><br>발표·결재·승인·면접·시상·승진 보고에 가장 결이 좋아요. 평소보다 격식·디테일·문서 정확성에 신경 쓰면 결실이 커요. 미뤄둔 공식 절차가 있다면 오늘 처리하세요.':stemTG==='편관'?'<b>① 도전·압박이 들어오는 날</b><br>경쟁·시험·승진 압박·도전적 미팅에 무게가 실립니다. 정면 돌파보다 측면 우회 — 강한 사람 앞에서는 한 걸음 양보가 진짜 승리입니다.':stemTG==='상관'?'<b>① 창의·표현이 빛나는 날</b><br>기획·콘텐츠·강연·창작 활동에 빛나지만 권위(상사·규율)와의 마찰이 일어납니다. 표현 톤을 한 단계 부드럽게 가져가면 결을 그대로 살릴 수 있어요.':stemTG==='식신'?'<b>① 협업·소통이 빛나는 날</b><br>사람과 함께 일하는 자리·점심 미팅·팀 회의에 결이 좋아요. 자기 단독 결정보다 협업으로 풀어가세요.':stemTG==='편재'?'<b>① 영업·이동·외근의 날</b><br>외부 영업·미팅·새 거래·이동을 동반한 비즈니스에 결이 좋아요. 발이 부지런할수록 결실이 커요.':stemTG==='정재'?'<b>① 정리·점검이 결이 좋은 날</b><br>새 시작보다 미뤄둔 정리·점검·문서 처리에 결이 좋은 날입니다.':stemTG==='정인'?'<b>① 학습·자격에 빛나는 날</b><br>학습·자격·시험·문서·인허가 처리에 매우 결이 좋아요. 어른·멘토에게 조언을 청하기 좋은 날.':stemTG==='편인'?'<b>① 전문 학습이 깊어지는 날</b><br>전문 분야 깊이 있는 학습·연구·자기 점검에 결이 좋아요.':'<b>① 자기 결정이 빛나는 날</b><br>본인 색깔이 강해지는 날 — 자기 결정에 자신감을 가지세요.'}</p>`;
   cBody2+=`<p>② <b>본인 사주 유형 ${gk.name}의 결</b><br>${gk.desc}. 그날 ${stemTG}의 색채가 본인 격국의 ${OHNAME[ys.main]===OHNAME[dpStemOh]?'용신을 직접 보강':OHNAME[ys.main]===OHNAME[(dpStemOh+2)%5]?'용신을 극하는':'평이한'} 결로 작용해요.</p>`;
   cBody2+=`<p>③ <b>이직·면접 결정 시</b><br>${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어와 면접·승진·이직 결정에 매우 길해요. 미뤄둔 결정이 있다면 오늘 행동에 옮기세요.':rel.kind==='충'?'일지 충이 들어 변동의 결이 큰 날 — 이직 결정은 한 호흡 더 살핀 후에.':'평이한 흐름이므로 평소 페이스를 유지하세요.'}</p>`;
   h+=paidWrapBody('CAREER','🏛️','직업·관운',cBody2,
     {good:`${stemTG==='정관'||stemTG==='편관'?'공식 자리·면접·승진 보고 등 관운 활동에 결이 가장 잘 맞는 날':stemTG==='상관'||stemTG==='식신'?'창의·표현·협업 활동에 결이 좋습니다 — 본인 색깔을 한 줄 정리해 발신하세요':'평이한 흐름이므로 정리·점검에 시간을 투자'} 하세요.`,
-     warn:`${stemTG==='상관'?'권위와의 마찰을 가장 경계 — 톤을 한 단계 부드럽게':stemTG==='편관'?'압박이 큰 날 — 정면 돌파보다 측면 우회':rel.kind==='충'?'큰 결정·이직·창업 개시는 다른 날로':'본인 페이스를 유지하되 무리한 도전은 미루기'}`});
+     warn:`${stemTG==='상관'?'권위와의 마찰을 가장 경계 — 톤을 한 단계 부드럽게':stemTG==='편관'?'압박이 큰 날 — 정면 돌파보다 측면 우회':rel.kind==='충'?'큰 결정·이직·창업 개시는 다른 날로':'본인 페이스를 유지하되 무리한 도전은 미루기'}`}, _primaryDpCard==='CAREER');
 
   // ── 건강
-  let hBody2=`<p>${y}/${m}/${d}의 건강 점수는 <b>${f.health}점</b>입니다. 본인 사주의 가장 강한 오행은 <em>${OHNAME[dom]}</em>, 약한 오행은 <em>${OHNAME[weak]}</em>입니다.</p>`;
+  let hBody2=(_primaryDpCard==='HEALTH'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 건강 점수는 <b>${f.health}점</b>입니다. 본인 사주의 가장 강한 오행은 <em>${OHNAME[dom]}</em>, 약한 오행은 <em>${OHNAME[weak]}</em>입니다.</p>`;
   hBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 오행 균형 + 그날 일진의 오행 작용을 함께 봅니다. 그날 일진이 본인의 약한 오행을 보강하는지, 아니면 강한 오행을 더 자극하는지가 핵심입니다.</div>`;
   hBody2+=`<p>① <b>그날 일진의 오행 작용</b><br>그날 천간 ${dpStemKo}은 ${OHNAME[dpStemOh]}, 지지 ${dpBrKo}는 ${OHNAME[dpBrOh]}입니다. ${OHNAME[dpStemOh]===OHNAME[weak]||OHNAME[dpBrOh]===OHNAME[weak]?'본인의 약한 오행 '+OHNAME[weak]+'을 보강하는 결 — 컨디션 회복에 좋은 날입니다.':OHNAME[dpStemOh]===OHNAME[dom]||OHNAME[dpBrOh]===OHNAME[dom]?'본인의 강한 오행 '+OHNAME[dom]+'을 더 강화하는 결 — 과로·강한 자극을 피하세요.':'평이한 결로, 본인 페이스 유지에 좋은 날입니다.'}</p>`;
   hBody2+=`<p>② <b>장부와 식단</b><br>약한 오행 ${OHNAME[weak]}${ohEun(weak)} ${weak===0?'간·담·근육·시력':weak===1?'심장·소장·혈액순환':weak===2?'위장·비장·소화기':weak===3?'폐·대장·면역':'신장·방광·생식기'} 영역과 연결돼요. 보강 식단으로 ${weak===0?'녹색 채소·신맛 과일·견과':weak===1?'붉은 식재료·쓴맛 야채·구운 음식':weak===2?'단호박·고구마·곡류·달콤한 뿌리채소':weak===3?'흰 식재료·매운 향신료·생강':'검은콩·해조류·짠 발효식'}을 추가하세요.</p>`;
   hBody2+=`<p>③ <b>그날 주의 영역</b><br>${rel.kind==='충'?'일지 충이 들어 스트레스성 두통·근육 긴장·소화 문제가 평소보다 잦습니다. 무리한 운동·장거리 운전을 줄이세요.':stemTG==='편관'?'편관의 압박 기운으로 스트레스성 증상이 올라올 수 있어요. 명상·산책·심호흡으로 풀어주세요.':'큰 변동 없는 평이한 흐름.'}</p>`;
   h+=paidWrapBody('HEALTH','🌿','건강·컨디션',hBody2,
     {good:`용신 ${OHNAME[ys.main]}${ohEul(ys.main)} 보강하는 ${['신맛·녹색','쓴맛·붉은','단맛·뿌리','매운맛·흰','짠맛·검은'][ys.main]} 음식을 식단에 추가하면 컨디션이 살아납니다. ${weak===0?'산책·등산':weak===1?'운동·요가':weak===2?'명상·정원 가꾸기':weak===3?'필라테스·정리 정돈':'수영·독서'}로 약한 영역을 보강하세요.`,
-     warn:`사주의 건강 풀이는 체질의 경향성일 뿐, 실제 진단은 전문의 상담이 필수입니다.`});
+     warn:`사주의 건강 풀이는 체질의 경향성일 뿐, 실제 진단은 전문의 상담이 필수입니다.`}, _primaryDpCard==='HEALTH');
 
   // ── 공부·문서
   let stBody2=`<p>${y}/${m}/${d}의 공부·문서 점수는 <b>${Math.round((f.career+f.total)/2)}점</b>입니다. 본인 사주 유형 ${gk.name}과 그날 결이 학습·시험에 ${stemTG==='정인'||stemTG==='편인'?'직접 길운으로 작용':stemTG==='상관'?'창의·논술형에 길 (객관식은 한 번 더 검토)':'평이한 흐름으로 작용'}하는 날입니다.</p>`;
@@ -3831,11 +3765,19 @@ function renderDaypickFortune(saju,y,m,d,extra){
   h+=paidWrapBody('STUDY','📚','공부·문서',stBody2);
 
   // ── 시간대
-  let hourBody='<p>그날 12지지 시간대(시진)별 흐름입니다. 본인 일지(' +myBrKo+ ')와 그날 일지(' +dpBrKo+ ')의 합·충 작용으로 시간대마다 결이 다릅니다.</p>';
-  hourCards.forEach(g=>{
-    hourBody+=`<p><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시 (${HOUR_RANGES[g.bi]})</b><br>${g.note}</p>`;
-  });
-  h+=paidWrapBody('HOUR','⏰','12지지 시간대 가이드',hourBody);
+  let hourBody=(_primaryDpCard==='HOUR'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+'<p>그날 12지지 시간대(시진)별 흐름입니다. 본인 일지(' +myBrKo+ ')와 그날 일지(' +dpBrKo+ ')의 합·충 작용으로 시간대마다 결이 다릅니다.</p>';
+  // 사용자 맥락별 추천 시간대 (옵션 C 매칭 시만)
+  if(_ctxTag&&_ctxTag!=='custom'){
+    const luckyHours=hourCards.filter(g=>g.kind==='길시').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
+    const cautionHours=hourCards.filter(g=>g.kind==='주의').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
+    const ctxActMap={
+      job:'직장 미팅·면접·결재', meet:'사람 만남·약속·소개', money:'금전 거래·결제·계약',
+      health:'운동·치료·진료', move:'이동·출발·여행 출발'
+    };
+    const actLabel=ctxActMap[_ctxTag]||'본인이 가장 알고 싶은 활동';
+    hourBody+=`<p style="margin-top:10px;padding:10px 12px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent-bright);border-radius:6px"><b>📍 「${CONTEXT_OPENER.daypick[_ctxTag]?CONTEXT_OPENER.daypick[_ctxTag].label:_ctxTag}」 활동을 위한 추천 시간</b><br>${luckyHours.length?`<b style="color:var(--wood)">길시 — ${luckyHours.join(', ')}</b> 에 ${actLabel}을 배치하시면 결이 가장 좋아요.`:'평이한 시간대 흐름 — 본인이 가능한 시간에 진행하셔도 결이 무난해요.'}${cautionHours.length?`<br><b style="color:var(--fire)">주의시 — ${cautionHours.join(', ')}</b> 는 ${actLabel}을 가급적 피하시는 게 좋아요.`:''}</p>`;
+  }
+  h+=paidWrapBody('HOUR','⏰','12지지 시간대 가이드',hourBody,null,_primaryDpCard==='HOUR');
 
   // ── 활동 매트릭스
   const actRecommend=[], actAvoid=[];
@@ -3974,9 +3916,14 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   const _ctxTag=(extra&&extra.contextTag)||'';
   const _ctxNote=(extra&&extra.contextNote)||'';
   const _ctxHtml=getContextOpener('monthly',_ctxTag,_ctxNote);
+  // 사용자 선택 태그 → 강조할 분야 평균 카드 매핑 (monthly)
+  const _moCardTag={
+    job:'AVG 직업·관운', love:'AVG 연애·관계', money:'AVG 재물', health:'AVG 건강', relation:'AVG 연애·관계'
+  };
+  const _primaryMoCard=_moCardTag[_ctxTag]||'';
   // 점수 링 헤로 (기간 평균 점수)
   let h=_ctxHtml+`<div class="daily-card">
-    <div class="daily-date">📆 ${sy}년 ${sm}월 ~ ${ey}년 ${em}월</div>
+    <div class="daily-date">${sy}년 ${sm}월 ~ ${ey}년 ${em}월</div>
     <div class="daily-score-ring" style="border-color:${avgGrade.color};background:${avgGrade.bg}">
       <div class="daily-score-num" style="color:${avgGrade.color}">${avgTotal}</div>
       <div class="daily-score-lab">${totalMonths}개월 평균</div>
@@ -4094,8 +4041,11 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   const fieldDeep=(emoji,name,key,bodyExtra)=>{
     const sc=avg(key);
     const g=dailyGrade(sc);
-    let b=`<p>${sy}.${sm} ~ ${ey}.${em} 기간의 <b>${name} 평균 점수는 ${sc}점</b>(${g.lab})입니다.</p>${bodyExtra}`;
-    return paidWrapBody(`AVG ${name}`,emoji,`${name} 흐름 — ${totalMonths}개월 종합`,b);
+    const catKey=`AVG ${name}`;
+    const isPrimary=_primaryMoCard===catKey;
+    const callOut=isPrimary?ctxCallOut('monthly',_ctxTag,_ctxNote):'';
+    let b=callOut+`<p>${sy}.${sm} ~ ${ey}.${em} 기간의 <b>${name} 평균 점수는 ${sc}점</b>(${g.lab})입니다.</p>${bodyExtra}`;
+    return paidWrapBody(catKey,emoji,`${name} 흐름 — ${totalMonths}개월 종합`,b,null,isPrimary);
   };
   h+=fieldDeep('💰','재물','wealth',
     `<p>이 기간의 재물 흐름은 ${monthsData.filter(o=>o.sc.wealth>=70).map(o=>`${o.mm}월`).join(', ')||'특별히 두드러지는 달 없음'}에 결이 가장 좋고, ${monthsData.filter(o=>o.sc.wealth<=45).map(o=>`${o.mm}월`).join(', ')||'주의 시기는 없음'}에 한 박자 살피는 게 좋아요.</p><p>본인 사주에서 약한 오행 ${OHNAME[weak]} 영역과 연결되는 거래·자산이 결에 잘 맞으며, 큰 흐름의 돈 결정은 길월 위주로 배치하세요.</p>`);
@@ -4110,6 +4060,17 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   let critBody=`<p>${totalMonths}개월 중 결이 가장 강한 시기는 <b>${decisive.yy}년 ${decisive.mm}월</b>(${decisive.sc.total}점, ${dailyGrade(decisive.sc.total).lab})입니다. 월주는 <em>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</em>이며, 본인 일간 ${myStemKo} 기준 <b>${decisive.sc.tg}</b>의 색채로 들어와요.</p>`;
   critBody+=`<p>이 달은 다음 활동에 가장 결이 잘 맞습니다 — ${decisive.sc.tg==='정관'?'면접·승진·결재·공식 자리':decisive.sc.tg==='편재'?'영업·새 거래·외부 활동':decisive.sc.tg==='식신'?'관계·협업·소통':decisive.sc.tg==='상관'?'창작·기획·발표':decisive.sc.tg==='정인'?'학습·자격·문서 처리':decisive.sc.tg==='정재'?'정리·점검·예산 정비':'본인 결의 한 발 더 깊은 표현'}.</p>`;
   critBody+=`<p>이 달의 가장 좋은 일진은 ${(_bestDayInMonth(saju,decisive.yy,decisive.mm)[0]||{d:'?'}).d}일입니다. ${totalMonths}개월에 한 번 있는 결정적 시기를 놓치지 마세요.</p>`;
+  // 사용자 맥락별 추천 시기 — 옵션 C 선택 시 분야별 베스트 시기 별도 추천
+  if(_ctxTag&&_ctxTag!=='custom'){
+    const ctxFieldMap={job:'career', love:'love', money:'wealth', health:'health', relation:'love'};
+    const ctxKey=ctxFieldMap[_ctxTag];
+    if(ctxKey){
+      const sortedByField=[...monthsData].sort((a,b)=>b.sc[ctxKey]-a.sc[ctxKey]);
+      const ctxTop=sortedByField.slice(0,Math.min(2,Math.ceil(totalMonths/3)));
+      const ctxLabel=CONTEXT_OPENER.monthly[_ctxTag]?CONTEXT_OPENER.monthly[_ctxTag].label:_ctxTag;
+      critBody+=`<div style="margin-top:14px;padding:12px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent-bright);border-radius:8px"><b style="color:var(--accent)">📍 「${ctxLabel}」에 가장 결이 좋은 시기</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">본인이 가장 알고 싶다고 선택하신 영역만 따로 보면, ${ctxTop.map(o=>`<b>${o.yy}.${String(o.mm).padStart(2,'0')}월(${o.sc[ctxKey]}점)</b>`).join(', ')}이 가장 결이 좋아요. 「${ctxLabel}」 관련 큰 결정은 가능하면 이 시기에 배치하세요.</span></div>`;
+    }
+  }
   h+=paidWrapBody('CRITICAL','🎯','결정적 시기 — 가장 결이 강한 달',critBody);
 
   // ── 통합 가이드 + 고전
@@ -4133,7 +4094,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
 // ══════════════════════════════════════════════
 //  신년운세 (NEWYEAR)
 // ══════════════════════════════════════════════
-function renderNewyearFortune(saju,y,extra){
+function renderNewyearFortune(saju,y){
   const yp=yearPillar(y,6,1,12,0);
   const ypStem=yp.stem, ypBranch=yp.branch;
   const ypStemKo=STEMKO[ypStem], ypBrKo=BRCHKO[ypBranch];
@@ -4293,12 +4254,8 @@ function renderNewyearFortune(saju,y,extra){
     return [...k].slice(0,5);
   })();
 
-  // 옵션 C — 사용자 맥락 선택 헤더
-  const _nyCtxTag=(extra&&extra.contextTag)||'';
-  const _nyCtxNote=(extra&&extra.contextNote)||'';
-  const _nyCtxHtml=getContextOpener('newyear',_nyCtxTag,_nyCtxNote);
   // 점수 링 헤로
-  let h=_nyCtxHtml+`<div class="daily-card">
+  let h=`<div class="daily-card">
     <div class="daily-date">🎉 ${y}년 신년운세</div>
     <div class="daily-score-ring" style="border-color:${grade.color};background:${grade.bg}">
       <div class="daily-score-num" style="color:${grade.color}">${total}</div>
@@ -5608,10 +5565,10 @@ function unlockAndRender(category){
     renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra));
     gotoCard(3);
   }else if(category==='newyear'){
-    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y,_meta.nyExtra));
+    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
     gotoCard(4);
   }else if(category==='life'){
-    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra));
+    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
     gotoCard(5);
   }else if(category==='gunghap'){
     renderTarget('p6',renderGunghapPaid(_saju,_meta.gnExtra));
@@ -6046,7 +6003,7 @@ function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
   return h;
 }
 
-function renderSajuPaid(saju,sy,sm,sd,sh,smin,extra){
+function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const oh=ohCount(saju);
   const dm=DM[saju.dp.stem];
   const ys=getYongsin(oh);
@@ -6071,11 +6028,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin,extra){
   const _userStageLabel=stageLabelOf(_userAge);
 
   let h='';
-
-  // 옵션 C — 사용자 맥락 선택 헤더 (life)
-  const _lifeCtxTag=(extra&&extra.contextTag)||'';
-  const _lifeCtxNote=(extra&&extra.contextNote)||'';
-  h+=getContextOpener('life',_lifeCtxTag,_lifeCtxNote);
 
   // 용어 안내(💡)는 결과 헤더 직후에 일괄 삽입됨 — 본문에서는 제거
 
@@ -7159,9 +7111,11 @@ async function downloadLifeSummary(fmt){
   }
 }
 
-function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn){
-  let h=`<div class="nb-card">
-    <div class="nb-cat">${catLabel}</div>
+function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
+  const cls='nb-card'+(isPrimary?' primary':'');
+  const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역</div>`:'';
+  let h=`<div class="${cls}">
+    ${badge}<div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}</div>
     <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
@@ -9274,9 +9228,6 @@ function renderNamePaid(saju, nmExtra){
 
   let h='';
 
-  // 옵션 C — 사용자 맥락 선택 헤더 (name)
-  h+=getContextOpener('name',nmExtra.contextTag||'',nmExtra.contextNote||'');
-
   // ── 카드 ①: 종합 점수 + 등급
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
@@ -9651,10 +9602,7 @@ function renderGunghapPaid(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
   const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
 
-  // 옵션 C — 사용자 맥락 선택 헤더 (gunghap)
-  const _ggCtxHtml=getContextOpener('gunghap',gnExtra.contextTag||'',gnExtra.contextNote||'');
-
-  let h=_ggCtxHtml;
+  let h='';
   // 1) 종합 점수 + 4축 세부 점수 + 종합 해석 + 일주 비교 — 기존 풍부한 결과
   h+=renderGunghapResult(saju1, saju2, result);
 
@@ -10118,8 +10066,7 @@ function analyze(){
   }else if(cat==='newyear'){
     const y=parseInt(document.getElementById('nyY').value)||0;
     if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.','nyY');
-    const ctx=readCtx('Newyear');
-    nyExtra={y,contextTag:ctx.tag,contextNote:ctx.note};
+    nyExtra={y};
   }else if(cat==='gunghap'){
     const gy=parseInt(document.getElementById('gnY').value)||0;
     const gm=parseInt(document.getElementById('gnM').value)||0;
@@ -10130,8 +10077,7 @@ function analyze(){
     if(!gm||gm<1||gm>12)return showErr('상대방 월(1~12)을 입력해주세요.','gnM');
     if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
     if(isNaN(gh))gh=-1;
-    const ctx=readCtx('Gunghap');
-    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,contextTag:ctx.tag,contextNote:ctx.note};
+    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap};
   }else if(cat==='name'){
     const surname=(document.getElementById('nmSurname').value||'').trim();
     const given=(document.getElementById('nmGiven').value||'').trim();
@@ -10153,11 +10099,7 @@ function analyze(){
     ['surname','given1','given2'].forEach(k=>{
       if(han[k]&&!strokes[k]&&HAN_STROKES[han[k]])strokes[k]=HAN_STROKES[han[k]];
     });
-    const ctx=readCtx('Name');
-    window._nmExtra={surname,given,han,strokes,contextTag:ctx.tag,contextNote:ctx.note};
-  }else if(cat==='life'){
-    const ctx=readCtx('Life');
-    window._lifeExtra={contextTag:ctx.tag,contextNote:ctx.note};
+    window._nmExtra={surname,given,han,strokes};
   }
 
   // 진태양시 보정 (시간 입력했을 때만)
@@ -10227,7 +10169,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,lifeExtra:window._lifeExtra||null,mbti,gender};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
@@ -10287,7 +10229,7 @@ function analyze(){
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderNewyearFortune(saju,nyExtra.y,nyExtra)
+          ?termTip+renderNewyearFortune(saju,nyExtra.y)
           :renderPaidLock('newyear',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
@@ -10295,7 +10237,7 @@ function analyze(){
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min,_meta.lifeExtra)
+          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
           :renderPaidLock('life',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
