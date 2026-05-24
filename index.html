@@ -1391,26 +1391,41 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 이름풀이·작명 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraName" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">✒️</span><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
-        <div class="cat-extra-desc">한글 발음 + 한자 + 획수까지 입력하면 정통 성명학 기준 4격(원형이정)·81수리 길흉까지 함께 풀어드려요. 한자를 모르시면 한글만 입력하셔도 한글 자모 오행으로 분석돼요.</div>
+        <div class="cat-extra-desc">한글 이름을 입력하면 각 글자에 맞는 한자 후보가 자동으로 나와요. 한자를 선택하시면 획수도 자동으로 채워져요. 정통 작명학 기준 한글 자모 오행 + 한자 자원오행 + 4격(원형이정) + 81수리 길흉을 모두 풀어드려요.</div>
         <div class="row3">
-          <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off"></div>
-          <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off"></div>
+          <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off" oninput="_onNameHangulChange('surname')"></div>
+          <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off" oninput="_onNameHangulChange('given')"></div>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
-          <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:8px">한자 입력 <small style="color:var(--muted);font-weight:400">(선택사항 · 정확한 풀이를 위해 권장)</small></div>
-          <div class="row3" style="margin-bottom:6px">
-            <div class="ig" style="flex:1"><label for="nmSurnameHan">성씨 한자</label><input type="text" id="nmSurnameHan" placeholder="金" maxlength="2" autocomplete="off" oninput="onHanInput('nmSurnameHan','nmSurnameStroke')"></div>
-            <div class="ig" style="flex:1"><label for="nmSurnameStroke">획수</label><input type="text" id="nmSurnameStroke" placeholder="8" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:4px">한자 선택 <small style="color:var(--muted);font-weight:400">(한글 입력하면 후보가 자동으로 채워져요)</small></div>
+          <div style="font-size:.66rem;color:var(--muted);margin-bottom:8px;line-height:1.6">아래 드롭다운에서 한자를 선택하시면 획수까지 자동으로 채워져요. 한자가 후보에 없으면 직접 한자 칸에 입력하시면 됩니다.</div>
+          <!-- 성씨 -->
+          <div style="margin-bottom:8px">
+            <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">성씨</div>
+            <div class="row3" style="gap:6px">
+              <div class="ig" style="flex:1.8"><label for="nmSurnameSel" style="font-size:.62rem">한자 선택</label><select id="nmSurnameSel" onchange="pickHanFromSelect('nmSurnameSel','nmSurnameHan','nmSurnameStroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
+              <div class="ig" style="flex:1"><label for="nmSurnameHan" style="font-size:.62rem">한자</label><input type="text" id="nmSurnameHan" placeholder="金" maxlength="2" autocomplete="off" oninput="onHanInput('nmSurnameHan','nmSurnameStroke')"></div>
+              <div class="ig" style="flex:.8"><label for="nmSurnameStroke" style="font-size:.62rem">획수</label><input type="text" id="nmSurnameStroke" placeholder="8" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+            </div>
           </div>
-          <div class="row3" style="margin-bottom:6px">
-            <div class="ig" style="flex:1"><label for="nmGiven1Han">이름1 한자</label><input type="text" id="nmGiven1Han" placeholder="敏" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven1Han','nmGiven1Stroke')"></div>
-            <div class="ig" style="flex:1"><label for="nmGiven1Stroke">획수</label><input type="text" id="nmGiven1Stroke" placeholder="11" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          <!-- 이름1 -->
+          <div style="margin-bottom:8px">
+            <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">이름 첫 글자</div>
+            <div class="row3" style="gap:6px">
+              <div class="ig" style="flex:1.8"><label for="nmGiven1Sel" style="font-size:.62rem">한자 선택</label><select id="nmGiven1Sel" onchange="pickHanFromSelect('nmGiven1Sel','nmGiven1Han','nmGiven1Stroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
+              <div class="ig" style="flex:1"><label for="nmGiven1Han" style="font-size:.62rem">한자</label><input type="text" id="nmGiven1Han" placeholder="敏" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven1Han','nmGiven1Stroke')"></div>
+              <div class="ig" style="flex:.8"><label for="nmGiven1Stroke" style="font-size:.62rem">획수</label><input type="text" id="nmGiven1Stroke" placeholder="11" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+            </div>
           </div>
-          <div class="row3">
-            <div class="ig" style="flex:1"><label for="nmGiven2Han">이름2 한자</label><input type="text" id="nmGiven2Han" placeholder="智" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven2Han','nmGiven2Stroke')"></div>
-            <div class="ig" style="flex:1"><label for="nmGiven2Stroke">획수</label><input type="text" id="nmGiven2Stroke" placeholder="12" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+          <!-- 이름2 -->
+          <div>
+            <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">이름 둘째 글자 <small style="color:var(--muted);font-weight:400">(외자면 비워두세요)</small></div>
+            <div class="row3" style="gap:6px">
+              <div class="ig" style="flex:1.8"><label for="nmGiven2Sel" style="font-size:.62rem">한자 선택</label><select id="nmGiven2Sel" onchange="pickHanFromSelect('nmGiven2Sel','nmGiven2Han','nmGiven2Stroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
+              <div class="ig" style="flex:1"><label for="nmGiven2Han" style="font-size:.62rem">한자</label><input type="text" id="nmGiven2Han" placeholder="智" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven2Han','nmGiven2Stroke')"></div>
+              <div class="ig" style="flex:.8"><label for="nmGiven2Stroke" style="font-size:.62rem">획수</label><input type="text" id="nmGiven2Stroke" placeholder="12" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
+            </div>
           </div>
-          <div style="font-size:.66rem;color:var(--muted);margin-top:8px;line-height:1.6">※ 흔한 인명용 한자 280자는 자동으로 획수가 채워져요. 매핑이 없는 한자는 수동 입력. 이름이 2글자면 이름2는 비워두세요.</div>
         </div>
       </fieldset>
 
@@ -9274,6 +9289,309 @@ const HAN_STROKES={
   '彬':11,'斌':12,'濱':17,'賓':14,'頻':16
 };
 
+// 한글 발음 → 인명용 한자 후보 (모바일 드롭다운용)
+// 흔한 한국 이름 음 약 150개 × 음당 5~12자
+const HAN_BY_HANGUL={
+  // 성씨 자주 쓰이는 한자
+  '김':['金','今','錦','琴'],'이':['李','伊','怡','理'],'박':['朴','博','璞'],'최':['崔','最'],'정':['鄭','丁','正','貞','政','晶','靜','禎','禎','征'],
+  '강':['姜','康','江','講','岡','綱'],'조':['趙','曺','早','照','造'],'윤':['尹','允','潤','胤','贇','閏'],'장':['張','章','長','璋'],'임':['林','任','壬','妊'],
+  '한':['韓','漢','寒','閑'],'오':['吳','五','悟','晤'],'서':['徐','西','序','瑞','書'],'신':['申','辛','新','信','愼'],'권':['權','勸','拳'],
+  '황':['黃','況','凰','晃'],'안':['安','顔','岸','案'],'송':['宋','松','頌','送'],'유':['柳','劉','兪','有','裕','遊','由','維'],'홍':['洪','弘','鴻','紅'],
+  '전':['全','田','錢','典','傳'],'고':['高','古','顧','故'],'문':['文','聞','問','門'],'양':['梁','楊','陽','洋','養'],'손':['孫','損','遜'],
+  '배':['裵','培','倍','配'],'백':['白','百','伯','栢'],'허':['許','虛','墟'],'남':['南','男','藍'],'심':['沈','心','深','審'],
+  '노':['盧','魯','奴','勞'],'하':['河','夏','賀','何'],'주':['周','朱','宙','晝','住'],'구':['具','九','邱','構','久'],'성':['成','星','聖','晟','誠'],
+  '곽':['郭','廓'],'차':['車','次','差'],'민':['閔','民','敏','旻','玟','珉','旼','岷','慜','瑉'],'위':['魏','韋','偉','慰','緯'],'염':['廉','念','炎'],
+  // 이름에 자주 쓰이는 인명 한자
+  '준':['俊','峻','濬','駿','埈','晙','焌','畯','儁','雋'],
+  '서':['書','瑞','徐','胥','序','棲','曙'],
+  '윤':['允','胤','潤','閏','贇','奫'],
+  '지':['智','志','知','地','池','芝','至','支','旨','枝','紙'],
+  '현':['鉉','賢','炫','弦','絃','晛','睍','顯','峴','現','玹','絢'],
+  '우':['宇','佑','祐','雨','禹','友','右','于','瑀','旴'],
+  '수':['秀','洙','銖','水','修','壽','遂','受','需','穗','琇'],
+  '하':['夏','河','賀','荷','遐','霞'],
+  '은':['銀','恩','垠','嫩','隱','誾','慇'],
+  '진':['辰','眞','晉','璡','振','陳','珍','瑱','溱','榛','縉','璡'],
+  '아':['娥','雅','峨','我','兒','亞','阿','婀'],
+  '예':['睿','藝','禮','叡','譽','銳','詣'],
+  '연':['延','蓮','姸','演','緣','涓','椽','璉'],
+  '준':['俊','峻','濬','駿','埈','晙','焌','畯','儁','雋'],
+  '도':['道','都','度','陶','圖','棹','燾','濤','禱'],
+  '재':['宰','財','才','在','栽','齋','梓','載'],
+  '민':['敏','旻','玟','珉','旼','岷','慜','瑉','閔','民'],
+  '영':['英','榮','永','瑛','映','詠','泳','榮','瀯','濚'],
+  '소':['素','韶','炤','沼','邵','所','蘇','少'],
+  '주':['周','朱','宙','住','晝','奏','珠'],
+  '나':['娜','奈','那','拏','拿'],
+  '림':['林','琳','霖','淋'],
+  '림':['琳','霖','淋','林'],
+  '림':['琳','霖','淋'],
+  '림':['林','琳','霖'],
+  '림':['林','琳'],
+  '림':['林'],
+  '림':['琳'],
+  '림':['霖'],
+  // 더 흔한 인명
+  '건':['建','健','乾','件','虔'],
+  '경':['京','敬','慶','景','瓊','璟','炅','炯','耕'],
+  '광':['光','廣','匡','曠','洸'],
+  '국':['國','局','菊','鞠'],
+  '귀':['貴','歸','龜'],
+  '규':['圭','奎','揆','珪','閨','逵'],
+  '근':['根','勤','謹','槿','瑾'],
+  '기':['基','起','器','棋','奇','旗','琪','璣','箕'],
+  '나':['娜','奈','那','拏','羅'],
+  '낙':['樂','洛','落'],
+  '단':['丹','旦','檀','湍'],
+  '담':['潭','澹','曇','憺'],
+  '대':['大','代','戴','袋','對'],
+  '덕':['德','悳'],
+  '동':['東','童','桐','動','同','棟','洞'],
+  '두':['杜','斗','頭','豆','枓'],
+  '란':['蘭','瀾','欄'],
+  '래':['來','萊'],
+  '로':['老','路','露','勞','蘆'],
+  '록':['祿','綠','錄','鹿'],
+  '룡':['龍','瀧'],
+  '루':['樓','淚','屢'],
+  '리':['利','理','里','梨','璃','裡','釐'],
+  '림':['林','琳','霖','淋'],
+  '만':['萬','滿','晩','曼'],
+  '명':['明','名','命','銘','鳴','溟'],
+  '모':['母','慕','謀','茅','貌'],
+  '목':['木','穆','睦','牧'],
+  '무':['武','茂','戊','務','撫'],
+  '문':['文','聞','問','門','汶'],
+  '미':['美','尾','味','米','眉','彌','薇'],
+  '범':['範','凡','犯','范','帆'],
+  '병':['秉','炳','柄','昞','昺','丙','屛'],
+  '복':['福','卜','服','復','馥'],
+  '봉':['鳳','奉','峯','峰','逢'],
+  '부':['富','夫','部','傅','賦'],
+  '빈':['彬','斌','濱','賓','頻','嬪'],
+  '사':['思','士','史','四','絲','寺','巳','師','沙'],
+  '산':['山','産','酸','算','傘'],
+  '삼':['三','森','蔘'],
+  '상':['尙','常','商','相','箱','象','想','祥','詳','上'],
+  '석':['錫','石','碩','奭','晳','汐','潟'],
+  '선':['善','宣','仙','禪','瑄','璇','銑','旋','先','船'],
+  '설':['雪','說','設','卨','薛'],
+  '섭':['攝','燮','涉'],
+  '세':['世','歲','勢','細','洗','稅','歲'],
+  '소':['素','韶','炤','沼','邵','所','蘇','少','瀟'],
+  '솔':['率','蔘','帥'],
+  '송':['宋','松','頌','送','淞'],
+  '수':['秀','洙','銖','水','修','壽','遂','受','需','穗','琇','收'],
+  '숙':['淑','叔','宿','熟','肅'],
+  '순':['順','純','淳','舜','洵','循','醇','盾','詢'],
+  '승':['承','勝','昇','繩','僧','陞'],
+  '시':['始','時','詩','視','侍','示','是','尸'],
+  '식':['植','式','植','拭','息','飾','寔'],
+  '신':['信','新','申','辛','慎','身','晨','宸','紳','迅'],
+  '실':['實','室','失','悉'],
+  '심':['心','深','沈','審','尋'],
+  '아':['娥','雅','峨','我','兒','亞','阿','婀','芽'],
+  '안':['安','顔','岸','案','按','鞍'],
+  '애':['愛','哀','涯','埃'],
+  '약':['若','藥','約','弱'],
+  '양':['梁','楊','陽','洋','養','糧','樣'],
+  '억':['億','憶','抑'],
+  '엄':['嚴','奄','淹'],
+  '여':['女','如','汝','餘','與','輿','余'],
+  '연':['延','蓮','姸','演','緣','涓','椽','璉','沿','燕'],
+  '열':['熱','悅','說','閱'],
+  '염':['念','炎','艶','閻','燄'],
+  '엽':['葉','曄'],
+  '영':['英','榮','永','瑛','映','詠','泳','瀯','濚','榮'],
+  '예':['睿','藝','禮','叡','譽','銳','詣','預','裔'],
+  '오':['吾','五','悟','晤','梧','傲','奧'],
+  '옥':['玉','沃','屋'],
+  '온':['溫','瑥','穩'],
+  '완':['完','玩','婉','緩'],
+  '왕':['王','旺','望'],
+  '요':['搖','謠','妖','遙','耀'],
+  '용':['用','勇','龍','容','溶','鎔','瑢','埇','庸'],
+  '우':['宇','佑','祐','雨','禹','友','右','于','瑀','旴','寓'],
+  '욱':['旭','彧','郁','煜','頊'],
+  '운':['雲','運','韻','蕓','耘'],
+  '원':['元','原','源','圓','院','園','轅','瑗','遠','袁'],
+  '월':['月','越','鉞'],
+  '위':['位','偉','圍','緯','違','慰','韋','魏'],
+  '유':['有','柔','幼','酉','游','佑','庾','裕','維','由','流'],
+  '윤':['允','胤','潤','閏','贇','奫'],
+  '율':['律','栗','慄','率'],
+  '은':['銀','恩','垠','隱','誾','慇','濦'],
+  '음':['音','陰','飮','吟'],
+  '의':['義','宜','意','依','衣','儀','疑','毅'],
+  '이':['李','伊','怡','理','利','離','已'],
+  '익':['益','翊','翼','瀷'],
+  '인':['仁','人','寅','印','因','姻','認'],
+  '일':['一','日','逸','溢','鎰','壹'],
+  '임':['任','壬','妊','賃'],
+  '자':['子','字','慈','姿','資','滋','磁','紫'],
+  '작':['作','灼','綽','勻'],
+  '장':['長','章','將','張','璋','莊','藏','場'],
+  '재':['宰','財','才','在','栽','齋','梓','載','再'],
+  '저':['底','低','箸','貯','姐'],
+  '적':['積','的','寂','跡','適','嫡'],
+  '전':['全','田','錢','典','傳','專','戰','展'],
+  '점':['點','店','占','漸'],
+  '정':['正','政','貞','征','淨','晶','珵','禎','靜','庭','廷','井','呈','整'],
+  '제':['制','帝','濟','劑','弟','梯','際'],
+  '조':['朝','曺','早','照','造','調','祚'],
+  '종':['宗','種','終','從','綜','鍾','鐘'],
+  '주':['周','朱','宙','住','晝','奏','珠','柱','洲','疇'],
+  '준':['俊','峻','濬','駿','埈','晙','焌','畯','儁','雋','准','遵'],
+  '중':['中','重','仲','衆'],
+  '지':['智','志','知','地','池','芝','至','支','旨','枝','紙','摯','祉'],
+  '직':['直','職','植','稙'],
+  '진':['辰','眞','晉','璡','振','陳','珍','瑱','溱','榛','縉','陣','晋'],
+  '집':['集','執'],
+  '찬':['燦','瓚','璨','贊','澯','欑','贊'],
+  '창':['昌','倉','創','彰','蒼','滄'],
+  '채':['採','彩','蔡','埰','寀','綵'],
+  '천':['天','千','川','泉','遷','薦','穿'],
+  '철':['哲','喆','澈','徹','撤','凸','鐵'],
+  '청':['淸','靑','晴','請'],
+  '초':['初','超','草','楚','焦'],
+  '촌':['村','寸'],
+  '총':['總','聰','寵'],
+  '추':['秋','楸','錘','追'],
+  '춘':['春'],
+  '충':['忠','沖','衝','充'],
+  '취':['翠','吹','取','聚','醉'],
+  '치':['治','致','齒','置','馳','峙'],
+  '칠':['七','漆'],
+  '쾌':['快'],
+  '타':['他','打','妥'],
+  '탁':['卓','託','濯','濁','琢'],
+  '탄':['誕','歎'],
+  '태':['泰','太','兌','台','胎','颱','怠'],
+  '택':['澤','宅','擇'],
+  '토':['土','吐'],
+  '통':['通','統','痛','桶'],
+  '파':['波','破','派','頗','婆'],
+  '판':['判','板','版','販','判'],
+  '팔':['八'],
+  '편':['便','片','偏','編','篇'],
+  '평':['平','評','坪','萍'],
+  '포':['浦','包','布','抱','胞','飽'],
+  '표':['表','票','標','彪','豹'],
+  '품':['品'],
+  '풍':['豊','風','楓','馮','諷'],
+  '필':['必','匹','畢','弼','筆'],
+  '하':['夏','河','賀','荷','遐','霞','瑕'],
+  '학':['學','鶴','壑'],
+  '한':['漢','韓','寒','閑','汗','瀚','翰'],
+  '함':['咸','含','涵','艦'],
+  '항':['恒','港','航','行','項'],
+  '해':['海','解','楷','諧','偕','駭','奚'],
+  '행':['行','幸','杏'],
+  '향':['香','向','響','享','鄕'],
+  '허':['許','虛','墟','獻'],
+  '헌':['憲','獻','軒','憲'],
+  '혁':['赫','革','奕','爀','焃'],
+  '현':['鉉','賢','炫','弦','絃','晛','睍','顯','峴','現','玹','絢','炫'],
+  '협':['協','俠','峽','脅'],
+  '형':['亨','兄','刑','形','炯','瑩','馨','瀅'],
+  '혜':['惠','慧','蕙','彗','兮','憓'],
+  '호':['浩','晧','昊','皓','虎','豪','胡','號','護','滸','濠'],
+  '홍':['洪','弘','鴻','紅','泓','烘'],
+  '화':['和','花','華','化','話','畫','貨','禾','嘩'],
+  '환':['桓','煥','還','歡','奐','喚','宦'],
+  '활':['活','闊'],
+  '황':['黃','況','凰','晃','煌','滉','幌'],
+  '회':['會','回','灰','悔','懷','繪','膾'],
+  '효':['孝','曉','效','爻','驍'],
+  '후':['厚','後','侯','候','勳','喉'],
+  '훈':['勳','訓','勛','熏','壎','薰','纁'],
+  '휘':['輝','揮','徽','彙','輝','煇'],
+  '흥':['興'],
+  '희':['熙','希','喜','禧','晞','姬','姫','僖','嬉']
+};
+
+// 한자 부수 자원오행 — 부수별 오행 매핑 (작명학 자원오행 기준)
+const HAN_RADICAL_OH={
+  // 木 (목)
+  '木':0,'艸':0,'艹':0,'竹':0,'禾':0,'米':0,'糸':0,'絲':0,'巾':0,'衣':0,'示':0,'青':0,'青':0,
+  // 火 (화)
+  '火':1,'灬':1,'日':1,'光':1,'赤':1,'丹':1,'夏':1,
+  // 土 (토)
+  '土':2,'石':2,'山':2,'阜':2,'阝':2,'田':2,'里':2,'屋':2,'瓦':2,'缶':2,'宀':2,'广':2,'黃':2,
+  // 金 (금)
+  '金':3,'刀':3,'刂':3,'斤':3,'戈':3,'矛':3,'白':3,'玉':3,'王':3,'貝':3,'車':3,
+  // 水 (수)
+  '水':4,'氵':4,'冫':4,'雨':4,'魚':4,'魚':4,'子':4,'川':4,'江':4,'河':4,'海':4,'湖':4,'池':4,'雲':4
+};
+
+// 흔한 인명 한자 → 자원오행 직접 매핑 (부수 매핑 실패 시 fallback)
+const HAN_ZAWON_OH={
+  '金':3,'木':0,'水':4,'火':1,'土':2,
+  '林':0,'森':0,'榮':0,'柔':0,'柏':0,'桐':0,'松':0,'梅':0,'梓':0,'楊':0,
+  '炳':1,'炯':1,'炅':1,'晟':1,'晝':1,'昌':1,'昭':1,'明':1,'晙':1,'昇':1,'晧':1,'晥':1,
+  '美':2,'圭':2,'坤':2,'垠':2,'坊':2,'城':2,'域':2,'基':2,'埈':2,'壽':2,
+  '錫':3,'銀':3,'鎬':3,'銘':3,'銳':3,'鎭':3,'珍':3,'珠':3,'璇':3,'璃':3,'珏':3,'琉':3,
+  '泉':4,'河':4,'江':4,'淑':4,'潤':4,'澤':4,'淵':4,'湘':4,'洙':4,'洙':4,
+  '敏':3,'民':1,'旻':1,'玟':3,'珉':3,'旼':1,
+  '俊':0,'峻':2,'濬':4,'駿':3,
+  '智':1,'志':1,'知':3,
+  '賢':3,'炫':1,'弦':0,
+  '宇':2,'佑':0,'祐':0,'雨':4,'禹':4,
+  '善':3,'宣':2,'禪':0,
+  '英':0,'瑛':3,'映':1,
+  '銀':3,'恩':1,'垠':2
+};
+
+// 한자 의미 사전 (흔한 인명용 200자, 짧은 의미)
+const HAN_MEANING={
+  '金':'쇠·황금','木':'나무','水':'물','火':'불','土':'흙',
+  '李':'오얏','朴':'순박할','崔':'높을','鄭':'정나라','姜':'생강','趙':'조나라','尹':'다스릴',
+  '張':'펼','林':'수풀','韓':'한나라','吳':'오나라','申':'펼','徐':'천천히','權':'권세',
+  '黃':'누를','安':'편안','宋':'송나라','柳':'버들','洪':'넓을','田':'밭','高':'높을',
+  '文':'글월','梁':'들보','孫':'손자','裵':'성','白':'흰','許':'허락할','劉':'성','南':'남쪽',
+  '沈':'잠길','盧':'밥그릇','河':'물','成':'이룰','郭':'성곽','車':'수레','兪':'성','明':'밝을',
+  '敏':'재빠를·총명','民':'백성','旻':'가을 하늘','玟':'옥돌','珉':'옥돌','旼':'화목할','慜':'영민할',
+  '俊':'준수할','峻':'높을','濬':'깊을','駿':'준마','埈':'높을','晙':'밝을','焌':'밝을','畯':'농부장',
+  '宇':'집·하늘','佑':'도울','祐':'복','雨':'비','禹':'우임금','友':'벗','瑀':'옥돌',
+  '智':'지혜','志':'뜻','知':'알다','地':'땅','池':'못','芝':'지초','至':'이를','支':'지탱',
+  '賢':'어질다','炫':'빛날','弦':'활시위','顯':'드러날','玹':'옥돌','絢':'무늬',
+  '善':'착할','宣':'베풀','仙':'신선','禪':'고요할','瑄':'도리옥','璇':'아름다운 옥',
+  '英':'꽃부리·뛰어날','瑛':'옥빛','永':'길','榮':'영화','映':'비칠','詠':'읊을','泳':'헤엄',
+  '靜':'고요할','貞':'곧을','晶':'맑을','淨':'깨끗할','政':'정사','晟':'밝을','禎':'상서로울',
+  '銀':'은','恩':'은혜','垠':'끝',
+  '修':'닦을','秀':'빼어날','壽':'오래 살','洙':'물가','銖':'무게단위','遂':'이룰',
+  '熙':'빛날','希':'바랄','喜':'기쁠','禧':'복','姬':'아씨','晞':'마를',
+  '夏':'여름','賀':'축하','荷':'연꽃','霞':'노을',
+  '서':'상서로울','瑞':'상서','書':'글',
+  '允':'진실로','潤':'젖을','胤':'대를 잇다',
+  '佳':'아름다울','嘉':'좋을','家':'집',
+  '誠':'정성','成':'이룰','城':'성','聖':'성스러울','星':'별',
+  '雅':'우아할','娥':'예쁠','峨':'높을',
+  '基':'터','起':'일어날','棋':'바둑','琪':'옥',
+  '建':'세울','健':'굳셀','乾':'하늘',
+  '正':'바를',
+  '勳':'공','訓':'가르칠','熏':'향기','壎':'질나팔','薰':'향풀',
+  '泰':'클·편안','太':'클','兌':'기쁠','台':'별',
+  '寶':'보배','保':'보호할','步':'걸음','譜':'족보','菩':'보살',
+  '京':'서울','敬':'공경','慶':'경사','景':'볕','璟':'옥','瓊':'옥',
+  '春':'봄','純':'순수','淳':'순박','順':'순할','循':'좇을','舜':'순임금',
+  '世':'세상','歲':'해','勢':'기세',
+  '光':'빛','冠':'갓','郡':'고을','國':'나라','君':'임금','群':'무리','軍':'군대',
+  '丹':'붉을','湛':'담글','潭':'못','端':'끝','達':'통할',
+  '里':'마을','梨':'배','理':'다스릴','利':'이로울','璃':'유리',
+  '蓮':'연꽃','憐':'사랑','年':'해','連':'이을',
+  '末':'끝','孟':'맏','冕':'면류관','勉':'힘쓸','眠':'잠잘',
+  '伯':'맏','柏':'잣나무','拍':'칠','帛':'비단',
+  '思':'생각','士':'선비','史':'역사','四':'넷','絲':'실','寺':'절','巳':'뱀','師':'스승','沙':'모래',
+  '良':'어질','兩':'두','量':'헤아릴','亮':'밝을',
+  '溫':'따뜻할','穩':'평온할',
+  '宥':'용서','裕':'넉넉할','有':'있을','柔':'부드러울','幼':'어릴','游':'헤엄',
+  '辰':'별·다섯째 지지','晉':'나아갈','璡':'아름다운 옥','進':'나아갈','眞':'참','振':'떨칠',
+  '燦':'빛날','瓚':'옥잔','璨':'빛날','贊':'도울','澯':'맑을',
+  '哲':'밝을','喆':'밝을','澈':'맑을','徹':'통할',
+  '彬':'빛날','斌':'빛날','濱':'물가','賓':'손님','頻':'자주'
+};
+
 // 81수리 영동수 길흉표 — true=길수, false=흉수
 // (정통 성명학 81수리)
 const SURI_81_GOOD=new Set([1,3,5,6,7,8,11,13,15,16,17,18,21,23,24,25,29,31,32,33,35,37,38,39,41,45,47,48,52,57,61,63,65,67,68,73,75,78,81]);
@@ -9321,6 +9639,91 @@ function onHanInput(hanId, strokeId){
   const ch=han.charAt(0);
   const s=HAN_STROKES[ch];
   if(s&&!strokeEl.value){strokeEl.value=String(s);}
+}
+
+// 한글 한 글자 → 인명용 한자 후보 배열 (드롭다운용)
+function getHanCandidates(hangulChar){
+  if(!hangulChar)return [];
+  const list=HAN_BY_HANGUL[hangulChar]||[];
+  // 중복 제거 + 획수 정보 함께 반환
+  const seen=new Set();
+  return list.filter(h=>{if(seen.has(h))return false;seen.add(h);return true;})
+    .map(h=>({han:h, stroke:HAN_STROKES[h]||0, meaning:HAN_MEANING[h]||''}));
+}
+
+// 한자 자원오행 — 부수 매핑 우선, 없으면 직접 매핑 fallback
+function getHanZawonOh(hanChar){
+  if(!hanChar)return null;
+  if(HAN_ZAWON_OH[hanChar]!=null)return HAN_ZAWON_OH[hanChar];
+  // 부수 추출은 복잡하므로 직접 매핑만 사용 (대표 인명 한자 위주)
+  return null;
+}
+
+// 한자 한 글자 → 의미 (없으면 빈 문자열)
+function getHanMeaning(hanChar){
+  return HAN_MEANING[hanChar]||'';
+}
+
+// 한글 입력 → 한자 후보 select 옵션 채우기
+function fillHanCandidateSelect(hangulInputId, selectId, hanInputId, strokeInputId){
+  const hangulEl=document.getElementById(hangulInputId);
+  const selectEl=document.getElementById(selectId);
+  if(!hangulEl||!selectEl)return;
+  const txt=(hangulEl.value||'').trim();
+  // 첫 글자 또는 마지막 글자 기준 (성씨는 첫 글자, 이름은 인덱스로 분기)
+  const charIdx=parseInt(selectEl.dataset.charIdx||'0');
+  const ch=txt.charAt(charIdx);
+  const cands=getHanCandidates(ch);
+  // 옵션 갱신
+  selectEl.innerHTML='<option value="">한자 선택...</option>'+
+    cands.map(c=>`<option value="${c.han}" data-stroke="${c.stroke}">${c.han} (${c.stroke}획)${c.meaning?' · '+c.meaning:''}</option>`).join('');
+  selectEl.disabled=cands.length===0;
+  if(cands.length===0)selectEl.innerHTML='<option value="">(한자 후보 없음)</option>';
+}
+
+// 한글 입력 시 — 각 글자별 한자 select 옵션 자동 채움
+function _onNameHangulChange(kind){
+  if(kind==='surname'){
+    const ch=(document.getElementById('nmSurname').value||'').trim().charAt(0);
+    _fillSelect('nmSurnameSel', ch);
+  }else if(kind==='given'){
+    const txt=(document.getElementById('nmGiven').value||'').trim();
+    _fillSelect('nmGiven1Sel', txt.charAt(0));
+    _fillSelect('nmGiven2Sel', txt.charAt(1));
+  }
+}
+function _fillSelect(selectId, hangulChar){
+  const sel=document.getElementById(selectId);
+  if(!sel)return;
+  if(!hangulChar){
+    sel.innerHTML='<option value="">한글부터 입력하세요</option>';
+    sel.disabled=true;
+    return;
+  }
+  const cands=getHanCandidates(hangulChar);
+  if(cands.length===0){
+    sel.innerHTML=`<option value="">(${hangulChar} 한자 후보 없음 — 직접 입력)</option>`;
+    sel.disabled=true;
+    return;
+  }
+  sel.innerHTML='<option value="">한자 선택...</option>'+
+    cands.map(c=>`<option value="${c.han}" data-stroke="${c.stroke}">${c.han} (${c.stroke}획)${c.meaning?' · '+c.meaning:''}</option>`).join('');
+  sel.disabled=false;
+}
+
+// select에서 한자 선택 → 한자 input + 획수 input 자동 채움
+function pickHanFromSelect(selectId, hanInputId, strokeInputId){
+  const selectEl=document.getElementById(selectId);
+  const hanEl=document.getElementById(hanInputId);
+  const strokeEl=document.getElementById(strokeInputId);
+  if(!selectEl||!hanEl)return;
+  const opt=selectEl.options[selectEl.selectedIndex];
+  if(!opt||!opt.value)return;
+  hanEl.value=opt.value;
+  if(strokeEl){
+    const s=opt.dataset.stroke||HAN_STROKES[opt.value]||'';
+    if(s)strokeEl.value=String(s);
+  }
 }
 
 // 한글 자모 오행 매핑 — 초성·종성 자음을 5행으로 분류
@@ -9385,53 +9788,41 @@ const NAME_POOL={
 // 이름 풀이 — 본인 사주 + 이름의 결을 종합 분석
 function renderNamePaid(saju, nmExtra){
   if(!nmExtra||!nmExtra.surname||!nmExtra.given){
-    return '<div class="card"><div class="abody">이름 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</div></div>';
+    return paidWrapBody('NAME','✒️','이름풀이','<p>이름 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</p>');
   }
   const surname=nmExtra.surname, given=nmExtra.given;
   const full=surname+given;
   const ohNames=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
+  const ohNamesShort=['목','화','토','금','수'];
   const ohEmojis=['🌱','🔥','🪨','⚙️','💧'];
 
-  // 1) 이름 오행 분석
+  // 이름 자모 오행 + 사주 오행
   const nameOh=analyzeNameOh(full);
-  // 2) 사주 오행
-  const sajuOh=ohCount(saju); // [목,화,토,금,수]
-  const sajuTotal=sajuOh.reduce((a,b)=>a+b,0);
+  const sajuOh=ohCount(saju);
   const sajuMaxIdx=sajuOh.indexOf(Math.max(...sajuOh));
   const sajuMinIdx=sajuOh.indexOf(Math.min(...sajuOh));
-  // 3) 용신 (이미 있는 함수 사용)
   const ys=getYongsin(sajuOh);
 
-  // 4) 사주-이름 궁합 점수
-  // 이름이 사주의 약한 오행(용신)을 보강하면 +가산, 강한 오행(기신)을 더 강화하면 -감산
+  // 사주-이름 궁합 점수 (한글 자모 기반)
   let nameScore=70;
-  const nameTotalOh=nameOh.oh.reduce((a,b)=>a+b,0)||1;
-  // 용신 보강 효과
   if(nameOh.oh[ys.main]>0)nameScore+=Math.min(15,nameOh.oh[ys.main]*5);
-  if(nameOh.oh[(ys.main+2)%5]>0)nameScore-=Math.min(10,nameOh.oh[(ys.main+2)%5]*3); // 기신 강화
-  // 사주에 가장 약한 오행 보강 효과
+  if(nameOh.oh[(ys.main+2)%5]>0)nameScore-=Math.min(10,nameOh.oh[(ys.main+2)%5]*3);
   if(sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0)nameScore+=Math.min(8,nameOh.oh[sajuMinIdx]*3);
-  // 균형 — 이름 오행이 사주 약점을 채우는가?
   const combined=sajuOh.map((v,i)=>v+nameOh.oh[i]);
   const span=Math.max(...combined)-Math.min(...combined);
   if(span<=4)nameScore+=5;
   else if(span>=7)nameScore-=5;
 
-  // 5) 한자 수리오행 4격 (원·형·이·정) + 81수리 길흉
+  // 한자 4격 + 81수리 (있을 때만)
   const strokes=nmExtra.strokes||{surname:0,given1:0,given2:0};
   const han=nmExtra.han||{surname:'',given1:'',given2:''};
-  const hasHan=(strokes.surname>0)&&(strokes.given1>0); // 최소 성+이름1 획수 있어야 4격 산출
+  const hasHan=(strokes.surname>0)&&(strokes.given1>0);
   let suri=null;
   if(hasHan){
     const sS=strokes.surname, sG1=strokes.given1, sG2=strokes.given2||0;
-    // 정통 4격 (사격) 산출
-    //  원격(元) = 이름 합 (given1+given2)  → 초년·만년
-    //  형격(亨) = 성+이름1                 → 청년·주운
-    //  이격(利) = 성+이름2 (이름2 없으면 성+1)  → 사회·인덕
-    //  정격(貞) = 성+이름1+이름2 (전체 합)   → 총운·말년
     const wonGyeok = sG1 + (sG2||0);
     const hyeongGyeok = sS + sG1;
-    const iGyeok = sG2 ? (sS + sG2) : (sS + 1); // 이름2 없으면 가획법으로 +1
+    const iGyeok = sG2 ? (sS + sG2) : (sS + 1);
     const jeongGyeok = sS + sG1 + (sG2||0);
     suri={
       won:{stroke:wonGyeok, ...suri81Reading(wonGyeok), oh:suriOhaeng(wonGyeok)},
@@ -9439,15 +9830,10 @@ function renderNamePaid(saju, nmExtra){
       i:{stroke:iGyeok, ...suri81Reading(iGyeok), oh:suriOhaeng(iGyeok)},
       jeong:{stroke:jeongGyeok, ...suri81Reading(jeongGyeok), oh:suriOhaeng(jeongGyeok)}
     };
-    // 점수 보정 — 4격의 길수/흉수 비율 반영
     const goods=[suri.won,suri.hyeong,suri.i,suri.jeong].filter(g=>g.good).length;
-    nameScore+=(goods-2)*6; // 4길 +12, 3길 +6, 2길 0, 1길 -6, 0길 -12
-    // 정격(말년·총운)이 길수면 추가 보너스
+    nameScore+=(goods-2)*6;
     if(suri.jeong.good)nameScore+=4;
-    // 수리오행이 용신과 일치하는 격이 있으면 가산
-    [suri.won,suri.hyeong,suri.i,suri.jeong].forEach(g=>{
-      if(g.oh===ys.main)nameScore+=2;
-    });
+    [suri.won,suri.hyeong,suri.i,suri.jeong].forEach(g=>{if(g.oh===ys.main)nameScore+=2;});
   }
   nameScore=Math.max(35,Math.min(98,nameScore));
 
@@ -9459,166 +9845,175 @@ function renderNamePaid(saju, nmExtra){
 
   let h='';
 
-  // ── 카드 ①: 종합 점수 + 등급
+  // ── ① 종합 점수 카드 (paidWrapBody 형식)
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
   const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}</div>`:'';
-  h+=`<div class="card">
-    <div class="ctitle big">✒️ 이름풀이 종합</div>
-    <div style="text-align:center;margin:6px 0 10px">
-      <div style="font-family:'Noto Serif KR',serif;font-size:1.6rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
+  let summaryBody=`<div style="text-align:center;margin:6px 0 14px">
+      <div style="font-family:'Noto Serif KR',serif;font-size:1.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
       ${hanDisplay}
-      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">성씨 ${surname} · 이름 ${given}${hasHan?` · 한자 ${strokes.surname}+${strokes.given1}${strokes.given2?'+'+strokes.given2:''}획`:''}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:5px">${surname} 성 · ${given} 이름${hasHan?` · 한자 ${strokes.surname}+${strokes.given1}${strokes.given2?'+'+strokes.given2:''}획`:''}</div>
     </div>
     <div class="score-ring-wrap">
-      <div class="score-ring ${ringCls}">
-        <div class="score-num ${numCls}">${nameScore}</div>
-        <div class="score-grade">/ 100</div>
-      </div>
+      <div class="score-ring ${ringCls}"><div class="score-num ${numCls}">${nameScore}</div><div class="score-grade">/ 100</div></div>
       <div style="font-size:.95rem;font-weight:700;color:${gradeColor}">${grade}</div>
     </div>
-    ${hasHan?'':'<div style="margin-top:10px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth);font-size:.74rem;color:var(--sub);line-height:1.7">💡 한자와 획수까지 입력하시면 정통 성명학 기준 <b>4격(원·형·이·정) + 81수리 길흉</b>까지 함께 풀어드려요. 다시 입력 화면으로 돌아가서 한자 칸을 채워보세요.</div>'}
-  </div>`;
+    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">「${full}」이라는 이름이 본인 사주와 얼마나 잘 어울리는지를 정통 작명학 기준으로 종합한 점수예요. 한글 소리의 오행, 한자 획수의 길흉(4격·81수리), 한자 글자가 품은 의미·기운까지 모두 봐서 산출했어요.</p>
+    <p style="font-size:.83rem;line-height:1.9">100점에 가까울수록 본인 사주의 약한 부분을 이름이 자연스럽게 채워주고, 본인을 도와주는 기운(용신)을 이름이 더해주는 결이에요. 점수가 낮다고 무조건 나쁜 이름은 아니고, 의식적으로 보완해야 할 부분이 더 많다는 뜻으로 봐주시면 돼요.</p>
+    ${hasHan?'':'<div style="margin-top:12px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth);font-size:.78rem;color:var(--sub);line-height:1.75">💡 한자와 획수까지 입력하시면 정통 작명학 기준 <b>4격(원·형·이·정) + 81수리 길흉 + 자원오행 + 한자 의미</b>까지 함께 풀어드려요. 다시 입력 화면으로 돌아가서 한자 칸을 채워보세요.</div>'}`;
+  h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
 
-  // ── 카드 ①.5: 한자 수리오행 4격 + 81수리 (한자 입력 시만)
+  // ── ② 한자 4격 + 81수리 (한자 있을 때만)
   if(hasHan){
-    const ohNamesShort=['목','화','토','금','수'];
-    const ohColors2=['var(--wood)','var(--fire)','var(--earth)','var(--metal)','var(--water)'];
     const gyeokTable=[
-      {k:'원격',sub:'초년·만년',data:suri.won},
-      {k:'형격',sub:'청년·주운',data:suri.hyeong},
-      {k:'이격',sub:'사회·인덕',data:suri.i},
-      {k:'정격',sub:'총운·말년',data:suri.jeong}
+      {k:'원격(元)',sub:'초년·기초운',data:suri.won, story:'어린 시절부터 성인 전까지의 결과 노년의 마무리'},
+      {k:'형격(亨)',sub:'청년기·중심운',data:suri.hyeong, story:'20대~40대 인생의 중심이 되는 운'},
+      {k:'이격(利)',sub:'사회·인덕운',data:suri.i, story:'사회 관계·동료·인맥·외부 환경의 결'},
+      {k:'정격(貞)',sub:'총운·말년운',data:suri.jeong, story:'평생을 통틀어 가장 중요한 종합 운 + 노년의 결실'}
     ];
     const goodCount=gyeokTable.filter(g=>g.data.good).length;
     let suriSummary='';
-    if(goodCount===4)suriSummary=`4격이 모두 <b>길수</b>로 잡혔어요. 정통 성명학 기준 <b>매우 좋은 작명</b>이에요.`;
-    else if(goodCount===3)suriSummary=`4격 중 3개가 길수예요. 한 곳을 빼고는 흐름이 좋은 이름이에요.`;
-    else if(goodCount===2)suriSummary=`4격 중 2개가 길수, 2개가 흉수예요. 시기별로 길흉이 갈리는 이름이라, 인생 단계에서 의식적인 보완이 필요해요.`;
-    else if(goodCount===1)suriSummary=`4격 중 1개만 길수예요. 같은 발음의 이름이라도 한자를 바꾸면 결이 달라질 수 있어요.`;
-    else suriSummary=`4격이 모두 흉수로 잡혔어요. 같은 발음이라도 한자(획수) 조합을 바꾸면 결이 크게 달라져요. 아래 추천 이름을 참고해보세요.`;
+    if(goodCount===4)suriSummary=`4격이 모두 <b>길수</b>로 잡혔어요. 정통 작명학 기준 <b>매우 좋은 작명</b>이에요. 인생 시기마다 결이 잘 풀려요.`;
+    else if(goodCount===3)suriSummary=`4격 중 3개가 길수예요. 한 시기만 살짝 부족하고 다른 시기는 모두 흐름이 좋은 이름이에요.`;
+    else if(goodCount===2)suriSummary=`4격 중 2개가 길수, 2개가 흉수예요. 시기에 따라 결이 갈리는 이름이라, 흉수 시기는 의식적인 보완으로 풀어가시면 돼요.`;
+    else if(goodCount===1)suriSummary=`4격 중 1개만 길수예요. 같은 발음의 이름이라도 한자를 바꾸면 결이 크게 달라질 수 있으니, 아래 추천 한자 조합을 참고해보세요.`;
+    else suriSummary=`4격이 모두 흉수로 잡혔어요. 같은 발음이라도 한자(획수) 조합을 바꾸면 결이 완전히 달라져요. 아래 추천 한자 조합을 꼭 참고해보세요.`;
 
-    h+=`<div class="card">
-      <div class="ctitle big">㊗ 한자 수리오행 4격 · 81수리 길흉</div>
-      <div class="abody" style="margin-bottom:10px">${suriSummary}</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">`;
+    let suriBody=`<p style="margin-bottom:12px">${suriSummary}</p>
+    <p style="margin-bottom:14px">한자 작명학에서는 이름의 획수를 4가지 시기로 나눠 봐요. 어렸을 때(원격), 청년기(형격), 사회 인덕(이격), 평생 총운(정격)이 각각 어떤 결을 만드는지가 핵심이에요.</p>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">`;
     gyeokTable.forEach(g=>{
       const goodColor=g.data.good?'var(--wood)':'var(--fire)';
-      const goodIcon=g.data.good?'✓':'⚠';
-      h+=`<div style="padding:11px 13px;background:var(--card);border-left:3px solid ${goodColor};border-radius:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-          <span style="font-weight:700;color:var(--accent);font-size:.86rem">${g.k} <small style="color:var(--muted);font-weight:400;margin-left:4px">${g.sub}</small></span>
-          <span style="font-size:.78rem;color:${goodColor};font-weight:700">${goodIcon} ${g.data.num}수 · ${ohEmojis[g.data.oh]} ${ohNamesShort[g.data.oh]}</span>
+      const goodIcon=g.data.good?'✓ 길수':'⚠ 흉수';
+      suriBody+=`<div style="padding:12px 14px;background:var(--bg-deep);border-left:3px solid ${goodColor};border-radius:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px">
+          <span style="font-weight:700;color:var(--accent);font-size:.88rem">${g.k} <small style="color:var(--muted);font-weight:400;margin-left:4px">${g.sub}</small></span>
+          <span style="font-size:.78rem;color:${goodColor};font-weight:700">${goodIcon} · ${g.data.num}수 · ${ohEmojis[g.data.oh]} ${ohNamesShort[g.data.oh]}</span>
         </div>
-        <div style="font-size:.76rem;color:var(--sub);line-height:1.65">${g.data.label}</div>
+        <div style="font-size:.77rem;color:var(--sub);line-height:1.75;margin-bottom:4px">${g.data.label}</div>
+        <div style="font-size:.71rem;color:var(--muted);line-height:1.6">↪ ${g.story}</div>
       </div>`;
     });
-    h+=`</div>
-      <div class="asec" style="margin-top:12px;padding:9px 11px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth)">
-        <div class="abody" style="font-size:.74rem;line-height:1.75">📖 <b>4격이란?</b> 한자 획수를 정통 작명학의 4가지 기둥으로 풀어본 결이에요. 원격(어린 시절·말년), 형격(청년기·중심운), 이격(사회 인덕), 정격(총운·말년 결실)이 각각 81수리의 길수·흉수로 구분돼요.</div>
-      </div>
-    </div>`;
+    suriBody+=`</div>
+    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">📖 <b>이 풀이를 어떻게 읽나요?</b> 4가지 격 옆에 ✓ 길수가 많을수록 좋고, ⚠ 흉수는 의식적인 보완이 필요한 시기예요. 길수·흉수는 정통 작명학의 81수리 길흉표를 기준으로 했고, 시기별 의미는 한자 획수 조합으로 자동 산출돼요.</div>`;
+    h+=paidWrapBody('SURI','㊗',`한자 4격 + 81수리 길흉`, suriBody);
   }
 
-  // ── 카드 ②: 이름 글자별 오행 분포
-  h+=`<div class="card">
-    <div class="ctitle big">🪷 이름 글자별 오행 풀이</div>
-    <div class="abody" style="margin-bottom:10px">한글 자모의 소리 기운으로 이름을 풀면 이렇게 나와요. 초성과 종성 자음이 각각 다섯 가지 기운(목·화·토·금·수)으로 흘러요.</div>
+  // ── ③ 한자 자원오행 + 한자 의미 (한자 있을 때만)
+  if(hasHan){
+    const hanChars=[han.surname,han.given1,han.given2].filter(Boolean);
+    const labels=['성씨','이름 첫 글자','이름 둘째 글자'];
+    let zaBody=`<p style="margin-bottom:12px">한자에는 글자마다 본래 품은 기운(자원오행)과 뜻이 있어요. 한글 자모 오행이 「소리의 결」이라면, 자원오행은 「글자 모양·뜻의 결」이에요. 두 가지가 함께 흘러야 이름의 결이 두텁고 깊어져요.</p>
+    <div style="display:flex;flex-direction:column;gap:9px">`;
+    hanChars.forEach((ch,idx)=>{
+      const zaOh=getHanZawonOh(ch);
+      const meaning=getHanMeaning(ch);
+      const zaLabel=zaOh!=null?`${ohEmojis[zaOh]} <b style="color:${OHCOLOR[zaOh]}">${ohNames[zaOh]}</b>`:'<span style="color:var(--muted)">자원오행 매핑 없음</span>';
+      const meaningLine=meaning?`<div style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-top:4px">↪ 뜻: <b style="color:var(--accent)">${meaning}</b></div>`:'<div style="font-size:.72rem;color:var(--muted);margin-top:4px">↪ 의미 풀이 매핑 없음</div>';
+      zaBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-left:3px solid ${zaOh!=null?OHCOLOR[zaOh]:'var(--border)'};border-radius:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-family:'Noto Serif KR',serif;font-size:1.35rem;color:var(--accent);font-weight:700">${ch} <small style="font-size:.65rem;color:var(--muted);font-weight:400;margin-left:6px">${labels[idx]||''}</small></span>
+          <span style="font-size:.76rem">${zaLabel}</span>
+        </div>
+        ${meaningLine}
+      </div>`;
+    });
+    zaBody+=`</div>
+    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">💡 자원오행은 한자 부수가 어떤 기운을 가지는지로 봐요. 예를 들어 <b>琳</b>(임)은 「玉(왕)」 부수가 들어가 <b>금속(금)</b> 기운을, <b>柔</b>(유)는 「木(나무)」 부수라 <b>나무(목)</b> 기운을 가져요. 본인 사주의 약한 기운(용신)과 자원오행이 같으면 이름이 더 도움을 줘요.</div>`;
+    h+=paidWrapBody('HANZAWON','㊕',`한자 자원오행 + 글자 의미`, zaBody);
+  }
+
+  // ── ④ 한글 글자별 오행 + 음양
+  let hanglBody=`<p style="margin-bottom:12px">한글 자음에는 다섯 가지 기운(목·화·토·금·수)이 숨어 있어요. 어금닛소리(ㄱㅋ)는 <b>나무</b>, 혓소리(ㄴㄷㄹㅌ)는 <b>불</b>, 목구멍소리(ㅇㅎ)는 <b>흙</b>, 잇소리(ㅅㅈㅊ)는 <b>금속</b>, 입술소리(ㅁㅂㅍ)는 <b>물</b> 기운을 가져요. 모음은 양(ㅏ·ㅑ·ㅗ·ㅛ 등)과 음(ㅓ·ㅕ·ㅜ·ㅠ 등)으로 음양을 결정해요.</p>
     <div style="display:flex;flex-direction:column;gap:8px">`;
   nameOh.perChar.forEach(p=>{
-    if(!p.cho){h+=`<div style="padding:8px;background:var(--bg-deep);border-radius:8px;color:var(--muted)">${p.ch} — 한글이 아니라 분석 생략</div>`;return;}
+    if(!p.cho){hanglBody+=`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;color:var(--muted)">${p.ch} — 한글이 아니라 분석 생략</div>`;return;}
     const chosName=p.chos!=null?ohNames[p.chos]:'없음';
     const jongsName=p.jongs!=null?ohNames[p.jongs]:'없음';
     const chosColor=p.chos!=null?OHCOLOR[p.chos]:'var(--muted)';
-    h+=`<div style="padding:9px 11px;background:var(--card);border-left:3px solid ${chosColor};border-radius:6px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.2rem;font-weight:700;color:var(--accent)">${p.ch}</span>
-        <span style="font-size:.7rem;color:var(--sub)">${p.yinyang==='양'?'☯︎ 양':'☯︎ 음'}</span>
+    hanglBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-left:3px solid ${chosColor};border-radius:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-family:'Noto Serif KR',serif;font-size:1.3rem;font-weight:700;color:var(--accent)">${p.ch}</span>
+        <span style="font-size:.72rem;color:var(--sub)">${p.yinyang==='양'?'☯︎ 양 (밝음·활동)':'☯︎ 음 (고요·내면)'}</span>
       </div>
-      <div style="font-size:.74rem;color:var(--sub);line-height:1.7">
-        초성 <b>${p.cho}</b> → ${ohEmojis[p.chos]||''} <b style="color:${chosColor}">${chosName}</b>${p.jong?` / 종성 <b>${p.jong}</b> → ${ohEmojis[p.jongs]||''} <b>${jongsName}</b>`:''}
+      <div style="font-size:.78rem;color:var(--sub);line-height:1.75">
+        초성 <b>${p.cho}</b> → ${ohEmojis[p.chos]||''} <b style="color:${chosColor}">${chosName}</b>${p.jong?` · 종성 <b>${p.jong}</b> → ${ohEmojis[p.jongs]||''} <b>${jongsName}</b>`:''}
       </div>
     </div>`;
   });
-  h+=`</div></div>`;
+  // 음양 종합
+  const yangCnt=nameOh.yinYang['양']||0;
+  const eumCnt=nameOh.yinYang['음']||0;
+  let yyBalance='';
+  if(yangCnt>0&&eumCnt>0)yyBalance='이름에 <b>양과 음이 모두</b> 들어가 균형이 잘 잡혀 있어요. 활동적인 면과 차분한 면이 함께 자라요.';
+  else if(yangCnt>0)yyBalance='이름이 <b>양 기운</b> 위주예요. 밝고 활동적인 결이 강한 대신, 차분히 내면을 다지는 시간이 의식적으로 필요해요.';
+  else if(eumCnt>0)yyBalance='이름이 <b>음 기운</b> 위주예요. 깊고 내면적인 결이 강한 대신, 밝은 외부 활동·교류를 의식적으로 늘리는 게 도움이 돼요.';
+  hanglBody+=`</div>
+    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">☯︎ <b>음양 균형:</b> ${yyBalance}</div>`;
+  h+=paidWrapBody('HANGUL','🪷',`한글 글자별 오행 + 음양 풀이`, hanglBody);
 
-  // ── 카드 ③: 이름 + 사주 종합 오행 (보강·과잉)
+  // ── ⑤ 사주 + 이름 종합 오행 막대그래프
   let combinedDesc='';
   const newSpan=Math.max(...combined)-Math.min(...combined);
-  if(newSpan<=3){
-    combinedDesc=`이름과 사주의 오행을 합치면 다섯 기운이 매우 균형 잡힌 결이에요. 이름이 본인 사주의 약점을 자연스럽게 채워주는 자리예요.`;
-  }else if(newSpan<=5){
-    combinedDesc=`이름과 사주의 오행이 어느 정도 균형 있는 결이에요. 다만 <b>${ohNames[sajuMaxIdx]}</b> 기운이 약간 두텁고 <b>${ohNames[sajuMinIdx]}</b> 기운이 부족하니, 일상에서 약한 쪽을 의식적으로 채워주세요.`;
-  }else{
-    combinedDesc=`이름과 사주가 합쳐졌을 때도 <b>${ohNames[sajuMaxIdx]}</b> 기운이 많이 치우친 결이에요. <b>${ohNames[sajuMinIdx]}</b> 기운 쪽 색·방향·음식·취미를 일상에서 의식적으로 더해 주시면 결이 한층 부드러워져요.`;
-  }
-  h+=`<div class="card">
-    <div class="ctitle big">⚖ 사주 + 이름 종합 오행</div>
-    <div class="abody" style="margin-bottom:10px">${combinedDesc}</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">`;
+  if(newSpan<=3)combinedDesc=`이름과 사주의 다섯 기운을 합치면 매우 균형 잡힌 결이에요. 이름이 본인 사주의 약점을 자연스럽게 채워주는 자리예요. <b>작명학 기준 가장 이상적인 형태</b>예요.`;
+  else if(newSpan<=5)combinedDesc=`이름과 사주의 오행이 어느 정도 균형 있는 결이에요. 다만 <b>${ohNames[sajuMaxIdx]}</b> 기운이 약간 두텁고 <b>${ohNames[sajuMinIdx]}</b> 기운이 부족하니, 일상에서 부족한 쪽을 의식적으로 채워주시면 결이 더 좋아져요.`;
+  else combinedDesc=`이름과 사주가 합쳐졌을 때도 <b>${ohNames[sajuMaxIdx]}</b> 기운이 많이 치우친 결이에요. <b>${ohNames[sajuMinIdx]}</b> 기운 쪽 색·방향·음식·취미를 일상에서 의식적으로 더해 주시면 결이 한층 부드러워져요.`;
+  let combBody=`<p style="margin-bottom:14px">${combinedDesc}</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">`;
   combined.forEach((v,i)=>{
     const sa=sajuOh[i], na=nameOh.oh[i];
     const maxV=Math.max(...combined);
     const pct=Math.round(v/maxV*100);
-    h+=`<div style="display:flex;align-items:center;gap:8px">
-      <div style="width:62px;font-size:.74rem;color:${OHCOLOR[i]};font-weight:700">${ohNames[i]}</div>
-      <div style="flex:1;background:var(--bg-deep);height:14px;border-radius:7px;overflow:hidden;position:relative">
-        <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:${OHCOLOR[i]};opacity:.7;border-radius:7px"></div>
+    combBody+=`<div style="display:flex;align-items:center;gap:8px">
+      <div style="width:68px;font-size:.76rem;color:${OHCOLOR[i]};font-weight:700">${ohNames[i]}</div>
+      <div style="flex:1;background:var(--bg-deep);height:16px;border-radius:8px;overflow:hidden;position:relative">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:${OHCOLOR[i]};opacity:.75;border-radius:8px"></div>
       </div>
-      <div style="font-size:.7rem;color:var(--sub);min-width:78px;text-align:right;white-space:nowrap;flex-shrink:0">사주 ${sa} + 이름 ${na}</div>
+      <div style="font-size:.7rem;color:var(--sub);min-width:80px;text-align:right;white-space:nowrap;flex-shrink:0">사주 ${sa} + 이름 ${na}</div>
     </div>`;
   });
-  h+=`</div></div>`;
+  combBody+=`</div>`;
+  h+=paidWrapBody('COMBINE','⚖',`사주 + 이름 종합 오행`, combBody);
 
-  // ── 카드 ④: 이름의 강점·보완점
+  // ── ⑥ 강점·보완점
   const strongPoints=[];
   const weakPoints=[];
-  if(nameOh.oh[ys.main]>0)strongPoints.push(`<b>${ohNames[ys.main]}</b> 기운 보강 — 본인을 가장 도와주는 결을 이름이 채워줘요.`);
-  if(nameOh.oh[sajuMinIdx]>0&&sajuMinIdx!==ys.main)strongPoints.push(`사주에서 약한 <b>${ohNames[sajuMinIdx]}</b> 기운 보강 — 균형이 잡혀요.`);
-  if(nameOh.yinYang['양']>0&&nameOh.yinYang['음']>0)strongPoints.push(`음양이 모두 들어가 균형 있는 이름이에요.`);
-  if(nameOh.oh[(ys.main+2)%5]>0)weakPoints.push(`본인 결을 거스르는 <b>${ohNames[(ys.main+2)%5]}</b> 기운이 약간 들어가 있어요. 일상에서 ${ohNames[ys.main]} 색·방향을 보충하면 결이 부드러워져요.`);
-  if(nameOh.yinYang['양']===0)weakPoints.push(`이름이 음 기운으로만 이뤄져 있어요. 밝은 활동·외부 모임을 의식적으로 늘리세요.`);
-  if(nameOh.yinYang['음']===0)weakPoints.push(`이름이 양 기운으로만 이뤄져 있어요. 차분한 시간·내면 정리를 의식적으로 늘리세요.`);
+  if(nameOh.oh[ys.main]>0)strongPoints.push(`<b>${ohNames[ys.main]}</b> 기운 보강 — 본인을 가장 도와주는 결을 이름이 자연스럽게 채워줘요.`);
+  if(nameOh.oh[sajuMinIdx]>0&&sajuMinIdx!==ys.main)strongPoints.push(`사주에서 약한 <b>${ohNames[sajuMinIdx]}</b> 기운을 이름이 보강해 균형이 잡혀요.`);
+  if(yangCnt>0&&eumCnt>0)strongPoints.push(`음양이 모두 들어가 균형 있는 이름이에요. 활동·휴식의 결이 함께 자라요.`);
+  if(hasHan&&suri&&suri.jeong.good)strongPoints.push(`정격(총운·말년)이 길수예요. 평생을 통틀어 결실의 결이 좋아요.`);
+  if(nameOh.oh[(ys.main+2)%5]>0)weakPoints.push(`본인 결을 거스르는 <b>${ohNames[(ys.main+2)%5]}</b> 기운이 들어가 있어요. 일상에서 ${ohNames[ys.main]} 색·방향·음식을 의식적으로 보충하면 결이 부드러워져요.`);
+  if(yangCnt===0)weakPoints.push(`이름이 음 기운으로만 이뤄져 있어요. 밝은 활동·외부 모임을 의식적으로 늘리세요.`);
+  if(eumCnt===0)weakPoints.push(`이름이 양 기운으로만 이뤄져 있어요. 차분한 시간·내면 정리를 의식적으로 늘리세요.`);
+  if(hasHan&&suri){
+    const badGyeoks=[];
+    if(!suri.won.good)badGyeoks.push('원격(어린 시절·말년)');
+    if(!suri.hyeong.good)badGyeoks.push('형격(청년기·중심운)');
+    if(!suri.i.good)badGyeoks.push('이격(사회 인덕)');
+    if(!suri.jeong.good)badGyeoks.push('정격(총운·말년)');
+    if(badGyeoks.length)weakPoints.push(`${badGyeoks.join('·')}이 흉수예요. 해당 시기에는 보수적으로 결정하고, 의식적으로 본인 기운을 다지는 시간이 필요해요.`);
+  }
   if(!strongPoints.length)strongPoints.push(`평이한 결의 이름이에요. 큰 강점도 큰 약점도 없는 자리예요.`);
   if(!weakPoints.length)weakPoints.push(`특별한 약점이 보이지 않는 균형 잡힌 이름이에요.`);
-  h+=`<div class="card">
-    <div class="ctitle big">💎 이 이름의 강점·보완점</div>
-    <div class="asec"><div class="atitle" style="color:var(--wood)">✓ 강점</div><div class="abody"><ul style="margin:4px 0 0;padding-left:18px;line-height:1.85">${strongPoints.map(s=>`<li>${s}</li>`).join('')}</ul></div></div>
-    <div class="asec" style="margin-top:10px"><div class="atitle" style="color:var(--earth)">△ 보완점</div><div class="abody"><ul style="margin:4px 0 0;padding-left:18px;line-height:1.85">${weakPoints.map(s=>`<li>${s}</li>`).join('')}</ul></div></div>
-  </div>`;
+  let strengthBody=`<div class="asec"><div class="atitle" style="color:var(--wood)">✓ 이 이름의 강점</div><div class="abody"><ul style="margin:6px 0 0;padding-left:18px;line-height:1.95">${strongPoints.map(s=>`<li style="margin-bottom:6px">${s}</li>`).join('')}</ul></div></div>
+    <div class="asec" style="margin-top:14px"><div class="atitle" style="color:var(--earth)">△ 보완하면 좋은 점</div><div class="abody"><ul style="margin:6px 0 0;padding-left:18px;line-height:1.95">${weakPoints.map(s=>`<li style="margin-bottom:6px">${s}</li>`).join('')}</ul></div></div>
+    <p style="margin-top:14px;font-size:.78rem;color:var(--sub);line-height:1.85">💡 보완점이 있다고 해서 이름을 바꿔야 한다는 뜻은 아니에요. 일상에서 색·음식·방향·취미로 부족한 결을 채우시면 충분히 좋은 흐름을 만드실 수 있어요.</p>`;
+  h+=paidWrapBody('STRENGTH','💎',`이 이름의 강점과 보완할 점`, strengthBody);
 
-  // ── 카드 ⑤: 추천 이름 5개 — 본인 사주 약한 오행 보강 자음 가진 이름
-  const recommendOh=ys.main; // 용신 오행
+  // ── ⑦ 추천 이름 5개 + 길수 한자 획수 조합
+  const recommendOh=ys.main;
   const secondaryOh=sajuMinIdx!==ys.main?sajuMinIdx:(ys.main+1)%5;
   const primaryPool=NAME_POOL[recommendOh]||[];
   const secondaryPool=NAME_POOL[secondaryOh]||[];
-  // 정렬: 첫 글자가 약한 오행 자음이면 +가중치, 같은 이름 중복 제거
   const recommended=[];
   const used=new Set();
-  // 우선 풀에서 3개
-  for(const name of primaryPool){
-    if(recommended.length>=3)break;
-    if(used.has(name))continue;
-    recommended.push({name, reason:`${ohNames[recommendOh]} 기운 보강 (본인을 가장 도와주는 결)`});
-    used.add(name);
-  }
-  // 보조 풀에서 2개
-  for(const name of secondaryPool){
-    if(recommended.length>=5)break;
-    if(used.has(name))continue;
-    recommended.push({name, reason:`${ohNames[secondaryOh]} 기운 보강 (사주의 약한 결 채움)`});
-    used.add(name);
-  }
-  // 한자 입력했고 성씨 획수가 있으면 길수 한자 획수 조합 가이드
+  for(const name of primaryPool){if(recommended.length>=3)break;if(used.has(name))continue;recommended.push({name, reason:`${ohNames[recommendOh]} 기운 보강 (본인을 가장 도와주는 결)`});used.add(name);}
+  for(const name of secondaryPool){if(recommended.length>=5)break;if(used.has(name))continue;recommended.push({name, reason:`${ohNames[secondaryOh]} 기운 보강 (사주의 약한 결 채움)`});used.add(name);}
   let suriGuide='';
   if(hasHan&&strokes.surname>0){
     const sS=strokes.surname;
-    // 형격(성+이름1)이 길수인 이름1 획수 후보 (1~24획 범위)
     const goodHyeong=[];
-    for(let s1=1;s1<=24;s1++){
-      if(SURI_81_GOOD.has(sS+s1))goodHyeong.push(s1);
-    }
-    // 정격(성+이름1+이름2)도 길수인 (s1,s2) 후보 — 가장 안전한 조합 4개만
+    for(let s1=1;s1<=24;s1++){if(SURI_81_GOOD.has(sS+s1))goodHyeong.push(s1);}
     const goodCombos=[];
     for(const s1 of goodHyeong){
       for(let s2=1;s2<=24;s2++){
@@ -9630,39 +10025,33 @@ function renderNamePaid(saju, nmExtra){
       if(goodCombos.length>=5)break;
     }
     if(goodCombos.length){
-      suriGuide=`<div class="asec" style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright)">
-        <div class="atitle" style="color:var(--accent);font-size:.84rem">㊗ 성씨 ${han.surname||'(한자 미입력)'} (${sS}획) 기준 길수 한자 획수 조합</div>
-        <div class="abody" style="font-size:.74rem;line-height:1.85;margin-top:6px">
-          본인 성씨 획수와 합쳐 4격이 모두 길수가 되는 추천 한자 획수 조합:
+      suriGuide=`<div style="margin-top:14px;padding:12px 14px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright)">
+        <div style="color:var(--accent);font-size:.86rem;font-weight:700;margin-bottom:6px">㊗ 성씨 ${han.surname||'(한자 미입력)'} (${sS}획) 기준 추천 한자 획수 조합</div>
+        <div style="font-size:.78rem;line-height:1.85;color:var(--sub)">
+          본인 성씨 획수와 합쳐 4격이 모두 길수가 되는 추천 조합이에요:
           <div style="margin-top:6px;display:flex;flex-direction:column;gap:4px">
-            ${goodCombos.map((c,i)=>`<div>· 이름1 <b>${c.s1}획</b> + 이름2 <b>${c.s2}획</b> (정격 ${c.total}수 길수)</div>`).join('')}
+            ${goodCombos.map(c=>`<div>· 이름 첫 글자 <b style="color:var(--accent)">${c.s1}획</b> + 둘째 글자 <b style="color:var(--accent)">${c.s2}획</b> <small style="color:var(--muted)">(전체 ${c.total}수 길수)</small></div>`).join('')}
           </div>
-          <div style="margin-top:8px;color:var(--muted);font-size:.7rem">위 획수에 해당하는 한자 중 본인 사주의 용신 오행을 반영한 글자를 고르시면 됩니다.</div>
+          <div style="margin-top:8px;color:var(--muted);font-size:.72rem">위 획수에 해당하는 한자 중 본인 사주의 용신 오행(${ohNames[ys.main]})을 반영한 글자를 고르시면 가장 좋아요.</div>
         </div>
       </div>`;
     }
   }
-
-  h+=`<div class="card">
-    <div class="ctitle big">🪷 본인 사주에 어울리는 추천 이름</div>
-    <div class="abody" style="margin-bottom:12px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>예요. 이 결을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요.</div>
-    <div style="display:flex;flex-direction:column;gap:8px">`;
+  let recBody=`<p style="margin-bottom:14px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>이에요. 이 결을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요. 자녀 작명을 고민 중이시거나 본인 개명을 생각하신다면 참고하세요.</p>
+    <div style="display:flex;flex-direction:column;gap:9px">`;
   recommended.forEach((r,i)=>{
     const candidateName=surname+r.name;
-    h+=`<div style="padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card));border-radius:9px;border:1px solid rgba(212,175,55,.2)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}</span>
+    recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:1px solid rgba(212,175,55,.2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
       </div>
-      <div style="font-size:.74rem;color:var(--sub);line-height:1.6">↪ ${r.reason}</div>
+      <div style="font-size:.76rem;color:var(--sub);line-height:1.7">↪ ${r.reason}</div>
     </div>`;
   });
-  h+=`</div>
-    ${suriGuide}
-    <div class="asec" style="margin-top:12px;padding:10px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--accent)">
-      <div class="abody" style="font-size:.76rem;line-height:1.75">💡 실제 출생 신고·개명 시에는 같은 한글 발음의 다양한 한자가 있으니, 한자 획수·뜻까지 함께 보시는 것을 권해드려요. 위 이름은 본인 사주의 오행 결을 보강하는 한글 발음 추천이에요.</div>
-    </div>
-  </div>`;
+  recBody+=`</div>${suriGuide}
+    <div style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.78rem;color:var(--sub);line-height:1.85">💡 실제 출생 신고·개명 시에는 같은 한글 발음에도 다양한 한자가 있어요. 위 한글 추천에 더해 한자 획수까지 길수 조합으로 맞추시면, 한글 자모 오행 + 자원오행 + 4격 길수까지 모두 갖춘 완벽한 작명이 가능해요. 작명소·법원 개명 시 참고 자료로도 쓰실 수 있어요.</div>`;
+  h+=paidWrapBody('RECOMMEND','🪷',`사주에 어울리는 추천 이름`, recBody);
 
   return h;
 }
