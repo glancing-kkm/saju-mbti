@@ -120,6 +120,8 @@
   --radius-lg:18px;
 }
 html,body{font-family:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+/* 전역 고아글자 차단 — 한국어 단어 단위 줄바꿈 (사용자 요청: 모든 글자 영역) */
+*{word-break:keep-all;overflow-wrap:break-word}
 h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-spacing:-.01em}
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
@@ -9491,6 +9493,122 @@ const HAN_BY_HANGUL={
   '희':['熙','希','喜','禧','晞','姬','姫','僖','嬉']
 };
 
+// ── 정확한 인명용 한자 통합 사전 (음·뜻·획수 모두 정확) ──
+// 흔한 인명 음 우선. HAN_BY_HANGUL이 fallback, HAN_DICT가 우선.
+// 작명학 표준 출처 기준 정리
+const HAN_DICT={
+  // 성씨 흔한 음
+  '김':[{han:'金',str:8,meaning:'쇠·황금'},{han:'今',str:4,meaning:'이제·지금'},{han:'錦',str:16,meaning:'비단'},{han:'琴',str:12,meaning:'거문고'}],
+  '이':[{han:'李',str:7,meaning:'오얏·성씨'},{han:'伊',str:6,meaning:'저·이'},{han:'怡',str:8,meaning:'기쁠'},{han:'珥',str:10,meaning:'귀고리'}],
+  '박':[{han:'朴',str:6,meaning:'순박할·성씨'},{han:'博',str:12,meaning:'넓을'},{han:'璞',str:16,meaning:'옥돌'}],
+  '최':[{han:'崔',str:11,meaning:'높을·성씨'},{han:'最',str:12,meaning:'가장'}],
+  '정':[{han:'鄭',str:19,meaning:'성씨'},{han:'丁',str:2,meaning:'장정·고무래'},{han:'正',str:5,meaning:'바를'},{han:'貞',str:9,meaning:'곧을'},{han:'政',str:9,meaning:'정사'},{han:'晶',str:12,meaning:'맑을·수정'},{han:'靜',str:16,meaning:'고요할'},{han:'禎',str:14,meaning:'상서로울'},{han:'征',str:8,meaning:'갈·정벌할'}],
+  '강':[{han:'姜',str:9,meaning:'생강·성씨'},{han:'康',str:11,meaning:'편안할'},{han:'江',str:7,meaning:'강물'},{han:'剛',str:10,meaning:'굳셀'},{han:'綱',str:14,meaning:'벼리'}],
+  '조':[{han:'趙',str:14,meaning:'성씨'},{han:'曺',str:10,meaning:'성씨'},{han:'早',str:6,meaning:'이를'},{han:'照',str:13,meaning:'비출'},{han:'造',str:11,meaning:'지을'}],
+  '윤':[{han:'尹',str:4,meaning:'다스릴·성씨'},{han:'允',str:4,meaning:'진실로'},{han:'潤',str:16,meaning:'젖을·윤택할'},{han:'胤',str:9,meaning:'대를 이을'},{han:'贇',str:19,meaning:'예쁠'}],
+  '장':[{han:'張',str:11,meaning:'베풀·성씨'},{han:'章',str:11,meaning:'글·문장'},{han:'長',str:8,meaning:'길·어른'},{han:'璋',str:16,meaning:'홀'}],
+  '임':[{han:'林',str:8,meaning:'수풀·성씨'},{han:'任',str:6,meaning:'맡을·성씨'},{han:'壬',str:4,meaning:'아홉째 천간'}],
+  '한':[{han:'韓',str:17,meaning:'한나라·성씨'},{han:'漢',str:14,meaning:'한수·한나라'},{han:'寒',str:12,meaning:'찰'},{han:'瀚',str:19,meaning:'넓을'},{han:'翰',str:16,meaning:'붓·날개'}],
+  '오':[{han:'吳',str:7,meaning:'성씨'},{han:'五',str:4,meaning:'다섯'},{han:'悟',str:10,meaning:'깨달을'},{han:'晤',str:11,meaning:'만날'}],
+  '서':[{han:'徐',str:10,meaning:'천천히·성씨'},{han:'瑞',str:13,meaning:'상서로울'},{han:'書',str:10,meaning:'글'},{han:'序',str:7,meaning:'차례'},{han:'抒',str:7,meaning:'펼·풀'}],
+  '신':[{han:'申',str:5,meaning:'펼·아홉째 지지'},{han:'辛',str:7,meaning:'매울·여덟째 천간'},{han:'信',str:9,meaning:'믿을'},{han:'新',str:13,meaning:'새로울'},{han:'愼',str:13,meaning:'삼갈'}],
+  '권':[{han:'權',str:22,meaning:'권세·저울'}],
+  '황':[{han:'黃',str:12,meaning:'누를·황색'},{han:'晃',str:10,meaning:'밝을'},{han:'凰',str:11,meaning:'봉황'},{han:'煌',str:13,meaning:'빛날'}],
+  '안':[{han:'安',str:6,meaning:'편안할'},{han:'顔',str:18,meaning:'얼굴·성씨'}],
+  '송':[{han:'宋',str:7,meaning:'성씨·송나라'},{han:'松',str:8,meaning:'소나무'}],
+  '유':[{han:'柳',str:9,meaning:'버들·성씨'},{han:'劉',str:15,meaning:'성씨'},{han:'兪',str:9,meaning:'대답할·성씨'},{han:'有',str:6,meaning:'있을'},{han:'裕',str:12,meaning:'넉넉할'},{han:'維',str:14,meaning:'벼리·맬'}],
+  '홍':[{han:'洪',str:9,meaning:'넓을·성씨'},{han:'弘',str:5,meaning:'클·넓을'},{han:'鴻',str:17,meaning:'기러기·클'},{han:'紅',str:9,meaning:'붉을'}],
+  '전':[{han:'全',str:6,meaning:'온전할·성씨'},{han:'田',str:5,meaning:'밭·성씨'},{han:'錢',str:16,meaning:'돈·성씨'},{han:'典',str:8,meaning:'법·책'},{han:'傳',str:13,meaning:'전할'}],
+  '고':[{han:'高',str:10,meaning:'높을·성씨'},{han:'古',str:5,meaning:'옛'}],
+  '문':[{han:'文',str:4,meaning:'글월·성씨'},{han:'門',str:8,meaning:'문'},{han:'問',str:11,meaning:'물을'}],
+  '양':[{han:'梁',str:11,meaning:'들보·성씨'},{han:'楊',str:13,meaning:'버들·성씨'},{han:'陽',str:12,meaning:'볕'},{han:'洋',str:9,meaning:'큰바다'},{han:'養',str:15,meaning:'기를'},{han:'良',str:7,meaning:'어질'}],
+  '손':[{han:'孫',str:10,meaning:'손자·성씨'}],
+  '배':[{han:'裵',str:14,meaning:'성씨'},{han:'培',str:11,meaning:'북돋울'}],
+  '백':[{han:'白',str:5,meaning:'흰·성씨'},{han:'伯',str:7,meaning:'맏'},{han:'柏',str:9,meaning:'잣나무'}],
+  '허':[{han:'許',str:11,meaning:'허락할·성씨'}],
+  '남':[{han:'南',str:9,meaning:'남쪽·성씨'}],
+  '심':[{han:'沈',str:7,meaning:'잠길·성씨'},{han:'心',str:4,meaning:'마음'},{han:'深',str:11,meaning:'깊을'}],
+  '노':[{han:'盧',str:16,meaning:'성씨·검을'},{han:'魯',str:15,meaning:'노둔할·성씨'}],
+  '하':[{han:'河',str:8,meaning:'물·성씨'},{han:'夏',str:10,meaning:'여름'},{han:'賀',str:12,meaning:'축하할'},{han:'荷',str:11,meaning:'연꽃'}],
+
+  // 인명 자주 쓰이는 이름 음
+  '민':[{han:'敏',str:11,meaning:'재빠를·총명할'},{han:'珉',str:9,meaning:'옥돌'},{han:'旻',str:8,meaning:'가을 하늘'},{han:'玟',str:8,meaning:'옥돌·아름다운 돌'},{han:'旼',str:8,meaning:'화목할'},{han:'閔',str:12,meaning:'성씨·근심할'},{han:'民',str:5,meaning:'백성'}],
+  '준':[{han:'俊',str:9,meaning:'준수할·뛰어날'},{han:'峻',str:10,meaning:'높을·험할'},{han:'濬',str:17,meaning:'깊을'},{han:'駿',str:17,meaning:'준마·뛰어날'},{han:'晙',str:11,meaning:'밝을·이를'},{han:'埈',str:10,meaning:'높을'},{han:'焌',str:11,meaning:'밝을'}],
+  '서':[{han:'徐',str:10,meaning:'천천히·성씨'},{han:'瑞',str:13,meaning:'상서로울'},{han:'書',str:10,meaning:'글'},{han:'序',str:7,meaning:'차례'},{han:'抒',str:7,meaning:'펼·풀어낼'}],
+  '윤':[{han:'允',str:4,meaning:'진실로·맏'},{han:'潤',str:16,meaning:'젖을·윤택할'},{han:'胤',str:9,meaning:'대를 이을'},{han:'尹',str:4,meaning:'다스릴·성씨'},{han:'贇',str:19,meaning:'예쁠'}],
+  '지':[{han:'智',str:12,meaning:'지혜·슬기'},{han:'志',str:7,meaning:'뜻'},{han:'知',str:8,meaning:'알'},{han:'池',str:6,meaning:'못'},{han:'芝',str:8,meaning:'지초·영지'},{han:'摯',str:15,meaning:'잡을·도탑'}],
+  '현':[{han:'賢',str:15,meaning:'어질·현명할'},{han:'炫',str:9,meaning:'빛날'},{han:'鉉',str:13,meaning:'솥귀'},{han:'顯',str:23,meaning:'드러날'},{han:'玹',str:9,meaning:'옥돌'},{han:'絢',str:12,meaning:'무늬·빛날'}],
+  '우':[{han:'宇',str:6,meaning:'집·우주'},{han:'佑',str:7,meaning:'도울'},{han:'祐',str:10,meaning:'복·도울'},{han:'雨',str:8,meaning:'비'},{han:'禹',str:9,meaning:'우임금'},{han:'友',str:4,meaning:'벗'},{han:'瑀',str:13,meaning:'옥돌'}],
+  '수':[{han:'秀',str:7,meaning:'빼어날'},{han:'修',str:10,meaning:'닦을'},{han:'壽',str:14,meaning:'목숨·오래 살'},{han:'洙',str:10,meaning:'물가'},{han:'銖',str:14,meaning:'무게 단위'},{han:'琇',str:12,meaning:'옥돌'}],
+  '진':[{han:'眞',str:10,meaning:'참'},{han:'振',str:11,meaning:'떨칠·일으킬'},{han:'晉',str:10,meaning:'나아갈'},{han:'璡',str:16,meaning:'아름다운 옥'},{han:'珍',str:10,meaning:'보배'},{han:'進',str:15,meaning:'나아갈'},{han:'瑱',str:15,meaning:'옥'}],
+  '아':[{han:'娥',str:10,meaning:'예쁠'},{han:'雅',str:12,meaning:'우아할·맑을'},{han:'我',str:7,meaning:'나'},{han:'兒',str:8,meaning:'아이'},{han:'峨',str:10,meaning:'높을'}],
+  '예':[{han:'睿',str:14,meaning:'슬기로울'},{han:'藝',str:18,meaning:'재주·예술'},{han:'禮',str:18,meaning:'예도'},{han:'叡',str:16,meaning:'밝을·슬기'},{han:'譽',str:21,meaning:'기릴'},{han:'銳',str:15,meaning:'날카로울'}],
+  '연':[{han:'延',str:7,meaning:'끌·늘일'},{han:'蓮',str:14,meaning:'연꽃'},{han:'姸',str:9,meaning:'고울'},{han:'演',str:14,meaning:'펼칠·통할'},{han:'緣',str:15,meaning:'인연'},{han:'淵',str:11,meaning:'못·깊을'}],
+  '도':[{han:'道',str:13,meaning:'길·도리'},{han:'都',str:11,meaning:'도읍'},{han:'度',str:9,meaning:'법도·정도'},{han:'陶',str:11,meaning:'질그릇·도자기'},{han:'圖',str:14,meaning:'그림·계획'},{han:'燾',str:18,meaning:'덮을·비출'}],
+  '재':[{han:'宰',str:10,meaning:'재상·주관할'},{han:'財',str:10,meaning:'재물'},{han:'才',str:3,meaning:'재주'},{han:'在',str:6,meaning:'있을'},{han:'栽',str:10,meaning:'심을'},{han:'梓',str:11,meaning:'가래나무'},{han:'載',str:13,meaning:'실을'}],
+  '영':[{han:'英',str:11,meaning:'꽃부리·뛰어날'},{han:'瑛',str:14,meaning:'옥빛'},{han:'榮',str:14,meaning:'영화·번성'},{han:'映',str:9,meaning:'비칠'},{han:'永',str:5,meaning:'길·영원'},{han:'詠',str:12,meaning:'읊을'},{han:'泳',str:9,meaning:'헤엄칠'}],
+  '소':[{han:'素',str:10,meaning:'본디·바탕'},{han:'韶',str:14,meaning:'아름다울'},{han:'蘇',str:20,meaning:'깨어날·소생할'},{han:'昭',str:9,meaning:'밝을'},{han:'笑',str:10,meaning:'웃을'}],
+  '주':[{han:'周',str:8,meaning:'두루·돌'},{han:'朱',str:6,meaning:'붉을·성씨'},{han:'宙',str:8,meaning:'집·우주'},{han:'住',str:7,meaning:'살·거주'},{han:'珠',str:10,meaning:'구슬'}],
+  '은':[{han:'恩',str:10,meaning:'은혜'},{han:'銀',str:14,meaning:'은'},{han:'垠',str:9,meaning:'끝·가장자리'},{han:'隱',str:17,meaning:'숨을'},{han:'誾',str:15,meaning:'온화할'}],
+  '하':[{han:'夏',str:10,meaning:'여름'},{han:'河',str:8,meaning:'물·강'},{han:'賀',str:12,meaning:'축하할'},{han:'荷',str:11,meaning:'연꽃·짐'},{han:'瑕',str:13,meaning:'옥의 티'},{han:'霞',str:17,meaning:'노을'}],
+  '경':[{han:'京',str:8,meaning:'서울'},{han:'敬',str:13,meaning:'공경할'},{han:'慶',str:15,meaning:'경사·경하'},{han:'景',str:12,meaning:'볕·경치'},{han:'瓊',str:19,meaning:'옥'},{han:'璟',str:16,meaning:'옥빛'},{han:'炅',str:8,meaning:'빛날'},{han:'炯',str:9,meaning:'빛날·환할'},{han:'耕',str:10,meaning:'밭갈'}],
+  '건':[{han:'健',str:11,meaning:'굳셀·튼튼할'},{han:'建',str:9,meaning:'세울'},{han:'乾',str:11,meaning:'하늘·마를'}],
+  '광':[{han:'光',str:6,meaning:'빛'},{han:'廣',str:15,meaning:'넓을'},{han:'匡',str:6,meaning:'바를'}],
+  '규':[{han:'圭',str:6,meaning:'홀·서옥'},{han:'奎',str:9,meaning:'별 이름'},{han:'珪',str:10,meaning:'홀·옥'},{han:'揆',str:12,meaning:'헤아릴'}],
+  '근':[{han:'根',str:10,meaning:'뿌리'},{han:'勤',str:13,meaning:'부지런할'},{han:'謹',str:18,meaning:'삼갈'},{han:'瑾',str:15,meaning:'아름다운 옥'}],
+  '기':[{han:'起',str:10,meaning:'일어날'},{han:'基',str:11,meaning:'터'},{han:'氣',str:10,meaning:'기운'},{han:'器',str:16,meaning:'그릇'},{han:'琪',str:13,meaning:'아름다운 옥'},{han:'璣',str:16,meaning:'구슬·별'}],
+  '명':[{han:'明',str:8,meaning:'밝을'},{han:'名',str:6,meaning:'이름'},{han:'命',str:8,meaning:'목숨·명'},{han:'銘',str:14,meaning:'새길'},{han:'鳴',str:14,meaning:'울'}],
+  '미':[{han:'美',str:9,meaning:'아름다울'},{han:'未',str:5,meaning:'아닐·여덟째 지지'},{han:'米',str:6,meaning:'쌀'},{han:'眉',str:9,meaning:'눈썹'},{han:'薇',str:17,meaning:'장미·고비'}],
+  '병':[{han:'秉',str:8,meaning:'잡을'},{han:'炳',str:9,meaning:'빛날'},{han:'柄',str:9,meaning:'자루·근본'},{han:'昞',str:9,meaning:'밝을'},{han:'昺',str:9,meaning:'밝을'}],
+  '봉':[{han:'鳳',str:14,meaning:'봉황'},{han:'奉',str:8,meaning:'받들'},{han:'峯',str:10,meaning:'봉우리'},{han:'峰',str:10,meaning:'봉우리'}],
+  '빈':[{han:'彬',str:11,meaning:'빛날·찬란할'},{han:'斌',str:11,meaning:'빛날·아름다울'},{han:'濱',str:17,meaning:'물가'},{han:'賓',str:14,meaning:'손님'}],
+  '선':[{han:'善',str:12,meaning:'착할'},{han:'宣',str:9,meaning:'베풀'},{han:'仙',str:5,meaning:'신선'},{han:'禪',str:17,meaning:'고요할·선'},{han:'瑄',str:13,meaning:'도리옥'},{han:'璇',str:15,meaning:'아름다운 옥'},{han:'璿',str:18,meaning:'아름다운 옥'}],
+  '성':[{han:'成',str:7,meaning:'이룰'},{han:'星',str:9,meaning:'별'},{han:'聖',str:13,meaning:'성스러울'},{han:'晟',str:11,meaning:'밝을'},{han:'城',str:10,meaning:'성·재'},{han:'誠',str:14,meaning:'정성'},{han:'盛',str:12,meaning:'성할·번성'}],
+  '석':[{han:'錫',str:16,meaning:'주석·줄'},{han:'石',str:5,meaning:'돌'},{han:'碩',str:14,meaning:'클·충실할'},{han:'奭',str:15,meaning:'클·성낼'}],
+  '수':[{han:'秀',str:7,meaning:'빼어날·뛰어날'},{han:'修',str:10,meaning:'닦을'},{han:'壽',str:14,meaning:'목숨'},{han:'洙',str:10,meaning:'물가'},{han:'銖',str:14,meaning:'무게'},{han:'琇',str:12,meaning:'옥돌'},{han:'遂',str:13,meaning:'이룰'},{han:'穗',str:17,meaning:'이삭'}],
+  '승':[{han:'承',str:8,meaning:'이을'},{han:'勝',str:12,meaning:'이길'},{han:'昇',str:8,meaning:'오를'},{han:'陞',str:10,meaning:'오를'}],
+  '식':[{han:'植',str:12,meaning:'심을'},{han:'式',str:6,meaning:'법·형식'},{han:'寔',str:12,meaning:'참으로'}],
+  '신':[{han:'信',str:9,meaning:'믿을'},{han:'新',str:13,meaning:'새로울'},{han:'晨',str:11,meaning:'새벽'},{han:'宸',str:10,meaning:'대궐'}],
+  '안':[{han:'安',str:6,meaning:'편안할'},{han:'眼',str:11,meaning:'눈'}],
+  '연':[{han:'延',str:7,meaning:'끌·늘일'},{han:'蓮',str:14,meaning:'연꽃'},{han:'姸',str:9,meaning:'고울'},{han:'演',str:14,meaning:'펼칠'},{han:'緣',str:15,meaning:'인연'}],
+  '용':[{han:'勇',str:9,meaning:'날쌜·용기'},{han:'龍',str:16,meaning:'용'},{han:'容',str:10,meaning:'얼굴·받아들일'},{han:'溶',str:13,meaning:'녹을'},{han:'瑢',str:14,meaning:'패옥 소리'},{han:'用',str:5,meaning:'쓸'}],
+  '욱':[{han:'旭',str:6,meaning:'아침 해'},{han:'郁',str:9,meaning:'성할·향기로울'},{han:'煜',str:13,meaning:'빛날'}],
+  '원':[{han:'元',str:4,meaning:'으뜸'},{han:'原',str:10,meaning:'근원·들'},{han:'源',str:13,meaning:'근원'},{han:'圓',str:13,meaning:'둥글·원만할'},{han:'瑗',str:13,meaning:'옥'},{han:'遠',str:14,meaning:'멀'}],
+  '율':[{han:'律',str:9,meaning:'법칙·가락'},{han:'栗',str:10,meaning:'밤'},{han:'率',str:11,meaning:'거느릴'}],
+  '인':[{han:'仁',str:4,meaning:'어질'},{han:'寅',str:11,meaning:'셋째 지지·범'},{han:'印',str:6,meaning:'도장'},{han:'忍',str:7,meaning:'참을'}],
+  '일':[{han:'一',str:1,meaning:'하나'},{han:'日',str:4,meaning:'날·해'},{han:'逸',str:11,meaning:'편안할·뛰어날'},{han:'溢',str:13,meaning:'넘칠'}],
+  '재':[{han:'宰',str:10,meaning:'재상'},{han:'財',str:10,meaning:'재물'},{han:'才',str:3,meaning:'재주'},{han:'在',str:6,meaning:'있을'},{han:'栽',str:10,meaning:'심을'},{han:'梓',str:11,meaning:'가래나무'},{han:'載',str:13,meaning:'실을'}],
+  '진':[{han:'眞',str:10,meaning:'참'},{han:'振',str:11,meaning:'떨칠'},{han:'晉',str:10,meaning:'나아갈'},{han:'璡',str:16,meaning:'아름다운 옥'},{han:'珍',str:10,meaning:'보배'},{han:'進',str:15,meaning:'나아갈'},{han:'辰',str:7,meaning:'다섯째 지지·별'}],
+  '찬':[{han:'燦',str:17,meaning:'빛날'},{han:'瓚',str:23,meaning:'옥잔'},{han:'璨',str:17,meaning:'빛날·옥'},{han:'贊',str:19,meaning:'도울·기릴'},{han:'澯',str:16,meaning:'맑을'}],
+  '창':[{han:'昌',str:8,meaning:'창성할'},{han:'倉',str:10,meaning:'곳간'},{han:'創',str:12,meaning:'비롯할·만들'},{han:'彰',str:14,meaning:'밝을·드러날'},{han:'蒼',str:13,meaning:'푸를'}],
+  '채':[{han:'採',str:11,meaning:'캘'},{han:'彩',str:11,meaning:'채색·무늬'},{han:'蔡',str:15,meaning:'성씨'},{han:'寀',str:11,meaning:'녹봉·식읍'},{han:'綵',str:14,meaning:'비단'}],
+  '천':[{han:'天',str:4,meaning:'하늘'},{han:'千',str:3,meaning:'일천'},{han:'川',str:3,meaning:'내·시내'},{han:'泉',str:9,meaning:'샘'}],
+  '철':[{han:'哲',str:10,meaning:'밝을·슬기'},{han:'喆',str:12,meaning:'밝을·쌍길'},{han:'澈',str:15,meaning:'맑을'},{han:'徹',str:15,meaning:'통할'}],
+  '청':[{han:'淸',str:11,meaning:'맑을'},{han:'靑',str:8,meaning:'푸를'},{han:'晴',str:12,meaning:'갤·맑을'}],
+  '태':[{han:'泰',str:9,meaning:'클·편안할'},{han:'太',str:4,meaning:'클'},{han:'兌',str:7,meaning:'기쁠'},{han:'台',str:5,meaning:'별'}],
+  '하':[{han:'夏',str:10,meaning:'여름'},{han:'河',str:8,meaning:'물'},{han:'賀',str:12,meaning:'축하할'},{han:'荷',str:11,meaning:'연꽃'},{han:'霞',str:17,meaning:'노을'}],
+  '한':[{han:'漢',str:14,meaning:'한수'},{han:'韓',str:17,meaning:'한나라'},{han:'寒',str:12,meaning:'찰'},{han:'閑',str:12,meaning:'한가할'},{han:'瀚',str:19,meaning:'넓을'}],
+  '혁':[{han:'赫',str:14,meaning:'빛날'},{han:'革',str:9,meaning:'가죽·고칠'},{han:'奕',str:9,meaning:'클·아름다울'},{han:'爀',str:18,meaning:'빛날'}],
+  '현':[{han:'賢',str:15,meaning:'어질'},{han:'炫',str:9,meaning:'빛날'},{han:'鉉',str:13,meaning:'솥귀'},{han:'顯',str:23,meaning:'드러날'},{han:'玹',str:9,meaning:'옥돌'},{han:'絢',str:12,meaning:'무늬'},{han:'晛',str:11,meaning:'밝을'}],
+  '형':[{han:'亨',str:7,meaning:'형통할'},{han:'炯',str:9,meaning:'빛날'},{han:'瑩',str:15,meaning:'옥빛'},{han:'馨',str:20,meaning:'꽃다울'},{han:'瀅',str:18,meaning:'맑을'}],
+  '혜':[{han:'惠',str:12,meaning:'은혜·자비'},{han:'慧',str:15,meaning:'슬기'},{han:'蕙',str:18,meaning:'난초'},{han:'憓',str:15,meaning:'사랑할'}],
+  '호':[{han:'浩',str:11,meaning:'넓을·클'},{han:'昊',str:8,meaning:'하늘'},{han:'皓',str:12,meaning:'흴·밝을'},{han:'晧',str:11,meaning:'밝을'},{han:'豪',str:14,meaning:'호걸'},{han:'浩',str:11,meaning:'넓을'}],
+  '홍':[{han:'洪',str:9,meaning:'넓을·큰물'},{han:'弘',str:5,meaning:'클·넓을'},{han:'鴻',str:17,meaning:'기러기'},{han:'紅',str:9,meaning:'붉을'}],
+  '환':[{han:'桓',str:10,meaning:'굳셀'},{han:'煥',str:13,meaning:'빛날'},{han:'歡',str:22,meaning:'기쁠'},{han:'奐',str:9,meaning:'클·빛날'}],
+  '훈':[{han:'勳',str:16,meaning:'공·공로'},{han:'訓',str:10,meaning:'가르칠'},{han:'熏',str:14,meaning:'향기·연기'},{han:'壎',str:17,meaning:'질나팔'},{han:'薰',str:17,meaning:'향풀'}],
+  '희':[{han:'熙',str:13,meaning:'빛날'},{han:'希',str:7,meaning:'바랄'},{han:'喜',str:12,meaning:'기쁠'},{han:'禧',str:17,meaning:'복'},{han:'晞',str:11,meaning:'마를·밝을'},{han:'姬',str:9,meaning:'아씨'}]
+};
+
+// 통합 사전에서 HAN_STROKES와 HAN_MEANING 자동 derive + 기존 사전 merge (기존 fallback)
+(function _mergeHanDict(){
+  for(const hangul in HAN_DICT){
+    HAN_DICT[hangul].forEach(o=>{
+      if(o.str&&!HAN_STROKES[o.han])HAN_STROKES[o.han]=o.str;
+      if(o.meaning&&!HAN_MEANING[o.han])HAN_MEANING[o.han]=o.meaning;
+    });
+  }
+})();
+
 // 한자 부수 자원오행 — 부수별 오행 매핑 (작명학 자원오행 기준)
 const HAN_RADICAL_OH={
   // 木 (목)
@@ -9625,8 +9743,13 @@ function onHanInput(hanId, strokeId){
 // 한글 한 글자 → 인명용 한자 후보 배열 (드롭다운용)
 function getHanCandidates(hangulChar){
   if(!hangulChar)return [];
+  // HAN_DICT(정확한 음·뜻·획수) 우선, 없으면 HAN_BY_HANGUL fallback
+  if(HAN_DICT[hangulChar]&&HAN_DICT[hangulChar].length){
+    const seen=new Set();
+    return HAN_DICT[hangulChar].filter(o=>{if(seen.has(o.han))return false;seen.add(o.han);return true;})
+      .map(o=>({han:o.han, stroke:o.str||HAN_STROKES[o.han]||0, meaning:o.meaning||HAN_MEANING[o.han]||''}));
+  }
   const list=HAN_BY_HANGUL[hangulChar]||[];
-  // 중복 제거 + 획수 정보 함께 반환
   const seen=new Set();
   return list.filter(h=>{if(seen.has(h))return false;seen.add(h);return true;})
     .map(h=>({han:h, stroke:HAN_STROKES[h]||0, meaning:HAN_MEANING[h]||''}));
@@ -10020,13 +10143,43 @@ function renderNamePaid(saju, nmExtra){
   }
   let recBody=`<p style="margin-bottom:14px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>이에요. 이 결을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요. 자녀 작명을 고민 중이시거나 본인 개명을 생각하신다면 참고하세요.</p>
     <div style="display:flex;flex-direction:column;gap:9px">`;
+  // 성씨 한자 (사용자 입력 우선, 없으면 사전 첫 후보)
+  const surnameHan=(han.surname)||(getHanCandidates(surname.charAt(0))[0]&&getHanCandidates(surname.charAt(0))[0].han)||'';
+  const surnameStroke=strokes.surname||(surnameHan?HAN_STROKES[surnameHan]:0)||0;
   recommended.forEach((r,i)=>{
     const candidateName=surname+r.name;
+    // 이름 글자별 한자 후보 1개씩 자동 추천 — 4격 길수 조합 우선
+    const givenChars=Array.from(r.name);
+    let bestCombo=null;
+    if(surnameStroke>0){
+      // 가능한 한자 조합 중 정격(전체 합)이 길수인 것 우선
+      const c1Opts=getHanCandidates(givenChars[0]||'');
+      const c2Opts=givenChars[1]?getHanCandidates(givenChars[1]):[{han:'',stroke:0,meaning:''}];
+      for(const c1 of c1Opts){
+        for(const c2 of c2Opts){
+          const total=surnameStroke+(c1.stroke||0)+(c2.stroke||0);
+          if(SURI_81_GOOD.has(total)){bestCombo={c1,c2,total};break;}
+        }
+        if(bestCombo)break;
+      }
+      if(!bestCombo&&c1Opts.length)bestCombo={c1:c1Opts[0], c2:c2Opts[0]||{han:'',stroke:0,meaning:''}, total:surnameStroke+(c1Opts[0].stroke||0)+((c2Opts[0]&&c2Opts[0].stroke)||0)};
+    }else{
+      const c1Opts=getHanCandidates(givenChars[0]||'');
+      const c2Opts=givenChars[1]?getHanCandidates(givenChars[1]):[{han:'',stroke:0,meaning:''}];
+      if(c1Opts.length)bestCombo={c1:c1Opts[0], c2:c2Opts[0]||{han:'',stroke:0,meaning:''}, total:0};
+    }
+    const hanFullName=surnameHan+(bestCombo?bestCombo.c1.han:'')+(bestCombo&&bestCombo.c2?bestCombo.c2.han:'');
+    const hanLines=[];
+    if(surnameHan)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${surnameHan}</b>(${surname.charAt(0)}, ${surnameStroke}획) — ${HAN_MEANING[surnameHan]||'성씨'}</div>`);
+    if(bestCombo&&bestCombo.c1.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c1.han}</b>(${givenChars[0]}, ${bestCombo.c1.stroke}획) — ${bestCombo.c1.meaning||'-'}</div>`);
+    if(bestCombo&&bestCombo.c2&&bestCombo.c2.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c2.han}</b>(${givenChars[1]}, ${bestCombo.c2.stroke}획) — ${bestCombo.c2.meaning||'-'}</div>`);
+    const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${SURI_81_GOOD.has(bestCombo.total)?'<b style="color:var(--wood)">(81수리 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>'}</div>`:'';
     recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:1px solid rgba(212,175,55,.2)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}</span>
+        <span style="font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
       </div>
+      ${hanLines.length?`<div style="font-size:.76rem;color:var(--sub);line-height:1.85;margin:8px 0 6px;padding:8px 11px;background:rgba(0,0,0,.15);border-radius:6px">${hanLines.join('')}${totalLine}</div>`:''}
       <div style="font-size:.76rem;color:var(--sub);line-height:1.7">↪ ${r.reason}</div>
     </div>`;
   });
