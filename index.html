@@ -400,65 +400,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .home-card .hc-desc{font-size:.8rem;color:var(--sub);line-height:1.75;padding-right:25px;font-family:'Do Hyeon','Manrope','Noto Sans KR',sans-serif}
 .home-foot{text-align:center;font-size:.7rem;color:var(--muted);padding:24px 14px 30px;line-height:1.85;letter-spacing:.02em}
 
-/* ── 오늘의 운세 위젯 (홈 메인) ── */
-.today-widget{margin:0 14px 18px;padding:18px 16px 16px;border-radius:18px;background:linear-gradient(135deg,#1d2330 0%,#241a2e 40%,#2a1f1a 100%);border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 28px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}
-.today-widget::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);pointer-events:none}
-.today-widget::after{content:'';position:absolute;bottom:-30px;left:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(120,80,180,.12),transparent 70%);pointer-events:none}
-.tw-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;position:relative;z-index:1}
-.tw-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 9px;border-radius:99px;font-weight:800;text-transform:uppercase;box-shadow:0 2px 8px rgba(212,175,55,.4)}
-.tw-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:#f4d36b;letter-spacing:.04em;text-shadow:0 1px 6px rgba(212,175,55,.25);position:relative;z-index:1}
-.tw-sub{font-size:.72rem;color:#b5b5c0;line-height:1.7;margin-bottom:14px;position:relative;z-index:1}
-.tw-tog-row{display:flex;gap:6px;margin-bottom:8px;position:relative;z-index:1}
-.tw-tog{flex:1;min-height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#c8c8d0;border-radius:9px;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;transition:.18s;letter-spacing:.04em}
-.tw-tog.on{background:linear-gradient(135deg,#d4af37,#b8902b);color:#0f1010;border-color:#d4af37;box-shadow:0 2px 10px rgba(212,175,55,.35)}
-.tw-input-row{display:flex;gap:6px;margin-bottom:8px;position:relative;z-index:1}
-.tw-input-row .ig{flex:1;display:flex;flex-direction:column;gap:3px}
-.tw-input-row .ig.wide{flex:2.2}
-.tw-input-row label{font-size:.62rem;color:#a8a8b5;letter-spacing:.06em;font-weight:600;text-transform:uppercase;padding-left:2px}
-.tw-input-row input{background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.2);color:#fff;border-radius:8px;padding:9px 10px;font-size:.92rem;font-family:inherit;font-weight:600;text-align:center;transition:.18s;outline:none}
-.tw-input-row input:focus{border-color:#d4af37;background:rgba(212,175,55,.08);box-shadow:0 0 0 3px rgba(212,175,55,.15)}
-.tw-input-row input::placeholder{color:#5a5a65;font-weight:400}
-.tw-time-unknown{display:flex;align-items:center;gap:7px;padding:7px 10px;margin-top:4px;font-size:.72rem;color:#a8a8b5;cursor:pointer;user-select:none;position:relative;z-index:1}
-.tw-time-unknown input[type=checkbox]{margin:0;cursor:pointer;accent-color:#d4af37}
-.tw-btn{width:100%;margin-top:12px;padding:13px 16px;background:linear-gradient(135deg,#f4d36b 0%,#d4af37 60%,#b8902b 100%);color:#0a0c0d;border:none;border-radius:11px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.98rem;font-weight:700;letter-spacing:.12em;cursor:pointer;box-shadow:0 4px 18px rgba(212,175,55,.35),inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;position:relative;z-index:1;overflow:hidden}
-.tw-btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(212,175,55,.5),inset 0 1px 0 rgba(255,255,255,.3)}
-.tw-btn:active{transform:translateY(0)}
-.tw-btn:disabled{opacity:.6;cursor:wait;transform:none}
-.tw-err{font-size:.72rem;color:#ff8a8a;margin-top:8px;min-height:0;position:relative;z-index:1;line-height:1.5}
-.tw-err.vis{min-height:18px}
-.tw-result{margin-top:14px;padding:14px;background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.2);border-radius:14px;position:relative;z-index:1;animation:twFadeIn .35s ease}
-@keyframes twFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.tw-score-row{display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:1px solid rgba(212,175,55,.15);margin-bottom:12px}
-.tw-score-num{font-family:'Do Hyeon',serif;font-size:2.6rem;font-weight:700;color:#f4d36b;line-height:1;text-shadow:0 2px 12px rgba(212,175,55,.4)}
-.tw-score-meta{flex:1}
-.tw-score-stars{font-size:.95rem;letter-spacing:2px;color:#f4d36b;margin-bottom:4px}
-.tw-score-grade{font-size:.7rem;color:#c8c8d0;letter-spacing:.04em}
-.tw-headline{font-family:'Do Hyeon',serif;font-size:1.05rem;color:#f4d36b;line-height:1.55;margin-bottom:10px;font-weight:700;letter-spacing:.02em}
-.tw-pillars{display:flex;justify-content:space-around;gap:6px;padding:10px;margin:10px 0;background:rgba(212,175,55,.05);border-radius:10px;border:1px solid rgba(212,175,55,.12)}
-.tw-pillar{text-align:center;flex:1}
-.tw-pillar-lab{font-size:.58rem;color:#9a9aa5;letter-spacing:.08em;margin-bottom:3px}
-.tw-pillar-st{font-family:'Noto Serif KR',serif;font-size:1.05rem;color:#f4d36b;font-weight:700;line-height:1.1}
-.tw-pillar-br{font-family:'Noto Serif KR',serif;font-size:1.05rem;color:#c8c8d0;font-weight:700;line-height:1.1;margin-top:1px}
-.tw-body{font-size:.82rem;color:#d4d4dc;line-height:1.85;margin-bottom:11px}
-.tw-body p{margin:0 0 9px}
-.tw-body p:last-child{margin-bottom:0}
-.tw-body b{color:#f4d36b;font-weight:700}
-.tw-luck{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:12px 0}
-.tw-luck-cell{background:rgba(255,255,255,.04);padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.06)}
-.tw-luck-lab{font-size:.6rem;color:#9a9aa5;letter-spacing:.06em;margin-bottom:3px;font-weight:600;text-transform:uppercase}
-.tw-luck-val{font-size:.82rem;color:#f0f0f5;font-weight:700;line-height:1.3}
-.tw-cta{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(212,175,55,.2)}
-.tw-cta-title{font-size:.78rem;color:#c8c8d0;text-align:center;margin-bottom:10px;line-height:1.6}
-.tw-cta-title b{color:#f4d36b}
-.tw-cta-row{display:flex;gap:8px;flex-wrap:wrap}
-.tw-cta-btn{flex:1;min-width:140px;padding:11px 12px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);color:#f4d36b;border-radius:10px;font-family:'Do Hyeon',serif;font-size:.82rem;font-weight:600;cursor:pointer;text-align:center;transition:.18s;line-height:1.4;letter-spacing:.02em}
-.tw-cta-btn:hover{background:rgba(212,175,55,.18);border-color:#d4af37;transform:translateY(-1px)}
-.tw-cta-btn .tw-cta-price{display:block;font-size:.68rem;color:#a8a8b5;margin-top:3px;font-weight:400}
-.tw-cta-btn.signature{background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(180,90,140,.15));border-color:rgba(212,175,55,.4)}
-.tw-disclaimer{font-size:.62rem;color:#7a7a85;text-align:center;margin-top:10px;letter-spacing:.04em;line-height:1.6}
-.tw-leap{display:none}
-.tw-leap.vis{display:flex}
-
 /* ── Input view header ── */
 .hdr-back{background:var(--bg-deep);color:var(--text);padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(12,15,16,.85)}
 .hdr-back .bb{background:var(--card);border:1px solid var(--border);color:var(--accent);width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:.18s}
@@ -1100,39 +1041,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <div class="h-sub">사주팔자와 MBTI를 함께 풀어내는 새로운 해석<br><span style="opacity:.75;font-size:.92em">만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다</span></div>
       <div class="h-deco">천 · 지 · 인</div>
     </div>
-    <!-- 오늘의 운세 위젯 (홈 첫 화면 후킹) -->
-    <div class="today-widget" id="todayWidget">
-      <div class="tw-head">
-        <span class="tw-badge">TODAY ✦ FREE</span>
-        <span class="tw-title">오늘 본인의 결 미리보기</span>
-      </div>
-      <div class="tw-sub">생년월일·시까지 정확히 입력하시면 <b style="color:#f4d36b">오늘의 일진과 본인 사주의 작용</b>을 1분 만에 풀어드려요. 입력값은 다른 카테고리에 자동으로 채워져요.</div>
-      <div class="tw-tog-row">
-        <button type="button" class="tw-tog on" id="twGm" onclick="setTwGender('male')">남성</button>
-        <button type="button" class="tw-tog" id="twGf" onclick="setTwGender('female')">여성</button>
-      </div>
-      <div class="tw-tog-row">
-        <button type="button" class="tw-tog on" id="twCs" onclick="setTwCal('solar')">양력</button>
-        <button type="button" class="tw-tog" id="twCl" onclick="setTwCal('lunar')">음력</button>
-      </div>
-      <div class="tw-tog-row tw-leap" id="twLeapSec">
-        <button type="button" class="tw-tog on" id="twLr" onclick="setTwLeap(false)">평달</button>
-        <button type="button" class="tw-tog" id="twLp" onclick="setTwLeap(true)">윤달</button>
-      </div>
-      <div class="tw-input-row">
-        <div class="ig wide"><label for="twY">연도</label><input type="text" id="twY" placeholder="1995" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></div>
-        <div class="ig"><label for="twM">월</label><input type="text" id="twM" placeholder="3" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"></div>
-        <div class="ig"><label for="twD">일</label><input type="text" id="twD" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"></div>
-      </div>
-      <div class="tw-input-row">
-        <div class="ig"><label for="twH">시 (0~23)</label><input type="text" id="twH" placeholder="14" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"></div>
-        <div class="ig"><label for="twMin">분 (0~59)</label><input type="text" id="twMin" placeholder="30" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"></div>
-      </div>
-      <label class="tw-time-unknown"><input type="checkbox" id="twTimeUnknown" onchange="setTwTimeUnknown(this.checked)"> 태어난 시간을 모릅니다 (시·분 미상)</label>
-      <button type="button" class="tw-btn" id="twBtn" onclick="analyzeTodayWidget()">✦ 오늘의 운세 받기 ✦</button>
-      <div class="tw-err" id="twErr" role="alert" aria-live="polite"></div>
-      <div id="twResult"></div>
-    </div>
     <div class="menu-wrap">
       <div class="menu-head">
         <div class="menu-head-title">사주 보기</div>
@@ -1151,6 +1059,22 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">오늘의 일진과 내 사주의 상호작용을 매일 새롭게</div>
           <div class="mc-tag t-free">무료</div>
         </button>
+        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
+          <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
+          <div class="mc-icon" aria-hidden="true">🌼</div>
+          <div class="mc-title">인생총운</div>
+          <div class="mc-desc">대운 흐름으로 보는 평생의 시기별 길흉화복</div>
+          <div class="mc-tag t-signature">시그니처</div>
+          <div class="mc-price">24,000원</div>
+        </button>
+        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 19,000원" role="listitem">
+          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
+          <div class="mc-icon" aria-hidden="true">🎉</div>
+          <div class="mc-title">신년운세</div>
+          <div class="mc-desc">사주·세운·대운을 종합한 한 해의 입체 분석</div>
+          <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">19,000원</div>
+        </button>
         <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 1,500원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">🎯</div>
@@ -1167,14 +1091,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">월당 1,500원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 9,000원 (6개월)</span></div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 19,000원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">🎉</div>
-          <div class="mc-title">신년운세</div>
-          <div class="mc-desc">사주·세운·대운을 종합한 한 해의 입체 분석</div>
-          <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">19,000원</div>
-        </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">💑</div>
@@ -1190,14 +1106,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">본인 이름의 오행 결 분석 + 사주에 어울리는 추천 이름 5개</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">4,900원</div>
-        </button>
-        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
-          <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">🌼</div>
-          <div class="mc-title">인생총운</div>
-          <div class="mc-desc">대운 흐름으로 보는 평생의 시기별 길흉화복</div>
-          <div class="mc-tag t-signature">시그니처</div>
-          <div class="mc-price">24,000원</div>
         </button>
       </div>
     </div>
@@ -2070,17 +1978,6 @@ function setLeap(b){
   _setTog('blp',b);
 }
 
-// 오늘의 운세 위젯 — 입력 상태
-let _twGender='male', _twCal='solar', _twLeap=false, _twTimeUnknown=false;
-function _twSetTog(id,on){const e=document.getElementById(id);if(e)e.className='tw-tog'+(on?' on':'');}
-function setTwGender(g){_twGender=g;_twSetTog('twGm',g==='male');_twSetTog('twGf',g==='female');}
-function setTwCal(t){_twCal=t;_twSetTog('twCs',t==='solar');_twSetTog('twCl',t==='lunar');const el=document.getElementById('twLeapSec');if(el)el.className='tw-tog-row tw-leap'+(t==='lunar'?' vis':'');}
-function setTwLeap(b){_twLeap=b;_twSetTog('twLr',!b);_twSetTog('twLp',b);}
-function setTwTimeUnknown(b){
-  _twTimeUnknown=b;
-  ['twH','twMin'].forEach(id=>{const e=document.getElementById(id);if(e){e.disabled=b;e.style.opacity=b?.4:1;if(b)e.value='';}});
-}
-
 // 궁합 — 상대방 입력 상태
 let _gnGender='male', _gnCal='solar', _gnLeap=false;
 function setGnGender(g){_gnGender=g;_setTog('gnGm',g==='male');_setTog('gnGf',g==='female');}
@@ -2174,7 +2071,7 @@ function goToInput(cat){
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
   if(mbtiFs){
-    const hideMbti=(cat==='manse'||cat==='daily');
+    const hideMbti=(cat==='manse'||cat==='daily'||cat==='name');
     mbtiFs.style.display=hideMbti?'none':'';
     if(hideMbti){
       const sel=document.getElementById('iMbti');
@@ -9577,7 +9474,7 @@ function renderNamePaid(saju, nmExtra){
       <div style="flex:1;background:var(--bg-deep);height:14px;border-radius:7px;overflow:hidden;position:relative">
         <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:${OHCOLOR[i]};opacity:.7;border-radius:7px"></div>
       </div>
-      <div style="font-size:.7rem;color:var(--sub);width:62px;text-align:right">사주 ${sa} + 이름 ${na}</div>
+      <div style="font-size:.7rem;color:var(--sub);min-width:78px;text-align:right;white-space:nowrap;flex-shrink:0">사주 ${sa} + 이름 ${na}</div>
     </div>`;
   });
   h+=`</div></div>`;
@@ -9676,161 +9573,6 @@ function renderNamePaid(saju, nmExtra){
     </div>
   </div>`;
 
-  return h;
-}
-
-// ══════════════════════════════════════════════
-//  오늘의 운세 위젯 — 홈 메인 1분 미리보기
-// ══════════════════════════════════════════════
-function analyzeTodayWidget(){
-  const errEl=document.getElementById('twErr');
-  const setErr=(m,focusId)=>{errEl.textContent=m;errEl.className='tw-err vis';if(focusId){const e=document.getElementById(focusId);if(e)e.focus();}};
-  errEl.textContent='';errEl.className='tw-err';
-
-  const y=parseInt(document.getElementById('twY').value)||0;
-  const m=parseInt(document.getElementById('twM').value)||0;
-  const d=parseInt(document.getElementById('twD').value)||0;
-  let h=_twTimeUnknown?-1:parseInt(document.getElementById('twH').value);
-  let mi=_twTimeUnknown?0:(parseInt(document.getElementById('twMin').value)||0);
-  if(!y||y<1900||y>2050)return setErr('연도(1900~2050)를 확인해주세요.','twY');
-  if(!m||m<1||m>12)return setErr('월(1~12)을 확인해주세요.','twM');
-  if(!d||d<1||d>31)return setErr('일(1~31)을 확인해주세요.','twD');
-  if(!_twTimeUnknown){
-    if(isNaN(h)||h<0||h>23)return setErr('시(0~23)를 입력하거나 「태어난 시간을 모릅니다」를 체크해주세요.','twH');
-    if(mi<0||mi>59)return setErr('분(0~59)을 확인해주세요.','twMin');
-  }
-  if(_twTimeUnknown)h=-1;
-
-  const btn=document.getElementById('twBtn');
-  btn.disabled=true;
-  btn.innerHTML='<span class="ldspin" aria-hidden="true"></span> 계산 중...';
-
-  setTimeout(()=>{
-    try{
-      let sy=y,sm=m,sd=d;
-      if(_twCal==='lunar'){const s=l2s(y,m,d,_twLeap);sy=s.y;sm=s.m;sd=s.d;}
-      // 존재하지 않는 날짜 검증
-      const testJD=gToJD(sy,sm,sd,12), testG=jdToG(testJD);
-      if(testG.month!==sm||testG.day!==sd){
-        btn.disabled=false;btn.textContent='✦ 오늘의 운세 받기 ✦';
-        return setErr('존재하지 않는 날짜예요. 다시 확인해주세요.');
-      }
-      const saju=calcSaju(sy,sm,sd,h,mi);
-      const result=renderTodayWidgetResult(saju, sy, sm, sd, h, mi);
-      document.getElementById('twResult').innerHTML=fixKoreanJosa(result);
-      // 다른 카테고리 자동 입력 — _lastInputs 캐시 + 전역 gender 동기화
-      gender=_twGender; calType=_twCal; isLeap=_twLeap;
-      _lastInputs={
-        gender:_twGender, calType:_twCal, isLeap:_twLeap,
-        year:String(y), month:String(m), day:String(d),
-        hour:String(h), min:String(mi),
-        cityKey:'seoul', mbti:''
-      };
-      btn.disabled=false;btn.textContent='✦ 다시 보기 ✦';
-      document.getElementById('twResult').scrollIntoView({behavior:'smooth',block:'nearest'});
-    }catch(e){
-      btn.disabled=false;btn.textContent='✦ 오늘의 운세 받기 ✦';
-      setErr(e.message||'분석 중 오류가 발생했어요. 입력값을 확인해주세요.');
-    }
-  },120);
-}
-
-function renderTodayWidgetResult(saju, sy, sm, sd, sh, smi){
-  const f=calcDailyFortune(saju);
-  const grade=dailyGrade(f.total);
-  const dStem=saju.dp.stem, dBr=saju.dp.branch;
-  const stars=Math.round(f.total/20);
-  const starStr='★'.repeat(stars)+'☆'.repeat(5-stars);
-  const tg=f.tg;
-  // 일진 천간 십신 → 친근체 헤드라인
-  const tgHead={
-    '비견':'본인 색깔이 또렷해지는 날',
-    '겁재':'경쟁심·승부욕이 올라오는 날',
-    '식신':'협업·소통이 빛나는 날',
-    '상관':'창의·표현이 빛나는 날',
-    '편재':'영업·이동·새 거래의 날',
-    '정재':'정리·점검이 결이 좋은 날',
-    '편관':'도전·압박이 들어오는 날',
-    '정관':'공식 자리에 길한 날',
-    '편인':'전문 학습이 깊어지는 날',
-    '정인':'학습·자격에 빛나는 날'
-  };
-  const headline=tgHead[tg]||'평이한 하루';
-
-  // 본문 4문단 — 일진·일지 작용·시간대·마무리
-  const dm=DM[dStem]||{};
-  const stemKey=stemNick(dStem)||STEMKO[dStem];
-  const todayStemKey=stemNick(f.dp.stem)||STEMKO[f.dp.stem];
-  const tgKw=(TG_KEYWORD[tg]||[]).slice(0,3).join('·');
-  // 일지 작용 단락
-  const relMap={
-    '합':`오늘 일지가 본인 일지와 <b>육합</b>을 이뤄, 자석처럼 끌어당기는 결이 들어와요. 함께 일하는 사람과 마음이 잘 맞고, 협의·계약·만남 자리에 결이 좋아요.`,
-    '반합':`오늘 일지가 본인 일지와 <b>반합</b>을 이뤄, 같은 방향으로 협력하는 결이에요. 팀 단위 작업이나 공동 목표 추진에 결이 잘 맞아요.`,
-    '동':`오늘 일지가 본인 일지와 같은 글자(비화)예요. 본인 결이 두 배로 강해지지만, 같은 약점도 같이 드러나니 의식적인 한 박자 쉬기가 필요해요.`,
-    '충':`오늘 일지가 본인 일지와 <b>충</b>을 이뤄, 변동·이동·정면 부딪힘의 결이 들어와요. 큰 결정·계약·다툼은 한 박자 미루고, 차분히 정리하는 시간으로 쓰는 게 좋아요.`,
-    '원진':`오늘 일지가 본인 일지와 <b>원진살</b> 관계예요. 이유 없는 거슬림이 올라오기 쉬운 날이라, 가까운 사람과의 대화에서 즉답을 미루는 자세가 도움이 돼요.`,
-    '형':`오늘 일지가 본인 일지와 <b>형살</b> 관계예요. 시비·갈등이 잦은 결이라 큰 회의·민원 자리는 신중하게.`,
-    '자형':`오늘 일지가 자형 — 내면 모순이 올라오기 쉬운 날이에요. 외부 활동(산책·운동)으로 결을 풀어내세요.`,
-    '파':`오늘 일지가 본인 일지와 <b>파</b> 관계예요. 시작은 잘 되어도 마무리에서 어긋나기 쉬우니 끝 확인을 한 번 더.`,
-    '해':`오늘 일지가 본인 일지와 <b>해</b> 관계예요. 미세한 방해·구설이 따라붙기 쉬우니 말은 한 번 더 다듬어서.`,
-    '평':`오늘 일지는 본인 일지와 평이한 관계예요. 큰 변화 없는 잔잔한 흐름이라, 미뤄둔 작업을 차분히 처리하기에 좋아요.`
-  };
-  const relBody=relMap[f.rel.kind]||relMap['평'];
-
-  // 시간대 가이드 (시간 입력했을 때만)
-  const hourGuide=(sh>=0)?(()=>{
-    const seg=sh<6?'새벽':sh<12?'오전':sh<18?'오후':'저녁';
-    const bestHour=tg==='정관'||tg==='편관'?'오전':tg==='정재'||tg==='편재'?'오후':tg==='식신'||tg==='상관'?'저녁':'오전·오후 균등';
-    return `<p><b>⏰ 시간대 결</b> — 오늘은 <b>${bestHour}</b>에 본인 결이 가장 잘 살아나요. ${seg} 시간에 가장 중요한 결정을 배치하면 결과가 좋고, 반대 시간대엔 쉬는 자리로 두면 흐름이 부드러워요.`;
-  })():'';
-
-  // 운세 등급별 마무리 한 줄
-  const closing=f.total>=80?`오늘은 본인 결이 활짝 펴지는 날이에요. <b>미뤄둔 한 가지</b>를 오늘 시작해 보세요.`:
-                f.total>=65?`잔잔하지만 안정적인 흐름이에요. <b>꾸준한 일</b>을 한 단계 더 진행하기에 좋아요.`:
-                f.total>=50?`평이한 결이라 무리한 도전보다 <b>내실 다지기</b>가 잘 맞아요.`:
-                `오늘은 조심스러운 결이에요. <b>한 박자 쉬어 가는 날</b>로 두면 흐름이 풀려요.`;
-
-  // 행운 4종 — 오늘 일진 오행 + 본인 일간 오행 균형으로 도출 (간이)
-  const luckOh=SOH[f.dp.stem]; // 오늘 일진 천간 오행
-  const luckColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][luckOh];
-  const luckDir=['동쪽','남쪽','중앙','서쪽','북쪽'][luckOh];
-  const luckNum=['3·8','2·7','5·10','4·9','1·6'][luckOh];
-  const luckFood=['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][luckOh];
-
-  // 사주 4기둥 미니 표시
-  const cell=(p,lab)=>p?`<div class="tw-pillar"><div class="tw-pillar-lab">${lab}</div><div class="tw-pillar-st">${STEMKO[p.stem]}</div><div class="tw-pillar-br">${BRCHKO[p.branch]}</div></div>`:`<div class="tw-pillar"><div class="tw-pillar-lab">${lab}</div><div class="tw-pillar-st" style="color:#5a5a65">·</div><div class="tw-pillar-br" style="color:#5a5a65">·</div></div>`;
-
-  let h=`<div class="tw-result">
-    <div class="tw-score-row">
-      <div class="tw-score-num">${f.total}</div>
-      <div class="tw-score-meta">
-        <div class="tw-score-stars">${starStr}</div>
-        <div class="tw-score-grade">${grade.lab} · 100점 만점</div>
-      </div>
-    </div>
-    <div class="tw-headline">${TG_EMOJI[tg]||'✦'} ${headline}</div>
-    <div class="tw-pillars">${cell(saju.yp,'年')}${cell(saju.mp,'月')}${cell(saju.dp,'日')}${cell(saju.hp,'時')}</div>
-    <div class="tw-body">
-      <p><b>본인 일간</b>은 <b>${STEMKO[dStem]}(${stemKey})</b>, 오늘 일진은 <b>${STEMKO[f.dp.stem]}${BRCHKO[f.dp.branch]}(${todayStemKey})</b>예요. 본인 기준 십신은 <b>${tg}</b>이라, ${tgKw}의 색채로 하루가 펼쳐져요.</p>
-      <p>${relBody}</p>
-      ${hourGuide}
-      <p>${closing}</p>
-    </div>
-    <div class="tw-luck">
-      <div class="tw-luck-cell"><div class="tw-luck-lab">🎨 행운 색</div><div class="tw-luck-val">${luckColor}</div></div>
-      <div class="tw-luck-cell"><div class="tw-luck-lab">🧭 행운 방향</div><div class="tw-luck-val">${luckDir}</div></div>
-      <div class="tw-luck-cell"><div class="tw-luck-lab">🔢 행운 숫자</div><div class="tw-luck-val">${luckNum}</div></div>
-      <div class="tw-luck-cell"><div class="tw-luck-lab">🍽 도움 음식</div><div class="tw-luck-val">${luckFood}</div></div>
-    </div>
-    <div class="tw-cta">
-      <div class="tw-cta-title">방금 본 풀이는 <b>맛보기</b>예요. 본인 사주의 <b>10년 흐름·평생의 결</b>이 궁금하다면 ↓</div>
-      <div class="tw-cta-row">
-        <button type="button" class="tw-cta-btn" onclick="goToInput('daypick')">🎯 지정일 운세<span class="tw-cta-price">중요 날의 일진 · 1,500원</span></button>
-        <button type="button" class="tw-cta-btn signature" onclick="goToInput('life')">🌼 인생총운<span class="tw-cta-price">평생 흐름 13카드 · 24,000원</span></button>
-      </div>
-      <div class="tw-disclaimer">위에 입력한 사주는 다른 카테고리에 자동으로 채워져요</div>
-    </div>
-  </div>`;
   return h;
 }
 
@@ -10261,7 +10003,7 @@ function analyze(){
   const cityKey=document.getElementById('iCity').value;
   // 만세력·일일운세는 MBTI 비교 풀이를 제공하지 않음 (입력값과 무관하게 강제 비움)
   const cat0=_category||'manse';
-  const mbti=(cat0==='manse'||cat0==='daily')?'':((document.getElementById('iMbti')||{}).value||'');
+  const mbti=(cat0==='manse'||cat0==='daily'||cat0==='name')?'':((document.getElementById('iMbti')||{}).value||'');
 
   if(!year||year<1900||year>2050)return showErr('연도는 1900~2050 사이로 입력해주세요.','iY');
   if(!month||month<1||month>12)return showErr('월은 1~12로 입력해주세요.','iM');
