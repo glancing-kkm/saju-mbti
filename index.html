@@ -1446,6 +1446,41 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <label for="nyY">연도 (예: 2026)</label>
           <input type="number" id="nyY" name="nyYear" placeholder="2026" min="1900" max="2100" inputmode="numeric" autocomplete="off">
         </div>
+        <div class="ctx-wrap">
+          <div class="ctx-lab">💭 올해 가장 알고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-desc">선택하시면 풀이의 핵심 단락이 본인의 결에 맞춰 분기돼요. 선택하지 않아도 풀이는 그대로 진행돼요.</div>
+          <div class="ctx-options" id="ctxOptionsNewyear">
+            <button type="button" class="ctx-btn" data-tag="job" onclick="setContextTag('newyear','job')">이직·승진</button>
+            <button type="button" class="ctx-btn" data-tag="love" onclick="setContextTag('newyear','love')">연애·결혼</button>
+            <button type="button" class="ctx-btn" data-tag="money" onclick="setContextTag('newyear','money')">재물·투자</button>
+            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('newyear','health')">건강</button>
+            <button type="button" class="ctx-btn" data-tag="study" onclick="setContextTag('newyear','study')">학업·시험</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('newyear','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomNewyearWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomNewyear" placeholder="예: 새 사업을 시작해요 / 자녀 입학이 있어요 (60자 이내)" maxlength="60" autocomplete="off">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 인생총운 - 옵션 C 맥락 -->
+      <fieldset class="cat-extra" id="catExtraLife" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">🌼</span><span class="cat-extra-title">인생총운 — 맥락 선택</span></div></legend>
+        <div class="cat-extra-desc">사주 정보만 있으면 풀이는 그대로 진행돼요. 아래 맥락을 선택하시면 해당 영역의 풀이가 더 깊이 강조돼요.</div>
+        <div class="ctx-wrap" style="margin-top:0">
+          <div class="ctx-lab">💭 지금 인생에서 가장 풀고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-options" id="ctxOptionsLife">
+            <button type="button" class="ctx-btn" data-tag="career" onclick="setContextTag('life','career')">진로·직업</button>
+            <button type="button" class="ctx-btn" data-tag="spouse" onclick="setContextTag('life','spouse')">배우자·결혼</button>
+            <button type="button" class="ctx-btn" data-tag="children" onclick="setContextTag('life','children')">자녀</button>
+            <button type="button" class="ctx-btn" data-tag="business" onclick="setContextTag('life','business')">사업·재물</button>
+            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('life','health')">건강</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('life','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomLifeWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomLife" placeholder="예: 인생의 큰 전환점에 서 있어요 (60자 이내)" maxlength="60" autocomplete="off">
+          </div>
+        </div>
       </fieldset>
 
       <!-- 이름풀이·작명 추가 입력 -->
@@ -1455,6 +1490,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3">
           <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off"></div>
           <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off"></div>
+        </div>
+        <div class="ctx-wrap" style="margin-top:10px">
+          <div class="ctx-lab">💭 이름이 본인 인생에 미치는 결 중 가장 알고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-options" id="ctxOptionsName">
+            <button type="button" class="ctx-btn" data-tag="career" onclick="setContextTag('name','career')">직장운</button>
+            <button type="button" class="ctx-btn" data-tag="love" onclick="setContextTag('name','love')">연애·결혼운</button>
+            <button type="button" class="ctx-btn" data-tag="health" onclick="setContextTag('name','health')">건강운</button>
+            <button type="button" class="ctx-btn" data-tag="total" onclick="setContextTag('name','total')">총운</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('name','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomNameWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomName" placeholder="예: 자녀 작명 중이에요 (60자 이내)" maxlength="60" autocomplete="off">
+          </div>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
           <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:8px">한자 입력 <small style="color:var(--muted);font-weight:400">(선택사항 · 정확한 풀이를 위해 권장)</small></div>
@@ -1507,6 +1555,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="ig">
             <label for="gnMin">분</label>
             <select id="gnMin"></select>
+          </div>
+        </div>
+        <div class="ctx-wrap" style="margin-top:14px">
+          <div class="ctx-lab">💭 이 인연에서 가장 알고 싶은 것은? <small>(선택사항)</small></div>
+          <div class="ctx-options" id="ctxOptionsGunghap">
+            <button type="button" class="ctx-btn" data-tag="marriage" onclick="setContextTag('gunghap','marriage')">결혼 가능성</button>
+            <button type="button" class="ctx-btn" data-tag="conflict" onclick="setContextTag('gunghap','conflict')">갈등 해소</button>
+            <button type="button" class="ctx-btn" data-tag="future" onclick="setContextTag('gunghap','future')">장기 전망</button>
+            <button type="button" class="ctx-btn" data-tag="partner" onclick="setContextTag('gunghap','partner')">동업·동거</button>
+            <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('gunghap','custom')">직접 입력</button>
+          </div>
+          <div class="ctx-custom-wrap" id="ctxCustomGunghapWrap" style="display:none">
+            <input type="text" class="ctx-custom-input" id="ctxCustomGunghap" placeholder="예: 부모님 반대가 있어요 (60자 이내)" maxlength="60" autocomplete="off">
           </div>
         </div>
       </fieldset>
@@ -2104,7 +2165,7 @@ function goToInput(cat){
   const ttl=document.querySelector('#view-input .hdr-back-title');
   if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
   // 카테고리별 추가 입력 섹션 표시
-  ['Daypick','Monthly','Newyear','Gunghap','Name'].forEach(k=>{
+  ['Daypick','Monthly','Newyear','Gunghap','Name','Life'].forEach(k=>{
     const el=document.getElementById('catExtra'+k);
     if(el)el.style.display='none';
   });
@@ -2138,6 +2199,8 @@ function goToInput(cat){
     ensureGnTimeSelects();
   }else if(cat==='name'){
     const el=document.getElementById('catExtraName');if(el)el.style.display='';
+  }else if(cat==='life'){
+    const el=document.getElementById('catExtraLife');if(el)el.style.display='';
   }
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
@@ -2250,7 +2313,7 @@ function ensurePaidPanel(){
   if(!p5||p5.dataset.rendered==='1'||!_saju||!_meta)return;
   const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
   p5.innerHTML=fixKoreanJosa(back+(_paidUnlocked
-    ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
+    ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra)
     :renderSajuLock(_saju)));
   if(_paidUnlocked)enrichTerms(p5);
   p5.dataset.rendered='1';
@@ -2267,7 +2330,7 @@ function tab(n){
     if(p5){
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
       p5.innerHTML=fixKoreanJosa(back+(lifeUnlocked
-        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
+        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra)
         :renderPaidLock('life',_saju)));
       if(lifeUnlocked)enrichTerms(p5);
       p5.dataset.rendered='1';
@@ -3518,6 +3581,32 @@ const CONTEXT_OPENER={
     money:{label:'재물·투자',body:'이 기간 재물·투자의 결을 보고 싶으시군요. 매달 재물의 결이 들어오는 시점과 본인 사주 유형의 결을 함께 봐드릴게요.'},
     health:{label:'건강',body:'이 기간 건강과 컨디션을 가장 염두에 두고 있으시군요. 매달 일진의 오행이 본인 약한 오행을 보강하는지가 핵심이에요.'},
     relation:{label:'관계·가족',body:'이 기간 관계·가족 사이의 결을 보고 싶으시군요. 매달 월주가 본인의 일지·월지와 어떤 관계(합·충·원진)를 이루는지가 핵심이에요.'}
+  },
+  newyear:{
+    job:{label:'이직·승진',body:'올해 직장에서의 결정·이직·승진을 가장 알고 싶으시군요. 세운 천간이 본인 일간 기준 관성으로 들어오는 달과 12개월 카드의 「직업·관운」 영역을 집중해 살피세요.'},
+    love:{label:'연애·결혼',body:'올해 연애·결혼의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 세운 일지의 합·충 작용, 그리고 재성·관성이 강한 달이 결정 시기예요.'},
+    money:{label:'재물·투자',body:'올해 재물·투자의 결을 보고 싶으시군요. 세운에 재성이 들어오는지, 일간의 강약과 함께 봐야 큰돈을 다룰 시기가 보여요.'},
+    health:{label:'건강',body:'올해 건강을 가장 염두에 두고 있으시군요. 세운 오행이 본인 약한 오행을 보강하는지, 그리고 12운성 변화를 함께 살피세요.'},
+    study:{label:'학업·시험',body:'올해 학업·자격·시험의 결을 보고 싶으시군요. 세운에 인성·식상이 들어오는 달이 결정적이에요.'}
+  },
+  gunghap:{
+    marriage:{label:'결혼 가능성',body:'두 분의 결혼 가능성을 가장 알고 싶으시군요. 일지(배우자궁) 합·충 작용과 천간합 여부, 그리고 4기둥 교차의 화합·갈등 비중이 결정적이에요. 아래 「결혼 생활 결」 카드를 집중해 살피세요.'},
+    conflict:{label:'갈등 해소',body:'두 분 사이의 갈등을 어떻게 풀지가 가장 큰 고민이시군요. 원진·형·충 작용이 들어오는 자리와 그 자리에 맞는 행동 처방을 아래에서 풀어드릴게요.'},
+    future:{label:'장기 전망',body:'두 분 인연의 장기 전망을 알고 싶으시군요. 오행 균형과 정격(말년) 비율을 함께 보면 결혼 후 30년의 결이 보여요.'},
+    partner:{label:'동업·동거',body:'두 분이 함께 일하거나 같이 살 수 있는지가 핵심이시군요. 아래 「동업·동거 결」 카드의 4기둥 교차 작용을 집중해 살피세요.'}
+  },
+  name:{
+    career:{label:'직장운',body:'이름이 본인 직장운에 미치는 결을 알고 싶으시군요. 형격(청년·주운)과 정격(총운)의 길흉이 핵심이에요. 한자 획수를 입력하시면 더 정확해요.'},
+    love:{label:'연애·결혼운',body:'이름이 본인 연애·결혼운에 미치는 결을 알고 싶으시군요. 이름의 음양 균형과 정격 길수 여부가 결혼 결을 좌우해요.'},
+    health:{label:'건강운',body:'이름이 본인 건강운에 미치는 결을 알고 싶으시군요. 본인 사주 약한 오행을 이름이 보강하는지가 핵심이에요.'},
+    total:{label:'총운',body:'이름이 본인 평생 결에 미치는 영향을 보고 싶으시군요. 4격(원·형·이·정)이 모두 길수인지가 작명학 기준 가장 중요한 평가예요.'}
+  },
+  life:{
+    career:{label:'진로·직업',body:'본인 인생에서 가장 풀고 싶은 게 진로·직업이시군요. 본인 일간·격국·용신이 어떤 직업 결과 맞는지를 「직업·관운」 카드에서 깊이 풀어드릴게요. 대운에서 관성이 들어오는 시기도 함께 살피세요.'},
+    spouse:{label:'배우자·결혼',body:'본인 인생에서 배우자·결혼이 가장 큰 화두시군요. 본인 일지(배우자궁)와 대운 흐름 속 재성·관성 기운을 「연애·결혼」 카드에서 집중해 풀어드릴게요.'},
+    children:{label:'자녀',body:'자녀 관련 결을 가장 알고 싶으시군요. 본인 시주(자녀궁)와 식상·관성 기운, 그리고 자녀 관련 대운 시기를 깊이 풀어드릴게요.'},
+    business:{label:'사업·재물',body:'사업·재물이 본인 인생의 가장 큰 관심사시군요. 본인 사주의 재성 강약과 신강·신약, 그리고 재물 운이 활짝 펴지는 대운 시기를 「재물운」 카드에서 깊이 풀어드릴게요.'},
+    health:{label:'건강',body:'건강·장수가 가장 큰 화두시군요. 본인 사주의 약한 오행과 12운성 변화, 그리고 건강 결이 약해지는 대운 시기를 「건강운」 카드에서 깊이 풀어드릴게요.'}
   }
 };
 function getContextOpener(cat,tag,note){
@@ -4044,7 +4133,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
 // ══════════════════════════════════════════════
 //  신년운세 (NEWYEAR)
 // ══════════════════════════════════════════════
-function renderNewyearFortune(saju,y){
+function renderNewyearFortune(saju,y,extra){
   const yp=yearPillar(y,6,1,12,0);
   const ypStem=yp.stem, ypBranch=yp.branch;
   const ypStemKo=STEMKO[ypStem], ypBrKo=BRCHKO[ypBranch];
@@ -4204,8 +4293,12 @@ function renderNewyearFortune(saju,y){
     return [...k].slice(0,5);
   })();
 
+  // 옵션 C — 사용자 맥락 선택 헤더
+  const _nyCtxTag=(extra&&extra.contextTag)||'';
+  const _nyCtxNote=(extra&&extra.contextNote)||'';
+  const _nyCtxHtml=getContextOpener('newyear',_nyCtxTag,_nyCtxNote);
   // 점수 링 헤로
-  let h=`<div class="daily-card">
+  let h=_nyCtxHtml+`<div class="daily-card">
     <div class="daily-date">🎉 ${y}년 신년운세</div>
     <div class="daily-score-ring" style="border-color:${grade.color};background:${grade.bg}">
       <div class="daily-score-num" style="color:${grade.color}">${total}</div>
@@ -5515,10 +5608,10 @@ function unlockAndRender(category){
     renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra));
     gotoCard(3);
   }else if(category==='newyear'){
-    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
+    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y,_meta.nyExtra));
     gotoCard(4);
   }else if(category==='life'){
-    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
+    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lifeExtra));
     gotoCard(5);
   }else if(category==='gunghap'){
     renderTarget('p6',renderGunghapPaid(_saju,_meta.gnExtra));
@@ -5953,7 +6046,7 @@ function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
   return h;
 }
 
-function renderSajuPaid(saju,sy,sm,sd,sh,smin){
+function renderSajuPaid(saju,sy,sm,sd,sh,smin,extra){
   const oh=ohCount(saju);
   const dm=DM[saju.dp.stem];
   const ys=getYongsin(oh);
@@ -5978,6 +6071,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _userStageLabel=stageLabelOf(_userAge);
 
   let h='';
+
+  // 옵션 C — 사용자 맥락 선택 헤더 (life)
+  const _lifeCtxTag=(extra&&extra.contextTag)||'';
+  const _lifeCtxNote=(extra&&extra.contextNote)||'';
+  h+=getContextOpener('life',_lifeCtxTag,_lifeCtxNote);
 
   // 용어 안내(💡)는 결과 헤더 직후에 일괄 삽입됨 — 본문에서는 제거
 
@@ -9176,6 +9274,9 @@ function renderNamePaid(saju, nmExtra){
 
   let h='';
 
+  // 옵션 C — 사용자 맥락 선택 헤더 (name)
+  h+=getContextOpener('name',nmExtra.contextTag||'',nmExtra.contextNote||'');
+
   // ── 카드 ①: 종합 점수 + 등급
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
@@ -9550,7 +9651,10 @@ function renderGunghapPaid(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
   const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
 
-  let h='';
+  // 옵션 C — 사용자 맥락 선택 헤더 (gunghap)
+  const _ggCtxHtml=getContextOpener('gunghap',gnExtra.contextTag||'',gnExtra.contextNote||'');
+
+  let h=_ggCtxHtml;
   // 1) 종합 점수 + 4축 세부 점수 + 종합 해석 + 일주 비교 — 기존 풍부한 결과
   h+=renderGunghapResult(saju1, saju2, result);
 
@@ -10014,7 +10118,8 @@ function analyze(){
   }else if(cat==='newyear'){
     const y=parseInt(document.getElementById('nyY').value)||0;
     if(!y||y<1900||y>2100)return showErr('신년운세 연도(1900~2100)를 입력해주세요.','nyY');
-    nyExtra={y};
+    const ctx=readCtx('Newyear');
+    nyExtra={y,contextTag:ctx.tag,contextNote:ctx.note};
   }else if(cat==='gunghap'){
     const gy=parseInt(document.getElementById('gnY').value)||0;
     const gm=parseInt(document.getElementById('gnM').value)||0;
@@ -10025,7 +10130,8 @@ function analyze(){
     if(!gm||gm<1||gm>12)return showErr('상대방 월(1~12)을 입력해주세요.','gnM');
     if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
     if(isNaN(gh))gh=-1;
-    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap};
+    const ctx=readCtx('Gunghap');
+    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,contextTag:ctx.tag,contextNote:ctx.note};
   }else if(cat==='name'){
     const surname=(document.getElementById('nmSurname').value||'').trim();
     const given=(document.getElementById('nmGiven').value||'').trim();
@@ -10047,7 +10153,11 @@ function analyze(){
     ['surname','given1','given2'].forEach(k=>{
       if(han[k]&&!strokes[k]&&HAN_STROKES[han[k]])strokes[k]=HAN_STROKES[han[k]];
     });
-    window._nmExtra={surname,given,han,strokes};
+    const ctx=readCtx('Name');
+    window._nmExtra={surname,given,han,strokes,contextTag:ctx.tag,contextNote:ctx.note};
+  }else if(cat==='life'){
+    const ctx=readCtx('Life');
+    window._lifeExtra={contextTag:ctx.tag,contextNote:ctx.note};
   }
 
   // 진태양시 보정 (시간 입력했을 때만)
@@ -10117,7 +10227,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,mbti,gender};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,lifeExtra:window._lifeExtra||null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
@@ -10177,7 +10287,7 @@ function analyze(){
       }else if(cat==='newyear'){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderNewyearFortune(saju,nyExtra.y)
+          ?termTip+renderNewyearFortune(saju,nyExtra.y,nyExtra)
           :renderPaidLock('newyear',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
@@ -10185,7 +10295,7 @@ function analyze(){
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
+          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min,_meta.lifeExtra)
           :renderPaidLock('life',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
