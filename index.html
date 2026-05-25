@@ -7129,6 +7129,84 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('YOOKCHIN','👨‍👩‍👧','6친 관계 — 부모·형제·배우자·자녀 인연',yckBody);
   }catch(e){}
 
+  // 직업 적성 풀이 — 격국 + 십신 + 신살 종합
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={
+      bigeop:Math.max(0,oh[_so]-1),
+      siksang:oh[(_so+1)%5],
+      jaesung:oh[(_so+2)%5],
+      gwansung:oh[(_so+3)%5],
+      insung:oh[(_so+4)%5]
+    };
+    const _ssRank=Object.entries(_sip).sort((a,b)=>b[1]-a[1]);
+    const _topSS=_ssRank[0][0];
+    const _topSSCnt=_ssRank[0][1];
+    // 직군 추천 매트릭스
+    const _jobByTopSS={
+      'bigeop':{
+        title:'자립·전문직·1인 사업가형',
+        body:'본인의 결이 또렷하고 자기 영역에서 빛나는 사주예요. 남 밑에서보다 본인의 이름으로 일할 때 가장 큰 결실이 나옵니다.',
+        jobs:['🏢 1인 사업·프리랜서·창업','⚖ 법조·회계·세무·변리사 (전문 자격직)','🩺 의료·한의사·치과 (전문직 + 자기 영역)','🎨 작가·디자이너·콘텐츠 크리에이터','💼 영업·중개·컨설팅 (본인 이름 = 자본)'],
+        env:'<b>1인 자영업·작은 회사·전문 자격 기반</b>이 가장 잘 맞아요. 대기업 안에서도 본인이 책임지는 프로젝트 단위로 일하시면 결이 살아요.'
+      },
+      'siksang':{
+        title:'창작·표현·돌봄형',
+        body:'본인 안의 결을 밖으로 풀어내는 힘이 강한 사주예요. 무엇을 만들어내고, 사람을 따뜻하게 품는 직업과 가장 잘 어울려요.',
+        jobs:['🎨 예술·창작·디자인·콘텐츠 제작','📚 교육·강사·교수·코치','🍳 요식·요리·베이커리·소믈리에','🧒 보육·간호·복지·심리 상담','🎤 방송·미디어·기획·홍보·MC'],
+        env:'<b>창의가 인정되고 표현이 자유로운 환경</b>이 잘 맞아요. 권위적인 조직보다 수평적인 팀·스튜디오·교육기관·1인 창작자가 좋아요.'
+      },
+      'jaesung':{
+        title:'활동·재물·실무형',
+        body:'세상의 자원을 현실적으로 다루는 감각이 뛰어난 사주예요. 돈·물건·정보를 빠르게 포착하고 흐름을 만드는 직업에서 빛나요.',
+        jobs:['💼 영업·세일즈·중개·무역','💰 금융·투자·은행·자산 운용','🏪 사업·창업·자영업·플랫폼 운영','🏗 건설·부동산·중개','📊 회계·세무·재무·경영'],
+        env:'<b>외부 활동·이동·교섭이 잦은 환경</b>이 잘 맞아요. 정적인 사무실보다 발이 부지런할수록 결실이 큰 직군이에요.'
+      },
+      'gwansung':{
+        title:'책임·관리·공직형',
+        body:'사회적 규율과 책임의 결을 잘 다루는 사주예요. 공식적 자리·체계가 잡힌 조직·리더 자리에 가장 잘 어울려요.',
+        jobs:['🏛 공무원·공기업·관공서','⚖ 법조·검찰·경찰·군 무관','🏥 의료·병원 행정·보건 행정','📊 대기업·금융권 관리직','🏢 임원·매니저·팀장·관리자'],
+        env:'<b>체계·규율·승진 체계가 명확한 조직</b>이 잘 맞아요. 자유로운 환경보다 책임·권한이 명확한 자리에서 가장 큰 결실이 나와요.'
+      },
+      'insung':{
+        title:'학문·교육·연구형',
+        body:'무언가를 깊이 받아들이고 정리하는 결이 강한 사주예요. 학문·연구·문화·돌봄처럼 「깊이」가 자산이 되는 직업과 잘 맞아요.',
+        jobs:['🎓 교수·연구원·학자','📚 교사·강사·교육 콘텐츠','🏥 의료·한의·약사·심리 상담','📰 언론·출판·편집·작가','🏛 종교·인문·문화·박물관·도서관'],
+        env:'<b>학습·자료·문서가 중심인 환경</b>이 잘 맞아요. 외부 활동이 잦은 영업·세일즈보다 깊이 있게 몰입하는 자리가 본인을 살려요.'
+      }
+    };
+    const _jobMain=_jobByTopSS[_topSS]||_jobByTopSS['bigeop'];
+    // 신살 보조 직업
+    const _hasYM=has('역마');
+    const _hasHG=has('화개');
+    const _hasYI=has('양인');
+    const _hasCU=has('천을귀인');
+    const _hasMC=has('문창귀인');
+    const _hasBH=has('백호');
+    let jobBody=`<div class="lead-card"><b>${_jobMain.title}</b>의 사주예요. ${_jobMain.body}</div>`;
+    const _ssKo={bigeop:'동료·라이벌의 결',siksang:'표현·풀어내는 결',jaesung:'현실·자원의 결',gwansung:'책임·규칙의 결',insung:'학습·받아들이는 결'};
+    jobBody+=`<p><span class="body-q">본인 직업 적성은 어떻게 보나요?</span><br>본인 사주에 가장 두텁게 흐르는 결은 <b>${_ssKo[_topSS]}</b>(${_topSSCnt}자리)예요. 이 결은 본인이 평생 가장 자연스럽게 쓰는 「일터에서의 색깔」을 결정해요.</p>`;
+    jobBody+=`<p><span class="body-q">가장 잘 맞는 직업군은?</span></p>`;
+    jobBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_jobMain.jobs.map(j=>`<div style="padding:8px 12px;background:rgba(212,175,73,.06);border-left:3px solid #d4a849;border-radius:5px;font-size:.82rem">${j}</div>`).join('')}</div>`;
+    jobBody+=`<p style="margin-top:14px"><span class="body-q">어떤 일터 환경이 잘 맞을까요?</span><br>${_jobMain.env}</p>`;
+    // 신살 보조 추천
+    const _bonusJobs=[];
+    if(_hasYM)_bonusJobs.push('🚚 <b>이동의 별(역마)</b>이 있어 출장·해외·외근이 잦은 직업이 잘 맞아요 (무역·물류·해외 영업·항공·관광·기자)');
+    if(_hasHG)_bonusJobs.push('🎨 <b>학문·예술의 별(화개)</b>이 있어 종교·예술·연구·창작 깊이가 자산이 돼요');
+    if(_hasYI||_hasBH)_bonusJobs.push('⚔ <b>결단의 별(양인·백호)</b>이 있어 무관·법조·의료처럼 「깎고 다듬는」 직업에서 큰 성취가 가능해요');
+    if(_hasCU)_bonusJobs.push('🌟 <b>귀인의 별(천을귀인)</b>이 있어 공직·관공서·복지·교육처럼 「사람을 도와주는」 자리에서 인덕이 빛나요');
+    if(_hasMC)_bonusJobs.push('📜 <b>학문의 별(문창귀인)</b>이 있어 교육·연구·시험·문서 처리에 특별한 강점이 있어요');
+    if(_bonusJobs.length>0){
+      jobBody+=`<p style="margin-top:14px"><span class="body-q">사주 별자리가 더해주는 직업 색채는?</span></p>`;
+      jobBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_bonusJobs.map(j=>`<div style="padding:8px 12px;background:rgba(108,191,126,.06);border-left:3px solid #6cbf7e;border-radius:5px;font-size:.82rem">${j}</div>`).join('')}</div>`;
+    }
+    // 창업 vs 직장
+    const _isCreator=_topSS==='bigeop'||_topSS==='jaesung'||_topSS==='siksang';
+    jobBody+=`<p style="margin-top:14px"><span class="body-q">창업이 맞을까요, 직장이 맞을까요?</span><br>${_isCreator?'<b>본인 사업·창업·자영업 쪽이 더 잘 맞는</b> 사주예요. 본인의 결이 또렷해서 남 밑에서 일하면 답답함을 느끼기 쉽고, 본인 이름으로 일할 때 가장 큰 결실이 나옵니다.':'<b>체계 잡힌 조직·직장 쪽이 더 잘 맞는</b> 사주예요. 본인의 결이 책임·학습·관리 쪽이라 안정적인 조직에서 차근차근 성장하는 흐름이 결을 살립니다.'}</p>`;
+    jobBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 적성은 「가능성」이지 「운명」이 아니에요</b><br>위 추천은 본인 결과 자연스럽게 맞는 영역이에요. 본인의 노력·환경·관심사로 다른 영역에서도 충분히 성공할 수 있고, 평생 한 직업이 아니라 여러 결을 거치는 것도 정상입니다. 위 추천은 「큰 결정 시 한 번 더 살펴볼 영역」으로 활용하세요.</p>`;
+    h+=paidWrapBody('JOB','💼','직업 적성 — 평생 잘 맞는 일터 색깔',jobBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 신살 종합 (만세력 위에 살 표시)
   // ═════════════════════════════════════
