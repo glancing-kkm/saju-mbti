@@ -3884,11 +3884,15 @@ function renderDaypickFortune(saju,y,m,d,extra){
   luckyBody+=`<p><b style="color:#e57462">⚡ 한 번 더 살필 띠</b><br>${badZ.length?badZ.join(' · '):'강한 충을 부르는 띠는 없어요.'}<br><span style="color:var(--sub);font-size:.78rem">이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
   h+=paidWrapBody('LUCKY','🧭','길방위 · 길색 · 길수 · 만나면 좋은 띠',luckyBody);
 
-  // ── 활성 신살 (미니 박스로)
+  // ── 활성 신살 (미니 박스로) + 개인화 부스트
   if(activeSins.length>0){
     let sinBody=`<p>본인 사주의 신살 중, 그날 일진(${dpStemKo}${dpBrKo})의 지지와 같은 자리에 있는 신살이 활성화돼요. 이 신살의 작용이 그날 평소보다 강하게 나타나요.</p>`;
     sinBody+=miniManseWithSinsal(saju);
     sinBody+=sinsalMiniHTML(activeSins, '아래 신살의 작용이 그날 강하게 발현돼요.');
+    try{
+      const _allDpSins=findSinsal(saju);
+      sinBody+=getPersonalizedSinsalInsight(_allDpSins, activeSins, '이 날');
+    }catch(e){}
     h+=paidWrapBody('SINSAL','⚡','그날 활성화되는 신살',sinBody);
   }
 
@@ -4190,6 +4194,49 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     <div class="nb-body"><p>월별 운세는 절기 기준 월주 천간·지지가 본인 일간과 만들어내는 흐름입니다. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판입니다. 결을 알면 흐름과 다투지 않고 결을 따라 한 가지를 더 잘할 수 있어요.</p></div>
   </div>`;
   return h;
+}
+
+// ══════════════════════════════════════════════
+//  신살 개인화 분석 — 본인 사주 신살 × 시기 활성화 신살
+// ══════════════════════════════════════════════
+// 본인 사주가 가진 신살이 시기(세운·대운)에서 같이 만나면 부스트·과다 효과
+// 다른 신살이 들어오면 보완 효과. 이를 풀이로 차별화.
+const _SINSAL_BOOST={
+  '도화살':{boost:'본인 매력이 한 해 동안 가장 빛나는 시기예요. 이성·인기·예술 영역에서 결이 살아납니다. 다만 진중한 만남을 의식적으로 선택하지 않으면 삼각관계·구설로 흐를 수 있어요.', solo:'그동안 보이지 않던 매력이 한 해 동안 잠깐 드러나는 결이에요. 새 인연·이성 호감의 결이 들어옵니다.'},
+  '홍염살':{boost:'본인 내면의 깊은 매력이 한 해 동안 가장 진하게 발산되는 시기예요. 깊고 진지한 인연이 들어오기 가장 좋은 결.', solo:'평소 드러나지 않던 은근한 매력이 한 해 동안 활성화돼요.'},
+  '천을귀인':{boost:'본인이 평생 받는 귀인 도움이 한 해 동안 가장 강해지는 시기예요. 위기마다 의외의 도움이 들어와요. 어렵다고 느낄수록 주변에 손을 내미세요.', solo:'이 한 해 동안 새 귀인이 들어와요. 평소 친하지 않던 사람에게서 의외의 도움을 받기 좋아요.'},
+  '문창귀인':{boost:'학문·시험·문서 영역에서 본인의 강점이 한 해 동안 가장 빛나는 시기예요. 시험 준비·자격 도전·자료 작성에 큰 결이 들어옵니다.', solo:'한 해 동안 학습·자료·문서의 결이 평소보다 잘 풀려요. 시험·자격에 도전하기 좋은 시기.'},
+  '역마살':{boost:'본인의 이동·변화 본성이 한 해 동안 가장 활발해지는 시기예요. 이사·해외·이직 같은 큰 변동을 자연스럽게 흐름에 맡기세요.', solo:'평소 가만히 있던 결에 이동·변화의 결이 들어오는 한 해예요.'},
+  '화개살':{boost:'학문·종교·예술 깊이가 한 해 동안 가장 진해지는 시기예요. 한 분야에 깊이 들어가는 학습·창작 결정을 이 해에 배치하면 결실이 큽니다.', solo:'평소 표면적이던 본인의 정신세계가 한 해 동안 깊어지는 결.'},
+  '양인살':{boost:'본인 추진력·결단력이 한 해 동안 가장 폭발하는 시기예요. 큰 결정·창업·도전을 잡기 좋지만, 충돌·사고·시비도 같이 강해지니 무리한 정면 돌파는 피하세요.', solo:'평소보다 결단력이 강해지는 한 해. 적절히 활용하면 큰 도약의 결.'},
+  '백호살':{boost:'본인 안의 급격한 변화·결단의 결이 한 해 동안 가장 강해지는 시기예요. 무관·법조·의료 영역엔 큰 성취의 해. 다른 영역엔 사고·구설 한 박자 살피세요.', solo:'평소보다 급변·결단의 결이 한 해 동안 들어와요.'},
+  '괴강살':{boost:'본인의 통솔력·카리스마가 한 해 동안 가장 진해지는 시기예요. 큰 그릇을 쓰는 자리·리더십 도전에 결이 좋습니다.', solo:'평소보다 강한 카리스마가 한 해 동안 들어와요.'}
+};
+function getPersonalizedSinsalInsight(mySinsals, activeSinsals, periodLabel){
+  if(!activeSinsals||activeSinsals.length===0)return '';
+  const myNames=new Set(mySinsals.map(s=>s.n));
+  const activeNames=new Set(activeSinsals.map(s=>s.n));
+  const matched=[...activeNames].filter(n=>myNames.has(n));
+  const onlyActive=[...activeNames].filter(n=>!myNames.has(n));
+  let html='';
+  if(matched.length>0){
+    html+=`<p style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:10px;border-left:3px solid var(--wood)"><b>🔆 본인 사주 신살 × ${periodLabel} 활성화 — 강화 작용</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주가 원래 가진 신살이 ${periodLabel} 활성화 신살과 만나, 효과가 한 단계 더 강해지는 시기예요.</span></p>`;
+    matched.forEach(n=>{
+      const ins=_SINSAL_BOOST[n];
+      if(ins)html+=`<p style="margin-top:6px;font-size:.82rem;line-height:1.85"><b>· ${n}</b> — ${ins.boost}</p>`;
+    });
+  }
+  if(onlyActive.length>0){
+    const newOnes=onlyActive.filter(n=>_SINSAL_BOOST[n]);
+    if(newOnes.length>0){
+      html+=`<p style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,73,.05),rgba(108,191,126,.03));border-radius:10px;border-left:3px solid var(--accent)"><b>✨ ${periodLabel}에 새로 들어오는 신살 — 보완 작용</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주에 원래 없던 결이 ${periodLabel} 한 해 동안 잠깐 들어와요. 평소엔 약했던 영역이 활성화돼요.</span></p>`;
+      newOnes.forEach(n=>{
+        const ins=_SINSAL_BOOST[n];
+        if(ins)html+=`<p style="margin-top:6px;font-size:.82rem;line-height:1.85"><b>· ${n}</b> — ${ins.solo}</p>`;
+      });
+    }
+  }
+  return html;
 }
 
 // ══════════════════════════════════════════════
@@ -4551,11 +4598,12 @@ function renderNewyearFortune(saju,y){
   h+=fieldBody('🏠','주거·이동운',homeYr,homeBody);
   h+=fieldBody('👨‍👩‍👧','가족·자녀운',familyYr,familyBody);
 
-  // 신살 작용
+  // 신살 작용 + 개인화 부스트 풀이
   if(activeYearSins.length>0){
     let sinBody=`<p>본인 사주의 신살 중, 세운 일지(${ypBrKo})와 만나며 ${y}년 한 해 동안 강하게 활성화되는 신살입니다.</p>`;
     sinBody+=miniManseWithSinsal(saju);
     sinBody+=sinsalMiniHTML(activeYearSins, `아래 신살의 작용이 ${y}년 한 해 동안 강하게 발현돼요.`);
+    sinBody+=getPersonalizedSinsalInsight(allSins, activeYearSins, `${y}년`);
     h+=paidWrapBody('SINSAL','⚡',`${y}년 활성화되는 신살`,sinBody);
   }
 
