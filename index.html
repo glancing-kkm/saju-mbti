@@ -7440,7 +7440,17 @@ function buildA4OhBars(oh){
 
 function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames,gender){
   // 데이터는 전역에 저장해 두고, 화면 카드는 다운로드 버튼만 표시
-  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender};
+  // 별자리(서양 12궁) + 현재 세운 활성화 신살을 미리 계산해 A4에 함께 노출
+  let zod=null, activeNowSins=[];
+  try{
+    if(_meta&&_meta.sm&&_meta.sd){
+      zod=getZodiac12(_meta.sm,_meta.sd);
+      const _curY=new Date().getFullYear();
+      const _curYp=yearPillar(_curY,6,1,12,0);
+      activeNowSins=sins.filter(s=>s.b===_curYp.branch);
+    }
+  }catch(e){}
+  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins};
   return `<div class="nb-card summary-card">
     <div class="nb-cat">🎯 SUMMARY</div>
     <div class="nb-title">📋 인생총운 요약본 다운로드</div>
@@ -7465,7 +7475,7 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
 
 function buildLifeSummaryA4Html(){
   if(!_lifeSummaryData)return '';
-  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender}=_lifeSummaryData;
+  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins}=_lifeSummaryData;
   const tot=oh.reduce((a,b)=>a+b,0);
   const me=oh[dStemOh],isStrong=me>=tot/3;
   const dom=oh.indexOf(Math.max(...oh)),weak=oh.indexOf(Math.min(...oh));
@@ -7520,6 +7530,12 @@ function buildLifeSummaryA4Html(){
             </div>
           </div>
         </div>
+
+        ${zod?`<div class="a4-section">
+          <div class="a4-h">✦ 별자리 + 사주 — 동·서양 이중 해석</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 별자리는 <b>'+zod.emoji+' '+zod.ko+'</b>('+zod.el+' 원소) — '+zod.body+'. '+getZodiacSajuFusion(zod,SOH[saju.dp.stem],dm.n.split('(')[0]))}</div>
+          ${activeNowSins.length>0?'<div class="a4-rel-item" style="margin-top:6px;font-size:.78rem">'+preventOrphan('🔆 <b>'+(new Date().getFullYear())+'년 활성화 신살 부스트</b> — '+[...new Set(activeNowSins.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (본인 사주의 이 신살이 올해 한 단계 더 강해져요)')+'</div>':''}
+        </div>`:''}
 
       </div>
       <div class="a4-col-right">
