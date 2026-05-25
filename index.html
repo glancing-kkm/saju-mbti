@@ -3671,8 +3671,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
       <div class="daily-score-lab">지정일 점수</div>
     </div>
     <div class="daily-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab}</div>
-    <div class="daily-headline">${TG_EMOJI[stemTG]||'🌟'} ${stemTG} 기운의 날</div>
-    <div class="daily-pillar">일진 <em>${STEMS[dpStem]}${BRCH[dpBranch]}(${dpStemKo}${dpBrKo})</em> · 본인 <span class="term">일간</span> <em>${myStemKo}</em> 기준 <em>${stemTG}</em>${rel.kind!=='평'?` · 일지 <b style="color:${rel.kind==='합'?'#6cbf7e':'#e57462'}">${rel.kind}</b>`:''}</div>
+    <div class="daily-headline">${TG_EMOJI[stemTG]||'🌟'} ${plainTG(stemTG)} 흐름의 날</div>
+    <div class="daily-pillar">이 날은 <em>${plainTG(stemTG)}</em> 기운이 들어오는 흐름${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${rel.kind==='합'?'#6cbf7e':'#e57462'}">${({합:'자석처럼 끌어당김',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
   </div>
 
   <div class="daily-cats">
@@ -3697,18 +3697,18 @@ function renderDaypickFortune(saju,y,m,d,extra){
     '겁재':'경쟁심·충동의 기운이 평소보다 진해지는 날이에요. 동업 자금·도박성 투자·시비는 한 박자 미루시는 게 안전해요'
   };
   const _yongsinTG=OHNAME[dpStemOh]===OHNAME[ys.main]||OHNAME[dpBrOh]===OHNAME[ys.main]?{tone:'길일',msg:`오늘은 본인을 가장 든든히 받쳐주는 ${OHNAME[ys.main]} 기운이 그대로 들어오는 결이라, 한 해 중에서도 가장 결이 잘 맞는 길일이에요. 미뤄둔 핵심 결정이 있다면 오늘 처리하시면 결실이 커요.`}:OHNAME[dpStemOh]===OHNAME[(ys.main+2)%5]||OHNAME[dpBrOh]===OHNAME[(ys.main+2)%5]?{tone:'정리하는 날',msg:'오늘은 본인을 도와주는 기운과 부딪치는 결이라, 큰 결정이나 새 도전보다 정리·관망·휴식의 카드를 꺼내기 좋은 날이에요. 무리하지 않으셔도 충분해요.'}:{tone:'평이한 날',msg:'오늘은 본인을 도와주는 기운과 특별한 작용이 없어요. 평소 페이스로 흘러가는 잔잔한 결이라, 일상 리듬을 그대로 지키시면 돼요.'};
-  const _relStory=rel.kind==='합'?'본인 일지와 오늘 일지가 자석처럼 끌어당기는 결이라, 사람 만남·교섭·계약이 평소보다 부드럽게 풀려요':rel.kind==='반합'||rel.kind==='반합약'?'본인 일지와 오늘 일지가 같은 방향으로 묶이는 결이라, 동맹·팀워크·협업에 결이 잘 맞는 날이에요':rel.kind==='동'?'본인 일지와 오늘 일지가 같은 글자라 본인 색깔이 평소의 두 배로 진해지는 자기 페이스의 날이에요':rel.kind==='충'?'본인 일지와 오늘 일지가 정면으로 부딪히는 결이라, 변동·이동·번복의 변수가 큰 날이에요. 큰 결정은 한 박자 멈추세요':rel.kind==='원진'?'본인 일지와 오늘 일지가 원진살 관계라, 가까운 사람의 사소한 말투에 미세한 거슬림이 누적되기 쉬운 날이에요':rel.kind==='형'?'본인 일지와 오늘 일지가 형살 관계라, 시비나 서로의 약점이 드러나기 쉬운 날이에요':rel.kind==='파'?'본인 일지와 오늘 일지가 파 관계라, 시작은 좋아도 마무리에서 어긋남이 생기기 쉬운 날이에요':rel.kind==='해'?'본인 일지와 오늘 일지가 해 관계라, 은근한 방해·구설·제3자 개입이 들어오는 날이에요':'본인 일지와 오늘 일지는 평이한 결이라 큰 변동 없는 잔잔한 흐름이에요';
+  const _relStory=rel.kind==='합'?'본인 자리와 이 날의 자리가 자석처럼 끌어당기는 결이라, 사람 만남·교섭·계약이 평소보다 부드럽게 풀려요':rel.kind==='반합'||rel.kind==='반합약'?'본인 자리와 이 날의 자리가 같은 방향으로 묶이는 결이라, 동맹·팀워크·협업에 잘 맞는 날이에요':rel.kind==='동'?'본인 자리와 이 날의 자리가 같은 글자라 본인 색깔이 평소의 두 배로 진해지는 자기 페이스의 날이에요':rel.kind==='충'?'본인 자리와 이 날의 자리가 정면으로 부딪히는 결이라, 변동·이동·번복의 변수가 큰 날이에요. 큰 결정은 한 박자 멈추세요':rel.kind==='원진'?'본인 자리와 이 날의 자리가 미세하게 거슬리는 결이라, 가까운 사람의 사소한 말투에 신경이 쓰이기 쉬워요':rel.kind==='형'?'본인 자리와 이 날의 자리가 서로 깎는 결이라, 시비나 서로의 약점이 드러나기 쉬운 날이에요':rel.kind==='파'?'본인 자리와 이 날의 자리가 어긋나는 결이라, 시작은 좋아도 마무리에서 어긋남이 생기기 쉬운 날이에요':rel.kind==='해'?'본인 자리와 이 날의 자리가 은근한 방해가 끼는 결이라, 구설·제3자 개입이 들어오는 날이에요':'본인 자리와 이 날의 자리는 평이한 결이라 큰 변동 없는 잔잔한 흐름이에요';
   let totBody='';
   // ① 이야기형 한 단락 결론 (lead-card)
   totBody+=`<div class="lead-card"><b>${y}년 ${m}월 ${d}일 · ${TG_EMOJI[stemTG]||'🌟'} ${grade.lab} ${f.total}점</b><br><br>오늘은 본인에게 <b>${plainTG(stemTG)}</b>의 결이 들어오는 날이에요. ${_stemTGStory[stemTG]||'평이한 흐름의 결이에요'}. ${_relStory}.</div>`;
   // ② 왜 이런 결이 나오나
-  totBody+=miniManseWithPointer(saju,'day','↑ 일주(본인) — 그날 들어오는 기운과 가장 직접 만나는 자리');
-  totBody+=`<p><span class="body-q">왜 이런 결이 나오는 걸까요?</span><br>본인은 <b>${STEMKO[myStem]}(${stemNick(myStem)||STEMKO[myStem]})</b> 일간으로 태어난 분인데, 오늘은 본인 위로 <b>${STEMKO[dpStem]}${BRCHKO[dpBranch]}(${stemNick(dpStem)||STEMKO[dpStem]} + ${branchNick(dpBranch)||BRCHKO[dpBranch]})</b> 일진이 흘러가요. 본인 기준으로 이 글자가 <b>${plainTG(stemTG)}</b>의 색채로 다가오니, 위에서 풀어드린 결이 그대로 펼쳐져요.</p>`;
+  totBody+=miniManseWithPointer(saju,'day','↑ 본인을 가리키는 두 글자 — 이 날의 기운과 가장 직접 만나는 자리');
+  totBody+=`<p><span class="body-q">왜 이런 결이 나오는 걸까요?</span><br>본인은 <b>${STEMKO[myStem]}(${stemNick(myStem)||STEMKO[myStem]})</b>로 태어난 분인데, 이 날은 본인 위로 <b>${STEMKO[dpStem]}${BRCHKO[dpBranch]}(${stemNick(dpStem)||STEMKO[dpStem]} + ${branchNick(dpBranch)||BRCHKO[dpBranch]})</b>의 기운이 흘러가요. 본인 기준으로 이 글자가 <b>${plainTG(stemTG)}</b>의 색채로 다가오니, 위에서 풀어드린 흐름이 그대로 펼쳐져요.</p>`;
   if(stemTG!==branchTG){
-    totBody+=`<p>한 가지 흥미로운 점은, 표면(위쪽 글자 <b>${plainTG(stemTG)}</b>)과 내면(아래쪽 글자 <b>${plainTG(branchTG)}</b>)의 결이 살짝 다르다는 거예요. 겉으로는 ${plainTG(stemTG)}의 일이 들어오지만, 그 결과가 마음 속에 남기는 결은 ${plainTG(branchTG)}의 색깔이에요. 그래서 같은 일도 두 가지 의미로 다가올 수 있어요.</p>`;
+    totBody+=`<p>한 가지 흥미로운 점은, 겉으로 드러난 결(<b>${plainTG(stemTG)}</b>)과 속으로 남는 결(<b>${plainTG(branchTG)}</b>)이 살짝 다르다는 거예요. 표면으로는 ${plainTG(stemTG)}의 일이 들어오지만, 그 결과가 마음 속에 남기는 색깔은 ${plainTG(branchTG)}이에요. 같은 일도 두 가지 의미로 다가올 수 있어요.</p>`;
   }
   // ③ 어떻게 보내면 좋을까
-  totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 도움 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 오늘은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
+  totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 본인을 도와주는 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 이 날은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만)
   totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `이 지정일을 본인의 「선천적 사주」와 「후천적 MBTI」를 함께 보면, 그날의 결을 더 풍부하게 읽을 수 있어요.`);
   h+=paidWrapBody('TOTAL','✨','지정일 종합 진단',totBody,
@@ -4029,31 +4029,31 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     const bdLabel=bestDays.filter(b=>b.total>=70).map(b=>`${mm}/${b.d}일(${dailyGrade(b.total).lab} ${b.total}점)`);
 
     let mBody=`<div style="margin-bottom:10px"><b>핵심 키워드</b> — ${keywords.map(k=>`<span style="display:inline-block;padding:2px 9px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.7rem;font-weight:700;margin-right:4px">${k}</span>`).join('')}</div>`;
-    mBody+=`<p>① <b>월주의 결</b> · <em>${STEMKO[mp.stem]}${BRCHKO[mp.branch]}</em> ${termName}부터 시작 ${monKo}<br>· <b>월 천간</b> ${stemRich(mp.stem)} — ${STEM_META[mp.stem].body}<br>· <b>월 지지</b> ${branchRich(mp.branch)} — ${BRANCH_META[mp.branch].body}<br>본인 일간 ${myStemKo} 기준 천간 십신은 <b>${sc.tg}</b>(${TG_EMOJI[sc.tg]||''}), 지지 정기 십신은 <b>${sc.btg}</b>으로, 「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(mp.stem)}」 + 「${branchNick(mp.branch)}」를 만나는 결입니다. 표면(${sc.tg})과 내면(${sc.btg})의 결이 ${sc.tg===sc.btg?'한 방향으로 일관되게':'다르게 교차하며'} 흐릅니다.</p>`;
+    mBody+=`<p>① <b>이 달을 이끄는 두 글자</b> · <em>${STEMKO[mp.stem]}${BRCHKO[mp.branch]}</em> ${termName}부터 시작하는 ${monKo}<br>· <b>위 글자</b> ${stemRich(mp.stem)} — ${STEM_META[mp.stem].body}<br>· <b>아래 글자</b> ${branchRich(mp.branch)} — ${BRANCH_META[mp.branch].body}<br>본인 기준으로 이달의 위 글자는 <b>${plainTG(sc.tg)}</b>(${TG_EMOJI[sc.tg]||''}), 아래 글자는 <b>${plainTG(sc.btg)}</b>의 결이에요. 「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(mp.stem)}」 + 「${branchNick(mp.branch)}」를 만나는 결이라, 겉으로 드러나는 흐름(${plainTG(sc.tg)})과 속으로 남는 결(${plainTG(sc.btg)})이 ${sc.tg===sc.btg?'한 방향으로 일관되게':'다르게 교차하며'} 흘러요.</p>`;
     mBody+=`<p>② <b>이 달이 본인에게 어떻게 다가올까요?</b><br>${sc.tg==='정관'?'이달은 직장에서 책임 있는 자리가 들어오는 달이에요. 면접·승진 보고·결재·공식 발표 같은 격식 있는 일들이 평소보다 깔끔하게 풀려요. 미뤄둔 공식 절차가 있다면 이달에 처리하시고, 사양보다 수락이 결을 만들어요.':sc.tg==='편관'?'이달은 도전·압박·경쟁·시험의 결이 들어오는 달이에요. 정면 돌파보다 한 박자 쉬었다가 측면으로 풀어가는 게 결이고, 강한 사람 앞에서는 한 걸음 양보가 진짜 승리예요. 큰 결정 전에 24시간 룰을 적용해보세요.':sc.tg==='정재'?'이달은 정기적이고 예측 가능한 재물 흐름이 자연스럽게 들어오는 달이에요. 큰 변동보다 차분한 정리·점검·꾸준함이 결실을 줘요. 가계부·예산·예금 정비에 결이 잘 맞아요.':sc.tg==='편재'?'이달은 바깥으로 나가서 움직일수록 운이 따라오는 달이에요. 영업·외근·새 거래·이동을 동반한 비즈니스에 결이 잘 맞으니 발이 부지런할수록 기회가 들어와요. 미뤄둔 거래가 있다면 이달에 추진하세요.':sc.tg==='식신'?'이달은 사람과 함께 무언가 만들고 표현하기 좋은 달이에요. 식사 자리·팀 미팅·창작 활동이 자연스럽게 풀리고, 협업이 단독 작업보다 결실이 커요. 맛집·여행·취미 모임을 이달에 잡아보세요.':sc.tg==='상관'?'이달은 창의력과 아이디어가 빛나는 달이에요. 글·콘텐츠·강연·기획 작업이 잘 풀리지만, 윗사람·권위와의 마찰이 일어날 수 있어요. 표현 톤만 한 단계 부드럽게 가져가시면 결이 살아나요.':sc.tg==='정인'?'이달은 학습과 어른의 도움이 자연스럽게 흘러들어오는 달이에요. 자료 정리·시험 준비·자격 학습·인허가 처리에 매우 결이 좋고, 어른이나 멘토에게 조언을 청하기에도 알맞아요. 작은 감사 인사 한 통이 큰 인연을 열어줘요.':sc.tg==='편인'?'이달은 깊이 파고드는 학습과 자기 점검에 결이 좋은 달이에요. 전문 분야 연구·명상·종교·예술 활동에서 통찰이 와요. 큰 결정보다는 안으로 다지는 시간으로 쓰세요.':sc.tg==='비견'?'이달은 본인 색깔이 평소보다 진해지고 동료·친구의 만남이 늘어나는 달이에요. 자기 결정·자기 사업의 결단에 결이 좋고, 같은 결의 사람들과 큰 일을 도모하기에 알맞아요.':'이달은 경쟁심과 충동이 평소보다 살짝 올라오는 달이에요. 동업 자금 거래·고가품 구매·도박성 투자는 한 박자 살피시는 게 안전해요. 운동이나 경쟁 활동으로 에너지를 풀면 결이 부드러워져요.'}</p>`;
     {
       const k=sc.rel.kind;
       const monthBranchKo=BRCHKO[mp.branch];
       if(k==='합'){
-        mBody+=`<p>③ <b>일지 육합 — 관계의 결</b><br>본인 일지 <em>${myBrKo}</em>와 월지 <em>${monthBranchKo}</em> 사이에 <b style="color:#6cbf7e">육합</b>이 들어, 사람·교섭·관계·계약 활동에 부드러움이 깃듭니다. ${sc.rel.desc} — 결혼·약혼·소개팅·재회·가족 모임 등 「관계 한 발」의 결이 좋은 달입니다.</p>`;
+        mBody+=`<p>③ <b>본인 자리와 자석처럼 끌어당기는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#6cbf7e">자석처럼 끌어당기는</b> 결이라, 사람·교섭·관계·계약 활동이 부드럽게 풀려요. 결혼·약혼·소개팅·재회·가족 모임 같은 「관계 한 발 더」 활동에 결이 좋은 달이에요.</p>`;
       }else if(k==='반합'||k==='반합약'){
-        mBody+=`<p>③ <b>일지 ${k==='반합'?'반합':'약반합'} — 협력의 결</b><br>본인 일지 <em>${myBrKo}</em>와 월지 <em>${monthBranchKo}</em>가 삼합국의 일부를 이루어, 동맹·팀워크·협업·큰 목표 추진에 결이 좋은 달입니다. ${sc.rel.desc}</p>`;
+        mBody+=`<p>③ <b>같은 방향으로 협력하는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 같은 큰 흐름으로 묶여서, 동맹·팀워크·협업·큰 목표 추진에 결이 좋은 달이에요.</p>`;
       }else if(k==='동'){
-        mBody+=`<p>③ <b>일지 비화 — 본인 색의 달</b><br>본인 일지와 월지가 같아 본인 색깔이 가장 진해지는 달입니다. 자기 페이스로 결정·실행하기에 길해요.</p>`;
+        mBody+=`<p>③ <b>본인 색깔이 가장 진해지는 달</b><br>본인 자리와 이달 자리가 같은 글자라, 본인 색깔이 평소의 두 배로 진해져요. 자기 페이스로 결정·실행하기에 결이 잘 맞아요.</p>`;
       }else if(k==='충'){
-        mBody+=`<p>③ <b>일지 충 — 변동의 변수</b><br>본인 일지 <em>${myBrKo}</em>와 월지 <em>${monthBranchKo}</em> 사이에 <b style="color:#e57462">충</b>이 들어, 변동·이동·번복·정리의 변수가 커요. ${sc.rel.desc} — 큰 결정은 미루고, 자연스럽게 정리되는 일은 결을 따라 정리하는 달로 활용하세요.</p>`;
+        mBody+=`<p>③ <b>정면으로 부딪히는 달 — 변동의 변수</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#e57462">정면으로 부딪히는</b> 결이라, 변동·이동·번복·정리의 변수가 커요. 큰 결정은 미루고, 자연스럽게 정리되는 일은 흐름을 따라 정리하는 달로 활용하세요.</p>`;
       }else if(k==='원진'){
-        mBody+=`<p>③ <b>일지 원진살 — 미묘하게 거슬리는 결</b><br>본인 일지 <em>${myBrKo}</em>와 월지 <em>${monthBranchKo}</em>가 <b style="color:#e57462">원진살</b>을 이룹니다. 충처럼 깨지진 않지만 가까운 사람의 사소한 말투·습관에 「딱히 이유는 없는데」 거슬림이 누적되기 쉬운 달입니다. 친밀한 관계일수록 거리감을 의식적으로 유지하세요.</p>`;
+        mBody+=`<p>③ <b>이유 없는 거슬림이 쌓이는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#e57462">미세하게 거슬리는</b> 결이에요. 정면 충돌은 아닌데 가까운 사람의 사소한 말투·습관에 「딱히 이유는 없는데」 신경이 쓰여요. 친밀한 관계일수록 의식적인 거리감을 유지하세요.</p>`;
       }else if(k==='형'){
-        mBody+=`<p>③ <b>일지 형살 — 깎임의 결</b><br>본인 일지와 월지가 <b style="color:#e57462">형살</b>을 이루어, 시비·법적 마찰·서로의 약점을 건드리는 결이 큰 달입니다. 무관·법조·의료 종사자에게는 오히려 직업 성취로 풀리지만, 일반 관계에서는 갈등을 회피하는 자세가 필요해요.</p>`;
+        mBody+=`<p>③ <b>서로 깎이는 달 — 갈등의 결</b><br>본인 자리와 이달 자리가 <b style="color:#e57462">서로 깎는</b> 결이라, 시비·법적 마찰·서로의 약점을 건드리는 결이 큰 달이에요. 무관·법조·의료 종사자에게는 오히려 직업 성취로 풀리지만, 일반 관계에서는 갈등을 회피하는 자세가 필요해요.</p>`;
       }else if(k==='자형'){
-        mBody+=`<p>③ <b>일지 자형 — 내면 모순의 결</b><br>본인 일지와 월지가 같은 자형 글자라, 내면의 모순·집착·우울이 올라오기 쉬운 달입니다. 외부 자극(여행·새 취미·운동)을 들여와 결을 풀어주세요.</p>`;
+        mBody+=`<p>③ <b>내면 갈등이 올라오는 달</b><br>본인 자리와 이달 자리가 같은 글자라 내면의 모순·집착·우울이 올라오기 쉬운 달이에요. 외부 자극(여행·새 취미·운동)을 들여와 흐름을 풀어주세요.</p>`;
       }else if(k==='파'){
-        mBody+=`<p>③ <b>일지 파 — 마무리의 변수</b><br>본인 일지와 월지가 <b style="color:#d4a849">파</b> 관계라, 시작은 좋아도 마무리·잔금·약속 이행 단계에서 어긋남이 생기기 쉬운 달입니다. 중요 약속은 한 번 더 확인하는 자세가 길을 엽니다.</p>`;
+        mBody+=`<p>③ <b>마무리가 어긋나는 달</b><br>본인 자리와 이달 자리가 <b style="color:#d4a849">마무리에서 어긋나는</b> 결이라, 시작은 좋아도 잔금·약속 이행 단계에서 미끄러지기 쉬워요. 중요 약속은 한 번 더 확인하는 자세가 결을 지켜줘요.</p>`;
       }else if(k==='해'){
-        mBody+=`<p>③ <b>일지 해 — 은근한 방해의 결</b><br>본인 일지와 월지가 <b style="color:#d4a849">해</b> 관계라, 미세한 어긋남·구설·제3자의 개입으로 일이 늦어지기 쉬운 달입니다. 입조심·말조심과 마진 시간 확보가 필요해요.</p>`;
+        mBody+=`<p>③ <b>은근한 방해가 끼는 달</b><br>본인 자리와 이달 자리가 <b style="color:#d4a849">은근한 방해</b>의 결이라, 미세한 어긋남·구설·제3자의 개입으로 일이 늦어지기 쉬워요. 입조심·말조심과 마진 시간 확보가 필요해요.</p>`;
       }else{
-        mBody+=`<p>③ <b>일지 평 — 안정 흐름</b><br>본인 일지와 월지에 강한 합·충·원진 작용이 없어 평이한 결의 달입니다. 자기 페이스 유지에 좋고, 일상 리듬을 다듬기에 적합해요.</p>`;
+        mBody+=`<p>③ <b>평이한 흐름의 달</b><br>본인 자리와 이달 자리에 강한 작용이 없어 평이한 결의 달이에요. 자기 페이스 유지에 좋고, 일상 리듬을 다듬기에 알맞아요.</p>`;
       }
     }
     mBody+=`<p>④ <b>분야별 점수와 흐름</b> · 💰 ${sc.wealth}점 · 💕 ${sc.love}점 · 🏛️ ${sc.career}점 · 🌿 ${sc.health}점<br>${sc.total>=75?'이 달은 흐름이 본인에게 도움이 되는 시기 — 미뤄둔 시작·확장·결정에 무게를 실어도 좋아요.':sc.total>=55?'평이한 흐름의 달 — 큰 도전보다 꾸준함이 결실을 줘요.':'한 박자 천천히 — 정리·내실·관망의 시간으로 활용하세요.'}</p>`;
