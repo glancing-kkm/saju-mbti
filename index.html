@@ -7641,6 +7641,95 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('PILLAR4','🏛','4기둥 자리별 인생 영역 — 조상·부모·본인·자녀',plBody);
   }catch(e){}
 
+  // 격국 종합 깊이 카드 — 격국별 인생·결혼·과제·강점 종합
+  try{
+    const _gkDeep={
+      '비견':{
+        strength:'독립심·자기 결·자기 영역 만들기',
+        marriage:'결혼 적령기는 평이하지만 본인 결이 강해 배우자 의견을 듣는 자세가 필요. 본인 사업·전문직 배우자와 잘 맞음',
+        challenge:'평생 다듬어야 할 점: 「본인 색이 강한」 결이라 협력·동업·금전 거래에서 신중함이 평생 과제. 동업은 가까운 사이일수록 명확한 계약 필수',
+        gift:'평생 자산: 자립심·전문성·1인 사업 그릇 — 본인 이름이 곧 자본'
+      },
+      '겁재':{
+        strength:'카리스마·결단력·큰 그릇',
+        marriage:'결혼 후 본인 주도권이 강해지기 쉬워, 배우자의 영역을 의식적으로 존중하는 자세가 결정적',
+        challenge:'평생 다듬어야 할 점: 「깎고 다듬는」 강한 결이라 충돌·시비·과거 들춤 주의. 강함은 무관·법조·의료로 풀면 큰 성취',
+        gift:'평생 자산: 카리스마·결단력·큰 무대를 이끄는 그릇'
+      },
+      '식신':{
+        strength:'표현력·돌봄·풍요로움',
+        marriage:'배우자에게 따뜻한 표현·돌봄을 주는 결로 가정 화목. 결혼·자녀 인연(여성) 풍부',
+        challenge:'평생 다듬어야 할 점: 너무 베푸는 결이라 본인 그릇을 챙기는 자세 필요. 한 분야 깊이 파기보단 다양함을 선호',
+        gift:'평생 자산: 의식주 풍요·사람 따뜻하게 품는 성품 — 예술·교육·요식·창작에 빛남'
+      },
+      '상관':{
+        strength:'창의·표현·통찰',
+        marriage:'배우자에게 표현은 풍부하지만 말 한 마디가 날카로울 수 있음. 칭찬·인정의 언어가 가정의 결을 만듦',
+        challenge:'평생 다듬어야 할 점: 권위·규율과 마찰이 평생 과제. 강의·미디어·창작 분야로 표현을 풀면 큰 결실',
+        gift:'평생 자산: 독창적 아이디어·비판적 통찰 — 강의·예술·기술 분야에서 두각'
+      },
+      '편재':{
+        strength:'사업 수완·활동력·재물 감각',
+        marriage:'남성은 매력적인 여성 인연 풍부. 다만 진중한 만남을 의식적으로 선택해야 함. 결혼 후엔 안정적인 가정으로의 의식적 회귀가 결정적',
+        challenge:'평생 다듬어야 할 점: 분산과 절제 — 한 곳에 몰입하면 한순간에 잃을 수 있음. 활동 재물의 결을 안정 자산으로 옮기는 지혜 필요',
+        gift:'평생 자산: 사업 수완·다양한 재물 기회 포착 — 무역·중개·투자·영업에 빛남'
+      },
+      '정재':{
+        strength:'성실·안정·가정형',
+        marriage:'성실한 배우자와 안정적 가정 — 결혼운이 가장 두터운 격국. 꾸준한 사랑으로 평생 동반자 관계 유지',
+        challenge:'평생 다듬어야 할 점: 너무 안정만 추구하면 변화·도약의 기회를 놓칠 수 있음. 가끔은 의식적 모험이 필요',
+        gift:'평생 자산: 꾸준한 직장·절약형 자산 관리 — 차근차근 쌓아가는 결로 안정 부 형성'
+      },
+      '편관':{
+        strength:'추진력·결단력·위기 극복',
+        marriage:'여성은 책임감 강한 남성과 인연. 결혼 후 부부 모두 책임이 무거워지기 쉬우니 휴식 시간 의식적으로 챙기기',
+        challenge:'평생 다듬어야 할 점: 과로·갈등·스트레스 관리가 평생 숙제. 정면 돌파보다 측면 우회가 더 큰 결실',
+        gift:'평생 자산: 위기에서 빛나는 그릇 — 무관·법조·경영·운동 리더 자리에 잘 맞음'
+      },
+      '정관':{
+        strength:'사회적 신뢰·책임감·정직',
+        marriage:'여성은 신뢰 가는 남성 배우자 — 결혼운 가장 좋은 격국. 안정적인 가정·자녀운',
+        challenge:'평생 다듬어야 할 점: 격식·규율을 너무 챙기다 보면 융통성 부족할 수 있음. 가까운 사람에게는 의식적으로 부드러움',
+        gift:'평생 자산: 사회적 신뢰가 자연스럽게 쌓이는 결 — 공직·관리직·대기업·승진 라인'
+      },
+      '편인':{
+        strength:'전문·연구·통찰·직관',
+        marriage:'배우자와 정신적·철학적 공유를 중시. 외향적 활동보다 내면 공유가 부부 결의 핵심',
+        challenge:'평생 다듬어야 할 점: 고립감·우울감을 의식적으로 다스리기. 한 분야에 너무 깊이 빠져 외부 단절될 수 있음',
+        gift:'평생 자산: 깊은 통찰력·직관·한 분야 전문성 — 연구·종교·역학·기술·창작에 빛남'
+      },
+      '정인':{
+        strength:'학습 능력·자비심·인덕',
+        marriage:'부모·은사·배우자의 인덕이 두텁고, 안정적 가정. 학문·문화 분야 배우자와 결이 잘 맞음',
+        challenge:'평생 다듬어야 할 점: 학습·받아들임이 과해 결정·실행이 늦을 수 있음. 의식적인 「행동으로 옮기는」 결단 필요',
+        gift:'평생 자산: 학습 능력·부모·스승 덕·인덕 — 교육·문화·복지·돌봄·연구에 빛남'
+      }
+    };
+    const _myGk=_gkDeep[gk.tg];
+    if(_myGk){
+      let gkBody=`<div class="lead-card"><b>본인 사주 유형: ${gk.name}</b> <span style="font-size:.84rem;color:var(--sub)">(${gk.nick||'고유 유형'})</span><br><span style="font-size:.82rem;line-height:1.7">${gk.desc}</span></div>`;
+      gkBody+=`<p><span class="body-q">${gk.name}의 평생 강점은?</span></p>`;
+      gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e;margin-top:8px">
+        <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 평생 자산</div>
+        <div style="font-size:.82rem;line-height:1.85">${_myGk.gift}</div>
+      </div>`;
+      gkBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849;margin-top:8px">
+        <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">💪 가장 빛나는 강점</div>
+        <div style="font-size:.82rem;line-height:1.85">${_myGk.strength}</div>
+      </div>`;
+      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,162,.05);border-radius:9px;border-left:4px solid #e574a2;margin-top:8px">
+        <div style="font-weight:700;color:#a84480;font-size:.88rem;margin-bottom:5px">💑 결혼·연애의 결</div>
+        <div style="font-size:.82rem;line-height:1.85">${_myGk.marriage}</div>
+      </div>`;
+      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:4px solid #e57462;margin-top:8px">
+        <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:5px">⚖ 평생 다듬어야 할 점</div>
+        <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
+      </div>`;
+      gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>격국이 알려주는 것</b><br>격국은 본인 사주의 「유형」을 보여줘요. 같은 격국이라도 대운·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 결이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 됩니다.</p>`;
+      h+=paidWrapBody('GYEOKGUK','📜','격국 종합 — 본인 사주 유형의 결',gkBody);
+    }
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
