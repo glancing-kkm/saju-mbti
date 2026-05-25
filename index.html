@@ -4140,6 +4140,52 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
 }
 
 // ══════════════════════════════════════════════
+//  대운 ↔ 세운 깊이 분석 — 신년·월별·지정일 공용
+// ══════════════════════════════════════════════
+// 본인 10년 흐름과 올해(또는 그날·그달) 외부 기운이 만나서 만드는 결을
+// 천간·지지 두 층에서 함께 풀이. 같은 세운이라도 어떤 대운 안에 있느냐로
+// 의미가 달라진다는 차별화 통찰.
+function getDaeunSewoonDeepInsight(saju, daeun, sewoonStem, sewoonBranch, y){
+  const dStemKo=STEMKO[daeun.stem], dBrKo=BRCHKO[daeun.branch];
+  const sStemKo=STEMKO[sewoonStem], sBrKo=BRCHKO[sewoonBranch];
+  const myStem=saju.dp.stem;
+  const dTG=tenGod(myStem,daeun.stem);
+  const sTG=tenGod(myStem,sewoonStem);
+  const dBrTG=tenGod(myStem,BR_MAIN_STEM[daeun.branch]);
+  const sBrTG=tenGod(myStem,BR_MAIN_STEM[sewoonBranch]);
+  const stemR=stemRel(daeun.stem,sewoonStem);
+  const brR=brRel(daeun.branch,sewoonBranch);
+
+  // (1) 천간끼리 — 합/충/평
+  let stemLine='';
+  if(stemR.kind==='합')stemLine=`<b style="color:#6cbf7e">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 자석처럼 묶여 새 결로 변하는 결</b>입니다. 본인의 10년 색깔이 ${y}년에 한 단계 더 부드러워지거나 새 방향으로 묶여, 인생 큰 챕터의 분위기가 바뀌는 해입니다.`;
+  else if(stemR.kind==='충')stemLine=`<b style="color:#e57462">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 정면으로 부딪히는 결</b>입니다. 본인 10년 챕터의 결정 방식이 ${y}년에 한 번 흔들려, 가치관·진로·관계의 큰 점검이 들어오는 해예요.`;
+  else stemLine=`10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}은 평이한 결로 만나, 본인 큰 챕터의 결을 그대로 이어가는 해예요.`;
+
+  // (2) 지지끼리 — 합/충/원진/형/파/해
+  const brLabel={'합':'자석처럼 끌어당기는','반합':'같은 방향으로 묶이는','반합약':'잔잔하게 협력하는','동':'같은 글자가 만나는','충':'정면으로 부딪히는','원진':'미세하게 거슬리는','형':'서로 깎이는','자형':'같은 글자가 겹치는','파':'어긋나는','해':'은근한 방해가 끼는','평':'평이한'}[brR.kind]||'평이한';
+  let brLine='';
+  if(brR.kind==='평'||brR.kind==='동')brLine=`10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}은 ${brLabel} 결이라, 본인이 앉은 자리의 큰 색깔을 그대로 유지하는 흐름입니다.`;
+  else if(['합','반합','반합약'].includes(brR.kind))brLine=`<b style="color:#6cbf7e">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 ${brLabel} 결</b>이라, 본인의 환경·자리에 협력·동맹의 결이 한 해 동안 더 강화되는 해예요.`;
+  else if(brR.kind==='충')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 정면으로 부딪히는 결</b>이라, 본인이 앉은 환경·자리에 변동·이동·재정립의 큰 흐름이 들어오는 해입니다. 큰 결정·이동은 길월에 배치하세요.`;
+  else if(brR.kind==='원진')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 미세하게 거슬리는 결</b>이라, 환경 안의 가까운 사람과 「딱히 큰 일은 없는데 거슬리는」 신경 쓰임이 한 해 동안 누적되기 쉬워요.`;
+  else if(brR.kind==='형'||brR.kind==='자형')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 서로 깎이는 결</b>이라, 환경 안에서 시비·약점 노출의 자리가 들어와요. 공직·법조·의료 분야엔 오히려 큰 성취의 결로 풀립니다.`;
+  else brLine=`10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 ${brLabel} 결로 만나, 한 해 동안 작은 어긋남·구설에 한 박자 살피는 결이 필요한 해예요.`;
+
+  // (3) 십신 색채 비교 — 같으면 강화, 다르면 어떤 색채가 더해지나
+  const _pdTG=plainTG(dTG);
+  const _psTG=plainTG(sTG);
+  let tgLine='';
+  if(dTG===sTG){
+    tgLine=`<b>10년 챕터와 올해 모두 「${_pdTG}」의 결</b>이라, 본인이 지금 살아내는 큰 색깔이 ${y}년에 더욱 진해지는 해예요. 이 색깔의 결정을 「올해 안에」 마무리하세요.`;
+  }else{
+    tgLine=`10년 챕터는 「${_pdTG}」의 결인데 ${y}년은 「${_psTG}」의 결이 더해져요. 큰 챕터 안에 한 해의 색채가 잠깐 더해지는 흐름이라, 본인 10년 결정의 방향을 유지하되 ${y}년만큼은 「${_psTG}」의 색깔을 잠깐 빌려 활용하면 결이 살아납니다.`;
+  }
+
+  return `<p>${stemLine}</p><p>${brLine}</p><p>${tgLine}</p>`;
+}
+
+// ══════════════════════════════════════════════
 //  신년운세 (NEWYEAR)
 // ══════════════════════════════════════════════
 function renderNewyearFortune(saju,y){
@@ -4350,6 +4396,36 @@ function renderNewyearFortune(saju,y){
   totBody+=`<p><span class="body-q">그래서 ${y}년을 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gkX.name.split(' ')[0]}</em>과 본인을 도와주는 <em>${OHNAME[ysX.main]}</em> 기운 관점에서 보면, ${y}년은 <b>${_yongsinYear.tone}</b>예요. ${_yongsinYear.msg}</p>`;
   // MBTI 통합
   totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `${y}년 한 해를 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 한 해의 결정을 본인의 두 결에 맞춰 배치할 수 있어요.`);
+  // 본인 10년 흐름(대운) ↔ 올해 세운 깊이 카드
+  try{
+    if(!_meta||!_meta.sy){throw new Error('_meta missing');}
+    const _g=_meta.gender||'male';
+    const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
+    let _curAge=y - _meta.sy;
+    if(_meta.sm>6||(_meta.sm===6&&_meta.sd>15))_curAge-=0; // 양력 기준 단순화
+    let _curD=_dq.daeuns[0];
+    let _curDIdx=0;
+    for(let i=0;i<_dq.daeuns.length;i++){
+      if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];_curDIdx=i;break;}
+    }
+    const _dStartY=_meta.sy+_curD.age;
+    const _dEndY=_dStartY+9;
+    const _daeunHeadline=`본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. (${_dStartY}년 ~ ${_dEndY}년)`;
+    const _daeunStage=_curAge-_curD.age;
+    const _stageWord=_daeunStage<=2?'초입(자리잡는 시기)':_daeunStage<=5?'중반(가장 진하게 펼쳐지는 시기)':_daeunStage<=8?'후반(다음 결로 넘어가기 전 정리 시기)':'끝자락(다음 10년 흐름이 곧 들어오는 시기)';
+    let dsBody=`<div class="lead-card">${_daeunHeadline}<br><span style="font-size:.82rem;color:var(--sub)">${y}년은 이 10년의 <b>${_stageWord}</b>예요.</span></div>`;
+    dsBody+=`<p><span class="body-q">10년 챕터와 올해는 어떻게 만날까요?</span><br>같은 ${y}년이라도 본인이 어떤 10년 흐름 안에 있느냐에 따라 같은 외부 기운이 다르게 작용해요. 본인의 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름과 ${y}년 ${ypStemKo}${ypBrKo}이 만나는 결을 풀어드릴게요.</p>`;
+    dsBody+=getDaeunSewoonDeepInsight(saju,_curD,ypStem,ypBranch,y);
+    if(_daeunStage>=8){
+      const _nextD=_dq.daeuns[_curDIdx+1];
+      if(_nextD){
+        const _nTG=plainTG(tenGod(saju.dp.stem,_nextD.stem));
+        dsBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 다음 10년 흐름이 곧 들어와요</b><br>${_nextD.age}세부터 <b>${STEMKO[_nextD.stem]}${BRCHKO[_nextD.branch]}</b> 10년 흐름이 시작됩니다. 본인 기준 <b>${_nTG}</b>의 결로 큰 챕터가 바뀌니, 지금 챕터의 결정·정리는 ${y}년 안에 마무리하는 게 결이 살아요.</p>`;
+      }
+    }
+    h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 '+y+'년',dsBody);
+  }catch(e){}
+
   h+=paidWrapBody('TOTAL','✨','세운과 사주의 만남 — 심층 진단',totBody,
     {strengths:[
        `<b>${tg}</b> 기운으로 「${(TG_KEYWORD[tg]||[]).join('·')}」의 색채가 한 해를 채움`,
@@ -6215,8 +6291,8 @@ const PLAIN_TG={
   '상관':'톡톡 튀는 창의·표현',
   '편재':'흐름을 타는 활동 재물',
   '정재':'꾸준히 쌓이는 안정 재물',
-  '편관':'강한 도전·압박을 견디는 결',
-  '정관':'사회적 신뢰·책임의 결',
+  '편관':'강한 도전·압박을 견디는 자리',
+  '정관':'사회적 신뢰·책임의 자리',
   '편인':'깊이 천착하는 전문 학습',
   '정인':'어른·스승의 보살핌'
 };
