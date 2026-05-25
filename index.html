@@ -6996,6 +6996,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 // 사주 데이터를 임시로 보관해 두는 변수 — 버튼 클릭 시 A4 생성에 사용
 let _lifeSummaryData=null;
 let _newyearSummaryData=null;
+let _gunghapSummaryData=null;
 
 // 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
 function getRelLifeMessage(places,type){
@@ -7832,6 +7833,112 @@ async function downloadNewyearSummary(fmt){
       const pdfH=pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
       pdf.save(`신년운세_${y}_요약_${date}.pdf`);
+    }
+  }catch(e){
+    console.error(e);
+    alert('요약본 생성에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+  }finally{
+    document.body.removeChild(offscreen);
+    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
+  }
+}
+
+// 궁합 A4 빌더
+function buildGunghapSummaryA4Html(){
+  if(!_gunghapSummaryData)return '';
+  const d=_gunghapSummaryData;
+  const {saju1,saju2,gen1,gen2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1,sy2,dmName1,dmName2}=d;
+  const date=new Date().toISOString().slice(0,10);
+  const brK=result.dayBrRel?result.dayBrRel.kind:'평';
+  const brLabel={'합':'자석처럼 끌어당김','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'같은 글자 만남','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[brK]||'평이';
+  const brCol=(brK==='합'||brK==='반합'||brK==='반합약')?'#6cbf7e':(brK==='충'||brK==='원진'||brK==='형')?'#e57462':'#d4a849';
+  const tg1=plainTG(tenGod(saju1.dp.stem,cd1.stem));
+  const tg2=plainTG(tenGod(saju2.dp.stem,cd2.stem));
+  const sw=(age,du)=>{const v=age-du.age;return v<=2?'초입':v<=5?'중반':v<=8?'후반':'끝자락';};
+  const sameTG=tg1===tg2;
+  let h=`<div class="a4-page">
+    <div class="a4-header">
+      <div class="a4-title">💑 두 분 궁합 요약본</div>
+      <div class="a4-subtitle">${dmName1} × ${dmName2} 일간 · 총점 <b style="color:${result.gradeColor}">${result.score}점 (${result.grade})</b></div>
+    </div>
+    <div class="a4-body">
+      <div class="a4-col-left">
+        <div class="a4-section">
+          <div class="a4-h">📊 본인 사주 4기둥</div>
+          ${buildA4Pillars(saju1,gen1)}
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">📊 상대 사주 4기둥</div>
+          ${buildA4Pillars(saju2,gen2)}
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">💞 두 분 자리가 만나는 결</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 일지 <b>'+BRCHKO[saju1.dp.branch]+'</b> × 상대 일지 <b>'+BRCHKO[saju2.dp.branch]+'</b> — <b style="color:'+brCol+'">'+brLabel+'</b>의 결')}</div>
+          ${result.dayStemRel&&result.dayStemRel.kind==='합'?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('🔗 본인 일간 '+STEMKO[saju1.dp.stem]+' × 상대 일간 '+STEMKO[saju2.dp.stem]+' — 자석처럼 끌어당기는 결 (부부 합)')+'</div>':''}
+        </div>
+      </div>
+      <div class="a4-col-right">
+        <div class="a4-section">
+          <div class="a4-h">📈 세부 점수</div>
+          <div class="a4-rel">
+            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
+              <div>🔄 오행 상생·상극 <b>${result.ohScore}점</b></div>
+              <div>👁 십신 관계 <b>${result.tgScore}점</b></div>
+            </div>
+            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
+              <div>💞 일지 합·충 <b>${result.brScore}점</b></div>
+              <div>⚖ 오행 균형 <b>${result.balScore}점</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">✦ 별자리 4원소 궁합</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(z1.emoji+' <b>'+z1.ko+'</b>('+z1.el+') × '+z2.emoji+' <b>'+z2.ko+'</b>('+z2.el+') — <b>'+pair.t+'</b> · '+pair.score+'점. '+pair.body)}</div>
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">🗓 두 분 인생 챕터 비교</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('· 본인: '+cd1.age+'세~ <b>'+STEMKO[cd1.stem]+BRCHKO[cd1.branch]+'</b> 10년 (<em>'+tg1+'</em>·'+sw(age1,cd1)+')')}<br>${preventOrphan('· 상대: '+cd2.age+'세~ <b>'+STEMKO[cd2.stem]+BRCHKO[cd2.branch]+'</b> 10년 (<em>'+tg2+'</em>·'+sw(age2,cd2)+')')}</div>
+          <div class="a4-rel-item" style="margin-top:4px">${preventOrphan(sameTG?'두 분 모두 <b>'+tg1+'</b>의 결 — 같은 인생 챕터로 큰 결정의 결이 잘 맞는 시기':'두 분의 인생 챕터 색깔이 달라요. 큰 결정 전 두 챕터의 의미를 함께 짚으세요.')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="a4-footer">${date} · saju-mbti.pages.dev · 두 분의 궁합은 사주 + 별자리 + 인생 챕터의 종합 결</div>
+  </div>`;
+  return preventOrphan(h);
+}
+
+async function downloadGunghapSummary(fmt){
+  if(!_gunghapSummaryData){alert('궁합 요약 데이터를 찾을 수 없어요.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
+  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
+  const btns=document.querySelectorAll('.gh-summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
+  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
+  const offscreen=document.createElement('div');
+  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
+  offscreen.innerHTML=buildGunghapSummaryA4Html();
+  document.body.appendChild(offscreen);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const a4=offscreen.querySelector('.a4-page');
+    const fit=await autoFitA4(a4);
+    const captureTarget=fit?fit.wrap:a4;
+    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
+    const date=new Date().toISOString().slice(0,10);
+    if(fmt==='png'){
+      const link=document.createElement('a');
+      link.download=`궁합_요약_${date}.png`;
+      link.href=canvas.toDataURL('image/png');
+      link.click();
+    }else{
+      const imgData=canvas.toDataURL('image/png');
+      const{jsPDF}=window.jspdf;
+      const pdf=new jsPDF('landscape','mm','a4');
+      const pdfW=pdf.internal.pageSize.getWidth();
+      const pdfH=pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
+      pdf.save(`궁합_요약_${date}.pdf`);
     }
   }catch(e){
     console.error(e);
@@ -10757,6 +10864,47 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   try{h+=renderGunghapZodiacDaeunCard(saju1,saju2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
+  // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
+  try{
+    if(_meta&&_meta.gnExtra){
+      const ge=_meta.gnExtra;
+      let sy2=ge.gy, sm2=ge.gm, sd2=ge.gd;
+      if(ge.cal==='lunar'){try{const s=l2s(ge.gy,ge.gm,ge.gd,!!ge.leap);sy2=s.y;sm2=s.m;sd2=s.d;}catch(e){}}
+      const z1=getZodiac12(_meta.sm,_meta.sd);
+      const z2=getZodiac12(sm2,sd2);
+      const pairKey=getZodiacPairKey(z1.el,z2.el);
+      const pair=_ZODIAC_ELEM_PAIR[pairKey]||{score:75,t:'평이한 결',body:''};
+      const dq1=calcDaeun(saju1,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,gen1);
+      const dq2=calcDaeun(saju2,sy2,sm2,sd2,ge.gh||12,ge.gmin||0,gen2);
+      const curY=new Date().getFullYear();
+      const age1=curY-_meta.sy, age2=curY-sy2;
+      let cd1=dq1.daeuns[0], cd2=dq2.daeuns[0];
+      for(let i=0;i<dq1.daeuns.length;i++){if(age1>=dq1.daeuns[i].age&&(i===dq1.daeuns.length-1||age1<dq1.daeuns[i+1].age)){cd1=dq1.daeuns[i];break;}}
+      for(let i=0;i<dq2.daeuns.length;i++){if(age2>=dq2.daeuns[i].age&&(i===dq2.daeuns.length-1||age2<dq2.daeuns[i+1].age)){cd2=dq2.daeuns[i];break;}}
+      _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1,mbti2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
+      h+=`<div class="nb-card summary-card">
+        <div class="nb-cat">🎯 SUMMARY</div>
+        <div class="nb-title">💑 궁합 요약본 다운로드</div>
+        <div class="nb-body">
+          <div class="summary-intro">
+            <p>두 분의 궁합을 <b>A4 한 장</b>에 정리한 요약본입니다.</p>
+            <ul>
+              <li>📊 두 분 사주 4기둥 비교 (본인 vs 상대)</li>
+              <li>📈 종합 점수 + 4가지 세부 점수 (오행·십신·일지·균형)</li>
+              <li>💞 일지(배우자 자리) 관계 + 일간 천간합</li>
+              <li>✦ 별자리 4원소 궁합 (점성학)</li>
+              <li>🗓 두 분 현재 10년 흐름 단계 비교</li>
+            </ul>
+            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
+          </div>
+          <div class="summary-actions">
+            <button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">📷 이미지(PNG)</button>
+            <button class="summary-btn gh-summary-btn secondary" onclick="downloadGunghapSummary('pdf')">📄 PDF 다운로드</button>
+          </div>
+        </div>
+      </div>`;
+    }
+  }catch(e){}
   return h;
 }
 
