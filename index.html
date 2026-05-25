@@ -7121,6 +7121,32 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=paidWrapBody('SEWOON','🗓','세운 — 올해의 흐름',swBody);
 
   // ═════════════════════════════════════
+  // 평생 사건 타임라인 — 결혼·승진·재물·이주·시험 시기 추정
+  // ═════════════════════════════════════
+  try{
+    const events=getLifeEventTimeline(saju,dq,gender);
+    let tlBody=`<p>본인의 사주 + 평생 대운 흐름을 종합해 인생의 핵심 사건이 어느 10년 흐름에 결로 들어오는지 정리했어요. 시기를 명확히 알면 「언제 결단하고 언제 정리할지」가 보입니다.</p>`;
+    tlBody+=`<p><span class="body-q">8가지 핵심 사건의 시기를 어떻게 보나요?</span><br>고전 사주명리에서는 대운별 십신 색채로 인생 사건의 결을 봐요. 결혼(${gender==='male'?'재성':'관성'} 운)·승진(정관)·도전(편관)·재물(편재·정재)·학습(정인·편인)·표현(식신·상관)·동료(비겁) 같은 결이 들어오는 시기를 모아 인생 타임라인을 그렸어요.</p>`;
+    tlBody+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
+    events.forEach((e,i)=>{
+      const isCur=i===curDIdx;
+      const isPast=e.du.age+9<_userAge;
+      const bgCol=isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)';
+      const borderCol=isCur?'var(--accent)':isPast?'var(--border)':'var(--wood)';
+      tlBody+=`<div style="padding:11px 13px;background:${bgCol};border-radius:9px;border-left:4px solid ${borderCol}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름 <span style="font-size:.74rem;font-weight:600;color:var(--sub);margin-left:5px">${plainTG(e.tg)}</span></div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':isPast?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--border);color:var(--sub);font-weight:600">지난 시기</span>':'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--wood);color:#1a1c1d;font-weight:700">앞으로</span>'}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.length?e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join(''):'<div style="color:var(--sub)">평이한 흐름 — 자기 페이스 유지에 좋은 10년</div>'}</div>
+      </div>`;
+    });
+    tlBody+=`</div>`;
+    tlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>큰 결정은 「이 시기에 결이 들어오는가」를 보고 배치하세요</b><br>결혼·이주·창업 같은 큰 결정은 사주의 결과 외부 시기가 함께 맞을 때 결실이 가장 큽니다. 위 타임라인의 「결혼 적기」·「승진 자리」 시기에 큰 결정을 배치하시면, 같은 결정도 한 단계 더 부드럽게 흐릅니다.</p>`;
+    h+=paidWrapBody('TIMELINE','📜','평생 사건 타임라인 — 결혼·승진·재물·시험 시기',tlBody);
+  }catch(e){}
+
+  // ═════════════════════════════════════
   // 인생총운 요약본 다운로드 카드 (A4 가로 — 오프스크린 캡처)
   // ═════════════════════════════════════
   h+=renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames,gender);
@@ -7522,6 +7548,56 @@ function stageActionOf(field,age){
 }
 function stageLabelOf(age){
   return LIFE_STAGE_LABEL[lifeStageOf(age)]||'';
+}
+
+// 평생 사건 타임라인 — 대운별 핵심 사건 시기 추정
+function getLifeEventTimeline(saju, dq, gender){
+  const dStem=saju.dp.stem;
+  return dq.daeuns.map((du, idx) => {
+    const tg=tenGod(dStem, du.stem);
+    const btg=tenGod(dStem, BR_MAIN_STEM[du.branch]);
+    const tags=[];
+    // 결혼 시기 — 남자는 재성 운, 여자는 관성 운
+    const isMarriageMale = gender==='male' && ['정재','편재'].includes(tg) || gender==='male' && ['정재','편재'].includes(btg);
+    const isMarriageFemale = gender==='female' && ['정관','편관'].includes(tg) || gender==='female' && ['정관','편관'].includes(btg);
+    if(isMarriageMale || isMarriageFemale){
+      tags.push({emoji:'💍', label:'결혼 적기', reason:gender==='male'?'재성 운 — 배우자 결이 들어오는 시기':'관성 운 — 배우자 결이 들어오는 시기'});
+    }
+    // 승진·공식 자리
+    if(tg==='정관'||btg==='정관'){
+      tags.push({emoji:'🏛', label:'승진·공식 자리', reason:'정관 운 — 사회적 신뢰가 결로 들어옴'});
+    }
+    // 도전·경쟁
+    if(tg==='편관'||btg==='편관'){
+      tags.push({emoji:'⚔', label:'도전·시험·경쟁', reason:'편관 운 — 압박을 견디며 큰 결로 도약'});
+    }
+    // 재물 활동
+    if(tg==='편재'||btg==='편재'){
+      tags.push({emoji:'💰', label:'사업·재물 활동', reason:'편재 운 — 활동·이동·새 거래가 큰 결로'});
+    }
+    if(tg==='정재'||btg==='정재'){
+      tags.push({emoji:'💎', label:'자산 형성·결혼 자금', reason:'정재 운 — 꾸준한 저축·결혼 자금이 쌓이는 시기'});
+    }
+    // 학습·시험
+    if(tg==='정인'||btg==='정인'){
+      tags.push({emoji:'📚', label:'학습·자격·시험·문서', reason:'정인 운 — 어른·문서·학습이 결로'});
+    }
+    if(tg==='편인'||btg==='편인'){
+      tags.push({emoji:'🔬', label:'전문 학습·연구', reason:'편인 운 — 깊이 천착하는 학습 시기'});
+    }
+    // 표현·창작·자녀
+    if(tg==='식신'||btg==='식신'){
+      tags.push({emoji:'🎨', label:gender==='female'?'표현·자녀·풍요':'표현·관계·풍요', reason:'식신 운 — '+(gender==='female'?'자녀 결·표현이 잘 풀림':'사람과 함께하는 결이 풍부')});
+    }
+    if(tg==='상관'||btg==='상관'){
+      tags.push({emoji:'✨', label:'창의·기획·발신', reason:'상관 운 — 톡톡 튀는 표현이 결로'});
+    }
+    // 동료·동업·경쟁
+    if(tg==='비견'||tg==='겁재'||btg==='비견'||btg==='겁재'){
+      tags.push({emoji:'👥', label:'동료·동업·경쟁', reason:'비겁 운 — 사람과의 결이 강해지는 시기'});
+    }
+    return {du, idx, tg, btg, ageRange:`${du.age}~${du.age+9}세`, tags};
+  });
 }
 
 function getDaeunNarrative(tg,du,saju,ys){
