@@ -7077,6 +7077,87 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     {good:`본인이 앉은 자리가 ${rel.key==='비화'?'본인과 닮은꼴이라 편안한 인연이':rel.key==='인성'?'배우자가 정신적·물질적 후원자가 되는 결로':rel.key==='식상'?'배우자에게 따뜻한 표현과 돌봄을 주는 관계가':rel.key==='재성'?'배우자가 본인 활동의 무대가 되는 결로':'배우자에게서 추진력과 자극을 받는 관계가'} 자리잡아요.`,
      warn:`${has('도화')?'매력의 별자리는 잘 쓰면 자산이지만, 삼각관계·외도 유혹에 휘말리지 않도록 본인의 절제가 필요해요.':has('백호')?'급격한 변화의 별자리가 부부 사이 충돌로 나타날 수 있어요. 평소에 짧고 자주 대화로 갈등을 풀어내는 습관이 결정적입니다.':'배우자와 가치관이 충돌할 때 본인 입장만 고집하지 말고 한 발짝 물러나서 상대를 이해해 보세요.'}`});
 
+  // 평생 연애·결혼 타임라인 — 대운별 만남·결혼·이별 시기
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStem=saju.dp.stem;
+    const _myBr=saju.dp.branch;
+    const _spouseOh=gender==='male'?wealthOh:officerOh; // 배우자 오행
+    const _gL=_meta.gender||'male';
+    const _dqL=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gL);
+    const _curAgeL=new Date().getFullYear()-_meta.sy+1;
+    let _curIdxL=0;
+    for(let i=0;i<_dqL.daeuns.length;i++){
+      if(_curAgeL>=_dqL.daeuns[i].age && (i===_dqL.daeuns.length-1||_curAgeL<_dqL.daeuns[i+1].age)){_curIdxL=i;break;}
+    }
+    const isMale=gender==='male';
+    const events=_dqL.daeuns.map((du,idx)=>{
+      const tg=tenGod(_dStem,du.stem);
+      const btg=tenGod(_dStem,BR_MAIN_STEM[du.branch]);
+      const dStemOh=SOH[du.stem];
+      const dBrOh=BOH[du.branch];
+      const brR=brRel(_myBr,du.branch);
+      const tags=[];
+      // 결혼 적기 — 남:재성·여:관성
+      const isMarriageTG=isMale?['정재','편재'].includes(tg)||['정재','편재'].includes(btg):['정관','편관'].includes(tg)||['정관','편관'].includes(btg);
+      if(isMarriageTG){
+        tags.push({emoji:'💍',type:'good',label:'결혼 적기',reason:(isMale?'재성':'관성')+' 운 — 배우자 결이 들어오는 시기, 진지한 인연·약혼·결혼 결정에 좋음'});
+      }
+      // 본인 일지(배우자궁)와 합 → 만남·재회
+      if(brR.kind==='합'){
+        tags.push({emoji:'💞',type:'good',label:'만남·재회기',reason:'본인 배우자 자리와 자석처럼 끌어당기는 결 — 새 인연·재회·고백·소개팅에 결이 부드러움'});
+      }
+      if(brR.kind==='반합'||brR.kind==='반합약'){
+        tags.push({emoji:'🌷',type:'good',label:'동반자 형성기',reason:'본인 배우자 자리와 같은 방향으로 묶이는 결 — 평생 함께할 동반자 인연이 들어오는 시기'});
+      }
+      // 도화·홍염 들어옴 → 매력 폭발기
+      if(dBrOh===0&&[3,6,9,0].includes(du.branch)){ // 도화 자리(자·오·묘·유) 들어옴
+        // 도화 활성화 추정 — 단순화
+        tags.push({emoji:'💖',type:'good',label:'매력 폭발기',reason:'도화의 별자리 자리에 운이 들어와 매력·인기·이성 호감이 강해지는 시기'});
+      }
+      // 본인 일지와 충 → 이별·재정립
+      if(brR.kind==='충'){
+        tags.push({emoji:'💔',type:'warn',label:'관계 정리·이별 가능',reason:'본인 배우자 자리와 정면 부딪힘 — 관계 변동·이별·재정립의 자연 흐름, 큰 결정 한 박자 살피기'});
+      }
+      // 원진 → 거슬림 누적
+      if(brR.kind==='원진'){
+        tags.push({emoji:'😶',type:'warn',label:'미세 거슬림 누적',reason:'본인 배우자 자리와 미세하게 거슬리는 결 — 사소한 말투에 신경 쓰이고 원망이 쌓이기 쉬운 시기'});
+      }
+      // 형 → 다툼·시비
+      if(brR.kind==='형'||brR.kind==='자형'){
+        tags.push({emoji:'⚡',type:'warn',label:'다툼·시비 주의',reason:'서로 깎이는 결 — 부부·연인 갈등이 잦아지기 쉬운 시기, 약점 짚지 않기'});
+      }
+      // 상관 → 권위 마찰
+      if(tg==='상관'&&!isMale){
+        tags.push({emoji:'🌪',type:'warn',label:'남편과 마찰 주의',reason:'상관이 관성을 극하는 결 — 남편·남성 권위와 마찰이 잦아질 수 있는 시기'});
+      }
+      // 비겁 → 경쟁자 등장 (외도 유혹·삼각관계)
+      if((tg==='겁재'||btg==='겁재')&&isMale){
+        tags.push({emoji:'🌬',type:'warn',label:'삼각관계·경쟁자 주의',reason:'겁재 운 — 본인의 재성(여성 인연)을 빼앗기 쉬운 결, 외도·삼각관계 주의'});
+      }
+      return {du,idx,tg,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let ltBody=`<p><span class="body-q">평생 연애·결혼은 어느 시기에 가장 결이 들어올까요?</span><br>본인 사주 + 대운(10년 흐름) + 배우자 자리(일지)의 만남을 종합해 어느 시기에 만남·결혼·재회의 결이 들어오고, 어느 시기에 이별·갈등의 결이 들어오는지 정리했어요.</p>`;
+    ltBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    events.forEach((e,i)=>{
+      const isCur=i===_curIdxL;
+      const hasGood=e.tags.some(t=>t.type==='good');
+      const hasWarn=e.tags.some(t=>t.type==='warn');
+      const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(229,116,162,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#e574a2':'var(--border)';
+      ltBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.length?e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join(''):'<div style="color:var(--sub)">평이한 연애 흐름 — 본인 페이스 유지에 좋은 10년</div>'}</div>
+      </div>`;
+    });
+    ltBody+=`</div>`;
+    ltBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>연애·결혼의 결을 잘 쓰는 법</b><br>결혼 적기·만남기에는 적극적으로 인연을 만나고, 정리기·갈등기에는 큰 결정(이별·결혼·동거)을 한 박자 미루세요. 갈등은 흉이 아니라 「자리를 흔드는 신호」예요 — 미루던 솔직한 대화나 정리해야 할 인연이 자연스럽게 드러나는 시기입니다.</p>`;
+    h+=paidWrapBody('LOVE_TIMELINE','💕','평생 연애·결혼 타임라인 — 만남·결혼·이별 시기',ltBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 건강운
   // ═════════════════════════════════════
