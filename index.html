@@ -7130,6 +7130,40 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }catch(e){}
 
   // ═════════════════════════════════════
+  // 12운성 — 본인 기운 단계 변화 (4기둥)
+  // ═════════════════════════════════════
+  try{
+    const dStem=saju.dp.stem;
+    const pillarsForStage=[
+      {label:'년주(초년·조상)',br:saju.yp.branch,age:'1~20세'},
+      {label:'월주(청년·부모)',br:saju.mp.branch,age:'20~40세'},
+      {label:'일주(중년·본인)',br:saju.dp.branch,age:'40~60세'},
+    ];
+    if(saju.hp)pillarsForStage.push({label:'시주(말년·자녀)',br:saju.hp.branch,age:'60세 이후'});
+    let stageBody=`<p><span class="body-q">본인 기운은 인생에서 어떻게 변할까요?</span><br>고전 사주명리의 12운성은 본인의 기운이 4기둥(년·월·일·시) 각 자리에서 어떤 단계에 있는지 보여줘요. 12단계는 식물의 한살이(씨앗→성장→성숙→갈무리)처럼 본인 기운의 흐름을 그려요.</p>`;
+    stageBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    pillarsForStage.forEach(p=>{
+      const st=twelveStage(dStem,p.br);
+      const desc=STAGE12_DESC[st]||'';
+      const locReading=getStageLocReading(st,p.label.split('(')[0])||'';
+      const stageType=['장생','관대','임관','제왕'].includes(st)?'g':['목욕','쇠','병','사','묘'].includes(st)?'y':['절','태','양'].includes(st)?'b':'';
+      const bg=stageType==='g'?'rgba(108,191,126,.08)':stageType==='y'?'rgba(212,175,73,.06)':stageType==='b'?'rgba(108,140,200,.06)':'var(--bg-deep)';
+      const border=stageType==='g'?'#6cbf7e':stageType==='y'?'#d4a849':stageType==='b'?'#6c8cc8':'var(--border)';
+      stageBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${p.label}</b> · ${p.age}</div>
+          <span style="font-size:.74rem;padding:2px 9px;border-radius:12px;background:${border};color:#1a1c1d;font-weight:700">${st}</span>
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85;color:var(--sub)">${desc}</div>
+        ${locReading?`<div style="margin-top:5px;font-size:.78rem;line-height:1.85"><b style="color:${border}">↪ 이 자리 의미:</b> ${locReading}</div>`:''}
+      </div>`;
+    });
+    stageBody+=`</div>`;
+    stageBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>12운성이 알려주는 것</b><br>본인 기운이 「언제 가장 진하고, 언제 가장 잠재기인지」를 알려주는 결이에요. 활기차게 펼치는 시기(<b style="color:#6cbf7e">장생·관대·임관·제왕</b>)에는 큰 결정을 적극적으로, 갈무리·잠재 시기(<b style="color:#d4a849">쇠·병·사·묘</b>·<b style="color:#6c8cc8">절·태·양</b>)에는 정리·휴식·내실 다지기에 무게를 두세요.</p>`;
+    h+=paidWrapBody('STAGE12','🌱',`12운성 — 본인 기운의 4기둥 단계 변화`,stageBody);
+  }catch(e){}
+
+  // ═════════════════════════════════════
   // 대운 시기별 (시각화 + 상세)
   // ═════════════════════════════════════
   const dq=calcDaeun(saju,sy,sm,sd,sh,smin,gender);
