@@ -3560,16 +3560,16 @@ const TG_KEYWORD={
 const CONTEXT_OPENER={
   daypick:{
     job:{label:'일·직장',body:'직장에서의 큰 결정·면접·보고·승진 자리에 그날 일진이 어떻게 받쳐주는지가 본인이 가장 알고 싶은 결이에요. 아래 「직업·관운」 카드에서 그날의 결과 본인 사주 유형의 만남을 자세히 풀어드릴게요.'},
-    meet:{label:'사람·만남',body:'그날의 사람·만남·소개·재회의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 그날 일지의 합·충·원진 작용이 핵심이에요. 아래 「연애·관계」 카드에서 자세히 풀어드릴게요.'},
-    money:{label:'돈·투자',body:'그날 돈·계약·투자의 결을 보고 싶으시군요. 본인 일간 기준 그날 천간이 어떤 십신으로 들어오는지(재성·관성 등)가 핵심이에요. 아래 「직업·관운」과 「공부·문서」 카드를 함께 살피세요.'},
+    meet:{label:'사람·만남',body:'그날의 사람·만남·소개·재회의 결을 보고 싶으시군요. 본인 배우자 자리와 그날 자리가 만나는 결이 핵심이에요. 아래 「연애·관계」 카드에서 자세히 풀어드릴게요.'},
+    money:{label:'돈·투자',body:'그날 돈·계약·투자의 결을 보고 싶으시군요. 본인 기준 그날 들어오는 흐름이 어떤 결인지가 핵심이에요. 아래 「직업·관운」과 「공부·문서」 카드를 함께 살피세요.'},
     health:{label:'건강',body:'그날의 컨디션과 건강을 가장 염두에 두고 있으시군요. 본인 사주의 약한 오행을 그날 일진이 보강하는지가 핵심이에요. 아래 「건강·컨디션」 카드에서 자세히 풀어드릴게요.'},
-    move:{label:'이동·여행',body:'그날 이동·여행·약속 동선이 주된 관심사이시군요. 본인 일간과 그날 일진의 결, 그리고 시간대별 합·충 작용이 중요해요. 아래 「연애·관계」와 시간대 흐름을 함께 보세요.'}
+    move:{label:'이동·여행',body:'그날 이동·여행·약속 동선이 주된 관심사이시군요. 본인 기운과 그날 기운이 만나는 결, 그리고 시간대별 길시·주의시가 중요해요. 아래 「연애·관계」와 시간대 흐름을 함께 보세요.'}
   },
   monthly:{
     job:{label:'직장·이직',body:'이 기간 직장에서의 결정·이직·승진의 결을 보고 싶으시군요. 매달 월주의 천간 십신이 관성·식상으로 어떻게 들어오는지가 핵심이에요. 아래 매월 카드의 「직업·관운」 영역을 집중해 살피세요.'},
-    love:{label:'연애·결혼',body:'이 기간 연애·결혼의 결을 보고 싶으시군요. 본인 일지(배우자궁)와 매달 월지의 합·충 작용, 그리고 ' + '재성·관성 기운이 어느 달에 강하게 들어오는지가 핵심이에요.'},
+    love:{label:'연애·결혼',body:'이 기간 연애·결혼의 결을 보고 싶으시군요. 본인 배우자 자리와 매달 자리가 만나는 결, 그리고 ' + '재성·관성 기운이 어느 달에 강하게 들어오는지가 핵심이에요.'},
     money:{label:'재물·투자',body:'이 기간 재물·투자의 결을 보고 싶으시군요. 매달 재물의 결이 들어오는 시점과 본인 사주 유형의 결을 함께 봐드릴게요.'},
-    health:{label:'건강',body:'이 기간 건강과 컨디션을 가장 염두에 두고 있으시군요. 매달 일진의 오행이 본인 약한 오행을 보강하는지가 핵심이에요.'},
+    health:{label:'건강',body:'이 기간 건강과 컨디션을 가장 염두에 두고 있으시군요. 매달 들어오는 기운이 본인의 약한 부분을 채워주는지가 핵심이에요.'},
     relation:{label:'관계·가족',body:'이 기간 관계·가족 사이의 결을 보고 싶으시군요. 매달 월주가 본인의 일지·월지와 어떤 관계(합·충·원진)를 이루는지가 핵심이에요.'}
   }
 };
@@ -3727,8 +3727,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
      ]}, _primaryDpCard==='TOTAL');
 
   // ── 재물
-  let wBody=(_primaryDpCard==='WEALTH'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 재물 점수는 <b>${f.wealth}점</b>입니다. 본인 일간 ${myStemKo}${ip(myStemKo)} 그날 천간 ${dpStemKo}${eul(dpStemKo)} ${stemTG}${ro(stemTG)} 만나는 결에서, 재성의 색채는 ${stemTG==='정재'||stemTG==='편재'?'직접 표면에 드러나는':stemTG==='겁재'?'위협받는':'간접적으로 작용하는'} 흐름입니다.</p>`;
-  wBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 일진의 천간이 본인 일간 기준 재물의 결인지, 그리고 일지 합·충 작용이 어떤 결을 만드는지를 봅니다.</div>`;
+  let wBody=(_primaryDpCard==='WEALTH'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 재물 점수는 <b>${f.wealth}점</b>입니다. 본인 기준 그날 위 글자가 ${plainTG(stemTG)}의 결로 다가오니, 재물의 색채는 ${stemTG==='정재'||stemTG==='편재'?'직접 표면에 드러나는':stemTG==='겁재'?'위협받는':'간접적으로 작용하는'} 흐름입니다.</p>`;
+  wBody+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 들어오는 기운이 본인에게 어떤 재물 결로 다가오는지, 본인 자리와 그날 자리가 어떻게 만나는지를 봅니다.</div>`;
   wBody+=`<p>${stemTG==='정재'?'정재의 날 — 정기적·예측 가능한 재물 활동에 매우 길해요. 월급·예금·정기 지급·꾸준히 쌓아온 거래의 결실이 들어오는 날이며, 가계부 정리·예산 점검·세금 정산·정기 결제 점검에 알맞은 결이에요.':stemTG==='편재'?'편재의 날 — 큰 흐름의 활동 재물에 결이 좋아요. 영업·미팅·새로운 거래·이동을 동반한 비즈니스에 길해요. 다만 큰 흐름의 돈인 만큼 한 번에 결정하지 말고 한도를 미리 정해두세요.':stemTG==='겁재'?'겁재의 날 — 충동 결제·동업 자금 거래·고가품 구매·도박성 투자를 가장 경계해야 하는 날입니다. 한 번 더 생각하는 24시간 룰을 적용하세요. 친한 사이의 금전 거래일수록 명확한 기록이 필요해요.':stemTG==='비견'?'비견의 날 — 동료·친구와의 금전 거래보다 자기 자산 점검에 무게를 두세요. 동업 미팅이라면 본인 입장과 한도를 미리 정리하고 들어가세요.':stemTG==='식신'||stemTG==='상관'?'식상의 날 — 본인의 표현·창작·재능을 통한 수입에 결이 좋아요. 콘텐츠·강연·작품 발표 등 자기 표현으로 돈이 생기는 통로를 활용하세요.':stemTG==='정관'||stemTG==='편관'?'관성의 날 — 직접 재물보다 책임·공식 자리·승진의 결과로서 재물이 따라오는 결입니다. 공식 결재·세금·공적 지출 처리에 길해요.':'인성의 날 — 직접 재물보다 학습·자격·전문성 투자에 결이 좋은 날입니다. 단기 수익보다 장기 자산을 다지는 데 시간을 쓰세요.'}</p>`;
   wBody+=`<p>${(()=>{const k=rel.kind;if(k==='합'||k==='반합'||k==='반합약')return '일지 '+(k==='합'?'육합':'반합')+'으로 거래·계약·교섭에 부드러움이 깃들어, 미뤄둔 협상이나 정리가 필요한 거래를 진행하기에 적합해요.';if(k==='충')return '일지 충으로 큰 거래·자산 매각·이동을 동반한 결정은 변동성이 큰 날입니다. 큰 흐름의 돈은 다른 날로 미루는 게 안전합니다.';if(k==='원진')return '일지 원진살이 들어, 가까운 사람과의 금전 거래에서 「말 못 할 거슬림」이 누적될 수 있는 날입니다. 동업 자금·친분 거래는 명확한 기록과 한 박자 거리감이 필요해요.';if(k==='형')return '일지 형살이 들어, 시비·법적 마찰·소송성 거래에 매우 주의해야 하는 날입니다. 계약서 조항을 한 번 더 검토하세요.';if(k==='파')return '일지 파가 들어, 마무리·잔금 처리에서 어긋남이 생기기 쉬운 날입니다. 결제·송금은 한 번 더 확인하세요.';if(k==='해')return '일지 해가 들어, 은근한 방해·구설로 거래가 늦어질 수 있는 날입니다. 마진 시간을 넉넉히 두고 진행하세요.';return '일지에 강한 합·충이 없어 평이한 재물 흐름의 날 — 평소 패턴대로 움직이세요.';})()}</p>`;
   wBody+=`<p>본인 사주에서 가장 강한 오행은 <em>${OHNAME[dom]}</em>이고 가장 약한 오행은 <em>${OHNAME[weak]}</em>입니다. ${OHNAME[weak]} 영역(${weak===0?'친환경·식품·교육':weak===1?'에너지·미디어·디자인':weak===2?'부동산·서비스':weak===3?'금융·기계·의료':'유체·물류·해외'})과 연결된 거래일수록 본인 결에 맞아 결실이 커요.</p>`;
@@ -3752,9 +3752,9 @@ function renderDaypickFortune(saju,y,m,d,extra){
       '파':'<b style="color:#d4a849">파</b> — 마무리가 흔들리는 결',
       '해':'<b style="color:#d4a849">해</b> — 은근한 방해·구설의 결'
     };
-    let b=(_primaryDpCard==='LOVE'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 연애·관계 점수는 <b>${f.love}점</b>입니다. 본인 일지 <em>${myBrKo}</em>(배우자궁)와 그날 일지 <em>${dpBrKo}</em>의 관계가 ${kindLabelMap[k]||'평이한 결'}입니다.</p>`;
-    b+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 일지(배우자궁)와 그날 일지의 합·충·원진·형·파·해 관계를 모두 살핍니다. 또한 그날 천간 십신이 ${gender==='male'?'재성(아내)':'관성(남편)'}인지도 함께 봅니다.</div>`;
-    b+=miniManseWithPointer(saju,'day','↑ 일주의 지지(일지)가 배우자궁 — 그날 일지와 직접 만남');
+    let b=(_primaryDpCard==='LOVE'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 연애·관계 점수는 <b>${f.love}점</b>입니다. 본인 자리 <em>${myBrKo}</em>(배우자 자리)와 그날 자리 <em>${dpBrKo}</em>의 관계가 ${kindLabelMap[k]||'평이한 결'}입니다.</p>`;
+    b+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 본인 배우자 자리와 그날 자리가 어떻게 만나는지(자석처럼 끌어당김·정면 부딪힘·이유 없는 거슬림·서로 깎임·마무리 어긋남·은근한 방해) 모두 살펴요. 또한 그날 천간 십신이 ${gender==='male'?'재성(아내)':'관성(남편)'}인지도 함께 봅니다.</div>`;
+    b+=miniManseWithPointer(saju,'day','↑ 본인 자리(아래 글자)가 배우자 자리 — 그날 자리와 직접 만남');
     if(k==='합'||k==='반합'||k==='반합약'){
       b+=`<p>① <b>고백·진전·소개팅에 길한 날</b><br>일지에 ${k==='합'?'육합':'반합'}이 들어 관계 진전에 매우 좋은 날입니다. 미뤄둔 데이트·고백·결혼 진전 대화를 이 날에 배치하면 결이 부드럽게 풀립니다. 기존 관계라면 평소 못한 표현(감사·사과·재확인)을 하기에 알맞고, 새 인연이라면 첫 만남이나 두 번째 만남에서 호감의 결이 쌓이는 결입니다.</p>`;
       b+=`<p>② <b>관계의 톤</b><br>${stemTG==='식신'||stemTG==='상관'?'표현이 풍부해지는 결 — 칭찬·선물·정성을 한 가지 더 더하세요.':stemTG==='정관'?'진중하고 공식적인 자리에 길 — 결혼 부모님 자리, 약혼 진전 등에 좋은 결.':stemTG==='편재'?'활동적인 만남 — 함께하는 외출·짧은 여행·영화 데이트에 결이 살아납니다.':'평소의 톤을 유지하되, 한 발 다가가는 용기가 결실을 만들어요.'}</p>`;
@@ -3787,7 +3787,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
      warn:_warnLoveMap[_kk]||'관계에서 본인의 자기 주장만 고집하지 말고 한 톤 부드럽게.'}, _primaryDpCard==='LOVE');
 
   // ── 직업·관운
-  let cBody2=(_primaryDpCard==='CAREER'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 직업·관운 점수는 <b>${f.career}점</b>입니다. 본인 일간 ${myStemKo} 기준 그날 천간 ${dpStemKo}${ip(dpStemKo)} <b>${stemTG}</b>이라는 건, ${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어오는 결 — 책임·공식·승진·면접 무게가 표면화':stemTG==='상관'?'창의·표현이 강해지는 결 — 두각은 보이지만 권위와의 마찰 가능':stemTG==='식신'?'사람과 함께 일하는 자리에 결이 좋은 날':stemTG==='정인'||stemTG==='편인'?'학습·자료 정리·인허가 처리에 결이 좋은 날':'평이한 직업 흐름의 날'}입니다.</p>`;
+  let cBody2=(_primaryDpCard==='CAREER'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 직업·관운 점수는 <b>${f.career}점</b>입니다. 본인 기준 그날 위 글자가 <b>${plainTG(stemTG)}</b>의 결로 다가온다는 건, ${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어오는 결 — 책임·공식·승진·면접 무게가 표면화':stemTG==='상관'?'창의·표현이 강해지는 결 — 두각은 보이지만 권위와의 마찰 가능':stemTG==='식신'?'사람과 함께 일하는 자리에 결이 좋은 날':stemTG==='정인'||stemTG==='편인'?'학습·자료 정리·인허가 처리에 결이 좋은 날':'평이한 직업 흐름의 날'}입니다.</p>`;
   cBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 천간 십신이 관성·식상·인성 중 어느 결인지를 핵심으로 봅니다. 본인 사주 유형 ${gk.name}의 결도 함께 작용해요.</div>`;
   cBody2+=`<p>${stemTG==='정관'?'<b>① 공식 자리에 길한 날</b><br>발표·결재·승인·면접·시상·승진 보고에 가장 결이 좋아요. 평소보다 격식·디테일·문서 정확성에 신경 쓰면 결실이 커요. 미뤄둔 공식 절차가 있다면 오늘 처리하세요.':stemTG==='편관'?'<b>① 도전·압박이 들어오는 날</b><br>경쟁·시험·승진 압박·도전적 미팅에 무게가 실립니다. 정면 돌파보다 측면 우회 — 강한 사람 앞에서는 한 걸음 양보가 진짜 승리입니다.':stemTG==='상관'?'<b>① 창의·표현이 빛나는 날</b><br>기획·콘텐츠·강연·창작 활동에 빛나지만 권위(상사·규율)와의 마찰이 일어납니다. 표현 톤을 한 단계 부드럽게 가져가면 결을 그대로 살릴 수 있어요.':stemTG==='식신'?'<b>① 협업·소통이 빛나는 날</b><br>사람과 함께 일하는 자리·점심 미팅·팀 회의에 결이 좋아요. 자기 단독 결정보다 협업으로 풀어가세요.':stemTG==='편재'?'<b>① 영업·이동·외근의 날</b><br>외부 영업·미팅·새 거래·이동을 동반한 비즈니스에 결이 좋아요. 발이 부지런할수록 결실이 커요.':stemTG==='정재'?'<b>① 정리·점검이 결이 좋은 날</b><br>새 시작보다 미뤄둔 정리·점검·문서 처리에 결이 좋은 날입니다.':stemTG==='정인'?'<b>① 학습·자격에 빛나는 날</b><br>학습·자격·시험·문서·인허가 처리에 매우 결이 좋아요. 어른·멘토에게 조언을 청하기 좋은 날.':stemTG==='편인'?'<b>① 전문 학습이 깊어지는 날</b><br>전문 분야 깊이 있는 학습·연구·자기 점검에 결이 좋아요.':'<b>① 자기 결정이 빛나는 날</b><br>본인 색깔이 강해지는 날 — 자기 결정에 자신감을 가지세요.'}</p>`;
   cBody2+=`<p>② <b>본인 사주 유형 ${gk.name}의 결</b><br>${gk.desc}. 그날 ${stemTG}의 색채가 본인 격국의 ${OHNAME[ys.main]===OHNAME[dpStemOh]?'용신을 직접 보강':OHNAME[ys.main]===OHNAME[(dpStemOh+2)%5]?'용신을 극하는':'평이한'} 결로 작용해요.</p>`;
@@ -3798,8 +3798,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
 
   // ── 건강
   let hBody2=(_primaryDpCard==='HEALTH'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 건강 점수는 <b>${f.health}점</b>입니다. 본인 사주의 가장 강한 오행은 <em>${OHNAME[dom]}</em>, 약한 오행은 <em>${OHNAME[weak]}</em>입니다.</p>`;
-  hBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 오행 균형 + 그날 일진의 오행 작용을 함께 봅니다. 그날 일진이 본인의 약한 오행을 보강하는지, 아니면 강한 오행을 더 자극하는지가 핵심입니다.</div>`;
-  hBody2+=`<p>① <b>그날 일진의 오행 작용</b><br>그날 천간 ${dpStemKo}은 ${OHNAME[dpStemOh]}, 지지 ${dpBrKo}는 ${OHNAME[dpBrOh]}입니다. ${OHNAME[dpStemOh]===OHNAME[weak]||OHNAME[dpBrOh]===OHNAME[weak]?'본인의 약한 오행 '+OHNAME[weak]+'을 보강하는 결 — 컨디션 회복에 좋은 날입니다.':OHNAME[dpStemOh]===OHNAME[dom]||OHNAME[dpBrOh]===OHNAME[dom]?'본인의 강한 오행 '+OHNAME[dom]+'을 더 강화하는 결 — 과로·강한 자극을 피하세요.':'평이한 결로, 본인 페이스 유지에 좋은 날입니다.'}</p>`;
+  hBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 사주 오행 균형 + 그날 들어오는 기운을 함께 봐요. 본인의 약한 부분을 채워주는지, 아니면 강한 부분을 더 자극하는지가 핵심이에요.</div>`;
+  hBody2+=`<p>① <b>그날 들어오는 기운의 결</b><br>그날 천간 ${dpStemKo}은 ${OHNAME[dpStemOh]}, 지지 ${dpBrKo}는 ${OHNAME[dpBrOh]}입니다. ${OHNAME[dpStemOh]===OHNAME[weak]||OHNAME[dpBrOh]===OHNAME[weak]?'본인의 약한 오행 '+OHNAME[weak]+'을 보강하는 결 — 컨디션 회복에 좋은 날입니다.':OHNAME[dpStemOh]===OHNAME[dom]||OHNAME[dpBrOh]===OHNAME[dom]?'본인의 강한 오행 '+OHNAME[dom]+'을 더 강화하는 결 — 과로·강한 자극을 피하세요.':'평이한 결로, 본인 페이스 유지에 좋은 날입니다.'}</p>`;
   hBody2+=`<p>② <b>장부와 식단</b><br>약한 오행 ${OHNAME[weak]}${ohEun(weak)} ${weak===0?'간·담·근육·시력':weak===1?'심장·소장·혈액순환':weak===2?'위장·비장·소화기':weak===3?'폐·대장·면역':'신장·방광·생식기'} 영역과 연결돼요. 보강 식단으로 ${weak===0?'녹색 채소·신맛 과일·견과':weak===1?'붉은 식재료·쓴맛 야채·구운 음식':weak===2?'단호박·고구마·곡류·달콤한 뿌리채소':weak===3?'흰 식재료·매운 향신료·생강':'검은콩·해조류·짠 발효식'}을 추가하세요.</p>`;
   hBody2+=`<p>③ <b>그날 주의 영역</b><br>${rel.kind==='충'?'일지 충이 들어 스트레스성 두통·근육 긴장·소화 문제가 평소보다 잦습니다. 무리한 운동·장거리 운전을 줄이세요.':stemTG==='편관'?'편관의 압박 기운으로 스트레스성 증상이 올라올 수 있어요. 명상·산책·심호흡으로 풀어주세요.':'큰 변동 없는 평이한 흐름.'}</p>`;
   h+=paidWrapBody('HEALTH','🌿','건강·컨디션',hBody2,
@@ -3846,7 +3846,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   if(rel.kind==='충'){actAvoid.push('<b>🚗 장거리 운전·이동</b> (가능하면 미루기)');actAvoid.push('<b>💍 결혼·계약 등 큰 결정</b>');actAvoid.push('<b>🏥 비응급 수술·시술</b>');}
   if(actAvoid.length===0)actAvoid.push('<b>⚠️ 큰 변동을 일으키는 결정만 한 박자 살피세요</b>');
 
-  let actBody=`<p>그날 결에 잘 맞는 활동(권장)과 한 박자 미뤄야 할 활동(회피)을 구체적으로 정리했습니다. 본인 사주 유형 ${gk.name}, 본인 일간 ${myStemKo}, 그날 ${dpStemKo}${dpBrKo}의 교차 분석 결과예요.</p>`;
+  let actBody=`<p>그날 결에 잘 맞는 활동(권장)과 한 박자 미뤄야 할 활동(회피)을 구체적으로 정리했습니다. 본인 사주 유형 ${gk.name}과 그날 ${dpStemKo}${dpBrKo}이 만나는 결을 종합한 결과예요.</p>`;
   actBody+=`<p style="color:#6cbf7e;font-weight:700">✅ 권장 활동</p>`;
   actBody+=actRecommend.map(a=>`<p>${a}</p>`).join('');
   actBody+=`<p style="color:#e57462;font-weight:700;margin-top:8px">⚠️ 회피·주의 활동</p>`;
@@ -3854,7 +3854,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   h+=paidWrapBody('ACTION','🎯','활동별 권장·회피 매트릭스',actBody);
 
   // ── 길방위·색·수·띠
-  let luckyBody=`<p>본인 일간 ${myStemKo}(${OHNAME[myStemOh]}) + 용신 ${OHNAME[ys.main]} + 그날 일진의 오행을 종합한 그날의 길운 자원입니다.</p>`;
+  let luckyBody=`<p>본인 본질(${OHNAME[myStemOh]}) + 본인을 도와주는 기운(${OHNAME[ys.main]}) + 그날의 흐름을 종합한 길운 자원이에요.</p>`;
   luckyBody+=`<p><b>🧭 길방위</b><br>${dirs.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">중요한 미팅·면접·계약 시 이 방향에서 들어오는 자리(또는 이 방향을 향한 자리)가 길해요.</span></p>`;
   luckyBody+=`<p><b>🎨 길색</b><br>${colors.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">옷·가방·소품·넥타이에 이 색을 한 가지 더하면 그날 기운과 잘 어우러집니다.</span></p>`;
   luckyBody+=`<p><b>🔢 길수</b><br>${nums.join(', ')}<br><span style="color:var(--sub);font-size:.78rem">약속 시각(예: 오후 ${nums[0]}시)·차량 번호 끝자리·자리 번호·방 번호 선택에 작게 활용하세요.</span></p>`;
@@ -4105,7 +4105,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     `<p>이 기간 중 일지 충이 드는 ${monthsData.filter(o=>o.sc.rel.kind==='충').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 형살이 드는 ${monthsData.filter(o=>o.sc.rel.kind==='형'||o.sc.rel.kind==='자형').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 원진살이 드는 ${monthsData.filter(o=>o.sc.rel.kind==='원진').map(o=>`${o.mm}월`).join(', ')||'없는'} 달은 스트레스성 두통·근육 긴장·소화 문제가 평소보다 잦으니 무리한 일정을 줄이고 충분한 수면을 챙기세요. 특히 형살이 드는 달은 사고·수술·외상 가능성이 높아져 격한 운동·과로를 피하는 게 좋아요.</p><p>본인의 약한 오행 ${OHNAME[weak]} 보강 식단(${weak===0?'녹색·신맛':weak===1?'붉은·쓴맛':weak===2?'단맛·뿌리':weak===3?'흰색·매운맛':'검은·짠맛'})을 ${totalMonths}개월 동안 꾸준히 추가하면 컨디션이 살아납니다.</p>`);
 
   // ── 결정적 시기
-  let critBody=`<p>${totalMonths}개월 중 결이 가장 강한 시기는 <b>${decisive.yy}년 ${decisive.mm}월</b>(${decisive.sc.total}점, ${dailyGrade(decisive.sc.total).lab})입니다. 월주는 <em>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</em>이며, 본인 일간 ${myStemKo} 기준 <b>${decisive.sc.tg}</b>의 색채로 들어와요.</p>`;
+  let critBody=`<p>${totalMonths}개월 중 결이 가장 강한 시기는 <b>${decisive.yy}년 ${decisive.mm}월</b>(${decisive.sc.total}점, ${dailyGrade(decisive.sc.total).lab})입니다. 월주는 <em>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</em>이며, 본인 기준 <b>${plainTG(decisive.sc.tg)}</b>의 결로 들어와요.</p>`;
   critBody+=`<p>이 달은 다음 활동에 가장 결이 잘 맞습니다 — ${decisive.sc.tg==='정관'?'면접·승진·결재·공식 자리':decisive.sc.tg==='편재'?'영업·새 거래·외부 활동':decisive.sc.tg==='식신'?'관계·협업·소통':decisive.sc.tg==='상관'?'창작·기획·발표':decisive.sc.tg==='정인'?'학습·자격·문서 처리':decisive.sc.tg==='정재'?'정리·점검·예산 정비':'본인 결의 한 발 더 깊은 표현'}.</p>`;
   critBody+=`<p>이 달의 가장 좋은 일진은 ${(_bestDayInMonth(saju,decisive.yy,decisive.mm)[0]||{d:'?'}).d}일입니다. ${totalMonths}개월에 한 번 있는 결정적 시기를 놓치지 마세요.</p>`;
   // 사용자 맥락별 추천 시기 — 옵션 C 선택 시 분야별 베스트 시기 별도 추천
@@ -5258,7 +5258,7 @@ function getRelevantRelations(saju,scope){
 function getRelevantRelationsHtml(saju,scope){
   const rels=getRelevantRelations(saju,scope).filter(r=>r&&Array.isArray(r.places)&&r.places.length>0);
   if(rels.length===0)return '';
-  const intro=scope==='love'?'본인의 일지(배우자궁)에서 보이는 결':
+  const intro=scope==='love'?'본인 자리(배우자 자리)에서 보이는 결':
               scope==='career'?'본인의 월지·시지(직장·자녀궁)에서 보이는 결':
               '본인 사주 4지지 사이에서 보이는 관계 결';
   let body=rels.map(r=>{
@@ -5630,7 +5630,7 @@ function renderDaypickTeaser(saju, dpExtra){
   const tg=f.tg;
   const tgHead={'비견':'본인 색깔이 또렷해지는 날','겁재':'경쟁심·승부욕이 올라오는 날','식신':'협업·소통이 빛나는 날','상관':'창의·표현이 빛나는 날','편재':'영업·이동·새 거래의 날','정재':'정리·점검이 결이 좋은 날','편관':'도전·압박이 들어오는 날','정관':'공식 자리에 길한 날','편인':'전문 학습이 깊어지는 날','정인':'학습·자격에 빛나는 날'};
   const headline=tgHead[tg]||'평이한 하루';
-  const lead=`${y}년 ${m}월 ${d}일은 본인 일간 <b>${STEMKO[saju.dp.stem]}</b> 기준으로 그날 일진과 만나 <b>${headline}</b>이에요. ${f.total>=75?'미뤄둔 결정을 이날에 배치하면 결실이 커요.':f.total>=60?'평이한 흐름 — 본인 페이스 유지에 좋은 날이에요.':'한 박자 천천히 — 정리·내실의 카드로 활용하세요.'}`;
+  const lead=`${y}년 ${m}월 ${d}일은 본인 기준으로 그날 들어오는 기운과 만나 <b>${headline}</b>이에요. ${f.total>=75?'미뤄둔 결정을 이날에 배치하면 결실이 커요.':f.total>=60?'평이한 흐름 — 본인 페이스 유지에 좋은 날이에요.':'한 박자 천천히 — 정리·내실의 카드로 활용하세요.'}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">이 날의 결 살짝 보기</span></div>
     <div class="teaser-score-row">
@@ -5702,7 +5702,7 @@ function renderNewyearTeaser(saju, y){
       </div>
     </div>
     <div class="teaser-headline">🎉 ${y}년은 ${headline}</div>
-    <div class="teaser-leadline">본인 일간 <b>${STEMKO[saju.dp.stem]}</b> 기준 ${y}년 세운 천간이 <b>${tg}</b>이라 ${tg.includes('관')?'사회적 책임과 결단의 결':tg.includes('재')?'재물의 결':tg.includes('인')?'학습·정인의 결':tg.includes('식')||tg.includes('상')?'표현·창의의 결':'본인 색깔의 결'}이 한 해 전반에 흐릅니다. 결정적 시기는 12개월 카드에서 확인하세요.</div>
+    <div class="teaser-leadline">본인 기준 ${y}년 위 글자가 <b>${plainTG(tg)}</b>의 결로 들어와 ${tg.includes('관')?'사회적 책임과 결단의 결':tg.includes('재')?'재물의 결':tg.includes('인')?'학습·정인의 결':tg.includes('식')||tg.includes('상')?'표현·창의의 결':'본인 색깔의 결'}이 한 해 전반에 흐릅니다. 결정적 시기는 12개월 카드에서 확인하세요.</div>
     ${_teaserBlurArea(['🌸 사계절 흐름 (봄·여름·가을·겨울)','📆 12개월 상세 풀이','💰 재물 / 💕 연애 / 🏛️ 직업 / 🌿 건강 (8분야)','🎯 길월·흉월·결정적 시기'])}
     ${_teaserCta('newyear')}
   </div>`;
