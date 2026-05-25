@@ -7284,6 +7284,78 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=`<p>반대로 <em>${OHNAME[outputOh]}</em> 기운(풀어내는 표현 자리)이 강한 시기는 발표·창작에서 빛나지만 정통 학문 시험에서는 산만해지기 쉬워요. 그 시기엔 의식적인 집중 시간을 따로 만들어 두시면 좋아요.</p>`;
   h+=paidWrapBody('STUDY','📚','학업·시험운',stBody);
 
+  // 평생 학업·시험 타임라인 — 대운별 학습·자격·시험 시기
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStem=saju.dp.stem;
+    const _myBr=saju.dp.branch;
+    const _gS=_meta.gender||'male';
+    const _dqS=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gS);
+    const _curAgeS=new Date().getFullYear()-_meta.sy+1;
+    let _curIdxS=0;
+    for(let i=0;i<_dqS.daeuns.length;i++){
+      if(_curAgeS>=_dqS.daeuns[i].age && (i===_dqS.daeuns.length-1||_curAgeS<_dqS.daeuns[i+1].age)){_curIdxS=i;break;}
+    }
+    const events=_dqS.daeuns.map((du,idx)=>{
+      const tg=tenGod(_dStem,du.stem);
+      const btg=tenGod(_dStem,BR_MAIN_STEM[du.branch]);
+      const tags=[];
+      // 정인 — 정형 학습·시험
+      if(tg==='정인'||btg==='정인'){
+        tags.push({emoji:'📚',type:'good',label:'정형 학습·자격 시험 시기',reason:'정인 운 — 대학·국가고시·자격증·학위 등 정형화된 학습에 결이 가장 좋은 시기'});
+      }
+      // 편인 — 전문 깊이·연구
+      if(tg==='편인'||btg==='편인'){
+        tags.push({emoji:'🔬',type:'good',label:'전문 깊이·연구 시기',reason:'편인 운 — 한 분야 깊이 천착·연구·전문 자격(전문의·박사·세무사 등) 결실 시기'});
+      }
+      // 식신 — 표현·창작 학습
+      if(tg==='식신'||btg==='식신'){
+        tags.push({emoji:'🎨',type:'good',label:'표현 학습기',reason:'식신 운 — 발표·창작·외국어 회화·실습 형식의 학습이 결이 좋은 시기'});
+      }
+      // 상관 — 톡톡 튀는 학습·강의
+      if(tg==='상관'||btg==='상관'){
+        tags.push({emoji:'✨',type:'good',label:'창의·강의 학습기',reason:'상관 운 — 토론·논술·강의·콘텐츠 형식 학습에 빛나는 시기'});
+      }
+      // 정관 — 명예 시험·승진 시험
+      if(tg==='정관'||btg==='정관'){
+        tags.push({emoji:'🏛',type:'good',label:'명예·승진 시험기',reason:'정관 운 — 승진·공식 자격·관리직 시험 결정에 좋은 시기'});
+      }
+      // 편관 — 도전 시험·경쟁
+      if(tg==='편관'||btg==='편관'){
+        tags.push({emoji:'⚔',type:'good',label:'도전 시험·경쟁 시기',reason:'편관 운 — 경쟁률 높은 시험·고시·사관·전문직 시험에 도전 정신이 빛나는 시기'});
+      }
+      // 비겁 — 산만·동료와의 경쟁
+      if(tg==='비견'||tg==='겁재'||btg==='비견'||btg==='겁재'){
+        tags.push({emoji:'⚠️',type:'warn',label:'산만·집중력 분산',reason:'비겁 운 — 친구·동료와 어울림은 즐겁지만 집중력이 분산되기 쉬워, 의식적인 집중 시간 확보 필요'});
+      }
+      // 충/형 들어오는 대운 — 학업 중단·진로 변경
+      const brR=brRel(_myBr,du.branch);
+      if(brR.kind==='충'){
+        tags.push({emoji:'🔄',type:'warn',label:'진로 변동·중단 가능',reason:'본인 자리와 정면 부딪힘 — 학업 중단·전공 변경·해외 유학 같은 큰 변동의 시기'});
+      }
+      return {du,idx,tg,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let stlBody=`<p><span class="body-q">평생 학업·시험은 어느 시기에 가장 빛날까요?</span><br>본인 사주 + 대운(10년 흐름)을 종합해 어느 시기에 정형 학습·연구·창의 학습·도전 시험이 결로 들어오는지 정리했어요. 진학·자격증·시험 결정을 시기에 맞춰 배치하면 결실이 가장 큽니다.</p>`;
+    stlBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    events.forEach((e,i)=>{
+      const isCur=i===_curIdxS;
+      const hasGood=e.tags.some(t=>t.type==='good');
+      const hasWarn=e.tags.some(t=>t.type==='warn');
+      const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,140,200,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6c8cc8':'var(--border)';
+      stlBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.length?e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join(''):'<div style="color:var(--sub)">평이한 학습 흐름 — 본인 페이스 유지에 좋은 10년</div>'}</div>
+      </div>`;
+    });
+    stlBody+=`</div>`;
+    stlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>학업·시험의 결을 잘 쓰는 법</b><br>정형 학습기에는 자격증·학위·국가고시에, 전문 연구기에는 박사·전문직 자격에, 도전 시험기에는 고시·경쟁률 높은 시험에 시간을 배치하세요. 큰 시험 결정은 정인·편인이 들어오는 대운을 기준으로 잡으면 결이 가장 잘 풀려요.</p>`;
+    h+=paidWrapBody('STUDY_TIMELINE','📜','평생 학업·시험 타임라인 — 학습·자격·시험 시기',stlBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
