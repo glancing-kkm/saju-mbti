@@ -7515,6 +7515,44 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('YEAR10','📅','향후 10년 연도별 핵심 운세',yrBody);
   }catch(e){}
 
+  // 사주 내부 합·충·형 종합 풀이
+  try{
+    const _allRels=findBranchRelations(saju);
+    const _goodRels=_allRels.filter(r=>r.tag==='g');
+    const _midRels=_allRels.filter(r=>r.tag==='y');
+    const _badRels=_allRels.filter(r=>r.tag==='r');
+    const _hasAny=_allRels.length>0;
+    let rsBody=`<p><span class="body-q">본인 사주 8글자가 만드는 관계 풀이</span><br>본인 사주 안의 천간·지지가 서로 만나며 만드는 합·충·형·원진·파·해 같은 관계예요. 이 관계들이 평생의 「큰 자산과 평생 과제」를 결정합니다.</p>`;
+    rsBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    // 좋은 관계
+    if(_goodRels.length>0){
+      rsBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e">
+        <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:6px">✓ 본인 인생의 「큰 자산」 — 좋은 결로 작용하는 관계</div>
+        ${_goodRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
+      </div>`;
+    }
+    // 중성 관계
+    if(_midRels.length>0){
+      rsBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+        <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:6px">⚖ 양면이 있는 관계 — 어떻게 쓰느냐로 결이 갈림</div>
+        ${_midRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
+      </div>`;
+    }
+    // 주의 관계
+    if(_badRels.length>0){
+      rsBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid #e57462">
+        <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:6px">⚠ 평생 과제 — 주의가 필요한 관계</div>
+        ${_badRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
+      </div>`;
+    }
+    if(!_hasAny){
+      rsBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:4px solid var(--border)"><div style="font-size:.82rem;color:var(--sub)">본인 사주 안에 두드러진 합·충 관계가 없어요. 큰 굴곡 없이 본연의 흐름이 잔잔히 이어지는 결이에요.</div></div>`;
+    }
+    rsBody+=`</div>`;
+    rsBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 안의 관계가 알려주는 것</b><br>본인 사주의 좋은 관계는 평생 본인을 「자연스럽게 살려주는 자산」이고, 주의 관계는 「평생 의식해서 다스려야 할 과제」예요. 좋은 관계는 의식적으로 활용하고, 주의 관계는 의식적으로 다듬으면 같은 사주도 다른 결로 펼쳐집니다.</p>`;
+    h+=paidWrapBody('SAJU_REL','🔗','본인 사주 안의 관계 — 평생 자산과 과제',rsBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
