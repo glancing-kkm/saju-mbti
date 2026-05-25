@@ -3711,6 +3711,28 @@ function renderDaypickFortune(saju,y,m,d,extra){
   totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 본인을 도와주는 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 이 날은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만)
   totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `이 지정일을 본인의 「선천적 사주」와 「후천적 MBTI」를 함께 보면, 그날의 결을 더 풍부하게 읽을 수 있어요.`);
+  // 본인 10년 흐름(대운) ↔ 이 날 결합 카드
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _g=_meta.gender||'male';
+    const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
+    const _curAge=y-_meta.sy;
+    let _curD=_dq.daeuns[0];
+    for(let i=0;i<_dq.daeuns.length;i++){
+      if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];break;}
+    }
+    const _dStartY=_meta.sy+_curD.age;
+    const _dEndY=_dStartY+9;
+    const _dTG=plainTG(tenGod(saju.dp.stem,_curD.stem));
+    const _stemRel=stemRel(_curD.stem,f.tg ? saju.dp.stem : saju.dp.stem); // placeholder
+    // 그날 천간/지지 vs 대운 — 간단히 합·충 확인
+    const _dayStem=f.dayStem||calcDailyFortune(saju,new Date(y,m-1,d)).dayStem;
+    let dsBody=`<div class="lead-card">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. (${_dStartY}년 ~ ${_dEndY}년)<br><span style="font-size:.82rem;color:var(--sub)">이 날 ${y}.${m}.${d}의 결은 이 10년 챕터 안에서 펼쳐집니다.</span></div>`;
+    dsBody+=`<p><span class="body-q">10년 챕터 안에서 이 날은 어떤 자리일까요?</span><br>같은 ${y}.${m}.${d}이라도 본인이 어떤 10년 흐름 안에 있느냐에 따라 그날의 의미가 달라져요. 10년 챕터의 결은 <b>${_dTG}</b>의 색깔이라, 이 챕터 안에서 이 날의 <b>${plainTG(stemTG)}</b> 기운은 ${_dTG===plainTG(stemTG)?'<b>큰 챕터의 결을 그대로 잇는</b> 결정적 하루':'<b>큰 챕터에 다른 색채를 더하는</b> 보완적 하루'}예요.</p>`;
+    dsBody+=`<p>${_dTG===plainTG(stemTG)?'이 날의 결정은 본인 10년 큰 챕터의 방향을 한 번 더 굳히는 무게가 있어요. 의미 있는 결정 한 가지를 배치하면 결이 살아납니다.':'이 날 들어오는 결은 본인 10년 큰 챕터의 메인 색깔과는 다르니, 한 박자 멈춰 「이 결정이 내 큰 챕터에 어떻게 맞물리는가」를 한 번 더 생각해보세요.'}</p>`;
+    h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 이 날',dsBody);
+  }catch(e){}
+
   h+=paidWrapBody('TOTAL','✨','지정일 종합 진단',totBody,
     {strengths:[
        `<b>${stemTG}</b> 기운 — 「${(TG_KEYWORD[stemTG]||[]).join('·')}」의 활동에서 결실`,
