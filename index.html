@@ -4206,6 +4206,35 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
 }
 
 // ══════════════════════════════════════════════
+//  삼재(三災) 계산 — 띠 그룹별 3년 주기
+// ══════════════════════════════════════════════
+// 12지 띠를 4그룹으로 나누고, 각 그룹마다 3년 연속으로 삼재가 들어옴.
+// 들삼재(첫째 해 — 변화 시작) → 눌삼재(중간 — 가장 강함) → 날삼재(마무리 — 후유증).
+// 띠 인덱스: 자0 축1 인2 묘3 진4 사5 오6 미7 신8 유9 술10 해11
+const _SAMJAE_GROUPS=[
+  {tied:[8,0,4], samjae:[2,3,4],  groupKo:'신·자·진'},  // 원숭이·쥐·용 띠 → 인묘진년 삼재
+  {tied:[5,9,1], samjae:[11,0,1], groupKo:'사·유·축'},  // 뱀·닭·소 띠 → 해자축년 삼재
+  {tied:[2,6,10],samjae:[8,9,10], groupKo:'인·오·술'},  // 범·말·개 띠 → 신유술년 삼재
+  {tied:[11,3,7],samjae:[5,6,7],  groupKo:'해·묘·미'}   // 돼지·토끼·양 띠 → 사오미년 삼재
+];
+function getSamjae(myZodiacBranch, yearBranch){
+  for(const g of _SAMJAE_GROUPS){
+    if(g.tied.includes(myZodiacBranch)){
+      const idx=g.samjae.indexOf(yearBranch);
+      if(idx<0)return {active:false, group:g.groupKo, nextYear:g.samjae[0], phaseLabel:''};
+      const phase=['들삼재','눌삼재','날삼재'][idx];
+      const desc=[
+        '삼재가 새로 들어오는 첫 해예요. 변화·이동·외부 자극의 기운이 시작되니, 큰 결정·확장·새 계약은 한 박자 미루고 흐름을 관찰하는 자세가 결을 지켜요.',
+        '삼재가 가장 강하게 자리잡는 가운데 해예요. 사주에서 가장 신중해야 할 시기로, 정리·내실·점검·관망에 무게를 두세요. 무리한 도전·새 사업·큰 거래는 다음 해로.',
+        '삼재가 나가는 마지막 해예요. 후유증·정리 단계라 새 시작보다 미뤄둔 마무리에 시간을 쓰세요. 한 해를 잘 보내면 다음 해부터 9년 동안은 삼재가 들어오지 않아요.'
+      ][idx];
+      return {active:true, phase, phaseLabel:phase, desc, group:g.groupKo, idx};
+    }
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════
 //  서양 12궁(태양궁) + 사주 일간 동·서양 이중 해석
 // ══════════════════════════════════════════════
 // 양력 생일로 본인의 서양 별자리 + 4원소(불·흙·공기·물) 추출.
@@ -4686,6 +4715,25 @@ function renderNewyearFortune(saju,y){
     return '두 띠는 평이한 결로, 한 해의 흐름이 자기 페이스대로 흘러갑니다.';
   })()}</p>`;
   h+=paidWrapBody('ZODIAC',ZODIAC_EMOJI[yearZodiac],`띠 작용 — 본인 띠 vs ${y}년 띠`,zBody);
+
+  // 삼재(三災) 카드 — 본인 띠 그룹의 3년 주기 안에서 올해가 어느 단계인지
+  try{
+    const _sj=getSamjae(myZodiac, yearZodiac);
+    if(_sj){
+      let sjBody='';
+      if(_sj.active){
+        sjBody=`<div class="lead-card" style="border-left:4px solid #e57462"><b>⚠️ ${y}년은 본인에게 ${_sj.phase}의 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹에 속해요. 이 그룹은 12년 주기로 3년 연속 삼재가 들어와요.</span></div>`;
+        sjBody+=`<p><span class="body-q">${_sj.phase}란 무엇일까요?</span><br>삼재는 12년에 한 번 들어오는 3년 주기의 큰 변동기예요. 첫째 해(들삼재)는 변화의 시작, 둘째 해(눌삼재)는 작용이 가장 강한 가운데, 셋째 해(날삼재)는 후유증의 마무리예요.</p>`;
+        sjBody+=`<p>${_sj.desc}</p>`;
+        sjBody+=`<p><span class="body-q">${y}년을 어떻게 보내면 좋을까요?</span><br>${_sj.idx===0?'들삼재는 흐름의 「변화 신호」예요. 큰 결정·확장·새 사업·결혼·이주 같은 큰 결정은 한 박자 늦추고 흐름을 관찰하세요. 평소대로 일상을 이어가되, 충동적 결정만 피하면 큰 문제는 없어요.':_sj.idx===1?'눌삼재는 사주에서 가장 신중해야 할 해예요. 새 사업·이직·창업·큰 거래·법적 분쟁은 가능한 피하시고, 정리·내실·점검·자기계발에 무게를 두세요. 건강 검진·꾸준한 운동·휴식을 평소보다 더 챙기세요.':'날삼재는 「잘 보내야 9년이 편한」 마무리 단계예요. 미뤄둔 정리·청산·인연 정리·과거의 짐 풀기에 시간을 쓰시고, 큰 새 시작은 다음 해로 미루세요. 한 해만 잘 견디면 9년 동안 삼재가 들어오지 않아요.'}</p>`;
+        sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 삼재가 흉만 의미하진 않아요</b><br>삼재는 인생의 「전환점」이기도 해요. 사주에 길성·천을귀인이 있는 분은 오히려 삼재 기간에 큰 도약을 이룬 케이스도 많아요. 핵심은 「큰 결정은 신중하게, 작은 정리는 적극적으로」예요.</p>`;
+      }else{
+        sjBody=`<div class="lead-card" style="border-left:4px solid #6cbf7e"><b>✓ ${y}년은 본인에게 삼재가 아닌 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹이라, ${ZODIAC_KO[_sj.nextYear]||'다음'}년부터 3년이 다음 삼재 기간이에요.</span></div>`;
+        sjBody+=`<p>삼재가 아닌 해는 큰 변동·후유증의 흐름이 없어요. 본인 사주의 결대로 자유롭게 큰 결정·확장·새 시작을 추진하기 좋은 시기예요.</p>`;
+      }
+      h+=paidWrapBody('SAMJAE','🔮',`삼재(三災) — ${y}년 본인 띠 점검`,sjBody);
+    }
+  }catch(e){}
 
   // 서양 12궁 + 사주 일간 — 동·서양 이중 해석
   try{
