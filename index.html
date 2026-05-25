@@ -9214,6 +9214,56 @@ function renderGunghapResult(saju1,saju2,result){
 // ══════════════════════════════════════════════
 //  이름풀이·작명 카테고리
 // ══════════════════════════════════════════════
+// ── 한글 자모 분석 (HAN_DICT보다 위에 정의해야 TDZ 회피) ──
+// 한글 자모 오행 매핑 — 초성·종성 자음을 5행으로 분류 (정통 성명학 한글파 분류)
+const HANGUL_CONS_OH={
+  'ㄱ':0,'ㄲ':0,'ㅋ':0,                        // 木 (어금닛소리)
+  'ㄴ':1,'ㄷ':1,'ㄸ':1,'ㄹ':1,'ㅌ':1,            // 火 (혓소리)
+  'ㅇ':2,'ㅎ':2,                                // 土 (목구멍소리)
+  'ㅅ':3,'ㅆ':3,'ㅈ':3,'ㅉ':3,'ㅊ':3,            // 金 (잇소리)
+  'ㅁ':4,'ㅂ':4,'ㅃ':4,'ㅍ':4                    // 水 (입술소리)
+};
+const HANGUL_CONS_LIST=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+// 한글 음절 → 초성/중성/종성 분해
+function hangulDecompose(ch){
+  const code=ch.charCodeAt(0)-0xAC00;
+  if(code<0||code>=11172)return null;
+  const cho=Math.floor(code/588);
+  const jung=Math.floor((code%588)/28);
+  const jong=code%28;
+  return {cho:HANGUL_CONS_LIST[cho], jung:jung, jong:jong>0?_jongToCons(jong):null};
+}
+function _jongToCons(jong){
+  // 종성 인덱스 → 자음 매핑 (복자음 첫 글자만)
+  const map=['','ㄱ','ㄲ','ㄱ','ㄴ','ㄴ','ㄴ','ㄷ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㅁ','ㅂ','ㅂ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  return map[jong]||null;
+}
+// 음양 — 중성(모음)으로 판정 (양: ㅏㅑㅗㅛ 등, 음: ㅓㅕㅜㅠㅡㅣ 등)
+const HANGUL_VOWEL_YANG=[0,2,4,7,8]; // ㅏㅐㅑㅒ → 양 / 단순화
+function jungToYinYang(j){
+  // 0:ㅏ 1:ㅐ 2:ㅑ 3:ㅒ 4:ㅓ 5:ㅔ 6:ㅕ 7:ㅖ 8:ㅗ 9:ㅘ 10:ㅙ 11:ㅚ 12:ㅛ 13:ㅜ 14:ㅝ 15:ㅞ 16:ㅟ 17:ㅠ 18:ㅡ 19:ㅢ 20:ㅣ
+  const yang=new Set([0,1,2,3,8,9,10,11,12]); // ㅏㅐㅑㅒㅗㅘㅙㅚㅛ → 양
+  return yang.has(j)?'양':'음';
+}
+// 이름 분석 — 글자별 오행 분포 + 음양 균형
+function analyzeNameOh(fullName){
+  const oh=[0,0,0,0,0];
+  const yinYang={양:0,음:0};
+  const perChar=[];
+  for(const ch of fullName){
+    const d=hangulDecompose(ch);
+    if(!d){perChar.push({ch,cho:null,jong:null,chos:null,jongs:null,yinyang:null});continue;}
+    const chos=HANGUL_CONS_OH[d.cho];
+    const jongs=d.jong?HANGUL_CONS_OH[d.jong]:null;
+    if(chos!=null)oh[chos]++;
+    if(jongs!=null)oh[jongs]++;
+    const yy=jungToYinYang(d.jung);
+    yinYang[yy]++;
+    perChar.push({ch,cho:d.cho,jong:d.jong,chos,jongs,yinyang:yy});
+  }
+  return {oh,yinYang,perChar};
+}
+
 // 인명용 한자 → 획수 매핑 (가장 흔한 280자) — 자동 채움용
 // 매핑 없는 한자는 사용자가 수동으로 획수 입력
 const HAN_STROKES={
@@ -9832,56 +9882,6 @@ function pickHanFromSelect(selectId, hanInputId, strokeInputId){
     const s=opt.dataset.stroke||HAN_STROKES[opt.value]||'';
     if(s)strokeEl.value=String(s);
   }
-}
-
-// 한글 자모 오행 매핑 — 초성·종성 자음을 5행으로 분류
-// (정통 성명학 한글파 분류 기준)
-const HANGUL_CONS_OH={
-  'ㄱ':0,'ㄲ':0,'ㅋ':0,                        // 木 (어금닛소리)
-  'ㄴ':1,'ㄷ':1,'ㄸ':1,'ㄹ':1,'ㅌ':1,            // 火 (혓소리)
-  'ㅇ':2,'ㅎ':2,                                // 土 (목구멍소리)
-  'ㅅ':3,'ㅆ':3,'ㅈ':3,'ㅉ':3,'ㅊ':3,            // 金 (잇소리)
-  'ㅁ':4,'ㅂ':4,'ㅃ':4,'ㅍ':4                    // 水 (입술소리)
-};
-const HANGUL_CONS_LIST=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-// 한글 음절 → 초성/중성/종성 분해
-function hangulDecompose(ch){
-  const code=ch.charCodeAt(0)-0xAC00;
-  if(code<0||code>=11172)return null;
-  const cho=Math.floor(code/588);
-  const jung=Math.floor((code%588)/28);
-  const jong=code%28;
-  return {cho:HANGUL_CONS_LIST[cho], jung:jung, jong:jong>0?_jongToCons(jong):null};
-}
-function _jongToCons(jong){
-  // 종성 인덱스 → 자음 매핑 (복자음 첫 글자만)
-  const map=['','ㄱ','ㄲ','ㄱ','ㄴ','ㄴ','ㄴ','ㄷ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㄹ','ㅁ','ㅂ','ㅂ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-  return map[jong]||null;
-}
-// 음양 — 중성(모음)으로 판정 (양: ㅏㅑㅗㅛ 등, 음: ㅓㅕㅜㅠㅡㅣ 등)
-const HANGUL_VOWEL_YANG=[0,2,4,7,8]; // ㅏㅐㅑㅒ → 양 / 단순화
-function jungToYinYang(j){
-  // 0:ㅏ 1:ㅐ 2:ㅑ 3:ㅒ 4:ㅓ 5:ㅔ 6:ㅕ 7:ㅖ 8:ㅗ 9:ㅘ 10:ㅙ 11:ㅚ 12:ㅛ 13:ㅜ 14:ㅝ 15:ㅞ 16:ㅟ 17:ㅠ 18:ㅡ 19:ㅢ 20:ㅣ
-  const yang=new Set([0,1,2,3,8,9,10,11,12]); // ㅏㅐㅑㅒㅗㅘㅙㅚㅛ → 양
-  return yang.has(j)?'양':'음';
-}
-// 이름 분석 — 글자별 오행 분포 + 음양 균형
-function analyzeNameOh(fullName){
-  const oh=[0,0,0,0,0];
-  const yinYang={양:0,음:0};
-  const perChar=[];
-  for(const ch of fullName){
-    const d=hangulDecompose(ch);
-    if(!d){perChar.push({ch,cho:null,jong:null,chos:null,jongs:null,yinyang:null});continue;}
-    const chos=HANGUL_CONS_OH[d.cho];
-    const jongs=d.jong?HANGUL_CONS_OH[d.jong]:null;
-    if(chos!=null)oh[chos]++;
-    if(jongs!=null)oh[jongs]++;
-    const yy=jungToYinYang(d.jung);
-    yinYang[yy]++;
-    perChar.push({ch,cho:d.cho,jong:d.jong,chos,jongs,yinyang:yy});
-  }
-  return {oh,yinYang,perChar};
 }
 
 // 이름 추천 풀 — 한국에서 흔히 쓰이는 좋은 의미의 이름 (오행별 분류)
