@@ -7153,6 +7153,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 let _lifeSummaryData=null;
 let _newyearSummaryData=null;
 let _gunghapSummaryData=null;
+let _nameSummaryData=null;
 
 // 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
 function getRelLifeMessage(places,type){
@@ -10944,7 +10945,164 @@ function renderNamePaid(saju, nmExtra){
     <div style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.78rem;color:var(--sub);line-height:1.85">💡 실제 출생 신고·개명 시에는 같은 한글 발음에도 다양한 한자가 있어요. 위 한글 추천에 더해 한자 획수까지 길수 조합으로 맞추시면, 한글 자모 오행 + 자원오행 + 4격 길수까지 모두 갖춘 완벽한 작명이 가능해요. 작명소·법원 개명 시 참고 자료로도 쓰실 수 있어요.</div>`;
   h+=paidWrapBody('RECOMMEND','🪷',`사주에 어울리는 추천 이름`, recBody);
 
+  // 이름풀이 A4 요약본 — 데이터 저장 + 다운로드 카드
+  try{
+    _nameSummaryData={
+      full, surname, given, han, strokes, hasHan, nameOh, sajuOh, ys, sajuMinIdx,
+      nameScore, grade, gradeColor, suri,
+      recommended: recommended.slice(0,5)
+    };
+    h+=`<div class="nb-card summary-card">
+      <div class="nb-cat">🎯 SUMMARY</div>
+      <div class="nb-title">✒️ 이름풀이 요약본 다운로드</div>
+      <div class="nb-body">
+        <div class="summary-intro">
+          <p>「${full}」 이름풀이를 <b>A4 한 장</b>에 정리한 요약본입니다.</p>
+          <ul>
+            <li>📊 종합 점수 + 등급 + 사주와의 궁합</li>
+            <li>🪷 한글 자모 오행 분석 (초성·종성 5행)</li>
+            ${hasHan?'<li>㊗ 한자 4격(원·형·이·정) + 81수리 길흉</li>':''}
+            <li>🌳 사주 오행 vs 이름 오행 균형도</li>
+            <li>🪷 사주에 어울리는 추천 이름 (4격 모두 길수 우선)</li>
+          </ul>
+          <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
+        </div>
+        <div class="summary-actions">
+          <button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">📷 이미지(PNG)</button>
+          <button class="summary-btn nm-summary-btn secondary" onclick="downloadNameSummary('pdf')">📄 PDF 다운로드</button>
+        </div>
+      </div>
+    </div>`;
+  }catch(e){}
+
   return h;
+}
+
+// 이름풀이 A4 빌더
+function buildNameSummaryA4Html(){
+  if(!_nameSummaryData)return '';
+  const d=_nameSummaryData;
+  const date=new Date().toISOString().slice(0,10);
+  const ohNames=['목','화','토','금','수'];
+  const ohEmoji=['🌱','🔥','🪨','⚙️','💧'];
+  // 한글 자모 오행 분포
+  const nohRow=d.nameOh.oh.map((v,i)=>`<div style="text-align:center"><div style="font-size:11px">${ohEmoji[i]} ${ohNames[i]}</div><div style="font-weight:800;font-size:13px;color:${v>0?'#1a1c1d':'#999'}">${v}</div></div>`).join('');
+  // 사주+이름 합산
+  const combined=d.sajuOh.map((v,i)=>v+d.nameOh.oh[i]);
+  const combinedRow=combined.map((v,i)=>{
+    const isYs=i===d.ys.main;
+    const isWeak=i===d.sajuMinIdx;
+    return `<div style="text-align:center;padding:3px 4px;border-radius:4px;background:${isYs?'#eaf6ec':isWeak?'#fceae6':'transparent'}"><div style="font-size:10px;color:${isYs?'#2e7d32':isWeak?'#c44':'#666'}">${ohEmoji[i]} ${ohNames[i]}${isYs?' (용신)':isWeak?' (약함)':''}</div><div style="font-weight:800;font-size:13px;color:#1a1c1d">${v}</div></div>`;
+  }).join('');
+  // 4격
+  let suriBlock='';
+  if(d.hasHan&&d.suri){
+    const gyeok=[
+      {k:'원격',sub:'초년',data:d.suri.won},
+      {k:'형격',sub:'청년',data:d.suri.hyeong},
+      {k:'이격',sub:'사회',data:d.suri.i},
+      {k:'정격',sub:'총운',data:d.suri.jeong}
+    ];
+    const goodCnt=gyeok.filter(g=>g.data.good).length;
+    const goodBadge=goodCnt===4?'<b style="color:#2e7d32">4격 모두 길수 ★</b>':goodCnt===3?'<b style="color:#2e7d32">4격 중 3개 길수 ✓</b>':goodCnt===2?'<span style="color:#a8732e">4격 중 2개 길수</span>':goodCnt===1?'<span style="color:#c44">4격 중 1개 길수</span>':'<span style="color:#c44">4격 모두 흉수</span>';
+    suriBlock=`<div class="a4-section">
+      <div class="a4-h">㊗ 한자 4격 (원·형·이·정) + 81수리</div>
+      <div class="a4-oh-legend" style="margin-bottom:5px">${goodBadge}</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px">
+        ${gyeok.map(g=>`<div style="padding:5px 6px;border-radius:5px;background:${g.data.good?'#eaf6ec':'#fceae6'};text-align:center">
+          <div style="font-size:10px;font-weight:800;color:${g.data.good?'#2e7d32':'#c44'}">${g.k}</div>
+          <div style="font-size:9px;color:#666">${g.sub}</div>
+          <div style="font-size:11px;font-weight:800">${g.data.stroke}획</div>
+          <div style="font-size:8.5px;color:${g.data.good?'#2e7d32':'#c44'}">${g.data.good?'✓ 길수':'⚠ 흉수'} · ${ohNames[g.data.oh]}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  // 추천 이름
+  let recBlock='';
+  if(d.recommended&&d.recommended.length){
+    recBlock=`<div class="a4-section">
+      <div class="a4-h">🪷 사주에 어울리는 추천 이름</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:5px">
+        ${d.recommended.slice(0,5).map((r,i)=>`<div style="padding:5px 8px;background:#fff8e8;border-left:3px solid #d4a849;border-radius:4px;font-size:11px">
+          <b style="color:#8b6f47">${i+1}. ${d.surname}${r.name}</b> <span style="color:#666;font-size:10px">— ${r.reason}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  let h=`<div class="a4-page">
+    <div class="a4-header">
+      <div class="a4-title">✒️ 이름풀이 요약본 — ${d.full}</div>
+      <div class="a4-subtitle">${d.hasHan?`한자 ${d.han.surname||''}${d.han.given1||''}${d.han.given2||''} · ${d.strokes.surname}+${d.strokes.given1}${d.strokes.given2?'+'+d.strokes.given2:''}획 · `:''}종합 점수 <b style="color:${d.gradeColor}">${d.nameScore}점 (${d.grade})</b></div>
+    </div>
+    <div class="a4-body">
+      <div class="a4-col-left">
+        <div class="a4-section">
+          <div class="a4-h">🪷 한글 자모 오행 분석</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:5px">${nohRow}</div>
+          <div class="a4-oh-legend" style="margin-top:5px">${preventOrphan('본인을 도와주는 기운은 <b>'+ohNames[d.ys.main]+'</b>예요. 이름에 이 기운('+(d.nameOh.oh[d.ys.main]||0)+'개)이 들어있으면 사주 보완에 도움이 됩니다.')}</div>
+        </div>
+        ${suriBlock}
+        <div class="a4-section">
+          <div class="a4-h">🌳 사주 + 이름 합산 오행 균형</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:5px">${combinedRow}</div>
+        </div>
+      </div>
+      <div class="a4-col-right">
+        ${recBlock}
+        <div class="a4-section">
+          <div class="a4-h">📝 이름풀이 종합 의견</div>
+          <div class="a4-oh-legend" style="line-height:1.75">${preventOrphan('「'+d.full+'」 이름은 사주 본인 도움 기운('+ohNames[d.ys.main]+')과의 만남에서 <b>'+d.grade+'</b>으로 평가됩니다. '+(d.hasHan?'한자 4격과 81수리 길흉까지 종합한 정통 작명학 기준 점수예요.':'한글 자모 오행 기준 점수예요. 한자까지 입력하시면 4격·81수리·자원오행까지 함께 풀어드려요.'))}</div>
+          <div class="a4-rel-item" style="margin-top:6px;font-size:10px">${preventOrphan('💡 실제 출생 신고·개명 시에는 같은 발음에도 한자에 따라 길흉이 갈려요. 추천 이름은 4격 모두 길수인 조합을 우선해서 제안했어요.')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="a4-footer">${date} · saju-mbti.pages.dev · 한글 자모 오행 + 한자 4격 + 81수리 정통 작명학 종합</div>
+  </div>`;
+  return preventOrphan(h);
+}
+
+async function downloadNameSummary(fmt){
+  if(!_nameSummaryData){alert('이름풀이 요약 데이터를 찾을 수 없어요.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
+  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
+  const btns=document.querySelectorAll('.nm-summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
+  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
+  const offscreen=document.createElement('div');
+  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
+  offscreen.innerHTML=buildNameSummaryA4Html();
+  document.body.appendChild(offscreen);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const a4=offscreen.querySelector('.a4-page');
+    const fit=await autoFitA4(a4);
+    const captureTarget=fit?fit.wrap:a4;
+    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
+    const date=new Date().toISOString().slice(0,10);
+    const fullName=_nameSummaryData.full;
+    if(fmt==='png'){
+      const link=document.createElement('a');
+      link.download=`이름풀이_${fullName}_${date}.png`;
+      link.href=canvas.toDataURL('image/png');
+      link.click();
+    }else{
+      const imgData=canvas.toDataURL('image/png');
+      const{jsPDF}=window.jspdf;
+      const pdf=new jsPDF('landscape','mm','a4');
+      const pdfW=pdf.internal.pageSize.getWidth();
+      const pdfH=pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
+      pdf.save(`이름풀이_${fullName}_${date}.pdf`);
+    }
+  }catch(e){
+    console.error(e);
+    alert('요약본 생성에 실패했습니다.');
+  }finally{
+    document.body.removeChild(offscreen);
+    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
+  }
 }
 
 // ── MBTI 궁합 점수 + 카드 ──
