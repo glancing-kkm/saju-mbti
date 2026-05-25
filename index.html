@@ -3917,6 +3917,42 @@ function renderDaypickFortune(saju,y,m,d,extra){
   prescBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(f.total)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','행동 처방 + 고전 한 줄',prescBody);
 
+  // 지정일 A4 요약본 데이터 저장 + 다운로드 카드
+  try{
+    if(_meta&&_meta.sy){
+      const _g=_meta.gender||'male';
+      const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
+      const _curAge=y-_meta.sy;
+      let _curD=_dq.daeuns[0];
+      for(let i=0;i<_dq.daeuns.length;i++){
+        if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];break;}
+      }
+      const _zod=getZodiac12(_meta.sm,_meta.sd);
+      _daypickSummaryData={saju,y,m,d,wDay,f,grade,stemTG,rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo,curDaeun:_curD,zod:_zod,hourCards,activeSins,dm,gender:_g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
+      h+=`<div class="nb-card summary-card">
+        <div class="nb-cat">🎯 SUMMARY</div>
+        <div class="nb-title">📅 ${y}.${m}.${d} 지정일 운세 요약본 다운로드</div>
+        <div class="nb-body">
+          <div class="summary-intro">
+            <p>이 날의 흐름을 <b>A4 한 장</b>에 정리한 요약본입니다.</p>
+            <ul>
+              <li>📊 본인 사주 4기둥 + 그날 점수</li>
+              <li>🗓 본인 10년 흐름 안에서 본 이 날</li>
+              <li>✦ 별자리 + 그날 결</li>
+              <li>⏰ 핵심 시간대 (길시·주의시)</li>
+              <li>📈 분야별 점수 (재물·연애·직업·건강)</li>
+            </ul>
+            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
+          </div>
+          <div class="summary-actions">
+            <button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">📷 이미지(PNG)</button>
+            <button class="summary-btn dp-summary-btn secondary" onclick="downloadDaypickSummary('pdf')">📄 PDF 다운로드</button>
+          </div>
+        </div>
+      </div>`;
+    }
+  }catch(e){}
+
   // ── 채팅
   h+=renderChatSection('daypick');
 
@@ -4198,6 +4234,42 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   guideBody+=`<p>분야별로는 <b>${avg('wealth')>=avg('love')&&avg('wealth')>=avg('career')?'💰 재물':avg('love')>=avg('career')?'💕 관계':'🏛️ 직업'}</b>의 흐름이 가장 도드라지므로, 이 분야에 주력하면 결실이 커요.</p>`;
   guideBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(avgTotal)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','기간 통합 행동 가이드 + 고전',guideBody);
+
+  // 월별 A4 요약본 데이터 저장 + 다운로드 카드
+  try{
+    if(_meta&&_meta.sy){
+      const _g=_meta.gender||'male';
+      const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
+      const _startAge=sy-_meta.sy;
+      let _startD=_dq.daeuns[0];
+      for(let i=0;i<_dq.daeuns.length;i++){
+        if(_startAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_startAge<_dq.daeuns[i+1].age)){_startD=_dq.daeuns[i];break;}
+      }
+      const _zod=getZodiac12(_meta.sm,_meta.sd);
+      _monthlySummaryData={saju,sy,sm,ey,em,totalMonths,monthsData,luckyMonths,toughMonths,decisive,avgTotal,avgGrade,gk,ys,curDaeun:_startD,zod:_zod,dm,gender:_g,wealthAvg:avg('wealth'),loveAvg:avg('love'),careerAvg:avg('career'),healthAvg:avg('health'),metaSy:_meta.sy};
+      h+=`<div class="nb-card summary-card">
+        <div class="nb-cat">🎯 SUMMARY</div>
+        <div class="nb-title">📅 ${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div>
+        <div class="nb-body">
+          <div class="summary-intro">
+            <p>${totalMonths}개월의 흐름을 <b>A4 한 장</b>에 정리한 요약본입니다.</p>
+            <ul>
+              <li>📊 ${totalMonths}개월 평균 점수 + 등급</li>
+              <li>🗓 본인 10년 흐름 안에서 본 이 기간</li>
+              <li>✦ 별자리 + 사주 결</li>
+              <li>📅 월별 막대그래프 + 길월·주의월·결정적 시기</li>
+              <li>📈 분야별 평균 (재물·연애·직업·건강)</li>
+            </ul>
+            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
+          </div>
+          <div class="summary-actions">
+            <button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">📷 이미지(PNG)</button>
+            <button class="summary-btn mo-summary-btn secondary" onclick="downloadMonthlySummary('pdf')">📄 PDF 다운로드</button>
+          </div>
+        </div>
+      </div>`;
+    }
+  }catch(e){}
 
   // ── 채팅 (3회)
   h+=renderChatSection('monthly');
@@ -7180,6 +7252,8 @@ let _lifeSummaryData=null;
 let _newyearSummaryData=null;
 let _gunghapSummaryData=null;
 let _nameSummaryData=null;
+let _daypickSummaryData=null;
+let _monthlySummaryData=null;
 
 // 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
 function getRelLifeMessage(places,type){
@@ -7733,7 +7807,24 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
       activeNowSins=sins.filter(s=>s.b===_curYp.branch);
     }
   }catch(e){}
-  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins};
+  // 평생 사건 타임라인 — A4에 핵심 사건 시기만 압축
+  let lifeEvents=[];
+  try{
+    const events=getLifeEventTimeline(saju,dq,gender);
+    const tagOrder=['💍 결혼 적기','🏛 승진·공식 자리','💰 사업·재물 활동','💎 자산 형성·결혼 자금','📚 학습·자격·시험·문서','🔬 전문 학습·연구'];
+    events.forEach(e=>{
+      e.tags.forEach(t=>{
+        const fullLabel=t.emoji+' '+t.label;
+        if(tagOrder.includes(fullLabel)){
+          lifeEvents.push({ageRange:e.ageRange,label:fullLabel});
+        }
+      });
+    });
+    // 같은 라벨 여러 번 → 첫 등장 시기만
+    const seen=new Set();
+    lifeEvents=lifeEvents.filter(e=>{const k=e.label;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,6);
+  }catch(e){}
+  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents};
   return `<div class="nb-card summary-card">
     <div class="nb-cat">🎯 SUMMARY</div>
     <div class="nb-title">📋 인생총운 요약본 다운로드</div>
@@ -7758,7 +7849,7 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
 
 function buildLifeSummaryA4Html(){
   if(!_lifeSummaryData)return '';
-  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins}=_lifeSummaryData;
+  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents}=_lifeSummaryData;
   const tot=oh.reduce((a,b)=>a+b,0);
   const me=oh[dStemOh],isStrong=me>=tot/3;
   const dom=oh.indexOf(Math.max(...oh)),weak=oh.indexOf(Math.min(...oh));
@@ -7818,6 +7909,13 @@ function buildLifeSummaryA4Html(){
           <div class="a4-h">✦ 별자리 + 사주 — 동·서양 이중 해석</div>
           <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 별자리는 <b>'+zod.emoji+' '+zod.ko+'</b>('+zod.el+' 원소) — '+zod.body+'. '+getZodiacSajuFusion(zod,SOH[saju.dp.stem],dm.n.split('(')[0]))}</div>
           ${activeNowSins.length>0?'<div class="a4-rel-item" style="margin-top:6px;font-size:.78rem">'+preventOrphan('🔆 <b>'+(new Date().getFullYear())+'년 활성화 신살 부스트</b> — '+[...new Set(activeNowSins.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (본인 사주의 이 신살이 올해 한 단계 더 강해져요)')+'</div>':''}
+        </div>`:''}
+
+        ${lifeEvents&&lifeEvents.length?`<div class="a4-section">
+          <div class="a4-h">📜 평생 사건 타임라인 (핵심 시기)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:10px;line-height:1.55">
+            ${lifeEvents.map(e=>`<div><b style="color:#8b6f47">${e.ageRange}</b> ${e.label}</div>`).join('')}
+          </div>
         </div>`:''}
 
       </div>
@@ -11181,6 +11279,193 @@ async function downloadNameSummary(fmt){
   }
 }
 
+// 지정일 A4 빌더
+function buildDaypickSummaryA4Html(){
+  if(!_daypickSummaryData)return '';
+  const d=_daypickSummaryData;
+  const date=new Date().toISOString().slice(0,10);
+  const curDStartY=d.sy+d.curDaeun.age;
+  const daeunLine=`${d.curDaeun.age}세부터 시작한 <b>${STEMKO[d.curDaeun.stem]}${BRCHKO[d.curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(d.saju.dp.stem,d.curDaeun.stem))}</em>의 결`;
+  const zodLine=d.zod?`${d.zod.emoji} <b>${d.zod.ko}</b>(${d.zod.el} 원소) — ${d.zod.body}.`:'';
+  // 시간대 핵심
+  const luckyHours=d.hourCards.filter(g=>g.kind==='길시').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
+  const cautionHours=d.hourCards.filter(g=>g.kind==='주의').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
+  let h=`<div class="a4-page">
+    <div class="a4-header">
+      <div class="a4-title">📅 ${d.y}.${d.m}.${d.d} 지정일 운세 요약본</div>
+      <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · 그날 ${d.dpStemKo}${d.dpBrKo}(<em>${plainTG(d.stemTG)}</em>의 결) · 총점 <b style="color:${d.grade.color}">${d.f.total}점 (${d.grade.lab})</b></div>
+    </div>
+    <div class="a4-body">
+      <div class="a4-col-left">
+        <div class="a4-section">
+          <div class="a4-h">📊 본인 사주 4기둥</div>
+          ${buildA4Pillars(d.saju,d.gender)}
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 이 날</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
+        </div>
+        ${d.zod?`<div class="a4-section">
+          <div class="a4-h">✦ 별자리 + 사주</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine)}</div>
+        </div>`:''}
+      </div>
+      <div class="a4-col-right">
+        <div class="a4-section">
+          <div class="a4-h">⏰ 이 날의 핵심 시간대</div>
+          <div class="a4-rel">
+            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
+              <div class="a4-rel-lab">🍀 길시</div>
+              ${luckyHours.length?luckyHours.map(t=>`<div>· ${t}</div>`).join(''):'<div class="a4-rel-none">두드러진 길시 없음</div>'}
+            </div>
+            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
+              <div class="a4-rel-lab">⚠️ 주의시</div>
+              ${cautionHours.length?cautionHours.map(t=>`<div>· ${t}</div>`).join(''):'<div class="a4-rel-none">두드러진 주의시 없음</div>'}
+            </div>
+          </div>
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">📈 분야별 점수</div>
+          <div class="a4-rel">
+            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
+              <div>💰 재물 <b>${d.f.wealth}점</b></div>
+              <div>💕 연애 <b>${d.f.love}점</b></div>
+            </div>
+            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
+              <div>🏛 직업 <b>${d.f.career}점</b></div>
+              <div>🌿 건강 <b>${d.f.health}점</b></div>
+            </div>
+          </div>
+        </div>
+        ${d.activeSins&&d.activeSins.length?`<div class="a4-section">
+          <div class="a4-h">⚡ 그날 활성화 신살</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan([...new Set(d.activeSins.map(s=>s.n.split(' ')[0]))].slice(0,5).join('·')+' (본인 사주 신살이 이 날 강하게 발현)')}</div>
+        </div>`:''}
+      </div>
+    </div>
+    <div class="a4-footer">${date} · saju-mbti.pages.dev · 이 날의 결은 본인 10년 챕터 안에서 펼쳐집니다</div>
+  </div>`;
+  return preventOrphan(h);
+}
+
+async function downloadDaypickSummary(fmt){
+  if(!_daypickSummaryData){alert('지정일 요약 데이터를 찾을 수 없어요.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
+  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
+  const btns=document.querySelectorAll('.dp-summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
+  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
+  const offscreen=document.createElement('div');
+  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
+  offscreen.innerHTML=buildDaypickSummaryA4Html();
+  document.body.appendChild(offscreen);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const a4=offscreen.querySelector('.a4-page');
+    const fit=await autoFitA4(a4);
+    const captureTarget=fit?fit.wrap:a4;
+    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
+    const date=new Date().toISOString().slice(0,10);
+    const ymd=`${_daypickSummaryData.y}${String(_daypickSummaryData.m).padStart(2,'0')}${String(_daypickSummaryData.d).padStart(2,'0')}`;
+    if(fmt==='png'){const link=document.createElement('a');link.download=`지정일_${ymd}_${date}.png`;link.href=canvas.toDataURL('image/png');link.click();}
+    else{const imgData=canvas.toDataURL('image/png');const{jsPDF}=window.jspdf;const pdf=new jsPDF('landscape','mm','a4');const pdfW=pdf.internal.pageSize.getWidth();const pdfH=pdf.internal.pageSize.getHeight();pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);pdf.save(`지정일_${ymd}_${date}.pdf`);}
+  }catch(e){console.error(e);alert('요약본 생성에 실패했습니다.');}
+  finally{document.body.removeChild(offscreen);btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});}
+}
+
+// 월별 A4 빌더
+function buildMonthlySummaryA4Html(){
+  if(!_monthlySummaryData)return '';
+  const d=_monthlySummaryData;
+  const date=new Date().toISOString().slice(0,10);
+  const monthLab=arr=>arr.map(m=>{const o=m.split('.');return o.length>1?`${o[1]}월`:m;}).join(', ');
+  const monthBars=d.monthsData.map(o=>{
+    const g=dailyGrade(o.sc.total);
+    const lab=`${o.yy%100}.${String(o.mm).padStart(2,'0')}`;
+    const isLucky=d.luckyMonths.includes(`${o.yy}.${String(o.mm).padStart(2,'0')}`);
+    const isTough=d.toughMonths.includes(`${o.yy}.${String(o.mm).padStart(2,'0')}`);
+    const isDec=d.decisive.yy===o.yy&&d.decisive.mm===o.mm;
+    return `<div class="a4-mo${isDec?' dec':''}${isLucky?' lk':''}${isTough?' tg':''}" title="${lab} ${o.sc.total}점">
+      <div class="a4-mo-bar" style="height:${Math.max(8,Math.round(o.sc.total*0.55))}px;background:${g.color}"></div>
+      <div class="a4-mo-lab" style="font-size:8px">${lab}</div>
+    </div>`;
+  }).join('');
+  const curDStartY=d.metaSy+d.curDaeun.age;
+  const daeunLine=`${d.curDaeun.age}세부터 시작한 <b>${STEMKO[d.curDaeun.stem]}${BRCHKO[d.curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(d.saju.dp.stem,d.curDaeun.stem))}</em>의 결, 이 기간이 이 챕터 안에서 펼쳐집니다.`;
+  const zodLine=d.zod?`${d.zod.emoji} <b>${d.zod.ko}</b>(${d.zod.el} 원소) — ${d.zod.body}.`:'';
+  let h=`<div class="a4-page">
+    <div class="a4-header">
+      <div class="a4-title">📅 ${d.sy}.${d.sm}~${d.ey}.${d.em} 월별 운세 요약본</div>
+      <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · ${d.totalMonths}개월 평균 <b style="color:${d.avgGrade.color}">${d.avgTotal}점 (${d.avgGrade.lab})</b> · 결정적 시기 <b>${d.decisive.yy}.${d.decisive.mm}</b></div>
+    </div>
+    <div class="a4-body">
+      <div class="a4-col-left">
+        <div class="a4-section">
+          <div class="a4-h">📊 본인 사주 4기둥</div>
+          ${buildA4Pillars(d.saju,d.gender)}
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 이 기간</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
+        </div>
+        ${d.zod?`<div class="a4-section">
+          <div class="a4-h">✦ 별자리 + 사주</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine)}</div>
+        </div>`:''}
+      </div>
+      <div class="a4-col-right">
+        <div class="a4-section">
+          <div class="a4-h">📅 ${d.totalMonths}개월 흐름</div>
+          <div class="a4-mo-grid" style="grid-template-columns:repeat(${Math.min(d.totalMonths,12)},1fr)">${monthBars}</div>
+          <div class="a4-oh-legend" style="margin-top:6px;font-size:9.5px">🍀 길월 <b>${monthLab(d.luckyMonths)}</b> · ⚠️ 주의월 <b>${monthLab(d.toughMonths)}</b> · ⭐ 결정적 <b>${d.decisive.mm}월</b></div>
+        </div>
+        <div class="a4-section">
+          <div class="a4-h">📈 분야별 평균</div>
+          <div class="a4-rel">
+            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
+              <div>💰 재물 <b>${d.wealthAvg}점</b></div>
+              <div>💕 연애 <b>${d.loveAvg}점</b></div>
+            </div>
+            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
+              <div>🏛 직업 <b>${d.careerAvg}점</b></div>
+              <div>🌿 건강 <b>${d.healthAvg}점</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="a4-footer">${date} · saju-mbti.pages.dev · ${d.totalMonths}개월 흐름이 본인 10년 챕터 안에서 펼쳐집니다</div>
+  </div>`;
+  return preventOrphan(h);
+}
+
+async function downloadMonthlySummary(fmt){
+  if(!_monthlySummaryData){alert('월별 요약 데이터를 찾을 수 없어요.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
+  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
+  const btns=document.querySelectorAll('.mo-summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
+  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
+  const offscreen=document.createElement('div');
+  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
+  offscreen.innerHTML=buildMonthlySummaryA4Html();
+  document.body.appendChild(offscreen);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const a4=offscreen.querySelector('.a4-page');
+    const fit=await autoFitA4(a4);
+    const captureTarget=fit?fit.wrap:a4;
+    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
+    const date=new Date().toISOString().slice(0,10);
+    const range=`${_monthlySummaryData.sy}${String(_monthlySummaryData.sm).padStart(2,'0')}_${_monthlySummaryData.ey}${String(_monthlySummaryData.em).padStart(2,'0')}`;
+    if(fmt==='png'){const link=document.createElement('a');link.download=`월별_${range}_${date}.png`;link.href=canvas.toDataURL('image/png');link.click();}
+    else{const imgData=canvas.toDataURL('image/png');const{jsPDF}=window.jspdf;const pdf=new jsPDF('landscape','mm','a4');const pdfW=pdf.internal.pageSize.getWidth();const pdfH=pdf.internal.pageSize.getHeight();pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);pdf.save(`월별_${range}_${date}.pdf`);}
+  }catch(e){console.error(e);alert('요약본 생성에 실패했습니다.');}
+  finally{document.body.removeChild(offscreen);btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});}
+}
+
 // ── MBTI 궁합 점수 + 카드 ──
 function mbtiCompatScore(m1, m2){
   if(!m1||!m2||m1.length!==4||m2.length!==4)return null;
@@ -11252,6 +11537,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   h+=renderGunghapFamilyCard(saju1, saju2, result);
   // 두 사람 별자리 4원소 궁합 + 대운 단계 비교 (동·서양 통합 차별화)
   try{h+=renderGunghapZodiacDaeunCard(saju1,saju2);}catch(e){}
+  // 두 사람 신살·공망 교차 — 사주 깊이 통찰
+  try{h+=renderGunghapSinsalGongmangCard(saju1,saju2,gen1,gen2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
   // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
@@ -11314,6 +11601,53 @@ const _ZODIAC_ELEM_PAIR={
 function getZodiacPairKey(e1,e2){
   const arr=[e1,e2].sort();
   return arr[0]+'-'+arr[1];
+}
+
+// 두 사람 신살·공망 교차 카드
+function renderGunghapSinsalGongmangCard(saju1, saju2, gen1, gen2){
+  // 신살 교차
+  const _origGender=typeof gender!=='undefined'?gender:'male';
+  let sins1=[], sins2=[];
+  try{gender=gen1; sins1=findSinsal(saju1);}catch(e){}
+  try{gender=gen2; sins2=findSinsal(saju2);}catch(e){}
+  gender=_origGender;
+  const names1=new Set(sins1.map(s=>s.n));
+  const names2=new Set(sins2.map(s=>s.n));
+  const common=[...names1].filter(n=>names2.has(n));
+  const only1=[...names1].filter(n=>!names2.has(n));
+  const only2=[...names2].filter(n=>!names1.has(n));
+  // 공망 비교
+  const gm1=emptyBranches(saju1.dp.stem,saju1.dp.branch);
+  const gm2=emptyBranches(saju2.dp.stem,saju2.dp.branch);
+  const gmShared=gm1.filter(b=>gm2.includes(b));
+  // 본문 작성
+  let body='';
+  body+=`<p><span class="body-q">두 분의 별자리(신살)와 비어있는 자리는 어떻게 만날까요?</span><br>두 분 사주의 신살과 공망이 같으면 닮은꼴 결로 가까워지고, 서로 다른 신살이 있으면 부족한 영역을 채워주는 결이 만들어져요.</p>`;
+  // 공통 신살
+  if(common.length>0){
+    body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:9px;border-left:3px solid var(--wood)"><b>🔆 두 분 모두 가진 별자리(공통 신살)</b><br><span style="font-size:.82rem">두 분 사주에 공통으로 들어있는 별자리는 <b>${common.join('·')}</b>예요. 같은 결을 공유하는 부분으로, 가장 빠르게 가까워질 수 있는 영역입니다.</span></p>`;
+  }
+  // 보완 신살 (한쪽만 가진 길성)
+  const goodNames=new Set(['천을귀인','문창귀인','화개살','천덕귀인','월덕귀인','암록','장성살','반안살']);
+  const only1Good=only1.filter(n=>goodNames.has(n));
+  const only2Good=only2.filter(n=>goodNames.has(n));
+  if(only1Good.length>0||only2Good.length>0){
+    body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.06),rgba(108,191,126,.03));border-radius:9px;border-left:3px solid var(--accent)"><b>✨ 서로를 보완하는 별자리</b><br>${only1Good.length?`<span style="font-size:.82rem">본인의 <b>${only1Good.join('·')}</b>이 상대에게 부족한 결을 채워줘요.</span><br>`:''}${only2Good.length?`<span style="font-size:.82rem">상대의 <b>${only2Good.join('·')}</b>이 본인에게 부족한 결을 채워줘요.</span>`:''}</p>`;
+  }
+  // 공망 비교
+  if(gmShared.length>0){
+    body+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--earth);font-size:.82rem"><b>🕳 두 분 모두 비어있는 자리(공통 공망)</b><br>두 분 사주에서 같은 자리가 비어있어요 (<b>${gmShared.map(b=>BRCHKO[b]).join('·')}</b>). 평소 약했던 같은 영역(가족·자녀·재물 등)을 함께 의식적으로 채워가는 결이라, 부부가 같은 약점을 같이 다듬어가야 해요.</p>`;
+  }else if(gm1.length||gm2.length){
+    const gm1Filled=gm1.some(b=>b===saju2.yp.branch||b===saju2.mp.branch||b===saju2.dp.branch||(saju2.hp&&b===saju2.hp.branch));
+    const gm2Filled=gm2.some(b=>b===saju1.yp.branch||b===saju1.mp.branch||b===saju1.dp.branch||(saju1.hp&&b===saju1.hp.branch));
+    if(gm1Filled||gm2Filled){
+      body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.03));border-radius:9px;border-left:3px solid var(--wood);font-size:.82rem"><b>🌱 비어있는 자리를 채워주는 결</b><br>${gm1Filled?'본인 사주의 비어있는 자리를 상대 사주가 채워줘요. ':''}${gm2Filled?'상대 사주의 비어있는 자리를 본인 사주가 채워줘요. ':''}함께 있으면 평소 약했던 영역이 자연스럽게 보강되는 결이에요 — 부부 궁합으로 매우 좋은 결.</p>`;
+    }
+  }
+  if(common.length===0&&only1Good.length===0&&only2Good.length===0&&gmShared.length===0){
+    body+=`<p style="margin-top:10px;font-size:.82rem;color:var(--sub)">두 분 사주에 두드러진 공통 신살이나 보완 결이 없어요. 평이한 결로, 큰 색깔보다 일상의 결로 다져가는 관계예요.</p>`;
+  }
+  return paidWrapBody('SINSAL_GM','✨','두 분 별자리·비어있는 자리 교차',body);
 }
 
 function renderGunghapZodiacDaeunCard(saju1, saju2){
