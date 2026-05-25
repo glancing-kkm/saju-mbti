@@ -7072,6 +7072,63 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     {good:'타고난 인덕을 살리시고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일로 깊게 만나는 관계 몇 개가 넓은 인맥보다 훨씬 든든해요.',
      warn:`${has('겁재')?'경쟁심이 깊은 결이 있어 동업과 금전 거래에서 신뢰를 잃기 쉬워요. 친한 사이일수록 명확한 계약과 기록이 본인을 지켜줘요.':'관계에서 본인의 주장과 상대의 말을 듣는 균형을 의식해서 잡아주세요.'}`});
 
+  // 6친(육친) 관계 — 부모·형제·배우자·자녀 인연 풀이
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={
+      bigeop:Math.max(0,oh[_so]-1),
+      siksang:oh[(_so+1)%5],
+      jaesung:oh[(_so+2)%5],
+      gwansung:oh[(_so+3)%5],
+      insung:oh[(_so+4)%5]
+    };
+    const _isMale=gender==='male';
+    const _strLabel=(n)=>n>=3?'두텁다':n>=2?'적당':n===1?'한 자리':'없다(약함)';
+    const _readingPos=(label,cnt,strong,weak,middle)=>cnt>=3?strong:cnt===0?weak:middle;
+    let yckBody=`<p><span class="body-q">사주의 5가지 결로 가족 인연을 보면?</span><br>고전 사주명리에서는 본인을 둘러싼 5가지 십신(동료·표현·재물·책임·학습)으로 6친(부모·형제·배우자·자녀)의 인연을 풀어요. 본인 사주의 각 결이 얼마나 두터운지로 인연의 깊이를 봅니다.</p>`;
+    yckBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    // 부모 (인성)
+    yckBody+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem">👨‍👩 부모·은사 인연 (학습·받아들이는 결)</div>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#6c8cc8;color:#1a1c1d;font-weight:700">${_strLabel(_sip.insung)}</span>
+      </div>
+      <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('부모',_sip.insung,'부모·스승·어른의 덕이 두터운 결이에요. 평생 좋은 멘토·후원자가 따라붙고, 어려울 때마다 어른의 도움이 와요.','부모와 정서적 거리가 있는 결이라 어린 시절부터 본인 힘으로 길을 여는 자립형이에요. 부모 덕보다 본인의 노력으로 만들어가는 인생.','부모·어른과의 인연이 평이한 결이에요. 의식적으로 부모님과 자주 연락하고 관계를 가꾸시면 인덕이 더 살아납니다.')}</div>
+    </div>`;
+    // 형제·동료 (비겁)
+    yckBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem">👫 형제·동료 인연 (같은 결의 동료)</div>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#d4a849;color:#1a1c1d;font-weight:700">${_strLabel(_sip.bigeop)}</span>
+      </div>
+      <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('형제',_sip.bigeop,'형제·친구·동료가 많고 가까운 결이에요. 사람 사이에서 본인 페이스를 또렷이 유지하는 강한 결로, 단체 활동에서도 본인 색이 살아나요. 동업·금전 거래는 신중하게.','형제·또래보다 본인 혼자만의 영역이 더 편한 결이에요. 깊게 만나는 친구 한두 명이 본인의 가장 든든한 자산이에요.','형제·친구 관계가 평이한 결로, 의식적으로 가까운 관계 몇 개를 가꾸시면 평생 자산이 돼요.')}</div>
+    </div>`;
+    // 배우자
+    const _spouse=_isMale?_sip.jaesung:_sip.gwansung;
+    const _spouseLabel=_isMale?'아내·여성 인연 (현실·자원의 결)':'남편·남성 인연 (책임·규칙의 결)';
+    const _spouseEmoji=_isMale?'💑':'💑';
+    yckBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid #e57462">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem">${_spouseEmoji} ${_spouseLabel}</div>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#e57462;color:#1a1c1d;font-weight:700">${_strLabel(_spouse)}</span>
+      </div>
+      <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('배우자',_spouse,_isMale?'아내·여성 인연이 풍부한 결이에요. 매력적인 이성과 자연스럽게 만나고, 결혼 후에도 가정 안에서 본인이 책임지고 다루는 결이 강합니다. 다양한 인연 속 진중한 선택이 핵심.':'남편·남성 인연이 풍부한 결이에요. 책임감 있고 신뢰할 만한 남성과 자연스럽게 만나는 결로, 결혼 후 안정적인 가정을 꾸리기 좋아요.',_isMale?'아내·여성과의 인연이 옅거나 늦게 만나는 결이에요. 한 사람과 깊이 만나는 결로, 본인이 의식적으로 다가가는 자세가 결을 만들어요.':'남편·남성과의 인연이 옅거나 늦게 만나는 결이에요. 본인 영역과 자기 일을 가꾸는 자세가 인연의 결을 만들어요.','배우자 인연이 평이한 결로, 본인의 일상 톤이 자연스레 인연의 결을 결정합니다.')}</div>
+    </div>`;
+    // 자녀
+    const _child=_isMale?_sip.gwansung:_sip.siksang;
+    const _childLabel=_isMale?'자녀 인연 (책임·규칙의 결)':'자녀 인연 (표현·풀어내는 결)';
+    yckBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid #6cbf7e">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem">👶 ${_childLabel}</div>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#6cbf7e;color:#1a1c1d;font-weight:700">${_strLabel(_child)}</span>
+      </div>
+      <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('자녀',_child,_isMale?'자녀 인연이 풍부한 결이에요. 자녀가 본인에게 큰 책임감과 사회적 성장을 가져다주는 결.':'자녀 인연이 풍부한 결이에요. 자녀를 통해 본인의 표현·창작·돌봄의 결이 자연스레 펼쳐져요.',_isMale?'자녀 인연이 옅은 결이에요. 자녀를 늦게 보거나 자녀와의 정서적 거리감이 있을 수 있어요. 자녀 외 후배·아랫사람을 돌보는 활동도 그 영역을 채워줍니다.':'자녀 인연이 옅은 결이에요. 자녀를 늦게 보거나 자녀와의 거리감이 있을 수 있어요. 표현·창작·교육 활동이 그 결을 채워줍니다.','자녀 인연이 평이한 결로, 본인의 결혼 후 자연스럽게 결을 만들어가는 결.')}</div>
+    </div>`;
+    yckBody+=`</div>`;
+    yckBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>6친 풀이의 의미</b><br>사주의 십신 강약은 인연의 「타고난 결」을 보여줘요. 약하다고 흉이 아니라 「의식적으로 가꿔야 할 영역」이라는 뜻. 부모 인연이 약하면 어른과의 관계를 의식적으로 가꾸고, 자녀 인연이 약하면 후배·아랫사람 돌봄으로 그 결을 채울 수 있어요.</p>`;
+    h+=paidWrapBody('YOOKCHIN','👨‍👩‍👧','6친 관계 — 부모·형제·배우자·자녀 인연',yckBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 신살 종합 (만세력 위에 살 표시)
   // ═════════════════════════════════════
