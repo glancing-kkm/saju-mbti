@@ -3809,7 +3809,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   // ── 공부·문서
   let stBody2=`<p>${y}/${m}/${d}의 공부·문서 점수는 <b>${Math.round((f.career+f.total)/2)}점</b>입니다. 본인 사주 유형 ${gk.name}과 그날 결이 학습·시험에 ${stemTG==='정인'||stemTG==='편인'?'직접 길운으로 작용':stemTG==='상관'?'창의·논술형에 길 (객관식은 한 번 더 검토)':'평이한 흐름으로 작용'}하는 날입니다.</p>`;
   stBody2+=`<p>${stemTG==='정인'?'<b>학습 흡수가 빛나는 날</b> — 자료 정리·시험 준비·자격 학습에 매우 길해요. 어른·멘토의 도움이나 추천서가 들어오는 결이에요.':stemTG==='편인'?'<b>깊이 파는 학습이 빛나는 날</b> — 전문 분야 학습·논문·연구에 결이 좋아요. 직관과 통찰이 맑은 날.':stemTG==='상관'?'<b>창의·표현이 빛나는 날</b> — 창작·기획·논술형 시험·발표 자료 작성에 빛나요. 다만 객관식 정답률은 한 번 더 검토하세요.':stemTG==='식신'?'<b>함께하는 학습이 빛나는 날</b> — 혼자 공부보다 스터디·강연 듣기에 결이 좋아요.':'평이한 학습 흐름. 무리한 진도보다 복습·정리에 시간을 쓰는 게 효과적입니다.'}</p>`;
-  stBody2+=`<p>${rel.kind==='합'?'일지 합으로 추천서·인허가·문서 처리에 결이 부드럽습니다.':rel.kind==='충'?'일지 충이 들어 큰 시험 결정·서류 마감일 결정은 한 박자 살핀 후에.':'평이한 문서 흐름.'}</p>`;
+  stBody2+=`<p>${rel.kind==='합'?'본인 자리와 그날 자리가 자석처럼 끌어당겨 추천서·인허가·문서 처리가 부드럽게 풀려요.':rel.kind==='충'?'본인 자리와 그날 자리가 부딪히는 결이라, 큰 시험 결정·서류 마감일 결정은 한 박자 살핀 후에 진행하세요.':'평이한 문서 흐름이에요.'}</p>`;
   h+=paidWrapBody('STUDY','📚','공부·문서',stBody2);
 
   // ── 시간대
@@ -4342,7 +4342,7 @@ function renderNewyearFortune(saju,y){
   // ① 한 줄 결론
   totBody+=`<div class="lead-card"><b>${y}년 · ${STEMKO[ypStem]}${BRCHKO[ypBranch]}년 (${TG_EMOJI[tg]||'🌟'} ${plainTG(tg)}의 결)</b><br>본인에게 <em>${_yearTGDescMap[tg]||'평이한 흐름의 해'}</em>예요. ${_relYearSummary}입니다.</div>`;
   // ② 왜
-  totBody+=miniManseWithPointer(saju,'day','↑ 본인 일주 — 올해 들어오는 기운과 가장 직접 만나는 자리');
+  totBody+=miniManseWithPointer(saju,'day','↑ 본인을 가리키는 두 글자 — 올해 들어오는 기운과 가장 직접 만나는 자리');
   totBody+=`<p><span class="body-q">왜 이렇게 작용할까요?</span><br>${y}년 입춘부터 다음 해 입춘 직전까지 본인 사주에 새로 더해지는 글자가 <em>${STEMKO[ypStem]}${BRCHKO[ypBranch]}</em>예요.</p>`;
   totBody+=`<p>· 위쪽 <b>${ypStemKo}</b> → 본인에게 <b>${plainTG(tg)}</b>의 결로 작용해 한 해의 표면을 채워요.<br>· 아래쪽 <b>${ypBrKo}</b> → 본인에게 <b>${plainTG(btg)}</b>의 결로 작용해 한 해의 바닥 흐름을 만들어요.</p>`;
   totBody+=`<p>본인 사주는 <em>${OHNAME[dom]}</em> 기운이 두텁고 <em>${OHNAME[weak]}</em> 기운이 부족해요. ${y}년 들어오는 글자가 본인의 ${OHNAME[weak]===OHNAME[ypStemOh]||OHNAME[weak]===OHNAME[ypBrOh]?'<b>부족한 기운을 채워주는 결</b>이라 보강과 균형의 해':OHNAME[dom]===OHNAME[ypStemOh]||OHNAME[dom]===OHNAME[ypBrOh]?'<b>이미 강한 기운을 더하는 결</b>이라 균형을 한 번 더 살펴야 하는 해':'중화된 흐름의 해'}입니다.</p>`;
@@ -4353,7 +4353,7 @@ function renderNewyearFortune(saju,y){
   h+=paidWrapBody('TOTAL','✨','세운과 사주의 만남 — 심층 진단',totBody,
     {strengths:[
        `<b>${tg}</b> 기운으로 「${(TG_KEYWORD[tg]||[]).join('·')}」의 색채가 한 해를 채움`,
-       rel.kind==='합'?'일지 합 — 사람·관계·교섭 활동에 부드러운 결':rel.kind==='평'?'평이한 흐름 — 자기 페이스 유지에 좋은 해':'본인 일간의 결이 외부 기운과 만나는 해',
+       rel.kind==='합'?'본인 자리와 자석처럼 끌어당기는 결 — 사람·관계·교섭에 부드러움':rel.kind==='평'?'평이한 흐름 — 자기 페이스 유지에 좋은 해':'본인 기운이 외부 기운과 만나는 해',
        `세운 글자 ${ypStemKo}${ypBrKo}이 본인 사주에 새로 더해지는 ${y}년 한정 기운`
      ],todos:[
        `${tg==='정관'||tg==='편관'?'책임·공식 자리·승진 보고를 적극 수락':tg==='편재'?'활동·새 거래·외부 영업·이동을 한 발 더':tg==='식신'||tg==='상관'?'창작·표현·콘텐츠로 본인의 결을 발신':tg==='정인'||tg==='편인'?'학습·자격·시험·문서 처리를 이 해에 배치':tg==='정재'?'정리·점검·꾸준한 자산 관리에 시간 투자':'본인의 강점 한 가지를 한 줄로 정리해 발신'}`,
@@ -5473,9 +5473,9 @@ const PAID_META={
     desc:'본인과 상대(배우자·연인)의 사주를 나란히 비교해 결혼·연애·동업·가족 결을 풀어드립니다.<br>두 사주의 8글자가 만나는 16개 자리를 모두 들여다봅니다.',
     features:[
       '· 종합 궁합 점수 + 등급 (천생연분~노력형)',
-      '· 4축 세부 점수 (오행 상생·십신·일지 합충·오행 균형)',
-      '· 일지(배우자궁) 작용 12가지 케이스 풀이',
-      '· 일간 천간합/충 + 4기둥 16칸 교차 작용',
+      '· 4가지 영역 점수 (본질·서로를 보는 결·자리 작용·기운 균형)',
+      '· 배우자 자리 작용 12가지 케이스 풀이',
+      '· 본인 글자끼리 끌어당김/부딪힘 + 8글자 16자리 교차 작용',
       '· 두 사람의 일주 비교 + 십신 관계',
       '· 연애·데이트 결 / 결혼 생활 결',
       '· 동업·동거 결 / 가족·자녀 결',
@@ -5742,7 +5742,7 @@ function renderGunghapTeaser(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
   const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
   const grade=dailyGrade(result.score);
-  const lead=`본인 일주 <b>${STEMKO[saju1.dp.stem]}${BRCHKO[saju1.dp.branch]}</b>과 상대 일주 <b>${STEMKO[saju2.dp.stem]}${BRCHKO[saju2.dp.branch]}</b>이 만나는 결입니다. 오행 관계는 <b>${result.ohRelType}</b>, 일지(배우자궁) 작용은 <b>${result.brLabel||'중립'}</b>이에요. ${result.score>=75?'두 분 결이 자연스럽게 맞물리는 인연이에요.':result.score>=60?'서로 다른 결이지만 노력으로 잘 가꿔갈 수 있는 인연이에요.':'서로 의식적으로 결을 맞춰가야 하는 인연이에요.'}`;
+  const lead=`본인 두 글자 <b>${STEMKO[saju1.dp.stem]}${BRCHKO[saju1.dp.branch]}</b>과 상대 두 글자 <b>${STEMKO[saju2.dp.stem]}${BRCHKO[saju2.dp.branch]}</b>이 만나는 결이에요. 본질 어울림은 <b>${result.ohRelType}</b>, 배우자 자리 작용은 <b>${result.brLabel||'중립'}</b>이에요. ${result.score>=75?'두 분 결이 자연스럽게 맞물리는 인연이에요.':result.score>=60?'서로 다른 결이지만 노력으로 잘 가꿔갈 수 있는 인연이에요.':'서로 의식적으로 결을 맞춰가야 하는 인연이에요.'}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">두 분 궁합 살짝 보기</span></div>
     <div class="teaser-score-row">
@@ -5754,7 +5754,7 @@ function renderGunghapTeaser(saju1, gnExtra){
     </div>
     <div class="teaser-headline">💑 「${stemNick(saju1.dp.stem)||STEMKO[saju1.dp.stem]}」 × 「${stemNick(saju2.dp.stem)||STEMKO[saju2.dp.stem]}」 인연</div>
     <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['📊 4축 세부 점수 (오행·십신·일지·균형)','💬 12케이스 일지 작용 + 천간합/충','💕 연애·데이트 결 / 💍 결혼 생활 결','🤝 동업·동거 결 / 👨‍👩‍👧 가족·자녀 결'])}
+    ${_teaserBlurArea(['📊 4가지 세부 점수 (본질·서로 보는 결·자리 작용·기운 균형)','💬 12케이스 자리 작용 + 끌어당김/부딪힘','💕 연애·데이트 결 / 💍 결혼 생활 결','🤝 동업·동거 결 / 👨‍👩‍👧 가족·자녀 결'])}
     ${_teaserCta('gunghap')}
   </div>`;
 }
@@ -9101,20 +9101,20 @@ function renderGunghapResult(saju1,saju2,result){
       <div class="score-ring ${ringCls}"><div class="score-num ${numCls}">${sc}</div><div class="score-grade">/ 100</div></div>
       <div style="font-size:.95rem;font-weight:700;color:${result.gradeColor}">${result.grade}</div>
     </div>
-    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">두 분의 사주팔자를 4가지 기준(오행·십신·일지 관계·오행 균형)으로 비교한 종합 점수예요. 100점에 가까울수록 서로 자연스럽게 잘 맞는 결이에요.</p>
+    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">두 분의 사주를 4가지 기준(타고난 본질·서로를 보는 결·자리 작용·기운 균형)으로 비교한 종합 점수예요. 100점에 가까울수록 서로 자연스럽게 잘 맞는 결이에요.</p>
     <div class="compat-grid" style="margin-top:10px">
-      <div class="compat-cell"><div class="compat-cell-label">오행 관계</div><div class="compat-cell-val" style="font-size:.78rem">${result.ohRelType}</div></div>
-      <div class="compat-cell"><div class="compat-cell-label">일지 관계</div><div class="compat-cell-val" style="font-size:.78rem">${result.brLabel||'중립'}</div></div>
-      <div class="compat-cell"><div class="compat-cell-label">오행 균형</div><div class="compat-cell-val" style="font-size:.78rem">${result.balScore>=80?'좋음':result.balScore>=65?'보통':'부족'}</div></div>
+      <div class="compat-cell"><div class="compat-cell-label">본질 어울림</div><div class="compat-cell-val" style="font-size:.78rem">${result.ohRelType}</div></div>
+      <div class="compat-cell"><div class="compat-cell-label">자리 작용</div><div class="compat-cell-val" style="font-size:.78rem">${result.brLabel||'중립'}</div></div>
+      <div class="compat-cell"><div class="compat-cell-label">기운 균형</div><div class="compat-cell-val" style="font-size:.78rem">${result.balScore>=80?'좋음':result.balScore>=65?'보통':'부족'}</div></div>
     </div>`;
   h+=paidWrapBody('GUNGHAP','💑','궁합 분석 결과',summaryBody);
 
   // ── ② 세부 점수 카드
   let detailBody=`<p style="margin-bottom:12px">종합 점수가 어떻게 나왔는지 4가지 영역별로 풀어봤어요.</p><div class="bars">`;
-  [{label:'오행 상생·상극',score:result.ohScore,desc:'두 분의 일간 오행이 서로 도와주는 결인지'},
-   {label:'십신 관계',score:result.tgScore,desc:'서로에게 어떤 역할로 보이는지 (배우자·동료·스승 등)'},
-   {label:'일지 합·충',score:result.brScore,desc:'배우자 자리(일지)가 어떤 작용을 만드는지'},
-   {label:'오행 균형',score:result.balScore,desc:'두 분 오행을 합쳤을 때 균형이 잡히는지'}].forEach(cat=>{
+  [{label:'본질 어울림',score:result.ohScore,desc:'두 분의 타고난 본질이 서로 도와주는 결인지'},
+   {label:'서로를 보는 결',score:result.tgScore,desc:'서로에게 어떤 사람으로 보이는지 (설레는·믿음직한·존중하는 등)'},
+   {label:'배우자 자리 작용',score:result.brScore,desc:'두 분의 배우자 자리가 어떻게 만나는지 (끌어당김·부딪힘 등)'},
+   {label:'기운 균형',score:result.balScore,desc:'두 분 기운을 합쳤을 때 균형이 잡히는지'}].forEach(cat=>{
     const color=cat.score>=80?'var(--wood)':cat.score>=65?'var(--earth)':'var(--fire)';
     detailBody+=`<div class="bar-row">
       <div class="bar-name" style="font-size:.72rem;width:90px;color:var(--sub)">${cat.label}</div>
