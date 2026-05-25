@@ -10197,11 +10197,14 @@ function renderNamePaid(saju, nmExtra){
   let suri=null;
   if(hasHan){
     const sS=strokes.surname, sG1=strokes.given1, sG2=strokes.given2||0;
-    const wonGyeok = sG1 + (sG2||0);
+    // 정통 81수리 4격 — 외자(이름 1글자)는 가상수 1 보정, 두 자(이름 2글자)는 정통 정의
+    const isOneJa = !sG2;
+    const wonGyeok = isOneJa ? (sG1 + 1) : (sG1 + sG2);
     const hyeongGyeok = sS + sG1;
-    const iGyeok = sG2 ? (sS + sG2) : (sS + 1);
-    const jeongGyeok = sS + sG1 + (sG2||0);
+    const iGyeok = isOneJa ? (sS + 1) : (sS + sG2);
+    const jeongGyeok = isOneJa ? (sS + sG1) : (sS + sG1 + sG2);
     suri={
+      isOneJa,
       won:{stroke:wonGyeok, ...suri81Reading(wonGyeok), oh:suriOhaeng(wonGyeok)},
       hyeong:{stroke:hyeongGyeok, ...suri81Reading(hyeongGyeok), oh:suriOhaeng(hyeongGyeok)},
       i:{stroke:iGyeok, ...suri81Reading(iGyeok), oh:suriOhaeng(iGyeok)},
@@ -10210,6 +10213,7 @@ function renderNamePaid(saju, nmExtra){
     const goods=[suri.won,suri.hyeong,suri.i,suri.jeong].filter(g=>g.good).length;
     nameScore+=(goods-2)*6;
     if(suri.jeong.good)nameScore+=4;
+    if(goods===4)nameScore+=3; // 4격 모두 길수 보너스 — 작명학 최고 등급
     [suri.won,suri.hyeong,suri.i,suri.jeong].forEach(g=>{if(g.oh===ys.main)nameScore+=2;});
   }
   nameScore=Math.max(35,Math.min(98,nameScore));
@@ -10425,17 +10429,37 @@ function renderNamePaid(saju, nmExtra){
     const givenChars=Array.from(r.name);
     let bestCombo=null;
     if(surnameStroke>0){
-      // 가능한 한자 조합 중 정격(전체 합)이 길수인 것 우선
+      // 가능한 한자 조합에서 4격(원·형·이·정) 모두 길수 우선 → 부분 길수 → 정격만 → 첫 후보
       const c1Opts=getHanCandidates(givenChars[0]||'');
       const c2Opts=givenChars[1]?getHanCandidates(givenChars[1]):[{han:'',stroke:0,meaning:''}];
+      const evaluateCombo=(c1,c2)=>{
+        const sG1=c1.stroke||0, sG2=c2.stroke||0;
+        const isOneJa=!sG2;
+        const won = isOneJa ? (sG1+1) : (sG1+sG2);
+        const hyeong = surnameStroke + sG1;
+        const i = isOneJa ? (surnameStroke+1) : (surnameStroke+sG2);
+        const jeong = isOneJa ? (surnameStroke+sG1) : (surnameStroke+sG1+sG2);
+        let goodCnt=0;
+        if(SURI_81_GOOD.has(won))goodCnt++;
+        if(SURI_81_GOOD.has(hyeong))goodCnt++;
+        if(SURI_81_GOOD.has(i))goodCnt++;
+        if(SURI_81_GOOD.has(jeong))goodCnt++;
+        return {c1,c2,total:surnameStroke+sG1+sG2,goodCnt,jeongGood:SURI_81_GOOD.has(jeong)};
+      };
+      let best4=null, best3=null, best2=null, bestJ=null, bestFallback=null;
       for(const c1 of c1Opts){
         for(const c2 of c2Opts){
-          const total=surnameStroke+(c1.stroke||0)+(c2.stroke||0);
-          if(SURI_81_GOOD.has(total)){bestCombo={c1,c2,total};break;}
+          const ev=evaluateCombo(c1,c2);
+          if(!bestFallback)bestFallback=ev;
+          if(ev.goodCnt===4&&!best4){best4=ev;break;}
+          if(ev.goodCnt===3&&!best3)best3=ev;
+          if(ev.goodCnt===2&&ev.jeongGood&&!best2)best2=ev;
+          if(ev.jeongGood&&!bestJ)bestJ=ev;
         }
-        if(bestCombo)break;
+        if(best4)break;
       }
-      if(!bestCombo&&c1Opts.length)bestCombo={c1:c1Opts[0], c2:c2Opts[0]||{han:'',stroke:0,meaning:''}, total:surnameStroke+(c1Opts[0].stroke||0)+((c2Opts[0]&&c2Opts[0].stroke)||0)};
+      const picked=best4||best3||best2||bestJ||bestFallback;
+      if(picked)bestCombo={c1:picked.c1,c2:picked.c2,total:picked.total,goodCnt:picked.goodCnt};
     }else{
       const c1Opts=getHanCandidates(givenChars[0]||'');
       const c2Opts=givenChars[1]?getHanCandidates(givenChars[1]):[{han:'',stroke:0,meaning:''}];
@@ -10446,7 +10470,9 @@ function renderNamePaid(saju, nmExtra){
     if(surnameHan)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${surnameHan}</b>(${surname.charAt(0)}, ${surnameStroke}획) — ${HAN_MEANING[surnameHan]||'성씨'}</div>`);
     if(bestCombo&&bestCombo.c1.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c1.han}</b>(${givenChars[0]}, ${bestCombo.c1.stroke}획) — ${bestCombo.c1.meaning||'-'}</div>`);
     if(bestCombo&&bestCombo.c2&&bestCombo.c2.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c2.han}</b>(${givenChars[1]}, ${bestCombo.c2.stroke}획) — ${bestCombo.c2.meaning||'-'}</div>`);
-    const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${SURI_81_GOOD.has(bestCombo.total)?'<b style="color:var(--wood)">(81수리 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>'}</div>`:'';
+    const goodCnt=bestCombo&&bestCombo.goodCnt;
+    const goodBadge=goodCnt===4?'<b style="color:var(--wood)">(4격 모두 길수 ★)</b>':goodCnt===3?'<b style="color:var(--wood)">(4격 중 3개 길수 ✓)</b>':goodCnt===2?'<small style="color:var(--earth)">(4격 중 2개 길수)</small>':goodCnt===1?'<small style="color:var(--earth)">(4격 중 1개 길수)</small>':SURI_81_GOOD.has(bestCombo&&bestCombo.total)?'<b style="color:var(--wood)">(정격 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>';
+    const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${goodBadge}</div>`:'';
     recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:1px solid rgba(212,175,55,.2)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <span style="font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
