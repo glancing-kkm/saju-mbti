@@ -843,6 +843,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
 .a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .a4-footer{text-align:left;font-size:9px;color:#999;margin-top:4px;border-top:1px dashed #c8a888;padding-top:4px}
+/* 신년 A4 — 12개월 막대그래프 */
+.a4-mo-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;align-items:end;padding:4px 2px;background:#fdf5e0;border-radius:5px;min-height:64px}
+.a4-mo{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;position:relative}
+.a4-mo-bar{width:14px;border-radius:2px 2px 0 0;transition:height .2s}
+.a4-mo-lab{font-size:9px;color:#1a1c1d;font-weight:600}
+.a4-mo.dec{background:rgba(212,168,73,.18);border-radius:4px;padding:1px}
+.a4-mo.dec::after{content:'⭐';position:absolute;top:-8px;font-size:9px}
+.a4-mo.lk .a4-mo-lab{color:#6cbf7e;font-weight:800}
+.a4-mo.tg .a4-mo-lab{color:#e57462;font-weight:800}
 
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(216,196,168,.06));border:1px solid rgba(212,175,55,.32);border-radius:14px;position:relative;overflow:hidden}
@@ -4698,6 +4707,45 @@ function renderNewyearFortune(saju,y){
   closeBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(total)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','한 해를 살아가는 결 + 고전',closeBody);
 
+  // 신년 A4 요약본 데이터 저장 + 카드
+  try{
+    if(_meta&&_meta.sy){
+      const _gN=_meta.gender||'male';
+      const _dqN=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gN);
+      const _curAgeN=y-_meta.sy;
+      let _curDN=_dqN.daeuns[0];
+      for(let i=0;i<_dqN.daeuns.length;i++){
+        if(_curAgeN>=_dqN.daeuns[i].age && (i===_dqN.daeuns.length-1||_curAgeN<_dqN.daeuns[i+1].age)){_curDN=_dqN.daeuns[i];break;}
+      }
+      const _stageN=_curAgeN-_curDN.age;
+      const _stageWordN=_stageN<=2?'초입':_stageN<=5?'중반':_stageN<=8?'후반':'끝자락';
+      const _zodN=getZodiac12(_meta.sm,_meta.sd);
+      _newyearSummaryData={saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod:_zodN,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage:_stageWordN,curDaeun:_curDN,dm,gender:_gN,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd,sh:_meta.hour||12,smin:_meta.min||0};
+      h+=`<div class="nb-card summary-card">
+        <div class="nb-cat">🎯 SUMMARY</div>
+        <div class="nb-title">📅 ${y}년 신년 운세 요약본 다운로드</div>
+        <div class="nb-body">
+          <div class="summary-intro">
+            <p>${y}년 한 해의 흐름을 <b>A4 한 장</b>에 정리한 요약본입니다.</p>
+            <ul>
+              <li>📊 본인 사주 4기둥 + ${y}년 총점</li>
+              <li>🗓 본인 10년 흐름 안에서 본 ${y}년 — 대운 단계</li>
+              <li>✦ 별자리 + 사주 동·서양 이중 해석</li>
+              <li>📅 12개월 막대그래프 + 길월·주의월·결정적 시기</li>
+              <li>📈 분야별 평균 (재물·연애·직업·건강)</li>
+              <li>${ZODIAC_EMOJI[yearZodiac]} 띠 작용 + 활성화 신살</li>
+            </ul>
+            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
+          </div>
+          <div class="summary-actions">
+            <button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">📷 이미지(PNG)</button>
+            <button class="summary-btn ny-summary-btn secondary" onclick="downloadNewyearSummary('pdf')">📄 PDF 다운로드</button>
+          </div>
+        </div>
+      </div>`;
+    }
+  }catch(e){}
+
   // 채팅 (3회)
   h+=renderChatSection('newyear');
 
@@ -6947,6 +6995,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 // ══════════════════════════════════════════════
 // 사주 데이터를 임시로 보관해 두는 변수 — 버튼 클릭 시 A4 생성에 사용
 let _lifeSummaryData=null;
+let _newyearSummaryData=null;
 
 // 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
 function getRelLifeMessage(places,type){
@@ -7653,6 +7702,136 @@ async function downloadLifeSummary(fmt){
       const pdfH=pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
       pdf.save(`인생총운_요약_${date}.pdf`);
+    }
+  }catch(e){
+    console.error(e);
+    alert('요약본 생성에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+  }finally{
+    document.body.removeChild(offscreen);
+    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
+  }
+}
+
+// 신년운세 A4 빌더
+function buildNewyearSummaryA4Html(){
+  if(!_newyearSummaryData)return '';
+  const d=_newyearSummaryData;
+  const {saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage,curDaeun,dm,gender,sm,sd,sh,smin,sy}=d;
+  const date=new Date().toISOString().slice(0,10);
+  const monthLab=arr=>arr.map(m=>`${m}월`).join(', ');
+  // 12개월 막대그래프 (압축)
+  const monthBars=monthsArr.map(o=>{
+    const g=dailyGrade(o.sc.total);
+    const isLucky=lucky.includes(o.mm);
+    const isTough=tough.includes(o.mm);
+    const isDec=decisive===o.mm;
+    return `<div class="a4-mo${isDec?' dec':''}${isLucky?' lk':''}${isTough?' tg':''}" title="${o.mm}월 ${o.sc.total}점">
+      <div class="a4-mo-bar" style="height:${Math.max(8,Math.round(o.sc.total*0.55))}px;background:${g.color}"></div>
+      <div class="a4-mo-lab">${o.mm}</div>
+    </div>`;
+  }).join('');
+  // 대운 한 줄
+  const curDStartY=sy+curDaeun.age;
+  const daeunLine=`${curDaeun.age}세부터 시작한 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(saju.dp.stem,curDaeun.stem))}</em>의 결, ${y}년은 이 10년의 <b>${daeunStage}</b> 단계`;
+  // 별자리
+  const zodLine=zod?`${zod.emoji} <b>${zod.ko}</b>(${zod.el} 원소) — ${zod.body}`:'';
+  // 띠 작용
+  const tCol=(zodiacRel.kind==='합'||zodiacRel.kind==='반합'||zodiacRel.kind==='반합약')?'#6cbf7e':(zodiacRel.kind==='충'||zodiacRel.kind==='원진'||zodiacRel.kind==='형')?'#e57462':'#d4a849';
+  const tLab={'합':'자석처럼 끌어당김','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'본인 본명년','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[zodiacRel.kind]||'평이';
+  // 신살 부스트
+  const matchedSins=[...new Set(activeYearSins.map(s=>s.n.split(' ')[0]))].slice(0,4);
+
+  let h=`<div class="a4-page">
+    <div class="a4-header">
+      <div class="a4-title">📅 ${y}년 신년 운세 요약본</div>
+      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · ${y}년 ${ypStemKo}${ypBrKo}(<em>${plainTG(tg)}</em>의 결) · 총점 <b style="color:${grade.color}">${total}점 (${grade.lab})</b></div>
+    </div>
+    <div class="a4-body">
+      <div class="a4-col-left">
+
+        <div class="a4-section">
+          <div class="a4-h">📊 본인 사주 4기둥</div>
+          ${buildA4Pillars(saju,gender)}
+          <div class="a4-oh-legend" style="margin-top:4px">본인 자리는 <b>일주</b>. ${y}년 들어오는 글자(${ypStemKo}${ypBrKo})와 이 자리가 어떻게 만나는지가 한 해 흐름을 결정.</div>
+        </div>
+
+        <div class="a4-section">
+          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 ${y}년</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
+        </div>
+
+        ${zod?`<div class="a4-section">
+          <div class="a4-h">✦ 별자리 + 사주 — 동·서양 이중 해석</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine+'. '+getZodiacSajuFusion(zod,SOH[saju.dp.stem],dm.n.split('(')[0]))}</div>
+        </div>`:''}
+
+      </div>
+      <div class="a4-col-right">
+        <div class="a4-section">
+          <div class="a4-h">📅 12개월 흐름</div>
+          <div class="a4-mo-grid">${monthBars}</div>
+          <div class="a4-oh-legend" style="margin-top:6px">🍀 길월 <b>${monthLab(lucky)}</b> · ⚠️ 주의월 <b>${monthLab(tough)}</b> · ⭐ 결정적 <b>${decisive}월</b></div>
+        </div>
+
+        <div class="a4-section">
+          <div class="a4-h">📈 ${y}년 분야별 평균</div>
+          <div class="a4-rel">
+            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
+              <div>💰 재물 <b>${wealthYr}점</b></div>
+              <div>💕 연애 <b>${loveYr}점</b></div>
+            </div>
+            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
+              <div>🏛 직업 <b>${careerYr}점</b></div>
+              <div>🌿 건강 <b>${healthYr}점</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="a4-section">
+          <div class="a4-h">${ZODIAC_EMOJI[yearZodiac]} 띠 작용 + ⚡ 활성화 신살</div>
+          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 띠 <b>'+ZODIAC_KO[myZodiac]+'띠</b> × '+y+'년 띠 <b>'+ZODIAC_KO[yearZodiac]+'띠</b> — <b style="color:'+tCol+'">'+tLab+'</b>의 결')}</div>
+          ${matchedSins.length?'<div class="a4-rel-item" style="margin-top:5px;font-size:.78rem">'+preventOrphan('🔆 '+y+'년 활성화 신살 — '+matchedSins.join('·')+' (본인 사주가 이 신살을 가지고 있다면 한 단계 더 강해져요)')+'</div>':''}
+        </div>
+      </div>
+    </div>
+    <div class="a4-footer">${date} · saju-mbti.pages.dev · ${y}년 한 해, 사주는 외부 기운의 안내일 뿐 결정하는 건 본인의 결</div>
+  </div>`;
+  return preventOrphan(h);
+}
+
+async function downloadNewyearSummary(fmt){
+  if(!_newyearSummaryData){alert('신년 요약 데이터를 찾을 수 없어요.');return;}
+  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
+  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
+  const btns=document.querySelectorAll('.ny-summary-btn');
+  btns.forEach(b=>{b.disabled=true;});
+  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
+  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
+  const offscreen=document.createElement('div');
+  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
+  offscreen.innerHTML=buildNewyearSummaryA4Html();
+  document.body.appendChild(offscreen);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const a4=offscreen.querySelector('.a4-page');
+    const fit=await autoFitA4(a4);
+    const captureTarget=fit?fit.wrap:a4;
+    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
+    const date=new Date().toISOString().slice(0,10);
+    const y=_newyearSummaryData.y;
+    if(fmt==='png'){
+      const link=document.createElement('a');
+      link.download=`신년운세_${y}_요약_${date}.png`;
+      link.href=canvas.toDataURL('image/png');
+      link.click();
+    }else{
+      const imgData=canvas.toDataURL('image/png');
+      const{jsPDF}=window.jspdf;
+      const pdf=new jsPDF('landscape','mm','a4');
+      const pdfW=pdf.internal.pageSize.getWidth();
+      const pdfH=pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
+      pdf.save(`신년운세_${y}_요약_${date}.pdf`);
     }
   }catch(e){
     console.error(e);
