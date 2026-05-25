@@ -12171,6 +12171,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   try{h+=renderGunghapZodiacDaeunCard(saju1,saju2);}catch(e){}
   // 두 사람 신살·공망 교차 — 사주 깊이 통찰
   try{h+=renderGunghapSinsalGongmangCard(saju1,saju2,gen1,gen2);}catch(e){}
+  // 두 사람 결혼·재물·건강 시기 일치도
+  try{h+=renderGunghapTimelineMatchCard(saju1,saju2,gen1,gen2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
   // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
@@ -12233,6 +12235,75 @@ const _ZODIAC_ELEM_PAIR={
 function getZodiacPairKey(e1,e2){
   const arr=[e1,e2].sort();
   return arr[0]+'-'+arr[1];
+}
+
+// 두 사람 결혼·재물·건강 시기 일치도 카드
+function renderGunghapTimelineMatchCard(saju1, saju2, gen1, gen2){
+  if(!_meta||!_meta.sy||!_meta.gnExtra)return '';
+  const ge=_meta.gnExtra;
+  let sy2=ge.gy, sm2=ge.gm, sd2=ge.gd;
+  if(ge.cal==='lunar'){try{const s=l2s(ge.gy,ge.gm,ge.gd,!!ge.leap);sy2=s.y;sm2=s.m;sd2=s.d;}catch(e){}}
+  const dq1=calcDaeun(saju1,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,gen1);
+  const dq2=calcDaeun(saju2,sy2,sm2,sd2,ge.gh||12,ge.gmin||0,gen2);
+  const curY=new Date().getFullYear();
+  // 각자의 향후 20년 결혼·재물·건강 적기 식별
+  function getTimelineKeys(saju,dq,gender,birthY){
+    const dStem=saju.dp.stem;
+    const myBr=saju.dp.branch;
+    const isMale=gender==='male';
+    return dq.daeuns.filter(du=>(birthY+du.age+9)>=curY).slice(0,3).map(du=>{
+      const tg=tenGod(dStem,du.stem);
+      const btg=tenGod(dStem,BR_MAIN_STEM[du.branch]);
+      const brR=brRel(myBr,du.branch);
+      const tags=[];
+      const marriageTGs=isMale?['정재','편재']:['정관','편관'];
+      if(marriageTGs.includes(tg)||marriageTGs.includes(btg))tags.push('marriage');
+      if(['정재','편재'].includes(tg)||['정재','편재'].includes(btg))tags.push('wealth');
+      if(brR.kind==='합'||brR.kind==='반합')tags.push('match');
+      if(brR.kind==='충')tags.push('change');
+      return {age:du.age,endAge:du.age+9,year:birthY+du.age,endYear:birthY+du.age+9,du,tags};
+    });
+  }
+  const tl1=getTimelineKeys(saju1,dq1,gen1,_meta.sy);
+  const tl2=getTimelineKeys(saju2,dq2,gen2,sy2);
+  // 두 사람 결혼 적기 겹치는 시기 식별
+  const marriagePeriods1=tl1.filter(t=>t.tags.includes('marriage')||t.tags.includes('match'));
+  const marriagePeriods2=tl2.filter(t=>t.tags.includes('marriage')||t.tags.includes('match'));
+  const overlapYears=[];
+  marriagePeriods1.forEach(p1=>{
+    marriagePeriods2.forEach(p2=>{
+      const start=Math.max(p1.year,p2.year);
+      const end=Math.min(p1.endYear,p2.endYear);
+      if(start<=end&&start>=curY-5){
+        overlapYears.push({start,end});
+      }
+    });
+  });
+  let body=`<p><span class="body-q">두 분의 결혼·큰 결정 시기는 언제 가장 잘 맞을까요?</span><br>각자의 향후 대운(10년 흐름)을 비교해 결혼·큰 결정의 결이 함께 들어오는 시기를 정리했어요. 결혼·이주·창업 같은 큰 결정을 두 분 모두 결이 좋은 시기에 배치하면 결실이 가장 큽니다.</p>`;
+  // 본인 결혼기
+  body+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">`;
+  body+=`<div style="padding:11px 12px;background:rgba(229,116,162,.06);border-radius:8px;border-left:3px solid #e574a2">
+    <div style="font-weight:700;color:#e574a2;font-size:.85rem;margin-bottom:5px">💕 본인 결혼·만남 적기</div>
+    ${marriagePeriods1.length?marriagePeriods1.map(p=>`<div style="font-size:.78rem;line-height:1.75">· ${p.age}~${p.endAge}세 (${p.year}~${p.endYear}) <span style="color:var(--sub)">${STEMKO[p.du.stem]}${BRCHKO[p.du.branch]}</span></div>`).join(''):'<div style="font-size:.78rem;color:var(--sub)">향후 30년 내 두드러진 결혼기 없음 — 평소 일상 톤이 결정적</div>'}
+  </div>`;
+  body+=`<div style="padding:11px 12px;background:rgba(229,116,162,.06);border-radius:8px;border-left:3px solid #e574a2">
+    <div style="font-weight:700;color:#e574a2;font-size:.85rem;margin-bottom:5px">💕 상대 결혼·만남 적기</div>
+    ${marriagePeriods2.length?marriagePeriods2.map(p=>`<div style="font-size:.78rem;line-height:1.75">· ${p.age}~${p.endAge}세 (${p.year}~${p.endYear}) <span style="color:var(--sub)">${STEMKO[p.du.stem]}${BRCHKO[p.du.branch]}</span></div>`).join(''):'<div style="font-size:.78rem;color:var(--sub)">향후 30년 내 두드러진 결혼기 없음 — 평소 일상 톤이 결정적</div>'}
+  </div>`;
+  body+=`</div>`;
+  // 겹치는 시기
+  if(overlapYears.length>0){
+    body+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:3px solid #6cbf7e;font-size:.82rem"><b>🎯 두 분 결혼·큰 결정 시기가 겹치는 시기</b><br>${overlapYears.map(o=>`<b>${o.start}~${o.end}년</b>`).join(' · ')}에 두 분 모두 결혼·만남·큰 결정의 결이 함께 들어옵니다. 이 시기에 결혼·약혼·동거·이주 같은 큰 결정을 배치하면 결이 가장 잘 맞습니다.</p>`;
+  }else{
+    body+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849;font-size:.82rem"><b>📌 결혼 시기가 정확히 겹치는 해는 없어요</b><br>각자의 결혼 적기가 다르지만, 사주는 「가능성」이지 「필연」이 아니에요. 두 분이 의식적으로 결을 맞춰가시면 어느 시기에도 좋은 결정을 만들 수 있습니다.</p>`;
+  }
+  // 큰 변동기 경고
+  const changes1=tl1.filter(t=>t.tags.includes('change'));
+  const changes2=tl2.filter(t=>t.tags.includes('change'));
+  if(changes1.length||changes2.length){
+    body+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid #e57462;font-size:.82rem"><b>⚠️ 큰 변동기 (정면 부딪힘) — 큰 결정 한 박자 살피세요</b><br>${changes1.length?`본인 <b>${changes1.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''}${changes1.length&&changes2.length?' · ':''}${changes2.length?`상대 <b>${changes2.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''} — 이 시기엔 결혼·이주·창업 같은 큰 결정보다 관계 정리·재정립의 자연 흐름을 받아들이는 자세가 결을 지킵니다.</p>`;
+  }
+  return paidWrapBody('TIMELINE_MATCH','📅','두 분 결혼·큰 결정 시기 일치도',body);
 }
 
 // 두 사람 신살·공망 교차 카드
