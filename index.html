@@ -4311,7 +4311,7 @@ function renderNewyearFortune(saju,y){
     </div>
     <div class="daily-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab}</div>
     <div class="daily-headline">${TG_EMOJI[tg]||'🌟'} ${tg} 기운의 한 해</div>
-    <div class="daily-pillar">세운 <em>${STEMS[ypStem]}${BRCH[ypBranch]}(${ypStemKo}${ypBrKo})</em> · 본인 <span class="term">일간</span> <em>${myStemKo}</em>(${dm.n.split('(')[0]}) 기준 <em>${tg}</em>${rel.kind!=='평'?` · 일지 <b style="color:${(rel.kind==='합'||rel.kind==='반합'||rel.kind==='반합약'||rel.kind==='동')?'#6cbf7e':(rel.kind==='파'||rel.kind==='해'||rel.kind==='자형')?'#d4a849':'#e57462'}">${({합:'육합',반합:'반합',반합약:'약반합',동:'비화',충:'충',원진:'원진살',형:'형살',자형:'자형',파:'파',해:'해'})[rel.kind]||rel.kind}</b>`:''}</div>
+    <div class="daily-pillar">올해 들어오는 두 글자 <em>${STEMS[ypStem]}${BRCH[ypBranch]}(${ypStemKo}${ypBrKo})</em> · 본인(${dm.n.split('(')[0]}) 기준으로 <em>${plainTG(tg)}</em>의 결${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${(rel.kind==='합'||rel.kind==='반합'||rel.kind==='반합약'||rel.kind==='동')?'#6cbf7e':(rel.kind==='파'||rel.kind==='해'||rel.kind==='자형')?'#d4a849':'#e57462'}">${({합:'자석처럼 끌어당김',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
     <div style="margin-top:14px">${yearKeywords.map(k=>`<span style="display:inline-block;padding:3px 12px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.74rem;font-weight:700;margin:2px">${k}</span>`).join('')}</div>
   </div>
 
@@ -4360,7 +4360,7 @@ function renderNewyearFortune(saju,y){
        `길월(${monthLab(lucky)}월)에 굵직한 결정 배치 — 결혼·이직·창업·계약·이사`,
        `결정적 시기 <b>${decisive}월</b>에 한 해 가장 큰 결정 한 가지를 반드시 내리기`
      ],avoids:[
-       rel.kind==='충'?'<b>일지 충</b> — 큰 결정·이동·결혼·계약은 길월로 미루기':tg==='겁재'?'<b>경쟁심이 강해지는 달</b> — 동업 자금·충동 지출·도박성 투자':tg==='편관'?'<b>도전·압박이 들어오는 달</b> — 무리한 도전·정면 돌파·시비':'무리한 확장보다 평소 리듬 유지',
+       rel.kind==='충'?'<b>정면 부딪힘이 들어오는 해</b> — 큰 결정·이동·결혼·계약은 길월로 미루기':tg==='겁재'?'<b>경쟁심이 강해지는 해</b> — 동업 자금·충동 지출·도박성 투자':tg==='편관'?'<b>도전·압박이 들어오는 해</b> — 무리한 도전·정면 돌파·시비':'무리한 확장보다 평소 리듬 유지',
        `주의월 ${monthLab(tough)}월에는 큰 결정 미루고 정리·내실·휴식`,
        `본인 약한 오행 ${OHNAME[weak]} 영역(${['간·시력','심혈관','소화·면역','폐·호흡','신장·생식기'][weak]}) 건강 무리`
      ]});
@@ -4409,7 +4409,7 @@ function renderNewyearFortune(saju,y){
     {good:`${monthLab(lucky)}의 재물 활동에 결이 좋아요. 본인 사주의 약한 오행 ${OHNAME[weak]} 영역과 연결된 거래에 더 큰 결실.`,
      warn:`${monthLab(tough)}에는 가계부·카드 사용·동업 자금을 한 번 더 점검하세요.`});
   h+=fieldBody('💕','연애·결혼운',loveYr,loveBody,
-    {good:`${rel.kind==='합'?'세운과 본인 일지에 합이 들어 결혼·약혼·재회 결정에 결이 좋은 해':'고백·소개팅·진전 대화는 길월에 배치하면 효과적'}.`,
+    {good:`${rel.kind==='합'?'올해 자리와 본인 자리가 자석처럼 끌어당기는 결이라, 결혼·약혼·재회 결정에 흐름이 좋은 해':'고백·소개팅·진전 대화는 길월에 배치하면 효과적'}.`,
      warn:`${rel.kind==='충'?'일지 충이 들어 관계 변동·정리의 자연 흐름이 있어요.':'관계에서 본인 톤만 고집하지 말고 한 박자 부드럽게.'}`});
   h+=fieldBody('🏛️','직업·사업운',careerYr,careerBody,
     {good:`이직·창업·승진 결정은 길월(${monthLab(lucky)}) 또는 결정적 시기(${decisive}월)에 배치하면 결이 가장 잘 맞습니다.`,
