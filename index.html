@@ -7459,6 +7459,62 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('GAEWOON','✨','평생 개운법 — 색·방향·음식·물건·습관',gwBody);
   }catch(e){}
 
+  // 향후 10년 연도별 핵심 운세 — 매년 한 줄 풀이
+  try{
+    const _dStem=saju.dp.stem;
+    const _myBr=saju.dp.branch;
+    const _curY=new Date().getFullYear();
+    const _yearRows=[];
+    for(let yy=_curY;yy<_curY+10;yy++){
+      const yp=yearPillar(yy,6,1,12,0);
+      const tg=tenGod(_dStem,yp.stem);
+      const btg=tenGod(_dStem,BR_MAIN_STEM[yp.branch]);
+      const brR=brRel(_myBr,yp.branch);
+      const ohS=SOH[yp.stem];
+      const ohB=BOH[yp.branch];
+      // 한 줄 키워드
+      const _tgKeyword={
+        '정관':'책임·승진','편관':'도전·압박','정재':'안정·저축','편재':'활동·사업',
+        '식신':'표현·풍요','상관':'창의·발신','정인':'학습·자격','편인':'전문·연구',
+        '비견':'독립·동료','겁재':'경쟁·충동'
+      };
+      const _brKeyword={'합':'사람·만남','반합':'동맹·협력','반합약':'잔잔한 협력','동':'본인 색 강화','충':'변동·이동','원진':'미세 거슬림','형':'시비·다툼','자형':'내면 갈등','파':'마무리 어긋남','해':'은근 방해','평':'평이'}[brR.kind]||'평이';
+      // 종합 점수 (간단 계산)
+      let score=60;
+      if(ohS===ys.main||ohB===ys.main)score+=15;
+      if(['정관','정재','정인','식신'].includes(tg))score+=8;
+      if(['정관','정재','정인','식신'].includes(btg))score+=5;
+      if(['편관','겁재'].includes(tg))score-=8;
+      if(brR.kind==='합'||brR.kind==='반합')score+=8;
+      if(brR.kind==='충'||brR.kind==='형'||brR.kind==='원진')score-=8;
+      if(ohS===(ys.main+2)%5)score-=8;
+      score=Math.max(35,Math.min(95,score));
+      const grade=score>=80?{lab:'대길',color:'#6cbf7e',bg:'rgba(108,191,126,.1)'}:score>=68?{lab:'길',color:'#a8c878',bg:'rgba(168,200,120,.1)'}:score>=55?{lab:'평',color:'#d4a849',bg:'rgba(212,168,73,.08)'}:{lab:'주의',color:'#e57462',bg:'rgba(229,116,98,.06)'};
+      _yearRows.push({yy,age:yy-_meta.sy+1,stem:yp.stem,branch:yp.branch,tg,btg,brR,score,grade,tgKeyword:_tgKeyword[tg]||tg,brKeyword:_brKeyword});
+    }
+    let yrBody=`<p><span class="body-q">앞으로 10년, 매년 어떤 결이 들어올까요?</span><br>본인 사주 + 향후 10년 세운(매년 외부 기운)을 종합해 매년 핵심 색채와 점수를 한눈에 정리했어요. 큰 결정을 어느 해에 배치할지 미리 보세요.</p>`;
+    yrBody+=`<div style="display:flex;flex-direction:column;gap:7px;margin-top:14px">`;
+    _yearRows.forEach((r,i)=>{
+      const isCur=i===0;
+      yrBody+=`<div style="padding:9px 12px;background:${r.grade.bg};border-radius:8px;border-left:4px solid ${r.grade.color};display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-weight:800;color:var(--accent);font-size:.85rem;min-width:65px">${r.yy}년${isCur?' ★':''}</div>
+          <div style="font-size:.74rem;color:var(--sub)">${r.age}세 · ${STEMKO[r.stem]}${BRCHKO[r.branch]}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;flex-wrap:wrap">
+          <span style="padding:2px 8px;border-radius:10px;background:rgba(212,175,73,.12);color:#8b6f47;font-weight:700">${r.tgKeyword}</span>
+          ${r.brR.kind!=='평'?`<span style="padding:2px 8px;border-radius:10px;background:rgba(108,140,200,.1);color:#4a6699;font-weight:700">${r.brKeyword}</span>`:''}
+          <span style="padding:2px 9px;border-radius:11px;background:${r.grade.color};color:#1a1c1d;font-weight:700;font-size:.72rem">${r.score}점 · ${r.grade.lab}</span>
+        </div>
+      </div>`;
+    });
+    yrBody+=`</div>`;
+    const _bestY=_yearRows.reduce((a,b)=>b.score>a.score?b:a);
+    const _worstY=_yearRows.reduce((a,b)=>b.score<a.score?b:a);
+    yrBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>10년 안에 가장 빛나는 해: ${_bestY.yy}년 (${_bestY.score}점)</b> · 결혼·창업·이주·계약 같은 큰 결정을 이 해에 배치하면 결실이 가장 큽니다.<br><b>가장 한 박자 살피는 해: ${_worstY.yy}년 (${_worstY.score}점)</b> · 정리·내실·점검에 무게를 두시고 큰 변동은 다른 해로 미루세요.</p>`;
+    h+=paidWrapBody('YEAR10','📅','향후 10년 연도별 핵심 운세',yrBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
