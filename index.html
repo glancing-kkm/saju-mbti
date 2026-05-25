@@ -6827,7 +6827,31 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ④ 공망(비어있는 자리) — 별자리가 없어도 사람마다 다르게 나오는 차별화 지점
   const gmList=emptyBranches(saju.dp.stem,saju.dp.branch);
   sinBody+=getGongmangReading(saju,gmList);
+  // 현재 대운·세운에 활성화되는 신살 + 개인화 부스트
+  try{
+    const _curY=new Date().getFullYear();
+    const _curYp=yearPillar(_curY,6,1,12,0);
+    const _activeNow=sins.filter(s=>s.b===_curYp.branch);
+    if(_activeNow.length>0){
+      sinBody+=`<p style="margin-top:14px"><span class="body-q">${_curY}년 현재, 본인의 별자리 중 어떤 것이 강해질까요?</span><br>본인 사주의 신살 중, 올해(${_curY}년) 세운 지지(${BRCHKO[_curYp.branch]})와 만나며 한 해 동안 강하게 활성화되는 별자리는 아래와 같아요.</p>`;
+      sinBody+=getPersonalizedSinsalInsight(sins,_activeNow,`${_curY}년`);
+    }
+  }catch(e){}
   h+=paidWrapBody('SINSAL','⚡','별자리·비어있는 자리 종합 분석',sinBody);
+
+  // 서양 12궁 + 사주 일간 — 동·서양 이중 해석 (인생 차원)
+  try{
+    if(_meta&&_meta.sm&&_meta.sd){
+      const _zod=getZodiac12(_meta.sm,_meta.sd);
+      const _sajuMainOh=SOH[saju.dp.stem];
+      const _dmName=dm.n.split('(')[0];
+      let starBody=`<div class="lead-card">본인 별자리는 <b>${_zod.emoji} ${_zod.ko}</b>(${_zod.el} 원소)예요. ${_zod.body}.</div>`;
+      starBody+=`<p><span class="body-q">동·서양 두 체계로 본 본인 인생은?</span><br>사주는 동양의 명리학, 별자리는 서양의 점성학이에요. 같은 본인이라는 한 사람을 다른 각도에서 보는 두 결입니다. 사주에선 본인을 <em>${STEMKO[saju.dp.stem]}(${OHNAME[_sajuMainOh]} 일간)</em>으로, 별자리에선 <em>${_zod.ko}(${_zod.el} 원소)</em>로 가리켜요.</p>`;
+      starBody+=`<p>${getZodiacSajuFusion(_zod,_sajuMainOh,_dmName)}</p>`;
+      starBody+=`<p><span class="body-q">인생 관점에서 두 결을 어떻게 활용할까요?</span><br>본인의 ${_zod.trait} 성품(별자리)과 사주의 ${OHNAME[_sajuMainOh]} 강점이 함께 본인 인생을 만들어가요. 사주는 「언제 무엇이 들어오는가」(시간의 결)를, 별자리는 「본인이 어떤 성품인가」(본질의 결)를 가리키니, 두 결을 서로 보완해서 보세요.</p>`;
+      h+=paidWrapBody('STAR12','✦',`별자리 + 사주 — 동·서양 이중 해석`,starBody);
+    }
+  }catch(e){}
 
   // ═════════════════════════════════════
   // 대운 시기별 (시각화 + 상세)
@@ -10508,9 +10532,70 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   h+=renderGunghapMarriageCard(saju1, saju2, result);
   h+=renderGunghapPartnerCard(saju1, saju2, result);
   h+=renderGunghapFamilyCard(saju1, saju2, result);
+  // 두 사람 별자리 4원소 궁합 + 대운 단계 비교 (동·서양 통합 차별화)
+  try{h+=renderGunghapZodiacDaeunCard(saju1,saju2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
   return h;
+}
+
+// 별자리 4원소 궁합 매트릭스
+const _ZODIAC_ELEM_PAIR={
+  '불-불':{score:90,t:'같은 결의 만남',body:'두 사람 모두 불 원소 — 열정과 추진력이 같은 결이라 빠르게 가까워지고 함께 큰 일을 벌이기 좋아요. 다만 같은 약점(즉흥·충돌)도 같이 가지니, 한 명은 한 박자 늦추는 자리를 의식적으로 맡으세요.'},
+  '흙-흙':{score:88,t:'안정과 풍요의 결',body:'두 사람 모두 흙 원소 — 안정·꾸준함의 결이 같아서 일상 리듬이 자연스럽게 맞고 신뢰가 빠르게 쌓여요. 자극이 부족해질 수 있으니 가끔은 의식적으로 새 자극을 함께 들이세요.'},
+  '공기-공기':{score:88,t:'대화와 호기심의 결',body:'두 사람 모두 공기 원소 — 대화·호기심·재치의 결이 같아서 함께 있으면 지루할 새가 없어요. 깊이 있는 정착 결정을 한 사람이 의식적으로 짚어주는 자리가 필요해요.'},
+  '물-물':{score:88,t:'감성과 직관의 결',body:'두 사람 모두 물 원소 — 감성·직관·공감의 결이 같아서 말 없이도 통하는 결이에요. 다만 함께 감정의 깊이로 빠질 수 있으니 외부 자극·활동을 의식적으로 들이세요.'},
+  '불-공기':{score:85,t:'서로 살리는 결',body:'불(열정)과 공기(호기심)는 서로를 살리는 결이에요. 공기가 불을 키우고 불이 공기에 방향을 주는 자리 — 같이 큰 그림을 그리고 추진하기 좋은 결이에요.'},
+  '흙-물':{score:85,t:'서로 살리는 결',body:'흙(안정)과 물(감성)은 서로를 살리는 결이에요. 흙이 물에 자리를 주고 물이 흙을 부드럽게 적시는 자리 — 가정·일상의 결이 가장 잘 맞는 조합이에요.'},
+  '불-물':{score:60,t:'서로 다른 결',body:'불(열정)과 물(감성)은 서로 다른 결이라 처음엔 끌리지만 일상에서 부딪힘이 잦을 수 있어요. 「상대가 나와 다른 사람」이라는 인정과 서로의 영역을 존중하는 거리감이 결을 살려요.'},
+  '불-흙':{score:65,t:'보완의 결',body:'불(열정)과 흙(안정)은 결의 속도가 달라요. 불은 빠르게 가고 싶고 흙은 천천히 다지고 싶어해요. 서로의 속도를 인정하면 큰 그림(불)과 디테일(흙) 두 결이 모두 살아납니다.'},
+  '공기-물':{score:65,t:'보완의 결',body:'공기(이성)와 물(감성)은 결정 방식이 달라요. 공기는 논리로, 물은 감정으로 판단해요. 서로의 결을 인정하면 두 결정 방식의 강점이 모두 살아납니다.'},
+  '공기-흙':{score:70,t:'보완의 결',body:'공기(소통)와 흙(안정)은 가치 우선순위가 달라요. 공기는 자극을 원하고 흙은 안정을 원해요. 일상에 작은 변화와 큰 안정을 함께 두면 결이 살아납니다.'}
+};
+function getZodiacPairKey(e1,e2){
+  const arr=[e1,e2].sort();
+  return arr[0]+'-'+arr[1];
+}
+
+function renderGunghapZodiacDaeunCard(saju1, saju2){
+  if(!_meta||!_meta.sy||!_meta.gnExtra)return '';
+  const ge=_meta.gnExtra;
+  let sy2=ge.gy, sm2=ge.gm, sd2=ge.gd;
+  if(ge.cal==='lunar'){try{const s=l2s(ge.gy,ge.gm,ge.gd,!!ge.leap);sy2=s.y;sm2=s.m;sd2=s.d;}catch(e){}}
+  const gh=ge.gh||12, gmin=ge.gmin||0;
+
+  // 별자리 4원소 궁합
+  const z1=getZodiac12(_meta.sm,_meta.sd);
+  const z2=getZodiac12(sm2,sd2);
+  const pairKey=getZodiacPairKey(z1.el,z2.el);
+  const pair=_ZODIAC_ELEM_PAIR[pairKey]||{score:75,t:'평이한 결',body:'두 사람 별자리 원소가 평이한 결로 만나요.'};
+  let body=`<div class="lead-card"><b>${z1.emoji} ${z1.ko}(${z1.el}) × ${z2.emoji} ${z2.ko}(${z2.el}) — ${pair.t}</b><br><span style="font-size:.82rem;color:var(--sub)">별자리 4원소 궁합 ${pair.score}점</span></div>`;
+  body+=`<p><span class="body-q">두 사람 별자리는 어떻게 만날까요?</span><br>본인은 ${z1.ko}(${z1.el} 원소), 상대는 ${z2.ko}(${z2.el} 원소)예요. ${pair.body}</p>`;
+
+  // 두 사람 대운 단계 비교
+  try{
+    const dq1=calcDaeun(saju1,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_meta.gender||'male');
+    const dq2=calcDaeun(saju2,sy2,sm2,sd2,gh,gmin,ge.gender||'female');
+    const curY=new Date().getFullYear();
+    const age1=curY-_meta.sy, age2=curY-sy2;
+    let cd1=dq1.daeuns[0], cd2=dq2.daeuns[0];
+    for(let i=0;i<dq1.daeuns.length;i++){if(age1>=dq1.daeuns[i].age&&(i===dq1.daeuns.length-1||age1<dq1.daeuns[i+1].age)){cd1=dq1.daeuns[i];break;}}
+    for(let i=0;i<dq2.daeuns.length;i++){if(age2>=dq2.daeuns[i].age&&(i===dq2.daeuns.length-1||age2<dq2.daeuns[i+1].age)){cd2=dq2.daeuns[i];break;}}
+    const tg1=plainTG(tenGod(saju1.dp.stem,cd1.stem));
+    const tg2=plainTG(tenGod(saju2.dp.stem,cd2.stem));
+    const sameStage=cd1.stem===cd2.stem&&cd1.branch===cd2.branch;
+    const sameTG=tg1===tg2;
+    const stage1=age1-cd1.age, stage2=age2-cd2.age;
+    const sw=v=>v<=2?'초입(자리잡는 시기)':v<=5?'중반(가장 진하게 펼쳐지는 시기)':v<=8?'후반(정리 시기)':'끝자락(곧 새 결 진입)';
+    body+=`<p style="margin-top:14px"><span class="body-q">두 사람 인생 챕터는 어디 있을까요?</span><br>· <b>본인</b>: ${cd1.age}세부터 시작한 <em>${STEMKO[cd1.stem]}${BRCHKO[cd1.branch]}</em> 10년 흐름 — ${sw(stage1)} · <b>${tg1}</b>의 결<br>· <b>상대</b>: ${cd2.age}세부터 시작한 <em>${STEMKO[cd2.stem]}${BRCHKO[cd2.branch]}</em> 10년 흐름 — ${sw(stage2)} · <b>${tg2}</b>의 결</p>`;
+    if(sameTG){
+      body+=`<p>두 분 모두 <b>${tg1}</b>의 결을 살고 있어요. 같은 인생 색깔을 함께 살아가는 시기라 큰 결정의 결이 잘 맞아요. 결혼·이주·창업 같은 큰 결정을 함께 추진하기 좋은 시기.</p>`;
+    }else{
+      body+=`<p>두 분의 인생 챕터 색깔이 달라요. 본인은 <b>${tg1}</b>의 결, 상대는 <b>${tg2}</b>의 결을 살고 있어요. 같은 결정도 두 분에게 다른 의미로 다가올 수 있으니, 큰 결정 전엔 「내 챕터에서 이게 어떤 의미인가」 + 「상대 챕터에서 이게 어떤 의미인가」 두 결을 함께 짚는 자세가 결을 살려요.</p>`;
+    }
+  }catch(e){}
+
+  return paidWrapBody('ZODIAC_DAEUN','✦','별자리 궁합 + 두 분 인생 챕터 비교',body);
 }
 
 function renderGunghapPaid(saju1, gnExtra){
