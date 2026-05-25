@@ -7356,6 +7356,109 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('STUDY_TIMELINE','📜','평생 학업·시험 타임라인 — 학습·자격·시험 시기',stlBody);
   }catch(e){}
 
+  // 평생 개운법 카드 — 용신 오행 기반 통합 액션 가이드
+  try{
+    const _yongOh=ys.main;
+    const _weakOh=oh.indexOf(Math.min(...oh));
+    const _strongOh=oh.indexOf(Math.max(...oh));
+    const _ohName=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
+    const _ohEmoji=['🌱','🔥','🪨','⚙️','💧'];
+    const _gaewoon={
+      0:{ // 목(나무)
+        color:'녹색·청록·청색·하늘색',
+        dir:'동쪽 · 동남쪽',
+        time:'새벽·이른 아침 (5~7시)',
+        season:'봄 (3~5월)',
+        food:'신맛 과일(귤·키위·매실) · 녹색 채소(시금치·브로콜리·상추) · 견과·콩류',
+        item:'식물·화분 · 나무 가구 · 책 · 천연 섬유',
+        sport:'산책 · 등산 · 식물 가꾸기 · 자전거',
+        interior:'동쪽 창가에 화분 · 녹색 인테리어 한 가지 추가 · 책장 정리',
+        habit:'매일 짧은 산책 + 새벽 햇볕 받기'
+      },
+      1:{ // 화(불)
+        color:'붉은색·주황·자주·핑크',
+        dir:'남쪽',
+        time:'정오 (11~13시)',
+        season:'여름 (6~8월)',
+        food:'쓴맛 야채(쑥갓·민들레·고들빼기) · 붉은 식재료(토마토·딸기·붉은 고기) · 커피',
+        item:'양초·조명 · 붉은색 소품 · 운동 기구',
+        sport:'요가 · 유산소 운동 · 표현 활동 · 노래·춤',
+        interior:'남쪽 거실에 따뜻한 조명 · 붉은 쿠션 · 양초 한 개',
+        habit:'매일 정오 10분 햇볕 + 한 번 크게 웃기'
+      },
+      2:{ // 토(흙)
+        color:'노란색·베이지·황토·갈색',
+        dir:'중앙 · 서남 · 동북',
+        time:'오후 (13~15시)',
+        season:'환절기 (3·6·9·12월)',
+        food:'단맛 뿌리채소(고구마·단호박·당근) · 곡류(현미·잡곡) · 꿀·대추',
+        item:'도자기 · 흙 화분 · 황색 소품 · 황금색 액세서리',
+        sport:'명상 · 정원 가꾸기 · 안정적인 걷기',
+        interior:'중앙 거실 정리·정돈 · 황색 카펫 또는 쿠션',
+        habit:'매일 같은 시간 식사 + 명상 5분'
+      },
+      3:{ // 금(금속)
+        color:'흰색·은색·회색·금색',
+        dir:'서쪽',
+        time:'저녁 (17~19시)',
+        season:'가을 (9~11월)',
+        food:'매운맛 향신료(생강·마늘·고추) · 흰 식재료(무·양파·배·흰살 생선) · 견과',
+        item:'금속 액세서리 · 시계 · 흰색 소품 · 정리 도구',
+        sport:'호흡 운동 · 필라테스 · 정리정돈',
+        interior:'서쪽 정리 · 흰색 가구 · 금속 액세서리 한 가지',
+        habit:'매일 저녁 10분 정리 + 깊은 호흡'
+      },
+      4:{ // 수(물)
+        color:'검정·남색·진청색·진회색',
+        dir:'북쪽',
+        time:'밤 (21~23시)',
+        season:'겨울 (12~2월)',
+        food:'짠맛(천일염·미역·다시마·간장) · 검은 식재료(검은콩·검은깨·미역) · 해조류',
+        item:'어항·물병 · 거울 · 진청색 소품',
+        sport:'수영 · 독서 · 야간 산책 · 명상',
+        interior:'북쪽에 거울·물 인테리어 · 검은색 또는 남색 소품',
+        habit:'매일 충분한 수분 + 밤 독서 30분'
+      }
+    };
+    const _yong=_gaewoon[_yongOh];
+    const _weak=_gaewoon[_weakOh];
+    let gwBody=`<div class="lead-card"><b>본인 사주를 도와주는 핵심 기운: ${_ohEmoji[_yongOh]} ${_ohName[_yongOh]}</b><br><span style="font-size:.82rem;color:var(--sub)">${_ohName[_yongOh]} 기운을 일상에 더하면 본인 결이 자연스럽게 살아납니다.</span></div>`;
+    gwBody+=`<p><span class="body-q">평생 운을 끌어올리는 8가지 일상 실천법</span><br>본인을 도와주는 <b>${_ohName[_yongOh]}</b> 기운에 해당하는 색·방향·음식·물건·습관을 일상에 한 가지씩 들이세요. 거창한 의식보다 매일 작은 실천이 평생 결을 만들어요.</p>`;
+    gwBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+        <div style="font-size:.74rem;color:var(--sub);font-weight:700">🎨 길색</div>
+        <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.color}</div>
+      </div>
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+        <div style="font-size:.74rem;color:var(--sub);font-weight:700">🧭 길방위</div>
+        <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.dir}</div>
+      </div>
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+        <div style="font-size:.74rem;color:var(--sub);font-weight:700">⏰ 길시간</div>
+        <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.time}</div>
+      </div>
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+        <div style="font-size:.74rem;color:var(--sub);font-weight:700">🍂 길계절</div>
+        <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.season}</div>
+      </div>
+    </div>`;
+    gwBody+=`<p style="margin-top:14px"><b>🍽 길음식</b><br><span style="font-size:.82rem;line-height:1.85">${_yong.food}</span></p>`;
+    gwBody+=`<p><b>🎁 길물건</b><br><span style="font-size:.82rem;line-height:1.85">${_yong.item}</span></p>`;
+    gwBody+=`<p><b>🏃 길운동</b><br><span style="font-size:.82rem;line-height:1.85">${_yong.sport}</span></p>`;
+    gwBody+=`<p><b>🏠 인테리어</b><br><span style="font-size:.82rem;line-height:1.85">${_yong.interior}</span></p>`;
+    gwBody+=`<p><b>📅 매일 습관 한 가지</b><br><span style="font-size:.82rem;line-height:1.85">${_yong.habit}</span></p>`;
+    // 약한 오행 보강
+    if(_weakOh!==_yongOh){
+      gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:3px solid #6c8cc8;font-size:.82rem"><b>💪 가장 부족한 ${_ohEmoji[_weakOh]} ${_ohName[_weakOh]} 기운 보강법</b><br>본인 사주에 가장 부족한 기운이라, 추가로 일상에 들이면 결이 더 단단해져요. <b>${_weak.color}</b> · <b>${_weak.food.split(' ')[0]}</b> · <b>${_weak.sport.split(' · ')[0]}</b>을 의식적으로 추가하세요.</p>`;
+    }
+    // 강한 오행 절제
+    if(_strongOh!==_yongOh&&oh[_strongOh]>=4){
+      gwBody+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid #e57462;font-size:.82rem"><b>⚖ 가장 강한 ${_ohEmoji[_strongOh]} ${_ohName[_strongOh]} 기운 절제법</b><br>본인 사주에 과한 기운이라, ${_ohName[_strongOh]}을 줄이는 색·음식은 평소보다 한 박자 줄이세요. 균형이 본인을 살립니다.</p>`;
+    }
+    gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>개운법의 핵심은 「작은 일상 실천」</b><br>거창한 부적·의식보다 매일 작은 색·음식·습관을 일상에 들이는 것이 평생 결을 만들어요. 위 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요.</p>`;
+    h+=paidWrapBody('GAEWOON','✨','평생 개운법 — 색·방향·음식·물건·습관',gwBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
