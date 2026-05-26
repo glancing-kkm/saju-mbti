@@ -3775,6 +3775,12 @@ function renderDaypickFortune(saju,y,m,d,extra){
     let dsBody=`<div class="lead-card">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. (${_dStartY}년 ~ ${_dEndY}년)<br><span style="font-size:.82rem;color:var(--sub)">이 날 ${y}.${m}.${d}의 결은 이 10년 챕터 안에서 펼쳐집니다.</span></div>`;
     dsBody+=`<p><span class="body-q">10년 챕터 안에서 이 날은 어떤 자리일까요?</span><br>같은 ${y}.${m}.${d}이라도 본인이 어떤 10년 흐름 안에 있느냐에 따라 그날의 의미가 달라져요. 10년 챕터의 결은 <b>${_dTG}</b>의 색깔이라, 이 챕터 안에서 이 날의 <b>${plainTG(stemTG)}</b> 기운은 ${_dTG===plainTG(stemTG)?'<b>큰 챕터의 결을 그대로 잇는</b> 결정적 하루':'<b>큰 챕터에 다른 색채를 더하는</b> 보완적 하루'}예요.</p>`;
     dsBody+=`<p>${_dTG===plainTG(stemTG)?'이 날의 결정은 본인 10년 큰 챕터의 방향을 한 번 더 굳히는 무게가 있어요. 의미 있는 결정 한 가지를 배치하면 결이 살아납니다.':'이 날 들어오는 결은 본인 10년 큰 챕터의 메인 색깔과는 다르니, 한 박자 멈춰 「이 결정이 내 큰 챕터에 어떻게 맞물리는가」를 한 번 더 생각해보세요.'}</p>`;
+    // 12운성 + 6친 한 줄 추가
+    try{
+      const _st=twelveStage(saju.dp.stem,saju.dp.branch);
+      const _stType=['장생','관대','임관','제왕'].includes(_st)?'활기':['목욕','쇠','병','사','묘'].includes(_st)?'갈무리':'잠재';
+      dsBody+=`<p style="margin-top:10px;padding:10px 12px;background:rgba(108,140,200,.05);border-radius:8px;border-left:3px solid #6c8cc8;font-size:.78rem">🌱 <b>본인 기운의 12단계</b> — <em>${_st}</em>(${_stType}형) 자리에 본인 결이 자리잡고 있어 평생 ${_stType==='활기'?'본인 색이 활발히 펼쳐지는':_stType==='갈무리'?'안으로 모으는':'새 결을 잉태하는'} 결로 작용해요.</p>`;
+    }catch(e){}
     h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 이 날',dsBody);
   }catch(e){}
 
@@ -4144,6 +4150,12 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
       const _nTG=plainTG(tenGod(saju.dp.stem,_endD.stem));
       dsBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 기간 중에 10년 흐름이 바뀝니다</b><br>${_nDStartY}년부터 <b>${STEMKO[_endD.stem]}${BRCHKO[_endD.branch]}</b> 10년 흐름으로 큰 챕터가 바뀝니다. 본인 기준 <b>${_nTG}</b>의 결로 인생 큰 챕터가 바뀌니, ${sy}년 안의 결정·정리는 이 변곡점 전에 마무리하는 게 결이 살아요.</p>`;
     }
+    // 12운성 한 줄
+    try{
+      const _st=twelveStage(saju.dp.stem,saju.dp.branch);
+      const _stType=['장생','관대','임관','제왕'].includes(_st)?'활기':['목욕','쇠','병','사','묘'].includes(_st)?'갈무리':'잠재';
+      dsBody+=`<p style="margin-top:10px;padding:10px 12px;background:rgba(108,140,200,.05);border-radius:8px;border-left:3px solid #6c8cc8;font-size:.78rem">🌱 <b>본인 기운의 12단계</b> — <em>${_st}</em>(${_stType}형) 자리. 이 ${totalMonths}개월 흐름은 평생 ${_stType} 단계 위에 펼쳐져요.</p>`;
+    }catch(e){}
     h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 이 기간',dsBody);
   }catch(e){}
 
@@ -4735,6 +4747,12 @@ function renderNewyearFortune(saju,y){
         dsBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 다음 10년 흐름이 곧 들어와요</b><br>${_nextD.age}세부터 <b>${STEMKO[_nextD.stem]}${BRCHKO[_nextD.branch]}</b> 10년 흐름이 시작됩니다. 본인 기준 <b>${_nTG}</b>의 결로 큰 챕터가 바뀌니, 지금 챕터의 결정·정리는 ${y}년 안에 마무리하는 게 결이 살아요.</p>`;
       }
     }
+    // 12운성 한 줄
+    try{
+      const _st=twelveStage(saju.dp.stem,saju.dp.branch);
+      const _stType=['장생','관대','임관','제왕'].includes(_st)?'활기':['목욕','쇠','병','사','묘'].includes(_st)?'갈무리':'잠재';
+      dsBody+=`<p style="margin-top:10px;padding:10px 12px;background:rgba(108,140,200,.05);border-radius:8px;border-left:3px solid #6c8cc8;font-size:.78rem">🌱 <b>본인 기운의 12단계</b> — <em>${_st}</em>(${_stType}형) 자리. ${y}년의 결은 이 평생 단계 위에서 펼쳐져요.</p>`;
+    }catch(e){}
     h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 '+y+'년',dsBody);
   }catch(e){}
 
@@ -7318,6 +7336,39 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=`<p><span class="body-q">${_userStage==='school'?'학교 성적·명문고 진학':_userStage==='youth'?'대학 진학·전공·자격 시험':_userStage==='young'||_userStage==='prime'?'자격증·학위·전문성':_userStage==='mid'?'후학 양성·자기 분야 정리':'평생 학습·취미 학문'}이 가장 잘 풀리는 시기는? — ${_userStageLabel} 기준</span><br>본인 사주에 <em>${OHNAME[resourceOh]}</em> 기운(받아들이는 학습 자리)이 새로 들어오는 10년 흐름·연 흐름이 결정적이에요.</p>`;
   stBody+=`<p>이 시기에 ${_userStage==='school'?'학교에서 두각을 나타내고 명문고 진학의 기틀이 잡혀요.':_userStage==='youth'?'대학·국가고시·자격 시험에 결실이 따라옵니다.':'큰 시험·논문·저술을 완성하면 결실이 자연스럽게 따라와요.'}</p>`;
   stBody+=`<p>반대로 <em>${OHNAME[outputOh]}</em> 기운(풀어내는 표현 자리)이 강한 시기는 발표·창작에서 빛나지만 정통 학문 시험에서는 산만해지기 쉬워요. 그 시기엔 의식적인 집중 시간을 따로 만들어 두시면 좋아요.</p>`;
+  // 격국 + 신살 기반 추천 학과·자격증 추가
+  try{
+    const _gkS=getGyeokguk(saju);
+    const _hasMC=sins.some(s=>s.n.startsWith('문창'));
+    const _hasHG=sins.some(s=>s.n.startsWith('화개'));
+    const _recByGk={
+      '식신':'예술·교육·요식·간호·복지',
+      '상관':'언론·미디어·강의·법학·기획',
+      '편재':'경영·무역·금융·IT·세무',
+      '정재':'회계·경영·은행·공무원·세무',
+      '편관':'법학·군사·경찰·의학·체육',
+      '정관':'법학·행정·정치·경영·교육',
+      '편인':'의학·한의학·역학·연구·예술',
+      '정인':'교육·문학·철학·역사·심리',
+      '비견':'법학·공학·경영·전문직',
+      '겁재':'체육·의학·예술·창업'
+    };
+    const _certByGk={
+      '식신':'사회복지사·요리사·교사·간호사',
+      '상관':'변호사·법무사·작가·아나운서',
+      '편재':'공인중개사·세무사·CFA·MBA',
+      '정재':'공인회계사·세무사·재무설계사·은행원',
+      '편관':'변호사·검사·군 간부·의사·경찰',
+      '정관':'행정고시·5급 공무원·법관·외무고시',
+      '편인':'의사·한의사·박사·연구원',
+      '정인':'교수·교사·작가·심리상담사',
+      '비견':'전문직 자격(변호사·회계사 등)',
+      '겁재':'전문 자격(의료·예술·창업 자격)'
+    };
+    const _rec=_recByGk[_gkS.tg]||'본인 흥미 기반 다양한 분야';
+    const _cert=_certByGk[_gkS.tg]||'본인 관심 자격';
+    stBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 결':''}</p>`;
+  }catch(e){}
   h+=paidWrapBody('STUDY','📚','학업·시험운',stBody);
 
   // 평생 학업·시험 타임라인 — 대운별 학습·자격·시험 시기
@@ -7624,6 +7675,26 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _balanceTip=_myPower<_outPower?'강화':'약화';
     sjBody+=`<p><span class="body-q">${_kind}이 좋아하는 대운/세운은?</span><br>${_kind==='신강'?'본인을 <b>덜어주는 식상·재성·관성</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 표현·돈·책임의 결이 들어와 본인의 강한 그릇을 풀어주는 시기입니다.':_kind==='신약'?'본인을 <b>받쳐주는 비겁·인성</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 동료의 도움·학습·문서·자격의 결이 들어와 본인의 약한 그릇을 채워주는 시기입니다.':'균형형은 어느 운이 들어와도 본인의 균형을 활용할 수 있어요. 다만 <b>약간 부족한 쪽</b>(현재 본인 '+_balanceTip+' 기운)이 들어오는 시기가 가장 매끄럽게 흐릅니다.'}</p>`;
     sjBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>${_kind}의 균형 가이드</b><br>${_kind==='신강'?'강함이 자산이지만 「내려놓기·기다림·협력」을 의식적으로 들이면 그릇이 한 단계 더 깊어져요. 본인 색이 강한 만큼 가까운 사람의 의견을 한 번 더 듣고 결정하는 습관이 결정적입니다.':_kind==='신약'?'약함이 깊이가 되는 자산이에요. 「본인이 약하다」가 아니라 「깊이 모으는 결」로 받아들이세요. 큰 도약보다 차근차근 쌓아가는 결이 평생 본인을 살려줍니다.':'균형이 가장 큰 강점이에요. 한쪽으로 치우치지 않는 결이라 어떤 환경에도 적응할 수 있어요. 다만 「본인이 누구인지」를 의식적으로 정하고 가는 자세가 평생 결을 만들어줍니다.'}</p>`;
+    // 강약 + 격국 결합 — 정밀 매칭 추가
+    try{
+      const _gk2=getGyeokguk(saju);
+      const _gkTg=_gk2.tg;
+      let _detail='';
+      if(_kind==='신강'){
+        if(['편관','정관'].includes(_gkTg))_detail='신강 + 관성격 — <b>큰 조직 리더·임원·고위 공직</b>이 가장 맞아요. 강한 그릇으로 큰 책임을 감당하는 그릇.';
+        else if(['편재','정재'].includes(_gkTg))_detail='신강 + 재성격 — <b>대형 사업·투자·자산 운용</b>이 가장 맞아요. 큰 흐름의 돈을 다루는 그릇.';
+        else if(['식신','상관'].includes(_gkTg))_detail='신강 + 식상격 — <b>창업·1인 콘텐츠·강의·예술</b>이 가장 맞아요. 본인 표현이 곧 자산이 되는 그릇.';
+        else _detail='신강 + 비겁/인성격 — <b>본인 사업·전문직·자영업</b>이 가장 맞아요. 남 밑이 아닌 본인 이름으로 일할 때 결실 최대.';
+      }else if(_kind==='신약'){
+        if(['편관','정관'].includes(_gkTg))_detail='신약 + 관성격 — <b>안정적 조직·중견기업 관리직·공무원</b>이 맞아요. 책임감은 있지만 조직 안에서 안정적으로.';
+        else if(['편재','정재'].includes(_gkTg))_detail='신약 + 재성격 — <b>전문직·자격증 기반 일</b>이 맞아요. 큰 흐름보다 본인 이름값으로 돈이 따라오는 결.';
+        else if(['식신','상관'].includes(_gkTg))_detail='신약 + 식상격 — <b>교육·돌봄·연구·문화</b>가 맞아요. 표현을 안정적인 환경에서 풀어내는 결.';
+        else _detail='신약 + 비겁/인성격 — <b>학습·교육·연구·종교</b>가 맞아요. 받아들이고 정리하는 결로 깊이 있는 성과.';
+      }else{
+        _detail='중화 — 어떤 직업이든 균형 있게 잘 맞아요. 「현재 시기에 어떤 결이 들어오는가」를 보고 유연하게 선택하시면 됩니다.';
+      }
+      sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 격국 정밀 매칭</b><br>${_detail}</p>`;
+    }catch(e){}
     h+=paidWrapBody('SINGANG','⚖','신강/신약 — 본인 사주의 그릇 크기',sjBody);
   }catch(e){}
 
@@ -7675,6 +7746,46 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     plBody+=`</div>`;
     plBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>4기둥이 알려주는 것</b><br>본인 사주는 한 가지 색이 아니라 4가지 영역의 결이 합쳐진 그림이에요. 어린 시절(년주)·청년기(월주)·중년(일주)·말년(시주)이 각각 다른 결로 펼쳐지니, 지금 인생 단계에서 본인이 어느 자리의 색채를 가장 자주 쓰는지 보세요.</p>`;
     h+=paidWrapBody('PILLAR4','🏛','4기둥 자리별 인생 영역 — 조상·부모·본인·자녀',plBody);
+  }catch(e){}
+
+  // 12지지 자리별 의미 카드 — 본인 사주 4지지 풀이
+  try{
+    const _BR_MEANING={
+      0:{ko:'자',animal:'🐭쥐',body:'겨울의 절정·물의 정점. 지혜·통찰·임기응변·기지가 빛나는 결.'},
+      1:{ko:'축',animal:'🐮소',body:'겨울 끝·흙으로 봄을 준비. 인내·꾸준함·근면·신중함의 결.'},
+      2:{ko:'인',animal:'🐯호랑이',body:'봄의 시작·나무의 기운. 추진력·리더십·도전·새 시작의 결.'},
+      3:{ko:'묘',animal:'🐰토끼',body:'봄의 중심·유연한 나무. 섬세·예술·미적 감각·온화함의 결.'},
+      4:{ko:'진',animal:'🐲용',body:'봄 끝·흙으로 여름 준비. 큰 그릇·변화·도약·신비로움의 결.'},
+      5:{ko:'사',animal:'🐍뱀',body:'여름 시작·작은 불. 통찰·깊이·집요함·전문성의 결.'},
+      6:{ko:'오',animal:'🐴말',body:'여름 중심·큰 불의 정점. 열정·표현·자유·외향·인기의 결.'},
+      7:{ko:'미',animal:'🐑양',body:'여름 끝·흙으로 가을 준비. 부드러움·돌봄·헌신·예술의 결.'},
+      8:{ko:'신',animal:'🐵원숭이',body:'가을 시작·결단의 금속. 기지·재치·사회성·다재다능의 결.'},
+      9:{ko:'유',animal:'🐔닭',body:'가을 중심·정제된 금속. 완벽주의·정교함·미적 감각·자존심의 결.'},
+      10:{ko:'술',animal:'🐶개',body:'가을 끝·흙으로 겨울 준비. 충성·정직·책임감·우직함의 결.'},
+      11:{ko:'해',animal:'🐷돼지',body:'겨울 시작·큰 물. 포용·관대·낙천·풍요·복덕의 결.'}
+    };
+    const _myBrs=[
+      {label:'년지(年支)·조상·초년',sub:'1~20세',b:saju.yp.branch},
+      {label:'월지(月支)·부모·청년',sub:'20~40세 · 격국 결정',b:saju.mp.branch},
+      {label:'일지(日支)·본인·배우자',sub:'40~60세 · 배우자궁',b:saju.dp.branch},
+      saju.hp?{label:'시지(時支)·자녀·말년',sub:'60세 이후',b:saju.hp.branch}:null
+    ].filter(Boolean);
+    let brBody=`<p><span class="body-q">본인 사주의 12지지 글자는 어떤 의미일까요?</span><br>본인 사주 아래쪽 4글자(지지)는 12동물·12계절·12오행의 의미를 가져요. 어느 자리에 어떤 글자가 자리잡았느냐로 그 영역(조상·청년·본인·자녀)의 성품이 결정됩니다.</p>`;
+    brBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    _myBrs.forEach(p=>{
+      const m=_BR_MEANING[p.b];
+      if(!m)return;
+      brBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:4px solid var(--accent)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.86rem">${p.label} · ${m.animal}<b style="margin-left:5px;color:var(--text)">${m.ko}</b></div>
+          <div style="font-size:.72rem;color:var(--sub)">${p.sub}</div>
+        </div>
+        <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${m.body}</div>
+      </div>`;
+    });
+    brBody+=`</div>`;
+    brBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 본인 사주에 자리잡은 4지지 동물들이 본인 인생의 4가지 영역에 각자 다른 성품을 새겨놓아요. 본인이 의식적으로 어느 자리의 결을 가장 자주 쓰는지 살펴보세요.</p>`;
+    h+=paidWrapBody('BRANCH12','🐭','12지지 — 4기둥 자리의 동물·계절 의미',brBody);
   }catch(e){}
 
   // 격국 종합 깊이 카드 — 격국별 인생·결혼·과제·강점 종합
@@ -12549,6 +12660,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   try{h+=renderGunghapTimelineMatchCard(saju1,saju2,gen1,gen2);}catch(e){}
   // 두 사람 결혼 후 일상·재물·자녀·노후 깊이
   try{h+=renderGunghapMarriedLifeCard(saju1,saju2,gen1,gen2);}catch(e){}
+  // 두 사람 12운성·격국 유형 비교
+  try{h+=renderGunghapStageGyeokgukCard(saju1,saju2,gen1,gen2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
   // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
@@ -12611,6 +12724,35 @@ const _ZODIAC_ELEM_PAIR={
 function getZodiacPairKey(e1,e2){
   const arr=[e1,e2].sort();
   return arr[0]+'-'+arr[1];
+}
+
+// 두 사람 12운성·격국 비교 카드
+function renderGunghapStageGyeokgukCard(saju1, saju2, gen1, gen2){
+  const st1=twelveStage(saju1.dp.stem,saju1.dp.branch);
+  const st2=twelveStage(saju2.dp.stem,saju2.dp.branch);
+  const gk1=getGyeokguk(saju1);
+  const gk2=getGyeokguk(saju2);
+  const _stType=s=>['장생','관대','임관','제왕'].includes(s)?'활기':['목욕','쇠','병','사','묘'].includes(s)?'갈무리':'잠재';
+  const t1=_stType(st1), t2=_stType(st2);
+  const stMatch=t1===t2?'두 분이 같은 단계 — 인생 리듬이 자연스럽게 일치':'두 분의 단계가 달라 — 한쪽이 활발할 때 다른 한쪽은 정리·잠재 단계라 서로 보완하는 결';
+  const gkMatch=gk1.tg===gk2.tg?'같은 격국 — 닮은꼴 인생 색채로 가치관·라이프스타일이 잘 맞음':'다른 격국 — 서로 다른 강점을 가진 보완형. 한쪽의 강점이 다른 쪽의 약점을 채워줌';
+  let body=`<p><span class="body-q">두 분의 인생 단계와 사주 유형은 어떻게 만날까요?</span><br>두 분 각자의 12운성(평생 기운 단계)과 격국(사주 유형)을 비교해, 인생 리듬과 가치관 일치도를 풀이했어요.</p>`;
+  body+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+    <div style="padding:11px 12px;background:rgba(108,140,200,.06);border-radius:8px;border-left:3px solid #6c8cc8">
+      <div style="font-size:.74rem;color:var(--sub);font-weight:700">본인</div>
+      <div style="font-size:.85rem;font-weight:700;margin-top:4px">${st1} (${t1}형)</div>
+      <div style="font-size:.78rem;color:var(--sub);margin-top:3px">${gk1.name} · ${gk1.nick||''}</div>
+    </div>
+    <div style="padding:11px 12px;background:rgba(229,116,162,.06);border-radius:8px;border-left:3px solid #e574a2">
+      <div style="font-size:.74rem;color:var(--sub);font-weight:700">상대</div>
+      <div style="font-size:.85rem;font-weight:700;margin-top:4px">${st2} (${t2}형)</div>
+      <div style="font-size:.78rem;color:var(--sub);margin-top:3px">${gk2.name} · ${gk2.nick||''}</div>
+    </div>
+  </div>`;
+  body+=`<p style="margin-top:14px"><b>🌱 인생 리듬 (12운성)</b><br><span style="font-size:.82rem;line-height:1.85">${stMatch}.</span></p>`;
+  body+=`<p><b>📜 사주 유형 (격국)</b><br><span style="font-size:.82rem;line-height:1.85">${gkMatch}.</span></p>`;
+  body+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 두 분의 인생 리듬과 가치관 색깔이 같은지 다른지를 보세요. 같으면 잘 통하지만 단조로울 수 있고, 다르면 서로 채워주지만 의식적인 이해가 필요해요.</p>`;
+  return paidWrapBody('STAGE_GK','🔀','두 분 인생 단계 + 사주 유형 비교',body);
 }
 
 // 두 사람 결혼 후 일상·재물·자녀·노후 깊이 카드
