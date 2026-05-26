@@ -7744,6 +7744,63 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('CHILD_NAME','👶','자녀 작명 도우미 — 본인 사주 기반 추천',chBody);
   }catch(e){}
 
+  // 인생 미션·과제 카드 — 격국·신살·강약 종합
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
+    const _gkM=getGyeokguk(saju);
+    const _ohSpan=Math.max(...oh)-Math.min(...oh);
+    const _missions=[];
+    // 격국 기반 미션
+    const _gkMission={
+      '비견':'본인 색이 강한 결이라, 「듣고 받아들이기」가 평생의 미션. 협력·동업·금전 거래에서 신중함을 기르세요.',
+      '겁재':'카리스마와 결단력이 강한 결이라, 「부드러움」을 의식적으로 들이는 게 미션. 깎고 다듬는 강함을 직업 성취로 풀어내세요.',
+      '식신':'표현·돌봄이 풍부한 결이라, 「본인 그릇 챙기기」가 미션. 베풀기만 하지 말고 본인의 깊이도 함께 가꿔주세요.',
+      '상관':'창의·표현이 강한 결이라, 「권위와의 마찰 다듬기」가 평생의 과제. 강의·미디어·예술로 표현을 풀어내면 큰 결실.',
+      '편재':'활동·재물의 결이라, 「분산과 절제」가 평생의 과제. 한 곳에 몰입하면 한순간에 잃을 수 있으니 분산을 의식하세요.',
+      '정재':'안정·성실의 결이라, 「가끔의 모험·도약」을 의식하는 게 미션. 너무 안정만 추구하면 기회를 놓칠 수 있어요.',
+      '편관':'추진·도전의 결이라, 「과로·갈등 다스리기」가 평생의 숙제. 측면 우회의 지혜를 익히세요.',
+      '정관':'책임·명예의 결이라, 「격식 속 부드러움」이 미션. 가까운 사람에게는 의식적으로 인간적인 면을 보이세요.',
+      '편인':'전문·연구의 결이라, 「고립감·우울감 다스리기」가 평생의 과제. 깊이 속에서도 외부와의 연결을 유지하세요.',
+      '정인':'학습·받아들이는 결이라, 「행동·실행 결단」이 미션. 받아들이기만 하지 말고 직접 행동으로 옮기는 결을 기르세요.'
+    };
+    _missions.push({emoji:'📜',label:`${_gkM.name} 평생 과제`,desc:_gkMission[_gkM.tg]||'본인 사주 유형의 강점을 살리고 약점을 의식적으로 다듬는 것이 평생 미션.'});
+    // 강약 기반
+    const _myPower=_sip.bigeop+1+_sip.insung;
+    const _outPower=_sip.siksang+_sip.jaesung+_sip.gwansung;
+    if(_myPower>_outPower+1){
+      _missions.push({emoji:'⚖',label:'신강의 균형 과제',desc:'기운이 두터운 결이라, 「내려놓기·기다림·협력」이 평생의 과제. 본인 색이 강한 만큼 가까운 사람의 의견을 한 번 더 듣는 자세가 결정적입니다.'});
+    }else if(_outPower>_myPower+1){
+      _missions.push({emoji:'⚖',label:'신약의 깊이 과제',desc:'기운이 한 박자 약한 결이라, 「본인 그릇 키우기」가 평생의 미션. 학습·자격·전문성으로 본인을 단단히 채우는 것이 평생 자산이 됩니다.'});
+    }
+    // 오행 균형
+    if(_ohSpan>=5){
+      const dom=oh.indexOf(Math.max(...oh));
+      const weak=oh.indexOf(Math.min(...oh));
+      _missions.push({emoji:'🌀',label:'오행 편중의 균형 과제',desc:`<b>${OHNAME[dom]}</b> 기운이 두텁고 <b>${OHNAME[weak]}</b> 기운이 부족해, 평생 「${OHNAME[weak]}」 영역(${['친환경·식음료·간담','에너지·심혈관','부동산·교육·소화','금융·기계·면역','유체·신장·생식'][weak]})을 의식적으로 채워야 결이 균형 잡힙니다.`});
+    }
+    // 신살 기반
+    let allSins=[];
+    try{allSins=findSinsal(saju);}catch(e){}
+    const sinNm=allSins.map(s=>s.n.split(' ')[0]);
+    if(sinNm.includes('양인살')||sinNm.includes('백호살'))_missions.push({emoji:'⚔',label:'결단의 결 다스리기',desc:'양인·백호의 강한 별자리가 있어 「충돌·사고·시비」가 평생 따라붙기 쉬워요. 공직·법조·의료·운동 같은 「깎고 다듬는」 직업으로 풀면 오히려 큰 성취.'});
+    if(sinNm.includes('도화살')||sinNm.includes('홍염살'))_missions.push({emoji:'💕',label:'매력의 결 다스리기',desc:'도화·홍염의 별자리가 있어 매력은 평생 자산이지만, 「진중한 관계」를 의식적으로 선택하는 자세가 평생의 과제예요.'});
+    if(sinNm.includes('역마살'))_missions.push({emoji:'🚚',label:'이동·변화의 결 활용',desc:'역마의 별자리가 있어 이동·변동이 평생 따라붙어요. 한 곳에 머무는 직업보다 외부·해외·이동이 잦은 직업이 결을 살립니다.'});
+    if(sinNm.includes('화개살'))_missions.push({emoji:'🎨',label:'깊이 천착의 결',desc:'화개의 별자리가 있어 한 분야 깊이 파는 결이 평생 자산. 종교·예술·연구·창작에 깊이 들어가시면 큰 결실.'});
+    if(sinNm.includes('천을귀인'))_missions.push({emoji:'🌟',label:'귀인 인덕 활용',desc:'평생 가장 강한 귀인 별자리. 어려울 때 주변에 도움을 청하는 자세가 결정적 — 도움받는 결을 「부담」이 아니라 「자산」으로 받아들이세요.'});
+    let mBody=`<p><span class="body-q">본인이 평생 의식적으로 다듬어야 할 결은?</span><br>본인 사주의 격국·강약·오행 균형·별자리를 종합해 평생의 미션과 과제를 정리했어요. 강점은 적극 활용하고, 미션은 의식적으로 다듬으시면 본인 사주의 결이 한 단계 더 깊어집니다.</p>`;
+    mBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    _missions.forEach(m=>{
+      mBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid var(--accent)">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem;margin-bottom:5px">${m.emoji} ${m.label}</div>
+        <div style="font-size:.81rem;line-height:1.85;color:var(--sub)">${m.desc}</div>
+      </div>`;
+    });
+    mBody+=`</div>`;
+    mBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>인생 미션의 의미</b><br>사주의 미션은 「약점」이 아니라 「평생 다듬어가는 자기 영역」이에요. 미션을 의식하고 사는 사람과 모르고 사는 사람은 인생 후반에 큰 차이가 납니다. 위 미션을 일상의 작은 선택 한 번에 적용하는 것부터 시작하세요.</p>`;
+    h+=paidWrapBody('MISSION','🎯','본인 사주의 평생 미션·과제 종합',mBody);
+  }catch(e){}
+
   // 사주 내부 합·충·형 종합 풀이
   try{
     const _allRels=findBranchRelations(saju);
