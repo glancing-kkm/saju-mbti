@@ -3761,8 +3761,6 @@ function renderDaypickFortune(saju,y,m,d,extra){
   }
   // ③ 어떻게 보내면 좋을까
   totBody+=`<p><span class="body-q">그래서 이 날 어떻게 보내면 좋을까요?</span><br>본인 사주 유형 <em>${gk.name.split(' ')[0]}</em>과 본인을 도와주는 기운 <em>${OHNAME[ys.main]}</em> 관점에서 보면, 이 날은 <b>${_yongsinTG.tone}</b>이에요. ${_yongsinTG.msg}</p>`;
-  // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만)
-  totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `이 지정일을 본인의 「선천적 사주」와 「후천적 MBTI」를 함께 보면, 그날의 결을 더 풍부하게 읽을 수 있어요.`);
   // 본인 10년 흐름(대운) ↔ 이 날 결합 카드
   try{
     if(!_meta||!_meta.sy)throw new Error('_meta missing');
@@ -4011,6 +4009,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
     <div class="nb-title">📌 ${y}년 ${m}월 ${d}일을 사는 결</div>
     <div class="nb-body"><p>일진은 그날 하루 외부 기운입니다. ${myStemKo}일간이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 결을 만드는 건 본인입니다. 거스르기보다 결을 따라 한 가지 행동만 추가해도 길이 열립니다. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
+  // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
+  h=_ctxPromote(h,_primaryDpCard);
   return h;
 }
 
@@ -4127,8 +4127,6 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   // ③ 어떻게
   totBody+=`<p><span class="body-q">이 기간을 어떻게 활용하면 좋을까요?</span><br><b>🍀 가장 잘 풀리는 시기 — ${luckyMonths.join(', ')}월</b><br>새 시작·확장·계약·이직·결혼 진전·중요한 발표 같은 큰 결정을 이 시기에 배치하시면 결실이 가장 커요. 특히 <b>${decisive.yy}.${decisive.mm}</b>이 가장 강한 결정적 시기입니다.</p>`;
   totBody+=`<p><b>⚠️ 조심할 시기 — ${toughMonths.join(', ')}월</b><br>큰 결정·확장·이동·새 거래는 미루시고, 정리·내실·휴식·점검의 카드를 꺼내기 좋은 시기예요. 흉이라기보다 「잠시 멈추고 살펴보라는 신호의 달」로 받아들이시면 좋아요.</p>`;
-  // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만)
-  totBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', `${totalMonths}개월의 흐름을 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 매달의 결정을 본인의 두 결에 맞춰 배치할 수 있어요.`);
   // 본인 10년 흐름(대운) ↔ 이 기간 결합 카드
   try{
     if(!_meta||!_meta.sy)throw new Error('_meta missing');
@@ -4335,6 +4333,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     <div class="nb-title">📌 ${totalMonths}개월을 사는 결</div>
     <div class="nb-body"><p>월별 운세는 절기 기준 월주 천간·지지가 본인 일간과 만들어내는 흐름입니다. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판입니다. 결을 알면 흐름과 다투지 않고 결을 따라 한 가지를 더 잘할 수 있어요.</p></div>
   </div>`;
+  // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
+  h=_ctxPromote(h,_primaryMoCard);
   return h;
 }
 
@@ -9750,8 +9750,9 @@ async function downloadGunghapSummary(fmt){
 
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   const cls='nb-card'+(isPrimary?' primary':'');
-  const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역</div>`:'';
-  let h=`<div class="${cls}">
+  const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
+  // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
+  let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}">
     ${badge}<div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}</div>
     <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
@@ -9777,8 +9778,17 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
       if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
     }
   }
-  h+='</div>';
+  h+=`</div><!--CARD_END:${catLabel}-->`;
   return h;
+}
+
+// 컨텍스트 우선: 특정 cardid 카드를 HTML 가장 앞으로 이동
+function _ctxPromote(html, cardId){
+  if(!cardId)return html;
+  const re=new RegExp('<!--CARD_START:'+cardId+'-->[\\s\\S]*?<!--CARD_END:'+cardId+'-->');
+  const m=html.match(re);
+  if(!m)return html;
+  return m[0]+html.replace(re,'');
 }
 
 function getSpouseImage(branch){
