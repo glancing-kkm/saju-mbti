@@ -12427,6 +12427,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   try{h+=renderGunghapSinsalGongmangCard(saju1,saju2,gen1,gen2);}catch(e){}
   // 두 사람 결혼·재물·건강 시기 일치도
   try{h+=renderGunghapTimelineMatchCard(saju1,saju2,gen1,gen2);}catch(e){}
+  // 두 사람 결혼 후 일상·재물·자녀·노후 깊이
+  try{h+=renderGunghapMarriedLifeCard(saju1,saju2,gen1,gen2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
   // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
@@ -12489,6 +12491,71 @@ const _ZODIAC_ELEM_PAIR={
 function getZodiacPairKey(e1,e2){
   const arr=[e1,e2].sort();
   return arr[0]+'-'+arr[1];
+}
+
+// 두 사람 결혼 후 일상·재물·자녀·노후 깊이 카드
+function renderGunghapMarriedLifeCard(saju1, saju2, gen1, gen2){
+  // 일지 작용
+  const brR=brRel(saju1.dp.branch,saju2.dp.branch);
+  // 두 사람 오행 합산 — 가정의 오행 균형
+  const oh1=ohCount(saju1);
+  const oh2=ohCount(saju2);
+  const coupleOh=oh1.map((v,i)=>v+oh2[i]);
+  const dom=coupleOh.indexOf(Math.max(...coupleOh));
+  const weak=coupleOh.indexOf(Math.min(...coupleOh));
+  const ohN=['목','화','토','금','수'];
+  const ohE=['🌱','🔥','🪨','⚙️','💧'];
+  // 두 사람 십신 비교
+  const so1=SOH[saju1.dp.stem], so2=SOH[saju2.dp.stem];
+  const sip1={bigeop:Math.max(0,oh1[so1]-1),siksang:oh1[(so1+1)%5],jaesung:oh1[(so1+2)%5],gwansung:oh1[(so1+3)%5],insung:oh1[(so1+4)%5]};
+  const sip2={bigeop:Math.max(0,oh2[so2]-1),siksang:oh2[(so2+1)%5],jaesung:oh2[(so2+2)%5],gwansung:oh2[(so2+3)%5],insung:oh2[(so2+4)%5]};
+  // 자녀 인연 — 합산
+  const childCnt=gen1==='male'?sip1.gwansung+sip2.siksang:sip1.siksang+sip2.gwansung;
+  const childGood=childCnt>=4;
+  const childMid=childCnt>=2&&childCnt<4;
+  // 재물 — 두 사람 재성 합
+  const wealthCnt=sip1.jaesung+sip2.jaesung;
+  const wealthGood=wealthCnt>=4;
+  // 가정 화목 — 일지 합·일간 합
+  const stR=stemRel(saju1.dp.stem,saju2.dp.stem);
+  const isHarmony=brR.kind==='합'||brR.kind==='반합'||brR.kind==='동'||stR.kind==='합';
+  const isTough=brR.kind==='충'||brR.kind==='원진'||brR.kind==='형';
+  // 일상 톤
+  let dailyTone='';
+  if(isHarmony)dailyTone='두 분의 자리가 자연스럽게 어우러져 일상 리듬이 잘 맞아요. 같은 시간에 잠들고 같은 시간에 일어나는 작은 일상이 자연스럽게 정착됩니다.';
+  else if(isTough)dailyTone='두 분의 자리에 부딪힘이 있어 일상 리듬을 의식적으로 맞추는 자세가 필요해요. 작은 다툼이 평소 쌓이지 않도록 「작은 불편을 그때 풀기」가 핵심입니다.';
+  else dailyTone='두 분의 자리가 평이한 결로 만나, 일상 리듬은 두 분이 함께 만들어가는 자리예요. 의식적인 「공유 시간」이 가정의 결을 만들어줍니다.';
+  let body=`<p><span class="body-q">결혼 후 두 분의 일상은 어떻게 흐를까요?</span><br>두 분 사주의 일지(배우자 자리)·일간(본인 결)·오행 합산을 종합해 결혼 후 일상·재물·자녀·노후 4가지 영역의 결을 풀어드릴게요.</p>`;
+  body+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
+  // 1. 일상 결
+  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+    <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">🏠 일상의 결</div>
+    <div style="font-size:.82rem;line-height:1.85">${dailyTone}</div>
+  </div>`;
+  // 2. 재물 결
+  body+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid #6cbf7e">
+    <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">💰 재물의 결</div>
+    <div style="font-size:.82rem;line-height:1.85">${wealthGood?'두 분 모두 재성(현실·자원의 결)이 두터워 가정 안 재물 활동이 활발한 결. 합쳐서 ${wealthCnt}자리의 재성으로 부부 공동 자산이 잘 쌓이는 흐름이에요.'.replace('${wealthCnt}',wealthCnt):wealthCnt>=2?`재성이 함께 ${wealthCnt}자리 — 평이한 재물 흐름. 한쪽이 안정 재물을 책임지고 다른 한쪽이 활동 재물을 책임지는 분담이 결을 살려요.`:`두 분 모두 재성이 약한 결이라, 본인 그릇·전문성·이름값으로 부가 따라오는 흐름. 큰 재물보다 정신적·문화적 풍요를 추구하는 가정이 본인들에게 더 맞아요.`}</div>
+  </div>`;
+  // 3. 자녀 결
+  body+=`<div style="padding:11px 13px;background:rgba(229,116,162,.06);border-radius:9px;border-left:4px solid #e574a2">
+    <div style="font-weight:700;color:#a84480;font-size:.88rem;margin-bottom:5px">👶 자녀의 결</div>
+    <div style="font-size:.82rem;line-height:1.85">${childGood?`두 분의 자녀 인연이 두터운 결(합계 ${childCnt}자리). 자녀가 가정에 큰 활기와 행복을 가져다주는 흐름. 자녀를 둘 이상 두기에 좋은 결이에요.`:childMid?`자녀 인연이 평이한 결(합계 ${childCnt}자리). 한 자녀에게 깊이 있는 사랑을 주는 결로, 자녀와의 정서적 거리가 가까운 흐름이에요.`:`자녀 인연이 약한 결(합계 ${childCnt}자리). 자녀를 늦게 보거나 한 자녀에게 깊이 집중하는 결이에요. 자녀 외에도 후배·아랫사람 돌봄 활동이 그 결을 채워줍니다.`}</div>
+  </div>`;
+  // 4. 가정 오행 균형
+  body+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8">
+    <div style="font-weight:700;color:#4a6699;font-size:.88rem;margin-bottom:5px">⚖ 가정 오행 균형</div>
+    <div style="font-size:.82rem;line-height:1.85">두 사주 합산 시 <b>${ohE[dom]} ${ohN[dom]}</b>(${coupleOh[dom]}자리) 기운이 가장 두텁고, <b>${ohE[weak]} ${ohN[weak]}</b>(${coupleOh[weak]}자리) 기운이 가장 부족해요. 부족한 ${ohN[weak]} 기운에 해당하는 ${['녹색·동쪽','적색·남쪽','황색·중앙','흰색·서쪽','검정·북쪽'][weak]} 인테리어·식단을 가정에 들이시면 두 분의 결이 더 균형 잡혀요.</div>
+  </div>`;
+  // 5. 노후 결
+  const lateGood=brR.kind==='합'||brR.kind==='반합'||stR.kind==='합';
+  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+    <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">🌙 노후의 결</div>
+    <div style="font-size:.82rem;line-height:1.85">${lateGood?'두 분의 일지·일간이 자석처럼 끌어당기는 결이라, 노후로 갈수록 결속이 더 깊어지는 결. 함께 늙어가며 평생 동반자로 결이 풀려갑니다.':isTough?'두 분의 자리에 부딪힘이 있어 노후로 갈수록 의식적인 「함께하는 활동」(여행·취미·식사)이 결을 만들어줘요. 가만히 두면 거리감이 생길 수 있는 결.':'평이한 결이라 노후의 색깔은 두 분이 함께 만들어가는 자리예요. 「오래 함께 사는 작은 습관」 한 가지를 만드시면 평생 동반자 결이 깊어집니다.'}</div>
+  </div>`;
+  body+=`</div>`;
+  body+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>결혼 생활의 결을 잘 쓰는 법</b><br>위 풀이는 사주가 보여주는 「자연스러운 흐름」이에요. 같은 사주라도 두 분의 노력·소통·환경에 따라 결과는 달라집니다. 좋은 결은 의식적으로 활용하고, 약한 결은 의식적으로 채워가시면 「두 분만의 결혼 생활」이 만들어집니다.</p>`;
+  return paidWrapBody('MARRIED_LIFE','🏡','결혼 후 생활 — 일상·재물·자녀·노후',body);
 }
 
 // 두 사람 결혼·재물·건강 시기 일치도 카드
