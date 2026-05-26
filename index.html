@@ -7801,6 +7801,78 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('MISSION','🎯','본인 사주의 평생 미션·과제 종합',mBody);
   }catch(e){}
 
+  // 인생 한 줄 슬로건 + 캐릭터 닉네임 카드
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
+    const _gkBE=getGyeokguk(saju);
+    const _myPower=_sip.bigeop+1+_sip.insung;
+    const _outPower=_sip.siksang+_sip.jaesung+_sip.gwansung;
+    const _strong=_myPower>_outPower;
+    let _allSins=[];
+    try{_allSins=findSinsal(saju);}catch(e){}
+    const _sinNames=_allSins.map(s=>s.n.split(' ')[0]);
+    // 핵심 형용사 (격국·강약 조합)
+    const _adjByGk={
+      '비견':_strong?'독립의':'단단한',
+      '겁재':_strong?'카리스마의':'결단의',
+      '식신':_strong?'풍요의':'따뜻한',
+      '상관':_strong?'창의의':'독특한',
+      '편재':_strong?'활동의':'민첩한',
+      '정재':_strong?'안정의':'성실한',
+      '편관':_strong?'추진의':'단호한',
+      '정관':_strong?'명예의':'책임의',
+      '편인':_strong?'전문의':'깊이의',
+      '정인':_strong?'학자의':'학습의'
+    };
+    const _adj=_adjByGk[_gkBE.tg]||'고유한';
+    // 캐릭터 명사 (격국·신살)
+    const _charByGk={
+      '비견':'독립 사업가',
+      '겁재':'전사·리더',
+      '식신':'풍요의 사절',
+      '상관':'창의 표현가',
+      '편재':'활동 기업가',
+      '정재':'안정 설계사',
+      '편관':'위기 돌파자',
+      '정관':'책임 관리자',
+      '편인':'깊이 연구가',
+      '정인':'학문 스승'
+    };
+    let _char=_charByGk[_gkBE.tg]||'고유 영혼';
+    if(_sinNames.includes('천을귀인'))_char='귀인의 동반자';
+    else if(_sinNames.includes('도화살'))_char='매력의 영혼';
+    else if(_sinNames.includes('역마살'))_char='이동의 자유인';
+    else if(_sinNames.includes('화개살'))_char='깊이의 예술가';
+    else if(_sinNames.includes('양인살'))_char='강한 결단자';
+    const _emoji=_sinNames.includes('천을귀인')?'🌟':_sinNames.includes('도화살')?'💕':_sinNames.includes('역마살')?'🚚':_sinNames.includes('화개살')?'🎨':_sinNames.includes('양인살')?'⚔':_strong?'🏔':'🌊';
+    // 슬로건
+    const _slogans={
+      '비견':_strong?'본인의 이름이 곧 자본이 되는 1인 그릇':'본인의 결을 단단히 키워 자기 길을 만드는 흐름',
+      '겁재':_strong?'깎고 다듬어 큰 그릇을 만드는 결단의 사람':'카리스마를 부드러움과 함께 키우는 사람',
+      '식신':_strong?'사람을 풍요롭게 품는 따뜻한 결의 사람':'표현과 돌봄으로 본인 영역을 가꾸는 사람',
+      '상관':_strong?'독창적 표현으로 세상에 결을 새기는 사람':'창의를 진중함과 함께 다듬는 사람',
+      '편재':_strong?'활동과 거래로 큰 흐름의 돈을 다루는 사람':'외부 활동에서 자기 결을 찾는 사람',
+      '정재':_strong?'성실히 쌓아 평생 안정 자산을 만드는 사람':'꾸준함과 가정을 자산으로 키우는 사람',
+      '편관':_strong?'위기에서 빛나는 강한 추진의 그릇':'압박을 측면 우회의 지혜로 푸는 사람',
+      '정관':_strong?'사회적 신뢰가 자연스레 쌓이는 그릇':'책임과 명예로 자기 자리를 만드는 사람',
+      '편인':_strong?'한 분야 깊이 천착하는 전문가형':'직관과 통찰로 깊이를 만드는 사람',
+      '정인':_strong?'학문·문화로 사람을 키우는 그릇':'배움과 자비로 본인을 단단히 채우는 사람'
+    };
+    const _slogan=_slogans[_gkBE.tg]||'본인의 결을 차근차근 만들어가는 고유한 영혼';
+    // 본인 일간 닉네임
+    const _stemNick={'갑':'큰 나무','을':'유연한 풀','병':'밝은 태양','정':'따뜻한 촛불','무':'든든한 산','기':'기름진 흙','경':'잘 벼린 칼','신':'정교한 보석','임':'큰 바다','계':'촉촉한 이슬'}[STEMKO[saju.dp.stem]]||'고유 글자';
+    let slBody=`<div style="text-align:center;padding:18px 14px;background:linear-gradient(135deg,rgba(212,175,73,.1),rgba(108,191,126,.06));border-radius:12px;border:2px solid var(--accent)">
+      <div style="font-size:2.2rem;margin-bottom:6px">${_emoji}</div>
+      <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:800;color:var(--accent);margin-bottom:6px">${_adj} ${_char}</div>
+      <div style="font-size:.78rem;color:var(--sub)">본인 일간: ${STEMKO[saju.dp.stem]} (${_stemNick})</div>
+      <div style="margin-top:14px;padding:11px 14px;background:rgba(0,0,0,.15);border-radius:9px;font-size:.92rem;font-weight:700;color:var(--text);line-height:1.7">「${_slogan}」</div>
+    </div>`;
+    slBody+=`<p style="margin-top:14px"><span class="body-q">이 슬로건은 어떻게 만들어졌나요?</span><br>본인 사주의 <b>${_gkBE.name}</b> + <b>${_strong?'신강':'신약'}</b> + <b>${_sinNames.slice(0,2).join('·')||'평이한 별자리'}</b>를 종합해 본인의 인생 색채를 한 줄로 압축했어요. 본인이 가장 자연스럽게 살아가는 결의 핵심이에요.</p>`;
+    slBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>슬로건의 활용</b><br>큰 결정 앞에서 망설일 때 위 슬로건을 떠올리세요. 본인 결과 맞는 결정은 자연스럽게 흐르고, 결과 안 맞는 결정은 무리해서 가지 마시는 게 평생의 결을 살리는 길이에요.</p>`;
+    h+=paidWrapBody('SLOGAN','✨','본인 사주 인생 슬로건',slBody);
+  }catch(e){}
+
   // 사주 내부 합·충·형 종합 풀이
   try{
     const _allRels=findBranchRelations(saju);
