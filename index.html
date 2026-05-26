@@ -8671,7 +8671,36 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
     const seen=new Set();
     lifeEvents=lifeEvents.filter(e=>{const k=e.label;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,6);
   }catch(e){}
-  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents};
+  // 신강/신약 압축
+  let _sgInfo=null;
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _myPower=Math.max(0,oh[_so]-1)+1+oh[(_so+4)%5];
+    const _outPower=oh[(_so+1)%5]+oh[(_so+2)%5]+oh[(_so+3)%5];
+    const _myPct=Math.round(_myPower/(_myPower+_outPower)*100);
+    _sgInfo={kind:Math.abs(_myPower-_outPower)<=1?'중화':_myPower>_outPower?'신강':'신약',pct:_myPct};
+  }catch(e){}
+  // 직업 적성 압축
+  let _jobShort='';
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
+    const _top=Object.entries(_sip).sort((a,b)=>b[1]-a[1])[0][0];
+    _jobShort={bigeop:'자립·전문직·1인 사업가형',siksang:'창작·표현·돌봄형',jaesung:'활동·재물·실무형',gwansung:'책임·관리·공직형',insung:'학문·교육·연구형'}[_top]||'';
+  }catch(e){}
+  // 6친 압축
+  let _yckShort='';
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
+    const _lab=(n)=>n>=3?'두텁다':n>=2?'적당':n===1?'한 자리':'약함';
+    const _spouse=gender==='male'?_sip.jaesung:_sip.gwansung;
+    const _child=gender==='male'?_sip.gwansung:_sip.siksang;
+    _yckShort=`부모 ${_lab(_sip.insung)} · 형제 ${_lab(_sip.bigeop)} · 배우자 ${_lab(_spouse)} · 자녀 ${_lab(_child)}`;
+  }catch(e){}
+  // 개운법 압축
+  const _gwShort=`길색 ${['녹·청','적·자주','황·베이지','흰·금','검·남'][ys.main]} · 길방위 ${['동','남','중앙','서','북'][ys.main]} · 길음식 ${['신맛·녹채','쓴맛·붉은','단맛·뿌리','매운·흰','짠맛·검은'][ys.main]}`;
+  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo:_sgInfo,jobShort:_jobShort,yckShort:_yckShort,gwShort:_gwShort};
   return `<div class="nb-card summary-card">
     <div class="nb-cat">🎯 SUMMARY</div>
     <div class="nb-title">📋 인생총운 요약본 다운로드</div>
@@ -8696,7 +8725,7 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
 
 function buildLifeSummaryA4Html(){
   if(!_lifeSummaryData)return '';
-  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents}=_lifeSummaryData;
+  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo,jobShort,yckShort,gwShort}=_lifeSummaryData;
   const tot=oh.reduce((a,b)=>a+b,0);
   const me=oh[dStemOh],isStrong=me>=tot/3;
   const dom=oh.indexOf(Math.max(...oh)),weak=oh.indexOf(Math.min(...oh));
@@ -8764,6 +8793,16 @@ function buildLifeSummaryA4Html(){
             ${lifeEvents.map(e=>`<div><b style="color:#8b6f47">${e.ageRange}</b> ${e.label}</div>`).join('')}
           </div>
         </div>`:''}
+
+        <div class="a4-section">
+          <div class="a4-h">⚖ 신강/신약 + 💼 직업 + 👨‍👩 6친 + ✨ 개운법</div>
+          <div style="font-size:10px;line-height:1.7">
+            ${sgInfo?`<div>· <b>그릇</b>: ${sgInfo.kind} (${sgInfo.pct}%) — ${sgInfo.kind==='신강'?'본인 사업·도전·리더 자리':sgInfo.kind==='신약'?'학습·자격·조직 입지':'시기 따라 유연'}</div>`:''}
+            ${jobShort?`<div>· <b>직업 적성</b>: ${jobShort}</div>`:''}
+            ${yckShort?`<div>· <b>6친</b>: ${yckShort}</div>`:''}
+            ${gwShort?`<div>· <b>개운법</b>: ${gwShort}</div>`:''}
+          </div>
+        </div>
 
       </div>
       <div class="a4-col-right">
