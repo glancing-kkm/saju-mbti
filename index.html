@@ -1408,17 +1408,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off" oninput="_onNameHangulChange('given')"></div>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:6px">
-            <div style="font-size:.75rem;color:var(--accent);font-weight:600">한자 선택 <small style="color:var(--muted);font-weight:400">(한글 입력하면 후보가 자동으로 채워져요)</small></div>
-            <button type="button" onclick="openHanziCanvas()" style="padding:5px 12px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:#1a1c1d;border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">🖌 손으로 그려서 찾기</button>
-          </div>
-          <div style="font-size:.66rem;color:var(--muted);margin-bottom:8px;line-height:1.6">아래 드롭다운에서 한자를 선택하시면 획수까지 자동으로 채워져요. 한자가 후보에 없거나 음을 모르면 「🖌 손으로 그리기」 버튼을 누르세요.</div>
+          <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:4px">한자 선택 <small style="color:var(--muted);font-weight:400">(한글 입력하면 후보가 자동으로 채워져요)</small></div>
+          <div style="font-size:.66rem;color:var(--muted);margin-bottom:8px;line-height:1.6">아래 드롭다운에서 한자를 선택하시거나, <b style="color:var(--accent)">한자 칸을 클릭하면 손글씨로 그려서 비슷한 한자를 찾을 수 있어요</b>.</div>
           <!-- 성씨 -->
           <div style="margin-bottom:8px">
             <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">성씨</div>
             <div class="row3" style="gap:6px">
               <div class="ig" style="flex:1.8"><label for="nmSurnameSel" style="font-size:.62rem">한자 선택</label><select id="nmSurnameSel" onchange="pickHanFromSelect('nmSurnameSel','nmSurnameHan','nmSurnameStroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
-              <div class="ig" style="flex:1"><label for="nmSurnameHan" style="font-size:.62rem">한자</label><input type="text" id="nmSurnameHan" placeholder="金" maxlength="2" autocomplete="off" oninput="onHanInput('nmSurnameHan','nmSurnameStroke')"></div>
+              <div class="ig" style="flex:1"><label for="nmSurnameHan" style="font-size:.62rem">한자 (클릭=손글씨)</label><input type="text" id="nmSurnameHan" placeholder="🖌 클릭" maxlength="2" autocomplete="off" readonly style="cursor:pointer;background:rgba(212,175,73,.06)" onclick="openHanziCanvas('nmSurnameHan','nmSurnameStroke')" oninput="onHanInput('nmSurnameHan','nmSurnameStroke')"></div>
               <div class="ig" style="flex:.8"><label for="nmSurnameStroke" style="font-size:.62rem">획수</label><input type="text" id="nmSurnameStroke" placeholder="8" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
             </div>
           </div>
@@ -1427,7 +1424,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">이름 첫 글자</div>
             <div class="row3" style="gap:6px">
               <div class="ig" style="flex:1.8"><label for="nmGiven1Sel" style="font-size:.62rem">한자 선택</label><select id="nmGiven1Sel" onchange="pickHanFromSelect('nmGiven1Sel','nmGiven1Han','nmGiven1Stroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
-              <div class="ig" style="flex:1"><label for="nmGiven1Han" style="font-size:.62rem">한자</label><input type="text" id="nmGiven1Han" placeholder="敏" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven1Han','nmGiven1Stroke')"></div>
+              <div class="ig" style="flex:1"><label for="nmGiven1Han" style="font-size:.62rem">한자 (클릭=손글씨)</label><input type="text" id="nmGiven1Han" placeholder="🖌 클릭" maxlength="2" autocomplete="off" readonly style="cursor:pointer;background:rgba(212,175,73,.06)" onclick="openHanziCanvas('nmGiven1Han','nmGiven1Stroke')" oninput="onHanInput('nmGiven1Han','nmGiven1Stroke')"></div>
               <div class="ig" style="flex:.8"><label for="nmGiven1Stroke" style="font-size:.62rem">획수</label><input type="text" id="nmGiven1Stroke" placeholder="11" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
             </div>
           </div>
@@ -1436,7 +1433,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <div style="font-size:.7rem;color:var(--accent);margin-bottom:4px">이름 둘째 글자 <small style="color:var(--muted);font-weight:400">(외자면 비워두세요)</small></div>
             <div class="row3" style="gap:6px">
               <div class="ig" style="flex:1.8"><label for="nmGiven2Sel" style="font-size:.62rem">한자 선택</label><select id="nmGiven2Sel" onchange="pickHanFromSelect('nmGiven2Sel','nmGiven2Han','nmGiven2Stroke')" disabled><option value="">한글부터 입력하세요</option></select></div>
-              <div class="ig" style="flex:1"><label for="nmGiven2Han" style="font-size:.62rem">한자</label><input type="text" id="nmGiven2Han" placeholder="智" maxlength="2" autocomplete="off" oninput="onHanInput('nmGiven2Han','nmGiven2Stroke')"></div>
+              <div class="ig" style="flex:1"><label for="nmGiven2Han" style="font-size:.62rem">한자 (클릭=손글씨)</label><input type="text" id="nmGiven2Han" placeholder="🖌 클릭" maxlength="2" autocomplete="off" readonly style="cursor:pointer;background:rgba(212,175,73,.06)" onclick="openHanziCanvas('nmGiven2Han','nmGiven2Stroke')" oninput="onHanInput('nmGiven2Han','nmGiven2Stroke')"></div>
               <div class="ig" style="flex:.8"><label for="nmGiven2Stroke" style="font-size:.62rem">획수</label><input type="text" id="nmGiven2Stroke" placeholder="12" maxlength="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
             </div>
           </div>
@@ -12110,6 +12107,57 @@ const HAN_DICT={
   '석':[{han:'石',str:5,meaning:'돌'},{han:'錫',str:16,meaning:'주석·줄'},{han:'碩',str:14,meaning:'클'},{han:'奭',str:15,meaning:'클'},{han:'晳',str:12,meaning:'밝을'},{han:'夕',str:3,meaning:'저녁'}]
 };
 
+// 추가 음당 후보 (HAN_DICT에 IIFE로 머지)
+const HAN_DICT_EXT={
+  '이':[{han:'利',str:7,meaning:'이로울'},{han:'易',str:8,meaning:'바꿀'},{han:'而',str:6,meaning:'말이을'},{han:'二',str:2,meaning:'둘'},{han:'異',str:11,meaning:'다를'},{han:'移',str:11,meaning:'옮길'},{han:'已',str:3,meaning:'이미'}],
+  '박':[{han:'拍',str:8,meaning:'칠'},{han:'迫',str:9,meaning:'다그칠'},{han:'珀',str:9,meaning:'호박'},{han:'箔',str:14,meaning:'발'},{han:'樸',str:16,meaning:'순박할'},{han:'撲',str:16,meaning:'칠'}],
+  '민':[{han:'珉',str:10,meaning:'옥돌'},{han:'旼',str:8,meaning:'화락할'},{han:'暋',str:13,meaning:'굳셀'},{han:'岷',str:8,meaning:'산이름'},{han:'閔',str:12,meaning:'성씨'},{han:'緡',str:15,meaning:'낚싯줄'}],
+  '준':[{han:'遵',str:16,meaning:'좇을'},{han:'埈',str:10,meaning:'높을'},{han:'晙',str:11,meaning:'밝을'},{han:'浚',str:11,meaning:'깊을'},{han:'准',str:10,meaning:'준할'},{han:'濬',str:17,meaning:'깊을'},{han:'樽',str:16,meaning:'술단지'},{han:'雋',str:13,meaning:'뛰어날'}],
+  '서':[{han:'緒',str:14,meaning:'실마리'},{han:'庶',str:11,meaning:'많을'},{han:'暑',str:13,meaning:'더울'},{han:'署',str:14,meaning:'관청'},{han:'西',str:6,meaning:'서녘'},{han:'棲',str:12,meaning:'살'},{han:'舒',str:12,meaning:'펼'},{han:'恕',str:10,meaning:'용서할'}],
+  '연':[{han:'延',str:7,meaning:'끌'},{han:'燕',str:16,meaning:'제비'},{han:'演',str:14,meaning:'펼'},{han:'緣',str:15,meaning:'인연'},{han:'沿',str:9,meaning:'따를'},{han:'然',str:12,meaning:'그럴'},{han:'鉛',str:13,meaning:'납'},{han:'妍',str:7,meaning:'고울'},{han:'娟',str:10,meaning:'예쁠'},{han:'涓',str:10,meaning:'시내'},{han:'軟',str:11,meaning:'연할'}],
+  '지':[{han:'地',str:6,meaning:'땅'},{han:'池',str:6,meaning:'못'},{han:'持',str:9,meaning:'가질'},{han:'旨',str:6,meaning:'뜻'},{han:'紙',str:10,meaning:'종이'},{han:'指',str:9,meaning:'손가락'},{han:'至',str:6,meaning:'이를'},{han:'之',str:4,meaning:'갈'},{han:'枝',str:8,meaning:'가지'},{han:'芝',str:8,meaning:'영지'},{han:'祉',str:9,meaning:'복'},{han:'摯',str:15,meaning:'잡을'}],
+  '수':[{han:'琇',str:12,meaning:'옥돌'},{han:'洙',str:10,meaning:'강이름'},{han:'銖',str:14,meaning:'무게'},{han:'袖',str:10,meaning:'소매'},{han:'受',str:8,meaning:'받을'},{han:'收',str:6,meaning:'거둘'},{han:'殊',str:10,meaning:'다를'},{han:'須',str:12,meaning:'모름지기'},{han:'隋',str:12,meaning:'수나라'},{han:'授',str:11,meaning:'줄'},{han:'數',str:15,meaning:'셀'}],
+  '은':[{han:'隱',str:22,meaning:'숨길'},{han:'垠',str:9,meaning:'끝'},{han:'殷',str:10,meaning:'은나라'},{han:'誾',str:15,meaning:'온화할'},{han:'珢',str:10,meaning:'옥돌'},{han:'圻',str:7,meaning:'경기'}],
+  '현':[{han:'絃',str:11,meaning:'줄'},{han:'眩',str:10,meaning:'어지러울'},{han:'峴',str:10,meaning:'재'},{han:'顯',str:23,meaning:'드러날'},{han:'玹',str:10,meaning:'옥돌'},{han:'絢',str:12,meaning:'무늬'},{han:'鉉',str:13,meaning:'솥귀'},{han:'縣',str:16,meaning:'고을'},{han:'玄',str:5,meaning:'검을'}],
+  '우':[{han:'憂',str:15,meaning:'근심'},{han:'牛',str:4,meaning:'소'},{han:'偶',str:11,meaning:'짝'},{han:'又',str:2,meaning:'또'},{han:'寓',str:12,meaning:'붙어살'},{han:'羽',str:6,meaning:'깃'},{han:'尤',str:4,meaning:'더욱'},{han:'郵',str:15,meaning:'우편'},{han:'瑀',str:13,meaning:'옥돌'}],
+  '진':[{han:'瑱',str:15,meaning:'옥'},{han:'珍',str:9,meaning:'보배'},{han:'鎭',str:18,meaning:'진압할'},{han:'陳',str:16,meaning:'베풀'},{han:'軫',str:12,meaning:'수레'},{han:'縝',str:16,meaning:'촘촘할'},{han:'璡',str:16,meaning:'옥돌'},{han:'塵',str:14,meaning:'티끌'}],
+  '호':[{han:'浩',str:11,meaning:'넓을'},{han:'號',str:13,meaning:'부를'},{han:'戶',str:4,meaning:'집'},{han:'護',str:21,meaning:'지킬'},{han:'好',str:6,meaning:'좋을'},{han:'互',str:4,meaning:'서로'},{han:'虎',str:8,meaning:'범'},{han:'湖',str:12,meaning:'호수'},{han:'豪',str:14,meaning:'호걸'},{han:'皓',str:12,meaning:'흴'},{han:'昊',str:8,meaning:'하늘'},{han:'晧',str:11,meaning:'밝을'},{han:'扈',str:11,meaning:'따를'},{han:'壕',str:17,meaning:'해자'},{han:'毫',str:11,meaning:'터럭'}],
+  '석':[{han:'釋',str:20,meaning:'풀'},{han:'蓆',str:14,meaning:'자리'},{han:'析',str:8,meaning:'쪼갤'},{han:'惜',str:11,meaning:'아낄'},{han:'昔',str:8,meaning:'옛'}],
+  '재':[{han:'在',str:6,meaning:'있을'},{han:'才',str:3,meaning:'재주'},{han:'材',str:7,meaning:'재목'},{han:'財',str:10,meaning:'재물'},{han:'載',str:13,meaning:'실을'},{han:'栽',str:10,meaning:'심을'},{han:'哉',str:9,meaning:'어조사'},{han:'滓',str:13,meaning:'찌꺼기'},{han:'渽',str:12,meaning:'맑을'},{han:'縡',str:16,meaning:'일'},{han:'宰',str:10,meaning:'재상'},{han:'災',str:7,meaning:'재앙'},{han:'裁',str:12,meaning:'마를'}],
+  '성':[{han:'城',str:10,meaning:'성'},{han:'盛',str:11,meaning:'성할'},{han:'省',str:9,meaning:'살필'},{han:'醒',str:16,meaning:'깰'},{han:'星',str:9,meaning:'별'},{han:'晟',str:11,meaning:'밝을'},{han:'晠',str:10,meaning:'밝을'},{han:'性',str:9,meaning:'성품'},{han:'聖',str:13,meaning:'성스러울'},{han:'聲',str:17,meaning:'소리'},{han:'惺',str:12,meaning:'영리할'},{han:'珹',str:11,meaning:'옥이름'}],
+  '병':[{han:'秉',str:8,meaning:'잡을'},{han:'屛',str:11,meaning:'병풍'},{han:'倂',str:10,meaning:'아우를'},{han:'昞',str:9,meaning:'밝을'},{han:'昺',str:9,meaning:'밝을'},{han:'幷',str:8,meaning:'아우를'},{han:'丙',str:5,meaning:'밝을'},{han:'兵',str:7,meaning:'군사'},{han:'柄',str:9,meaning:'자루'},{han:'炳',str:9,meaning:'밝을'}],
+  '영':[{han:'渶',str:13,meaning:'물맑을'},{han:'楹',str:13,meaning:'기둥'},{han:'瑛',str:14,meaning:'옥빛'},{han:'映',str:9,meaning:'비칠'},{han:'榮',str:14,meaning:'영광'},{han:'營',str:17,meaning:'경영할'},{han:'永',str:5,meaning:'길'},{han:'泳',str:9,meaning:'헤엄칠'},{han:'詠',str:12,meaning:'읊을'},{han:'潁',str:14,meaning:'영수'},{han:'瀛',str:19,meaning:'바다'},{han:'纓',str:23,meaning:'갓끈'}],
+  '태':[{han:'跆',str:12,meaning:'밟을'},{han:'怠',str:9,meaning:'게으를'},{han:'颱',str:14,meaning:'태풍'},{han:'胎',str:9,meaning:'아이밸'},{han:'台',str:5,meaning:'별'},{han:'兌',str:7,meaning:'기쁠'},{han:'太',str:4,meaning:'클'},{han:'泰',str:9,meaning:'클'}],
+  '종':[{han:'鍾',str:17,meaning:'쇠북'},{han:'鐘',str:20,meaning:'쇠북'},{han:'終',str:11,meaning:'마칠'},{han:'縱',str:17,meaning:'세로'},{han:'從',str:11,meaning:'좇을'},{han:'種',str:14,meaning:'씨'},{han:'宗',str:8,meaning:'마루'},{han:'琮',str:12,meaning:'옥'}],
+  '형':[{han:'邢',str:11,meaning:'성씨'},{han:'螢',str:16,meaning:'반딧불'},{han:'馨',str:20,meaning:'향기'},{han:'衡',str:16,meaning:'저울'},{han:'兄',str:5,meaning:'맏'},{han:'刑',str:6,meaning:'형벌'},{han:'型',str:9,meaning:'모형'},{han:'形',str:7,meaning:'모양'},{han:'瑩',str:15,meaning:'밝을'},{han:'熒',str:14,meaning:'반딧불'}],
+  '광':[{han:'光',str:6,meaning:'빛'},{han:'廣',str:15,meaning:'넓을'},{han:'鑛',str:23,meaning:'쇳돌'},{han:'匡',str:6,meaning:'바를'},{han:'桄',str:10,meaning:'베틀'},{han:'壙',str:18,meaning:'광중'},{han:'狂',str:7,meaning:'미칠'}],
+  '학':[{han:'學',str:16,meaning:'배울'},{han:'鶴',str:21,meaning:'학'},{han:'壑',str:17,meaning:'골짜기'},{han:'樂',str:15,meaning:'즐길'},{han:'虐',str:9,meaning:'사나울'},{han:'瘧',str:14,meaning:'학질'}],
+  '동':[{han:'冬',str:5,meaning:'겨울'},{han:'棟',str:12,meaning:'마룻대'},{han:'銅',str:14,meaning:'구리'},{han:'憧',str:15,meaning:'동경할'},{han:'胴',str:10,meaning:'창자'},{han:'洞',str:9,meaning:'골'}],
+  '훈':[{han:'勛',str:12,meaning:'공로'},{han:'薰',str:17,meaning:'향풀'},{han:'勳',str:16,meaning:'공로'},{han:'壎',str:17,meaning:'질나팔'},{han:'熏',str:14,meaning:'향기'},{han:'訓',str:10,meaning:'가르칠'}],
+  '희':[{han:'嬉',str:15,meaning:'즐길'},{han:'噫',str:16,meaning:'한숨'},{han:'熹',str:16,meaning:'빛날'},{han:'禧',str:17,meaning:'복'},{han:'晞',str:11,meaning:'마를'},{han:'熙',str:13,meaning:'빛날'},{han:'希',str:7,meaning:'바랄'},{han:'喜',str:12,meaning:'기쁠'},{han:'姬',str:9,meaning:'아씨'},{han:'姫',str:9,meaning:'아씨'},{han:'囍',str:24,meaning:'쌍희'}],
+  '강':[{han:'剛',str:10,meaning:'굳셀'},{han:'強',str:11,meaning:'강할'},{han:'鋼',str:16,meaning:'강철'},{han:'殭',str:17,meaning:'굳을'},{han:'絳',str:12,meaning:'진홍'},{han:'康',str:11,meaning:'편안'},{han:'江',str:7,meaning:'강물'},{han:'講',str:17,meaning:'외울'},{han:'岡',str:8,meaning:'산등성이'},{han:'綱',str:14,meaning:'벼리'},{han:'姜',str:9,meaning:'생강'}],
+  '하':[{han:'河',str:9,meaning:'강'},{han:'夏',str:10,meaning:'여름'},{han:'霞',str:17,meaning:'노을'},{han:'瑕',str:13,meaning:'옥티'},{han:'荷',str:10,meaning:'멜'},{han:'廈',str:13,meaning:'문간'},{han:'蝦',str:15,meaning:'두꺼비'},{han:'何',str:7,meaning:'어찌'},{han:'下',str:3,meaning:'아래'}],
+  '예':[{han:'藝',str:19,meaning:'재주'},{han:'禮',str:18,meaning:'예도'},{han:'銳',str:15,meaning:'날카로울'},{han:'乂',str:2,meaning:'풀벨'},{han:'譽',str:21,meaning:'기릴'},{han:'豫',str:16,meaning:'미리'},{han:'睿',str:14,meaning:'슬기'},{han:'叡',str:16,meaning:'밝을'},{han:'濊',str:16,meaning:'예나라'},{han:'藝',str:19,meaning:'재주'},{han:'隸',str:17,meaning:'노예'}],
+  '윤':[{han:'倫',str:10,meaning:'인륜'},{han:'胤',str:9,meaning:'대이을'},{han:'閏',str:12,meaning:'윤달'},{han:'贇',str:19,meaning:'예쁠'},{han:'潤',str:16,meaning:'젖을'},{han:'尹',str:4,meaning:'다스릴'},{han:'允',str:4,meaning:'진실로'},{han:'昀',str:8,meaning:'햇빛'},{han:'阭',str:10,meaning:'높을'},{han:'玧',str:8,meaning:'옥빛'}],
+  '채':[{han:'菜',str:12,meaning:'나물'},{han:'采',str:8,meaning:'캘'},{han:'彩',str:11,meaning:'채색'},{han:'蔡',str:15,meaning:'성씨'},{han:'債',str:13,meaning:'빚'},{han:'寨',str:14,meaning:'울타리'},{han:'採',str:11,meaning:'캘'}],
+  '아':[{han:'我',str:7,meaning:'나'},{han:'兒',str:8,meaning:'아이'},{han:'阿',str:8,meaning:'언덕'},{han:'雅',str:12,meaning:'우아할'},{han:'娥',str:10,meaning:'예쁠'},{han:'峨',str:10,meaning:'높을'},{han:'芽',str:8,meaning:'싹'},{han:'牙',str:4,meaning:'어금니'},{han:'啞',str:11,meaning:'벙어리'},{han:'婀',str:11,meaning:'아리따울'}],
+  '하':[{han:'下',str:3,meaning:'아래'},{han:'河',str:9,meaning:'강'},{han:'夏',str:10,meaning:'여름'},{han:'霞',str:17,meaning:'노을'}],
+  '시':[{han:'時',str:10,meaning:'때'},{han:'始',str:8,meaning:'처음'},{han:'施',str:9,meaning:'베풀'},{han:'侍',str:8,meaning:'모실'},{han:'試',str:13,meaning:'시험'},{han:'視',str:12,meaning:'볼'},{han:'示',str:5,meaning:'보일'},{han:'詩',str:13,meaning:'시'},{han:'匙',str:11,meaning:'숟가락'},{han:'柴',str:10,meaning:'섶'},{han:'矢',str:5,meaning:'화살'}],
+  '다':[{han:'多',str:6,meaning:'많을'},{han:'茶',str:10,meaning:'차'},{han:'妸',str:8,meaning:'아름다울'}],
+  '나':[{han:'娜',str:10,meaning:'아름다울'},{han:'那',str:11,meaning:'어찌'},{han:'奈',str:8,meaning:'어찌'},{han:'拏',str:9,meaning:'붙잡을'}],
+  '혜':[{han:'惠',str:12,meaning:'은혜'},{han:'慧',str:15,meaning:'슬기'},{han:'蕙',str:18,meaning:'난초'},{han:'嘒',str:14,meaning:'별이름'},{han:'譓',str:21,meaning:'슬기'}]
+};
+// HAN_DICT_EXT를 HAN_DICT에 안전 머지 (기존 후보 유지 + 중복 제거)
+(function _mergeHanDictExt(){
+  for(const k in HAN_DICT_EXT){
+    if(!HAN_DICT[k])HAN_DICT[k]=[];
+    const seen=new Set(HAN_DICT[k].map(o=>o.han));
+    HAN_DICT_EXT[k].forEach(o=>{
+      if(!seen.has(o.han)){HAN_DICT[k].push(o);seen.add(o.han);}
+    });
+  }
+})();
+
 // 한자 부수 자원오행 — 부수별 오행 매핑 (작명학 자원오행 기준)
 const HAN_RADICAL_OH={
   // 木 (목)
@@ -14486,38 +14534,41 @@ function fallbackCopy(text,msg){
   document.body.removeChild(el);
 }
 
-// ───────────────── 한자 손글씨 그리기 모달 + 음 검색 ─────────────────
-function openHanziCanvas(){
-  // 모달 이미 있으면 제거 후 재생성
+// ───────────────── 한자 손글씨 그리기 모달 + 음 검색 + 비슷한 한자 ─────────────────
+let _hanziTargetHan=null, _hanziTargetStroke=null;
+function openHanziCanvas(targetHanId, targetStrokeId){
+  // 입력란 ID 저장 (모달 닫을 때 자동 입력에 사용)
+  _hanziTargetHan=targetHanId||null;
+  _hanziTargetStroke=targetStrokeId||null;
   const old=document.getElementById('hanziCanvasModal');
   if(old)old.remove();
   const modal=document.createElement('div');
   modal.id='hanziCanvasModal';
   modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px;animation:fadeIn .2s';
   modal.innerHTML=`
-    <div style="background:var(--bg);border-radius:14px;max-width:380px;width:100%;max-height:90vh;overflow-y:auto;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.5)">
+    <div style="background:var(--bg);border-radius:14px;max-width:380px;width:100%;max-height:92vh;overflow-y:auto;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.5)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-size:1rem;font-weight:800;color:var(--accent)">🖌 한자 손으로 그리기</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--accent)">🖌 한자 손글씨 + 비슷한 한자 찾기</div>
         <button onclick="closeHanziCanvas()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px">×</button>
       </div>
-      <div style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px">
-        ① 캔버스에 한자를 그리세요 (참고용)<br>
-        ② 그린 한자의 <b>한글 음</b>(예: 김·민·준)을 입력하면 후보 한자 5+자 표시<br>
-        ③ 한자 클릭 → 자동 입력
+      <div style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:10px">
+        ① 한자를 손으로 그리세요 → <b>비슷한 획수 한자 자동 후보</b><br>
+        ② 또는 한글 음 입력 (정밀 검색)<br>
+        ③ 후보 한자 클릭 → 입력란에 자동 입력
       </div>
       <canvas id="hanziDrawCanvas" width="280" height="280" style="display:block;margin:0 auto;border:2px solid var(--accent);border-radius:10px;background:#fff;touch-action:none;cursor:crosshair"></canvas>
       <div style="display:flex;gap:6px;margin-top:8px;justify-content:center">
         <button onclick="clearHanziCanvas()" style="padding:6px 14px;background:var(--bg-deep);color:var(--sub);border:1px solid var(--border);border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">🧹 지우기</button>
+        <button onclick="searchHanziByStrokeFromCanvas()" style="padding:6px 14px;background:var(--accent);color:#1a1c1d;border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">🔍 비슷한 한자 찾기</button>
       </div>
       <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)">
-        <label style="font-size:.74rem;color:var(--accent);font-weight:700">한글 음 입력 (그린 한자의 발음)</label>
+        <label style="font-size:.74rem;color:var(--accent);font-weight:700">또는 한글 음 입력 (정밀 검색)</label>
         <input type="text" id="hanziSoundInput" placeholder="예: 민" maxlength="2" oninput="searchHanziBySound(this.value)" style="width:100%;margin-top:6px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg-deep);color:var(--text);font-size:.95rem;font-family:inherit" autocomplete="off">
       </div>
       <div id="hanziSearchResult" style="margin-top:12px;min-height:50px"></div>
-      <div style="margin-top:14px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.72rem;color:var(--sub);line-height:1.7">📌 손으로 그리는 한자는 직접 인식하지 않고, 음을 함께 입력해 후보 한자를 보여드려요. 그린 한자와 후보를 비교해 선택하세요.</div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.7rem;color:var(--sub);line-height:1.7">📌 손글씨는 그린 한자의 획수를 대략 추정해 ±2 범위 한자 후보를 보여드려요. 정밀 검색은 음을 함께 입력하세요.</div>
     </div>`;
   document.body.appendChild(modal);
-  // 캔버스 그리기 셋업
   setupHanziCanvas();
 }
 
@@ -14578,31 +14629,90 @@ function searchHanziBySound(sound){
   }catch(e){box.innerHTML=`<div style="text-align:center;color:#e57462;font-size:.78rem;padding:14px">검색 오류: ${e.message}</div>`;}
 }
 
-// 캔버스에서 고른 한자 → 활성 한자 입력란에 자동 채움 (가장 비어있는 칸 우선)
+// 캔버스에서 고른 한자 → 지정된 입력란에 채움 (없으면 비어있는 첫 칸)
 function pickHanziFromCanvas(han, stroke){
-  // 우선순위: 현재 포커스된 한자 입력란 > 비어있는 첫 칸 (성씨 → 이름1 → 이름2)
+  // 우선순위: openHanziCanvas로 지정된 _hanziTargetHan > 비어있는 첫 칸
+  if(_hanziTargetHan){
+    const el=document.getElementById(_hanziTargetHan);
+    if(el){
+      el.value=han;
+      const se=_hanziTargetStroke?document.getElementById(_hanziTargetStroke):null;
+      if(se && stroke)se.value=stroke;
+      // readonly 입력란이라 input 이벤트는 onHanInput 함수 직접 호출
+      try{if(typeof onHanInput==='function')onHanInput(_hanziTargetHan,_hanziTargetStroke);}catch(e){}
+      el.style.background='rgba(108,191,126,.25)';
+      setTimeout(()=>{el.style.background='rgba(212,175,73,.06)';},1200);
+      closeHanziCanvas();
+      return;
+    }
+  }
+  // 폴백: 비어있는 첫 칸
   const inputs=[
     {han:'nmSurnameHan',stroke:'nmSurnameStroke'},
     {han:'nmGiven1Han',stroke:'nmGiven1Stroke'},
     {han:'nmGiven2Han',stroke:'nmGiven2Stroke'}
   ];
-  // 비어있는 첫 칸 찾기
   for(const i of inputs){
     const el=document.getElementById(i.han);
     if(el && !el.value){
       el.value=han;
       const se=document.getElementById(i.stroke);
       if(se && stroke)se.value=stroke;
-      el.dispatchEvent(new Event('input'));
-      // 시각적 강조
-      el.style.background='rgba(108,191,126,.15)';
-      setTimeout(()=>{el.style.background='';},1200);
+      try{if(typeof onHanInput==='function')onHanInput(i.han,i.stroke);}catch(e){}
+      el.style.background='rgba(108,191,126,.25)';
+      setTimeout(()=>{el.style.background='rgba(212,175,73,.06)';},1200);
       closeHanziCanvas();
       return;
     }
   }
-  // 모든 칸이 차있으면 사용자에게 안내
   alert('한자 입력란이 모두 채워져 있어요. 비우고 다시 시도하시거나 직접 입력란에 붙여넣기 하세요.');
+}
+
+// 손글씨 캔버스에서 stroke count 대략 추정 → 비슷한 획수 한자 후보 표시
+function searchHanziByStrokeFromCanvas(){
+  const c=document.getElementById('hanziDrawCanvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  const img=ctx.getImageData(0,0,c.width,c.height);
+  const d=img.data;
+  // 채워진 픽셀(어두운 영역) 카운트
+  let filled=0;
+  for(let i=0;i<d.length;i+=4){
+    // 알파 채널 + 밝기로 판단
+    if(d[i+3]>50 && (d[i]+d[i+1]+d[i+2])<400)filled++;
+  }
+  if(filled<200){
+    document.getElementById('hanziSearchResult').innerHTML='<div style="text-align:center;color:#e57462;font-size:.78rem;padding:14px">⚠️ 캔버스에 한자를 그려주세요.</div>';
+    return;
+  }
+  // 추정 공식: 평균 한 획당 약 350~450 픽셀 (캔버스 280×280, 선두께 8 기준)
+  // 실험적 보정값
+  const strokeApprox=Math.max(1,Math.min(30,Math.round(filled/420)));
+  // ±2 범위 한자 후보
+  const lo=Math.max(1,strokeApprox-2), hi=strokeApprox+2;
+  const matches=[];
+  for(const han in HAN_STROKES){
+    const s=HAN_STROKES[han];
+    if(s>=lo && s<=hi)matches.push({han, stroke:s, meaning:HAN_MEANING[han]||''});
+  }
+  // 정확한 stroke부터 정렬 + 의미 있는 것 우선
+  matches.sort((a,b)=>{
+    const da=Math.abs(a.stroke-strokeApprox), db=Math.abs(b.stroke-strokeApprox);
+    if(da!==db)return da-db;
+    return (b.meaning?1:0)-(a.meaning?1:0);
+  });
+  const topN=matches.slice(0,24);
+  let html=`<div style="font-size:.74rem;color:var(--sub);margin-bottom:7px">📊 추정 획수: <b style="color:var(--accent)">${strokeApprox}획</b> 부근 (±2) — 후보 한자 ${topN.length}자 (클릭으로 선택)</div>`;
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-height:240px;overflow-y:auto">';
+  topN.forEach(c=>{
+    html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" style="padding:9px 4px;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
+      <span style="font-family:'Noto Serif KR',serif;font-size:1.4rem;color:var(--accent);font-weight:700">${c.han}</span>
+      <span style="font-size:.6rem;color:var(--sub)">${c.stroke}획</span>
+      <span style="font-size:.58rem;color:var(--muted);line-height:1.25;text-align:center;word-break:keep-all">${(c.meaning||'').substring(0,6)}</span>
+    </button>`;
+  });
+  html+='</div>';
+  document.getElementById('hanziSearchResult').innerHTML=html;
 }
 </script>
 </body>
