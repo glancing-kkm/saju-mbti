@@ -11940,6 +11940,38 @@ function renderNamePaid(saju, nmExtra){
     <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">☯︎ <b>음양 균형:</b> ${yyBalance}</div>`;
   h+=paidWrapBody('HANGUL','🪷',`한글 글자별 오행 + 음양 풀이`, hanglBody);
 
+  // 음양 조화 깊이 카드
+  try{
+    const _yang=nameOh.yinYang['양']||0;
+    const _yin=nameOh.yinYang['음']||0;
+    const _total=_yang+_yin;
+    const _yangPct=_total?Math.round(_yang/_total*100):50;
+    const _yinPct=100-_yangPct;
+    let _balance,_balanceCol,_meaning,_advice;
+    if(Math.abs(_yang-_yin)<=1){
+      _balance='균형형';_balanceCol='#6cbf7e';
+      _meaning='이름의 양(밝음·움직임) 기운과 음(고요·내면) 기운이 균형 잡힌 결이에요. 정통 작명학 기준 가장 이상적인 형태로, 본인의 외향성·내향성이 조화롭게 발휘되도록 도와줍니다.';
+      _advice='이 균형이 평생 자산이에요. 외부 활동과 내면 다스림을 모두 잘 다루는 결로, 어떤 환경에도 적응하기 좋아요.';
+    }else if(_yang>_yin){
+      _balance='양 우세형';_balanceCol='#d4a849';
+      _meaning='양 기운('+_yangPct+'%)이 음 기운('+_yinPct+'%)보다 우세한 결이에요. 활동·표현·외향이 강해 사회적 활동·인간관계에 빠르게 적응하지만, 내면을 고요히 다지는 시간이 부족할 수 있어요.';
+      _advice='의식적으로 명상·독서·혼자만의 시간을 들이세요. 양 우세는 활동력의 자산이니, 음의 깊이를 더하면 평생 자산이 됩니다.';
+    }else{
+      _balance='음 우세형';_balanceCol='#6c8cc8';
+      _meaning='음 기운('+_yinPct+'%)이 양 기운('+_yangPct+'%)보다 우세한 결이에요. 내면·사색·고요가 강해 깊이 있는 작업·예술·연구에 잘 맞지만, 외부 표현·활동에서는 한 박자 신중한 결이에요.';
+      _advice='의식적으로 산책·운동·사람 만남을 일상에 들이세요. 음 우세는 깊이의 자산이니, 양의 활동력을 더하면 평생 자산이 됩니다.';
+    }
+    let yyBody=`<div class="lead-card" style="border-left:4px solid ${_balanceCol}"><b>이름의 음양: ${_balance}</b><br><span style="font-size:.82rem;color:var(--sub)">양 ${_yang}자(${_yangPct}%) · 음 ${_yin}자(${_yinPct}%)</span></div>`;
+    yyBody+=`<p><span class="body-q">음양은 어떻게 판단하나요?</span><br>한글 모음(중성)을 양(ㅏ·ㅑ·ㅗ·ㅛ·ㅐ·ㅒ 등)과 음(ㅓ·ㅕ·ㅜ·ㅠ·ㅡ·ㅣ 등)으로 분류해, 이름 전체의 음양 비율로 봐요. 양은 밝음·움직임·외향, 음은 고요·내면·사색을 의미합니다.</p>`;
+    yyBody+=`<div style="display:flex;align-items:stretch;height:32px;border-radius:8px;overflow:hidden;margin-top:14px;border:1px solid var(--border)">
+      <div style="flex:${_yangPct};background:linear-gradient(90deg,#d4a849,#e8c578);display:flex;align-items:center;justify-content:center;color:#1a1c1d;font-weight:800;font-size:.82rem">☀ 양 ${_yangPct}%</div>
+      <div style="flex:${_yinPct};background:linear-gradient(90deg,#4a6699,#6c8cc8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem">☾ 음 ${_yinPct}%</div>
+    </div>`;
+    yyBody+=`<p style="margin-top:14px"><span class="body-q">${_balance}의 의미는?</span><br>${_meaning}</p>`;
+    yyBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">💡 <b>음양 활용 가이드</b><br>${_advice}</p>`;
+    h+=paidWrapBody('YINYANG','☯',`이름의 음양 조화 — ${_balance}`,yyBody);
+  }catch(e){}
+
   // ── ⑤ 사주 + 이름 종합 오행 막대그래프
   let combinedDesc='';
   const newSpan=Math.max(...combined)-Math.min(...combined);
