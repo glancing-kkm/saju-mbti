@@ -7694,6 +7694,53 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('ACTIVITY','🎯','사주별 추천 활동·취미·일',acBody);
   }catch(e){}
 
+  // 자녀 작명 도우미 카드 — 본인 사주 기반 자녀 이름 추천
+  try{
+    const _yongOh=ys.main;
+    const _weakOh=oh.indexOf(Math.min(...oh));
+    const _ohName=['목','화','토','금','수'];
+    const _ohEmoji=['🌱','🔥','🪨','⚙️','💧'];
+    const _consBy=['ㄱ·ㅋ','ㄴ·ㄷ·ㄹ·ㅌ','ㅇ·ㅎ','ㅅ·ㅈ·ㅊ','ㅁ·ㅂ·ㅍ'];
+    // 자녀에 좋은 한자 음 (오행별)
+    const _nameByOh={
+      0:{boys:['건·근·균·규·곤','강','경'],girls:['가·경·고','규·기·길']},
+      1:{boys:['단·도·동·두','래·려·록·류','명·민'],girls:['단·다','연·열·려','루·란']},
+      2:{boys:['우·욱·원·윤·은','오·옥','우'],girls:['아·연·은','우·원·예']},
+      3:{boys:['서·석·선·성·수','신·세','소·송'],girls:['서·선·소','수·시·세','선·송']},
+      4:{boys:['민·범·병','빈·박·붕'],girls:['미·민·매','보·빈']}
+    };
+    // 추천 한자 (보강 오행 기반)
+    const _hanByOh={
+      0:['樹(16)나무','梧(11)벽오동','植(12)심을','森(12)수풀','榮(14)영광','蓮(14)연꽃','英(11)꽃부리','華(14)빛날'],
+      1:['炳(9)밝을','晟(11)밝을','晃(10)밝을','曦(20)햇빛','旭(6)아침해','炅(7)빛','炯(9)빛','瑩(15)밝을'],
+      2:['坤(8)땅','基(11)터','圭(6)홀','奎(9)별이름','埈(10)높을','均(7)고를','貴(12)귀할','德(15)덕'],
+      3:['銀(14)은','錫(16)주석','鎬(18)호경','鎭(18)진압할','鉉(13)솥귀','鈞(12)서른근','璇(15)옥','瑞(13)상서'],
+      4:['潤(16)윤택할','瀚(19)넓을','濬(17)깊을','澈(15)맑을','洙(10)강이름','洵(9)참','溫(13)따뜻할','泓(8)물깊을']
+    };
+    const _yongHan=_hanByOh[_yongOh];
+    const _weakHan=_hanByOh[_weakOh];
+    let chBody=`<div class="lead-card"><b>자녀 작명을 고려하시나요?</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 부족한 ${_ohEmoji[_weakOh]}${_ohName[_weakOh]} 기운과 자녀에게 보강해줄 ${_ohEmoji[_yongOh]}${_ohName[_yongOh]} 기운을 함께 고려해 자녀 이름을 추천드려요.</span></div>`;
+    chBody+=`<p><span class="body-q">자녀 이름에 어떤 결을 담아야 할까요?</span><br>자녀는 본인의 사주 결을 부분적으로 이어받으니, 본인이 부족한 영역을 자녀 이름이 보강해주면 가족 전체의 결이 더 균형 잡혀요. 또한 본인을 도와주는 <b>${_ohEmoji[_yongOh]}${_ohName[_yongOh]}</b> 기운이 들어가면 가정에 그 결이 흐릅니다.</p>`;
+    chBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid #6cbf7e;margin-top:14px">
+      <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 자녀에게 좋은 1순위 — ${_ohEmoji[_yongOh]}${_ohName[_yongOh]} 기운 (본인 도움 기운)</div>
+      <div style="font-size:.81rem;line-height:1.85"><b>자음</b>: ${_consBy[_yongOh]}이 들어간 이름<br><b>추천 한자</b>: ${_yongHan.join(' · ')}</div>
+    </div>`;
+    if(_weakOh!==_yongOh){
+      chBody+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8;margin-top:8px">
+        <div style="font-weight:700;color:#4a6699;font-size:.88rem;margin-bottom:5px">💪 본인 가족에 부족한 ${_ohEmoji[_weakOh]}${_ohName[_weakOh]} 기운 보강</div>
+        <div style="font-size:.81rem;line-height:1.85"><b>자음</b>: ${_consBy[_weakOh]}이 들어간 이름<br><b>추천 한자</b>: ${_weakHan.join(' · ')}</div>
+      </div>`;
+    }
+    // 자녀자리(시지) 풀이
+    if(saju.hp){
+      const _childBr=saju.hp.branch;
+      const _childBrKo=BRCHKO[_childBr];
+      chBody+=`<p style="margin-top:14px"><span class="body-q">본인 사주의 자녀 자리(시지)는?</span><br>본인 시지(${_childBrKo})는 자녀 자리예요. 이 자리의 결을 보면 자녀와의 인연 색깔이 보입니다. 자녀 이름은 본인 시지와 자석처럼 끌어당기는 결을 가지면 부모-자녀 관계가 더 부드러워져요.</p>`;
+    }
+    chBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>자녀 작명 시 함께 고려</b><br>· 자녀의 출생 사주(태어난 후) 4기둥을 함께 봐서 자녀 본인에게 부족한 오행을 채우는 게 가장 좋습니다<br>· 한자는 4격(원·형·이·정) 모두 길수 조합이 정통 작명학 기준 최고<br>· 자녀 출생 후 「이름풀이」 카테고리에서 본인이 정한 이름을 시뮬하실 수 있어요</p>`;
+    h+=paidWrapBody('CHILD_NAME','👶','자녀 작명 도우미 — 본인 사주 기반 추천',chBody);
+  }catch(e){}
+
   // 사주 내부 합·충·형 종합 풀이
   try{
     const _allRels=findBranchRelations(saju);
