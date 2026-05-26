@@ -12365,11 +12365,25 @@ function renderNamePaid(saju, nmExtra){
 
   // 한자 4격 + 81수리 (있을 때만)
   const strokes=Object.assign({surname:0,given1:0,given2:0},nmExtra.strokes||{});
-  const han=nmExtra.han||{surname:'',given1:'',given2:''};
+  const han=Object.assign({surname:'',given1:'',given2:''},nmExtra.han||{});
   // 사용자가 한자 입력했지만 획수 누락 시 HAN_STROKES에서 자동 보강
   if(han.surname && !strokes.surname && HAN_STROKES[han.surname])strokes.surname=HAN_STROKES[han.surname];
   if(han.given1 && !strokes.given1 && HAN_STROKES[han.given1])strokes.given1=HAN_STROKES[han.given1];
   if(han.given2 && !strokes.given2 && HAN_STROKES[han.given2])strokes.given2=HAN_STROKES[han.given2];
+  // 사용자가 한자 입력 안 했으면 한글 음 첫 후보 자동 사용 (모든 한자 표시 보장)
+  let hanAutoFilled=false;
+  if(!han.surname){
+    const c=getHanCandidates(surname.charAt(0));
+    if(c && c.length){han.surname=c[0].han; strokes.surname=c[0].stroke||HAN_STROKES[c[0].han]||0; hanAutoFilled=true;}
+  }
+  if(!han.given1 && given.length>=1){
+    const c=getHanCandidates(given.charAt(0));
+    if(c && c.length){han.given1=c[0].han; strokes.given1=c[0].stroke||HAN_STROKES[c[0].han]||0; hanAutoFilled=true;}
+  }
+  if(!han.given2 && given.length>=2){
+    const c=getHanCandidates(given.charAt(1));
+    if(c && c.length){han.given2=c[0].han; strokes.given2=c[0].stroke||HAN_STROKES[c[0].han]||0; hanAutoFilled=true;}
+  }
   const hasHan=(strokes.surname>0)&&(strokes.given1>0);
   let suri=null;
   if(hasHan){
@@ -12406,7 +12420,7 @@ function renderNamePaid(saju, nmExtra){
   // ── ① 종합 점수 카드 (paidWrapBody 형식)
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
-  const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}</div>`:'';
+  const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}${hanAutoFilled?'<span style="font-size:.7rem;color:var(--muted);margin-left:6px;font-family:inherit;letter-spacing:0">(자동 추천)</span>':''}</div>`:'';
   let summaryBody=`<div style="text-align:center;margin:6px 0 14px">
       <div style="font-family:'Noto Serif KR',serif;font-size:1.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
       ${hanDisplay}
@@ -12418,7 +12432,7 @@ function renderNamePaid(saju, nmExtra){
     </div>
     <p style="margin-top:14px;font-size:.83rem;line-height:1.9">「${full}」이라는 이름이 본인 사주와 얼마나 잘 어울리는지를 정통 작명학 기준으로 종합한 점수예요. 한글 소리의 오행, 한자 획수의 길흉(4격·81수리), 한자 글자가 품은 의미·기운까지 모두 봐서 산출했어요.</p>
     <p style="font-size:.83rem;line-height:1.9">100점에 가까울수록 본인 사주의 약한 부분을 이름이 자연스럽게 채워주고, 본인을 도와주는 기운(용신)을 이름이 더해주는 결이에요. 점수가 낮다고 무조건 나쁜 이름은 아니고, 의식적으로 보완해야 할 부분이 더 많다는 뜻으로 봐주시면 돼요.</p>
-    ${hasHan?'':'<div style="margin-top:12px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;border-left:3px solid var(--earth);font-size:.78rem;color:var(--sub);line-height:1.75">💡 한자와 획수까지 입력하시면 정통 작명학 기준 <b>4격(원·형·이·정) + 81수리 길흉 + 자원오행 + 한자 의미</b>까지 함께 풀어드려요. 다시 입력 화면으로 돌아가서 한자 칸을 채워보세요.</div>'}`;
+    ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid #6cbf7e;font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 자동 매핑해 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능합니다.</div>':''}`;
   h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
 
   // ── ② 한자 4격 + 81수리 (한자 있을 때만)
