@@ -7602,6 +7602,39 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('YEAR10','📅','향후 10년 연도별 핵심 운세',yrBody);
   }catch(e){}
 
+  // 길일 추천 카드 — 향후 12개월 결혼·이주·창업 적기
+  try{
+    const _today=new Date();
+    const _lucky=[];
+    for(let i=1;i<=365;i++){
+      const d=new Date(_today.getTime()+i*86400000);
+      const f=calcDailyFortune(saju,d);
+      if(f.total>=85)_lucky.push({date:d,score:f.total,tg:f.tg,rel:f.rel});
+    }
+    _lucky.sort((a,b)=>b.score-a.score);
+    const _topN=Math.min(_lucky.length,10);
+    if(_topN>0){
+      const _wkDay=['일','월','화','수','목','금','토'];
+      let ldBody=`<p><span class="body-q">향후 1년 안 가장 결이 좋은 날은?</span><br>본인 사주 + 향후 365일 매일 일진을 자동 계산해, 결혼·이주·창업·계약·이사 같은 큰 결정을 배치하기 좋은 길일 상위 10일을 정리했어요.</p>`;
+      ldBody+=`<div style="display:flex;flex-direction:column;gap:7px;margin-top:14px">`;
+      _lucky.slice(0,_topN).forEach((d,i)=>{
+        const ds=`${d.date.getFullYear()}.${String(d.date.getMonth()+1).padStart(2,'0')}.${String(d.date.getDate()).padStart(2,'0')}`;
+        const wk=_wkDay[d.date.getDay()];
+        const _relK={'합':'자석처럼 끌어당김','반합':'같은 방향 묶임','반합약':'잔잔한 협력','동':'본인 색 강화','평':'평이'}[d.rel.kind]||d.rel.kind;
+        ldBody+=`<div style="padding:9px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:4px solid #6cbf7e;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div style="font-weight:800;color:#2e7d32;font-size:.84rem;min-width:90px">${i+1}. ${ds}<span style="font-size:.72rem;color:var(--sub);margin-left:3px">(${wk})</span></div>
+            <span style="font-size:.74rem;color:var(--sub)">${plainTG(d.tg)}·${_relK}</span>
+          </div>
+          <span style="padding:2px 9px;border-radius:11px;background:#6cbf7e;color:#1a1c1d;font-weight:700;font-size:.72rem">${d.score}점</span>
+        </div>`;
+      });
+      ldBody+=`</div>`;
+      ldBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>길일 활용 가이드</b><br>위 날짜는 본인 사주 + 그날 일진의 만남이 가장 결이 좋은 날이에요. 결혼·약혼·이주·창업·중요 계약·승진 보고·면접 같은 큰 결정을 이 날에 배치하시면 결실이 가장 큽니다. 가족 길일·종교 길일·계절 등 다른 요소와 함께 종합 판단하세요.</p>`;
+      h+=paidWrapBody('LUCKY_DAYS','🍀','향후 1년 안 길일 ★ — 결혼·이주·창업 적기',ldBody);
+    }
+  }catch(e){}
+
   // 사주 내부 합·충·형 종합 풀이
   try{
     const _allRels=findBranchRelations(saju);
