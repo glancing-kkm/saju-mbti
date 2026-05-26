@@ -4809,6 +4809,63 @@ function renderNewyearFortune(saju,y){
   monBody+=`<p>🎯 <b>결정적 시기 — ${decisive}월</b><br>한 해 중 흐름이 가장 강한 달입니다. 1년에 한 번 있는 결정적 시기이므로, 가장 큰 결정을 이 달에 내리세요.</p>`;
   h+=paidWrapBody('MONTHS','📅','12개월 흐름 + 길월·주의월·결정적 시기',monBody);
 
+  // ─── Phase BN: 월별 상세 풀이 (1~12월 각각 좋은점·주의점·추천 행동) ───
+  let monthDetailBody=`<p>한 해 12개월 각각의 상세 풀이입니다. 매월의 좋은점·주의점·추천 행동을 통해 굵직한 결정을 어느 달에 배치할지 한눈에 알 수 있어요.</p>`;
+  monthDetailBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+  monthsArr.forEach(o=>{
+    const tgM=tenGod(saju.dp.stem, o.mp.stem);
+    const btgM=tenGod(saju.dp.stem, BR_MAIN_STEM[o.mp.branch]);
+    const relM=brRel(saju.dp.branch, o.mp.branch);
+    const sc=o.sc;
+    const gM=dailyGrade(sc.total);
+    const isLucky=lucky.includes(o.mm);
+    const isTough=tough.includes(o.mm);
+    const isDecisive=o.mm===decisive;
+    // 좋은점 — 십신 + 분야 max
+    const fld=[{k:'wealth',n:'재물·돈'},{k:'love',n:'연애·관계'},{k:'career',n:'직장·직업'},{k:'health',n:'건강'}];
+    const fldMax=fld.reduce((m,f)=>sc[f.k]>m.s?{k:f.k,n:f.n,s:sc[f.k]}:m,{s:-1});
+    const fldMin=fld.reduce((m,f)=>sc[f.k]<m.s||m.s<0?{k:f.k,n:f.n,s:sc[f.k]}:m,{s:101});
+    let goodLine='';
+    if(['정재','편재','식신'].includes(tgM))goodLine=`${fldMax.n} 영역의 흐름이 좋고, ${tgM==='정재'?'꾸준한 수입·저축':tgM==='편재'?'활동·외부 거래':'재능·표현 활동'}에 결이 잘 맞아요`;
+    else if(['정관','편관'].includes(tgM))goodLine=`책임·직책·시험·승진에 결이 좋고, 공식 자리·문서 처리에 잘 맞는 달이에요`;
+    else if(['정인','편인'].includes(tgM))goodLine=`학습·자격증·전문성 강화·문서 활동에 결이 좋은 달이에요`;
+    else if(['상관'].includes(tgM))goodLine=`창작·콘텐츠·SNS·표현 활동에 결이 좋은 달이에요`;
+    else if(['비견','겁재'].includes(tgM))goodLine=`동료·친구·인맥 활동이 활발한 달이에요`;
+    if(isLucky)goodLine=`🍀 한 해의 길월 — `+goodLine+'. 굵직한 결정·계약·새 시작을 이 달에 배치하세요';
+    if(isDecisive)goodLine=`🎯 결정적 시기 — 한 해 중 흐름이 가장 강한 달. `+goodLine;
+    // 주의점 — 관계(충/형/원진/파/해) + 분야 min
+    let warnLine='';
+    if(relM.kind==='충')warnLine=`본인 자리와 정면으로 부딪히는 결 — 큰 결정·이동·매각은 다른 달로 미루세요`;
+    else if(relM.kind==='형'||relM.kind==='자형')warnLine=`서로 깎이는 결 — 시비·계약 분쟁·법적 검토가 필요한 달이라 계약서 한 번 더 확인`;
+    else if(relM.kind==='원진')warnLine=`이유 없이 거슬리는 결 — 가까운 사람의 사소한 말투에 즉답을 한 박자 늦추기`;
+    else if(relM.kind==='파')warnLine=`시작은 좋아도 마무리가 어긋나기 쉬운 결 — 잔금·계약 마무리를 한 번 더 점검`;
+    else if(relM.kind==='해')warnLine=`은근한 방해·구설이 따라붙는 결 — 입조심·말조심으로 결을 지키세요`;
+    else if(tgM==='겁재')warnLine=`동업 자금·과시 소비·충동 투자 주의 — 큰 결정은 24시간 룰 적용`;
+    else if(tgM==='편관')warnLine=`압박·도전이 큰 달 — 정면 돌파보다 측면 우회로 결을 풀어가세요`;
+    else if(tgM==='상관')warnLine=`톡톡 튀는 표현이 강한 달 — 윗사람·권위와의 마찰을 의식적으로 다스리세요`;
+    else if(sc.total<55)warnLine=`전반적 흐름이 한 박자 느린 달 — 정리·내실·휴식의 카드를 꺼내세요`;
+    else warnLine=`평이한 흐름의 달 — 자기 페이스 유지 + 미뤄둔 작업 차분히 처리`;
+    if(isTough)warnLine=`⚠️ 한 해의 주의월 — `+warnLine;
+    // 추천 행동 — 분야 max 기반
+    let tipLine='';
+    if(fldMax.k==='wealth')tipLine=`이 달은 재물 활동(저축·자산 점검·작은 투자)에 무게를 두면 결실이 따라와요`;
+    else if(fldMax.k==='love')tipLine=`이 달은 관계 활동(소개팅·고백·진전 대화·재회)에 무게를 두면 결이 부드러워요`;
+    else if(fldMax.k==='career')tipLine=`이 달은 직업 활동(이직 면접·승진 추진·창업 준비)에 무게를 두면 결이 잘 맞아요`;
+    else tipLine=`이 달은 건강·일상 루틴 정비(운동·식단·수면)에 무게를 두면 한 해 체력이 든든해져요`;
+    monthDetailBody+=`<div style="padding:11px 13px;background:${isDecisive?'rgba(212,175,73,.12)':isLucky?'rgba(108,191,126,.06)':isTough?'rgba(229,116,98,.05)':'var(--bg-deep)'};border-radius:9px;border-left:4px solid ${isDecisive?'var(--accent)':isLucky?'#6cbf7e':isTough?'#e57462':'var(--border)'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem">📅 <b>${o.mm}월</b> · ${STEMKO[o.mp.stem]}${BRCHKO[o.mp.branch]} 흐름</div>
+        <span style="padding:2px 9px;border-radius:12px;background:${gM.bg};color:${gM.color};font-size:.7rem;font-weight:700;border:1px solid ${gM.color}55">${gM.lab} ${sc.total}점</span>
+      </div>
+      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:#6cbf7e;font-weight:700">✓ 좋은점:</span> ${goodLine}</div>
+      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:#e57462;font-weight:700">⚠ 주의점:</span> ${warnLine}</div>
+      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:var(--accent);font-weight:700">✦ 추천 행동:</span> ${tipLine}</div>
+    </div>`;
+  });
+  monthDetailBody+=`</div>`;
+  monthDetailBody+=`<p style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.78rem;line-height:1.8">📌 <b>월별 풀이를 어떻게 활용하나요?</b><br>① 길월(🍀)에는 굵직한 결정·계약을 배치하세요 ② 주의월(⚠️)에는 큰 결정을 미루고 내실에 무게를 두세요 ③ 결정적 시기(🎯)는 한 해 중 가장 큰 결정을 내리는 달이에요 ④ 매월의 추천 행동을 다이어리에 메모해두면 한 해 흐름을 놓치지 않습니다.</p>`;
+  h+=paidWrapBody('MONTHDETAIL','🗓','1~12월 월별 상세 풀이 — 좋은점·주의점·추천 행동',monthDetailBody);
+
   // 분기별 행동 지침
   let qBody=`<p>한 해를 4분기로 나눠본 행동 지침입니다. 분기별 평균 점수를 통해 큰 흐름을 보고, 굵직한 행동을 어느 분기에 배치할지 가이드입니다.</p>`;
   qBody+=`<p><b>1분기 (1~3월)</b> · 평균 ${qAvg(Q1)}점 (${dailyGrade(qAvg(Q1)).lab})<br>${qHint(qAvg(Q1))}의 카드 — ${qAvg(Q1)>=70?'한 해 시작과 동시에 굵직한 결정·계약·이직 행동을 배치하면 결실이 커요.':qAvg(Q1)>=55?'평이한 흐름으로 자기 페이스 유지에 좋은 분기.':'정리·관망·휴식의 카드를 꺼내고, 큰 결정은 다음 분기로.'}</p>`;
@@ -9492,9 +9549,28 @@ function buildNewyearSummaryA4Html(){
       </div>
       <div class="a4-col-right">
         <div class="a4-section">
-          <div class="a4-h">📅 12개월 흐름</div>
+          <div class="a4-h">📅 12개월 흐름 + 월별 한 줄 풀이</div>
           <div class="a4-mo-grid">${monthBars}</div>
           <div class="a4-oh-legend" style="margin-top:6px">🍀 길월 <b>${monthLab(lucky)}</b> · ⚠️ 주의월 <b>${monthLab(tough)}</b> · ⭐ 결정적 <b>${decisive}월</b></div>
+          <div style="margin-top:7px;display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;font-size:.66rem;line-height:1.45">
+            ${monthsArr.map(o=>{
+              const tgM=tenGod(saju.dp.stem,o.mp.stem);
+              const relM=brRel(saju.dp.branch,o.mp.branch);
+              const isL=lucky.includes(o.mm), isT=tough.includes(o.mm), isD=decisive===o.mm;
+              let hint='';
+              if(['정재','편재','식신'].includes(tgM))hint='재물·활동';
+              else if(['정관','편관'].includes(tgM))hint='책임·시험';
+              else if(['정인','편인'].includes(tgM))hint='학습·문서';
+              else if(tgM==='상관')hint='창작·표현';
+              else hint='동료·인맥';
+              if(relM.kind==='충')hint+='/충 변동';
+              else if(relM.kind==='형')hint+='/형 시비';
+              else if(relM.kind==='원진')hint+='/원진 거슬림';
+              const mark=isD?'🎯':isL?'🍀':isT?'⚠️':'·';
+              const col=isD?'#d4af37':isL?'#6cbf7e':isT?'#e57462':'#666';
+              return `<div style="color:${col}"><b>${mark}${o.mm}월</b>(${o.sc.total}): ${hint}</div>`;
+            }).join('')}
+          </div>
         </div>
 
         <div class="a4-section">
