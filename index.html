@@ -7635,6 +7635,65 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
   }catch(e){}
 
+  // 사주별 추천 활동·취미·여가 카드
+  try{
+    const _so=SOH[saju.dp.stem];
+    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
+    const _top=Object.entries(_sip).sort((a,b)=>b[1]-a[1])[0][0];
+    const _yongOh=ys.main;
+    const _weakOh=oh.indexOf(Math.min(...oh));
+    const _actByTop={
+      bigeop:{
+        title:'자기 영역·자기 페이스의 결',
+        hobby:['🏃 1인 운동 (수영·달리기·등산·라이딩)','🎨 1인 창작 (사진·글쓰기·도예·악기)','📚 독서·자기 학습 (독립적 몰입)','🧘 명상·요가 (자기 다스리기)','🏕 캠핑·낚시 (혼자만의 시간)'],
+        career:['전문 자격 도전 (변호사·회계사·의사 등)','1인 사업·창업 준비','블로그·SNS 자기 브랜딩'],
+        avoid:['단체 활동 위주의 동호회 (본인 페이스가 깨짐)','동업·공동 사업 (본인 색이 강해 갈등)']
+      },
+      siksang:{
+        title:'표현·풀어내는 결',
+        hobby:['🎨 예술·창작 (그림·노래·춤·연주)','🍳 요리·베이킹·홈쿡','📝 글쓰기·블로그·SNS','🎤 노래방·합창·연극·낭독','🌱 가드닝·반려동물 돌봄'],
+        career:['창작·콘텐츠·미디어·교육 분야','요식·서비스·복지 분야','강의·코칭·진행자'],
+        avoid:['표현 억압된 환경 (규율 엄격한 조직)','단조롭고 반복적인 업무 (창의 마비)']
+      },
+      jaesung:{
+        title:'현실·자원의 결',
+        hobby:['💼 재테크·투자·경제 공부','🌍 여행·맛집 탐방·문화 체험','🏃 활동적 운동 (헬스·테니스·골프)','📱 IT·신기술·트렌드 탐색','🛍 쇼핑·인테리어·홈가꾸기'],
+        career:['영업·세일즈·중개·무역','금융·투자·자산 관리','사업·창업·자영업'],
+        avoid:['움직임 적은 사무직 (활동 욕구 억제)','한 곳에 매여 있는 환경 (이동 욕구)']
+      },
+      gwansung:{
+        title:'책임·규칙의 결',
+        hobby:['📚 클래식 음악·고전 문학·역사 학습','🎯 체계적 운동 (필라테스·태권도·검도)','🍵 다도·서예·고전 공예','🏛 박물관·미술관·역사 유적 탐방','🎓 자격증·학위 준비'],
+        career:['공무원·공기업·대기업 관리직','법조·의료·교육 분야','임원·관리자·리더 자리'],
+        avoid:['규율 없는 자유로운 환경 (불안)','책임 없는 단순 업무 (의욕 저하)']
+      },
+      insung:{
+        title:'학습·받아들이는 결',
+        hobby:['📚 깊이 있는 독서·학문 연구','🧘 명상·요가·종교·철학','🎨 한국화·서예·고전 음악','🌿 자연 탐방·식물·약초 공부','✍ 글쓰기·번역·전문서 집필'],
+        career:['교육·연구·문화·복지 분야','종교·심리·상담·의학','작가·번역가·편집자·도서관 사서'],
+        avoid:['시끄러운 외부 활동 환경','즉흥적·표면적 만남 위주']
+      }
+    };
+    const _act=_actByTop[_top];
+    const _ohActivity=[
+      '🌱 산책·등산·식물 가꾸기 (목 보강)',
+      '🔥 요가·표현 활동·노래 (화 보강)',
+      '🪨 명상·정원 가꾸기·요리 (토 보강)',
+      '⚙️ 정리·필라테스·호흡 운동 (금 보강)',
+      '💧 수영·독서·야간 산책 (수 보강)'
+    ];
+    let acBody=`<div class="lead-card"><b>본인 사주의 핵심 결: ${_act.title}</b><br><span style="font-size:.82rem;color:var(--sub)">본인이 가장 자연스럽게 쓰는 결에 맞는 활동·취미가 일상의 결을 살려줍니다.</span></div>`;
+    acBody+=`<p><span class="body-q">어떤 취미·여가가 잘 맞을까요?</span></p>`;
+    acBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_act.hobby.map(j=>`<div style="padding:8px 12px;background:rgba(108,191,126,.06);border-left:3px solid #6cbf7e;border-radius:5px;font-size:.82rem">${j}</div>`).join('')}</div>`;
+    acBody+=`<p style="margin-top:14px"><span class="body-q">어떤 일·자기계발이 결이 살아날까요?</span></p>`;
+    acBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_act.career.map(j=>`<div style="padding:8px 12px;background:rgba(212,175,73,.06);border-left:3px solid #d4a849;border-radius:5px;font-size:.82rem">· ${j}</div>`).join('')}</div>`;
+    acBody+=`<p style="margin-top:14px"><span class="body-q">한 박자 살피는 활동은?</span></p>`;
+    acBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_act.avoid.map(j=>`<div style="padding:8px 12px;background:rgba(229,116,98,.05);border-left:3px solid #e57462;border-radius:5px;font-size:.82rem">· ${j}</div>`).join('')}</div>`;
+    acBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,140,200,.06),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid #6c8cc8;font-size:.82rem"><b>💪 본인을 도와주는 ${OHNAME[_yongOh]} 기운 보강 활동</b><br>${_ohActivity[_yongOh]} — 하루 30분만 일상에 들이세요. 본인 결이 한 단계 살아납니다.</p>`;
+    acBody+=`<p style="margin-top:8px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>본인 결에 맞는 활동의 효과</b><br>본인 사주의 결과 맞는 취미·일은 「자연스럽게 몰입되고 결과가 큰」 영역이에요. 반대로 결과 안 맞는 일은 노력 대비 성과가 적으니, 무리해서 안 맞는 일을 붙들기보다 본인 결에 맞는 영역에 시간을 쓰세요.</p>`;
+    h+=paidWrapBody('ACTIVITY','🎯','사주별 추천 활동·취미·일',acBody);
+  }catch(e){}
+
   // 사주 내부 합·충·형 종합 풀이
   try{
     const _allRels=findBranchRelations(saju);
