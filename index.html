@@ -12855,6 +12855,36 @@ function renderNamePaid(saju, nmExtra){
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
   const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}${hanAutoFilled?'<span style="font-size:.7rem;color:var(--muted);margin-left:6px;font-family:inherit;letter-spacing:0">(자동 추천)</span>':''}</div>`:'';
+  // ── 종합 총평: 좋은점·보완점·주의점 자동 생성
+  const _suriGoodCnt=suri?[suri.won,suri.hyeong,suri.i,suri.jeong].filter(g=>g.good).length:0;
+  const _suriGoodNames=suri?['won','hyeong','i','jeong'].filter(k=>suri[k].good).map(k=>({won:'어린 시절(원격)',hyeong:'청년기(형격)',i:'사회 관계(이격)',jeong:'평생 총운(정격)'}[k])):[];
+  const _suriBadNames=suri?['won','hyeong','i','jeong'].filter(k=>!suri[k].good).map(k=>({won:'어린 시절(원격)',hyeong:'청년기(형격)',i:'사회 관계(이격)',jeong:'평생 총운(정격)'}[k])):[];
+  // 좋은점 자동
+  const _goods=[];
+  if(nameOh.oh[ys.main]>0)_goods.push(`본인을 도와주는 <b>${ohNames[ys.main]}</b> 기운이 이름에 들어있어요. 한글 소리의 결이 사주의 약한 부분을 자연스럽게 채워줍니다.`);
+  if(_suriGoodCnt>=3)_goods.push(`한자 4가지 자리 중 <b>${_suriGoodCnt}개</b>가 길수예요 (${_suriGoodNames.join(', ')}). 인생 시기 대부분에서 흐름이 잘 풀리는 작명입니다.`);
+  else if(_suriGoodCnt===2)_goods.push(`한자 4가지 자리 중 <b>${_suriGoodNames.join(', ')}</b>가 길수예요. 이 시기에 본인이 그릇을 키우면 다른 시기 흉수도 함께 풀려요.`);
+  else if(_suriGoodCnt===1)_goods.push(`한자 4가지 자리 중 <b>${_suriGoodNames[0]||''}</b>이 길수예요. 이 자리를 본인 강점으로 살려 보세요.`);
+  const _yangPct=(nameOh.yinYang['양']||0), _yinPct=(nameOh.yinYang['음']||0);
+  if(Math.abs(_yangPct-_yinPct)<=1)_goods.push(`이름에 <b>양과 음 기운이 균형</b>잡혀 있어요. 활동적인 면과 차분한 면이 함께 자라는 작명입니다.`);
+  const combinedSpan=Math.max(...combined)-Math.min(...combined);
+  if(combinedSpan<=4)_goods.push(`사주 오행 + 이름 오행 합계의 <b>편차가 작아</b>(±${combinedSpan}), 전체 균형이 잡힌 결입니다.`);
+  if(_goods.length===0)_goods.push(`기본 점수대(${nameScore}점)는 평이한 흐름이에요. 아래 분야별 풀이를 참고해 본인 강점을 살려 보세요.`);
+  // 보완해야 할 점 자동
+  const _improves=[];
+  if(nameOh.oh[ys.main]===0)_improves.push(`본인을 도와주는 <b>${ohNames[ys.main]}</b> 기운이 이름 한글에 없어요. 본인 활동에서 ${ys.main===0?'녹색 옷·식물·교육 분야':ys.main===1?'붉은색·에너지·미디어':ys.main===2?'노란색·부동산·신뢰':ys.main===3?'흰색·금속·법무':'검은색·물·이동'}을 의식적으로 자주 만나면 결을 채울 수 있어요.`);
+  if(nameOh.oh[(ys.main+2)%5]>=2)_improves.push(`이름에 본인 도움 기운을 <b>치는 기운</b>이 두 자 이상 들어있어요. 외부 색상·환경을 본인 도움 기운 쪽으로 의식적으로 맞춰 균형을 다지면 좋아요.`);
+  if(_suriGoodCnt<=1)_improves.push(`한자 4가지 자리 중 길수가 적어요. 같은 한글 이름이라도 <b>한자(획수)를 다르게</b> 쓰면 길수로 바뀔 수 있으니, 한자 칸을 다시 살펴보거나 아래 추천 한자 조합을 참고해보세요.`);
+  if(sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]===0)_improves.push(`본인 사주에서 가장 약한 <b>${ohNames[sajuMinIdx]}</b> 기운이 이름에도 없어요. 식단·운동·인테리어로 이 기운을 보강해주세요.`);
+  if(_improves.length===0)_improves.push(`전반적으로 보완할 큰 약점이 보이지 않아요. 본인 강점을 더 갈고 닦는 방향으로 가시면 좋아요.`);
+  // 주의해야 할 점 자동
+  const _cautions=[];
+  if(_suriGoodCnt===0)_cautions.push(`<b>4가지 자리가 모두 흉수</b>예요. 같은 한글 발음이라도 한자를 바꾸면 결이 완전히 달라지니, 다시 한자 조합을 점검해보세요.`);
+  if(_suriBadNames.includes('평생 총운(정격)'))_cautions.push(`<b>평생 총운(정격)</b>이 흉수예요. 4가지 자리 중 무게가 가장 큰 자리라, 30~40대부터 자산·건강·인맥을 분산해 차곡차곡 쌓는 「장기 분산 전략」이 가장 중요해요.`);
+  if(_suriBadNames.includes('청년기(형격)'))_cautions.push(`<b>청년기(형격)</b>가 흉수예요. 20~40대에 큰 결정 전 더 신중하게 시뮬레이션해보고, 한 분야에 꾸준히 시간을 투자하는 인내심이 결정적이에요.`);
+  if(Math.abs(_yangPct-_yinPct)>=3)_cautions.push(`이름이 <b>${_yangPct>_yinPct?'양':'음'} 기운에 치우쳐</b> 있어요. ${_yangPct>_yinPct?'차분히 내면을 다지는 시간(독서·명상·일기)':'밝은 외부 활동·교류(모임·운동·여행)'}을 의식적으로 늘려 균형을 잡으세요.`);
+  if(_cautions.length===0)_cautions.push(`큰 주의 사항은 없어요. 다만 모든 이름은 본인이 어떻게 쓰는지에 따라 결이 바뀌니, 한자가 품은 의미를 자주 떠올리며 살아주세요.`);
+
   let summaryBody=`<div style="text-align:center;margin:6px 0 14px">
       <div style="font-family:'Noto Serif KR',serif;font-size:1.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
       ${hanDisplay}
@@ -12864,18 +12894,65 @@ function renderNamePaid(saju, nmExtra){
       <div class="score-ring ${ringCls}"><div class="score-num ${numCls}">${nameScore}</div><div class="score-grade">/ 100</div></div>
       <div style="font-size:.95rem;font-weight:700;color:${gradeColor}">${grade}</div>
     </div>
-    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">「${full}」이라는 이름이 본인 사주와 얼마나 잘 어울리는지를 정통 작명학 기준으로 종합한 점수예요. 한글 소리의 오행, 한자 획수의 길흉(4격·81수리), 한자 글자가 품은 의미·기운까지 모두 봐서 산출했어요.</p>
-    <p style="font-size:.83rem;line-height:1.9">100점에 가까울수록 본인 사주의 약한 부분을 이름이 자연스럽게 채워주고, 본인을 도와주는 기운(용신)을 이름이 더해주는 결이에요. 점수가 낮다고 무조건 나쁜 이름은 아니고, 의식적으로 보완해야 할 부분이 더 많다는 뜻으로 봐주시면 돼요.</p>
+    <p style="margin-top:14px;font-size:.83rem;line-height:1.9">「${full}」이라는 이름이 본인 사주와 얼마나 잘 어울리는지를 정통 작명학 기준으로 종합한 점수예요. 한글 소리의 오행, 한자 획수의 길흉(4가지 자리·81수리), 한자 글자가 품은 의미·기운까지 모두 봐서 산출했어요.</p>
+    <p style="font-size:.83rem;line-height:1.9">100점에 가까울수록 본인 사주의 약한 부분을 이름이 자연스럽게 채워주고, 본인을 도와주는 기운(용신)을 이름이 더해주는 흐름이에요. 점수가 낮다고 무조건 나쁜 이름은 아니고, 의식적으로 보완해야 할 부분이 더 많다는 뜻으로 봐주시면 돼요.</p>
+
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px">
+      <div style="padding:12px 14px;background:rgba(108,191,126,.08);border-left:3px solid #6cbf7e;border-radius:8px">
+        <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:6px">✓ 이 이름의 좋은점</div>
+        <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_goods.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
+      </div>
+      <div style="padding:12px 14px;background:rgba(212,175,73,.07);border-left:3px solid var(--accent);border-radius:8px">
+        <div style="font-weight:700;color:var(--accent);font-size:.88rem;margin-bottom:6px">✦ 보완해야 할 점</div>
+        <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_improves.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
+      </div>
+      <div style="padding:12px 14px;background:rgba(229,116,98,.06);border-left:3px solid #e57462;border-radius:8px">
+        <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:6px">⚠ 주의해야 할 점</div>
+        <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_cautions.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
+      </div>
+    </div>
+
     ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid #6cbf7e;font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 자동 매핑해 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능합니다.</div>':''}`;
   h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
 
   // ── ② 한자 4격 + 81수리 (한자 있을 때만)
   if(hasHan){
+    // 각 격에 대해 시기·길수 시 어떤 운/흉수 시 무엇을 조심·해야 할 일을 자세히 풀이
+    const _detailFor=(key, isGood)=>{
+      const M={
+        won:{
+          period:'태어나서 약 20세까지의 어린 시절·학창 시절',
+          goodWhen:'부모님 사랑과 가정의 뒷받침이 두텁고, 학교에서 성격이 둥글게 자라며 또래 친구·선생님과 자연스러운 관계를 맺어요. 큰 사고나 병치레 없이 기초 체력과 마음 그릇이 잘 다져지는 시기예요.',
+          warnWhen:'유년기·청소년기에 가정 환경 변화·이사·전학·또래 갈등이 잦거나, 부모님과의 거리감·외로움을 자주 느낄 수 있어요. 한 가지 자기 표현 방법(일기·운동·악기·미술 등)을 어렸을 때부터 꾸준히 길러주면 흉수의 결을 풀어가는 자기 안의 자리가 만들어져요.',
+          tip:'어린 시절 가정의 사랑과 기초 학습이 평생을 받쳐주는 자리예요. 본인이 부모라면 자녀에게 안정감을 충분히 주시고, 본인이 이 시기를 회상한다면 그때의 결핍을 지금 어른인 본인이 다시 채워주는 행동(꾸준한 자기 돌봄)이 도움이 돼요.'
+        },
+        hyeong:{
+          period:'대략 20대~40대 — 청년기를 거쳐 인생의 중심이 되는 시기',
+          goodWhen:'직장·진로·결혼·창업 같은 인생의 큰 결정이 잘 풀려요. 본인이 노력한 만큼 결실이 나오고, 한 분야에서 본인 자리를 잡아가는 흐름이 자연스러워요. 인생 후반의 그릇이 이 시기에 거의 결정돼요.',
+          warnWhen:'직장 변동·이직·진로 고민·관계 갈등이 반복되거나, 같은 노력에 비해 결실이 늦게 따라올 수 있어요. 큰 결정 전에 더 신중하게 시뮬레이션해보고, 한 분야에 꾸준히 시간을 투자하는 「인내심」이 이 흉수를 푸는 결정적 열쇠예요.',
+          tip:'4격 중 인생의 무게가 가장 큰 자리예요. 이 시기가 길수면 도약을, 흉수면 인내를 선택하는 자세로 가시면 됩니다. 본인이 지금 이 시기에 있다면 5년 단위 목표를 세우고 한 가지에 집중해보세요.'
+        },
+        i:{
+          period:'평생에 걸친 사회 관계·동료·인맥·외부 환경의 결',
+          goodWhen:'본인을 도와주는 귀인이 자주 등장하고, 동료·상사·후배 관계가 부드러워요. 인맥이 곧 자산이 되는 흐름이라, 사람을 통해 기회가 들어오는 일이 자연스러워요.',
+          warnWhen:'동료·동업·인간관계에서 갈등이 자주 생기거나, 본인이 베푼 것에 비해 돌아오는 게 적게 느껴질 수 있어요. 사람을 너무 쉽게 믿거나 너무 닫지 말고, 일정한 거리감을 두면서 깊이 있는 관계 2~3명을 길게 가져가는 전략이 흉수의 결을 풀어요.',
+          tip:'본인이 사람 사이에서 어떤 자리를 잡는지를 보여주는 거울이에요. 길수면 인맥을 자산처럼 키우시고, 흉수면 본인을 보호할 수 있는 단단한 자기만의 분야를 먼저 만든 다음 관계를 넓혀가세요.'
+        },
+        jeong:{
+          period:'평생을 통틀어 가장 중요한 종합 운 + 50대 이후 노년의 결실',
+          goodWhen:'인생 전반의 흐름이 안정적이고, 노년에 자녀·자산·건강·명예 어느 한쪽으로 결실이 잘 모여요. 4격 중 가장 무게가 큰 자리라서 이게 길수면 다른 격에 약간의 흉수가 있어도 전체 흐름이 잘 풀려요.',
+          warnWhen:'인생 후반의 결실이 흩어지거나 노년에 자산·건강 문제로 힘들 수 있어요. 30대~40대부터 자산·건강·인맥을 분산해 차곡차곡 쌓아두는 「장기 분산 전략」이 이 흉수를 푸는 가장 큰 보완책이에요. 한 곳에 몰빵하지 마세요.',
+          tip:'4격 중 가장 무게가 큰 자리라 이게 길수면 종합 운이 매우 좋고, 흉수면 다른 3격이 모두 길수여도 전체 균형이 흔들릴 수 있어요. 지금부터 본인 인생의 「세 다리(자산·건강·관계)」를 균형 있게 만드세요.'
+        }
+      };
+      const d=M[key];
+      return isGood?{lab:'길수 시기',body:d.goodWhen,tip:d.tip}:{lab:'흉수 보완',body:d.warnWhen,tip:d.tip};
+    };
     const gyeokTable=[
-      {k:'원격(元)',sub:'초년·기초운',data:suri.won, story:'어린 시절부터 성인 전까지의 결과 노년의 마무리'},
-      {k:'형격(亨)',sub:'청년기·중심운',data:suri.hyeong, story:'20대~40대 인생의 중심이 되는 운'},
-      {k:'이격(利)',sub:'사회·인덕운',data:suri.i, story:'사회 관계·동료·인맥·외부 환경의 결'},
-      {k:'정격(貞)',sub:'총운·말년운',data:suri.jeong, story:'평생을 통틀어 가장 중요한 종합 운 + 노년의 결실'}
+      {k:'원격(元)',sub:'어린 시절·기초 자리',data:suri.won, period:'태어나서 약 20세까지', detail:_detailFor('won', suri.won.good)},
+      {k:'형격(亨)',sub:'청년기·인생 중심 자리',data:suri.hyeong, period:'20대 ~ 40대', detail:_detailFor('hyeong', suri.hyeong.good)},
+      {k:'이격(利)',sub:'사회 관계·인덕 자리',data:suri.i, period:'평생에 걸친 사람 관계', detail:_detailFor('i', suri.i.good)},
+      {k:'정격(貞)',sub:'평생 총운·말년 결실 자리',data:suri.jeong, period:'평생 + 50대 이후 노년', detail:_detailFor('jeong', suri.jeong.good)}
     ];
     const goodCount=gyeokTable.filter(g=>g.data.good).length;
     let suriSummary='';
@@ -12886,23 +12963,26 @@ function renderNamePaid(saju, nmExtra){
     else suriSummary=`4격이 모두 흉수로 잡혔어요. 같은 발음이라도 한자(획수) 조합을 바꾸면 결이 완전히 달라져요. 아래 추천 한자 조합을 꼭 참고해보세요.`;
 
     let suriBody=`<p style="margin-bottom:12px">${suriSummary}</p>
-    <p style="margin-bottom:14px">한자 작명학에서는 이름의 획수를 4가지 시기로 나눠 봐요. 어렸을 때(원격), 청년기(형격), 사회 인덕(이격), 평생 총운(정격)이 각각 어떤 결을 만드는지가 핵심이에요.</p>
+    <p style="margin-bottom:14px">한자 이름의 획수를 시기별 4가지 자리(어린 시절·청년기·사회 관계·평생 총운)로 나눠본 풀이입니다. 각 자리가 길수면 그 시기 흐름이 잘 풀리고, 흉수면 그 시기에 의식적인 보완이 필요해요.</p>
     <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">`;
     gyeokTable.forEach(g=>{
       const goodColor=g.data.good?'var(--wood)':'var(--fire)';
       const goodIcon=g.data.good?'✓ 길수':'⚠ 흉수';
-      suriBody+=`<div style="padding:12px 14px;background:var(--bg-deep);border-left:3px solid ${goodColor};border-radius:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px">
-          <span style="font-weight:700;color:var(--accent);font-size:.88rem">${g.k} <small style="color:var(--muted);font-weight:400;margin-left:4px">${g.sub}</small></span>
+      const accentBg=g.data.good?'rgba(108,191,126,.06)':'rgba(229,116,98,.05)';
+      suriBody+=`<div style="padding:13px 15px;background:${accentBg};border-left:3px solid ${goodColor};border-radius:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;flex-wrap:wrap;gap:4px">
+          <span style="font-weight:700;color:var(--accent);font-size:.92rem">${g.k} <small style="color:var(--muted);font-weight:400;margin-left:4px">${g.sub}</small></span>
           <span style="font-size:.78rem;color:${goodColor};font-weight:700">${goodIcon} · ${g.data.num}수 · ${ohEmojis[g.data.oh]} ${ohNamesShort[g.data.oh]}</span>
         </div>
-        <div style="font-size:.77rem;color:var(--sub);line-height:1.75;margin-bottom:4px">${g.data.label}</div>
-        <div style="font-size:.71rem;color:var(--muted);line-height:1.6">↪ ${g.story}</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-bottom:6px;line-height:1.5">📅 시기: <b style="color:var(--sub)">${g.period}</b></div>
+        <div style="font-size:.78rem;color:var(--text);line-height:1.85;margin-bottom:7px;padding:8px 10px;background:rgba(0,0,0,.12);border-radius:6px">📖 <b>${g.data.num}수의 결</b>: ${g.data.label}</div>
+        <div style="font-size:.78rem;color:var(--sub);line-height:1.85;margin-bottom:7px"><b style="color:${goodColor}">${g.detail.lab}:</b> ${g.detail.body}</div>
+        <div style="font-size:.76rem;color:var(--muted);line-height:1.75;padding:7px 10px;background:rgba(212,175,73,.06);border-radius:6px;border-left:2px solid var(--accent)">💡 <b>이 자리를 잘 쓰는 법:</b> ${g.detail.tip}</div>
       </div>`;
     });
     suriBody+=`</div>
-    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">📖 <b>이 풀이를 어떻게 읽나요?</b> 4가지 격 옆에 ✓ 길수가 많을수록 좋고, ⚠ 흉수는 의식적인 보완이 필요한 시기예요. 길수·흉수는 정통 작명학의 81수리 길흉표를 기준으로 했고, 시기별 의미는 한자 획수 조합으로 자동 산출돼요.</div>`;
-    h+=paidWrapBody('SURI','㊗',`한자 4격 + 81수리 길흉`, suriBody);
+    <div style="margin-top:12px;padding:11px 13px;background:rgba(212,175,55,.06);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;color:var(--sub);line-height:1.85">📖 <b>이 풀이를 어떻게 읽나요?</b> 4가지 자리 옆에 ✓ 길수가 많을수록 좋고, ⚠ 흉수는 그 시기에 의식적인 보완이 필요해요. 길수·흉수는 정통 작명학의 81수리 길흉표를 기준으로 했고, 시기별 의미는 한자 획수 조합으로 자동 산출돼요. <b>가장 무게가 큰 자리는 정격(평생 총운)</b>이라 이게 길수면 다른 3개에 약간 흉수가 있어도 전체 흐름이 잘 풀려요.</div>`;
+    h+=paidWrapBody('SURI','㊗',`한자 4가지 자리 + 81수리 길흉`, suriBody);
   }
 
   // ── ③ 한자 자원오행 + 한자 의미 (한자 있을 때만)
