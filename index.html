@@ -2449,6 +2449,7 @@ function renderDailyFortune(saju){
       ${_dailyHourCard(saju, f)}
       ${_dailyLuckCard(saju, f)}
       ${_dailyActionCard(saju, f)}
+      ${_dailyDaeunStageCard(saju, f)}
       <div class="daily-card" style="text-align:left;padding:18px">
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
@@ -2456,6 +2457,41 @@ function renderDailyFortune(saju){
       <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(24,000원)을 보세요.</div>
     </div>`;
   return h;
+}
+
+// 일일운세 — 본인 대운 단계 + 핵심 시간대 통합 카드
+function _dailyDaeunStageCard(saju, f){
+  try{
+    if(!_meta||!_meta.sy)return '';
+    const _g=_meta.gender||'male';
+    const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
+    const _curY=new Date().getFullYear();
+    const _curAge=_curY-_meta.sy+1;
+    let _curD=_dq.daeuns[0];
+    for(let i=0;i<_dq.daeuns.length;i++){
+      if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];break;}
+    }
+    const _tg=plainTG(tenGod(saju.dp.stem,_curD.stem));
+    const _myBr=saju.dp.branch;
+    const _myBrKo=BRCHKO[_myBr];
+    const _dpBr=f.dp.branch;
+    // 핵심 시간대 추출 — 본인 자리와 합/충 시간
+    const _luckyHours=[], _cautionHours=[];
+    for(let bi=0;bi<12;bi++){
+      const r=brRel(_myBr,bi);
+      const sr=brRel(_dpBr,bi);
+      if(r.kind==='합'||sr.kind==='합')_luckyHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
+      else if(r.kind==='충'||sr.kind==='충')_cautionHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
+    }
+    return `<div class="daily-card" style="text-align:left;padding:18px;background:linear-gradient(135deg,rgba(212,175,73,.06),rgba(108,140,200,.04))">
+      <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
+      <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 큰 챕터의 결은 <b>${_tg}</b>예요.<br>오늘은 이 10년 챕터 안에서 펼쳐지는 한 페이지 — 본인 결을 그대로 이어가시면 돼요.</div>
+      ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:8px;font-size:.78rem;line-height:1.75">
+        ${_luckyHours.length?`<div><b style="color:#6cbf7e">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
+        ${_cautionHours.length?`<div><b style="color:#e57462">⚠️ 오늘의 주의시</b> — ${_cautionHours.join(', ')}</div>`:''}
+      </div>`:''}
+    </div>`;
+  }catch(e){return '';}
 }
 
 // ── 일일운세 강화 카드 3장
