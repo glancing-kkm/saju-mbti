@@ -14982,9 +14982,9 @@ function openHanziCanvas(targetHanId, targetStrokeId){
         <button onclick="closeHanziCanvas()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px">×</button>
       </div>
       <div style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:10px">
-        ① 한자를 손으로 그리세요 → <b>CJK 전체 20,992자 중 비슷한 한자 자동 후보</b><br>
+        ① 한자를 손으로 그리세요 → <b>획수 + 모양</b>으로 비슷한 한자 자동 정렬 (CJK 전체 20,992자에서)<br>
         ② 또는 한글 음 입력 (정밀 검색)<br>
-        ③ 후보 한자 클릭 → 입력란에 자동 입력
+        ③ 모양 일치도(%)가 높은 한자 클릭 → 입력란에 자동 입력
       </div>
       <canvas id="hanziDrawCanvas" width="280" height="280" style="display:block;margin:0 auto;border:2px solid var(--accent);border-radius:10px;background:#fff;touch-action:none;cursor:crosshair"></canvas>
       <div style="display:flex;gap:6px;margin-top:8px;justify-content:center">
@@ -14996,7 +14996,7 @@ function openHanziCanvas(targetHanId, targetStrokeId){
         <input type="text" id="hanziSoundInput" placeholder="예: 민" maxlength="2" oninput="searchHanziBySound(this.value)" style="width:100%;margin-top:6px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg-deep);color:var(--text);font-size:.95rem;font-family:inherit" autocomplete="off">
       </div>
       <div id="hanziSearchResult" style="margin-top:12px;min-height:50px"></div>
-      <div style="margin-top:14px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.7rem;color:var(--sub);line-height:1.7">📌 손글씨는 획수를 추정해 ±3 범위 한자를 CJK 전체 20,992자에서 찾아 페이지로 보여드려요. 첫 검색은 인덱싱에 1~2초 걸립니다.</div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.7rem;color:var(--sub);line-height:1.7">📌 손글씨로 그린 한자를 <b>획수 + 모양 유사도(IoU)</b> 둘 다 비교해 가장 비슷한 한자부터 위에 보여드려요. 첫 검색은 인덱싱 + 모양 비교에 1~2초 걸립니다.</div>
     </div>`;
   document.body.appendChild(modal);
   setupHanziCanvas();
@@ -15098,10 +15098,92 @@ function pickHanziFromCanvas(han, stroke){
   alert('한자 입력란이 모두 채워져 있어요. 비우고 다시 시도하시거나 직접 입력란에 붙여넣기 하세요.');
 }
 
-// ─── 사전 외 한자도 stroke 추정 캐시 (Canvas 렌더링 → 픽셀 카운트) ───
+// ─── 사전 외 한자도 stroke 추정 + 모양(shape) grid 캐시 ───
 const _cjkStrokeCache={};
+const _cjkShapeCache={}; // 한자 → 32×32 binary grid (Uint8Array)
 let _cjkAllIndexBuilt=false;
 let _cjkAllByStroke=null; // {stroke: [han...]}
+const _SHAPE_GRID=32; // 32×32 grid (1024 bits) — 모양 비교용
+
+// 한자를 32×32 binary grid로 렌더링 (모양 비교용 캐시)
+function _shapeGridForChar(han){
+  if(_cjkShapeCache[han])return _cjkShapeCache[han];
+  const N=_SHAPE_GRID, PX=N*2; // 64×64 렌더 후 2x2 다운샘플
+  const c=document.createElement('canvas');
+  c.width=PX; c.height=PX;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,PX,PX);
+  ctx.fillStyle='#000';
+  ctx.font=(PX*0.85)+'px "Noto Serif KR", serif';
+  ctx.textBaseline='middle';
+  ctx.textAlign='center';
+  ctx.fillText(han,PX/2,PX/2);
+  const img=ctx.getImageData(0,0,PX,PX).data;
+  // bounding box로 정규화 후 32×32 grid 생성
+  let minX=PX,minY=PX,maxX=-1,maxY=-1;
+  for(let y=0;y<PX;y++)for(let x=0;x<PX;x++){
+    const i=(y*PX+x)*4;
+    if((img[i]+img[i+1]+img[i+2])<450){
+      if(x<minX)minX=x;if(x>maxX)maxX=x;
+      if(y<minY)minY=y;if(y>maxY)maxY=y;
+    }
+  }
+  const grid=new Uint8Array(N*N);
+  if(maxX>=0){
+    const bw=maxX-minX+1, bh=maxY-minY+1;
+    // bounding box를 N×N로 매핑
+    for(let y=0;y<PX;y++)for(let x=0;x<PX;x++){
+      const i=(y*PX+x)*4;
+      if((img[i]+img[i+1]+img[i+2])<450){
+        const gx=Math.floor((x-minX)/bw*N);
+        const gy=Math.floor((y-minY)/bh*N);
+        if(gx>=0&&gx<N&&gy>=0&&gy<N)grid[gy*N+gx]=1;
+      }
+    }
+  }
+  _cjkShapeCache[han]=grid;
+  return grid;
+}
+
+// 사용자가 그린 캔버스를 32×32 binary grid로 (bounding box 정규화)
+function _userShapeGrid(canvas){
+  const N=_SHAPE_GRID;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const img=ctx.getImageData(0,0,W,H).data;
+  let minX=W,minY=H,maxX=-1,maxY=-1;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=(y*W+x)*4;
+    // 검은 잉크: alpha>50 + 밝기<400
+    if(img[i+3]>50 && (img[i]+img[i+1]+img[i+2])<400){
+      if(x<minX)minX=x;if(x>maxX)maxX=x;
+      if(y<minY)minY=y;if(y>maxY)maxY=y;
+    }
+  }
+  const grid=new Uint8Array(N*N);
+  if(maxX>=0){
+    const bw=maxX-minX+1, bh=maxY-minY+1;
+    for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
+      const i=(y*W+x)*4;
+      if(img[i+3]>50 && (img[i]+img[i+1]+img[i+2])<400){
+        const gx=Math.floor((x-minX)/bw*N);
+        const gy=Math.floor((y-minY)/bh*N);
+        if(gx>=0&&gx<N&&gy>=0&&gy<N)grid[gy*N+gx]=1;
+      }
+    }
+  }
+  return grid;
+}
+
+// 두 grid 모양 유사도: IoU (Intersection over Union) 0~1
+function _shapeSimilarity(g1, g2){
+  let inter=0, union=0;
+  for(let i=0;i<g1.length;i++){
+    if(g1[i]&&g2[i])inter++;
+    if(g1[i]||g2[i])union++;
+  }
+  return union===0?0:inter/union;
+}
 
 function _estimateStrokeForChar(han){
   if(HAN_STROKES[han])return HAN_STROKES[han];
@@ -15147,7 +15229,7 @@ function _buildCjkIndex(){
 let _hanziSearchPage=0, _hanziSearchMatches=[], _hanziSearchApprox=0;
 const _HANZI_PAGE_SIZE=60;
 
-// 손글씨 캔버스에서 stroke count 대략 추정 → CJK 전체에서 비슷한 한자 후보 표시
+// 손글씨 캔버스에서 stroke count 대략 추정 + 모양 유사도 → 비슷한 한자 후보 표시
 function searchHanziByStrokeFromCanvas(){
   const c=document.getElementById('hanziDrawCanvas');
   if(!c)return;
@@ -15163,17 +15245,20 @@ function searchHanziByStrokeFromCanvas(){
     return;
   }
   const strokeApprox=Math.max(1,Math.min(30,Math.round(filled/420)));
+  const userGrid=_userShapeGrid(c);
   // 첫 호출이면 CJK 전체 인덱스 빌드 (약 0.5~2초)
   const resultBox=document.getElementById('hanziSearchResult');
   if(!_cjkAllIndexBuilt){
     resultBox.innerHTML='<div style="text-align:center;color:var(--sub);font-size:.78rem;padding:14px">⏳ 한자 전체(20,992자) 인덱싱 중... 첫 검색은 1~2초 걸립니다.</div>';
-    setTimeout(()=>{_buildCjkIndex(); _runHanziSearch(strokeApprox);},50);
+    setTimeout(()=>{_buildCjkIndex(); _runHanziSearch(strokeApprox, userGrid);},50);
     return;
   }
-  _runHanziSearch(strokeApprox);
+  // 모양 비교는 후보가 많으면 1~2초 걸릴 수 있으므로 setTimeout으로 UI 블록 방지
+  resultBox.innerHTML='<div style="text-align:center;color:var(--sub);font-size:.78rem;padding:14px">⏳ 모양 비교 중... 1~2초 걸려요.</div>';
+  setTimeout(()=>_runHanziSearch(strokeApprox, userGrid),30);
 }
 
-function _runHanziSearch(strokeApprox){
+function _runHanziSearch(strokeApprox, userGrid){
   _buildCjkIndex();
   // ±3 범위 한자 후보 (CJK 전체 + 사전)
   const lo=Math.max(1,strokeApprox-3), hi=strokeApprox+3;
@@ -15181,18 +15266,20 @@ function _runHanziSearch(strokeApprox){
   for(let s=lo; s<=hi; s++){
     const list=_cjkAllByStroke[s]||[];
     for(const han of list){
-      // 사전(HAN_STROKES) 있는 한자 우선
       const inDict=!!HAN_STROKES[han];
       const meaning=HAN_MEANING[han]||'';
-      matches.push({han, stroke:s, meaning, inDict});
+      // 모양 유사도(IoU) 계산 + 후보 모양 캐시
+      const shapeGrid=_shapeGridForChar(han);
+      const sim=userGrid?_shapeSimilarity(userGrid, shapeGrid):0;
+      matches.push({han, stroke:s, meaning, inDict, sim});
     }
   }
+  // 정렬: 모양 유사도 60% + 획수 정확도 25% + 사전/의미 등록 15%
   matches.sort((a,b)=>{
-    const da=Math.abs(a.stroke-strokeApprox), db=Math.abs(b.stroke-strokeApprox);
-    if(da!==db)return da-db;
-    // 사전 등록 > 의미 등록 > 코드포인트 순
-    if(a.inDict!==b.inDict)return b.inDict-a.inDict;
-    if(!!a.meaning!==!!b.meaning)return (b.meaning?1:0)-(a.meaning?1:0);
+    const dA=Math.abs(a.stroke-strokeApprox), dB=Math.abs(b.stroke-strokeApprox);
+    const scoreA=a.sim*100 - dA*3 + (a.inDict?5:0) + (a.meaning?2:0);
+    const scoreB=b.sim*100 - dB*3 + (b.inDict?5:0) + (b.meaning?2:0);
+    if(Math.abs(scoreB-scoreA)>0.5)return scoreB-scoreA;
     return a.han.codePointAt(0)-b.han.codePointAt(0);
   });
   _hanziSearchMatches=matches;
@@ -15207,15 +15294,17 @@ function _renderHanziSearchPage(){
   const start=_hanziSearchPage*_HANZI_PAGE_SIZE;
   const end=Math.min(start+_HANZI_PAGE_SIZE, total);
   const slice=_hanziSearchMatches.slice(start,end);
-  let html=`<div style="font-size:.72rem;color:var(--sub);margin-bottom:7px;line-height:1.5">📊 추정 획수: <b style="color:var(--accent)">${_hanziSearchApprox}획</b> 부근 (±3) — CJK 전체 <b>${total.toLocaleString()}</b>자 중 ${start+1}~${end} (${_hanziSearchPage+1}/${totalPages}쪽)</div>`;
+  let html=`<div style="font-size:.72rem;color:var(--sub);margin-bottom:7px;line-height:1.5">📊 추정 획수 <b style="color:var(--accent)">${_hanziSearchApprox}획</b> ±3 + <b style="color:var(--accent)">모양 유사도</b> 기준 정렬 — CJK 전체 <b>${total.toLocaleString()}</b>자 중 ${start+1}~${end} (${_hanziSearchPage+1}/${totalPages}쪽)</div>`;
   html+='<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-height:240px;overflow-y:auto">';
   slice.forEach(c=>{
     const code=c.han.codePointAt(0).toString(16).toUpperCase();
-    const tip=c.meaning?`${c.meaning} · ${c.stroke}획`:`${c.stroke}획 · U+${code}`;
-    const dictMark=c.inDict?'':' style2';
+    const simPct=Math.round((c.sim||0)*100);
+    const tip=c.meaning?`${c.meaning} · ${c.stroke}획 · 모양 ${simPct}%`:`${c.stroke}획 · 모양 ${simPct}% · U+${code}`;
+    // 모양 유사도 80%+ 초록색, 60%+ 황금색, 그 외 회색
+    const simColor=simPct>=80?'#6cbf7e':simPct>=60?'var(--accent)':'var(--sub)';
     html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" title="${tip}" style="padding:7px 2px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;${c.inDict?'':'opacity:.85'}" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
       <span style="font-family:'Noto Serif KR',serif;font-size:1.25rem;color:var(--accent);font-weight:700;line-height:1">${c.han}</span>
-      <span style="font-size:.54rem;color:var(--sub)">${c.stroke}획</span>
+      <span style="font-size:.54rem;color:var(--sub)">${c.stroke}획 <span style="color:${simColor};font-weight:700">${simPct}%</span></span>
     </button>`;
   });
   html+='</div>';
