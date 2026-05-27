@@ -8986,7 +8986,63 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
 
   // ─── BT: 카드 목차(TOC) 자동 생성 후 맨 위에 prepend ───
-  h=_generateTOC(h,'본인 사주풀이')+h;
+  const _tocCard=_generateTOC(h,'본인 사주풀이');
+
+  // ─── BW: 본인 사주 한눈에 보기 마스터 카드 ───
+  let _masterCard='';
+  try{
+    const _curD=dq.daeuns[curDIdx];
+    const _stageLab=_userStageLabel;
+    const _domOh=oh.indexOf(Math.max(...oh));
+    const _weakOh=oh.indexOf(Math.min(...oh));
+    const _topSins=sinNames.slice(0,3).join(' · ');
+    const _curDaeunTg=_curD?tenGod(saju.dp.stem,_curD.stem):null;
+    const _curDaeunPlain=_curDaeunTg?plainTG(_curDaeunTg):'';
+    const _helpFood=ys.main===0?'녹색·신맛·새싹':ys.main===1?'붉은색·쓴맛·매운':ys.main===2?'노란색·단맛·뿌리':ys.main===3?'흰색·매운맛·해산물':'검은색·짠맛·검은콩';
+    const _helpDir=ys.main===0?'동쪽':ys.main===1?'남쪽':ys.main===2?'중앙':ys.main===3?'서쪽':'북쪽';
+    _masterCard=`<!--CARD_START:MASTER--><div class="nb-card" data-cardid="MASTER" id="card-MASTER" style="background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(45,52,71,.5));border:1px solid rgba(212,175,55,.35)">
+      <div class="nb-cat">MASTER</div>
+      <div class="nb-title">🌟 본인 사주 한눈에 보기 — 핵심 요약</div>
+      <div class="nb-body">
+        <p style="font-size:.85rem;line-height:1.9;margin-bottom:14px">아래 카드들을 하나하나 보기 전, 본인 사주의 핵심을 한 그림으로 정리해드려요. 자세한 풀이는 각 카드에서 이어집니다.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px">
+          <div style="padding:11px 13px;background:rgba(108,191,126,.08);border-left:3px solid #6cbf7e;border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">본인 본질</div>
+            <div style="font-weight:700;color:#6cbf7e;font-size:.92rem">${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${dm.n.split('(')[0]}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${stemNick(dp.stem)}</div>
+          </div>
+          <div style="padding:11px 13px;background:rgba(212,175,73,.08);border-left:3px solid var(--accent);border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">사주 유형</div>
+            <div style="font-weight:700;color:var(--accent);font-size:.92rem">${gk.name}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${gk.nick?gk.nick.split('·').slice(0,2).join(' · '):'본인 기질'}</div>
+          </div>
+          <div style="padding:11px 13px;background:rgba(212,175,73,.06);border-left:3px solid var(--accent-bright);border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">도움 기운(용신)</div>
+            <div style="font-weight:700;color:var(--accent-bright);font-size:.92rem">${OHNAME[ys.main]}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${_helpFood} · ${_helpDir}</div>
+          </div>
+          <div style="padding:11px 13px;background:rgba(229,116,98,.06);border-left:3px solid #e57462;border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">보강 필요 기운</div>
+            <div style="font-weight:700;color:#e57462;font-size:.92rem">${OHNAME[_weakOh]}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">의식적인 활동·환경으로 채우기</div>
+          </div>
+          ${_topSins?`<div style="padding:11px 13px;background:rgba(150,120,200,.08);border-left:3px solid #9678c8;border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">주요 별자리(신살)</div>
+            <div style="font-weight:700;color:#9678c8;font-size:.92rem">${_topSins}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">평생 작용하는 결</div>
+          </div>`:''}
+          ${_curD?`<div style="padding:11px 13px;background:rgba(74,144,226,.08);border-left:3px solid #4a90e2;border-radius:8px">
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">현재 10년 흐름 (${_userAge}세)</div>
+            <div style="font-weight:700;color:#4a90e2;font-size:.92rem">${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} · ${_curDaeunPlain}</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${_curD.age}~${_curD.age+9}세 · ${_stageLab}</div>
+          </div>`:''}
+        </div>
+        <p style="margin-top:14px;padding:11px 13px;background:rgba(212,175,73,.06);border-radius:8px;border-left:3px solid var(--accent);font-size:.79rem;color:var(--sub);line-height:1.8">📌 이 6가지가 본인 사주를 이루는 가장 큰 결이에요. 아래 「📋 본인 사주풀이 목차」에서 보고 싶은 영역을 선택하시거나, 차례대로 스크롤하면서 자세한 풀이를 보실 수 있습니다.</p>
+      </div>
+    </div><!--CARD_END:MASTER-->`;
+  }catch(e){}
+
+  h=_masterCard+_tocCard+h;
 
   return h;
 }
