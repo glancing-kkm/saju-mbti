@@ -4039,6 +4039,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
   </div>`;
   // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
   h=_ctxPromote(h,_primaryDpCard);
+  // BT: 카드 목차
+  h=_generateTOC(h,'지정일 운세')+h;
   return h;
 }
 
@@ -4363,6 +4365,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   </div>`;
   // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
   h=_ctxPromote(h,_primaryMoCard);
+  // BT: 카드 목차
+  h=_generateTOC(h,'월별 운세')+h;
   return h;
 }
 
@@ -5046,6 +5050,8 @@ function renderNewyearFortune(saju,y){
     <div class="nb-title">📌 ${y}년을 사는 결</div>
     <div class="nb-body"><p>신년운세는 입춘부터 다음 입춘까지의 외부 기운입니다. 절대적인 길흉이 아니라 <b>한 해가 어떤 결로 들어오는지</b>의 안내판입니다. 길월에 굵직한 결정을 배치하고, 주의월에는 정리와 내실에 무게를 두는 것이 한 해를 잘 사는 결입니다.</p></div>
   </div>`;
+  // BT: 카드 목차
+  h=_generateTOC(h,'신년 운세')+h;
   return h;
 }
 
@@ -8980,32 +8986,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
 
   // ─── BT: 카드 목차(TOC) 자동 생성 후 맨 위에 prepend ───
-  try{
-    const tocMatches=[...h.matchAll(/<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)<\/div>/g)];
-    if(tocMatches.length>0){
-      const seenIds=new Set();
-      const items=tocMatches.filter(m=>{
-        const id=m[1];
-        if(seenIds.has(id))return false;
-        seenIds.add(id);
-        return true;
-      }).map(m=>{
-        const safeId='card-'+m[1].replace(/[^A-Za-z0-9_-]/g,'_');
-        const title=m[2].trim();
-        return `<button type="button" onclick="document.getElementById('${safeId}').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${title}</button>`;
-      });
-      const tocCard=`<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
-        <div class="nb-cat">TOC</div>
-        <div class="nb-title">📋 카드 목차 — 보고 싶은 카드로 바로 이동</div>
-        <div class="nb-body">
-          <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">아래 ${items.length}개 카드 중 보고 싶은 항목을 클릭하면 해당 카드로 자동 이동해요. 본인 사주의 모든 영역(평생 12종 타임라인 + 분야별 상세 카드)이 정리되어 있어요.</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px">${items.join('')}</div>
-        </div>
-      </div><!--CARD_END:TOC-->`;
-      // 첫 번째 카드(헤더) 다음에 TOC 삽입 — 또는 맨 앞
-      h=tocCard+h;
-    }
-  }catch(e){}
+  h=_generateTOC(h,'본인 사주풀이')+h;
 
   return h;
 }
@@ -10158,6 +10139,33 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   }
   h+=`</div><!--CARD_END:${catLabel}-->`;
   return h;
+}
+
+// BT: 카드 목차(TOC) 자동 생성 — 본문 h에서 카드 추출 → TOC HTML 반환
+function _generateTOC(h, scopeLabel){
+  try{
+    const tocMatches=[...h.matchAll(/<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)<\/div>/g)];
+    if(tocMatches.length<3)return ''; // 카드 3개 미만이면 TOC 생략
+    const seenIds=new Set();
+    const items=tocMatches.filter(m=>{
+      const id=m[1];
+      if(seenIds.has(id))return false;
+      seenIds.add(id);
+      return true;
+    }).map(m=>{
+      const safeId='card-'+m[1].replace(/[^A-Za-z0-9_-]/g,'_');
+      const title=m[2].trim();
+      return `<button type="button" onclick="document.getElementById('${safeId}').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${title}</button>`;
+    });
+    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
+      <div class="nb-cat">TOC</div>
+      <div class="nb-title">📋 ${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
+      <div class="nb-body">
+        <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">아래 ${items.length}개 카드 중 보고 싶은 항목을 클릭하면 해당 카드로 자동 이동해요.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px">${items.join('')}</div>
+      </div>
+    </div><!--CARD_END:TOC-->`;
+  }catch(e){return '';}
 }
 
 // 컨텍스트 우선: 특정 cardid 카드를 HTML 가장 앞으로 이동
@@ -13631,6 +13639,8 @@ function renderNamePaid(saju, nmExtra){
     </div>`;
   }catch(e){}
 
+  // BT: 카드 목차
+  h=_generateTOC(h,'이름풀이')+h;
   return h;
 }
 
@@ -14070,6 +14080,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
       </div>`;
     }
   }catch(e){}
+  // BT: 카드 목차
+  h=_generateTOC(h,'궁합')+h;
   return h;
 }
 
