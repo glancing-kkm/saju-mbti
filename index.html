@@ -8962,6 +8962,137 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('TIMELINE','📜','평생 사건 타임라인 — 결혼·승진·재물·시험 시기',tlBody);
   }catch(e){}
 
+  // ─── BX: 12종 평생 타임라인 통합 마스터 차트 (LIFE_HEATMAP) ───
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStemX=saju.dp.stem, _myBrX=saju.dp.branch;
+    const _gX=_meta.gender||'male';
+    const _dqX=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gX);
+    const _curYrX=new Date().getFullYear();
+    const _curAgeX=_curYrX-_meta.sy+1;
+    let _curIdxX=0;
+    for(let i=0;i<_dqX.daeuns.length;i++){
+      if(_curAgeX>=_dqX.daeuns[i].age && (i===_dqX.daeuns.length-1||_curAgeX<_dqX.daeuns[i+1].age)){_curIdxX=i;break;}
+    }
+    const _gmX=emptyBranches(saju.dp.stem,saju.dp.branch);
+    const YOKMA_X=[2,5,8,11], HWAGAE_X=[4,10,1,7];
+    // 각 대운별 12종 분야 상태: 'good'/'flat'/'warn'/'bad'
+    const fieldList=[
+      {key:'wealth',ko:'재물',emoji:'💎'},
+      {key:'career',ko:'직업',emoji:'💼'},
+      {key:'love',ko:'연애',emoji:'💕'},
+      {key:'health',ko:'건강',emoji:'🩺'},
+      {key:'study',ko:'학업',emoji:'📜'},
+      {key:'family',ko:'가족',emoji:'👨‍👩‍👧'},
+      {key:'move',ko:'이동',emoji:'🚄'},
+      {key:'spirit',ko:'영성',emoji:'🪷'},
+      {key:'human',ko:'인간관계',emoji:'🤝'},
+      {key:'gongmang',ko:'공망채움',emoji:'✨'},
+      {key:'overall',ko:'종합',emoji:'⭐'}
+    ];
+    const _judgeField=(tg,btg,brR,du,key)=>{
+      const isYokma=YOKMA_X.includes(du.branch);
+      const isHwagae=HWAGAE_X.includes(du.branch);
+      const isGm=_gmX.includes(du.branch);
+      const hasGood=(arr)=>arr.includes(tg)||arr.includes(btg);
+      switch(key){
+        case 'wealth':
+          if(hasGood(['정재','편재','식신']))return 'good';
+          if(hasGood(['겁재']))return 'bad';
+          if(brR.kind==='충')return 'warn';
+          return 'flat';
+        case 'career':
+          if(hasGood(['정관','편관']))return 'good';
+          if(brR.kind==='형'||brR.kind==='자형')return 'warn';
+          return 'flat';
+        case 'love':
+          if(brR.kind==='합'||brR.kind==='반합'||brR.kind==='반합약')return 'good';
+          if(brR.kind==='충')return 'warn';
+          if(brR.kind==='원진')return 'warn';
+          return 'flat';
+        case 'health':
+          if(hasGood(['정인','편인','식신']))return 'good';
+          if(brR.kind==='충'||brR.kind==='형')return 'warn';
+          return 'flat';
+        case 'study':
+          if(hasGood(['정인','편인']))return 'good';
+          return 'flat';
+        case 'family':
+          if(hasGood(['정인','편인','정재','식신']))return 'good';
+          if(brR.kind==='충'||brR.kind==='원진')return 'warn';
+          return 'flat';
+        case 'move':
+          if(isYokma)return 'good';
+          if(brR.kind==='충')return 'bad';
+          return 'flat';
+        case 'spirit':
+          if(isHwagae)return 'good';
+          if(hasGood(['정인','편인']))return 'good';
+          return 'flat';
+        case 'human':
+          if(hasGood(['비견','식신','정재','정관','정인']))return 'good';
+          if(hasGood(['겁재']))return 'bad';
+          if(brR.kind==='원진')return 'warn';
+          return 'flat';
+        case 'gongmang':
+          if(isGm)return 'good';
+          return 'flat';
+        case 'overall': {
+          // 다른 분야들의 가중 평균
+          const others=['wealth','career','love','health','family','human'];
+          let g=0,b=0,w=0;
+          others.forEach(k=>{
+            const s=_judgeField(tg,btg,brR,du,k);
+            if(s==='good')g++;
+            else if(s==='bad'||s==='warn')w++;
+          });
+          if(g>=4)return 'good';
+          if(w>=3)return 'warn';
+          if(g>w)return 'good';
+          return 'flat';
+        }
+      }
+      return 'flat';
+    };
+    // 각 대운별 모든 분야 상태 계산
+    const matrix=_dqX.daeuns.map(du=>{
+      const tg=tenGod(_dStemX,du.stem), btg=tenGod(_dStemX,BR_MAIN_STEM[du.branch]);
+      const brR=brRel(_myBrX,du.branch);
+      const states={};
+      fieldList.forEach(f=>{states[f.key]=_judgeField(tg,btg,brR,du,f.key);});
+      return {du,tg,btg,states};
+    });
+    const stateBg={good:'rgba(108,191,126,.45)',flat:'rgba(180,180,180,.18)',warn:'rgba(229,178,73,.45)',bad:'rgba(229,116,98,.45)'};
+    const stateMark={good:'🟢',flat:'·',warn:'🟡',bad:'🔴'};
+    const stateLab={good:'좋음',flat:'평이',warn:'주의',bad:'변동'};
+    // 가로 스크롤 가능 그리드
+    let htBody=`<p>본인 사주 + 대운(10년 흐름)을 종합해 평생 12종 분야의 시기별 상태를 한 표로 정리했어요. 각 칸의 색깔이 본인의 그 시기 그 분야 흐름을 보여줍니다. ★ 현재 대운은 강조했어요.</p>
+    <div style="margin-top:14px;font-size:.72rem;color:var(--sub);line-height:1.6">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동/갈등</div>
+    <div style="margin-top:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:8px">
+      <table style="border-collapse:collapse;min-width:max-content;font-family:inherit;font-size:.7rem;width:100%">
+        <thead><tr>
+          <th style="padding:7px 8px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:2px solid var(--accent);text-align:left;color:var(--accent);font-weight:700">분야</th>`;
+    matrix.forEach((m,i)=>{
+      const isCur=i===_curIdxX;
+      htBody+=`<th style="padding:7px 5px;background:${isCur?'rgba(212,175,73,.18)':'var(--bg-deep)'};border-bottom:2px solid ${isCur?'var(--accent)':'var(--border)'};color:${isCur?'var(--accent)':'var(--sub)'};font-weight:${isCur?700:500};white-space:nowrap;font-size:.65rem">${isCur?'★ ':''}${m.du.age}~${m.du.age+9}<br><span style="font-size:.6rem;color:var(--muted);font-weight:400">${STEMKO[m.du.stem]}${BRCHKO[m.du.branch]}</span></th>`;
+    });
+    htBody+=`</tr></thead><tbody>`;
+    fieldList.forEach(f=>{
+      htBody+=`<tr>
+        <td style="padding:6px 8px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);font-size:.68rem;white-space:nowrap">${f.emoji} ${f.ko}</td>`;
+      matrix.forEach((m,i)=>{
+        const st=m.states[f.key];
+        const isCur=i===_curIdxX;
+        htBody+=`<td title="${m.du.age}~${m.du.age+9}세 ${f.ko} ${stateLab[st]}" style="padding:0;background:${stateBg[st]};border:1px solid var(--bg);width:38px;height:30px;text-align:center;font-size:.7rem;${isCur?'box-shadow:inset 0 0 0 2px rgba(212,175,73,.5)':''}">${stateMark[st]}</td>`;
+      });
+      htBody+=`</tr>`;
+    });
+    htBody+=`</tbody></table>
+    </div>
+    <p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.79rem;color:var(--sub);line-height:1.85">💡 <b>이 차트를 어떻게 활용하나요?</b><br>① 평생 가장 좋은 시기(🟢 많은 컬럼)에 큰 결정·결혼·창업을 배치<br>② 🔴 변동 시기에는 큰 결정을 한 박자 미루고 정리·내실에 집중<br>③ 본인 인생 단계(★ 현재)와 다음 10년 흐름을 함께 보면 평생 계획을 세우기 좋아요</p>`;
+    h+=paidWrapBody('LIFE_HEATMAP','📊','평생 흐름 통합 마스터 차트 — 12종 분야 × 대운 한눈에',htBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 인생총운 요약본 다운로드 카드 (A4 가로 — 오프스크린 캡처)
   // ═════════════════════════════════════
@@ -9769,6 +9900,55 @@ function buildLifeSummaryA4Html(){
             ${lifeEvents.map(e=>`<div><b style="color:#8b6f47">${e.ageRange}</b> ${e.label}</div>`).join('')}
           </div>
         </div>`:''}
+
+        ${(()=>{
+          // BY: 미니 마스터 차트 (12종 분야 × 대운)
+          try{
+            const YOK=[2,5,8,11], HWG=[4,10,1,7];
+            const _gmA=emptyBranches(saju.dp.stem,saju.dp.branch);
+            const _fieldsA=[
+              {k:'wealth',ko:'재물'},{k:'career',ko:'직업'},{k:'love',ko:'연애'},
+              {k:'health',ko:'건강'},{k:'study',ko:'학업'},{k:'family',ko:'가족'},
+              {k:'move',ko:'이동'},{k:'spirit',ko:'영성'},{k:'human',ko:'인맥'},
+              {k:'gongmang',ko:'공망'}
+            ];
+            const judge=(tg,btg,brR,du,key)=>{
+              const isY=YOK.includes(du.branch), isH=HWG.includes(du.branch), isG=_gmA.includes(du.branch);
+              const has=arr=>arr.includes(tg)||arr.includes(btg);
+              if(key==='wealth')return has(['정재','편재','식신'])?'good':has(['겁재'])?'bad':brR.kind==='충'?'warn':'flat';
+              if(key==='career')return has(['정관','편관'])?'good':brR.kind==='형'?'warn':'flat';
+              if(key==='love')return brR.kind==='합'||brR.kind==='반합'||brR.kind==='반합약'?'good':brR.kind==='충'||brR.kind==='원진'?'warn':'flat';
+              if(key==='health')return has(['정인','편인','식신'])?'good':brR.kind==='충'?'warn':'flat';
+              if(key==='study')return has(['정인','편인'])?'good':'flat';
+              if(key==='family')return has(['정인','정재','식신'])?'good':brR.kind==='충'?'warn':'flat';
+              if(key==='move')return isY?'good':brR.kind==='충'?'bad':'flat';
+              if(key==='spirit')return isH||has(['정인','편인'])?'good':'flat';
+              if(key==='human')return has(['비견','정재','정관'])?'good':has(['겁재'])?'bad':'flat';
+              if(key==='gongmang')return isG?'good':'flat';
+              return 'flat';
+            };
+            const bgM={good:'#6cbf7e',flat:'#444',warn:'#d4a849',bad:'#e57462'};
+            let rows='';
+            _fieldsA.forEach(f=>{
+              rows+=`<div style="display:contents"><div style="padding:2px 4px;font-size:8.5px;color:#bbb;white-space:nowrap">${f.ko}</div>`;
+              dq.daeuns.forEach((du,i)=>{
+                const tg=tenGod(saju.dp.stem,du.stem), btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
+                const brR=brRel(saju.dp.branch,du.branch);
+                const st=judge(tg,btg,brR,du,f.k);
+                const isCur=i===curDIdx;
+                rows+=`<div style="background:${bgM[st]};height:11px;border-radius:2px;${isCur?'box-shadow:inset 0 0 0 1px #d4af37':''}"></div>`;
+              });
+              rows+='</div>';
+            });
+            const headers='<div style="padding:2px 4px;font-size:8px;color:#888">나이</div>'+dq.daeuns.map((du,i)=>`<div style="font-size:8px;color:${i===curDIdx?'#d4af37':'#888'};text-align:center;font-weight:${i===curDIdx?700:400}">${du.age}</div>`).join('');
+            const cols=dq.daeuns.length;
+            return `<div class="a4-section">
+              <div class="a4-h">📊 평생 흐름 마스터 차트 — 12종 분야 × 대운</div>
+              <div style="display:grid;grid-template-columns:36px repeat(${cols},1fr);gap:1.5px;margin-top:4px">${headers}${rows}</div>
+              <div style="margin-top:5px;font-size:9px;color:#aaa;line-height:1.5">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동 · ★ 현재 대운(금색 강조)</div>
+            </div>`;
+          }catch(e){return '';}
+        })()}
 
         <div class="a4-section">
           <div class="a4-h">⚖ 신강/신약 + 💼 직업 + 👨‍👩 6친 + ✨ 개운법</div>
