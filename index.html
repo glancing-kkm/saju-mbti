@@ -13609,6 +13609,74 @@ function renderNamePaid(saju, nmExtra){
     <div style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.78rem;color:var(--sub);line-height:1.85">💡 실제 출생 신고·개명 시에는 같은 한글 발음에도 다양한 한자가 있어요. 위 한글 추천에 더해 한자 획수까지 길수 조합으로 맞추시면, 한글 자모 오행 + 자원오행 + 4격 길수까지 모두 갖춘 완벽한 작명이 가능해요. 작명소·법원 개명 시 참고 자료로도 쓰실 수 있어요.</div>`;
   h+=paidWrapBody('RECOMMEND','🪷',`사주에 어울리는 추천 이름`, recBody);
 
+  // ─── BV: 같은 한글 발음 + 4격 길수 한자 조합 자동 추천 ───
+  try{
+    const _hangulChars=[surname.charAt(0), given.charAt(0)];
+    if(given.length>=2)_hangulChars.push(given.charAt(1));
+    const isOneJa=_hangulChars.length===2;
+    // 각 음의 한자 후보 (획수 보유한 것만)
+    const candS=getHanCandidates(_hangulChars[0]).filter(o=>o.stroke>0);
+    const candG1=getHanCandidates(_hangulChars[1]).filter(o=>o.stroke>0);
+    const candG2=isOneJa?[null]:getHanCandidates(_hangulChars[2]).filter(o=>o.stroke>0);
+    if(candS.length>0 && candG1.length>0 && (isOneJa || candG2.length>0)){
+      const combos=[];
+      // 모든 조합 탐색 (조합 수 제한: 각 음 최대 15자 → 3375 조합)
+      const maxPer=15;
+      for(const cs of candS.slice(0,maxPer)){
+        for(const cg1 of candG1.slice(0,maxPer)){
+          const g2list=isOneJa?[null]:candG2.slice(0,maxPer);
+          for(const cg2 of g2list){
+            const sS=cs.stroke, sG1=cg1.stroke, sG2=cg2?cg2.stroke:0;
+            const won=isOneJa?(sG1+1):(sG1+sG2);
+            const hyeong=sS+sG1;
+            const iGy=isOneJa?(sS+1):(sS+sG2);
+            const jeong=isOneJa?(sS+sG1):(sS+sG1+sG2);
+            const wonOk=SURI_81_GOOD.has(((won-1)%81)+1);
+            const hyeOk=SURI_81_GOOD.has(((hyeong-1)%81)+1);
+            const iOk=SURI_81_GOOD.has(((iGy-1)%81)+1);
+            const jeoOk=SURI_81_GOOD.has(((jeong-1)%81)+1);
+            const goodCnt=(wonOk?1:0)+(hyeOk?1:0)+(iOk?1:0)+(jeoOk?1:0);
+            // 자원오행 매치 점수 (용신 자원오행과 일치하는 한자 가산)
+            let ohScore=0;
+            const sOh=getHanZawonOh(cs.han), g1Oh=getHanZawonOh(cg1.han), g2Oh=cg2?getHanZawonOh(cg2.han):null;
+            if(sOh===ys.main)ohScore+=2;
+            if(g1Oh===ys.main)ohScore+=2;
+            if(g2Oh===ys.main)ohScore+=2;
+            // 정격(가장 무게 큰 자리) 길수 가산
+            const score=goodCnt*10 + (jeoOk?5:0) + ohScore;
+            combos.push({cs,cg1,cg2,sS,sG1,sG2,won,hyeong,iGy,jeong,wonOk,hyeOk,iOk,jeoOk,goodCnt,ohScore,score});
+          }
+        }
+      }
+      combos.sort((a,b)=>b.score-a.score);
+      const top5=combos.slice(0,5);
+      let sphBody=`<p>본인 한글 이름 「<b style="color:var(--accent)">${full}</b>」의 같은 발음으로 만들 수 있는 한자 조합 중, <b>4가지 자리(원격·형격·이격·정격)에 길수가 가장 많이 모이는 조합</b>을 자동 탐색했어요. 같은 발음이라도 한자(획수)에 따라 평생 흐름이 크게 달라져요.</p>
+      <p style="font-size:.79rem;color:var(--sub);margin-top:8px;line-height:1.8">개명·자녀 작명·법원 신청 시 참고하시고, 한자 의미와 자원오행도 함께 보세요.</p>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+      top5.forEach((c,i)=>{
+        const hanStr=c.cg2?`${c.cs.han}${c.cg1.han}${c.cg2.han}`:`${c.cs.han}${c.cg1.han}`;
+        const strokeStr=c.cg2?`${c.sS}+${c.sG1}+${c.sG2}획`:`${c.sS}+${c.sG1}획`;
+        const goodColor=c.goodCnt===4?'#6cbf7e':c.goodCnt===3?'var(--wood)':c.goodCnt===2?'var(--accent)':'var(--sub)';
+        const sMeaning=getHanMeaning(c.cs.han)||'';
+        const g1Meaning=getHanMeaning(c.cg1.han)||'';
+        const g2Meaning=c.cg2?(getHanMeaning(c.cg2.han)||''):'';
+        const meaningLine=[c.cs.han+(sMeaning?'('+sMeaning+')':''),c.cg1.han+(g1Meaning?'('+g1Meaning+')':''),c.cg2?c.cg2.han+(g2Meaning?'('+g2Meaning+')':''):''].filter(Boolean).join(' · ');
+        const gyeokLine=[`원격 ${c.won} ${c.wonOk?'✓':'✗'}`,`형격 ${c.hyeong} ${c.hyeOk?'✓':'✗'}`,`이격 ${c.iGy} ${c.iOk?'✓':'✗'}`,`정격 ${c.jeong} ${c.jeoOk?'✓':'✗'}`].join(' · ');
+        sphBody+=`<div style="padding:12px 14px;background:rgba(212,175,73,.06);border-left:3px solid ${goodColor};border-radius:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:6px">
+            <span style="font-weight:700;color:var(--accent);font-size:.92rem">${i+1}. <span style="font-family:'Noto Serif KR',serif;letter-spacing:.1em">${hanStr}</span> <small style="color:var(--muted);font-weight:400;margin-left:6px">${full} · ${strokeStr}</small></span>
+            <span style="font-size:.74rem;color:${goodColor};font-weight:700">4격 ${c.goodCnt}/4 길수</span>
+          </div>
+          <div style="font-size:.76rem;color:var(--sub);line-height:1.75;margin-bottom:6px">↪ <b>의미:</b> ${meaningLine}</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.7;padding:7px 9px;background:rgba(0,0,0,.12);border-radius:5px">${gyeokLine}${c.ohScore>0?` · ⭐ 도움 기운(<b>${ohNames[ys.main]}</b>) ${c.ohScore/2}자 일치`:''}</div>
+        </div>`;
+      });
+      sphBody+=`</div>
+      <div style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.78rem;color:var(--sub);line-height:1.85">💡 <b>이 추천의 가치</b><br>한자 이름은 같은 발음이라도 획수에 따라 인생 시기마다 흐름이 크게 달라져요. 위 5개는 본인 한글 이름을 유지하면서 4격 길수가 가장 많이 모이는 조합이에요. 가능하면 정격(평생 총운) 길수를 우선하시고, 한자 의미가 본인 분위기와 맞는지도 함께 보세요.</div>`;
+      h+=paidWrapBody('SAME_PHONIC_HAN','🔡',`같은 발음 + 4격 길수 한자 조합 추천 (${full})`, sphBody);
+    }
+  }catch(e){}
+
   // 이름풀이 A4 요약본 — 데이터 저장 + 다운로드 카드
   try{
     _nameSummaryData={
