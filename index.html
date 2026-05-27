@@ -7382,6 +7382,72 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('LOVE_TIMELINE','💕','평생 연애·결혼 타임라인 — 만남·결혼·이별 시기',ltBody);
   }catch(e){}
 
+  // ─── BS: 평생 가족·자녀 타임라인 ───
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStemF=saju.dp.stem, _myBrF=saju.dp.branch;
+    const _gF=_meta.gender||'male';
+    const _dqF=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gF);
+    const _curYrF=new Date().getFullYear();
+    const _curAgeF=_curYrF-_meta.sy+1;
+    let _curIdxF=0;
+    for(let i=0;i<_dqF.daeuns.length;i++){
+      if(_curAgeF>=_dqF.daeuns[i].age && (i===_dqF.daeuns.length-1||_curAgeF<_dqF.daeuns[i+1].age)){_curIdxF=i;break;}
+    }
+    const _famReason=(tg,age)=>{
+      const s=lifeStageOf(age);
+      const M={
+        정인:{school:'어머니·할머니 사랑이 깊은 시기',youth:'부모님 도움·진로 조언 시기',young:'결혼·출산 준비 시기',prime:'육아·자녀 학교 적응',mid:'자녀 사춘기·진로 결정 함께',senior1:'자녀 독립·결혼·손주 기다림',senior2:'손주와 시간·자녀 가정 안정 지켜보기'},
+        편인:{school:'특별한 양육·돌봄 인연',youth:'멘토·은사 만남',young:'자녀 출산 후 본인 정체성 재정립',prime:'자녀 양육과 본인 일 균형',mid:'자녀 진학·취업 함께',senior1:'정신적 유산 자녀에게 전수',senior2:'영적 교감·기록 남기기'},
+        정재:{school:'아버지 안정·가계 풍요',youth:'결혼 자금 준비 시작',young:'결혼·신혼집·첫 자녀',prime:'자녀 학자금·내 집 마련',mid:'자녀 결혼 자금 준비',senior1:'자녀 결혼·손주 출산 자금 도움',senior2:'노후 자녀에게 물려줄 자산 정리'},
+        편재:{school:'아버지 활동 활발',youth:'다양한 가족 활동·여행',young:'배우자 만남·결혼',prime:'사업과 가족 균형',mid:'자녀 사업·진로 도움',senior1:'손주에게 경험 전수',senior2:'가족 모임·여행으로 화목'},
+        식신:{school:'동생·친척과 즐거운 시기',youth:'가족 식사·대화 풍성',young:'결혼·임신·출산 준비',prime:'자녀 양육·돌봄의 즐거움',mid:'자녀와 친구처럼 소통',senior1:'손주 돌봄·자녀 가정 도움',senior2:'손주와 만드는 추억'},
+        상관:{school:'표현 강한 자녀의 본인',youth:'부모와 의견 충돌·자기주장 강해짐',young:'배우자와 솔직한 대화 시기',prime:'자녀와 창의적 활동 함께',mid:'자녀 자기 표현 응원',senior1:'자녀에게 진솔한 인생 이야기',senior2:'자서전·가족 기록 남기기'},
+        정관:{school:'규율 있는 가정·부모님 모범',youth:'부모님 기대 부응·진로 결정',young:'결혼·가장으로서 자리잡기',prime:'자녀 교육·가정의 기둥',mid:'자녀 진로 안정·가정 관리',senior1:'가족 어른 역할·자녀 결혼',senior2:'가문 어른 역할'},
+        편관:{school:'엄격한 부모님·규율 시기',youth:'부모와 갈등·독립 욕구',young:'결혼·가장 책임 무거움',prime:'자녀 양육의 강한 책임',mid:'자녀 사춘기·갈등 관리',senior1:'자녀 독립 후 새 책임',senior2:'가족 어른 책임'},
+        비견:{school:'형제·자매와 친밀',youth:'동기·친척 가까움',young:'배우자와 친구 같은 관계',prime:'동기·친척 도움',mid:'동기·옛 친척 만남',senior1:'옛 형제·동기 모임 풍성',senior2:'가족·자손 모임'},
+        겁재:{school:'형제 다툼·경쟁',youth:'부모님과 의견 차이',young:'배우자와 가치관 조율',prime:'자녀와 의견 충돌 주의',mid:'가족 내 입장차 조율',senior1:'옛 갈등 화해 시기',senior2:'가족 화목 위해 양보'}
+      };
+      return (M[tg]&&M[tg][s])||'';
+    };
+    const eventsF=_dqF.daeuns.map((du,idx)=>{
+      const tg=tenGod(_dStemF,du.stem), btg=tenGod(_dStemF,BR_MAIN_STEM[du.branch]);
+      const brR=brRel(_myBrF,du.branch);
+      const tags=[];
+      if(tg==='정인'||btg==='정인')tags.push({emoji:'🤱',type:'good',label:'어머니·자녀 양육기',reason:'정인 흐름 — '+(_famReason('정인',du.age)||'어머니·자녀 양육의 시기')});
+      if(tg==='편인'||btg==='편인')tags.push({emoji:'💫',type:'good',label:'특별 양육·멘토',reason:'편인 흐름 — '+(_famReason('편인',du.age)||'특별 인연·돌봄의 시기')});
+      if(tg==='정재'||btg==='정재')tags.push({emoji:'🏠',type:'good',label:'안정 가정·자산',reason:'정재 흐름 — '+(_famReason('정재',du.age)||'안정 가정·자산의 시기')});
+      if(tg==='편재'||btg==='편재')tags.push({emoji:'👨‍👩‍👧‍👦',type:'good',label:'활동 가족·아버지',reason:'편재 흐름 — '+(_famReason('편재',du.age)||'활동 가족·아버지의 시기')});
+      if(tg==='식신'||btg==='식신')tags.push({emoji:'🍼',type:'good',label:'출산·돌봄기',reason:'식신 흐름 — '+(_famReason('식신',du.age)||'출산·돌봄의 시기')});
+      if(tg==='상관'||btg==='상관')tags.push({emoji:'💬',type:'good',label:'표현·소통기',reason:'상관 흐름 — '+(_famReason('상관',du.age)||'가족 소통의 시기')});
+      if(tg==='정관'||btg==='정관')tags.push({emoji:'⚖️',type:'good',label:'가정 책임기',reason:'정관 흐름 — '+(_famReason('정관',du.age)||'가정 책임의 시기')});
+      if(tg==='편관'||btg==='편관')tags.push({emoji:'⚔️',type:'warn',label:'책임 무거움·갈등',reason:'편관 흐름 — '+(_famReason('편관',du.age)||'책임·갈등 시기')});
+      if(tg==='비견'||btg==='비견')tags.push({emoji:'👫',type:'good',label:'형제·친척 가까움',reason:'비견 흐름 — '+(_famReason('비견',du.age)||'형제·친척 가까운 시기')});
+      if(tg==='겁재'||btg==='겁재')tags.push({emoji:'⚠️',type:'warn',label:'가족 다툼 주의',reason:'겁재 흐름 — '+(_famReason('겁재',du.age)||'가족 다툼 주의 시기')});
+      if(brR.kind==='충')tags.push({emoji:'⚡',type:'warn',label:'가족 변동기',reason:'본인 자리와 정면 부딪힘 — 가족 구성·관계 변동의 시기'});
+      if(brR.kind==='원진')tags.push({emoji:'💭',type:'warn',label:'미세한 거슬림',reason:'미묘하게 거슬리는 결 — 가까운 가족 사이 의식적 거리감'});
+      return {du,idx,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let ftBody=`<p><span class="body-q">평생 가족·자녀와의 흐름은 어떻게 풀릴까요?</span><br>본인 사주 + 대운으로 부모·배우자·자녀와의 관계 흐름을 정리했어요. 결혼·출산·자녀 독립·부모 봉양·자녀와의 화해 시기를 미리 보면 가족 관계를 더 부드럽게 가꿔갈 수 있어요.</p>`;
+    ftBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    eventsF.forEach((e,i)=>{
+      const isCur=i===_curIdxF;
+      const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
+      const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      ftBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.length?e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join(''):'<div style="color:var(--sub)">평이한 가족 흐름 — 본인 페이스 유지에 좋은 10년</div>'}</div>
+      </div>`;
+    });
+    ftBody+=`</div>`;
+    ftBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>가족 흐름을 잘 쓰는 법</b><br>양육기에는 자녀에게 시간을, 안정기에는 가정 자산에, 책임 무거운 시기에는 본인 컨디션 관리에 무게를 두세요. 가족 변동기에는 큰 결정보다 대화로 결을 다지세요.</p>`;
+    h+=paidWrapBody('FAMILY_TIMELINE','👨‍👩‍👧‍👦','평생 가족·자녀 타임라인 — 결혼·출산·양육·부모 봉양·자녀 독립',ftBody);
+  }catch(e){}
+
   // ═════════════════════════════════════
   // 건강운
   // ═════════════════════════════════════
@@ -7485,6 +7551,66 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     htBody+=`</div>`;
     htBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>평생 건강 관리 한 줄</b><br>본인이 평생 의식해야 할 핵심 부위는 <b>${_organByOh[_weak]}</b>예요. 약한 오행 영역이라 정기 검진을 평소보다 한 박자 더 신경 쓰시고, 회복기 대운에서는 적극적으로 건강 검진·치료·생활습관 개선을 배치하세요. 위 풀이는 체질의 큰 경향이며, 실제 진단·치료는 반드시 전문의와 상담하세요.</p>`;
     h+=paidWrapBody('HEALTH_TIMELINE','🩺','평생 건강 타임라인 — 회복기·주의기',htBody);
+  }catch(e){}
+
+  // ─── BS: 평생 이사·이주·해외 타임라인 ───
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStemM=saju.dp.stem, _myBrM=saju.dp.branch;
+    const _gM=_meta.gender||'male';
+    const _dqM=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gM);
+    const _curYrM=new Date().getFullYear();
+    const _curAgeM=_curYrM-_meta.sy+1;
+    let _curIdxM=0;
+    for(let i=0;i<_dqM.daeuns.length;i++){
+      if(_curAgeM>=_dqM.daeuns[i].age && (i===_dqM.daeuns.length-1||_curAgeM<_dqM.daeuns[i+1].age)){_curIdxM=i;break;}
+    }
+    // 역마살 글자: 인·사·신·해
+    const YOKMA=[2,5,8,11];
+    // 본인 사주 역마 보유 여부
+    const _hasYokma=[saju.yp.branch,saju.mp.branch,saju.dp.branch,saju.hp?saju.hp.branch:-1].some(b=>YOKMA.includes(b));
+    const _moveReason=(brR,du,age)=>{
+      const s=lifeStageOf(age);
+      const isYokma=YOKMA.includes(du.branch);
+      if(isYokma){
+        const M={school:'전학·이사·새 학교 적응',youth:'유학·기숙사·자취 시작',young:'첫 이주·해외 연수·출장 잦은 직업',prime:'잦은 이동·해외 출장·확장 이주',mid:'사업 확장 이주·이민 결정',senior1:'은퇴 이주·휴양지 이주',senior2:'자녀 집 근처 이주·요양 이주'};
+        return M[s]||'이동·이주의 시기';
+      }
+      if(brR.kind==='충'){
+        const M={school:'전학·환경 큰 변화',youth:'타지 학업·자취 시작',young:'이사·해외·새 환경',prime:'이주·해외·큰 이동',mid:'사업 이전·이주',senior1:'은퇴 이주·자녀 동반',senior2:'요양 시설·자녀 집 이주'};
+        return M[s]||'환경 변화의 시기';
+      }
+      return '안정·정착의 시기 — 큰 이동 없음';
+    };
+    const eventsM=_dqM.daeuns.map((du,idx)=>{
+      const brR=brRel(_myBrM,du.branch);
+      const tags=[];
+      const isYokma=YOKMA.includes(du.branch);
+      if(isYokma)tags.push({emoji:'🚄',type:'good',label:'역마기 — 이동·해외',reason:'역마 글자 흐름 — '+_moveReason(brR,du,du.age)});
+      if(brR.kind==='충')tags.push({emoji:'⚡',type:'warn',label:'환경 변동기',reason:'본인 자리와 정면 부딪힘 — '+_moveReason(brR,du,du.age)});
+      if(brR.kind==='형')tags.push({emoji:'⚖',type:'warn',label:'이주 분쟁 주의',reason:'서로 깎이는 결 — 부동산·이사 계약 분쟁 주의'});
+      if(brR.kind==='합'||brR.kind==='반합')tags.push({emoji:'🏡',type:'good',label:'안정 정착기',reason:'본인 자리와 자연스럽게 어울리는 결 — 한 자리 정착·내실에 좋은 시기'});
+      if(!tags.length)tags.push({emoji:'·',type:'flat',label:'평이한 흐름',reason:'큰 이동 없이 자기 페이스 유지 시기'});
+      return {du,idx,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let mtBody=`<p><span class="body-q">평생 이사·이주·해외 활동은 어느 시기에 어떻게 풀릴까요?</span><br>본인 사주 + 대운으로 이동·이주·해외 활동 시기를 정리했어요. ${_hasYokma?'본인 사주에 <b>역마</b>가 자리잡고 있어 평생 이동성이 강한 결입니다.':'본인 사주는 역마 글자가 직접 없어 한 자리 정착형에 가까운 결입니다.'}</p>`;
+    mtBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    eventsM.forEach((e,i)=>{
+      const isCur=i===_curIdxM;
+      const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
+      const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      mtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join('')}</div>
+      </div>`;
+    });
+    mtBody+=`</div>`;
+    mtBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>이동 흐름을 잘 쓰는 법</b><br>역마기에는 유학·해외·이주를, 안정 정착기에는 내실 다지기와 자기 자리 굳히기를, 환경 변동기에는 큰 결정 전 한 박자 살피기를 우선하세요.</p>`;
+    h+=paidWrapBody('MOVE_TIMELINE','🚄','평생 이사·이주·해외 타임라인 — 이동·정착·환경 변동 시기',mtBody);
   }catch(e){}
 
   // ═════════════════════════════════════
@@ -7611,6 +7737,66 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     stlBody+=`</div>`;
     stlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>학업·시험의 결을 잘 쓰는 법</b><br>정형 학습기에는 자격증·학위·국가고시에, 전문 연구기에는 박사·전문직 자격에, 도전 시험기에는 고시·경쟁률 높은 시험에 시간을 배치하세요. 큰 시험 결정은 정인·편인이 들어오는 대운을 기준으로 잡으면 결이 가장 잘 풀려요.</p>`;
     h+=paidWrapBody('STUDY_TIMELINE','📜','평생 학업·시험 타임라인 — 학습·자격·시험 시기',stlBody);
+  }catch(e){}
+
+  // ─── BS: 평생 영성·정신·내면 타임라인 ───
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStemS=saju.dp.stem, _myBrS=saju.dp.branch;
+    const _gS=_meta.gender||'male';
+    const _dqS=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gS);
+    const _curYrS=new Date().getFullYear();
+    const _curAgeS=_curYrS-_meta.sy+1;
+    let _curIdxS=0;
+    for(let i=0;i<_dqS.daeuns.length;i++){
+      if(_curAgeS>=_dqS.daeuns[i].age && (i===_dqS.daeuns.length-1||_curAgeS<_dqS.daeuns[i+1].age)){_curIdxS=i;break;}
+    }
+    // 화개살 글자: 진·술·축·미 (4고지)
+    const HWAGAE=[4,10,1,7];
+    const _hasHwagae=[saju.yp.branch,saju.mp.branch,saju.dp.branch,saju.hp?saju.hp.branch:-1].some(b=>HWAGAE.includes(b));
+    const _spiritReason=(tg,age,isHwagae,isGm)=>{
+      const s=lifeStageOf(age);
+      if(isHwagae){
+        const M={school:'독서·예술·내면 세계가 풍성',youth:'철학·종교·예술에 깊이 끌림',young:'한 분야 천착·전문성 깊이',prime:'학문·예술·종교 성취',mid:'후학 양성·자기 분야 정리',senior1:'정신적 유산·깊은 사색',senior2:'마음의 평안·회향'};
+        return M[s]||'학문·예술·종교 깊이의 시기';
+      }
+      if(tg==='정인'||tg==='편인'){
+        const M={school:'학습 흡수·독서 풍성',youth:'학문·인문·종교에 깊이',young:'전문 학문·자격증',prime:'전문성 도약·연구',mid:'학문 정리·후학 양성',senior1:'평생 학습·정신 분야',senior2:'학문 정리·기록'};
+        return M[s]||'학습·내면 깊이의 시기';
+      }
+      if(isGm)return '공망 작용 — 내면 작업·정신 분야에 결이 잘 맞는 시기';
+      return '평이한 내면 흐름 — 본인 페이스 유지';
+    };
+    const _gmSpirit=emptyBranches(saju.dp.stem,saju.dp.branch);
+    const eventsS=_dqS.daeuns.map((du,idx)=>{
+      const tg=tenGod(_dStemS,du.stem), btg=tenGod(_dStemS,BR_MAIN_STEM[du.branch]);
+      const tags=[];
+      const isHwagae=HWAGAE.includes(du.branch);
+      const isGm=_gmSpirit.includes(du.branch);
+      if(isHwagae)tags.push({emoji:'🪷',type:'good',label:'화개 — 학문·예술·종교 깊이',reason:_spiritReason(tg,du.age,true,false)});
+      if(tg==='정인'||btg==='정인'||tg==='편인'||btg==='편인')tags.push({emoji:'📚',type:'good',label:'학습·정신 깊이기',reason:_spiritReason(tg==='정인'||tg==='편인'?tg:btg,du.age,false,false)});
+      if(isGm)tags.push({emoji:'✨',type:'good',label:'공망 채움 — 내면 작업기',reason:_spiritReason(tg,du.age,false,true)});
+      if(!tags.length)tags.push({emoji:'·',type:'flat',label:'평이한 정신 흐름',reason:'외부 활동 중심의 시기 — 의식적인 내면 시간 확보 권장'});
+      return {du,idx,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let spBody=`<p><span class="body-q">평생 영성·정신·내면 작업은 어느 시기에 깊어질까요?</span><br>본인 사주 + 대운으로 학문·종교·예술·명상·자기 성찰 같은 정신적 성장 시기를 정리했어요. ${_hasHwagae?'본인 사주에 <b>화개</b>가 자리잡고 있어 평생 깊이 있는 정신 활동에 결이 잘 맞아요.':'본인 사주는 화개 글자가 직접 없어 외부 활동형에 가까운 결입니다. 의식적으로 내면 시간을 확보하세요.'}</p>`;
+    spBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    eventsS.forEach((e,i)=>{
+      const isCur=i===_curIdxS;
+      const hasGood=e.tags.some(t=>t.type==='good');
+      const bg=isCur?'rgba(212,175,73,.12)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasGood?'#6cbf7e':'var(--border)';
+      spBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join('')}</div>
+      </div>`;
+    });
+    spBody+=`</div>`;
+    spBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>정신 흐름을 잘 쓰는 법</b><br>화개기·학습 깊이기에는 학문·예술·종교 활동을, 공망 채움기에는 명상·일기·자기 돌봄을, 평이한 시기에는 일상 속에서 짧은 내면 시간을 확보하세요.</p>`;
+    h+=paidWrapBody('SPIRIT_TIMELINE','🪷','평생 영성·정신·내면 타임라인 — 학문·예술·종교·명상 시기',spBody);
   }catch(e){}
 
   // 평생 개운법 카드 — 용신 오행 기반 통합 액션 가이드
@@ -8388,6 +8574,72 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
     {good:'타고난 인덕을 살리시고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일로 깊게 만나는 관계 몇 개가 넓은 인맥보다 훨씬 든든해요.',
      warn:`${has('겁재')?'경쟁심이 깊은 결이 있어 동업과 금전 거래에서 신뢰를 잃기 쉬워요. 친한 사이일수록 명확한 계약과 기록이 본인을 지켜줘요.':'관계에서 본인의 주장과 상대의 말을 듣는 균형을 의식해서 잡아주세요.'}`});
+
+  // ─── BS: 평생 인간관계 타임라인 ───
+  try{
+    if(!_meta||!_meta.sy)throw new Error('_meta missing');
+    const _dStemH=saju.dp.stem, _myBrH=saju.dp.branch;
+    const _gH=_meta.gender||'male';
+    const _dqH=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gH);
+    const _curYrH=new Date().getFullYear();
+    const _curAgeH=_curYrH-_meta.sy+1;
+    let _curIdxH=0;
+    for(let i=0;i<_dqH.daeuns.length;i++){
+      if(_curAgeH>=_dqH.daeuns[i].age && (i===_dqH.daeuns.length-1||_curAgeH<_dqH.daeuns[i+1].age)){_curIdxH=i;break;}
+    }
+    const _humanReason=(tg,age)=>{
+      const s=lifeStageOf(age);
+      const M={
+        비견:{school:'또래 친구·교실 단체 활동',youth:'동기·동아리·전공 네트워크',young:'동료·창업 동지·인맥 시작',prime:'전문가 그룹·동업·자기 자리',mid:'동기·동창·자녀 독립 후 관계',senior1:'옛 친구·동기 모임 풍성',senior2:'동년배 추억·정리'},
+        겁재:{school:'친구 경쟁·다툼',youth:'또래 라이벌·자기 단련',young:'동기 경쟁·동업 갈등',prime:'동업·금전 갈등 주의',mid:'옛 갈등 정리',senior1:'후배 양성으로 전환',senior2:'베푸는 시기'},
+        식신:{school:'친구와 즐거운 시간',youth:'동기·취미 모임',young:'직장 동료·사람 인연',prime:'후배·고객·서비스 인연',mid:'네트워크 풍성',senior1:'후학·봉사로 새 인연',senior2:'후세대와 따뜻한 교류'},
+        상관:{school:'또래 SNS·표현 활발',youth:'창작·콘텐츠 친구',young:'온라인·미디어 인맥',prime:'팬·구독자·영향력',mid:'후배 양성·강연',senior1:'독자·청중',senior2:'유산 기록 청자'},
+        정재:{school:'친한 친구·진심 어린 관계',youth:'평생 친구 만남',young:'배우자·동료와 평생 관계',prime:'안정적 인맥·신뢰 형성',mid:'오래된 친구·신뢰 굳건',senior1:'평생 친구·동료',senior2:'진심으로 남는 관계'},
+        편재:{school:'다양한 친구·외부 활동',youth:'다양한 사람·외부 인맥',young:'네트워크 확장·고객·동료',prime:'사업·외부 영업 인맥',mid:'고객·동료·확장 인맥',senior1:'사업 정리 후 옛 인연',senior2:'기부·봉사 인맥'},
+        정관:{school:'규율·선생님·반장 관계',youth:'멘토·상사·공식 인연',young:'상사·동료·조직 관계',prime:'직장 상사·부하·동료',mid:'임원·관리 관계',senior1:'후배 멘토 역할',senior2:'어른 역할'},
+        편관:{school:'엄격한 어른과 관계',youth:'코치·선배·강한 멘토',young:'압박 있는 상사 관계',prime:'경쟁 상사·라이벌',mid:'리더로서 관리 관계',senior1:'권위 있는 자문',senior2:'경험 어른 역할'},
+        정인:{school:'어머니·선생님·도서관',youth:'스승·후원자',young:'멘토·은사',prime:'후원자·교수',mid:'후학 양성',senior1:'평생 학습 동지',senior2:'학문 동지'},
+        편인:{school:'독특한 친구·특별 관계',youth:'예술·인문 동지',young:'전문 분야 동료',prime:'특이한 인맥·창의 동지',mid:'독창 분야 권위자 관계',senior1:'정신적 동지',senior2:'영적 동지'}
+      };
+      return (M[tg]&&M[tg][s])||'';
+    };
+    const eventsH=_dqH.daeuns.map((du,idx)=>{
+      const tg=tenGod(_dStemH,du.stem), btg=tenGod(_dStemH,BR_MAIN_STEM[du.branch]);
+      const brR=brRel(_myBrH,du.branch);
+      const tags=[];
+      if(tg==='비견'||btg==='비견')tags.push({emoji:'👥',type:'good',label:'동료·친구 시기',reason:'비견 흐름 — '+(_humanReason('비견',du.age)||'동료·친구 인연의 시기')});
+      if(tg==='겁재'||btg==='겁재')tags.push({emoji:'⚠️',type:'warn',label:'경쟁·동업 갈등',reason:'겁재 흐름 — '+(_humanReason('겁재',du.age)||'경쟁·갈등 주의 시기')});
+      if(tg==='식신'||btg==='식신')tags.push({emoji:'🤝',type:'good',label:'따뜻한 인연기',reason:'식신 흐름 — '+(_humanReason('식신',du.age)||'따뜻한 사람 인연')});
+      if(tg==='상관'||btg==='상관')tags.push({emoji:'📣',type:'good',label:'표현·영향력기',reason:'상관 흐름 — '+(_humanReason('상관',du.age)||'표현·영향력 시기')});
+      if(tg==='정재'||btg==='정재')tags.push({emoji:'💞',type:'good',label:'안정 인연기',reason:'정재 흐름 — '+(_humanReason('정재',du.age)||'안정 인연 형성')});
+      if(tg==='편재'||btg==='편재')tags.push({emoji:'🌐',type:'good',label:'네트워크 확장기',reason:'편재 흐름 — '+(_humanReason('편재',du.age)||'네트워크 확장 시기')});
+      if(tg==='정관'||btg==='정관')tags.push({emoji:'🏛',type:'good',label:'상사·멘토 인연',reason:'정관 흐름 — '+(_humanReason('정관',du.age)||'상사·멘토 인연 시기')});
+      if(tg==='편관'||btg==='편관')tags.push({emoji:'⚔️',type:'good',label:'강한 멘토·라이벌',reason:'편관 흐름 — '+(_humanReason('편관',du.age)||'강한 멘토·라이벌 시기')});
+      if(tg==='정인'||btg==='정인')tags.push({emoji:'🌟',type:'good',label:'스승·후원자',reason:'정인 흐름 — '+(_humanReason('정인',du.age)||'스승·후원자 인연')});
+      if(tg==='편인'||btg==='편인')tags.push({emoji:'✨',type:'good',label:'특별 인연·동지',reason:'편인 흐름 — '+(_humanReason('편인',du.age)||'특별 인연 시기')});
+      if(brR.kind==='충')tags.push({emoji:'⚡',type:'warn',label:'관계 정리기',reason:'본인 자리와 정면 부딪힘 — 한 관계가 정리·재정립되는 시기'});
+      if(brR.kind==='원진')tags.push({emoji:'💭',type:'warn',label:'미세한 거슬림',reason:'미묘하게 거슬리는 결 — 가까운 사람의 사소한 말투에 거리감 필요'});
+      return {du,idx,ageRange:`${du.age}~${du.age+9}세`,tags};
+    });
+    let httBody=`<p><span class="body-q">평생 인간관계는 어떻게 풀릴까요?</span><br>본인 사주 + 대운으로 친구·동료·인맥의 흐름을 정리했어요. 인맥 확장기·정리기·갈등기를 미리 보면 관계를 더 단단하게 가꿔갈 수 있어요.</p>`;
+    httBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
+    eventsH.forEach((e,i)=>{
+      const isCur=i===_curIdxH;
+      const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
+      const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      httBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
+          ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
+        </div>
+        <div style="margin-top:7px;font-size:.81rem;line-height:1.85">${e.tags.length?e.tags.map(t=>`<div style="margin:2px 0">${t.emoji} <b>${t.label}</b> <span style="color:var(--sub)">— ${t.reason}</span></div>`).join(''):'<div style="color:var(--sub)">평이한 인간관계 흐름 — 자기 페이스 유지에 좋은 10년</div>'}</div>
+      </div>`;
+    });
+    httBody+=`</div>`;
+    httBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>인맥 흐름을 잘 쓰는 법</b><br>확장기에는 새 인맥과 적극 만남을, 안정 인연기에는 깊은 1:1 관계를 다지기에, 정리기에는 갈등 회피보다 솔직한 대화를 우선하세요.</p>`;
+    h+=paidWrapBody('HUMAN_TIMELINE','🤝','평생 인간관계 타임라인 — 친구·동료·인맥의 흐름',httBody);
+  }catch(e){}
 
   // 6친(육친) 관계 — 부모·형제·배우자·자녀 인연 풀이
   try{
