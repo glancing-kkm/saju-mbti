@@ -6482,8 +6482,10 @@ function unlockAndRender(category){
   const mbti=(_meta&&_meta.mbti)||'';
   const heroHTML=resultHeroHTML(_saju, mbti, category);
   const tldrHTML=''; // TLDR 카드 노출 안 함 (사용자 요청)
-  const mbtiAnalysis=mbti?mbtiAnalysisHTML(_saju, mbti):'';
-  const mbtiBadge=mbti?mbtiBadgeHTML(_saju, mbti):'';
+  // CA-3: 지정일·월별·일일·만세력·이름풀이는 MBTI 분석/배지 숨김 (입력란 hideMbti와 동일 조건)
+  const _hideMbtiHeader=(category==='daypick'||category==='monthly'||category==='daily'||category==='manse'||category==='name');
+  const mbtiAnalysis=(mbti && !_hideMbtiHeader)?mbtiAnalysisHTML(_saju, mbti):'';
+  const mbtiBadge=(mbti && !_hideMbtiHeader)?mbtiBadgeHTML(_saju, mbti):'';
   const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
   const nextActions=nextActionsHTML(category);
   const renderTarget=(panelId,html)=>{
