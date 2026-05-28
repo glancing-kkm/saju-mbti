@@ -7050,15 +7050,51 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const yFood=['신맛 과일·녹색 채소','쓴맛 야채·붉은 식재료','단맛·뿌리채소','매운맛·흰 식재료','짠맛·검은 식재료'][ys.main];
 
   let totBody=miniManse(saju);
-  // ① 한 줄 결론 — 본인의 그릇 크기를 친근하게
-  totBody+=`<div class="lead-card">${isStrong?'기운이 두터운':'기운이 한 박자 약한'} <b>${gk.name.split(' ')[0]}</b>${gk.nick?` · <em>${gk.nick.split('·')[0]}형</em>`:''}의 사주입니다. ${isStrong?'큰 책임과 큰 도전도 흔들리지 않고 감당할 수 있는, 포용력이 큰 사람이에요.':'먼저 본인을 단단히 채운 뒤 큰 무대로 천천히 도약하는, 깊이 있게 자라는 사람이세요.'}</div>`;
-  // ② 왜 — 일간 비율 + 강·약 오행을 일상어로
-  totBody+=`<p><span class="body-q">왜 그렇게 보일까요?</span><br>본인을 뜻하는 글자가 사주 여덟 자 중 <b>${strongPct}%</b>를 차지하고 있어 ${isStrong?'기운이 두텁고 단단해요. 흔들리는 일에도 본인 페이스를 지키기 쉬운 흐름이에요.':'기운이 한 박자 약해요. 그래서 본인 혼자보다 주변의 도움과 학습으로 채우는 흐름이 잘 어울려요.'}</p>`;
-  totBody+=`<p>다섯 기운 중 <b>${OHNAME[dom]}</b>이 가장 두텁게 자리잡아 <em>${domStrength}</em>이 본인의 큰 무기입니다. 반대로 <b>${OHNAME[weak]}</b>이 가장 부족해서 <em>${weakArea}</em>은 일상에서 의식해서 채워주는 게 좋아요.</p>`;
-  totBody+=`<p>${gk.desc}${keySinsal?` 여기에 <b>${keySinsal.n}</b>이 자리잡고 있어, ${keySinsal.d}이 한 가지 더 얹혀 있어요.`:''}</p>`;
-  // ③ 어떻게 — 행동 처방
-  totBody+=`<p><span class="body-q">그래서 어떻게 살면 좋을까요?</span><br>${isStrong?'<b>본인 사업·리더 포지션·새로운 도전</b>에 적극적으로 발을 들이세요. 큰 흐름의 돈과 책임을 다루어도 흔들리지 않는 그릇이라, 망설이지 말고 본인 흐름을 따라가는 게 가장 자연스럽습니다.':'<b>공부·자격증·전문성</b>으로 본인의 그릇을 단단히 키운 뒤, 큰 조직에서 입지를 다지고, 그다음 천천히 독립을 그리는 패턴이 가장 안전해요. 처음부터 큰 무대에 서기보다 차근차근 쌓아가는 흐름이 본인에게 맞습니다.'}</p>`;
-  totBody+=`<p>일상에서 운을 끌어올리는 가장 쉬운 방법은 본인을 도와주는 기운 <b>${OHNAME[ys.main]}</b>을 가까이 두는 거예요.<br>· 옷·소품 색 — <b>${yColor}</b> 계열<br>· 자리·여행 방향 — <b>${yDir}</b><br>· 식단에 한 가지 — <b>${yFood}</b><br>셋 중 단 한 가지만 일상에 들여도 흐름이 살아납니다.</p>`;
+  // ─── CE+: 본인 사주 핵심 8글자 한눈에 ───
+  const _stemOhCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _brOhCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  const _goodOhKo=OHNAME[ys.main];
+  const _badOhIdx=(ys.main+2)%5;
+  const _badOhKo=OHNAME[_badOhIdx];
+  totBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌟 본인 사주의 핵심 — 어떤 글자가 어디에 있나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인이 앉은 자리(일지)</b>: <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em> — ${branchNick(dp.branch)} · 결혼 후 배우자 자리<br>
+      · <b>사주 유형(격국)</b>: <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>${keySinsal?` · 별자리 <em>${keySinsal.n}</em>`:''}<br>
+      · <b>본인 기운 강약</b>: <em>${isStrong?'신강(기운 두터움 '+strongPct+'%)':'신약(기운 약함 '+strongPct+'%)'}</em>
+    </div>
+  </div>`;
+
+  // ① 본인 본질 — 일간 + 격국으로 어떤 사람
+  totBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 사람인가요?</span><br>본인의 본질은 <b>${stemRich(dp.stem)}</b>이에요. ${STEM_META[dp.stem].body} 이 본질이 <em>${gk.name}</em> 유형으로 자리잡아 ${gk.desc}</p>`;
+  totBody+=`<p>다섯 기운 중 <b>${OHNAME[dom]}</b>이 가장 두텁게 자리잡아 <em>${domStrength}</em>이 본인의 큰 무기입니다. 반대로 <b>${OHNAME[weak]}</b>이 가장 부족해서 <em>${weakArea}</em>은 일상에서 의식해서 채워주는 게 좋아요.${keySinsal?` 여기에 <b>${keySinsal.n}</b>이 자리잡고 있어 ${keySinsal.d}이 한 단계 더 얹혀 있어요.`:''}</p>`;
+
+  // ② 본인 강점·그림자
+  totBody+=`<p><span class="body-q">💡 본인의 강점과 의식해서 다스릴 부분</span><br>· <b>강점</b>: ${dm.pos.slice(0,3).join(', ')}<br>· <b>다스릴 부분</b>: ${dm.neg.slice(0,2).join(', ')}<br>${isStrong?'본인 사업·리더 자리·새로운 도전을 망설이지 마세요. 큰 책임과 큰 결정에도 흔들리지 않는 포용력이 큰 그릇이에요.':'먼저 공부·자격증·전문성으로 본인 그릇을 키운 뒤 큰 무대로 나가세요. 큰 조직에서 자리잡고 천천히 독립하는 패턴이 본인에게 안전합니다.'}</p>`;
+
+  // ③ 대운·세운에서 도움 글자 (사용자 요청 핵심)
+  totBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 대운·세운에서 본인을 도와주는 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자</b>: <em>${_goodOhKo}</em> 기운 — 천간 <b>${_stemOhCh[ys.main]}</b> · 지지 <b>${_brOhCh[ys.main]}</b><br>
+      <b>왜 도움이 되나요?</b> 본인 사주에서 약한 <em>${OHNAME[weak]}</em> 기운을 직접 보강하거나, 본인의 본질 <em>${OHNAME[dStemOh]}</em>을 받쳐주는 기운이라 본인 흐름이 자연스럽게 살아나기 때문이에요.<br>
+      <b>이 시기에는</b>: 큰 결정·이직·창업·결혼·중요한 발표 같은 굵직한 일을 배치하시면 결실이 따라옵니다. 미뤄둔 계획을 꺼내기 가장 좋은 시기예요.
+    </div>
+  </div>`;
+
+  // ④ 대운·세운에서 주의 글자
+  totBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 대운·세운에서 조심해야 할 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${_badOhKo}</em> 기운 — 천간 <b>${_stemOhCh[_badOhIdx]}</b> · 지지 <b>${_brOhCh[_badOhIdx]}</b><br>
+      <b>왜 조심해야 하나요?</b> 본인을 도와주는 용신 <em>${OHNAME[ys.main]}</em>을 직접 깎거나, 본인의 약한 부분을 더 약하게 만드는 기운이라 같은 노력에도 결실이 늦게 따라오기 쉬워요.<br>
+      <b>이 시기에는</b>: 큰 결정·확장·이동·새 거래를 한 박자 미루고, 정리·내실·휴식·자기 점검에 무게를 두세요. 흉이 아니라 「잠시 멈춰 보살피라는 신호」로 받아들이는 게 가장 좋아요.
+    </div>
+  </div>`;
+
+  // ⑤ 일상 실천
+  totBody+=`<p style="margin-top:14px"><span class="body-q">✦ 매일 한 가지 — 본인 흐름을 지키는 가장 쉬운 길</span><br>도움 기운 <b>${OHNAME[ys.main]}</b>을 일상에 한 가지만 들여보세요.<br>· 옷·소품 색 — <b>${yColor}</b> 계열<br>· 자리·여행 방향 — <b>${yDir}</b><br>· 식단에 한 가지 — <b>${yFood}</b><br>셋 중 한 가지만 들여도 본인의 흐름이 자연스럽게 살아납니다.</p>`;
   h+=paidWrapBody('TOTAL','✨','총운 — 인생 흐름의 큰 그림',totBody,
     {strengths:[
        `타고난 <b>${dm.pos.slice(0,2).join('·')}</b>의 결 — 본인의 본질이 사회적 자산이 됨`,
