@@ -7117,23 +7117,52 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const hasWealth=has('편재')||has('정재');
   const wealthHeadline=!hasWealth?'직접 돈보다 명예·이름값으로 부가 따라오는 사주':wealth.pp>wealth.pj?'큰 흐름의 활동 재물을 다루는 사업가형 사주':wealth.pj>wealth.pp?'성실히 꾸준히 쌓는 안정형 재물 사주':'안정과 도전을 함께 다룰 줄 아는 균형형 재물 사주';
   let wBody='';
-  // ① 한 줄 결론 — 본인 사주가 돈을 어떻게 다루는 사람인지
-  wBody+=`<div class="lead-card">${isStrong?'기운이 두터운':'기운이 한 박자 약한'} <b>${wealthHeadline}</b>입니다. ${isStrong?(hasWealth?'좋은 시기가 오면 큰 결실을 거둘 수 있는, 포용력이 큰 사람이세요.':'직접 돈보다 본인의 이름값이 곧 돈이 되는 흐름이에요.'):'무리해서 돈을 좇기보다 본인의 그릇을 먼저 키우는 흐름이 안전합니다.'}</div>`;
-  // ② 왜 — 돈 자리 위치
+  // ─── CF-3 WEALTH 본문 전체 재작성 (기승전결 + 본인 글자·위치 → 도움/조심) ───
+  const _wealthStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _wealthBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  // [기] lead 박스 — 본인의 돈 자리 핵심
+  wBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💰 본인 사주의 「돈 자리」 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>돈 자리(재성)</b>: <em>${OHNAME[wealthOh]}</em> 기운 (천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b>)<br>
+      · <b>사주 안 돈 글자 분포</b>: 안정 재물 ${wealth.pj}개 · 활동 재물 ${wealth.pp}개<br>
+      · <b>본인 사주 돈 유형</b>: <em>${wealthHeadline}</em>
+    </div>
+  </div>`;
+  // [기] 사주판 — 돈 자리 강조
   if(wealthPillars.length>0){
     wBody+=miniManseWithPointer(saju,wealthPillars,'↑ 강조된 자리가 본인에게 「돈」을 뜻하는 자리예요');
   }else{
     wBody+=miniManse(saju);
     wBody+=`<div class="mm-pointer">↑ 겉으로 드러난 글자에는 「돈 자리」가 없고, 지지 글자 안에 숨어 있는 형태예요</div>`;
   }
-  wBody+=`<p><span class="body-q">왜 그렇게 보일까요?</span><br>본인의 「돈 자리」는 <b>${OHNAME[wealthOh]}</b> 기운으로 자리잡아요. 사주 안에 돈과 관련된 글자가 <b>꾸준한 안정 재물 ${wealth.pj}개 · 흐름을 타는 활동 재물 ${wealth.pp}개</b> 있어요.</p>`;
-  wBody+=`<p>두 가지 차이를 쉽게 풀면 —<br>· <b>안정 재물</b>은 월급, 예금, 정기 수입처럼 꾸준히 쌓이는 돈이에요. <em>예: 월급쟁이가 매달 받는 정기 급여</em><br>· <b>활동 재물</b>은 사업, 투자, 영업처럼 흐름을 타고 큰 단위로 움직이는 돈이에요. <em>예: 계약금·중개 수수료처럼 한 번에 들어오는 돈</em></p>`;
-  wBody+=`<p>${wealth.style}</p>`;
-  // ③ 어떻게 — 행동 처방
-  wBody+=`<p><span class="body-q">그래서 어떻게 다루면 좋을까요?</span><br>${isStrong?'적극적인 <b>재테크·사업 도전·큰 흐름의 돈 운용</b>이 본인에게 잘 맞아요. 한 번에 큰돈이 들어와도 흔들리지 않는 그릇이라, 미뤄두던 큰 결정도 진행해 볼 만합니다.':'먼저 <b>공부·자격증·전문성</b>으로 본인의 그릇을 키운 뒤 돈에 도전하세요. 본인의 이름값·전문성으로 인정받으면 그것이 자연스럽게 돈으로 돌아오는 흐름이에요.'}</p>`;
-  wBody+=`<p><b>돈이 가장 잘 풀리는 시기 — ${_userStageLabel} 기준</b><br>본인 사주에 <em>${OHNAME[wealthOh]}</em> 기운이 새로 들어오는 해가 큰 결실의 시기예요. 지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('wealth',_userAge)}</em>의 결실이 자연스럽게 따라오기 쉬운 흐름입니다.</p>`;
-  wBody+=`<p>반대로 <em>${OHNAME[dStemOh]}</em> 기운이 들어오는 해는 경쟁 상대가 가까워지는 시기라, ${_userStage==='school'||_userStage==='youth'?'친구와의 다툼이나 충동 소비':'동업 갈등이나 충동 지출'}을 한 번 더 조심하시면 좋아요.</p>`;
-  wBody+=`<p><b>일상에서 운을 끌어올리는 한 가지</b><br>지갑·통장·작업 공간 색을 <b>${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]}</b> 계열로 바꿔보세요. 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운이 일상에 흐르기 시작합니다. 방향은 <b>${['동쪽','남쪽','중앙','서쪽','북쪽'][ys.main]}</b>이 가장 잘 맞아요.</p>`;
+  // [승] 그래서 본인은 돈을 어떻게 다루는 사람?
+  wBody+=`<p><span class="body-q">📖 그래서 본인은 돈을 어떻게 다루는 사람인가요?</span><br>본인의 본질 <b>${stemNick(dp.stem)}</b>이 <em>${OHNAME[wealthOh]}</em> 기운(재성)을 만나면 ${wealth.style} 본인 사주에 안정 재물 <b>${wealth.pj}개</b>, 활동 재물 <b>${wealth.pp}개</b>가 자리잡아, ${wealth.pp>wealth.pj?'큰 흐름의 활동 돈을 다루는 결':wealth.pj>wealth.pp?'꾸준히 쌓이는 안정 돈에 강한 결':'두 가지 모두 다룰 줄 아는 균형 결'}입니다.</p>`;
+  wBody+=`<p>· <b>안정 재물</b>은 월급·예금·정기 수입처럼 꾸준히 쌓이는 돈<br>· <b>활동 재물</b>은 사업·투자·영업처럼 흐름을 타고 큰 단위로 움직이는 돈</p>`;
+  // [전] 본인 강점·주의
+  wBody+=`<p><span class="body-q">💡 본인의 재물 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${isStrong?(hasWealth?'기운이 두터워 큰 흐름의 돈을 다뤄도 흔들리지 않는 포용력':'본인의 이름값·전문성이 곧 돈이 되는 결'):'무리하지 않고 차근차근 본인 그릇에 맞게 쌓아가는 안정성'}<br>· <b>주의</b>: ${has('겁재')?'경쟁심이 깊게 자리잡아 동업·과시 소비·충동 투자로 돈을 잃기 쉬워요. 큰 결정은 24시간 룰':wealth.pp>wealth.pj?'활동 재물이 강해 한 번에 큰돈을 다루다 한순간에 잃을 수도. 분산·절제':'성실하지만 큰 도약 시기에는 외부 조언·인맥 확장이 필요'}</p>`;
+  // [결] 대운/세운 도움 글자 (큰 박스)
+  wBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 재물에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자</b>: <em>${OHNAME[wealthOh]}</em> 기운(재성 자체) — 천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b><br>
+      또는 <em>${OHNAME[outputOh]}</em> 기운(식상 — 재물을 만드는 활동) — 천간 <b>${_wealthStemCh[outputOh]}</b> · 지지 <b>${_wealthBrCh[outputOh]}</b><br>
+      <b>왜?</b> 재성 글자는 본인의 「돈 자리」 자체가 강해지는 시기이고, 식상 글자는 본인 표현·활동이 돈으로 바뀌는 통로를 열어주기 때문이에요.<br>
+      <b>이 시기에는</b>: 큰 매수·계약·창업·새 거래·이직·결혼 자금 결정을 적극 배치하세요. 미뤄둔 결정의 결실이 자연스럽게 따라옵니다.
+    </div>
+  </div>`;
+  // [결] 대운/세운 조심 글자
+  wBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 재물에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${OHNAME[dStemOh]}</em> 기운(비겁 — 본인과 같은 기운) — 천간 <b>${_wealthStemCh[dStemOh]}</b> · 지지 <b>${_wealthBrCh[dStemOh]}</b><br>
+      <b>왜?</b> 본인과 같은 기운이 들어오면 「돈 자리」를 경쟁 상대처럼 나눠 가지게 돼요. 동업·과시 소비·충동 투자로 돈이 새기 쉬운 흐름이에요.<br>
+      <b>이 시기에는</b>: 큰 매수·동업·고가품 구매·새 사업 결정을 한 박자 미루세요. 24시간 룰을 적용하고, 친한 사이일수록 명확한 기록이 본인을 지켜줘요.
+    </div>
+  </div>`;
+  // [결+실천] 인생 단계 + 일상 행동
+  wBody+=`<p style="margin-top:14px"><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 무엇에 집중할까요?</span><br>본인 단계에서 가장 결실 큰 영역은 <em>${stageActionOf('wealth',_userAge)}</em>. 일상 실천: 지갑·통장·작업 공간 색을 <b>${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]}</b> 계열로, 자리는 <b>${['동쪽','남쪽','중앙','서쪽','북쪽'][ys.main]}</b> 방향이 본인 흐름을 살립니다.</p>`;
   wBody+=_fieldConclusion('wealth',saju,ys,gender);
   h+=paidWrapBody('WEALTH','💰','재물운 — 돈의 흐름과 그릇',wBody,
     {good:wealth.advice,warn:`${has('겁재')?'경쟁심이 깊게 자리잡아 동업·과시 소비·충동 투자로 돈을 잃기 쉬워요. 큰 결정은 하루 미루는 습관이 본인을 지켜줘요.':wealth.pp>wealth.pj?'활동 재물 위주라 큰 흐름의 돈을 다루다 한순간에 잃을 수도 있어요. 분산과 절제가 핵심입니다.':'성실한 흐름이라 안정적이지만, 큰 도약을 원할 때는 외부의 조언과 인맥 확장이 결정적입니다.'}`});
@@ -7231,23 +7260,52 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const careerHeadline=gk.nick?gk.nick.split('·').slice(0,2).join('·'):'본인 기질에 맞는 분야';
   const careerSinsalLine=has('역마')?'<b>이동·해외·외근의 별자리</b>가 있어 활동성 높은 직업, 출장 잦은 일, 해외 활동이 본인에게 잘 맞아요.':has('문창')?'<b>지적 활동의 별자리</b>가 자리잡고 있어 글쓰기·기획·강의·논문·콘텐츠처럼 머리를 쓰는 일에서 본인이 빛납니다.':has('양인')||has('백호')?'<b>강한 흐름단력의 별자리</b>가 있어 무관·외과·의료·운동·예술처럼 「깎고 다듬는」 강도 높은 일에서 두각을 보입니다.':null;
   let cBody='';
-  // ① 한 줄 결론
-  cBody+=`<div class="lead-card"><b>${gk.name.split(' ')[0]}</b>의 흐름으로 <em>${careerHeadline}</em>에서 빛나는 사주입니다. ${isStrong?'<b>본인 사업·전문직·리더 포지션</b>을 추진해도 충분히 감당할 수 있는, 포용력이 큰 사람이세요.':'<b>큰 조직에서 안정적으로 입지를 다진 뒤 독립</b>을 그리는 패턴이 가장 안전한 흐름이에요.'}</div>`;
-  // ② 왜 — 직업 자리 위치
+  // ─── CF-3 CAREER 본문 전체 재작성 ───
+  const _careerStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _careerBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  // [기] lead 박스 — 본인의 직업 자리
+  cBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💼 본인 사주의 「직업 자리」 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>책임·직책 자리(관성)</b>: <em>${OHNAME[officerOh]}</em> 기운 (천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b>)<br>
+      · <b>표현·창작 자리(식상)</b>: <em>${OHNAME[outputOh]}</em> 기운 (천간 <b>${_careerStemCh[outputOh]}</b> · 지지 <b>${_careerBrCh[outputOh]}</b>)<br>
+      · <b>본인 사주 직업 유형</b>: <em>${gk.name}</em> — ${careerHeadline}
+    </div>
+  </div>`;
+  // 사주판
   if(careerPillars.length>0){
     cBody+=miniManseWithPointer(saju,careerPillars,'↑ 강조된 자리가 본인의 「직업 기운」이 모이는 자리예요');
   }else{
     cBody+=miniManse(saju,'month');
     cBody+=`<div class="mm-pointer">↑ 태어난 달의 글자(월주)가 본인 직업의 큰 흐름을 정하는 자리예요</div>`;
   }
-  cBody+=`<p><span class="body-q">직업은 어떻게 보일까요?</span><br>본인 사주에서 직업은 두 가지 흐름으로 함께 봅니다.</p>`;
-  cBody+=`<p>· <b>책임·직책의 결</b>(${OHNAME[officerOh]} 기운) — 외부에서 본인에게 들어오는 책임·직책·명예예요. <em>예: 회사에서 받는 직책, 사회에서 인정받는 위치</em><br>· <b>표현·창작의 결</b>(${OHNAME[outputOh]} 기운) — 본인이 밖으로 내놓는 표현·창작·돌봄이에요. <em>예: 본인이 만드는 콘텐츠, 본인이 돌보는 사람</em></p>`;
-  cBody+=`<p>거기에 태어난 달이 만드는 본인 유형이 더해져 직업의 큰 흐름이 정해집니다. ${gk.desc}${careerSinsalLine?` ${careerSinsalLine}`:''}</p>`;
-  // ③ 어떻게 — 분야 추천
-  cBody+=`<p><span class="body-q">그래서 어떤 분야가 잘 맞을까요?</span></p>`;
-  cBody+=`<p>${careerDetail.gkc.length>0?'· <b>유형 추천</b> — '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>본인 본질에 맞는 분야</b> — ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· <b>도움 기운을 살리는 분야</b> — ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
-  cBody+=`<p><b>${_userStage==='school'?'학업·진학·진로':_userStage==='youth'?'진학·취업·진로 결정':_userStage==='senior1'||_userStage==='senior2'?'은퇴 설계·인생 2막·자문':'승진·이직'}이 잘 풀리는 시기 — ${_userStageLabel} 기준</b><br>본인 사주에 <em>${OHNAME[officerOh]}</em> 기운(책임·직책 자리)이 새로 들어오는 해가 결정적이에요.</p>`;
-  cBody+=`<p>${_userStage==='school'?'학생 시절엔 학업 성적·명문고 진학·자격 시험에 흐름이 잘 맞는 흐름이고':_userStage==='youth'?'청년 초기엔 대학 진학·전공 자격·국가고시에 흐름이 잘 맞고':'<em>'+OHNAME[outputOh]+'</em> 기운(표현·창작 자리)이 강한 시기는 창업이나 프리랜서 전향에 좋고'}, <em>${OHNAME[resourceOh]}</em> 기운(학문·자격 자리)이 강한 시기는 자격증·학위·전문성 강화에 시간을 쓰는 게 본인 결과 잘 맞아요.</p>`;
+  // [승] 그래서 본인은 어떤 일에 맞나
+  cBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 일에 잘 맞나요?</span><br>본인의 본질 <b>${stemNick(dp.stem)}</b>이 <em>${gk.name}</em> 유형으로 자라서 ${gk.desc}${careerSinsalLine?` ${careerSinsalLine}`:''}</p>`;
+  cBody+=`<p>본인 사주에서 직업은 두 가지 흐름으로 봅니다.<br>· <b>책임·직책</b>(${OHNAME[officerOh]}) — 외부에서 들어오는 직책·자격·명예<br>· <b>표현·창작</b>(${OHNAME[outputOh]}) — 본인이 밖으로 내놓는 콘텐츠·서비스·돌봄</p>`;
+  // [전] 분야 추천
+  cBody+=`<p><span class="body-q">💡 잘 맞는 분야</span><br>${careerDetail.gkc.length>0?'· <b>유형 추천</b>: '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>본질에 맞는 분야</b>: ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· <b>도움 기운을 살리는 분야</b>: ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
+  // [결] 도움 글자
+  cBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 직업에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자</b>: <em>${OHNAME[officerOh]}</em>(관성 — 책임·승진) — 천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b><br>
+      또는 <em>${OHNAME[resourceOh]}</em>(인성 — 자격·문서·학위) — 천간 <b>${_careerStemCh[resourceOh]}</b> · 지지 <b>${_careerBrCh[resourceOh]}</b><br>
+      <b>왜?</b> 관성은 본인 책임 자리가 직접 강해지는 시기, 인성은 자격·학위로 사회 인정의 토대가 두터워지는 시기예요.<br>
+      <b>이 시기에는</b>: 승진 추진·이직·새 직장·자격증 응시·국가고시·창업 결정에 적기. 한 분야에서 본인 자리를 굳히세요.
+    </div>
+  </div>`;
+  // [결] 조심 글자
+  cBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 직업에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_careerStemCh[outputOh]}</b> · 지지 <b>${_careerBrCh[outputOh]}</b><br>
+      <b>왜?</b> 식상이 너무 강해지면 본인 표현·창의가 권위·규율과 마찰을 만들어요. 톡톡 튀는 결로 평가가 갈리기 쉬운 시기.<br>
+      <b>이 시기에는</b>: 상사·규율과의 마찰을 의식적으로 다스리고, 톤을 한 단계 부드럽게. 사직·이직 결정은 한 박자 미루세요.
+    </div>
+  </div>`;
+  // [결+실천] 인생 단계
+  cBody+=`<p style="margin-top:14px"><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 무엇에 집중할까요?</span><br>${_userStage==='school'?'학업·진학·자격증·생활기록부에 집중. 정관·인성 흐름이 강한 시기에 큰 시험을 배치.':_userStage==='youth'?'대학·전공·국가고시·첫 직장 결정. 인성 글자가 들어오는 시기에 응시·면접.':_userStage==='senior1'||_userStage==='senior2'?'은퇴 설계·인생 2막·자문·후학 양성. 관성 흐름이 강한 시기에 자문직 결정.':'승진·이직·창업 추진. 관성 글자가 들어오는 시기에 굵직한 결정.'} 추천 액션: <em>${stageActionOf('career',_userAge)}</em></p>`;
   cBody+=getRelevantRelationsHtml(saju,'career');
   cBody+=_fieldConclusion('career',saju,ys,gender);
   h+=paidWrapBody('CAREER','💼','직업·사업운',cBody,
@@ -7331,17 +7389,49 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const loveHeadline=has('도화')?'매력과 끼가 풍부한 인기형 사주':has('홍염')?'은밀하고 깊은 매력의 진정성형 사주':dm.pos[0]+'의 흐름으로 진실한 만남에서 행복을 찾는 사주';
   const partnerWord=gender==='male'?'아내':'남편';
   let lBody='';
-  // ① 한 줄 결론
-  lBody+=`<div class="lead-card"><b>${loveHeadline}</b>입니다. 본인의 배우자 자리(일지 <em>${BRCHKO[dp.branch]}·${ANIMAL[dp.branch]}</em>)를 보면, ${getSpouseImage(dp.branch)} 분이 본인과 잘 어울려요.</div>`;
-  // ② 왜 — 두 자리 풀이
+  // ─── CF-3 LOVE 본문 재작성 ───
+  const _loveSpouseOh=gender==='male'?wealthOh:officerOh;
+  const _loveStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _loveBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  const _hapBranch=getDajiHapDesc(dp.branch);
+  // [기] lead 박스
+  lBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💕 본인 사주의 「배우자 자리」 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인이 앉은 자리(일지·배우자 자리)</b>: <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em> — ${getSpouseImage(dp.branch)} 분<br>
+      · <b>${partnerWord}를 뜻하는 기운</b>: <em>${OHNAME[_loveSpouseOh]}</em> (천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b>)<br>
+      · <b>잘 어울리는 짝 글자</b>: 일지(${BRCHKO[dp.branch]})와 자연스럽게 어울리는 <em>${_hapBranch}</em><br>
+      · <b>본인 사주 연애 유형</b>: <em>${loveHeadline}</em>
+    </div>
+  </div>`;
   lBody+=miniManseWithPointer(saju,lovePillars,'↑ 강조된 자리: 본인이 앉은 의자(일지) + '+(gender==='male'?'아내 자리':'남편 자리'));
-  lBody+=`<p><span class="body-q">연애·결혼은 어떻게 보일까요?</span><br>본인 사주에서는 두 자리를 함께 봐요.</p>`;
-  lBody+=`<p>· <b>본인이 앉은 의자(일지)</b> — 태어난 날의 아래 글자예요. 본인이 평소 마음 두는 자리이자, 결혼하면 ${partnerWord}가 앉을 자리이기도 해요.<br>· <b>${partnerWord}를 뜻하는 기운</b>(${OHNAME[gender==='male'?wealthOh:officerOh]} 기운) — 본인 사주에서 ${gender==='male'?'아내·여성 인연을':'남편·남성 인연을'} 가리키는 흐름입니다.</p>`;
-  lBody+=`<p>본인 글자 ${dm.n.split('(')[0]}이 배우자 자리에 <b>${rel.desc}</b>로 앉아 있어요. ${rel.imp}</p>`;
-  lBody+=`<p>${has('도화')?'본인 사주에는 <b>매력과 끼의 별자리</b>가 자리잡고 있어요. 이성에게 호감을 끌어당기는 힘이 강한 흐름이라, 다양한 인연 속에서 진중한 만남을 의식해서 고르는 자세가 필요해요. 잘 쓰면 본인의 큰 자산이 되지만, 함부로 쓰면 관계의 씨앗이 되는 양날의 흐름이에요.':has('홍염')?'본인 사주에는 <b>은밀하고 깊은 매력의 별자리</b>가 자리잡고 있어요. 표면적인 끌림보다는 한번 빠지면 깊어지는 인연이 본인과 잘 어울리고, 진정성이 관계의 핵심이 돼요.':'강한 매력의 별자리는 두드러지지 않아요. 그래서 <em>'+dm.pos[0]+'</em> 같은 본인 본연의 성품으로 인연을 차근차근 만들어가는 흐름이에요.'}</p>`;
-  // ③ 어떻게 — 시기 안내
-  lBody+=`<p><span class="body-q">${_userStage==='school'?'첫 호감·또래 관계의 결':_userStage==='youth'?'첫 연애·진지한 인연이 시작되는 시기':_userStage==='young'||_userStage==='prime'?'결혼·진지한 만남이 결실로 이어지는 시기':_userStage==='mid'?'부부 관계 점검과 자녀 독립 시기':'동반자와 함께하는 인생 2막의 시기'}는?</span><br>본인 사주에 <em>${OHNAME[gender==='male'?wealthOh:officerOh]}</em> 기운(${partnerWord} 자리)이 새로 들어오는 해가 결정적이에요.</p>`;
-  lBody+=`<p>본인이 앉은 자리(일지)와 <em>자연스럽게 잘 통하는 짝</em>이 되는 <em>${getDajiHapDesc(dp.branch)}</em> 글자의 해에도 ${_userStage==='school'?'좋은 친구·이성 호감':_userStage==='youth'?'진지한 첫 인연':'좋은 인연'}이 자연스럽게 맺어지기 쉬워요. 지금 ${_userStageLabel}이라면 <em>${stageActionOf('love',_userAge)}</em>에 가장 큰 흐름이 들어와요.</p>`;
+  // [승] 그래서 본인은 어떤 관계를?
+  lBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 관계를 만드는 사람인가요?</span><br>본인 글자 <em>${dm.n.split('(')[0]}</em>이 배우자 자리에 <b>${rel.desc}</b>로 앉아 있어요. ${rel.imp}</p>`;
+  lBody+=`<p>${has('도화')?'본인 사주에는 <b>매력·끼의 별자리(도화)</b>가 있어 이성을 끌어당기는 힘이 강한 흐름이라, 다양한 인연 속에서 진중한 만남을 의식해 고르는 자세가 필요해요.':has('홍염')?'본인 사주에는 <b>깊은 매력의 별자리(홍염)</b>가 있어 한번 빠지면 깊어지는 인연이 본인과 어울리고, 진정성이 관계의 핵심.':'본인 본연의 성품 <em>'+dm.pos[0]+'</em>으로 인연을 차근차근 만들어가는 흐름이에요.'}</p>`;
+  // [전] 강점·주의
+  lBody+=`<p><span class="body-q">💡 본인의 연애 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${rel.key==='비화'?'본인과 닮은꼴이라 편안한 인연':rel.key==='인성'?'배우자가 후원자가 되는 관계':rel.key==='식상'?'배우자에게 표현·돌봄을 주는 관계':rel.key==='재성'?'배우자가 본인 활동의 무대가 되는 관계':'배우자에게서 추진력을 받는 관계'}<br>· <b>주의</b>: ${has('도화')?'삼각관계·외도 유혹에 휘말리지 않도록 의식적 절제 필요':has('백호')?'급격한 변화 흐름이 부부 충돌로 — 짧고 자주 대화':'본인 입장만 고집 말고 한 발 양보하는 태도'}</p>`;
+  // [결] 도움 글자
+  lBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 연애에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자 ①</b>: <em>${OHNAME[_loveSpouseOh]}</em>(${partnerWord} 자리) — 천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b><br>
+      <b>도움 글자 ②</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 자연스럽게 어울리는 <em>${_hapBranch}</em> 글자<br>
+      <b>왜?</b> ${partnerWord} 자리 글자는 본인에게 인연이 들어오는 통로이고, 일지와 어울리는 글자는 본인이 앉은 자리와 짝을 이뤄 만남이 부드럽게 흘러요.<br>
+      <b>이 시기에는</b>: 소개팅·고백·결혼 결정·재회 결정에 적기. 미뤄둔 진전 대화를 이 시기에 풀어내세요.
+    </div>
+  </div>`;
+  // [결] 조심 글자
+  lBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 연애에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 정면으로 부딪히는 충 글자 또는 미세하게 거슬리는 원진 글자<br>
+      <b>왜?</b> 일지가 본인의 「감정 자리·배우자 자리」라, 충/원진 글자가 들어오면 관계 변동·이별·정리의 자연 흐름이 일어나기 쉬워요.<br>
+      <b>이 시기에는</b>: 큰 결정(결혼·이별 통보)을 한 박자 미루고, 관계 정리는 「자연 흐름」으로 받아들이세요. 본인 톤만 고집하지 말고 상대 입장 이해.
+    </div>
+  </div>`;
+  // [결+실천] 시기 안내
+  lBody+=`<p style="margin-top:14px"><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 무엇에 집중할까요?</span><br>${_userStage==='school'?'첫 호감·또래 관계 형성. 본인 일지와 어울리는 글자가 들어오는 시기에 좋은 친구·이성 호감.':_userStage==='youth'?'첫 연애·진지한 인연 시작. '+OHNAME[_loveSpouseOh]+' 기운 강한 해에 만남.':_userStage==='young'||_userStage==='prime'?'결혼·결실 시기. '+OHNAME[_loveSpouseOh]+' 글자 들어오는 해에 진전.':_userStage==='mid'?'부부 점검·자녀 독립. 짧고 자주 대화로 결을 다지세요.':'동반자와 인생 2막. 깊은 1:1 시간 확보.'} 추천: <em>${stageActionOf('love',_userAge)}</em></p>`;
   lBody+=getRelevantRelationsHtml(saju,'love');
   lBody+=_fieldConclusion('love',saju,ys,gender);
   h+=paidWrapBody('LOVE','💕','연애·결혼운',lBody,
@@ -7507,19 +7597,49 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const lackSymptom=['피로·시력 저하·근육 경직','순환 장애·우울·수면 부족','소화 불량·식욕 부진','호흡기·피부 알레르기','요통·뼈·청력 약화'];
   const healthHeadline=maxCnt>=4?`${OHNAME[maxOhIdx]} 과다 — ${organMap[maxOhIdx].split('·')[0]} 부담을 평생 의식해야 하는 체질`:minCnt===0?`${OHNAME[minOhIdx]} 결핍 — ${organMap[minOhIdx].split('·')[0]} 영역을 의식적으로 채워야 하는 체질`:`다섯 기운이 비교적 균형 잡힌 안정형 체질`;
   let hBody='';
-  // ① 한 줄 결론
-  hBody+=`<div class="lead-card"><b>${healthHeadline}</b>입니다. ${has('백호')||has('양인')?'다만 <em>급격한 변화·강한 흐름단의 별자리</em>가 있어 사고·외상·급성 질환은 일반 사주보다 한 단계 더 주의가 필요해요.':has('역마')?'다만 <em>이동·해외의 별자리</em>가 강해 이동 중 사고와 컨디션 관리가 평생 과제예요.':'평소 무리하지 않는 페이스가 본인에게 가장 좋은 약입니다.'}</div>`;
-  // ② 왜 — 다섯 기운 분포
+  // ─── CF-3 HEALTH 본문 재작성 ───
+  const _healthStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _healthBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  // [기] lead
+  hBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌿 본인 사주의 「건강 체질」 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>가장 두터운 기운</b>: <em>${OHNAME[maxOhIdx]}</em>(${maxCnt}개) — ${organMap[maxOhIdx]}<br>
+      · <b>가장 부족한 기운</b>: <em>${OHNAME[minOhIdx]}</em>(${minCnt}개) — ${organMap[minOhIdx]} 영역 보강 필요<br>
+      · <b>본인을 도와주는 기운</b>: <em>${OHNAME[ys.main]}</em> (천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>)<br>
+      · <b>본인 사주 체질 유형</b>: <em>${healthHeadline}</em>
+    </div>
+  </div>`;
   if(healthPillars.length>0){
     hBody+=miniManseWithPointer(saju,healthPillars,`↑ 강조된 자리에 ${OHNAME[maxOhIdx]} 기운이 강하게 자리잡고 있어요`);
   }
-  hBody+=`<p><span class="body-q">건강은 어떻게 보일까요?</span><br>건강은 본인 사주 여덟 글자의 다섯 기운 균형으로 봐요. 각 기운이 우리 몸의 어느 부분과 연결되는지 정리하면 다음과 같습니다.</p>`;
-  hBody+=`<p>· 🌳 <b>나무 기운(목)</b> ${oh[0]}개 — ${organMap[0]}<br>· 🔥 <b>불 기운(화)</b> ${oh[1]}개 — ${organMap[1]}<br>· ⛰️ <b>흙 기운(토)</b> ${oh[2]}개 — ${organMap[2]}<br>· ⚒️ <b>금속 기운(금)</b> ${oh[3]}개 — ${organMap[3]}<br>· 💧 <b>물 기운(수)</b> ${oh[4]}개 — ${organMap[4]}</p>`;
-  hBody+=`<p>${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b> 기운이 4개 이상이라 <em>'+overSymptom[maxOhIdx]+'</em>에 평생 주의하셔야 해요.':'가장 비중이 높은 <b>'+OHNAME[maxOhIdx]+'</b> 기운이 <em>'+overSymptom[maxOhIdx].split('·')[0]+'</em> 경향으로 나타나기 쉬워요.'} ${minCnt===0?'반대로 <b>'+OHNAME[minOhIdx]+'</b> 기운이 0개여서 <em>'+lackSymptom[minOhIdx]+'</em> 영역이 약한 편이에요.':'부족한 기운은 두드러지지 않아 큰 위험은 적습니다.'}</p>`;
-  // ③ 어떻게 — 식단·활동
-  hBody+=`<p><span class="body-q">그래서 어떻게 관리하면 좋을까요? — ${_userStageLabel}의 핵심 과제</span><br>지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('health',_userAge)}</em>가 건강의 핵심 과제예요. 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운을 보강하는 식단과 활동을 일상에 들이시면 좋아요.</p>`;
-  hBody+=`<p>· <b>식단</b> — ${['신맛 과일·녹색 채소','쓴맛 야채·붉은 식재료','단맛·뿌리채소','매운맛·흰 식재료','짠맛·검은 식재료'][ys.main]} 한 가지<br>· <b>활동</b> — ${['산책·등산·식물 가꾸기','요가·유산소·표현 활동','명상·정원 가꾸기','필라테스·정리정돈','수영·독서'][ys.main]}</p>`;
-  hBody+=`<p>건강이 가장 잘 회복되는 시기는 ${OHNAME[ys.main]} 기운이 새로 들어오는 10년 흐름·연 흐름이에요. 반대로 <b>${OHNAME[(ys.main+2)%5]}</b> 기운이 강해지는 시기에는 무리하지 마시고 휴식을 우선으로 챙기세요.</p>`;
+  // [승] 그래서 본인 체질은?
+  hBody+=`<p><span class="body-q">📖 그래서 본인의 체질은 어떤가요?</span><br>본인 사주 8글자에서 다섯 기운이 어떻게 자리잡았는지가 본인 체질의 큰 그림이에요.</p>`;
+  hBody+=`<p>· 🌳 <b>나무(목)</b> ${oh[0]}개 — ${organMap[0]}<br>· 🔥 <b>불(화)</b> ${oh[1]}개 — ${organMap[1]}<br>· ⛰️ <b>흙(토)</b> ${oh[2]}개 — ${organMap[2]}<br>· ⚒️ <b>금속(금)</b> ${oh[3]}개 — ${organMap[3]}<br>· 💧 <b>물(수)</b> ${oh[4]}개 — ${organMap[4]}</p>`;
+  // [전] 강점·주의
+  hBody+=`<p><span class="body-q">💡 본인의 건강 강점과 주의해야 할 부분</span><br>· <b>주의</b>: ${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b>이 4개 이상이라 '+overSymptom[maxOhIdx]+'에 평생 주의':'가장 비중 높은 '+OHNAME[maxOhIdx]+'이 '+overSymptom[maxOhIdx].split('·')[0]+' 경향'}<br>· <b>보강</b>: ${minCnt===0?'<b>'+OHNAME[minOhIdx]+'</b>이 0개 — '+lackSymptom[minOhIdx]+' 영역 의식적 보강':'부족한 기운 두드러지지 않아 균형 잡힌 편'}<br>· <b>별자리 작용</b>: ${has('백호')||has('양인')?'급격한 변화 별자리 — 사고·외상·급성 질환 한 단계 더 주의':has('역마')?'이동 별자리 — 이동 중 사고와 컨디션 관리가 평생 과제':'특별한 위험 별자리 없음 — 무리 안 하는 페이스가 약'}</p>`;
+  // [결] 도움 글자
+  hBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 건강에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자</b>: <em>${OHNAME[ys.main]}</em>(용신) — 천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>${minCnt===0?` 또는 부족한 <em>${OHNAME[minOhIdx]}</em> — 천간 <b>${_healthStemCh[minOhIdx]}</b> · 지지 <b>${_healthBrCh[minOhIdx]}</b>`:''}<br>
+      <b>왜?</b> 용신 글자는 본인 약한 부분을 보강해주고, 부족한 오행 글자는 비어 있던 자리를 채워줘 컨디션이 자연스럽게 안정돼요.<br>
+      <b>이 시기에는</b>: 건강 회복·운동 시작·식단 변화·큰 수술 결정의 적기. 정기 검진을 미루지 마세요.
+    </div>
+  </div>`;
+  // [결] 조심 글자
+  hBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 건강에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${OHNAME[(ys.main+2)%5]}</em>(용신을 깎는 기운) — 천간 <b>${_healthStemCh[(ys.main+2)%5]}</b> · 지지 <b>${_healthBrCh[(ys.main+2)%5]}</b><br>
+      또한 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 충/형 글자도 사고·급성 질환 가능성<br>
+      <b>왜?</b> 용신이 깎이면 약한 부분 회복이 늦어지고, 일지 충/형은 본인 컨디션 자리에 직접 충격을 줘요.<br>
+      <b>이 시기에는</b>: 무리한 활동·수면 부족·과음 절제. 운전·운동 강도 한 단계 낮추고, 정기 검진을 자주.
+    </div>
+  </div>`;
+  // [결+실천]
+  hBody+=`<p style="margin-top:14px"><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 무엇에 집중할까요?</span><br>${stageActionOf('health',_userAge)}. 일상 실천: 식단 <b>${['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리','매운맛·흰 음식','짠맛·검은 음식'][ys.main]}</b> + 활동 <b>${['산책·등산','요가·유산소','명상·정원','정리정돈·필라테스','수영·독서'][ys.main]}</b>.</p>`;
   hBody+=_fieldConclusion('health',saju,ys,gender);
   h+=paidWrapBody('HEALTH','🌿','건강운 — 다섯 기운의 균형',hBody,
     {good:`본인을 도와주는 ${OHNAME[ys.main]} 기운에 해당하는 ${['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][ys.main]}을 식단에 한 가지 늘리고, ${['산책·등산','운동·요가','명상·정원 가꾸기','정리정돈·필라테스','수영·독서'][ys.main]} 같은 활동이 본인 컨디션을 회복시켜 줘요.`,
@@ -7667,19 +7787,46 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const studyPillars=findTenGodPillars(saju,['정인','편인','식신','상관']);
   const studyHeadline=has('문창')?'두뇌가 명석한 정형 학습 강자형':gk.name.includes('인')?'학습이 곧 정체성이 되는 학자형':gk.name.includes('식')||gk.name.includes('상관')?'응용·창작·표현 학습에 강한 표현 학습형':has('화개')?'한 분야를 깊이 파고드는 연구형':'흥미를 따라가는 자유 학습형';
   let stBody='';
-  // ① 한 줄 결론
-  stBody+=`<div class="lead-card"><b>${studyHeadline}</b>의 사주입니다. ${has('문창')?'자격증·시험·논문 같은 정형화된 학습에 특히 강한 흐름이에요.':gk.name.includes('식')||gk.name.includes('상관')?'단순 암기보다 토론·발표·창작 형식의 학습이 본인에게 잘 맞아요.':gk.name.includes('인')?'학문·교육 분야에서 큰 결실을 거둘 수 있는 흐름이에요.':'흥미를 느끼는 분야를 깊게 파고드는 전략이 본인에게 가장 효과적이에요.'}</div>`;
-  // ② 왜 — 두 자리 풀이
+  // ─── CF-3 STUDY 본문 재작성 ───
+  const _studyStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _studyBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  // [기] lead
+  stBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">📚 본인 사주의 「학습 자리」 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>받아들이는 학습 자리(인성)</b>: <em>${OHNAME[resourceOh]}</em> (천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b>)<br>
+      · <b>풀어내는 표현 자리(식상)</b>: <em>${OHNAME[outputOh]}</em> (천간 <b>${_studyStemCh[outputOh]}</b> · 지지 <b>${_studyBrCh[outputOh]}</b>)<br>
+      · <b>본인 사주 학업 유형</b>: <em>${studyHeadline}</em>${has('문창')?' · 문창귀인 ★':has('화개')?' · 화개 ★':''}
+    </div>
+  </div>`;
   if(studyPillars.length>0){
     stBody+=miniManseWithPointer(saju,studyPillars,'↑ 강조된 자리가 본인의 「학습 기운」이 모이는 자리예요');
   }
-  stBody+=`<p><span class="body-q">학업은 어떻게 보일까요?</span><br>학업·시험은 본인 사주에서 두 가지 흐름으로 함께 봅니다.</p>`;
-  stBody+=`<p>· <b>받아들이는 결</b>(${OHNAME[resourceOh]} 기운) — 부모·스승·책에서 본인이 받아들이는 학습력이에요. <em>예: 강의를 듣고 정리하는 능력</em><br>· <b>풀어내는 결</b>(${OHNAME[outputOh]} 기운) — 본인이 표현·응용·창작으로 풀어내는 힘이에요. <em>예: 배운 내용을 발표하거나 글로 정리하는 능력</em></p>`;
-  stBody+=`<p>${has('문창')?'거기에 <b>지적 활동의 별자리</b>가 자리잡고 있어 글재주와 논리력이 두드러져요.':has('화개')?'거기에 <b>한 분야를 깊이 파는 별자리</b>가 자리잡고 있어 전문 학습에 특히 강해요.':'본인 사주의 두 흐름이 잘 어우러져 꾸준한 학습력을 만들어 줘요.'}</p>`;
-  // ③ 어떻게 — 시기 안내
-  stBody+=`<p><span class="body-q">${_userStage==='school'?'학교 성적·명문고 진학':_userStage==='youth'?'대학 진학·전공·자격 시험':_userStage==='young'||_userStage==='prime'?'자격증·학위·전문성':_userStage==='mid'?'후학 양성·자기 분야 정리':'평생 학습·취미 학문'}이 가장 잘 풀리는 시기는? — ${_userStageLabel} 기준</span><br>본인 사주에 <em>${OHNAME[resourceOh]}</em> 기운(받아들이는 학습 자리)이 새로 들어오는 10년 흐름·연 흐름이 결정적이에요.</p>`;
-  stBody+=`<p>이 시기에 ${_userStage==='school'?'학교에서 두각을 나타내고 명문고 진학의 기틀이 잡혀요.':_userStage==='youth'?'대학·국가고시·자격 시험에 결실이 따라옵니다.':'큰 시험·논문·저술을 완성하면 결실이 자연스럽게 따라와요.'}</p>`;
-  stBody+=`<p>반대로 <em>${OHNAME[outputOh]}</em> 기운(풀어내는 표현 자리)이 강한 시기는 발표·창작에서 빛나지만 정통 학문 시험에서는 산만해지기 쉬워요. 그 시기엔 의식적인 집중 시간을 따로 만들어 두시면 좋아요.</p>`;
+  // [승] 그래서 본인은 어떻게 공부하나
+  stBody+=`<p><span class="body-q">📖 그래서 본인은 어떻게 공부하나요?</span><br>본인 사주에서 학업은 두 가지로 함께 봐요.<br>· <b>받아들이는 결</b>(${OHNAME[resourceOh]} 기운) — 강의·책에서 받아들이는 학습력<br>· <b>풀어내는 결</b>(${OHNAME[outputOh]} 기운) — 표현·발표·글로 푸는 힘</p>`;
+  stBody+=`<p>${has('문창')?'본인 사주에 <b>지적 활동 별자리(문창귀인)</b>가 자리잡아 글재주와 논리력이 두드러져 자격증·시험·논문 같은 정형 학습에 특히 강해요.':has('화개')?'본인 사주에 <b>깊이 파는 별자리(화개)</b>가 자리잡아 한 분야 전문 학습·연구에 특히 강해요.':'특별한 학업 별자리는 없지만 두 자리가 잘 어우러져 꾸준한 학습력을 만들어요.'}</p>`;
+  // [전] 강점·주의
+  stBody+=`<p><span class="body-q">💡 본인의 학업 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${gk.name.includes('인')?'학문·교육 분야에서 큰 결실':gk.name.includes('식')||gk.name.includes('상관')?'토론·발표·창작 형식의 학습에 강함':has('문창')?'정형 학습·자격증·논문에 두각':'흥미 분야에 깊이 파고드는 집중력'}<br>· <b>주의</b>: ${OHNAME[outputOh]} 기운이 너무 강한 시기엔 본인 표현 활동에 끌려 정통 학문 시험에서 산만해지기 쉬워요. 의식적인 집중 시간 확보 필요.</p>`;
+  // [결] 도움 글자
+  stBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 학업에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자 ①</b>: <em>${OHNAME[resourceOh]}</em>(인성 — 받아들이는 학습) — 천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b><br>
+      <b>도움 글자 ②</b>: <em>${OHNAME[officerOh]}</em>(관성 — 공식 시험·자격) — 천간 <b>${_studyStemCh[officerOh]}</b> · 지지 <b>${_studyBrCh[officerOh]}</b><br>
+      <b>왜?</b> 인성은 본인 학습 자리가 직접 강해지는 시기, 관성은 공식 자격·시험을 받쳐주는 사회 인정의 토대예요.<br>
+      <b>이 시기에는</b>: 자격증·국가고시·대학 입시·대학원·논문·저술을 적극 배치. 미뤄둔 큰 시험을 응시하세요.
+    </div>
+  </div>`;
+  // [결] 조심 글자
+  stBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 학업에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_studyStemCh[outputOh]}</b> · 지지 <b>${_studyBrCh[outputOh]}</b><br>
+      <b>왜?</b> 식상이 강해지면 본인 표현 활동(SNS·창작·자기 표현)에 끌려서 정통 학문 시험에 집중하기 어려워요.<br>
+      <b>이 시기에는</b>: 의식적인 집중 시간 차단(폰 분리·자습실), 표현 활동은 시험 후로 미루세요.
+    </div>
+  </div>`;
   // 격국 + 신살 기반 추천 학과·자격증 추가
   try{
     const _gkS=getGyeokguk(saju);
