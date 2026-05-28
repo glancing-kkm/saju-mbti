@@ -10351,11 +10351,19 @@ function _generateTOC(h, scopeLabel){
   }catch(e){return '';}
 }
 
-// CF: 모든 카드 도입에 본인 사주 핵심 요약 박스 (일관된 맥락)
+// CF: 모든 카드 도입에 본인 사주 핵심 요약 박스 (5분야 lead 박스 수준 강화)
 function _sajuContextHeader(saju, ys, gk, fieldLabel){
   const dStemOh=SOH[saju.dp.stem];
-  return `<div style="padding:9px 12px;background:rgba(212,175,55,.07);border-left:3px solid var(--accent-bright);border-radius:6px;margin-bottom:12px;font-size:.74rem;line-height:1.7;color:var(--sub)">
-    📍 <b style="color:var(--accent)">본인 사주 기준</b> — <em>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</em> 일간 · <em>${gk.name}</em> 유형 · 도움 기운 <em>${OHNAME[ys.main]}</em>${fieldLabel?` · 지금 「${fieldLabel}」 영역을 보는 중`:''}
+  const _ctxStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const _ctxBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  return `<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">📍 본인 사주의 「${fieldLabel||'영역'}」 자리 — 어떻게 자리잡았나</div>
+    <div style="font-size:.81rem;line-height:1.95">
+      · <b>본인 자신(일간)</b>: <em>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(saju.dp.stem)}<br>
+      · <b>본인이 앉은 자리(일지)</b>: <em>${BRCHKO[saju.dp.branch]}(${ANIMAL[saju.dp.branch]})</em>${branchNick(saju.dp.branch)?` — ${branchNick(saju.dp.branch)}`:''}<br>
+      · <b>사주 유형(격국)</b>: <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em><br>
+      · <b>본인을 도와주는 기운(용신)</b>: <em>${OHNAME[ys.main]}</em> (천간 <b>${_ctxStemCh[ys.main]}</b> · 지지 <b>${_ctxBrCh[ys.main]}</b>)
+    </div>
   </div>`;
 }
 
