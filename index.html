@@ -7098,6 +7098,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   wBody+=`<p><b>돈이 가장 잘 풀리는 시기 — ${_userStageLabel} 기준</b><br>본인 사주에 <em>${OHNAME[wealthOh]}</em> 기운이 새로 들어오는 해가 큰 결실의 시기예요. 지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('wealth',_userAge)}</em>의 결실이 자연스럽게 따라오기 쉬운 흐름입니다.</p>`;
   wBody+=`<p>반대로 <em>${OHNAME[dStemOh]}</em> 기운이 들어오는 해는 경쟁 상대가 가까워지는 시기라, ${_userStage==='school'||_userStage==='youth'?'친구와의 다툼이나 충동 소비':'동업 갈등이나 충동 지출'}을 한 번 더 조심하시면 좋아요.</p>`;
   wBody+=`<p><b>일상에서 운을 끌어올리는 한 가지</b><br>지갑·통장·작업 공간 색을 <b>${['녹색·청색','적색·자주','황색·갈색','흰색·금색','검정·남색'][ys.main]}</b> 계열로 바꿔보세요. 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운이 일상에 흐르기 시작합니다. 방향은 <b>${['동쪽','남쪽','중앙','서쪽','북쪽'][ys.main]}</b>이 가장 잘 맞아요.</p>`;
+  wBody+=_fieldConclusion('wealth',saju,ys,gender);
   h+=paidWrapBody('WEALTH','💰','재물운 — 돈의 흐름과 그릇',wBody,
     {good:wealth.advice,warn:`${has('겁재')?'경쟁심이 깊게 자리잡아 동업·과시 소비·충동 투자로 돈을 잃기 쉬워요. 큰 결정은 하루 미루는 습관이 본인을 지켜줘요.':wealth.pp>wealth.pj?'활동 재물 위주라 큰 흐름의 돈을 다루다 한순간에 잃을 수도 있어요. 분산과 절제가 핵심입니다.':'성실한 흐름이라 안정적이지만, 큰 도약을 원할 때는 외부의 조언과 인맥 확장이 결정적입니다.'}`});
 
@@ -7212,6 +7213,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   cBody+=`<p><b>${_userStage==='school'?'학업·진학·진로':_userStage==='youth'?'진학·취업·진로 결정':_userStage==='senior1'||_userStage==='senior2'?'은퇴 설계·인생 2막·자문':'승진·이직'}이 잘 풀리는 시기 — ${_userStageLabel} 기준</b><br>본인 사주에 <em>${OHNAME[officerOh]}</em> 기운(책임·직책 자리)이 새로 들어오는 해가 결정적이에요.</p>`;
   cBody+=`<p>${_userStage==='school'?'학생 시절엔 학업 성적·명문고 진학·자격 시험에 흐름이 잘 맞는 흐름이고':_userStage==='youth'?'청년 초기엔 대학 진학·전공 자격·국가고시에 흐름이 잘 맞고':'<em>'+OHNAME[outputOh]+'</em> 기운(표현·창작 자리)이 강한 시기는 창업이나 프리랜서 전향에 좋고'}, <em>${OHNAME[resourceOh]}</em> 기운(학문·자격 자리)이 강한 시기는 자격증·학위·전문성 강화에 시간을 쓰는 게 본인 결과 잘 맞아요.</p>`;
   cBody+=getRelevantRelationsHtml(saju,'career');
+  cBody+=_fieldConclusion('career',saju,ys,gender);
   h+=paidWrapBody('CAREER','💼','직업·사업운',cBody,
     {good:`<b>${gk.name}</b>의 강점이 발현되는 시기(본인 유형을 돕는 기운이 들어오는 10년 흐름)에 큰 도약이 가능합니다. 지금 ${_userStageLabel}이라면 이 시기에 <em>${stageActionOf('career',_userAge)}</em>을 적극적으로 추진하세요.`,
      warn:`책임 기운이 너무 강하면 과부하로, 표현 기운이 너무 강하면 권위와의 충돌로 ${_userStage==='school'||_userStage==='youth'?'학교·진학':'직장'}에서 갈등이 생기기 쉬워요. ${has('상관')?'특히 톡톡 튀는 표현의 흐름이 강하니 '+(_userStage==='school'||_userStage==='youth'?'선생님·규율':'상사·규율')+'과의 마찰을 의식적으로 다스리세요.':'본인 성향과 조직 문화의 흐름을 미리 살펴서 선택하시면 좋아요.'}`});
@@ -7305,6 +7307,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=`<p><span class="body-q">${_userStage==='school'?'첫 호감·또래 관계의 결':_userStage==='youth'?'첫 연애·진지한 인연이 시작되는 시기':_userStage==='young'||_userStage==='prime'?'결혼·진지한 만남이 결실로 이어지는 시기':_userStage==='mid'?'부부 관계 점검과 자녀 독립 시기':'동반자와 함께하는 인생 2막의 시기'}는?</span><br>본인 사주에 <em>${OHNAME[gender==='male'?wealthOh:officerOh]}</em> 기운(${partnerWord} 자리)이 새로 들어오는 해가 결정적이에요.</p>`;
   lBody+=`<p>본인이 앉은 자리(일지)와 <em>자연스럽게 잘 통하는 짝</em>이 되는 <em>${getDajiHapDesc(dp.branch)}</em> 글자의 해에도 ${_userStage==='school'?'좋은 친구·이성 호감':_userStage==='youth'?'진지한 첫 인연':'좋은 인연'}이 자연스럽게 맺어지기 쉬워요. 지금 ${_userStageLabel}이라면 <em>${stageActionOf('love',_userAge)}</em>에 가장 큰 흐름이 들어와요.</p>`;
   lBody+=getRelevantRelationsHtml(saju,'love');
+  lBody+=_fieldConclusion('love',saju,ys,gender);
   h+=paidWrapBody('LOVE','💕','연애·결혼운',lBody,
     {good:`본인이 앉은 자리가 ${rel.key==='비화'?'본인과 닮은꼴이라 편안한 인연이':rel.key==='인성'?'배우자가 정신적·물질적 후원자가 되는 결로':rel.key==='식상'?'배우자에게 따뜻한 표현과 돌봄을 주는 관계가':rel.key==='재성'?'배우자가 본인 활동의 무대가 되는 결로':'배우자에게서 추진력과 자극을 받는 관계가'} 자리잡아요.`,
      warn:`${has('도화')?'매력의 별자리는 잘 쓰면 자산이지만, 삼각관계·외도 유혹에 휘말리지 않도록 본인의 절제가 필요해요.':has('백호')?'급격한 변화의 별자리가 부부 사이 충돌로 나타날 수 있어요. 평소에 짧고 자주 대화로 갈등을 풀어내는 습관이 결정적입니다.':'배우자와 가치관이 충돌할 때 본인 입장만 고집하지 말고 한 발짝 물러나서 상대를 이해해 보세요.'}`});
@@ -7481,6 +7484,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   hBody+=`<p><span class="body-q">그래서 어떻게 관리하면 좋을까요? — ${_userStageLabel}의 핵심 과제</span><br>지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('health',_userAge)}</em>가 건강의 핵심 과제예요. 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운을 보강하는 식단과 활동을 일상에 들이시면 좋아요.</p>`;
   hBody+=`<p>· <b>식단</b> — ${['신맛 과일·녹색 채소','쓴맛 야채·붉은 식재료','단맛·뿌리채소','매운맛·흰 식재료','짠맛·검은 식재료'][ys.main]} 한 가지<br>· <b>활동</b> — ${['산책·등산·식물 가꾸기','요가·유산소·표현 활동','명상·정원 가꾸기','필라테스·정리정돈','수영·독서'][ys.main]}</p>`;
   hBody+=`<p>건강이 가장 잘 회복되는 시기는 ${OHNAME[ys.main]} 기운이 새로 들어오는 10년 흐름·연 흐름이에요. 반대로 <b>${OHNAME[(ys.main+2)%5]}</b> 기운이 강해지는 시기에는 무리하지 마시고 휴식을 우선으로 챙기세요.</p>`;
+  hBody+=_fieldConclusion('health',saju,ys,gender);
   h+=paidWrapBody('HEALTH','🌿','건강운 — 다섯 기운의 균형',hBody,
     {good:`본인을 도와주는 ${OHNAME[ys.main]} 기운에 해당하는 ${['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][ys.main]}을 식단에 한 가지 늘리고, ${['산책·등산','운동·요가','명상·정원 가꾸기','정리정돈·필라테스','수영·독서'][ys.main]} 같은 활동이 본인 컨디션을 회복시켜 줘요.`,
      warn:'사주는 체질의 큰 경향만 보여주는 참고 자료예요. 실제 진단과 치료는 반드시 전문의와 상담하시고, 정기적인 건강 검진도 꼭 챙기시기 바랍니다.'});
@@ -7671,8 +7675,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     };
     const _rec=_recByGk[_gkS.tg]||'본인 흥미 기반 다양한 분야';
     const _cert=_certByGk[_gkS.tg]||'본인 관심 자격';
-    stBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 결':''}</p>`;
+    stBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 흐름':''}</p>`;
   }catch(e){}
+  stBody+=_fieldConclusion('study',saju,ys,gender);
   h+=paidWrapBody('STUDY','📚','학업·시험운',stBody);
 
   // 평생 학업·시험 타임라인 — 대운별 학습·자격·시험 시기
@@ -10140,6 +10145,66 @@ function _generateTOC(h, scopeLabel){
       </div>
     </div><!--CARD_END:TOC-->`;
   }catch(e){return '';}
+}
+
+// CE: 분야 카드 결론 — 본인 일간 + 도움 기운 → 분야별 장점/주의 + 대운/세운 도움/주의 글자
+function _fieldConclusion(field, saju, ys, gender){
+  const dStem=saju.dp.stem;
+  const dStemOh=SOH[dStem];
+  const dStemKo=STEMKO[dStem];
+  const stemNm=DM[dStem].n.split('(')[0];
+  const helpOhKo=OHNAME[ys.main];
+  const helpFood={0:'녹색 옷·신 음식·식물',1:'붉은색·매운 음식·에너지',2:'노란색·단 음식·뿌리채소',3:'흰색·매운 음식·금속 액세서리',4:'검은색·짠 음식·물 가까이'}[ys.main];
+  // 오행으로 십신 매핑 (본인 일간 기준)
+  const wealthOhIdx=(dStemOh+2)%5; // 재성
+  const officerOhIdx=(dStemOh+4)%5; // 관성
+  const outputOhIdx=(dStemOh+1)%5; // 식상
+  const resourceOhIdx=(dStemOh+3)%5; // 인성
+  const ohKoName=['목(나무)','화(불)','토(흙)','금(쇠)','수(물)'];
+  let pros='', needs='', cautions='', helpStems='', avoidStems='';
+  if(field==='wealth'){
+    pros=`<b>${stemNm}</b>이라는 본인의 본질 위에 ${ohKoName[wealthOhIdx]} 기운(재성)이 본인 재물 자리예요. 활동·교섭·실용 감각이 본인 강점입니다.`;
+    needs=`재물을 늘리려면 <b>${ohKoName[wealthOhIdx]}</b> 기운이 강해지는 시기에 큰 결정을 배치하세요. ${helpFood}을 일상에 두면 약한 부분이 보강돼요.`;
+    cautions=`비견·겁재(본인과 같은 ${OHNAME[dStemOh]} 기운) 글자가 들어오는 시기엔 동업·과시 소비·충동 투자가 손실로 이어지기 쉬워요. 큰 결정 전 24시간 룰을 적용하세요.`;
+    helpStems=`대운·세운에 <b>${ohKoName[wealthOhIdx]}</b>(재성) 또는 <b>${ohKoName[outputOhIdx]}</b>(식상 — 재물을 만드는 활동) 글자가 들어오는 시기. 본인이 만든 결과가 돈으로 자연스럽게 바뀝니다.`;
+    avoidStems=`대운·세운에 <b>${ohKoName[dStemOh]}</b>(비겁 — 본인과 같은 기운) 글자가 너무 강하게 들어오는 시기. 동료 자금·과시 소비 주의.`;
+  } else if(field==='career'){
+    pros=`<b>${stemNm}</b>의 본인은 ${ohKoName[officerOhIdx]} 기운(관성·책임)을 직업 자리로 받아들여요. 책임·체계·공식 자리에서 본인 강점이 발휘됩니다.`;
+    needs=`승진·이직·새 직장 결정은 <b>${ohKoName[officerOhIdx]}</b>(관성) 또는 <b>${ohKoName[resourceOhIdx]}</b>(인성 — 자격·학위) 기운이 강해지는 시기에 배치하세요.`;
+    cautions=`표현·자기주장이 강한 식상(${ohKoName[outputOhIdx]}) 글자가 너무 강해지면 권위·상사와 마찰이 생기기 쉽고, 본인 능력보다 평가가 낮아질 수 있어요.`;
+    helpStems=`대운·세운에 <b>${ohKoName[officerOhIdx]}</b>(관성 — 책임 자리) 또는 <b>${ohKoName[resourceOhIdx]}</b>(인성 — 자격·문서) 글자가 들어오는 시기.`;
+    avoidStems=`<b>${ohKoName[outputOhIdx]}</b>(식상) 글자가 강한 시기 — 톡톡 튀는 표현이 권위와 마찰될 수 있어요.`;
+  } else if(field==='love'){
+    const spouseOhIdx=gender==='male'?wealthOhIdx:officerOhIdx;
+    const spouseWord=gender==='male'?'아내·여자친구':'남편·남자친구';
+    pros=`<b>${stemNm}</b>의 본인에게 ${spouseWord}는 <b>${ohKoName[spouseOhIdx]}</b> 기운으로 들어와요. 본인 일지(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})가 배우자 자리예요.`;
+    needs=`결혼·고백·관계 진전은 본인 일지와 자연스럽게 어울리는(합·반합) 글자가 대운/세운에 들어오는 시기에 배치하세요. ${getDajiHapDesc(saju.dp.branch)} 글자가 그 자리예요.`;
+    cautions=`본인 일지와 정면 부딪히는 충 글자나 미세하게 거슬리는 원진 글자가 들어오면 관계 정리·변동 가능성이 커요. 큰 결정은 한 박자 미루세요.`;
+    helpStems=`대운·세운에 <b>${ohKoName[spouseOhIdx]}</b>(${spouseWord} 자리) 또는 본인 일지와 합/반합 글자가 들어오는 시기.`;
+    avoidStems=`본인 일지(${BRCHKO[saju.dp.branch]})와 정면 부딪히는 충 글자 또는 미세하게 거슬리는 원진 글자가 들어오는 시기 — 변동·정리 자연 흐름으로 받아들이세요.`;
+  } else if(field==='health'){
+    pros=`<b>${stemNm}</b>의 본인은 ${OHNAME[dStemOh]} 기운이 본질이라, ${OHNAME[dStemOh]==='목'?'간·근육·신경계':OHNAME[dStemOh]==='화'?'심장·혈관·시력':OHNAME[dStemOh]==='토'?'위·소화기·근육':OHNAME[dStemOh]==='금'?'폐·대장·피부':'신장·방광·골수'} 영역이 본인 건강의 토대예요.`;
+    needs=`도움 기운 <b>${helpOhKo}</b>을 보강해주세요. ${helpFood}을 일상에 두면 약한 부분이 자연스럽게 채워져요.`;
+    cautions=`본인 일지와 정면 부딪히는 충 글자가 강한 시기엔 사고·수술·급성 질환 가능성이 커요. 운전·운동 강도·식단을 한 단계 더 살피세요.`;
+    helpStems=`대운·세운에 <b>${helpOhKo}</b> 기운 글자가 들어오는 시기 — 본인 약한 부분이 보강되어 컨디션이 안정돼요.`;
+    avoidStems=`<b>${OHNAME[(dStemOh+1)%5]}</b>(본인을 극하는 기운) 글자가 강한 시기 — 무리한 활동·수면 부족이 누적되기 쉬워요.`;
+  } else if(field==='study'){
+    pros=`<b>${stemNm}</b>의 본인은 ${ohKoName[resourceOhIdx]} 기운(인성·받아들이는 결)을 학습 자리로 써요. 책·강의·자료를 정리해서 본인 것으로 만드는 능력이 본인 강점입니다.`;
+    needs=`자격증·학위·시험 결정은 <b>${ohKoName[resourceOhIdx]}</b>(인성) 또는 <b>${ohKoName[officerOhIdx]}</b>(관성 — 공식 자리) 글자가 강해지는 시기에 배치하세요.`;
+    cautions=`식상(${ohKoName[outputOhIdx]})이 너무 강한 시기엔 본인 표현·창작에 끌려서 정통 학문 시험에서 산만해지기 쉬워요.`;
+    helpStems=`대운·세운에 <b>${ohKoName[resourceOhIdx]}</b>(인성) 또는 <b>${ohKoName[officerOhIdx]}</b>(관성) 글자가 들어오는 시기.`;
+    avoidStems=`<b>${ohKoName[outputOhIdx]}</b>(식상) 글자가 너무 강한 시기 — 자기 표현 활동은 좋지만 시험 집중은 의식적인 시간 확보가 필요해요.`;
+  }
+  return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.79rem;line-height:1.85">
+    <div style="font-weight:700;color:var(--accent);font-size:.85rem;margin-bottom:8px">💡 본인 사주 「${dStemKo}${OHNAME[dStemOh]}」 기준 — 이 분야 결론</div>
+    <div style="margin-bottom:6px"><b style="color:#6cbf7e">✓ 장점:</b> ${pros}</div>
+    <div style="margin-bottom:6px"><b style="color:var(--accent)">✦ 필요한 것:</b> ${needs}</div>
+    <div style="margin-bottom:6px"><b style="color:#e57462">⚠ 주의:</b> ${cautions}</div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)">
+      <div style="margin-bottom:5px"><b style="color:#6cbf7e">🟢 대운·세운에서 본인을 도와주는 글자:</b> ${helpStems}</div>
+      <div><b style="color:#e57462">🔴 대운·세운에서 조심해야 할 글자:</b> ${avoidStems}</div>
+    </div>
+  </div>`;
 }
 
 // 컨텍스트 우선: SCORE_END 마커 다음에 매칭 카드 삽입 (점수 카드 다음에 표시)
