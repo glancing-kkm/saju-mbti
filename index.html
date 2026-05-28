@@ -2120,7 +2120,7 @@ function goToInput(cat){
   // MBTI 입력 — 만세력·일일운세는 비교 풀이가 의미 없어 숨김
   const mbtiFs=document.getElementById('mbtiFieldset');
   if(mbtiFs){
-    const hideMbti=(cat==='manse'||cat==='daily'||cat==='name');
+    const hideMbti=(cat==='manse'||cat==='daily'||cat==='name'||cat==='daypick'||cat==='monthly');
     mbtiFs.style.display=hideMbti?'none':'';
     if(hideMbti){
       const sel=document.getElementById('iMbti');
@@ -3743,8 +3743,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
     job:'CAREER', meet:'LOVE', money:'WEALTH', health:'HEALTH', move:'HOUR'
   };
   const _primaryDpCard=_dpCardTag[_ctxTag]||'';
-  // 점수 링 헤로 카드 (일일운세 스타일)
-  let h=_ctxHtml+`<div class="daily-card">
+  // 점수 링 헤로 카드 (일일운세 스타일) — 점수 먼저, 컨텍스트는 다음
+  let h=`<div class="daily-card">
     <div class="daily-date">${y}년 ${m}월 ${d}일 (${wDay}요일)</div>
     <div class="daily-score-ring" style="border-color:${grade.color};background:${grade.bg}">
       <div class="daily-score-num" style="color:${grade.color}">${f.total}</div>
@@ -3761,7 +3761,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${f.career}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div></div>
   </div>
-  `;
+  <!--SCORE_END-->${_ctxHtml}`;
 
   // ── 종합 진단 (TOTAL) — 이야기형 톤
   const _stemTGStory={
@@ -4037,8 +4037,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
     <div class="nb-title">📌 ${y}년 ${m}월 ${d}일을 사는 결</div>
     <div class="nb-body"><p>일진은 그날 하루 외부 기운입니다. ${myStemKo}일간이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 결을 만드는 건 본인입니다. 거스르기보다 결을 따라 한 가지 행동만 추가해도 길이 열립니다. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
-  // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
-  h=_ctxPromote(h,_primaryDpCard);
+  // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤)
+  h=_ctxPromoteAfterScore(h,_primaryDpCard);
   // BT: 카드 목차
   h=_generateTOC(h,'지정일 운세')+h;
   return h;
@@ -4125,8 +4125,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     job:'AVG 직업·관운', love:'AVG 연애·관계', money:'AVG 재물', health:'AVG 건강', relation:'AVG 연애·관계'
   };
   const _primaryMoCard=_moCardTag[_ctxTag]||'';
-  // 점수 링 헤로 (기간 평균 점수)
-  let h=_ctxHtml+`<div class="daily-card">
+  // 점수 링 헤로 (기간 평균 점수) — 점수 먼저, 컨텍스트는 다음
+  let h=`<div class="daily-card">
     <div class="daily-date">${sy}년 ${sm}월 ~ ${ey}년 ${em}월</div>
     <div class="daily-score-ring" style="border-color:${avgGrade.color};background:${avgGrade.bg}">
       <div class="daily-score-num" style="color:${avgGrade.color}">${avgTotal}</div>
@@ -4143,7 +4143,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업 평균</span><span class="daily-cat-score">${avg('career')}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강 평균</span><span class="daily-cat-score">${avg('health')}점</span></div></div>
   </div>
-  `;
+  <!--SCORE_END-->${_ctxHtml}`;
 
   // ── 기간 종합 진단
   let totBody='';
@@ -4363,8 +4363,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     <div class="nb-title">📌 ${totalMonths}개월을 사는 결</div>
     <div class="nb-body"><p>월별 운세는 절기 기준 월주 천간·지지가 본인 일간과 만들어내는 흐름입니다. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판입니다. 결을 알면 흐름과 다투지 않고 결을 따라 한 가지를 더 잘할 수 있어요.</p></div>
   </div>`;
-  // BO-2: 컨텍스트 카드 최상위로 이동 (사용자가 선택한 카테고리 우선)
-  h=_ctxPromote(h,_primaryMoCard);
+  // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤)
+  h=_ctxPromoteAfterScore(h,_primaryMoCard);
   // BT: 카드 목차
   h=_generateTOC(h,'월별 운세')+h;
   return h;
@@ -10402,6 +10402,20 @@ function _generateTOC(h, scopeLabel){
       </div>
     </div><!--CARD_END:TOC-->`;
   }catch(e){return '';}
+}
+
+// 컨텍스트 우선: SCORE_END 마커 다음에 매칭 카드 삽입 (점수 카드 다음에 표시)
+function _ctxPromoteAfterScore(html, cardId){
+  if(!cardId)return html;
+  const re=new RegExp('<!--CARD_START:'+cardId+'-->[\\s\\S]*?<!--CARD_END:'+cardId+'-->');
+  const m=html.match(re);
+  if(!m)return html;
+  const MARKER='<!--SCORE_END-->';
+  const sIdx=html.indexOf(MARKER);
+  if(sIdx<0)return m[0]+html.replace(re,''); // 폴백: 가장 앞으로
+  const withoutCard=html.replace(re,'');
+  const sIdx2=withoutCard.indexOf(MARKER);
+  return withoutCard.substring(0,sIdx2+MARKER.length)+m[0]+withoutCard.substring(sIdx2+MARKER.length);
 }
 
 // 컨텍스트 우선: 특정 cardid 카드를 HTML 가장 앞으로 이동
