@@ -7022,6 +7022,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   sajuBody+=`<p style="margin-top:14px"><b>⑤ 한 줄로 정리하면</b><br>본인은 <em>${dm.n.split('(')[0]}</em>의 본질을 가진 <em>${gk.name}${gk.nick?'('+gk.nick.split('·')[0]+'형)':''}</em>의 사주입니다.<br>· <b>강점</b> — ${dm.pos.slice(0,3).join(', ')}<br>· <b>의식해서 다스릴 부분</b> — ${dm.neg.slice(0,2).join(', ')}<br>본인을 도와주는 기운 <b>${OHNAME[ys.main]}</b>의 색·방향·음식·활동을 일상에 한 가지만 들여도 평생의 흐름이 자연스럽게 풀립니다.</p>`;
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만) — 사주팔자 종합 풀이 안에 직접 끼움
   sajuBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', '평생의 흐름을 읽을 때 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 본인의 본질이 더 또렷이 보입니다.');
+  sajuBody=_sajuContextHeader(saju,ys,gk,'사주팔자 종합')+sajuBody;
+  sajuBody+=_generalAreaConclusion(saju,ys,'사주팔자 종합');
 
   h+=`<div class="nb-card">
     <div class="nb-cat">SAJU PALJA</div>
@@ -8095,6 +8097,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gwBody+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid #e57462;font-size:.82rem"><b>⚖ 가장 강한 ${_ohEmoji[_strongOh]} ${_ohName[_strongOh]} 기운 절제법</b><br>본인 사주에 과한 기운이라, ${_ohName[_strongOh]}을 줄이는 색·음식은 평소보다 한 박자 줄이세요. 균형이 본인을 살립니다.</p>`;
     }
     gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>개운법의 핵심은 「작은 일상 실천」</b><br>거창한 부적·의식보다 매일 작은 색·음식·습관을 일상에 들이는 것이 평생 흐름을 만들어요. 위 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요.</p>`;
+    gwBody=_sajuContextHeader(saju,ys,gk,'개운법')+gwBody;
     gwBody+=_generalAreaConclusion(saju,ys,'개운법·일상 실천');
     h+=paidWrapBody('GAEWOON','✨','평생 개운법 — 색·방향·음식·물건·습관',gwBody);
   }catch(e){}
@@ -8190,6 +8193,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     rsBody+=`</div>`;
     rsBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 안의 관계가 알려주는 것</b><br>본인 사주의 좋은 관계는 평생 본인을 「자연스럽게 살려주는 자산」이고, 주의 관계는 「평생 의식해서 다스려야 할 과제」예요. 좋은 관계는 의식적으로 활용하고, 주의 관계는 의식적으로 다듬으면 같은 사주도 다른 흐름으로 펼쳐집니다.</p>`;
+    rsBody=_sajuContextHeader(saju,ys,gk,'사주 글자 관계')+rsBody;
     rsBody+=_generalAreaConclusion(saju,ys,'사주 글자 간 관계');
     h+=paidWrapBody('SAJU_REL','🔗','본인 사주 안의 관계 — 평생 자산과 과제',rsBody);
   }catch(e){}
@@ -8249,6 +8253,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       }
       sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 격국 정밀 매칭</b><br>${_detail}</p>`;
     }catch(e){}
+    sjBody=_sajuContextHeader(saju,ys,gk,'신강·신약')+sjBody;
     sjBody+=_generalAreaConclusion(saju,ys,'신강·신약 균형');
     h+=paidWrapBody('SINGANG','⚖','신강/신약 — 본인 사주의 그릇 크기',sjBody);
   }catch(e){}
@@ -8430,6 +8435,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
       </div>`;
       gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>격국이 알려주는 것</b><br>격국은 본인 사주의 「유형」을 보여줘요. 같은 격국이라도 대운·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 흐름이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 됩니다.</p>`;
+      gkBody=_sajuContextHeader(saju,ys,gk,'격국·사주 유형')+gkBody;
       gkBody+=_generalAreaConclusion(saju,ys,'본인 사주 유형(격국)');
       h+=paidWrapBody('GYEOKGUK','📜','격국 종합 — 본인 사주 유형',gkBody);
     }
@@ -8484,6 +8490,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gfBody+=`</div>`;
     }
     gfBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>공망 채워짐의 의미</b><br>본인 사주의 공망(비어있는 자리)에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 들어오는 보강의 시기」예요. 위 시기에 의도적으로 그 영역(학습·관계·재물·자녀 등)을 챙기시면 자연스럽게 결실이 따라옵니다.</p>`;
+    gfBody=_sajuContextHeader(saju,ys,gk,'공망 자리')+gfBody;
     h+=paidWrapBody('GONGMANG_TL','✨','평생 공망 채워짐 시기 — 약했던 영역의 결실기',gfBody);
   }catch(e){}
 
@@ -8503,6 +8510,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   huBody+=`<p><span class="body-q">관계망은 어떻게 만들어가면 좋을까요? — ${_userStageLabel} 기준</span><br>지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('relation',_userAge)}</em>이 본인 관계망의 중심이 돼요.</p>`;
   huBody+=`<p>${oh[dStemOh]>=3?(_userStage==='school'||_userStage==='youth'?'친구·또래가 많고 본인 주장이 또렷한 흐름이라, 단체 활동 속에서도 본인 페이스를 지키는 자세가 필요해요.':'형제·친구가 많고 본인 주장이 또렷한 사주라, <b>1인 직업이나 본인 사업</b> 쪽이 잘 맞아요. 동업과 금전 거래는 친한 사이일수록 명확한 계약과 기록을 남기시는 게 본인을 지켜줘요.'):(_userStage==='school'||_userStage==='youth'?'학교·동아리·동기 모임을 통해 관계망이 자연스럽게 만들어져요. 일대일로 깊게 만나는 친구 몇 명이 본인의 가장 든든한 자산이 돼요.':'외부 인맥(<b>직장·동호회·온라인 커뮤니티</b>)을 통해 관계망을 넓혀가시는 편이 본인에게 잘 맞아요. 일대일로 깊게 만나는 관계 몇 개를 평소에 가꿔두시면, 어려울 때 그게 가장 든든한 자산이 돼요.')}</p>`;
   huBody+=getRelevantRelationsHtml(saju,'human');
+  huBody=_sajuContextHeader(saju,ys,gk,'인간관계')+huBody;
   huBody+=_generalAreaConclusion(saju,ys,'인간관계·인덕');
   h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
     {good:'타고난 인덕을 살리시고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일로 깊게 만나는 관계 몇 개가 넓은 인맥보다 훨씬 든든해요.',
@@ -8628,6 +8636,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div>`;
     yckBody+=`</div>`;
     yckBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>6친 풀이의 의미</b><br>사주의 십신 강약은 인연의 「타고난 결」을 보여줘요. 약하다고 흉이 아니라 「의식적으로 가꿔야 할 영역」이라는 뜻. 부모 인연이 약하면 어른과의 관계를 의식적으로 가꾸고, 자녀 인연이 약하면 후배·아랫사람 돌봄으로 그 흐름을 채울 수 있어요.</p>`;
+    yckBody=_sajuContextHeader(saju,ys,gk,'6친 가족 인연')+yckBody;
     yckBody+=_generalAreaConclusion(saju,ys,'6친(가족) 인연');
     h+=paidWrapBody('YOOKCHIN','👨‍👩‍👧','6친 관계 — 부모·형제·배우자·자녀 인연',yckBody);
   }catch(e){}
@@ -8707,6 +8716,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _isCreator=_topSS==='bigeop'||_topSS==='jaesung'||_topSS==='siksang';
     jobBody+=`<p style="margin-top:14px"><span class="body-q">창업이 맞을까요, 직장이 맞을까요?</span><br>${_isCreator?'<b>본인 사업·창업·자영업 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기이 또렷해서 남 밑에서 일하면 답답함을 느끼기 쉽고, 본인 이름으로 일할 때 가장 큰 결실이 나옵니다.':'<b>체계 잡힌 조직·직장 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기이 책임·학습·관리 쪽이라 안정적인 조직에서 차근차근 성장하는 흐름이 흐름을 살립니다.'}</p>`;
     jobBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 적성은 「가능성」이지 「운명」이 아니에요</b><br>위 추천은 본인 결과 자연스럽게 맞는 영역이에요. 본인의 노력·환경·관심사로 다른 영역에서도 충분히 성공할 수 있고, 평생 한 직업이 아니라 여러 흐름을 거치는 것도 정상입니다. 위 추천은 「큰 결정 시 한 번 더 살펴볼 영역」으로 활용하세요.</p>`;
+    jobBody=_sajuContextHeader(saju,ys,gk,'직업 적성')+jobBody;
     jobBody+=_generalAreaConclusion(saju,ys,'직업 적성');
     h+=paidWrapBody('JOB','💼','직업 적성 — 평생 잘 맞는 일터 색깔',jobBody);
   }catch(e){}
@@ -8752,6 +8762,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       sinBody+=getPersonalizedSinsalInsight(sins,_activeNow,`${_curY}년`);
     }
   }catch(e){}
+  sinBody=_sajuContextHeader(saju,ys,gk,'별자리·신살')+sinBody;
   sinBody+=_generalAreaConclusion(saju,ys,'별자리(신살) 작용');
   h+=paidWrapBody('SINSAL','⚡','별자리·비어있는 자리 종합 분석',sinBody);
 
@@ -8864,6 +8875,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   swBody+=`<p><span class="body-q">올해는 어떻게 보내면 좋을까요? — ${_userAge}세 ${_userStageLabel} 기준</span><br>${getSewoonDesc(swTG,swBTG,curDaeun,saju,_userAge)}</p>`;
   const swHapChung=analyzeSewoonHapChung(saju,swSaewoon);
   if(swHapChung)swBody+=`<p>${swHapChung}</p>`;
+  swBody=_sajuContextHeader(saju,ys,gk,'올해 세운')+swBody;
   swBody+=_generalAreaConclusion(saju,ys,'올해의 세운');
   h+=paidWrapBody('SEWOON','🗓','세운 — 올해의 흐름',swBody);
 
