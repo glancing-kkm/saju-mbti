@@ -3927,7 +3927,9 @@ function renderDaypickFortune(saju,y,m,d,extra){
   let stBody2=`<p>${y}/${m}/${d}의 공부·문서 점수는 <b>${Math.round((f.career+f.total)/2)}점</b>입니다. 본인 사주 유형 ${gk.name}과 그날 흐름이 학습·시험에 ${stemTG==='정인'||stemTG==='편인'?'직접 길운으로 작용':stemTG==='상관'?'창의·논술형에 길 (객관식은 한 번 더 검토)':'평이한 흐름으로 작용'}하는 날입니다.</p>`;
   stBody2+=`<p>${stemTG==='정인'?'<b>학습 흡수가 빛나는 날</b> — 자료 정리·시험 준비·자격 학습에 매우 길해요. 어른·멘토의 도움이나 추천서가 들어오는 흐름이에요.':stemTG==='편인'?'<b>깊이 파는 학습이 빛나는 날</b> — 전문 분야 학습·논문·연구에 흐름이 좋아요. 직관과 통찰이 맑은 날.':stemTG==='상관'?'<b>창의·표현이 빛나는 날</b> — 창작·기획·논술형 시험·발표 자료 작성에 빛나요. 다만 객관식 정답률은 한 번 더 검토하세요.':stemTG==='식신'?'<b>함께하는 학습이 빛나는 날</b> — 혼자 공부보다 스터디·강연 듣기에 흐름이 좋아요.':'평이한 학습 흐름. 무리한 진도보다 복습·정리에 시간을 쓰는 게 효과적입니다.'}</p>`;
   stBody2+=`<p>${rel.kind==='합'?'본인 자리와 그날 자리가 자석처럼 끌어당겨 추천서·인허가·문서 처리가 부드럽게 풀려요.':rel.kind==='충'?'본인 자리와 그날 자리가 부딪히는 흐름이라, 큰 시험 결정·서류 마감일 결정은 한 박자 살핀 후에 진행하세요.':'평이한 문서 흐름이에요.'}</p>`;
-  h+=paidWrapBody('STUDY','📚','공부·문서',stBody2);
+  h+=paidWrapBody('STUDY','📚','공부·문서',stBody2,
+    {good:`${stemTG==='정인'||stemTG==='편인'?'학습·시험·자격증·문서 처리 흐름이 가장 잘 맞는 날':stemTG==='상관'?'창작·논술·발표 자료 작성에 흐름이 좋은 날':'복습·정리·진도 점검에 시간을 투자하면 효과적인 날'}이에요.`,
+     warn:`${rel.kind==='충'?'큰 시험 결정·서류 마감·계약 서명은 한 박자 미루세요':rel.kind==='형'?'계약서·시험 답안은 한 번 더 검토 — 사소한 실수가 분쟁으로 번지기 쉬워요':'무리한 진도보다 본인 페이스 유지'}.`}, _primaryDpCard==='STUDY');
 
   // ── 시간대
   let hourBody=(_primaryDpCard==='HOUR'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+'<p>그날 12지지 시간대(시진)별 흐름입니다. 본인 일지(' +myBrKo+ ')와 그날 일지(' +dpBrKo+ ')의 합·충 작용으로 시간대마다 흐름이 다릅니다.</p>';
@@ -4288,23 +4290,33 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   });
 
   // ── 분야별 종합 (재물/연애/직업/건강)
-  const fieldDeep=(emoji,name,key,bodyExtra)=>{
+  const fieldDeep=(emoji,name,key,bodyExtra,goodWarn)=>{
     const sc=avg(key);
     const g=dailyGrade(sc);
     const catKey=`AVG ${name}`;
     const isPrimary=_primaryMoCard===catKey;
     const callOut=isPrimary?ctxCallOut('monthly',_ctxTag,_ctxNote):'';
     let b=callOut+`<p>${sy}.${sm} ~ ${ey}.${em} 기간의 <b>${name} 평균 점수는 ${sc}점</b>(${g.lab})입니다.</p>${bodyExtra}`;
-    return paidWrapBody(catKey,emoji,`${name} 흐름 — ${totalMonths}개월 종합`,b,null,isPrimary);
+    return paidWrapBody(catKey,emoji,`${name} 흐름 — ${totalMonths}개월 종합`,b,goodWarn||null,isPrimary);
   };
+  const _luckyMs=monthsData.filter(o=>o.sc.total>=70).map(o=>`${o.mm}월`).join(', ');
+  const _toughMs=monthsData.filter(o=>o.sc.total<=45).map(o=>`${o.mm}월`).join(', ');
   h+=fieldDeep('💰','재물','wealth',
-    `<p>이 기간의 재물 흐름은 ${monthsData.filter(o=>o.sc.wealth>=70).map(o=>`${o.mm}월`).join(', ')||'특별히 두드러지는 달 없음'}에 흐름이 가장 좋고, ${monthsData.filter(o=>o.sc.wealth<=45).map(o=>`${o.mm}월`).join(', ')||'주의 시기는 없음'}에 한 박자 살피는 게 좋아요.</p><p>본인 사주에서 약한 오행 ${OHNAME[weak]} 영역과 연결되는 거래·자산이 결에 잘 맞으며, 큰 흐름의 돈 결정은 길월 위주로 배치하세요.</p>`);
+    `<p>이 기간의 재물 흐름은 ${monthsData.filter(o=>o.sc.wealth>=70).map(o=>`${o.mm}월`).join(', ')||'특별히 두드러지는 달 없음'}에 흐름이 가장 좋고, ${monthsData.filter(o=>o.sc.wealth<=45).map(o=>`${o.mm}월`).join(', ')||'주의 시기는 없음'}에 한 박자 살피는 게 좋아요.</p><p>본인 사주에서 약한 오행 ${OHNAME[weak]} 영역과 연결되는 거래·자산이 결에 잘 맞으며, 큰 흐름의 돈 결정은 길월 위주로 배치하세요.</p>`,
+    {good:`${_luckyMs||'길월 없음'}에 큰 거래·계약·미팅을 배치하세요. 약한 오행 ${OHNAME[weak]} 영역의 거래에 더 큰 결실.`,
+     warn:`${_toughMs||'주의월 없음'}에는 가계부·카드 사용·동업 자금을 한 번 더 점검. 충동 결제·고가품 구매 24시간 룰 적용.`});
   h+=fieldDeep('💕','연애·관계','love',
-    `<p>이 기간 중 본인 자리와 자연스럽게 잘 통하거나 같은 방향으로 묶이는 달이 ${monthsData.filter(o=>['합','반합','반합약'].includes(o.sc.rel.kind)).map(o=>`${o.mm}월`).join(', ')||'없음'}, 정면으로 부딪히는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='충').map(o=>`${o.mm}월`).join(', ')||'없음'}, 미묘하게 거슬리는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='원진').map(o=>`${o.mm}월`).join(', ')||'없음'}, 서로 깎이는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='형'||o.sc.rel.kind==='자형').map(o=>`${o.mm}월`).join(', ')||'없음'}입니다.</p><p>자연스럽게 잘 통하는 달은 관계 진전·결혼 결정·재회·소개팅에 흐름이 가장 좋고, 정면으로 부딪히는 달은 관계 정리·재정립의 자연 흐름으로 받아들이세요. 미묘하게 거슬리는 달은 가까운 사람의 사소한 말투에 예민해지지 말고 의식적인 거리감과 짧고 자주 소통하는 습관이, 서로 깎이는 달은 상대의 약점을 말로 짚지 않는 자제력이 흐름을 지킵니다.</p>`);
+    `<p>이 기간 중 본인 자리와 자연스럽게 잘 통하거나 같은 방향으로 묶이는 달이 ${monthsData.filter(o=>['합','반합','반합약'].includes(o.sc.rel.kind)).map(o=>`${o.mm}월`).join(', ')||'없음'}, 정면으로 부딪히는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='충').map(o=>`${o.mm}월`).join(', ')||'없음'}, 미묘하게 거슬리는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='원진').map(o=>`${o.mm}월`).join(', ')||'없음'}, 서로 깎이는 달이 ${monthsData.filter(o=>o.sc.rel.kind==='형'||o.sc.rel.kind==='자형').map(o=>`${o.mm}월`).join(', ')||'없음'}입니다.</p><p>자연스럽게 잘 통하는 달은 관계 진전·결혼 결정·재회·소개팅에 흐름이 가장 좋고, 정면으로 부딪히는 달은 관계 정리·재정립의 자연 흐름으로 받아들이세요. 미묘하게 거슬리는 달은 가까운 사람의 사소한 말투에 예민해지지 말고 의식적인 거리감과 짧고 자주 소통하는 습관이, 서로 깎이는 달은 상대의 약점을 말로 짚지 않는 자제력이 흐름을 지킵니다.</p>`,
+    {good:`합·반합 달엔 고백·소개팅·진전 대화·결혼 결정에 흐름이 가장 잘 맞아요. 한 박자 빠르게 행동.`,
+     warn:`충 달엔 큰 결정(이별·결혼·동거)은 다른 달로. 원진·형 달엔 짧고 자주 소통하고, 상대의 아픈 자리는 절대 말로 짚지 않기.`});
   h+=fieldDeep('🏛️','직업·관운','career',
-    `<p>책임의 결(관성)이 들어오는 달이 직업 결정의 결정적 시기예요. 이 기간 중 ${monthsData.filter(o=>o.sc.tg==='정관'||o.sc.tg==='편관').map(o=>`${o.mm}월(${o.sc.tg})`).join(', ')||'관성 달이 없음 — 평이한 흐름'}.</p><p>이직·승진·창업 결정은 가능하면 위 달에 배치하면 흐름이 잘 맞습니다.</p>`);
+    `<p>책임의 결(관성)이 들어오는 달이 직업 결정의 결정적 시기예요. 이 기간 중 ${monthsData.filter(o=>o.sc.tg==='정관'||o.sc.tg==='편관').map(o=>`${o.mm}월(${o.sc.tg})`).join(', ')||'관성 달이 없음 — 평이한 흐름'}.</p><p>이직·승진·창업 결정은 가능하면 위 달에 배치하면 흐름이 잘 맞습니다.</p>`,
+    {good:`관성 달엔 면접·승진 보고·공식 자리에 흐름이 강해요. 이직·창업 개시도 이 시기에 배치.`,
+     warn:`상관 달엔 권위와의 마찰 주의 — 톤 조절이 핵심. 편관 달엔 압박이 큰 시기 — 정면 돌파보다 측면 우회.`});
   h+=fieldDeep('🌿','건강','health',
-    `<p>이 기간 중 본인 자리와 정면으로 부딪히는 ${monthsData.filter(o=>o.sc.rel.kind==='충').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 서로 깎이는 ${monthsData.filter(o=>o.sc.rel.kind==='형'||o.sc.rel.kind==='자형').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 미묘하게 거슬리는 ${monthsData.filter(o=>o.sc.rel.kind==='원진').map(o=>`${o.mm}월`).join(', ')||'없는'} 달은 스트레스성 두통·근육 긴장·소화 문제가 평소보다 잦으니 무리한 일정을 줄이고 충분한 수면을 챙기세요. 특히 서로 깎이는 달은 사고·수술·외상 가능성이 높아져 격한 운동·과로를 피하는 게 좋아요.</p><p>본인의 약한 오행 ${OHNAME[weak]} 보강 식단(${weak===0?'녹색·신맛':weak===1?'붉은·쓴맛':weak===2?'단맛·뿌리':weak===3?'흰색·매운맛':'검은·짠맛'})을 ${totalMonths}개월 동안 꾸준히 추가하면 컨디션이 살아납니다.</p>`);
+    `<p>이 기간 중 본인 자리와 정면으로 부딪히는 ${monthsData.filter(o=>o.sc.rel.kind==='충').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 서로 깎이는 ${monthsData.filter(o=>o.sc.rel.kind==='형'||o.sc.rel.kind==='자형').map(o=>`${o.mm}월`).join(', ')||'없는'} 달, 미묘하게 거슬리는 ${monthsData.filter(o=>o.sc.rel.kind==='원진').map(o=>`${o.mm}월`).join(', ')||'없는'} 달은 스트레스성 두통·근육 긴장·소화 문제가 평소보다 잦으니 무리한 일정을 줄이고 충분한 수면을 챙기세요. 특히 서로 깎이는 달은 사고·수술·외상 가능성이 높아져 격한 운동·과로를 피하는 게 좋아요.</p><p>본인의 약한 오행 ${OHNAME[weak]} 보강 식단(${weak===0?'녹색·신맛':weak===1?'붉은·쓴맛':weak===2?'단맛·뿌리':weak===3?'흰색·매운맛':'검은·짠맛'})을 ${totalMonths}개월 동안 꾸준히 추가하면 컨디션이 살아납니다.</p>`,
+    {good:`약한 오행 ${OHNAME[weak]} 보강 식단(${weak===0?'녹색·신맛':weak===1?'붉은·쓴맛':weak===2?'단맛·뿌리':weak===3?'흰색·매운맛':'검은·짠맛'})을 꾸준히. ${weak===0?'산책·등산':weak===1?'운동·요가':weak===2?'명상·정원 가꾸기':weak===3?'필라테스·정리 정돈':'수영·독서'} 활동도 컨디션 보강.`,
+     warn:`충·형 달엔 격한 운동·과로·운전 사고·수술 미루기. 사주의 건강 풀이는 체질 경향성일 뿐, 실제 진단은 전문의 상담 필수.`});
 
   // ── 결정적 시기
   let critBody=`<p>${totalMonths}개월 중 흐름이 가장 강한 시기는 <b>${decisive.yy}년 ${decisive.mm}월</b>(${decisive.sc.total}점, ${dailyGrade(decisive.sc.total).lab})입니다. 월주는 <em>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</em>이며, 본인 기준 <b>${plainTG(decisive.sc.tg)}</b>의 흐름으로 들어와요.</p>`;
@@ -4927,13 +4939,21 @@ function renderNewyearFortune(saju,y){
   h+=fieldBody('🏛️','직업·사업운',careerYr,careerBody,
     {good:`이직·창업·승진 결정은 길월(${monthLab(lucky)}) 또는 결정적 시기(${decisive}월)에 배치하면 흐름이 가장 잘 맞습니다.`,
      warn:`${tg==='상관'?'권위와의 마찰을 가장 경계 — 톤 조절이 핵심':tg==='편관'?'압박이 큰 해 — 정면 돌파보다 측면 우회':'평이한 흐름이지만 무리한 확장은 미루기'}.`});
-  h+=fieldBody('👥','인간관계·인맥',relationYr,relationBody);
+  h+=fieldBody('👥','인간관계·인맥',relationYr,relationBody,
+    {good:`길월(${monthLab(lucky)})에는 새 인맥·동료·후원자 만남이 자연스럽게 이어져요. 일대일 깊은 만남을 우선하세요.`,
+     warn:`주의월(${monthLab(tough)})에는 동업·금전 거래에서 신뢰가 흔들리기 쉬워요. 친한 사이일수록 명확한 기록 필수.`});
   h+=fieldBody('🌿','건강운',healthYr,healthBody,
     {good:`용신 ${OHNAME[ysX.main]} 보강 식단(${['신맛·녹색','쓴맛·붉은','단맛·뿌리','매운맛·흰','짠맛·검은'][ysX.main]})을 한 해 동안 꾸준히 추가하세요.`,
      warn:`사주의 건강 풀이는 체질 경향성일 뿐, 실제 진단은 전문의 상담이 필수입니다.`});
-  h+=fieldBody('📚','공부·시험운',studyYr,studyBody);
-  h+=fieldBody('🏠','주거·이동운',homeYr,homeBody);
-  h+=fieldBody('👨‍👩‍👧','가족·자녀운',familyYr,familyBody);
+  h+=fieldBody('📚','공부·시험운',studyYr,studyBody,
+    {good:`자격증·시험 응시는 길월(${monthLab(lucky)}) 또는 결정적 시기(${decisive}월)에 배치. 인성 흐름이 강한 시기에 합격률 상승.`,
+     warn:`표현 활동이 강한 시기는 집중력 분산 — SNS·취미를 의식적으로 줄이고 자습 시간 확보.`});
+  h+=fieldBody('🏠','주거·이동운',homeYr,homeBody,
+    {good:`이사·이주·해외 출장은 본인 자리와 어울리는 글자가 들어오는 시기 우선. 길월에 큰 이동 결정.`,
+     warn:`충 결의 달에는 큰 이주·계약 미루고, 잔금·서명은 한 번 더 확인 필수.`});
+  h+=fieldBody('👨‍👩‍👧','가족·자녀운',familyYr,familyBody,
+    {good:`가족 모임·자녀 진학·출산은 합 결인 시기에 자연스럽게 풀려요. 부모님 건강·자녀 진로에 의식적 시간 투자.`,
+     warn:`충·원진 결인 시기엔 가족 갈등이 누적되기 쉬워요. 짧고 자주 대화로 의식적 소통.`});
 
   // 신살 작용 + 개인화 부스트 풀이
   if(activeYearSins.length>0){
@@ -7886,7 +7906,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     stBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 흐름':''}</p>`;
   }catch(e){}
   stBody+=_fieldConclusion('study',saju,ys,gender);
-  h+=paidWrapBody('STUDY','📚','학업·시험운',stBody);
+  h+=paidWrapBody('STUDY','📚','학업·시험운',stBody,
+    {good:`인성(印星)이 강한 시기에 학습 흡수가 빛나요. 큰 시험·자격증 응시는 인성 대운·세운 또는 본인 자리의 합 결인 해에 배치하면 합격률이 자연스럽게 올라요.`,
+     warn:`상관·겁재가 강한 시기엔 표현·창의 활동이 빛나지만 집중력 분산이 큰 함정이에요. SNS·취미를 의식적으로 줄이고 자습 시간을 확보하세요. 시험은 한 번 더 검토.`});
 
   // 평생 학업·시험 타임라인 — 대운별 학습·자격·시험 시기
   try{
@@ -14865,7 +14887,9 @@ function renderGunghapLoveCard(s1,s2,r){
   const loveBody=`<div class="asec"><div class="atitle">두 분 사이의 연애 결</div><div class="abody">${body}</div></div>
     ${hint?`<div class="asec" style="margin-top:12px"><div class="atitle">상대가 본인에게 보이는 결 (${r.tg12})</div><div class="abody">${hint}</div></div>`:''}
     <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${sc>=75?'서로의 흐름을 그대로 인정해주는 것이 가장 큰 사랑 표현이에요.':sc>=60?'사소한 차이는 서로의 매력으로 받아들이는 자세가 관계를 키워요.':'서로 다른 흐름을 한 번 더 듣고 묻는 습관이 관계를 단단하게 만들어요.'}</div></div>`;
-  return paidWrapBody('LOVE','💕','연애·데이트 결',loveBody);
+  return paidWrapBody('LOVE','💕','연애·데이트 결',loveBody,
+    {good:`${sc>=70?'서로의 흐름이 잘 맞는 자리 — 자연스러운 데이트·일상 공유에 흐름이 좋아요. 상대가 좋아하는 것을 한 가지 더 챙기는 작은 정성으로 큰 친밀도':'평이한 흐름이지만 「상대가 좋아하는 디테일」을 의식적으로 챙기면 흐름이 살아나는 자리'}.`,
+     warn:`${br==='충'?'정면 충돌의 결 — 큰 결정(이별·동거·결혼)은 한 박자 미루고, 다툼 시 24시간 룰 적용':br==='원진'?'겉으론 평이하지만 속에서 거슬림이 쌓이는 결 — 정기 대화 시간 필수':br==='형'||br==='파'||br==='해'||br==='자형'?'작은 어긋남이 잦은 결 — 약속은 메모, 큰 결정은 한 박자 쉬기':'평이한 흐름이지만 본인 톤만 고집하지 말고 한 박자 부드럽게'}.`});
 }
 
 // ── 결혼 생활 결 ──
@@ -14885,7 +14909,9 @@ function renderGunghapMarriageCard(s1,s2,r){
   const stemBonus=stRel==='합'?'<br><br>특히 두 분의 일간이 <b>천간합 — 부부 합</b>을 이뤄, 결혼 생활에서 서로를 끌어당기는 결속력이 매우 강한 자리예요.':stRel==='충'?'<br><br>두 분의 일간이 천간충 — 가치관·결정 방식에서 부딪힐 수 있어요. 큰 결정 전에 「각자의 입장 1분씩 말하기」 룰을 두면 흐름이 부드러워져요.':'';
   const marBody=`<div class="asec"><div class="atitle">두 분이 함께 살 때의 결</div><div class="abody">${body}${stemBonus}</div></div>
     <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--earth)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${sc>=75?'결혼 생활은 두 분 모두에게 안정과 성장을 주는 자리가 돼요.':sc>=60?'결혼 후 「작은 약속을 꼭 지키는」 습관이 신뢰를 두텁게 만들어요.':'결혼 결정 전에 둘이 함께 「3개월 동거」 같은 충분한 시간을 갖는 게 좋아요.'}</div></div>`;
-  return paidWrapBody('MARRIAGE','💍','결혼 생활 결',marBody);
+  return paidWrapBody('MARRIAGE','💍','결혼 생활 결',marBody,
+    {good:`${oh==='상생'?'서로 도와주는 흐름이라 결혼 생활이 안정적이에요. 큰 결정도 함께 의논하며 진행 가능':oh==='비화'?'닮은 흐름이라 일상이 편안해요. 약점은 외부 도움(전문가·친구)을 함께 구하면 더 단단':oh==='상극'?'서로 자극 — 함께 성장이 빠른 흐름. 갈등 시 「감정을 먼저 받아주기」 룰':'평이한 흐름 — 정기 「우리 시간」 1회 약속이 결혼 흐름을 단단히'}.`,
+     warn:`${stRel==='충'?'일간 충 — 가치관·결정 방식에서 부딪힘. 큰 결정 전 「각자 입장 1분씩」 룰 필수':oh==='상극'?'논리로 이기려 하면 갈등 누적 — 감정 수용이 핵심':'본인 톤만 고집하지 말고 한 박자 부드럽게. 결혼 후 가계부·일정 공유 의식적으로'}.`});
 }
 
 // ── 동업·동거 결 ──
@@ -14903,7 +14929,9 @@ function renderGunghapPartnerCard(s1,s2,r){
   }
   const partBody=`<div class="asec"><div class="atitle">함께 일하거나 같이 살 때의 결</div><div class="abody">${body}</div></div>
     <div class="asec" style="margin-top:12px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 8글자가 만나는 16칸 교차에서 <b>화합 ${goodCnt}건</b> / <b>갈등 ${badCnt}건</b>이 검출됐어요. ${goodCnt>=badCnt?'시너지가 우세한 흐름':'갈등이 우세한 흐름'}이에요.</div></div>`;
-  return paidWrapBody('PARTNER','🤝','동업·동거 결',partBody);
+  return paidWrapBody('PARTNER','🤝','동업·동거 결',partBody,
+    {good:`${goodCnt>badCnt?'화합 우세 — 동업·공동 사업·동거에 시너지. 역할 분담만 명확하면 큰 갈등 없이 흐름':goodCnt===badCnt?'균형 — 「3개월 시범 기간」으로 서로의 흐름 확인 후 본격 진행':'갈등 우세지만, 각자 영역 분명히 나누면 흐름 가능 — 계약서·약속 메모 필수'}.`,
+     warn:`${badCnt>goodCnt?'동업 시 작은 마찰 잦음 — 자금·역할·기간을 처음부터 문서화':'친한 사이일수록 금전 거래·동업 자금은 명확한 기록 필수'}.`});
 }
 
 // ── 가족·자녀 결 ──
@@ -14923,7 +14951,9 @@ function renderGunghapFamilyCard(s1,s2,r){
   }
   const famBody=`<div class="asec"><div class="atitle">두 분이 가족을 이뤘을 때의 결</div><div class="abody">${body}</div></div>
     <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 자녀운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>`;
-  return paidWrapBody('FAMILY','👨‍👩‍👧','가족·자녀 결',famBody);
+  return paidWrapBody('FAMILY','👨‍👩‍👧','가족·자녀 결',famBody,
+    {good:`${r.balScore>=80?'두 분 오행 합산이 균형 — 자녀가 다양한 흐름의 환경에서 자라기 좋아요':r.balScore>=65?`${ohNames[maxIdx]} 강세 — 자녀에게 약한 ${ohNames[minIdx]} 환경(색·음식·취미·방향)을 의식적으로 노출`:`${ohNames[maxIdx]} 치우침 — ${ohNames[minIdx]} 환경을 더해주는 게 양육의 핵심`}.`,
+     warn:`자녀운은 두 분 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이 권장. 부모님 건강·노후 관리도 의식적 시간 투자 필수.`});
 }
 
 // ══════════════════════════════════════════════
