@@ -270,7 +270,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* Pillars */
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .pcol{display:flex;flex-direction:column;gap:3px}
-.plabel{font-size:.62rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.06em;text-transform:uppercase}
+.plabel{font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.06em;text-transform:uppercase}
 .pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:1.35rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
 .pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
 .ew{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.2)}
@@ -355,7 +355,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .compat-cell-val{font-size:.82rem;font-weight:700;color:var(--text);word-break:keep-all;white-space:nowrap}
 .compare-pillars{display:grid !important;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) !important;gap:4px;align-items:center;text-align:center;width:100%}
 .compare-pillars > .pcol{min-width:0;width:100%;max-width:100%}
-.compare-pillars .plabel{font-size:.7rem;color:var(--sub);margin-bottom:3px}
+.compare-pillars .plabel{font-size:.78rem;color:var(--sub);margin-bottom:3px}
 .compare-pillars .pstem,.compare-pillars .pbranch{font-size:.88rem;padding:5px 1px;min-width:0;width:100%;box-sizing:border-box}
 .compare-pillars .pstem .sm,.compare-pillars .pbranch .sm{font-size:.55rem}
 .compare-arrow{font-size:.95rem;color:var(--sub);padding:0 1px;text-align:center}
@@ -772,7 +772,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mm-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 4px 8px;text-align:center;transition:.2s;position:relative}
 .mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(212,175,55,.15);background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.5));transform:translateY(-2px);z-index:2}
 .mm-col.hl::after{content:'★';position:absolute;top:-9px;right:-5px;color:var(--accent-bright);font-size:.95rem;text-shadow:0 0 6px rgba(212,175,55,.5)}
-.mm-lab{font-size:.6rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.mm-lab{font-size:.78rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
 .mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
 .mm-cell .mm-sub{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
@@ -8637,7 +8637,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isMyDay=p.key==='day';
       plBody+=`<div style="padding:11px 13px;background:${p.bg};border-radius:9px;border-left:4px solid ${p.border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
-          <div style="font-weight:700;color:${p.border};font-size:.92rem">${p.emoji} ${p.label}</div>
+          <div style="font-weight:700;color:${p.border};font-size:.78rem">${p.emoji} ${p.label}</div>
           <div style="font-size:.74rem;color:var(--sub);font-weight:600">${p.sub}</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin:5px 0;flex-wrap:wrap">
@@ -9174,7 +9174,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const border=stageType==='g'?'#6cbf7e':stageType==='y'?'#d4a849':stageType==='b'?'#6c8cc8':'var(--border)';
       stageBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${p.label}</b> · ${p.age}</div>
+          <div style="font-weight:700;color:var(--accent);font-size:.78rem"><b>${p.label}</b> · ${p.age}</div>
           <span style="font-size:.74rem;padding:2px 9px;border-radius:12px;background:${border};color:#1a1c1d;font-weight:700">${st}</span>
         </div>
         <div style="margin-top:7px;font-size:.81rem;line-height:1.85;color:var(--sub)">${desc}</div>
@@ -15644,7 +15644,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   stagePillars.forEach(p=>{
     const stage=twelveStage(saju.dp.stem,p.branch);
     h+=`<div style="text-align:center;background:var(--earth-bg);border-radius:8px;padding:8px 4px">
-      <div style="font-size:.65rem;color:var(--sub);margin-bottom:3px">${p.label}</div>
+      <div style="font-size:.78rem;color:var(--sub);margin-bottom:3px">${p.label}</div>
       <div style="font-size:.78rem;font-weight:700;color:var(--accent)">${stage}</div>
     </div>`;
   });
