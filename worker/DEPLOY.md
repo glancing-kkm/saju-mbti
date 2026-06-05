@@ -149,3 +149,67 @@ Anthropic 콘솔 → **Settings → Limits** 에서 월별 한도(예: $50) 설�
 | "5회 한도 소진" | 정상 동작. 캐시 삭제 시 초기화. |
 
 Worker 로그 보기: Cloudflare → Worker → **Logs** 탭에서 실시간 확인 가능.
+
+---
+
+# 카카오페이 결제 Worker 배포 가이드
+
+토스가 아닌 **카카오페이 직접 API** 방식입니다. SDK 없이 서버사이드 redirect 흐름.
+
+## 1. 카카오페이 가맹점 신청
+
+1. https://biz.kakaopay.com 접속 → **가맹점 신청**
+2. 사업자 등록증·정산 계좌 등 서류 제출
+3. 승인 후 **개발자센터** 진입
+4. **SECRET KEY** + **CID** 발급
+   - 테스트 단계만 사용 시: CID = `TC0ONETIME` (가맹점 등록 없이 즉시 테스트 가능)
+   - 운영 결제: 정식 CID 발급 필수
+
+## 2. Worker 배포 (Wrangler CLI)
+
+```sh
+cd worker
+wrangler deploy --config wrangler.kakao-payment.toml
+```
+
+웹 대시보드 사용 시: `worker/kakao-payment-worker.js` 내용을 새 Worker에 복사.
+
+## 3. 시크릿 등록 (3종)
+
+```sh
+wrangler secret put KAKAO_SECRET_KEY --config wrangler.kakao-payment.toml
+# → biz.kakaopay.com > 개발자센터 > SECRET KEY
+
+wrangler secret put KAKAO_CID --config wrangler.kakao-payment.toml
+# → TC0ONETIME (테스트) 또는 발급받은 정식 CID
+
+wrangler secret put ALLOWED_ORIGIN --config wrangler.kakao-payment.toml
+# → 예: https://saju-mbti-9h1.pages.dev
+```
+
+## 4. index.html 연결
+
+`index.html`의 `KAKAO_PAYMENT_BASE` 상수를 배포된 Worker URL로 교체:
+```js
+const KAKAO_PAYMENT_BASE='https://kakao-payment-worker.your-subdomain.workers.dev';
+```
+뒤에 `/ready`, `/approve`는 워커가 자동으로 라우팅합니다 (URL에 포함하지 말 것).
+
+## 5. 결제 흐름
+
+1. 사용자가 「카카오페이로 결제하기」 클릭
+2. 브라우저 → Worker `/ready` POST → 카카오페이 API → `{tid, next_redirect_url}` 반환
+3. 브라우저 → next_redirect_url로 redirect → 카카오페이 앱/웹에서 결제 진행
+4. 결제 완료 후 `approval_url?pg_token=xxx`로 돌아옴
+5. 브라우저 → Worker `/approve` POST → 카카오페이 API 승인 호출 → 결제 확정
+6. sessionStorage의 tid·orderId 정보로 검증 (세션 끊기면 영수증 기반 수동 처리)
+
+## 6. 문제 해결
+
+| 증상 | 원인 / 해결 |
+|------|-------------|
+| "결제 서버가 아직 배포되지 않았습니다" | `KAKAO_PAYMENT_BASE`가 example URL 그대로. 4단계 다시 확인. |
+| "준비 실패" `KAKAO_REJECTED` | SECRET KEY·CID 미등록 또는 오타. 3단계 다시 확인. |
+| "결제 정보가 만료되었습니다" | 결제 도중 브라우저 종료 또는 다른 기기에서 콜백. 영수증 기반 수동 환불·재처리. |
+| CORS 에러 | `ALLOWED_ORIGIN`이 실제 사이트 도메인과 다름. 콤마로 여러 개 등록 가능. |
+| 금액 불일치 `AMOUNT_MISMATCH` | 클라이언트가 보낸 amount와 worker의 `CATEGORY_PRICE` 차이. 가격 변경 시 양쪽 다 수정 필수. |

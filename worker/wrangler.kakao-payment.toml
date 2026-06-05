@@ -1,0 +1,20 @@
+name = "kakao-payment-worker"
+main = "kakao-payment-worker.js"
+compatibility_date = "2024-11-01"
+
+# 배포: wrangler deploy --config wrangler.kakao-payment.toml
+#
+# 시크릿 등록 (저장소에 커밋하지 말 것):
+#   wrangler secret put KAKAO_SECRET_KEY --config wrangler.kakao-payment.toml
+#     → biz.kakaopay.com 가맹점 관리자 콘솔 > 개발자센터 > SECRET KEY
+#   wrangler secret put KAKAO_CID --config wrangler.kakao-payment.toml
+#     → biz.kakaopay.com 가맹점 관리자 콘솔 > CID
+#     → 테스트 환경: TC0ONETIME (개발사가 별도 등록 없이 사용 가능)
+#   wrangler secret put ALLOWED_ORIGIN --config wrangler.kakao-payment.toml
+#     → 예: https://saju-mbti-9h1.pages.dev (여러 개면 콤마 구분)
+#
+# 카카오페이 가맹점 신청: https://biz.kakaopay.com
+# 신규 API 문서: https://developers.kakaopay.com/docs/payment/online/use-info
+
+[observability]
+enabled = true

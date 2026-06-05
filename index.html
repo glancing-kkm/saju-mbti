@@ -74,8 +74,7 @@
 <!-- html2canvas: 이미지 저장 (분석 후 사용자 상호작용 시점에만 필요 → defer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" defer></script>
-<!-- 토스페이먼츠 SDK: 결제 시점에만 로드 → defer -->
-<script src="https://js.tosspayments.com/v1/payment" defer></script>
+<!-- 카카오페이는 직접 API(서버사이드 redirect) 방식 — 별도 SDK 불필요 -->
 <!-- Kakao SDK (앱 키 등록 필요: https://developers.kakao.com) -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -513,9 +512,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pay-agree-text a{color:var(--accent);text-decoration:underline}
 .pay-cta-row{display:flex;gap:8px}
 .pay-cta-cancel{flex:1;padding:13px;background:transparent;border:1px solid var(--border);color:var(--sub);border-radius:10px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit}
-.pay-cta-go{flex:2;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));border:0;color:var(--bg-mid);border-radius:10px;font-size:.92rem;font-weight:800;cursor:pointer;letter-spacing:.04em;font-family:inherit;transition:.18s}
+/* 카카오페이 Cobranding — 노란색 #FFEB00 + 진한 갈색 텍스트 #3C1E1E */
+.pay-cta-go{flex:2;padding:13px;background:#FFEB00;border:0;color:#3C1E1E;border-radius:10px;font-size:.92rem;font-weight:800;cursor:pointer;letter-spacing:.02em;font-family:inherit;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .pay-cta-go:disabled{opacity:.45;cursor:not-allowed;background:var(--card);color:var(--muted)}
-.pay-cta-go:not(:disabled):hover{filter:brightness(1.07)}
+.pay-cta-go:not(:disabled):hover{filter:brightness(.97)}
+.pay-cta-go .kakao-logo{display:inline-block;background:#3C1E1E;color:#FFEB00;padding:2px 7px;border-radius:4px;font-size:.78rem;font-weight:900;letter-spacing:.04em}
 .pay-status{display:none;padding:10px 12px;border-radius:9px;font-size:.8rem;margin-bottom:10px;line-height:1.6}
 .pay-status.err{display:block;background:rgba(229,116,98,.12);border:1px solid var(--fire);color:var(--fire)}
 .pay-status.info{display:block;background:rgba(212,175,55,.1);border:1px solid var(--accent);color:var(--accent-bright)}
@@ -1098,13 +1099,13 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 월당 1,500원, 최대 9,000원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 월당 2,000원, 최대 12,000원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">📆</div>
           <div class="mc-title">월별 운세</div>
           <div class="mc-desc">최대 6개월의 운세 흐름을 연속적으로 추적</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">월당 1,500원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 9,000원 (6개월)</span></div>
+          <div class="mc-price">월당 2,000원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 12,000원 (6개월)</span></div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
@@ -1353,7 +1354,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 월별 운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraMonthly" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">📆</span><span class="cat-extra-title">월별 운세 — 기간 선택</span></div></legend>
-        <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 6개월 · 월당 1,500원).</div>
+        <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드립니다 (최대 6개월 · 월당 2,000원).</div>
         <div class="row3">
           <div class="ig">
             <label for="moStartY">시작 연도</label>
@@ -1596,7 +1597,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <div class="pay-cta-row">
       <button class="pay-cta-cancel" type="button" onclick="closePaymentConsent()">취소</button>
-      <button class="pay-cta-go" type="button" id="payCtaGo" onclick="startTossPayment()" disabled>💳 결제하기</button>
+      <button class="pay-cta-go" type="button" id="payCtaGo" onclick="startKakaoPayment()" disabled><span class="kakao-logo">pay</span>카카오페이로 결제하기</button>
     </div>
 
     <div class="pay-foot">
@@ -2174,7 +2175,7 @@ function onMonthlyPreview(){
   }
   const amount=PAY_BASE_PRICE.monthly*months;
   prev.className='mo-preview';
-  prev.innerHTML=`<b>${months}개월</b> 선택됨 · 결제 예상 금액 <b>${formatWon(amount)}</b><br><span style="font-size:.75rem;color:var(--muted)">월당 1,500원 × ${months} = ${formatWon(amount)}</span>`;
+  prev.innerHTML=`<b>${months}개월</b> 선택됨 · 결제 예상 금액 <b>${formatWon(amount)}</b><br><span style="font-size:.75rem;color:var(--muted)">월당 2,000원 × ${months} = ${formatWon(amount)}</span>`;
 }
 // 입력 완료(블러·Enter) 시점에만 값 보정 — 입력 중 자동 변경 방지
 function onMonthlyClamp(source){
@@ -6142,7 +6143,7 @@ const PAID_META={
       '· 본인 사주 일간 기반 맞춤 조언',
       '· 최대 6개월 연속 풀이'
     ],
-    price:'월당 1,500원 (최대 9,000원)'
+    price:'월당 2,000원 (최대 12,000원)'
   },
   newyear:{
     icon:'🎉',title:'신년운세',
@@ -6260,7 +6261,7 @@ function renderPaidLock(category, saju){
     <div class="pay-prep">
       <div class="pay-prep-badge">💳 안전 결제</div>
       <div class="pay-prep-body">카카오페이·네이버페이로 간편하게 결제하실 수 있어요. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
-      <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 1,500원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
+      <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 2,000원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
     </div>
     <div class="easypay-row">
       <button type="button" class="easypay-btn easypay-kakao" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 결제">
@@ -6579,17 +6580,17 @@ function _secretUnlockTap(category){
 }
 
 // ══════════════════════════════════════════════
-//  결제 — 토스페이먼츠 흐름
+//  결제 — 카카오페이 직접 API (Cobranding 가이드 적용)
 // ══════════════════════════════════════════════
-// 환경: 실제 운영 시 아래 두 상수를 운영자가 발급받은 키로 교체
-//   TOSS_CLIENT_KEY: 토스 대시보드 > API 키 > 클라이언트 키
-//   PAYMENT_CONFIRM_URL: 결제 승인 처리 워커 엔드포인트 (worker/payment-worker.js 배포 후)
-const TOSS_CLIENT_KEY='test_ck_REPLACE_WITH_LIVE_CLIENT_KEY';
-const PAYMENT_CONFIRM_URL='https://payment.example.workers.dev/confirm'; // 배포 후 교체
-// 토스페이먼츠 v1 SDK 간편결제 provider — easyPay 값은 한글 라벨 그대로 전달
-const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이',NAVERPAY:'네이버페이'};
+// 환경: 실제 운영 시 KAKAO_PAYMENT_BASE 를 배포된 워커 베이스 URL로 교체
+//   - 베이스 URL 뒤에 /ready, /approve 가 붙음
+//   - Worker 코드: worker/kakao-payment-worker.js
+//   - 운영자 작업: biz.kakaopay.com 가맹점 신청 → SECRET_KEY/CID 발급 → wrangler secret 등록 → 배포
+const KAKAO_PAYMENT_BASE='https://kakao-payment.example.workers.dev'; // 배포 후 교체
+const KAKAO_PAY_SS_KEY='kakao_pay_pending_v1'; // sessionStorage 키 (tid·orderId·category·amount 보존)
+const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이'};
 let _payCategory=null;
-let _payMethod=null; // 'KAKAOPAY' | 'NAVERPAY'
+let _payMethod='KAKAOPAY'; // 현재는 카카오페이 단일
 
 function openPaymentConsent(category,method){
   _payCategory=category;
@@ -6605,9 +6606,9 @@ function openPaymentConsent(category,method){
   document.getElementById('payProductDesc').textContent=descPlain;
   const amount=computePayAmount(category,_meta);
   document.getElementById('payProductPrice').textContent=formatWon(amount);
-  // 선택한 흐름제 수단 표시
+  // 카카오페이 Cobranding — pay 로고 + 결제 라벨 (HTML 사용을 위해 innerHTML)
   const cta=document.getElementById('payCtaGo');
-  cta.textContent=`${PAY_METHOD_LABEL[_payMethod]||'간편결제'}로 결제하기`;
+  cta.innerHTML=`<span class="kakao-logo">pay</span>카카오페이로 결제하기`;
   // 동의 체크 초기화
   document.querySelectorAll('#payAgree input[type="checkbox"]').forEach(c=>c.checked=false);
   cta.disabled=true;
@@ -6636,109 +6637,150 @@ function _genOrderId(category){
   const rnd=Math.random().toString(36).slice(2,8).toUpperCase();
   return `SMBT-${category}-${ts}-${rnd}`;
 }
-async function startTossPayment(){
+// ─── 카카오페이 ① 결제 시작 (Worker /ready 호출 → next_redirect_url 로 이동) ───
+async function startKakaoPayment(){
   const cat=_payCategory; if(!cat){return;}
-  const method=_payMethod||'KAKAOPAY';
   const m=PAID_META[cat]; const amount=computePayAmount(cat,_meta);
   const statusEl=document.getElementById('payStatus');
-  if(typeof TossPayments==='undefined'){
+  if(KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
     statusEl.className='pay-status err';
-    statusEl.textContent='결제 모듈 로딩 중입니다. 잠시 후 다시 시도해주세요.';
-    return;
-  }
-  if(TOSS_CLIENT_KEY.startsWith('test_ck_REPLACE')){
-    statusEl.className='pay-status err';
-    statusEl.textContent='결제 키가 아직 등록되지 않았습니다. 운영자 설정 후 이용해주세요.';
+    statusEl.textContent='결제 서버가 아직 배포되지 않았습니다. 운영자 설정 후 이용해주세요.';
     return;
   }
   const orderId=_genOrderId(cat);
-  const easyPayLabel=PAY_METHOD_LABEL[method]||'카카오페이';
+  const userId=(function(){
+    let u=null; try{u=localStorage.getItem('saju_user_id_v1');}catch(e){}
+    if(!u){ u='U-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8); try{localStorage.setItem('saju_user_id_v1',u);}catch(e){} }
+    return u;
+  })();
+  const itemName=`천지인 사주 ${m.title}`;
+  const approvalUrl=location.origin+location.pathname+'?kpay=ok&cat='+encodeURIComponent(cat);
+  const cancelUrl=location.origin+location.pathname+'?kpay=cancel';
+  const failUrl=location.origin+location.pathname+'?kpay=fail';
+  statusEl.className='pay-status';
+  statusEl.textContent='카카오페이 결제 준비 중…';
   try{
-    // 결제 시도 정보 임시 저장 (success 콜백에서 카테고리·결제수단 식별용)
-    sessionStorage.setItem('pendingPayment',JSON.stringify({orderId,category:cat,method,amount,startedAt:Date.now()}));
-    const tp=TossPayments(TOSS_CLIENT_KEY);
-    // 토스 v1 SDK: 간편결제는 method='카드' + easyPay에 한글 라벨 ('카카오페이'·'네이버페이')
-    await tp.requestPayment('카드',{
-      easyPay:easyPayLabel,
-      amount:amount,
-      orderId:orderId,
-      orderName:`천지인 사주 ${m.title}`,
-      successUrl:location.origin+location.pathname+'?pay=success&cat='+encodeURIComponent(cat),
-      failUrl:location.origin+location.pathname+'?pay=fail',
-      customerName:'천지인 사주 이용자'
+    const res=await fetch(KAKAO_PAYMENT_BASE+'/ready',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        category:cat,
+        amount:amount,
+        partnerOrderId:orderId,
+        partnerUserId:userId,
+        itemName:itemName,
+        approvalUrl:approvalUrl,
+        cancelUrl:cancelUrl,
+        failUrl:failUrl
+      })
     });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.ok){
+      throw new Error((data&&data.message)||('준비 실패 '+res.status));
+    }
+    // 승인 단계에서 필요한 정보 보존 — redirect 후 같은 브라우저 세션에서 읽음
+    sessionStorage.setItem(KAKAO_PAY_SS_KEY,JSON.stringify({
+      tid:data.tid,
+      partnerOrderId:orderId,
+      partnerUserId:userId,
+      category:cat,
+      amount:amount,
+      startedAt:Date.now()
+    }));
+    // 모바일은 next_redirect_mobile_url, PC는 next_redirect_pc_url
+    const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    const redirectUrl=isMobile?data.nextRedirectMobileUrl:data.nextRedirectPcUrl;
+    if(!redirectUrl){throw new Error('redirect URL 누락');}
+    location.href=redirectUrl;
   }catch(e){
     statusEl.className='pay-status err';
     statusEl.textContent='결제 창을 띄우지 못했습니다: '+(e&&e.message||'알 수 없는 오류');
   }
 }
-// 결제 success/fail 콜백 처리 — 페이지 로드 시 query string 확인
+// 토스 호환 alias — 기존 onclick 호환 (장기적으론 제거 가능)
+async function startTossPayment(){return startKakaoPayment();}
+
+// ─── 카카오페이 ② 콜백 처리 (?pg_token=...) — 페이지 로드 시 실행 ───
 async function _handlePaymentReturn(){
   const params=new URLSearchParams(location.search);
-  const pay=params.get('pay');
-  if(!pay)return;
-  if(pay==='fail'){
-    const msg=params.get('message')||'결제가 취소되었거나 실패했습니다.';
-    alert('❌ '+msg);
+  const kpay=params.get('kpay');
+  if(!kpay)return;
+  if(kpay==='cancel'){
+    alert('결제가 취소되었습니다.');
     history.replaceState({},'',location.pathname);
     return;
   }
-  if(pay==='success'){
-    const paymentKey=params.get('paymentKey');
-    const orderId=params.get('orderId');
-    const amount=parseInt(params.get('amount')||'0',10);
-    const cat=params.get('cat')||(JSON.parse(sessionStorage.getItem('pendingPayment')||'{}').category)||'life';
-    if(!paymentKey||!orderId||!amount){
-      alert('❌ 결제 검증 정보가 부족합니다. 영수증 확인 후 고객문의로 연락해 주세요.');
-      history.replaceState({},'',location.pathname);
+  if(kpay==='fail'){
+    alert('❌ 결제가 실패했습니다. 카드사·잔액 등을 확인해 주세요.');
+    history.replaceState({},'',location.pathname);
+    return;
+  }
+  if(kpay!=='ok')return;
+  const pgToken=params.get('pg_token');
+  const cat=params.get('cat')||'life';
+  if(!pgToken){
+    alert('❌ 결제 토큰이 누락되었습니다. 영수증 확인 후 고객문의로 연락해 주세요.');
+    history.replaceState({},'',location.pathname);
+    return;
+  }
+  const pending=(()=>{ try{return JSON.parse(sessionStorage.getItem(KAKAO_PAY_SS_KEY)||'null');}catch(e){return null;} })();
+  if(!pending||!pending.tid){
+    alert('❌ 결제 정보가 만료되었습니다. (브라우저를 다시 시작하셨거나 세션이 끊겼을 수 있어요.) 영수증 확인 후 고객문의로 연락해 주세요.');
+    history.replaceState({},'',location.pathname);
+    return;
+  }
+  try{
+    const res=await fetch(KAKAO_PAYMENT_BASE+'/approve',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        tid:pending.tid,
+        partnerOrderId:pending.partnerOrderId,
+        partnerUserId:pending.partnerUserId,
+        pgToken:pgToken,
+        category:pending.category,
+        amount:pending.amount
+      })
+    });
+    if(!res.ok){
+      const errd=await res.json().catch(()=>({}));
+      throw new Error((errd&&errd.message)||'승인 실패 ('+res.status+')');
+    }
+    const data=await res.json();
+    if(!(data&&data.ok)){
+      throw new Error((data&&data.message)||'승인 실패');
+    }
+    sessionStorage.removeItem(KAKAO_PAY_SS_KEY);
+    history.replaceState({},'',location.pathname);
+    const orderId=pending.partnerOrderId;
+    // 채팅 추가 패키지 — 잠금 해제 아닌 현재 사주·카테고리 채팅 보너스 충전
+    const pack=CHAT_PACKS.find(p=>p.cat===cat);
+    if(pack){
+      const targetCat=_category||'life';
+      addChatBonus(targetCat, pack.count);
+      try{
+        const r=document.getElementById('chatRemaining');
+        if(r)r.textContent=`${chatRemaining(targetCat)}회 남음`;
+        const inp=document.getElementById('chatInput');
+        if(inp)inp.disabled=false;
+        const btn=document.getElementById('chatBtn');
+        if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
+      }catch(e){}
+      alert(`✅ 결제가 완료되었습니다.\n추가 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
       return;
     }
-    try{
-      // 백엔드 워커에 결제 승인 요청 (서버에서 토스 API confirm 호출 + 검증)
-      const res=await fetch(PAYMENT_CONFIRM_URL,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({paymentKey,orderId,amount,category:cat})
-      });
-      if(!res.ok)throw new Error('확인 요청 실패 ('+res.status+')');
-      const data=await res.json();
-      if(data&&data.ok){
-        sessionStorage.removeItem('pendingPayment');
-        history.replaceState({},'',location.pathname);
-        // 채팅 추가 패키지(chatpack*) — 잠금 해제가 아닌 현재 사주·카테고리의 채팅 보너스 충전
-        const pack=CHAT_PACKS.find(p=>p.cat===cat);
-        if(pack){
-          // 현재 채팅이 열린 카테고리(_category) 기준 보너스 추가
-          const targetCat=_category||'life';
-          addChatBonus(targetCat, pack.count);
-          // 채팅 UI 갱신: 잠금 입력 해제 + 남은 횟수 라벨 즉시 반영
-          try{
-            const r=document.getElementById('chatRemaining');
-            if(r)r.textContent=`${chatRemaining(targetCat)}회 남음`;
-            const inp=document.getElementById('chatInput');
-            if(inp)inp.disabled=false;
-            const btn=document.getElementById('chatBtn');
-            if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
-          }catch(e){}
-          alert(`✅ 결제가 완료되었습니다.\n추가 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
-          return;
-        }
-        // 일반 카테고리 — 잠금 해제 + 풀이 노출
-        setUnlockedFor(cat);
-        const rendered=unlockAndRender(cat);
-        if(rendered){
-          alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 풀이가 열립니다.\n\n주문번호: '+orderId);
-        }else{
-          alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 카테고리에서 사주를 입력하시면 풀이가 바로 열립니다.\n\n주문번호: '+orderId);
-          try{ goToInput(cat); }catch(e){}
-        }
-      }else{
-        throw new Error((data&&data.message)||'승인 실패');
-      }
-    }catch(e){
-      alert('❌ 결제 승인 중 오류: '+(e&&e.message||'알 수 없는 오류')+'\n영수증 확인 후 고객문의로 연락해 주세요.');
-      history.replaceState({},'',location.pathname);
+    // 일반 카테고리 — 잠금 해제 + 풀이 노출
+    setUnlockedFor(cat);
+    const rendered=unlockAndRender(cat);
+    if(rendered){
+      alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 풀이가 열립니다.\n\n주문번호: '+orderId);
+    }else{
+      alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 카테고리에서 사주를 입력하시면 풀이가 바로 열립니다.\n\n주문번호: '+orderId);
+      try{ goToInput(cat); }catch(e){}
     }
+  }catch(e){
+    alert('❌ 결제 승인 중 오류: '+(e&&e.message||'알 수 없는 오류')+'\n영수증 확인 후 고객문의로 연락해 주세요.');
+    history.replaceState({},'',location.pathname);
   }
 }
 // DOM 준비 시 1회 실행
