@@ -8117,7 +8117,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>개운법의 핵심은 「작은 일상 실천」</b><br>거창한 부적·의식보다 매일 작은 색·음식·습관을 일상에 들이는 것이 평생 흐름을 만들어요. 위 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요.</p>`;
     gwBody=_sajuContextHeader(saju,ys,gk,'개운법')+gwBody;
-    gwBody+=_generalAreaConclusion(saju,ys,'개운법·일상 실천');
+    gwBody+=_areaDeepConclusion('gaewoon',saju,ys,gender);
     h+=paidWrapBody('GAEWOON','✨','평생 개운법 — 색·방향·음식·물건·습관',gwBody);
   }catch(e){}
 
@@ -8216,7 +8216,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     rsBody+=`</div>`;
     rsBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 안의 관계가 알려주는 것</b><br>본인 사주의 좋은 관계는 평생 본인을 「자연스럽게 살려주는 자산」이고, 주의 관계는 「평생 의식해서 다스려야 할 과제」예요. 좋은 관계는 의식적으로 활용하고, 주의 관계는 의식적으로 다듬으면 같은 사주도 다른 흐름으로 펼쳐집니다.</p>`;
     rsBody=_sajuContextHeader(saju,ys,gk,'사주 글자 관계')+rsBody;
-    rsBody+=_generalAreaConclusion(saju,ys,'사주 글자 간 관계');
+    rsBody+=_areaDeepConclusion('sajurel',saju,ys,gender);
     h+=paidWrapBody('SAJU_REL','🔗','본인 사주 안의 관계 — 평생 자산과 과제',rsBody);
   }catch(e){}
 
@@ -8278,7 +8278,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 격국 정밀 매칭</b><br>${_detail}</p>`;
     }catch(e){}
     sjBody=_sajuContextHeader(saju,ys,gk,'신강·신약')+sjBody;
-    sjBody+=_generalAreaConclusion(saju,ys,'신강·신약 균형');
+    sjBody+=_areaDeepConclusion('singang',saju,ys,gender);
     h+=paidWrapBody('SINGANG','⚖','신강/신약 — 본인 사주의 그릇 크기',sjBody);
   }catch(e){}
 
@@ -8463,7 +8463,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       </div>`;
       gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>격국이 알려주는 것</b><br>격국은 본인 사주의 「유형」을 보여줘요. 같은 격국이라도 대운·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 흐름이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 됩니다.</p>`;
       gkBody=_sajuContextHeader(saju,ys,gk,'격국·사주 유형')+gkBody;
-      gkBody+=_generalAreaConclusion(saju,ys,'본인 사주 유형(격국)');
+      gkBody+=_areaDeepConclusion('gyeokguk',saju,ys,gender);
       h+=paidWrapBody('GYEOKGUK','📜','격국 종합 — 본인 사주 유형',gkBody);
     }
   }catch(e){}
@@ -8521,6 +8521,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     gfBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>공망 채워짐의 의미</b><br>본인 사주의 공망(비어있는 자리)에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 들어오는 보강의 시기」예요. 위 시기에 의도적으로 그 영역(학습·관계·재물·자녀 등)을 챙기시면 자연스럽게 결실이 따라옵니다.</p>`;
     gfBody=_sajuContextHeader(saju,ys,gk,'공망 자리')+gfBody;
+    gfBody+=_areaDeepConclusion('gongmang',saju,ys,gender);
     h+=paidWrapBody('GONGMANG_TL','✨','평생 공망 채워짐 시기 — 약했던 영역의 결실기',gfBody);
   }catch(e){}
 
@@ -8542,7 +8543,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   huBody+=`<p>${oh[dStemOh]>=3?(_userStage==='school'||_userStage==='youth'?'친구·또래가 많고 본인 주장이 또렷한 흐름이라, 단체 활동 속에서도 본인 페이스를 지키는 자세가 필요해요.':'형제·친구가 많고 본인 주장이 또렷한 사주라, <b>1인 직업이나 본인 사업</b> 쪽이 잘 맞아요. 동업과 금전 거래는 친한 사이일수록 명확한 계약과 기록을 남기시는 게 본인을 지켜줘요.'):(_userStage==='school'||_userStage==='youth'?'학교·동아리·동기 모임을 통해 관계망이 자연스럽게 만들어져요. 일대일로 깊게 만나는 친구 몇 명이 본인의 가장 든든한 자산이 돼요.':'외부 인맥(<b>직장·동호회·온라인 커뮤니티</b>)을 통해 관계망을 넓혀가시는 편이 본인에게 잘 맞아요. 일대일로 깊게 만나는 관계 몇 개를 평소에 가꿔두시면, 어려울 때 그게 가장 든든한 자산이 돼요.')}</p>`;
   huBody+=getRelevantRelationsHtml(saju,'human');
   huBody=_sajuContextHeader(saju,ys,gk,'인간관계')+huBody;
-  huBody+=_generalAreaConclusion(saju,ys,'인간관계·인덕');
+  huBody+=_areaDeepConclusion('human',saju,ys,gender);
   h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
     {good:'타고난 인덕을 살리시고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일로 깊게 만나는 관계 몇 개가 넓은 인맥보다 훨씬 든든해요.',
      warn:`${has('겁재')?'경쟁심이 깊은 흐름이 있어 동업과 금전 거래에서 신뢰를 잃기 쉬워요. 친한 사이일수록 명확한 계약과 기록이 본인을 지켜줘요.':'관계에서 본인의 주장과 상대의 말을 듣는 균형을 의식해서 잡아주세요.'}`});
@@ -8673,7 +8674,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     yckBody+=`</div>`;
     yckBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>6친 풀이의 의미</b><br>사주의 십신 강약은 인연의 「타고난 결」을 보여줘요. 약하다고 흉이 아니라 「의식적으로 가꿔야 할 영역」이라는 뜻. 부모 인연이 약하면 어른과의 관계를 의식적으로 가꾸고, 자녀 인연이 약하면 후배·아랫사람 돌봄으로 그 흐름을 채울 수 있어요.</p>`;
     yckBody=_sajuContextHeader(saju,ys,gk,'6친 가족 인연')+yckBody;
-    yckBody+=_generalAreaConclusion(saju,ys,'6친(가족) 인연');
+    yckBody+=_areaDeepConclusion('yookchin',saju,ys,gender);
     h+=paidWrapBody('YOOKCHIN','👨‍👩‍👧','6친 관계 — 부모·형제·배우자·자녀 인연',yckBody);
   }catch(e){}
 
@@ -8756,7 +8757,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     jobBody+=`<p style="margin-top:14px"><span class="body-q">창업이 맞을까요, 직장이 맞을까요?</span><br>${_isCreator?'<b>본인 사업·창업·자영업 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기이 또렷해서 남 밑에서 일하면 답답함을 느끼기 쉽고, 본인 이름으로 일할 때 가장 큰 결실이 나옵니다.':'<b>체계 잡힌 조직·직장 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기이 책임·학습·관리 쪽이라 안정적인 조직에서 차근차근 성장하는 흐름이 흐름을 살립니다.'}</p>`;
     jobBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 적성은 「가능성」이지 「운명」이 아니에요</b><br>위 추천은 본인 결과 자연스럽게 맞는 영역이에요. 본인의 노력·환경·관심사로 다른 영역에서도 충분히 성공할 수 있고, 평생 한 직업이 아니라 여러 흐름을 거치는 것도 정상입니다. 위 추천은 「큰 결정 시 한 번 더 살펴볼 영역」으로 활용하세요.</p>`;
     jobBody=_sajuContextHeader(saju,ys,gk,'직업 적성')+jobBody;
-    jobBody+=_generalAreaConclusion(saju,ys,'직업 적성');
+    jobBody+=_areaDeepConclusion('job',saju,ys,gender);
     h+=paidWrapBody('JOB','💼','직업 적성 — 평생 잘 맞는 일터 색깔',jobBody);
   }catch(e){}
 
@@ -8800,7 +8801,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
   }catch(e){}
   sinBody=_sajuContextHeader(saju,ys,gk,'별자리·신살')+sinBody;
-  sinBody+=_generalAreaConclusion(saju,ys,'별자리(신살) 작용');
+  sinBody+=_areaDeepConclusion('sinsal',saju,ys,gender);
   h+=paidWrapBody('SINSAL','⚡','별자리·비어있는 자리 종합 분석',sinBody);
 
   // 서양 12궁 + 사주 일간 — 동·서양 이중 해석 (인생 차원)
@@ -8914,7 +8915,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const swHapChung=analyzeSewoonHapChung(saju,swSaewoon);
   if(swHapChung)swBody+=`<p>${swHapChung}</p>`;
   swBody=_sajuContextHeader(saju,ys,gk,'올해 세운')+swBody;
-  swBody+=_generalAreaConclusion(saju,ys,'올해의 세운');
+  swBody+=_areaDeepConclusion('sewoon',saju,ys,gender);
   h+=paidWrapBody('SEWOON','🗓','세운 — 올해의 흐름',swBody);
 
   // ═════════════════════════════════════
@@ -10420,6 +10421,43 @@ function _generalAreaConclusion(saju, ys, areaLabel){
     <div style="font-weight:700;color:var(--accent);font-size:.83rem;margin-bottom:7px">💡 본인 사주(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}) 기준 — ${areaLabel}에서</div>
     <div style="margin-bottom:5px"><b style="color:#6cbf7e">🟢 도와주는 글자:</b> <em>${goodOh}</em> 기운 (천간 ${_stemCh[ys.main]} · 지지 ${_brCh[ys.main]}) — 본인 본질을 받쳐주거나 약한 부분을 채워주는 기운이라 이 시기에 ${areaLabel} 활동이 자연스럽게 풀려요.</div>
     <div><b style="color:#e57462">🔴 조심해야 할 글자:</b> <em>${badOh}</em> 기운 (천간 ${_stemCh[(ys.main+2)%5]} · 지지 ${_brCh[(ys.main+2)%5]}) — 본인 용신을 깎는 기운이라 이 시기에 ${areaLabel} 큰 결정은 한 박자 미루세요.</div>
+  </div>`;
+}
+
+// CH: 영역별 5분야 깊이 인라인 도움/조심 글자 박스 + 실천 단락 통합
+// (10 일반 카드용 — 영역별 맞춤 표현)
+function _areaDeepConclusion(area, saju, ys, gender){
+  const dStem=saju.dp.stem, dStemOh=SOH[dStem];
+  const stemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
+  const brCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
+  const A={
+    gaewoon:{label:'개운법·일상 실천',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인을 도와주는 용신이 강해지는 시기. 이 시기에 도움 기운 색·음식·습관을 일상에 들이면 평생 자산.',badWhy:'용신을 깎는 기운이 강해지는 시기. 평소엔 균형을 잘 잡지만 이 시기는 의식적으로 도움 기운 보강 필요.',action:'아래 색·방향·음식·물건·습관 중 본인이 가장 쉽게 들일 한 가지부터 일상에 추가'},
+    sajurel:{label:'사주 글자 간 관계',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 사주 자체에 자리잡은 합·반합·삼합 관계가 본인의 평생 자산. 같은 흐름 글자가 들어오면 그 자산이 더 강해져요.',badWhy:'본인 사주 안의 충/형/원진이 외부 운에서 더 강하게 자극받는 시기. 평소보다 의식적인 거리감 필요.',action:'본인 사주에 합이 많으면 협력·동맹 활동에, 충이 많으면 변동·도전 활동에 무게'},
+    singang:{label:'신강·신약 균형',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인의 균형을 받쳐주는 기운. 신강이면 덜어주는 운, 신약이면 받쳐주는 운이 들어오는 시기.',badWhy:'본인 그릇을 한쪽으로 더 치우치게 만드는 운. 균형이 깨지면 본인 페이스도 흔들리기 쉬워요.',action:'본인 그릇에 맞는 인생 전략을 평생 일관되게 — 신강은 도전, 신약은 학습'},
+    gyeokguk:{label:'본인 사주 유형(격국)',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 격국이 가장 자연스럽게 발현되는 흐름. 본인 본연의 결로 살아가기 좋은 시기.',badWhy:'본인 격국과 반대 결의 외부 운. 본인 본연이 아닌 다른 모습을 요구받기 쉬운 시기.',action:'본인 격국의 강점은 적극 발휘, 평생 과제는 의식적으로 다듬어가기'},
+    gongmang:{label:'공망 채워짐',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 공망 자리에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 자연스럽게 들어오는 보강기」.',badWhy:'본인 공망과 다른 영역의 글자가 강한 시기. 그 영역만 더 두드러지고 약한 자리는 평소처럼 부족.',action:'공망 채워지는 시기엔 그 영역(학습·관계·재물·자녀)을 의도적으로 챙기기'},
+    human:{label:'인간관계·인덕',helpOh:ys.main,badOh:SOH[dStem],helpWhy:'본인을 도와주는 기운이 운에서 들어오면 자연스럽게 귀인이 나타나는 시기.',badWhy:'본인과 같은 기운(비겁)이 너무 강해지는 시기엔 동료 갈등·경쟁이 본인 자산을 흩뜨릴 수 있어요.',action:'평소 한두 사람과 깊게 만나는 결로 — 넓은 인맥보다 진심 어린 1:1 관계'},
+    yookchin:{label:'6친(가족) 인연',helpOh:(SOH[dStem]+3)%5,badOh:(SOH[dStem]+1)%5,helpWhy:'인성(어머니·후원자) 글자가 운에서 들어오면 가족 화목·부모님 도움이 강해지는 시기.',badWhy:'식상(자기 표현) 글자가 너무 강해지면 본인 주장이 강해져 가족 갈등 가능성.',action:'명절·생신·자녀 진학 같은 가족 이벤트는 합 결 강한 시기에 배치'},
+    job:{label:'직업 적성',helpOh:(SOH[dStem]+4)%5,badOh:(SOH[dStem]+1)%5,helpWhy:'관성(책임 자리)이 운에서 들어오면 본인 직업 자리가 강해지는 시기. 승진·이직 적기.',badWhy:'식상(표현) 글자가 너무 강해지면 권위·상사와 마찰. 사직·이직 결정은 한 박자 미루기.',action:'본인 본연의 일터 색깔에 맞는 분야 한 곳에 평생 깊이 들어가기'},
+    sinsal:{label:'별자리(신살) 작용',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 신살이 운의 같은 자리 글자와 만나는 시기엔 신살 작용이 평소보다 강해져요. 길성이면 결실기.',badWhy:'본인의 흉성 신살이 운에서 강하게 자극받는 시기. 평소 의식하던 다스림이 더 필요한 시기.',action:'길성 별자리는 적극 활용, 흉성은 의식적인 자제·예방 습관으로 다스리기'},
+    sewoon:{label:'세운(올해)',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'올해 들어오는 글자가 본인 용신과 같은 흐름이면 큰 결정을 적극 배치.',badWhy:'올해 글자가 본인 용신을 깎으면 큰 결정 한 박자 미루고 정리·내실에 무게.',action:'길월에 굵직한 결정, 주의월에 정리·내실'}
+  };
+  const a=A[area]||{label:'영역',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 용신',badWhy:'용신 극하는 기운',action:'본인 흐름 따라가기'};
+  return `<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 ${a.label}에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>도움 글자</b>: <em>${OHNAME[a.helpOh]}</em> 기운 — 천간 <b>${stemCh[a.helpOh]}</b> · 지지 <b>${brCh[a.helpOh]}</b><br>
+      <b>왜?</b> ${a.helpWhy}<br>
+      <b>이 시기에는</b>: ${a.action}
+    </div>
+  </div>
+  <div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 ${a.label}에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-size:.79rem;line-height:1.9">
+      <b>주의 글자</b>: <em>${OHNAME[a.badOh]}</em> 기운 — 천간 <b>${stemCh[a.badOh]}</b> · 지지 <b>${brCh[a.badOh]}</b><br>
+      <b>왜?</b> ${a.badWhy}<br>
+      <b>이 시기에는</b>: 큰 결정 한 박자 미루고 평소보다 의식적인 다스림이 필요해요.
+    </div>
   </div>`;
 }
 
