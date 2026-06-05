@@ -7251,6 +7251,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     wtBody+=`</div>`;
     wtBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>재물의 흐름을 잘 쓰는 법</b><br>안정 재물기에는 저축·부동산·결혼 자금에, 활동 재물기에는 사업·창업·새 거래에, 학습 투자기에는 자격증·학위에 시간을 쓰세요. <b>주의기에는 큰 결정·동업·계약을 한 박자 미루는 것</b>이 평생 재물의 가장 큰 보호 장치예요.</p>`;
+    wtBody=_sajuContextHeader(saju,ys,gk,'평생 재물 흐름')+wtBody;
+    wtBody+=_generalAreaConclusion(saju,ys,'평생 재물 타임라인');
     h+=paidWrapBody('WEALTH_TIMELINE','💎','평생 재물 타임라인 — 재물기·주의기',wtBody);
   }catch(e){}
 
@@ -7379,6 +7381,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ctBody+=`</div>`;
     ctBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 흐름을 잘 쓰는 법</b><br>안정 직장기에는 입사·자격증·승진에, 사업·이동기에는 창업·이직·새 거래에, 학습·전문성 시기에는 학위·자격증에 시간을 쓰세요. <b>변동·갈등기에는 큰 결정을 한 박자 미루는 것</b>이 평생 직업의 가장 큰 보호 장치예요.</p>`;
+    ctBody=_sajuContextHeader(saju,ys,gk,'평생 직업·사업 흐름')+ctBody;
+    ctBody+=_generalAreaConclusion(saju,ys,'평생 직업·사업 타임라인');
     h+=paidWrapBody('CAREER_TIMELINE','💼','평생 직업·사업 타임라인 — 진학·취업·승진·창업·이직·은퇴',ctBody);
   }catch(e){}
 
@@ -7518,6 +7522,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ltBody+=`</div>`;
     ltBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>연애·결혼의 흐름을 잘 쓰는 법</b><br>결혼 적기·만남기에는 적극적으로 인연을 만나고, 정리기·갈등기에는 큰 결정(이별·결혼·동거)을 한 박자 미루세요. 갈등은 흉이 아니라 「자리를 흔드는 신호」예요 — 미루던 솔직한 대화나 정리해야 할 인연이 자연스럽게 드러나는 시기입니다.</p>`;
+    ltBody=_sajuContextHeader(saju,ys,gk,'평생 연애·결혼 흐름')+ltBody;
+    ltBody+=_generalAreaConclusion(saju,ys,'평생 연애·결혼 타임라인');
     h+=paidWrapBody('LOVE_TIMELINE','💕','평생 연애·결혼 타임라인 — 만남·결혼·이별 시기',ltBody);
   }catch(e){}
 
@@ -7584,6 +7590,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ftBody+=`</div>`;
     ftBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>가족 흐름을 잘 쓰는 법</b><br>양육기에는 자녀에게 시간을, 안정기에는 가정 자산에, 책임 무거운 시기에는 본인 컨디션 관리에 무게를 두세요. 가족 변동기에는 큰 결정보다 대화로 흐름을 다지세요.</p>`;
+    ftBody=_sajuContextHeader(saju,ys,gk,'평생 가족·자녀 흐름')+ftBody;
+    ftBody+=_generalAreaConclusion(saju,ys,'평생 가족·자녀 타임라인');
     h+=paidWrapBody('FAMILY_TIMELINE','👨‍👩‍👧‍👦','평생 가족·자녀 타임라인 — 결혼·출산·양육·부모 봉양·자녀 독립',ftBody);
   }catch(e){}
 
@@ -7720,6 +7728,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     htBody+=`</div>`;
     htBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>평생 건강 관리 한 줄</b><br>본인이 평생 의식해야 할 핵심 부위는 <b>${_organByOh[_weak]}</b>예요. 약한 오행 영역이라 정기 검진을 평소보다 한 박자 더 신경 쓰시고, 회복기 대운에서는 적극적으로 건강 검진·치료·생활습관 개선을 배치하세요. 위 풀이는 체질의 큰 경향이며, 실제 진단·치료는 반드시 전문의와 상담하세요.</p>`;
+    htBody=_sajuContextHeader(saju,ys,gk,'평생 건강 흐름')+htBody;
+    htBody+=_generalAreaConclusion(saju,ys,'평생 건강 타임라인');
     h+=paidWrapBody('HEALTH_TIMELINE','🩺','평생 건강 타임라인 — 회복기·주의기',htBody);
   }catch(e){}
 
@@ -7780,6 +7790,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     mtBody+=`</div>`;
     mtBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>이동 흐름을 잘 쓰는 법</b><br>역마기에는 유학·해외·이주를, 안정 정착기에는 내실 다지기와 자기 자리 굳히기를, 환경 변동기에는 큰 결정 전 한 박자 살피기를 우선하세요.</p>`;
+    mtBody=_sajuContextHeader(saju,ys,gk,'평생 이동·이주 흐름')+mtBody;
+    mtBody+=_generalAreaConclusion(saju,ys,'평생 이동·이주 타임라인');
     h+=paidWrapBody('MOVE_TIMELINE','🚄','평생 이사·이주·해외 타임라인 — 이동·정착·환경 변동 시기',mtBody);
   }catch(e){}
 
@@ -7934,6 +7946,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     stlBody+=`</div>`;
     stlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>학업·시험의 흐름을 잘 쓰는 법</b><br>정형 학습기에는 자격증·학위·국가고시에, 전문 연구기에는 박사·전문직 자격에, 도전 시험기에는 고시·경쟁률 높은 시험에 시간을 배치하세요. 큰 시험 결정은 정인·편인이 들어오는 대운을 기준으로 잡으면 흐름이 가장 잘 풀려요.</p>`;
+    stlBody=_sajuContextHeader(saju,ys,gk,'평생 학업·시험 흐름')+stlBody;
+    stlBody+=_generalAreaConclusion(saju,ys,'평생 학업·시험 타임라인');
     h+=paidWrapBody('STUDY_TIMELINE','📜','평생 학업·시험 타임라인 — 학습·자격·시험 시기',stlBody);
   }catch(e){}
 
@@ -7994,6 +8008,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     spBody+=`</div>`;
     spBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>정신 흐름을 잘 쓰는 법</b><br>화개기·학습 깊이기에는 학문·예술·종교 활동을, 공망 채움기에는 명상·일기·자기 돌봄을, 평이한 시기에는 일상 속에서 짧은 내면 시간을 확보하세요.</p>`;
+    spBody=_sajuContextHeader(saju,ys,gk,'평생 영성·정신 흐름')+spBody;
+    spBody+=_generalAreaConclusion(saju,ys,'평생 영성·정신 타임라인');
     h+=paidWrapBody('SPIRIT_TIMELINE','🪷','평생 영성·정신·내면 타임라인 — 학문·예술·종교·명상 시기',spBody);
   }catch(e){}
 
@@ -8594,6 +8610,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     httBody+=`</div>`;
     httBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>인맥 흐름을 잘 쓰는 법</b><br>확장기에는 새 인맥과 적극 만남을, 안정 인연기에는 깊은 1:1 관계를 다지기에, 정리기에는 갈등 회피보다 솔직한 대화를 우선하세요.</p>`;
+    httBody=_sajuContextHeader(saju,ys,gk,'평생 인간관계 흐름')+httBody;
+    httBody+=_generalAreaConclusion(saju,ys,'평생 인간관계 타임라인');
     h+=paidWrapBody('HUMAN_TIMELINE','🤝','평생 인간관계 타임라인 — 친구·동료·인맥의 흐름',httBody);
   }catch(e){}
 
@@ -8922,6 +8940,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     tlBody+=`</div>`;
     tlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>큰 결정은 「이 시기에 흐름이 들어오는가」를 보고 배치하세요</b><br>결혼·이주·창업 같은 큰 결정은 사주의 결과 외부 시기가 함께 맞을 때 결실이 가장 큽니다. 위 타임라인의 「결혼 적기」·「승진 자리」 시기에 큰 결정을 배치하시면, 같은 흐름정도 한 단계 더 부드럽게 흐릅니다.</p>`;
+    tlBody=_sajuContextHeader(saju,ys,gk,'평생 사건 종합')+tlBody;
+    tlBody+=_generalAreaConclusion(saju,ys,'평생 사건 종합 타임라인');
     h+=paidWrapBody('TIMELINE','📜','평생 사건 타임라인 — 결혼·승진·재물·시험 시기',tlBody);
   }catch(e){}
 
@@ -9053,6 +9073,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     htBody+=`</tbody></table>
     </div>
     <p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.79rem;color:var(--sub);line-height:1.85">💡 <b>이 차트를 어떻게 활용하나요?</b><br>① 평생 가장 좋은 시기(🟢 많은 컬럼)에 큰 결정·결혼·창업을 배치<br>② 🔴 변동 시기에는 큰 결정을 한 박자 미루고 정리·내실에 집중<br>③ 본인 인생 단계(★ 현재)와 다음 10년 흐름을 함께 보면 평생 계획을 세우기 좋아요</p>`;
+    htBody=_sajuContextHeader(saju,ys,gk,'평생 흐름 마스터 차트')+htBody;
+    htBody+=_generalAreaConclusion(saju,ys,'평생 흐름 마스터 차트');
     h+=paidWrapBody('LIFE_HEATMAP','📊','평생 흐름 통합 마스터 차트 — 12종 분야 × 대운 한눈에',htBody);
   }catch(e){}
 
