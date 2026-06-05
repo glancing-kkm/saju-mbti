@@ -8079,11 +8079,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     };
     const _yong=_gaewoon[_yongOh];
     const _weak=_gaewoon[_weakOh];
-    // CF-6: GAEWOON 5분야 패턴 본문 재작성
+    // CH-PRO: GAEWOON 통째 5분야 패턴 재작성
     let gwBody='';
-    gwBody+=`<p><span class="body-q">📖 본인 사주에서 「개운」은 어떻게 작용하나요?</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})에서 가장 부족하거나 본인을 받쳐주는 기운이 바로 「개운 자리」예요. 거창한 부적·의식이 아니라, 일상 속 색·방향·음식·물건·습관에 도움 기운을 한 가지씩 들이는 것이 평생 흐름을 부드럽게 만드는 가장 강력한 방법입니다.</p>`;
-    gwBody+=`<p><span class="body-q">💡 본인 사주가 가장 좋아하는 기운</span><br>본인을 도와주는 핵심 기운은 <b>${_ohEmoji[_yongOh]} ${_ohName[_yongOh]}</b>이에요. ${_ohName[_yongOh]} 기운은 본인 일간 <em>${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]}</em>을 ${_yongOh===SOH[saju.dp.stem]?'본인과 같은 결로 받쳐주거나':(_yongOh+1)%5===SOH[saju.dp.stem]?'본인을 낳아주는 어머니 자리로 채워주거나':'본인이 다스리는 자산 자리로 풀어주거나'} 본인 사주에 부족한 부분을 보강하는 역할이에요. 그래서 ${_ohName[_yongOh]} 계열 색·음식·방향·습관을 일상에 더하면 본인 흐름이 자연스럽게 살아납니다.</p>`;
-    gwBody+=`<p style="margin-top:14px"><b>🎁 본인 사주에 가장 잘 맞는 8가지 일상 실천</b><br>아래 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요. 매일 작은 한 가지가 거창한 의식보다 훨씬 큰 흐름을 만들어요.</p>`;
+    gwBody+=miniManse(saju);
+    gwBody+=`<p><span class="body-q">📖 본인 사주의 「개운 자리」 — 어떻게 자리잡았나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}) 사주에서 가장 부족하거나 본인을 받쳐주는 기운이 「개운 자리」예요. 본인 사주의 도움 기운은 <b>${_ohEmoji[_yongOh]} ${_ohName[_yongOh]}</b>, 가장 부족한 기운은 <b>${_ohEmoji[_weakOh]} ${_ohName[_weakOh]}</b>이에요.</p>`;
+    gwBody+=`<p><span class="body-q">💡 개운법이 작동하는 원리</span><br>${_ohName[_yongOh]} 기운은 본인 일간 <em>${OHNAME[dStemOh]}</em>을 ${_yongOh===dStemOh?'본인과 같은 결로 받쳐주는':(_yongOh+1)%5===dStemOh?'본인을 낳아주는 어머니 자리로 채워주는':'본인의 부족한 부분을 보강하는'} 역할이에요. 거창한 부적·의식이 아니라 매일 작은 색·방향·음식·습관으로 도움 기운을 일상에 들이는 것이 평생 흐름을 부드럽게 만드는 가장 강력한 방법입니다.</p>`;
+    gwBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 매일 한 가지부터</span><br>아래 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요. 매일 작은 한 가지가 거창한 의식보다 훨씬 큰 흐름을 만들어요.</p>`;
     gwBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
       <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">🎨 길색</div>
@@ -8184,10 +8185,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _midRels=_allRels.filter(r=>r.tag==='y');
     const _badRels=_allRels.filter(r=>r.tag==='r');
     const _hasAny=_allRels.length>0;
-    // CF-6: SAJU_REL 5분야 패턴
+    // CH-PRO: SAJU_REL 통째 5분야 패턴 재작성
     let rsBody='';
-    rsBody+=`<p><span class="body-q">📖 본인 사주 8글자가 서로 만나며 만드는 관계</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})이 사주 안의 다른 글자들과 어떻게 만나는지가 본인의 「평생 자산과 과제」를 결정해요. 합·반합·삼합 같은 어울림은 본인 인생의 큰 자산이고, 충·형·원진 같은 부딪힘은 본인이 평생 의식하고 다스려야 할 과제입니다.</p>`;
-    rsBody+=`<p><span class="body-q">💡 본인 사주 관계가 인생에 미치는 영향</span><br>본인 사주에 자연스럽게 어울리는 합 관계가 많으면 사람과의 협력·관계 활동이 평생 자산이 되고, 부딪히는 충·형 관계가 많으면 변동·도전·강한 흐름이 평생 본인의 결을 만들어요. 어느 한쪽이 절대적으로 좋거나 나쁘지 않고, 본인이 어떻게 활용하느냐에 따라 모두 인생 자산이 될 수 있어요.</p>`;
+    rsBody+=miniManse(saju);
+    rsBody+=`<p><span class="body-q">📖 본인 사주 8글자가 만드는 관계 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 사주 안의 다른 글자들과 어떻게 만나는지가 본인의 「평생 자산과 평생 과제」를 결정해요. 본인 사주에는 자연스러운 어울림(합) <em>${_goodRels.length}개</em>, 양면 관계(반합·동) <em>${_midRels.length}개</em>, 부딪힘(충·형·원진) <em>${_badRels.length}개</em>가 자리잡았어요.</p>`;
+    rsBody+=`<p><span class="body-q">💡 본인 사주 관계의 의미</span><br>· <b>합(어울림)</b>은 평생 본인을 자연스럽게 살려주는 자산 — 사람·협력·관계 활동에서 본인이 빛남<br>· <b>반합·동(양면)</b>은 어떻게 쓰느냐로 흐름이 갈리는 결 — 의식적 활용이 핵심<br>· <b>충·형·원진(부딪힘)</b>은 평생 의식해서 다스려야 할 과제 — 잘 다듬으면 오히려 인생 자산<br>${_hasAny?'본인 사주에는 두드러진 관계들이 자리잡아 인생 색채가 풍부한 흐름이에요.':'두드러진 관계가 적어 본인 본연의 결이 잔잔히 이어지는 흐름이에요.'}</p>`;
+    rsBody+=`<p><span class="body-q">💡 본인 강점과 평생 과제</span><br>· <b>강점</b>: ${_goodRels.length>=2?'합 관계가 두 개 이상이라 협력·관계 활동에서 평생 자산':_goodRels.length>=1?'합 관계가 있어 사람을 통해 결실이 따라오는 결':'외부 관계보다 본인 본연의 결로 평생 깊이를 모으는 결'}<br>· <b>과제</b>: ${_badRels.length>=2?'충·형이 두 개 이상이라 변동·갈등이 평생 의식할 결 — 미리 알면 자산으로 전환':_badRels.length>=1?'한 가지 부딪힘이 평생 의식할 결 — 잘 다스리면 본인 본연의 결':'두드러진 과제 적어 본연의 흐름 유지가 핵심'}</p>`;
     rsBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     // 좋은 관계
     if(_goodRels.length>0){
@@ -8237,10 +8240,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     if(_balanced){_kind='중화';_kindCol='#d4a849';_kindLabel='균형형';}
     else if(_strong){_kind='신강';_kindCol='#6cbf7e';_kindLabel='기운이 두터운 사주';}
     else{_kind='신약';_kindCol='#6c8cc8';_kindLabel='깊이를 모으는 사주';}
-    // CF-6: SINGANG 5분야 패턴
+    // CH-PRO: SINGANG 통째 5분야 패턴 재작성
     let sjBody='';
-    sjBody+=`<p><span class="body-q">📖 본인의 「그릇 크기」는 어떻게 자리잡았나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})이 사주 8글자에서 차지하는 비중과, 본인을 받쳐주는 동료·학습 기운(비겁·인성)이 얼마나 두터운지가 본인의 그릇 크기를 만들어요. 본인은 <b>${_kind} — ${_kindLabel}</b>이에요.</p>`;
-    sjBody+=`<p><span class="body-q">💡 신강/신약이 의미하는 것</span><br>본인 사주 8글자 중 <b>본인을 강화하는 기운</b>(비겁 ${_bigeop}개 + 인성 ${_insung}개 = ${_myPower}자리·${_myPct}%) vs <b>본인을 약화하는 기운</b>(식상 ${_siksang}개 + 재성 ${_jaesung}개 + 관성 ${_gwansung}개 = ${_outPower}자리·${100-_myPct}%). ${_kind==='신강'?'본인 기운이 더 두터워 큰 책임과 큰 도전을 감당할 수 있는 포용력이 큰 그릇':_kind==='신약'?'본인 기운이 한 박자 약해 깊이를 모으는 신중함과 도움을 잘 받는 결':'본인과 외부 기운이 비슷해 어느 흐름에도 적응할 수 있는 균형형'}이에요.</p>`;
+    sjBody+=miniManse(saju);
+    sjBody+=`<p><span class="body-q">📖 본인 사주의 「그릇 크기」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 사주 8글자에서 차지하는 비중과, 본인을 받쳐주는 동료·학습 기운이 얼마나 두터운지가 본인의 그릇 크기를 만들어요. 본인은 <b>${_kind} — ${_kindLabel}</b>이에요.</p>`;
+    sjBody+=`<p>· <b>본인 강화 기운</b>: 비겁(같은 동료) ${_bigeop}개 + 인성(받쳐주는 학습) ${_insung}개 = <em>${_myPower}자리 (${_myPct}%)</em><br>· <b>본인 약화 기운</b>: 식상(표현) ${_siksang}개 + 재성(돈) ${_jaesung}개 + 관성(책임) ${_gwansung}개 = <em>${_outPower}자리 (${100-_myPct}%)</em><br>${_kind==='신강'?'본인 기운이 더 두터워 큰 책임을 감당할 수 있는 포용력이 큰 그릇':_kind==='신약'?'본인 기운이 한 박자 약해 깊이를 모으는 신중함의 결':'본인과 외부 기운이 비슷해 어느 흐름에도 적응할 수 있는 균형형'}이에요.</p>`;
     sjBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
       <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">본인 강화 기운</div>
@@ -8440,10 +8444,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     };
     const _myGk=_gkDeep[gk.tg];
     if(_myGk){
-      // CF-6: GYEOKGUK 5분야 패턴
+      // CH-PRO: GYEOKGUK 통째 5분야 패턴 재작성
       let gkBody='';
-      gkBody+=`<p><span class="body-q">📖 본인 사주의 「유형(격국)」은 어떻게 정해졌나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})이 태어난 달의 글자(월지 ${BRCHKO[saju.mp.branch]})와 만나며 <b>${gk.name}</b>이라는 유형이 정해졌어요. 격국은 본인 사주의 큰 줄기이자 평생 인생관·진로의 핵심 색깔이에요.</p>`;
-      gkBody+=`<p><span class="body-q">💡 본인 ${gk.name}의 본질</span><br>${gk.desc} ${gk.nick?'이 유형의 별명은 <b>'+gk.nick+'</b>이에요.':''} 같은 일간이라도 격국이 다르면 인생 색깔이 크게 달라지는데, 본인은 이 유형의 강점을 살리고 약점을 의식해서 다스리는 길을 가시면 됩니다.</p>`;
+      gkBody+=miniManseWithPointer(saju,['month'],'↑ 월주가 본인 사주 유형(격국)을 결정하는 핵심 자리');
+      gkBody+=`<p><span class="body-q">📖 본인 사주 「유형(격국)」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 태어난 달의 글자(월지 <em>${BRCHKO[saju.mp.branch]}</em>)와 만나며 <b>${gk.name}</b>${gk.nick?' · '+gk.nick.split('·')[0]+'형':''} 유형이 정해졌어요. 같은 일간이라도 태어난 달이 다르면 격국이 달라지고, 격국이 다르면 인생 색깔이 크게 달라져요.</p>`;
+      gkBody+=`<p><span class="body-q">💡 본인 ${gk.name}의 본질·강점·과제</span><br>${gk.desc} 이 유형이 가장 자연스럽게 살려면 본인 본연의 강점을 적극 발휘하고, 평생 과제는 의식적으로 다듬는 자세가 핵심이에요.</p>`;
+      gkBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — ${gk.name} 유형으로 살아가는 길</span><br>${_userStage==='school'?'본인 격국 유형에 맞는 학과·진로 방향을 조기 발견해 깊이 파고들기':_userStage==='youth'?'대학·전공·첫 직장 선택에 본인 격국 유형을 우선 고려':_userStage==='young'||_userStage==='prime'?'본인 격국이 가장 빛나는 분야에 평생 깊이 들어가기':_userStage==='mid'?'본인 격국의 정점 시기 — 사회적 자리를 굳히고 후학 양성도 시작':'본인 격국으로 평생 모은 자산을 인생 2막·자문 역할로 풀어내기'}</p>`;
       gkBody+=`<p><span class="body-q">${gk.name}의 평생 강점은?</span></p>`;
       gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e;margin-top:8px">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 평생 자산</div>
@@ -8485,11 +8491,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const yp=yearPillar(yy,6,1,12,0);
       if(_gm.includes(yp.branch))_filledYears.push({yy,age:yy-_meta.sy+1,branch:yp.branch});
     }
-    // CF-6: GONGMANG_TL 5분야 패턴
+    // CH-PRO: GONGMANG_TL 통째 5분야 패턴 재작성
     let gfBody='';
-    gfBody+=`<p><span class="body-q">📖 본인 사주의 「공망」 자리</span><br>본인의 일주(${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}) 기준으로 비어있는 두 글자, 즉 본인 사주에 부재하는 자리가 <b>${_gmKo}</b>이에요. 공망은 「있어야 할 자리가 비어 있는」 결로, 본인이 평소 노력하는 만큼 결실이 따라오기 어려운 영역을 가리켜요.</p>`;
-    gfBody+=`<p><span class="body-q">💡 공망이 채워지는 시기의 의미</span><br>본인의 비어있는 자리 <em>${_gmKo}</em>에 해당하는 글자가 대운(10년 흐름)이나 세운(매년)에 들어오는 시기는 「평소 약했던 영역에 결실이 자연스럽게 들어오는 보강기」예요. 이 시기에 해당 영역(학습·관계·재물·자녀 등)을 의도적으로 챙기시면, 평소엔 어렵던 일이 자연스럽게 풀려요.</p>`;
-    gfBody+=`<p><span class="body-q">공망이 채워지는 시기는 언제일까요?</span><br>본인 공망(${_gmKo})에 해당하는 글자가 대운(10년 흐름) 또는 세운(매년)에서 들어오면, 평소 약했던 영역에 결실이 들어와요. 가장 가까운 채워짐 시기를 정리했어요.</p>`;
+    gfBody+=miniManse(saju);
+    gfBody+=`<p><span class="body-q">📖 본인 사주의 「공망」 자리</span><br>본인의 일주 <b>${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}</b> 기준으로 비어있는 두 글자가 <b>${_gmKo}</b>이에요. 공망은 「있어야 할 자리가 비어 있는」 결로, 본인이 평소 노력하는 만큼 결실이 따라오기 어려운 영역을 가리킵니다. 본인 사주에서 ${_gmKo} 자리에 해당하는 인생 영역(학습·관계·재물·자녀 중 어디)이 평소엔 약하게 느껴져요.</p>`;
+    gfBody+=`<p><span class="body-q">💡 공망의 의미 — 약점이 아니라 자리 비어있음</span><br>공망은 「본인이 못한다」가 아니라 「있어야 할 자리가 비어 있다」는 뜻이에요. 평소엔 노력 대비 결실이 약해 보이지만, 그 비어있는 자리에 해당하는 글자가 대운(10년)이나 세운(매년)에 들어오는 시기는 「평소 약했던 영역에 결실이 자연스럽게 들어오는 보강기」예요. 이 시기를 미리 알면 평생 약했던 영역을 의도적으로 채울 수 있어요.</p>`;
+    gfBody+=`<p><span class="body-q">✦ 공망 채워짐 시기 — 본인 인생에서 언제일까</span><br>본인 공망(${_gmKo})에 해당하는 글자가 대운 또는 세운에서 들어오는 시기를 아래에 정리했어요. 이 시기에 의도적으로 그 영역을 챙기시면 평소엔 어렵던 일이 자연스럽게 풀려요.</p>`;
     // 채워지는 대운
     gfBody+=`<div style="margin-top:14px"><b style="color:var(--accent);font-size:.88rem">🗓 공망이 채워지는 10년 흐름 (대운)</b></div>`;
     gfBody+=`<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">`;
@@ -8529,18 +8536,13 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // 인간관계
   // ═════════════════════════════════════
   const humanHeadline=has('천을귀인')?'평생 위기마다 귀인이 나타나는 인덕 풍부형':has('역마')?'활동 반경이 넓고 다양한 인연을 맺는 사교형':oh[dStemOh]>=3?'형제·친구가 많고 자기 주장이 또렷한 동료형':oh[dStemOh]<2?'깊이 있는 일대일 인연이 잘 맞는 내향형':dm.pos[0]+'의 성품으로 인덕을 만들어가는 진정성형';
-  // CF-6: HUMAN 5분야 패턴
+  // CH-PRO: HUMAN 본문 통째 5분야 패턴 재작성
   let huBody='';
-  huBody+=`<p><span class="body-q">📖 본인은 「인덕」이 어떻게 자리잡았나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})이 만드는 인덕은 <b>${humanHeadline}</b>이에요. ${has('천을귀인')?'사주에 가장 강한 귀인의 별자리가 자리잡아 위기마다 도와주는 사람이 자연스럽게 나타나는 흐름':oh[dStemOh]>=3?'본인과 같은 흐름 글자가 3개 이상이라 동업·협력보다 본인 사업이나 1인 직업이 잘 맞는 흐름':'본인 글자 비중이 깊지 않아 일대일 깊은 인연 몇 개가 넓은 인맥보다 든든한 흐름'}이에요.</p>`;
-  huBody+=`<p><span class="body-q">💡 본인 인간관계의 핵심</span><br>본인 사주 8글자에는 본인 자신·동료·어른·책임 자리·다루는 자리·돌보는 자리가 모두 어떤 비중으로 자리잡았는지가 본인 인덕의 큰 그림을 만들어요. ${has('역마')?'또 이동·해외의 별자리가 강해 새 환경에서 빠르게 적응하고 인맥을 넓히는 능력이 본인 자산이에요. ':''}${has('상관')?'다만 톡톡 튀는 표현의 별자리가 있어 윗사람·규율과 마찰이 생기기 쉬우니 톤 한 단계 부드럽게.':'타고난 인덕을 살리되, 한두 사람과 깊게 만나는 결을 중심으로 삼으세요.'}</p>`;
-  // ② 왜 — 다섯 자리 풀이
   huBody+=miniManseWithSinsal(saju);
-  huBody+=`<p><span class="body-q">인간관계는 어떻게 보일까요?</span><br>본인 글자를 둘러싼 다섯 자리가 각각 어떤 사람들을 가리키는지 보면 다음과 같아요.</p>`;
-  huBody+=`<p>· <b>같은 흐름의 동료·라이벌</b> — 형제·친구·동기<br>· <b>어른·스승·후원자</b> — 부모·은사·돌봐주는 사람<br>· <b>책임·권위 자리</b> — 상사·${gender==='female'?'남편·':''}공권력<br>· <b>본인이 다루는 자리</b> — ${gender==='male'?'아내·여성·돈':'재물·돈·본인이 책임지는 대상'}<br>· <b>본인이 돌보는 자리</b> — 자녀·후배·아랫사람</p>`;
-  huBody+=`<p>${has('천을귀인')?'본인 사주에는 <b>가장 강한 귀인의 별자리</b>가 자리잡고 있어요. 위기 때마다 귀인이 나타나 본인을 도와주는, 평생 큰 인덕의 흐름이에요.':'강한 귀인의 별자리는 없지만, 본인의 <em>'+dm.pos[0]+'</em> 같은 성품이 자연스러운 인덕을 만들어 줘요.'} ${has('역마')?'또 <b>이동·해외의 별자리</b>가 강해 새로운 환경에서 빠르게 적응하고 인맥을 넓혀가는 능력이 본인의 큰 자산이에요.':''} ${has('상관')?'다만 <b>톡톡 튀는 표현의 별자리</b>가 있어 권위·규율과 마찰이 생기기 쉬워요. 윗사람과의 관계에서 톤을 한 단계 부드럽게 가시면 좋아요.':''}</p>`;
-  // ③ 어떻게
-  huBody+=`<p><span class="body-q">관계망은 어떻게 만들어가면 좋을까요? — ${_userStageLabel} 기준</span><br>지금 ${_userAge}세 ${_userStageLabel}에는 <em>${stageActionOf('relation',_userAge)}</em>이 본인 관계망의 중심이 돼요.</p>`;
-  huBody+=`<p>${oh[dStemOh]>=3?(_userStage==='school'||_userStage==='youth'?'친구·또래가 많고 본인 주장이 또렷한 흐름이라, 단체 활동 속에서도 본인 페이스를 지키는 자세가 필요해요.':'형제·친구가 많고 본인 주장이 또렷한 사주라, <b>1인 직업이나 본인 사업</b> 쪽이 잘 맞아요. 동업과 금전 거래는 친한 사이일수록 명확한 계약과 기록을 남기시는 게 본인을 지켜줘요.'):(_userStage==='school'||_userStage==='youth'?'학교·동아리·동기 모임을 통해 관계망이 자연스럽게 만들어져요. 일대일로 깊게 만나는 친구 몇 명이 본인의 가장 든든한 자산이 돼요.':'외부 인맥(<b>직장·동호회·온라인 커뮤니티</b>)을 통해 관계망을 넓혀가시는 편이 본인에게 잘 맞아요. 일대일로 깊게 만나는 관계 몇 개를 평소에 가꿔두시면, 어려울 때 그게 가장 든든한 자산이 돼요.')}</p>`;
+  huBody+=`<p><span class="body-q">📖 본인 사주의 「인덕 자리」 — 어떻게 자리잡았나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 만드는 인간관계 유형은 <b>${humanHeadline}</b>이에요. 본인 사주 8글자에 본인과 같은 동료(비겁) 글자가 <em>${oh[dStemOh]}개</em>, 본인을 도와주는 어른(인성) 글자가 <em>${oh[(dStemOh+4)%5]}개</em>, 본인이 다루는 자리(재성)가 <em>${oh[(dStemOh+2)%5]}개</em>, 본인을 책임지는 자리(관성)가 <em>${oh[(dStemOh+3)%5]}개</em>, 본인이 돌보는 자리(식상)가 <em>${oh[(dStemOh+1)%5]}개</em> 자리잡아 인덕의 큰 그림이 정해졌어요.</p>`;
+  huBody+=`<p>본인 글자를 둘러싼 다섯 자리는 각각 본인 인생에서 어떤 사람들을 가리켜요.<br>· <b>같은 흐름(비겁)</b> — 형제·친구·동기·동업자<br>· <b>어른 자리(인성)</b> — 부모·스승·후원자·은사<br>· <b>책임 자리(관성)</b> — 상사·${gender==='female'?'남편·':''}공권력·법<br>· <b>다루는 자리(재성)</b> — ${gender==='male'?'아내·여성·돈':'재물·돈·맡은 일'}<br>· <b>돌보는 자리(식상)</b> — 자녀·후배·아랫사람</p>`;
+  huBody+=`<p><span class="body-q">💡 본인 인간관계의 강점과 의식할 부분</span><br>· <b>강점</b>: ${has('천을귀인')?'<b>천을귀인 별자리</b>가 자리잡아 위기마다 귀인이 자연스럽게 나타나는 평생 자산':oh[dStemOh]>=3?'본인 색이 또렷해 한 분야 1인 직업·본인 사업에서 빛나는 자기 주도형':'일대일 깊은 인연으로 신뢰를 쌓는 진정성형'}${has('역마')?' + 이동·해외 별자리로 새 환경 적응이 빠른 사교형':''}<br>· <b>주의</b>: ${has('겁재')?'경쟁심이 깊어 동업·금전 거래에서 신뢰가 흔들리기 쉬움 — 친할수록 명확한 기록·계약 필수':has('상관')?'표현이 튀어 윗사람·규율과 마찰 — 톤 한 단계 부드럽게':'본인 주장과 상대 의견의 균형을 의식해서 잡기'}</p>`;
+  huBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 관계망을 어떻게 가꿀까요?</span><br>${_userStage==='school'?'학교·동아리·또래 모임에서 본인 페이스를 지키되 1~2명과 깊게 신뢰를 쌓기':_userStage==='youth'?'대학·동기·진로 네트워크 안에서 평생 친구 만남 — 깊은 인연 2~3명이 평생 자산':_userStage==='young'?'직장 동료·동기·고객과의 신뢰 — 1:1로 깊게 만나는 관계 우선':_userStage==='prime'?'동업·전문가 그룹 활용 — 다만 동업 자금은 명확한 기록 필수':_userStage==='mid'?'동기·동창 재회 + 자녀 독립 후 새 관계 — 의식적인 깊이 다지기':_userStage==='senior1'?'옛 친구·은퇴 모임 풍성 — 한 사람과 깊은 시간이 가장 큰 자산':'가족·자손·소수의 진심 어린 관계 — 인생 정리의 시기'} · 추천 액션: <em>${stageActionOf('relation',_userAge)}</em></p>`;
   huBody+=getRelevantRelationsHtml(saju,'human');
   huBody=_sajuContextHeader(saju,ys,gk,'인간관계')+huBody;
   huBody+=_areaDeepConclusion('human',saju,ys,gender);
@@ -8629,10 +8631,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _isMale=gender==='male';
     const _strLabel=(n)=>n>=3?'두텁다':n>=2?'적당':n===1?'한 자리':'없다(약함)';
     const _readingPos=(label,cnt,strong,weak,middle)=>cnt>=3?strong:cnt===0?weak:middle;
-    // CF-6: YOOKCHIN 5분야 패턴
+    // CH-PRO: YOOKCHIN 통째 5분야 패턴 재작성
     let yckBody='';
-    yckBody+=`<p><span class="body-q">📖 본인 사주의 「가족 인연」 풀이</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})을 둘러싼 5가지 자리(동료·표현·재물·책임·학습)로 부모·형제·배우자·자녀와의 인연을 풀어요. 본인 사주에 각 자리가 얼마나 두터운지가 6친 인연의 깊이를 결정합니다.</p>`;
-    yckBody+=`<p><span class="body-q">💡 6친 인연을 어떻게 보나</span><br>· <b>인성(받아들이는 자리)</b> — 어머니·스승·후원자 인연<br>· <b>재성(다스리는 자리)</b> — ${gender==='male'?'아내·아버지':'아버지'} 인연 + 재물 자산<br>· <b>관성(책임 자리)</b> — ${gender==='female'?'남편·':''}직장 상사·공권력 인연<br>· <b>식상(표현 자리)</b> — ${gender==='female'?'자녀·':'자녀·후배·'}돌보는 사람<br>· <b>비겁(같은 자리)</b> — 형제·동기·친구</p>`;
+    yckBody+=miniManse(saju);
+    yckBody+=`<p><span class="body-q">📖 본인 사주의 「6친 인연」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})을 둘러싼 5가지 자리가 부모·형제·배우자·자녀와의 인연을 결정해요. 본인 사주의 각 자리가 얼마나 두터운지로 인연의 깊이가 정해집니다.</p>`;
+    yckBody+=`<p>· <b>인성(${OHNAME[(dStemOh+4)%5]}) ${oh[(dStemOh+4)%5]}개</b> — 어머니·스승·후원자 인연<br>· <b>재성(${OHNAME[(dStemOh+2)%5]}) ${oh[(dStemOh+2)%5]}개</b> — ${gender==='male'?'아내·아버지':'아버지'} 인연 + 재물<br>· <b>관성(${OHNAME[(dStemOh+3)%5]}) ${oh[(dStemOh+3)%5]}개</b> — ${gender==='female'?'남편·':''}상사 인연<br>· <b>식상(${OHNAME[(dStemOh+1)%5]}) ${oh[(dStemOh+1)%5]}개</b> — 자녀·후배·돌보는 사람<br>· <b>비겁(${OHNAME[dStemOh]}) ${oh[dStemOh]}개</b> — 형제·친구·동기</p>`;
+    yckBody+=`<p><span class="body-q">💡 본인 사주에서 가장 두터운/약한 가족 자리</span><br>${oh[(dStemOh+4)%5]>=3?'인성이 두터워 어머니·스승의 도움이 평생 자산':oh[(dStemOh+4)%5]===0?'인성이 비어 어머니·스승 인연이 의식적인 가꿈 필요':''} ${oh[(dStemOh+2)%5]>=3?'재성 두터워 '+(gender==='male'?'아내':'아버지')+' 인연이 평생 자산':oh[(dStemOh+2)%5]===0?(gender==='male'?'재성 비어 결혼 인연을 의식적으로 가꿈 필요':'재성 비어 아버지 인연이 약하기 쉬움'):''} ${oh[(dStemOh+1)%5]>=3?'식상 두터워 자녀·후배 인연이 풍성':oh[(dStemOh+1)%5]===0?'식상 비어 자녀와 의식적 소통 필요':''}</p>`;
     yckBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     // 부모 (인성)
     yckBody+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8">
@@ -8732,10 +8736,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _hasCU=has('천을귀인');
     const _hasMC=has('문창귀인');
     const _hasBH=has('백호');
-    // CF-6: JOB 5분야 패턴
+    // CH-PRO: JOB 통째 5분야 패턴 재작성
     let jobBody='';
-    jobBody+=`<p><span class="body-q">📖 본인 사주에 가장 잘 맞는 「일터 색깔」</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})이 ${gk.name} 유형으로 자라서, 본인에게 가장 자연스러운 일터는 <b>${_jobMain.title}</b>이에요. ${_jobMain.body}</p>`;
-    jobBody+=`<p><span class="body-q">💡 본인 직업 색깔이 정해지는 원리</span><br>본인 사주 안에서 어떤 자리(동료·표현·재물·책임·학습)가 가장 두텁게 자리잡았는지, 그리고 어떤 별자리(역마·화개·양인·천을귀인 등)가 자리잡았는지가 본인 일터의 색깔을 결정해요. ${_hasYM?'역마가 있어 이동·외근·해외 활동이 자연스럽고, ':''}${_hasHG?'화개가 있어 한 분야 깊이 파는 전문 학자형이 잘 맞고, ':''}${_hasCU?'천을귀인이 있어 사람을 통해 기회가 들어오는 결이고, ':''}${_hasMC?'문창귀인이 있어 글·문서·기획에 강하고, ':''}${_hasYI?'양인이 있어 결단력·강도 높은 일에 강하고, ':''}${_hasBH?'백호가 있어 위기관리·외과·법조 같은 강도 높은 분야에 두각.':'본인 본연의 성품 '+dm.pos[0]+'을 살리는 분야가 가장 자연스러워요.'}</p>`;
+    jobBody+=miniManseWithPointer(saju,['month'],'↑ 월주가 본인 직업 색깔의 핵심');
+    jobBody+=`<p><span class="body-q">📖 본인 사주의 「일터 색깔」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 <b>${gk.name}</b> 유형으로 자라서, 본인에게 가장 자연스러운 일터는 <b>${_jobMain.title}</b>이에요. ${_jobMain.body}</p>`;
+    jobBody+=`<p><span class="body-q">💡 본인 직업 색깔이 정해지는 원리</span><br>본인 사주 안에서 어떤 자리(동료·표현·재물·책임·학습)가 가장 두텁게 자리잡았는지, 그리고 어떤 별자리가 자리잡았는지가 본인 일터의 색깔을 결정해요.<br>${_hasYM?'· 역마 ★ — 이동·외근·해외 활동 자연스러움<br>':''}${_hasHG?'· 화개 ★ — 한 분야 깊이 파는 전문 학자형<br>':''}${_hasCU?'· 천을귀인 ★ — 사람을 통해 기회가 들어오는 결<br>':''}${_hasMC?'· 문창귀인 ★ — 글·문서·기획에 강함<br>':''}${_hasYI?'· 양인 ★ — 결단력·강도 높은 일에 강함<br>':''}${_hasBH?'· 백호 ★ — 위기관리·외과·법조에 두각<br>':''}${(!_hasYM&&!_hasHG&&!_hasCU&&!_hasMC&&!_hasYI&&!_hasBH)?'본인 본연의 성품 <em>'+dm.pos[0]+'</em>을 살리는 분야가 가장 자연스러워요.':''}</p>`;
+    jobBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 직업 결정의 길</span><br>${_userStage==='school'?'본인 직업 색깔에 맞는 학과·진로를 조기 발견':_userStage==='youth'?'대학·전공·국가고시·첫 직장 선택 시 본인 일터 색깔 우선':_userStage==='young'||_userStage==='prime'?'본인 일터 색깔이 가장 빛나는 분야에 깊이 들어가기 + 승진·이직 결정':_userStage==='mid'?'본인 분야 정점 시기 — 후학·자문 역할도 시작':'은퇴 설계·인생 2막·자문 역할 — 본인 평생 자산 풀어내기'} · 추천 액션: <em>${stageActionOf('career',_userAge)}</em></p>`;
     const _ssKo={bigeop:'동료·라이벌의 결',siksang:'표현·풀어내는 결',jaesung:'현실·자원의 결',gwansung:'책임·규칙의 결',insung:'학습·받아들이는 결'};
     jobBody+=`<p><span class="body-q">본인 직업 적성은 어떻게 보나요?</span><br>본인 사주에 가장 두텁게 흐르는 흐름은 <b>${_ssKo[_topSS]}</b>(${_topSSCnt}자리)예요. 이 흐름은 본인이 평생 가장 자연스럽게 쓰는 「일터에서의 색깔」을 결정해요.</p>`;
     jobBody+=`<p><span class="body-q">가장 잘 맞는 직업군은?</span></p>`;
@@ -8766,10 +8772,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   const sinCount=sins.length;
   const sinKeyName=sinCount>0?[...new Set(sinNames)][0]:null;
-  // CF-6: SINSAL 5분야 패턴
+  // CH-PRO: SINSAL 통째 5분야 패턴 재작성
   let sinBody='';
-  sinBody+=`<p><span class="body-q">📖 본인 사주에 「별자리」가 어떻게 자리잡았나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]})을 둘러싼 사주 8글자의 특정 조합이 만드는 작은 별자리 같은 기운이 신살이에요. 본인은 <b>${sinCount===0?'두드러진 별자리 없이 잔잔한 흐름':sinCount>=3?'여러 별자리가 얽혀 굴곡과 색채가 풍부한 결':sinKeyName+'이 인생 전반에 색깔을 더하는 결'}</b>이에요.</p>`;
-  sinBody+=`<p><span class="body-q">💡 별자리가 어느 자리에 있느냐가 핵심</span><br>같은 별자리라도 어느 기둥에 자리잡았느냐로 작용 영역이 달라져요.<br>· <b>년주</b> — 조상·어린 시절<br>· <b>월주</b> — 부모·청년기·직업<br>· <b>일주</b> — 본인·배우자<br>· <b>시주</b> — 자녀·말년</p>`;
+  sinBody+=`<p><span class="body-q">📖 본인 사주의 「별자리(신살)」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})을 둘러싼 사주 8글자의 특정 조합이 만드는 작은 별자리 같은 기운이 신살이에요. 본인 사주에는 <em>${sinCount}개</em>의 별자리가 자리잡아, <b>${sinCount===0?'두드러진 별자리 없이 잔잔한 흐름':sinCount>=3?'여러 별자리가 얽혀 굴곡과 색채가 풍부한 결':sinKeyName+'이 인생 전반에 색깔을 더하는 결'}</b>이에요.</p>`;
+  sinBody+=`<p><span class="body-q">💡 같은 별자리도 어느 자리에 있느냐가 핵심</span><br>· <b>년주</b> — 조상·어린 시절 영역에 작용<br>· <b>월주</b> — 부모·청년기·직업 영역에 작용<br>· <b>일주</b> — 본인·배우자 영역에 작용<br>· <b>시주</b> — 자녀·말년 영역에 작용<br>본인 사주의 별자리들이 어느 자리에 있는지 아래 만세력에서 표시했어요.</p>`;
+  sinBody+=`<p><span class="body-q">✦ 본인 별자리 활용 가이드</span><br>${sinCount===0?'두드러진 별자리가 없어 본인 본연의 흐름이 잔잔히 이어져요. 큰 굴곡 없는 안정형.':sinCount>=3?'여러 별자리가 본인 인생 색채를 풍부하게 만들어요. 각 별자리의 작용을 알고 살면 본인 인생의 큰 그림이 또렷해져요.':'한두 가지 별자리가 인생에 색깔을 더해요. 이 별자리들을 본인 자산으로 활용하세요.'}</p>`;
   sinBody+=miniManseWithSinsal(saju);
   // ③ 어떻게 — 각 별자리 풀이
   if(sins.length>0){
@@ -8902,10 +8909,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const swTG=tenGod(saju.dp.stem,swStem);
   const swBTG=tenGod(saju.dp.stem,BR_MAIN_STEM[swBranch]);
   const curDaeun=dq.daeuns[curDIdx];
-  // CF-6: SEWOON 5분야 패턴
+  // CH-PRO: SEWOON 통째 5분야 패턴 재작성
   let swBody='';
-  swBody+=`<p><span class="body-q">📖 ${cy}년 본인 사주에 어떤 흐름이 들어오나</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[SOH[saju.dp.stem]]}) 기준으로, ${cy}년에 들어오는 <b>${STEMKO[swStem]}${BRCHKO[swBranch]}</b> 글자는 <em>${plainTG(swTG)}</em>의 흐름이에요. 이건 본인에게 ${swTG==='정관'||swTG==='편관'?'책임·직책·승진의 결':swTG==='정재'||swTG==='편재'?'재물·자산·실용의 결':swTG==='식신'||swTG==='상관'?'표현·창작·서비스의 결':swTG==='정인'||swTG==='편인'?'학습·자격·문서의 결':'동료·친구·경쟁의 결'}로 다가옵니다.</p>`;
-  swBody+=`<p><span class="body-q">💡 본인 10년 흐름 + 올해 한 해 결합</span><br>현재 본인의 10년 대운 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b> 안에서 ${cy}년이 어떤 위치인지가 핵심이에요. ${getDaeunSewoonCombo(saju,curDaeun,swSaewoon,ys)} 같은 시기로, 10년 대운의 큰 흐름 위에 올해 한 해 색깔이 더해지는 결입니다.</p>`;
+  swBody+=pillarPlusRow(saju,curDaeun,swSaewoon);
+  swBody+=`<p><span class="body-q">📖 ${cy}년 본인 사주에 들어오는 「올해 글자」</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}) 기준, ${cy}년에 들어오는 <b>${STEMKO[swStem]}${BRCHKO[swBranch]}</b>는 <em>${plainTG(swTG)}</em>의 흐름이에요. 본인에게 ${swTG==='정관'||swTG==='편관'?'<b>책임·직책·승진</b>의 결':swTG==='정재'||swTG==='편재'?'<b>재물·자산·실용</b>의 결':swTG==='식신'||swTG==='상관'?'<b>표현·창작·서비스</b>의 결':swTG==='정인'||swTG==='편인'?'<b>학습·자격·문서</b>의 결':'<b>동료·친구·경쟁</b>의 결'}로 다가오는 한 해입니다.</p>`;
+  swBody+=`<p><span class="body-q">💡 본인 10년 흐름 안에서 ${cy}년의 위치</span><br>현재 본인의 10년 대운 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b>(${plainTG(tenGod(saju.dp.stem,curDaeun.stem))}) 안에서 ${cy}년이 어떤 위치인지가 핵심이에요. ${getDaeunSewoonCombo(saju,curDaeun,swSaewoon,ys)} 시기로, 10년 대운의 큰 흐름 위에 올해 한 해 색깔이 더해지는 결이에요.</p>`;
+  swBody+=`<p><span class="body-q">✦ 본인 ${_userAge}세 ${_userStageLabel} — ${cy}년 어떻게 보낼까</span><br>${getSewoonDesc(swTG,swBTG,curDaeun,saju,_userAge)}</p>`;
   // ② 왜
   swBody+=pillarPlusRow(saju,curDaeun,swSaewoon);
   swBody+=`<p><span class="body-q">「올해의 결」은 어떻게 정해지나요?</span><br>매년 양력 2월 4일경 입춘을 기점으로 새 글자 두 개가 본인 사주에 더해져 한 해 동안 작용해요. 10년 흐름이 「인생의 큰 흐름」라면, 올해의 흐름은 「그 흐름 안 한 페이지」 같은 거예요.</p>`;
