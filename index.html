@@ -347,11 +347,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .compat-cell{background:var(--earth-bg);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
 .compat-cell-label{font-size:.6rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
 .compat-cell-val{font-size:.82rem;font-weight:700;color:var(--text);word-break:keep-all;white-space:nowrap}
-.compare-pillars{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px;align-items:center;text-align:center}
-.compare-pillars > .pcol{min-width:0}
-.compare-pillars .pstem,.compare-pillars .pbranch{font-size:1.05rem;padding:7px 2px}
-.compare-pillars .pstem .sm,.compare-pillars .pbranch .sm{font-size:.6rem}
-.compare-arrow{font-size:1.1rem;color:var(--sub);padding:0 2px}
+.compare-pillars{display:grid !important;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) !important;gap:4px;align-items:center;text-align:center;width:100%}
+.compare-pillars > .pcol{min-width:0;width:100%;max-width:100%}
+.compare-pillars .plabel{font-size:.7rem;color:var(--sub);margin-bottom:3px}
+.compare-pillars .pstem,.compare-pillars .pbranch{font-size:.88rem;padding:5px 1px;min-width:0;width:100%;box-sizing:border-box}
+.compare-pillars .pstem .sm,.compare-pillars .pbranch .sm{font-size:.55rem}
+.compare-arrow{font-size:.95rem;color:var(--sub);padding:0 1px;text-align:center}
 
 /* ── 공유·저장 버튼 ── */
 .share-bar{display:flex;gap:8px;padding:10px 14px 0}
@@ -1721,7 +1722,17 @@ const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
 const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5};
 function chatLsKeyOf(cat){return `saju_chat_count_${cat||'life'}_v2`;}
-function chatMaxOf(cat){return CHAT_MAX_BY_CAT[cat||'life']||5;}
+// CI-3: 월별 운세는 결제한 개월수만큼 질문 가능 (3개월=3회, 6개월=6회)
+function chatMaxOf(cat){
+  if(cat==='monthly' && typeof _meta!=='undefined' && _meta && _meta.moExtra){
+    const {sy,sm,ey,em}=_meta.moExtra;
+    if(sy&&sm&&ey&&em){
+      const months=(ey*12+(em-1))-(sy*12+(sm-1))+1;
+      if(months>=1)return Math.max(1,Math.min(6,months));
+    }
+  }
+  return CHAT_MAX_BY_CAT[cat||'life']||5;
+}
 
 // ══════════════════════════════════════════════
 //  사주 용어 사전 (자세한 풀이 본문 클릭 팝업)
@@ -6176,7 +6187,7 @@ const PAID_META={
   chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:1500,newyear:19000,gunghap:5900,name:4900,life:24000,
+const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:4900,life:24000,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월

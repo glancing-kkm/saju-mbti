@@ -19,11 +19,11 @@
 //    4) 토스 API 호출 결과의 status === 'DONE' 확인
 //    5) 동일 orderId 중복 승인 방지를 위해 KV 또는 D1에 처리 이력 저장 (권장)
 
-// 카테고리당 단가 (원). monthly는 월당 단가이며 실제 결제 금액은 1~6개월 ×1500
+// 카테고리당 단가 (원). monthly는 월당 단가이며 실제 결제 금액은 1~6개월 ×2000
 // chatpack* 은 AI 채팅 질문 추가 패키지 — 결제 후 클라이언트에서 현재 사주의 채팅 보너스 +N
 const CATEGORY_PRICE = {
   daypick: 1500,
-  monthly: 1500, // 월당 — 1500/3000/4500/6000/7500/9000 중 하나여야 함
+  monthly: 2000, // 월당 — 2000/4000/6000/8000/10000/12000 중 하나여야 함
   newyear: 19000,
   gunghap: 5900,
   name: 4900,
@@ -34,7 +34,7 @@ const CATEGORY_PRICE = {
   chatpack10: 7000,
 };
 const MONTHLY_MAX = 6;
-const MONTHLY_UNIT = 1500;
+const MONTHLY_UNIT = 2000;
 // 카테고리·금액 위조 방지 — 월별은 월당 단가의 1~6배수 허용, 그 외는 단일 정가 일치
 function isAmountValid(category, amount) {
   if (category === 'monthly') {
