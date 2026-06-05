@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+  <!-- 배경 그라데이션 -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1428"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5d76e"/>
+      <stop offset="100%" stop-color="#d4af49"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.3" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#d4af49" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#d4af49" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- 좌측 한자 天機 -->
+  <g transform="translate(80, 200)">
+    <text x="0" y="0" font-size="240" font-weight="900" fill="url(#gold)" letter-spacing="-6">天</text>
+    <text x="0" y="210" font-size="240" font-weight="900" fill="url(#gold)" letter-spacing="-6">機</text>
+  </g>
+
+  <!-- 한자 아래 한글 라벨 -->
+  <text x="100" y="500" font-size="26" fill="#d4af49" font-weight="600" letter-spacing="2">천기 (天機)</text>
+  <text x="100" y="528" font-size="18" fill="#8a8aa0" letter-spacing="1">만세역 대종사</text>
+
+  <!-- 우측 본문 영역 -->
+  <g transform="translate(540, 130)">
+    <!-- 상단 작은 배지 -->
+    <rect x="0" y="0" width="148" height="36" rx="18" fill="none" stroke="#d4af49" stroke-width="1.5"/>
+    <text x="74" y="24" font-size="16" fill="#d4af49" text-anchor="middle" font-weight="600" letter-spacing="2">PREMIUM</text>
+
+    <!-- 제목 -->
+    <text x="0" y="100" font-size="68" font-weight="900" fill="#ffffff" letter-spacing="-2">천지인 사주</text>
+
+    <!-- 부제 -->
+    <text x="0" y="158" font-size="32" font-weight="700" fill="#e8e8f0" letter-spacing="-1">사주팔자 × MBTI</text>
+    <text x="0" y="200" font-size="32" font-weight="700" fill="#e8e8f0" letter-spacing="-1">통합 분석</text>
+
+    <!-- 구분선 -->
+    <line x1="0" y1="240" x2="180" y2="240" stroke="#d4af49" stroke-width="2"/>
+
+    <!-- tagline -->
+    <text x="0" y="282" font-size="22" fill="#b8b8c8" letter-spacing="-0.5">만세력 진태양시 자동 보정 · 28+ 카드 깊이</text>
+    <text x="0" y="316" font-size="22" fill="#b8b8c8" letter-spacing="-0.5">AI 역술가 실시간 질의응답</text>
+
+    <!-- 카테고리 칩 -->
+    <g transform="translate(0, 360)" font-size="18" font-weight="600">
+      <g>
+        <rect x="0" y="0" width="100" height="38" rx="19" fill="#1f2540"/>
+        <text x="50" y="25" fill="#f5d76e" text-anchor="middle">일일운세</text>
+      </g>
+      <g transform="translate(112, 0)">
+        <rect width="100" height="38" rx="19" fill="#1f2540"/>
+        <text x="50" y="25" fill="#f5d76e" text-anchor="middle">신년운세</text>
+      </g>
+      <g transform="translate(224, 0)">
+        <rect width="100" height="38" rx="19" fill="#1f2540"/>
+        <text x="50" y="25" fill="#f5d76e" text-anchor="middle">인생총운</text>
+      </g>
+      <g transform="translate(336, 0)">
+        <rect width="80" height="38" rx="19" fill="#1f2540"/>
+        <text x="40" y="25" fill="#f5d76e" text-anchor="middle">궁합</text>
+      </g>
+      <g transform="translate(428, 0)">
+        <rect width="80" height="38" rx="19" fill="#1f2540"/>
+        <text x="40" y="25" fill="#f5d76e" text-anchor="middle">작명</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- 하단 도메인 -->
+  <text x="600" y="588" font-size="20" fill="#6a6a80" text-anchor="middle" letter-spacing="2">saju-mbti-9h1.pages.dev</text>
+
+  <!-- 모서리 별 장식 -->
+  <g fill="#d4af49" opacity="0.4">
+    <circle cx="60" cy="60" r="3"/>
+    <circle cx="1140" cy="80" r="2"/>
+    <circle cx="1100" cy="540" r="2.5"/>
+    <circle cx="80" cy="560" r="2"/>
+    <circle cx="1080" cy="30" r="1.5"/>
+  </g>
+</svg>

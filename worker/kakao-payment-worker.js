@@ -28,7 +28,7 @@ const CATEGORY_PRICE = {
   monthly: 2000, // 월당 — 2000 × 1~6개월
   newyear: 19000,
   gunghap: 5900,
-  name: 4900,
+  name: 9900,
   life: 24000,
   chatpack1: 1000,
   chatpack3: 2500,

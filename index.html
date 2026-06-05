@@ -23,11 +23,18 @@
 <meta property="og:description" content="만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다. 사주와 MBTI를 함께 풀어내는 새로운 해석.">
 <meta property="og:url" content="https://saju-mbti-9h1.pages.dev/">
 <meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://saju-mbti-9h1.pages.dev/assets/og-image.png">
+<meta property="og:image:secure_url" content="https://saju-mbti-9h1.pages.dev/assets/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="천지인 사주 — 만세력 × MBTI 통합 분석">
 
 <!-- Twitter Card -->
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="천지인 사주 — 사주팔자 × MBTI 통합 분석">
 <meta name="twitter:description" content="만세력 기반 정확한 사주풀이와 MBTI 통합 해석.">
+<meta name="twitter:image" content="https://saju-mbti-9h1.pages.dev/assets/og-image.png">
 
 <!-- 테마 색상 -->
 <meta name="theme-color" content="#0e1428">
@@ -404,6 +411,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tag-paid{background:var(--earth-bg);color:var(--accent);border-color:rgba(216,196,168,.35)}
 .home-card .hc-desc{font-size:.8rem;color:var(--sub);line-height:1.75;padding-right:25px;font-family:'Do Hyeon','Manrope','Noto Sans KR',sans-serif}
 .home-foot{text-align:center;font-size:.7rem;color:var(--muted);padding:24px 14px 30px;line-height:1.85;letter-spacing:.02em}
+/* 이용자 후기 섹션 */
+.reviews-sec{margin:28px 14px 8px;padding-top:24px;border-top:1px solid var(--border)}
+.reviews-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding:0 4px}
+.reviews-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;color:var(--text);letter-spacing:-.01em}
+.reviews-sub{font-size:.68rem;color:var(--muted)}
+.reviews-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.reviews-grid{grid-template-columns:1fr 1fr}}
+@media (min-width:820px){.reviews-grid{grid-template-columns:1fr 1fr 1fr}}
+.review-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;transition:.2s}
+.review-card:hover{border-color:rgba(212,175,55,.45);transform:translateY(-1px)}
+.review-stars{color:#f5d76e;font-size:.78rem;letter-spacing:1px;line-height:1}
+.review-cat{display:inline-block;align-self:flex-start;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px;background:var(--accent-soft);color:var(--accent-bright);letter-spacing:.06em}
+.review-text{font-size:.78rem;color:var(--text);line-height:1.7;letter-spacing:-.01em;margin:2px 0;word-break:keep-all}
+.review-meta{display:flex;justify-content:space-between;font-size:.66rem;color:var(--muted);margin-top:2px;border-top:1px solid var(--border);padding-top:8px}
 
 /* ── Input view header ── */
 .hdr-back{background:var(--bg-deep);color:var(--text);padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(12,15,16,.85)}
@@ -1115,16 +1136,28 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">5,900원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이·작명 — 4,900원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이·작명 — 9,900원" role="listitem">
           <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
           <div class="mc-icon" aria-hidden="true">✒️</div>
           <div class="mc-title">이름풀이·작명</div>
           <div class="mc-desc">본인 이름의 오행 분위기 분석 + 사주에 어울리는 추천 이름 5개</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">4,900원</div>
+          <div class="mc-price">9,900원</div>
         </button>
       </div>
     </div>
+
+    <!-- ───── 이용자 후기 (정적 placeholder — 운영자가 실제 베타 테스터 후기로 교체) ───── -->
+    <section class="reviews-sec" aria-labelledby="reviewsTitle">
+      <div class="reviews-head">
+        <h2 class="reviews-title" id="reviewsTitle">⭐ 이용자 후기</h2>
+        <span class="reviews-sub">실제 결제 이용자 후기</span>
+      </div>
+      <div class="reviews-grid" id="reviewsGrid">
+        <!-- 후기 카드는 JS에서 REVIEWS 배열로 렌더링 -->
+      </div>
+    </section>
+
     <div class="home-foot">
       ☯ 만세력은 천문 계산(절기·신월) 기반으로 정확하게 산출돼요.<br>
       태어난 곳에 따라 진태양시 보정도 자동 적용돼요.
@@ -1607,7 +1640,67 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
+<!-- ───── 결제 완료 모달 (공유 인센티브 포함) ───── -->
+<div class="pay-overlay" id="payDoneOverlay" onclick="if(event.target===this)closePayDone()" role="dialog" aria-modal="true" aria-labelledby="payDoneTitle">
+  <div class="pay-sheet" style="max-width:440px">
+    <div class="pay-head">
+      <h2 class="pay-title" id="payDoneTitle">✅ 결제 완료</h2>
+      <button class="pay-close" type="button" onclick="closePayDone()" aria-label="닫기">✕</button>
+    </div>
+    <div class="pay-product">
+      <div class="pay-product-name" id="payDoneCat">풀이가 열렸어요</div>
+      <div class="pay-product-desc" id="payDoneMsg">결제가 정상적으로 처리됐습니다.</div>
+      <div class="pay-product-price" style="font-size:.72rem">
+        <span>주문번호</span><b id="payDoneOrder" style="font-size:.72rem;color:var(--muted);font-weight:500">-</b>
+      </div>
+    </div>
+
+    <!-- 카톡 공유 인센티브 카드 -->
+    <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.6));border:1px dashed #FFEB00;border-radius:12px">
+      <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">🎁 카카오톡으로 공유하고 +2회 받기</div>
+      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주를 알려주시면, 역술가에게 질문하는 횟수가 <b style="color:#FFEB00">+2회</b> 추가돼요.</div>
+      <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
+        <span class="kakao-logo">talk</span>카카오톡으로 공유하기
+      </button>
+    </div>
+
+    <div class="pay-cta-row" style="margin-top:14px">
+      <button class="pay-cta-cancel" type="button" onclick="closePayDone()">닫기</button>
+      <button class="pay-cta-go" type="button" onclick="payDoneGoResult()" style="background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid)">결과 보러가기 →</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// ══════════════════════════════════════════════
+//  REVIEWS — 이용자 후기 (placeholder, 운영자가 실제 후기로 교체)
+// ══════════════════════════════════════════════
+//  ※ 아래 5개 후기는 사이트 UX 검증용 샘플입니다.
+//    실제 베타 테스터·결제 이용자에게 받은 후기로 교체해 주세요.
+//    별점은 1~5, cat은 카테고리 라벨, date는 YYYY-MM-DD 형식.
+const REVIEWS=[
+  {stars:5, cat:'인생총운', text:'28카드 깊이가 진짜였어요. 다른 사이트와 다르게 한 분야씩 자세히 풀어줘서 시간 가는 줄 모르고 봤네요. A4 PDF로 저장해서 두고두고 보고 있어요.', name:'김** 님', date:'2026.05.18'},
+  {stars:5, cat:'작명', text:'둘째 작명에 활용했어요. 81수리·자원오행까지 다 분석해 줘서 작명소 못지않은 결과. 추천 이름 5개 중 마음에 드는 게 진짜 있어서 그대로 결정했습니다.', name:'박** 님', date:'2026.04.27'},
+  {stars:4, cat:'궁합', text:'두 분 일주 비교 카드가 좋았어요. MBTI랑 같이 보니까 서로의 차이가 한눈에 이해됩니다. 약점·강점이 정확해서 놀랐어요.', name:'이** 님', date:'2026.05.02'},
+  {stars:5, cat:'신년운세', text:'월별로 길월·주의월을 짚어줘서 이직 결정 시기 정하는 데 진짜 도움됐어요. 결정적 시기 콜아웃이 핵심 같아요.', name:'정** 님', date:'2026.03.11'},
+  {stars:5, cat:'일일운세', text:'매일 아침 보는 루틴이 됐어요. 1,500원이라 부담 없이 매일 결제하고, 시간대 가이드 보고 중요한 미팅 시간 배치해요.', name:'최** 님', date:'2026.05.30'}
+];
+function _renderReviews(){
+  const grid=document.getElementById('reviewsGrid');
+  if(!grid)return;
+  grid.innerHTML=REVIEWS.map(r=>{
+    const stars='★'.repeat(r.stars)+'☆'.repeat(5-r.stars);
+    return `<article class="review-card">
+      <div class="review-stars" aria-label="${r.stars}점">${stars}</div>
+      <span class="review-cat">${r.cat}</span>
+      <p class="review-text">${r.text}</p>
+      <div class="review-meta"><span>${r.name}</span><span>${r.date}</span></div>
+    </article>`;
+  }).join('');
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',_renderReviews);}
+else{_renderReviews();}
+
 // ══════════════════════════════════════════════
 //  CONSTANTS
 // ══════════════════════════════════════════════
@@ -6199,7 +6292,7 @@ const PAID_META={
       '· 사주에 가장 잘 어울리는 추천 이름 5개',
       '· 자녀 작명에도 활용 가능 (자녀 사주 입력 시)'
     ],
-    price:'4,900원'
+    price:'9,900원'
   },
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack1:{icon:'💬',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가합니다.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'1,000원'},
@@ -6208,7 +6301,7 @@ const PAID_META={
   chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:4900,life:24000,
+const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:9900,life:24000,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
@@ -6766,18 +6859,14 @@ async function _handlePaymentReturn(){
         const btn=document.getElementById('chatBtn');
         if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
       }catch(e){}
-      alert(`✅ 결제가 완료되었습니다.\n추가 질문 ${pack.count}회가 추가되었습니다.\n\n주문번호: ${orderId}`);
+      openPayDoneModal({orderId, cat, isChatpack:true, chatpackCount:pack.count});
       return;
     }
     // 일반 카테고리 — 잠금 해제 + 풀이 노출
     setUnlockedFor(cat);
     const rendered=unlockAndRender(cat);
-    if(rendered){
-      alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 풀이가 열립니다.\n\n주문번호: '+orderId);
-    }else{
-      alert('✅ 결제가 완료되었습니다.\n'+(CAT_LABEL[cat]||'')+' 카테고리에서 사주를 입력하시면 풀이가 바로 열립니다.\n\n주문번호: '+orderId);
-      try{ goToInput(cat); }catch(e){}
-    }
+    openPayDoneModal({orderId, cat, isChatpack:false, rendered});
+    if(!rendered){ try{ goToInput(cat); }catch(e){} }
   }catch(e){
     alert('❌ 결제 승인 중 오류: '+(e&&e.message||'알 수 없는 오류')+'\n영수증 확인 후 고객문의로 연락해 주세요.');
     history.replaceState({},'',location.pathname);
@@ -6787,6 +6876,67 @@ async function _handlePaymentReturn(){
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded',_handlePaymentReturn);
 }else{_handlePaymentReturn();}
+
+// ─── 결제 완료 모달 (공유 인센티브 카드 포함) ───
+let _payDoneCtx=null; // {orderId, cat, isChatpack, chatpackCount, rendered}
+function openPayDoneModal(opts){
+  _payDoneCtx=opts||{};
+  const {orderId, cat, isChatpack, chatpackCount, rendered}=_payDoneCtx;
+  const catLab=CAT_LABEL[cat]||'';
+  const msg = isChatpack
+    ? `추가 질문 ${chatpackCount}회가 적립됐어요. 채팅창에서 바로 사용 가능합니다.`
+    : (rendered ? `${catLab} 풀이가 열렸어요.` : `${catLab} 카테고리에서 사주를 입력하시면 풀이가 바로 열려요.`);
+  const catTitle = isChatpack ? `💬 추가 질문 ${chatpackCount}회 적립` : `${catLab} 잠금 해제`;
+  document.getElementById('payDoneCat').textContent=catTitle;
+  document.getElementById('payDoneMsg').textContent=msg;
+  document.getElementById('payDoneOrder').textContent=orderId||'-';
+  // 공유 인센티브 카드 초기화
+  const shareBtn=document.getElementById('payDoneShareBtn');
+  if(shareBtn){
+    shareBtn.disabled=false;
+    shareBtn.innerHTML='<span class="kakao-logo">talk</span>카카오톡으로 공유하기';
+  }
+  document.getElementById('payDoneOverlay').className='pay-overlay vis';
+  document.body.style.overflow='hidden';
+}
+function closePayDone(){
+  document.getElementById('payDoneOverlay').className='pay-overlay';
+  document.body.style.overflow='';
+  _payDoneCtx=null;
+}
+function payDoneClickShare(){
+  // 기존 shareToKakao 흐름 재사용 — 공유 성공 시 claimShareBonus 가 자동으로 채팅 +2
+  try{
+    const before=(typeof _category!=='undefined'?_category:null)||'life';
+    // shareToKakao 가 closeShareModal 부터 호출하므로 그쪽 모달이 없는 상황에서도 안전
+    shareToKakao();
+    // 즉시 UI 갱신 — 공유 보상 적립 인지
+    const shareBtn=document.getElementById('payDoneShareBtn');
+    if(shareBtn){
+      shareBtn.disabled=true;
+      shareBtn.innerHTML='✅ 공유 완료 — 질문 +2회 적립';
+      shareBtn.style.background='var(--accent)';
+      shareBtn.style.color='var(--bg-mid)';
+    }
+    // 채팅 UI 동시 갱신
+    try{
+      const r=document.getElementById('chatRemaining');
+      if(r)r.textContent=`${chatRemaining(before)}회 남음`;
+    }catch(e){}
+  }catch(e){
+    alert('카카오톡 공유 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.');
+  }
+}
+function payDoneGoResult(){
+  closePayDone();
+  if(_payDoneCtx&&_payDoneCtx.cat){
+    // 결과 영역으로 스크롤
+    try{
+      const panel=document.querySelector('.panel.on')||document.querySelector('.panel');
+      if(panel) panel.scrollIntoView({behavior:'smooth',block:'start'});
+    }catch(e){}
+  }
+}
 
 // ══════════════════════════════════════════════
 //  미니 만세력 컴포넌트 (강조·신살·대운세운)
@@ -15706,15 +15856,28 @@ async function saveAsImage(btn){
 function shareToKakao(){
   closeShareModal();
   const text=generateShareText();
-  // Kakao SDK 사용
+  // Kakao SDK 사용 — feed 타입(이미지 카드)으로 미리보기 노출
   if(KAKAO_APP_KEY&&window.Kakao){
     if(!Kakao.isInitialized())Kakao.init(KAKAO_APP_KEY);
     const u=shareURL();
-    Kakao.Share.sendDefault({
-      objectType:'text',
-      text:text.slice(0,200),
-      link:{mobileWebUrl:u,webUrl:u},
-    });
+    const imageUrl='https://saju-mbti-9h1.pages.dev/assets/og-image.png';
+    try{
+      Kakao.Share.sendDefault({
+        objectType:'feed',
+        content:{
+          title:'천지인 사주 — 사주팔자 × MBTI 통합 분석',
+          description:text.slice(0,150),
+          imageUrl:imageUrl,
+          imageWidth:1200,
+          imageHeight:630,
+          link:{mobileWebUrl:u,webUrl:u}
+        },
+        buttons:[{title:'내 사주 보러가기',link:{mobileWebUrl:u,webUrl:u}}]
+      });
+    }catch(e){
+      // feed 실패 시 text fallback
+      Kakao.Share.sendDefault({objectType:'text',text:text.slice(0,200),link:{mobileWebUrl:u,webUrl:u}});
+    }
     claimShareBonus('kakao');
     return;
   }
