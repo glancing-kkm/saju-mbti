@@ -425,6 +425,28 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .review-cat{display:inline-block;align-self:flex-start;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px;background:var(--accent-soft);color:var(--accent-bright);letter-spacing:.06em}
 .review-text{font-size:.78rem;color:var(--text);line-height:1.7;letter-spacing:-.01em;margin:2px 0;word-break:keep-all}
 .review-meta{display:flex;justify-content:space-between;font-size:.66rem;color:var(--muted);margin-top:2px;border-top:1px solid var(--border);padding-top:8px}
+.reviews-write-btn{background:var(--card);border:1px solid var(--accent);color:var(--accent-bright);font-size:.7rem;font-weight:700;padding:6px 12px;border-radius:50px;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:.18s}
+.reviews-write-btn:hover{background:var(--accent-soft);transform:translateY(-1px)}
+/* 후기 작성 폼 */
+.review-form{display:flex;flex-direction:column;gap:12px;padding:6px 0 4px}
+.rv-row{display:flex;flex-direction:column;gap:6px}
+.rv-label{font-size:.74rem;color:var(--sub);font-weight:700;letter-spacing:.02em}
+.rv-cat-tag{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;background:var(--accent-soft);color:var(--accent-bright);letter-spacing:.04em;align-self:flex-start}
+.rv-stars{cursor:pointer;font-size:1.7rem;color:#f5d76e;letter-spacing:6px;user-select:none;line-height:1}
+.rv-stars .rv-st{cursor:pointer;transition:opacity .12s}
+.rv-stars .rv-st.dim{opacity:.25}
+.rv-input,.rv-text{background:var(--bg-deep);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:10px 12px;font-family:inherit;font-size:.84rem;line-height:1.6;width:100%;box-sizing:border-box}
+.rv-text{resize:vertical;min-height:120px}
+.rv-input:focus,.rv-text:focus{outline:0;border-color:var(--accent)}
+.rv-counter{font-size:.68rem;color:var(--muted);text-align:right}
+.rv-counter.warn{color:#ff8888}
+.rv-policy{font-size:.66rem;color:var(--muted);line-height:1.7;padding:9px 11px;background:var(--bg-deep);border:1px dashed var(--border);border-radius:8px}
+.rv-submit{padding:12px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:.18s}
+.rv-submit:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
+.coupon-badge{padding:18px 16px;background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(255,235,180,.06));border:1px dashed var(--accent);border-radius:12px;text-align:center;display:flex;flex-direction:column;gap:6px}
+.coupon-amount{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.6rem;color:var(--accent-bright);font-weight:800;letter-spacing:-.01em}
+.coupon-meta{font-size:.72rem;color:var(--sub);line-height:1.6}
+.rv-block-msg{padding:18px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--sub);line-height:1.72;text-align:center}
 
 /* ── Input view header ── */
 .hdr-back{background:var(--bg-deep);color:var(--text);padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(12,15,16,.85)}
@@ -1151,7 +1173,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <section class="reviews-sec" aria-labelledby="reviewsTitle">
       <div class="reviews-head">
         <h2 class="reviews-title" id="reviewsTitle">⭐ 이용자 후기</h2>
-        <span class="reviews-sub">실제 결제 이용자 후기</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="reviews-sub">실제 결제 이용자 후기</span>
+          <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 다음 결제 2,000원 할인 받기">✏️ 후기 작성</button>
+        </div>
       </div>
       <div class="reviews-grid" id="reviewsGrid">
         <!-- 후기 카드는 JS에서 REVIEWS 배열로 렌더링 -->
@@ -1594,6 +1619,15 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="pay-product" id="payProduct">
       <div class="pay-product-name" id="payProductName">상품명</div>
       <div class="pay-product-desc" id="payProductDesc">상품 설명</div>
+      <!-- 원가 (쿠폰 적용 시 노출) -->
+      <div class="pay-product-price" id="payPriceBaseRow" style="display:none;font-size:.72rem">
+        <span style="color:var(--muted)">원가</span><b id="payPriceBase" style="font-weight:500;color:var(--muted);text-decoration:line-through">0원</b>
+      </div>
+      <!-- 할인 (쿠폰 적용 시 노출) -->
+      <div class="pay-product-price" id="payPriceCouponRow" style="display:none;font-size:.74rem">
+        <span style="color:var(--accent-bright)">💝 후기 작성 보상 할인</span><b id="payPriceCoupon" style="font-weight:700;color:var(--accent-bright)">-0원</b>
+      </div>
+      <!-- 결제 금액 (항상 노출) -->
       <div class="pay-product-price">
         <span>결제 금액</span><b id="payProductPrice">0원</b>
       </div>
@@ -1664,9 +1698,31 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </button>
     </div>
 
+    <!-- 후기 작성 인센티브 카드 -->
+    <div id="payDoneReviewCard" style="margin-top:10px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(45,52,71,.6));border:1px dashed var(--accent);border-radius:12px">
+      <div style="font-size:.82rem;font-weight:800;color:var(--accent-bright);letter-spacing:.02em;margin-bottom:6px">💝 후기 쓰고 다음 결제 2,000원 할인</div>
+      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">짧은 후기 한 줄로 다음 결제 시 <b style="color:var(--accent-bright)">-2,000원</b>이 자동 적용돼요.</div>
+      <button type="button" id="payDoneReviewBtn" onclick="payDoneClickReview()" style="width:100%;padding:11px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer">
+        ✏️ 후기 작성하고 쿠폰 받기
+      </button>
+    </div>
+
     <div class="pay-cta-row" style="margin-top:14px">
       <button class="pay-cta-cancel" type="button" onclick="closePayDone()">닫기</button>
       <button class="pay-cta-go" type="button" onclick="payDoneGoResult()" style="background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid)">결과 보러가기 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ───── 후기 작성 모달 ───── -->
+<div class="pay-overlay" id="reviewWriteOverlay" onclick="if(event.target===this)closeReviewWrite()" role="dialog" aria-modal="true" aria-labelledby="reviewWriteTitle">
+  <div class="pay-sheet" style="max-width:480px">
+    <div class="pay-head">
+      <h2 class="pay-title" id="reviewWriteTitle">💝 후기 작성하고 2,000원 할인</h2>
+      <button class="pay-close" type="button" onclick="closeReviewWrite()" aria-label="닫기">✕</button>
+    </div>
+    <div id="reviewWriteBody">
+      <!-- 자격 검증 결과에 따라 동적 렌더링 -->
     </div>
   </div>
 </div>
@@ -1788,7 +1844,11 @@ function setUnlockedFor(cat){
   // 현재 사주가 있으면 토큰도 같이 저장 (24h 영속화 — 같은 사주만 자동 복원)
   if(_saju){
     const sid=sajuIdOf(_saju,_meta);
-    if(sid)_savePaidToken(cat,sid);
+    if(sid){
+      _savePaidToken(cat,sid);
+      // 후기 작성 자격(7일) — 결제 토큰 만료 후에도 후기 작성 가능
+      try{ if(typeof _markReviewEligible==='function') _markReviewEligible(sid, cat); }catch(e){}
+    }
   }
 }
 function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 유지 */}
@@ -6306,6 +6366,17 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
+// 후기 보상 쿠폰 — 후기 작성 시 다음 결제 -2,000원
+const _REVIEW_COUPON_LS_KEY='saju_review_coupon_v1';
+const _REVIEW_SUBMITTED_LS_KEY='saju_review_submitted_v1';
+const _REVIEW_ELIGIBLE_LS_KEY='saju_review_eligible_v1';
+const _REVIEW_COUPON_AMOUNT=2000;
+const _REVIEW_COUPON_TTL_MS=30*24*60*60*1000;
+const _REVIEW_ELIGIBLE_TTL_MS=7*24*60*60*1000;
+const _REVIEW_MIN_LENGTH=30;
+const _REVIEW_MAX_LENGTH=500;
+// 후기 Worker 엔드포인트 — 카카오페이 Worker와 동일 베이스 사용 (호출 시점에 동적 참조)
+function _reviewWorkerBase(){return (typeof KAKAO_PAYMENT_BASE==='string')?KAKAO_PAYMENT_BASE:'';}
 // 채팅 패키지 수량 매핑 — 결제 confirm 후 chatBonus에 더할 횟수
 const CHAT_PACKS=[
   {cat:'chatpack1', count:1,  price:1000,  label:'1회'},
@@ -6684,6 +6755,9 @@ const KAKAO_PAY_SS_KEY='kakao_pay_pending_v1'; // sessionStorage 키 (tid·order
 const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이'};
 let _payCategory=null;
 let _payMethod='KAKAOPAY'; // 현재는 카카오페이 단일
+let _payCoupon=null; // 현재 결제에 적용될 쿠폰 (없으면 null)
+let _payBaseAmount=0; // 쿠폰 적용 전 원가
+let _payFinalAmount=0; // 결제 금액 (원가 - 쿠폰)
 
 function openPaymentConsent(category,method){
   _payCategory=category;
@@ -6697,8 +6771,23 @@ function openPaymentConsent(category,method){
     descPlain+=` · ${cnt}개월 (${e.sy}.${String(e.sm).padStart(2,'0')} ~ ${e.ey}.${String(e.em).padStart(2,'0')})`;
   }
   document.getElementById('payProductDesc').textContent=descPlain;
-  const amount=computePayAmount(category,_meta);
-  document.getElementById('payProductPrice').textContent=formatWon(amount);
+  // 원가 계산 + 후기 쿠폰 적용
+  const baseAmount=computePayAmount(category,_meta);
+  _payBaseAmount=baseAmount;
+  _payCoupon=(typeof getApplicableCoupon==='function')?getApplicableCoupon(category, baseAmount):null;
+  const couponAmt=_payCoupon?_payCoupon.amount:0;
+  _payFinalAmount=baseAmount-couponAmt;
+  // UI: 쿠폰 있으면 원가/할인 줄 노출
+  const baseRow=document.getElementById('payPriceBaseRow');
+  const couponRow=document.getElementById('payPriceCouponRow');
+  if(_payCoupon){
+    if(baseRow){baseRow.style.display='flex';document.getElementById('payPriceBase').textContent=formatWon(baseAmount);}
+    if(couponRow){couponRow.style.display='flex';document.getElementById('payPriceCoupon').textContent='-'+formatWon(couponAmt);}
+  }else{
+    if(baseRow)baseRow.style.display='none';
+    if(couponRow)couponRow.style.display='none';
+  }
+  document.getElementById('payProductPrice').textContent=formatWon(_payFinalAmount);
   // 카카오페이 Cobranding — pay 로고 + 결제 라벨 (HTML 사용을 위해 innerHTML)
   const cta=document.getElementById('payCtaGo');
   cta.innerHTML=`<span class="kakao-logo">pay</span>카카오페이로 결제하기`;
@@ -6733,7 +6822,12 @@ function _genOrderId(category){
 // ─── 카카오페이 ① 결제 시작 (Worker /ready 호출 → next_redirect_url 로 이동) ───
 async function startKakaoPayment(){
   const cat=_payCategory; if(!cat){return;}
-  const m=PAID_META[cat]; const amount=computePayAmount(cat,_meta);
+  const m=PAID_META[cat];
+  const baseAmount=computePayAmount(cat,_meta);
+  // 모달 열기 직후 _payCoupon이 세팅되어 있지 않거나, 그 사이 다른 쿠폰이 발급된 경우 재조회
+  const coupon=_payCoupon&&!_payCoupon.used ? _payCoupon : ((typeof getApplicableCoupon==='function')?getApplicableCoupon(cat, baseAmount):null);
+  const couponAmount=coupon?coupon.amount:0;
+  const amount=baseAmount-couponAmount;
   const statusEl=document.getElementById('payStatus');
   if(KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
     statusEl.className='pay-status err';
@@ -6759,6 +6853,7 @@ async function startKakaoPayment(){
       body:JSON.stringify({
         category:cat,
         amount:amount,
+        couponAmount:couponAmount,
         partnerOrderId:orderId,
         partnerUserId:userId,
         itemName:itemName,
@@ -6778,6 +6873,8 @@ async function startKakaoPayment(){
       partnerUserId:userId,
       category:cat,
       amount:amount,
+      couponAmount:couponAmount,
+      couponCode:coupon?coupon.code:null,
       startedAt:Date.now()
     }));
     // 모바일은 next_redirect_mobile_url, PC는 next_redirect_pc_url
@@ -6832,7 +6929,8 @@ async function _handlePaymentReturn(){
         partnerUserId:pending.partnerUserId,
         pgToken:pgToken,
         category:pending.category,
-        amount:pending.amount
+        amount:pending.amount,
+        couponAmount:pending.couponAmount||0
       })
     });
     if(!res.ok){
@@ -6845,6 +6943,10 @@ async function _handlePaymentReturn(){
     }
     sessionStorage.removeItem(KAKAO_PAY_SS_KEY);
     history.replaceState({},'',location.pathname);
+    // 쿠폰 소진 — 승인 성공 직후에만 호출 (취소·실패 시 미사용)
+    if(pending.couponCode && typeof consumeCoupon==='function'){
+      try{ consumeCoupon(pending.couponCode, pending.partnerOrderId); }catch(e){}
+    }
     const orderId=pending.partnerOrderId;
     // 채팅 추가 패키지 — 잠금 해제 아닌 현재 사주·카테고리 채팅 보너스 충전
     const pack=CHAT_PACKS.find(p=>p.cat===cat);
@@ -10995,6 +11097,13 @@ function chatIncCount(cat){
   const k=chatLsKeyOf(cat||_category||'life');
   localStorage.setItem(k, String((parseInt(localStorage.getItem(k)||'0',10)||0)+1));
 }
+// ═════════════════════════════════════════════════════════════
+//  사주ID 기반 보상 시스템 — 채팅 보너스 · 공유 보너스 · 후기 쿠폰
+//  공통: sajuIdOf(_saju, _meta) 키로 사용자 식별 (로그인 없음)
+//  - 채팅 보너스 — 추가 질문 패키지 결제로 충전, 카테고리별 누적
+//  - 공유 보너스 — 카톡/밴드/인스타 공유 시 +2회 (채널당 1회)
+//  - 후기 쿠폰   — 후기 작성 시 다음 결제 2,000원 할인 (사주별 1회, 30일 TTL)
+// ═════════════════════════════════════════════════════════════
 // ── 채팅 보너스 (질문 추가 패키지 결제로 충전) ──
 // localStorage 구조: { '<sajuId>_<cat>': N } — 같은 사주·카테고리 단위로 누적
 const _CHAT_BONUS_LS_KEY='saju_chat_bonus_v1';
@@ -11055,6 +11164,244 @@ function claimShareBonus(channel){
   setTimeout(()=>{
     try{alert(`🎁 공유 보상이 적립되었습니다!\n질문 ${_SHARE_BONUS_COUNT}회가 추가되었어요.`);}catch(e){}
   },300);
+}
+// ── 후기 작성 보상 — 사주별 1회, 다음 결제 2,000원 할인 쿠폰 ──
+function _loadValidCoupons(){
+  let arr=[];
+  try{arr=JSON.parse(localStorage.getItem(_REVIEW_COUPON_LS_KEY)||'[]')||[];}catch(e){}
+  if(!Array.isArray(arr))return [];
+  const now=Date.now();
+  const valid=arr.filter(c=>c&&typeof c.amount==='number'&&c.exp>now);
+  if(valid.length!==arr.length){try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(valid));}catch(e){}}
+  return valid;
+}
+function _saveReviewCoupon(coupon){
+  if(!coupon||!coupon.code)return false;
+  const arr=_loadValidCoupons();
+  if(arr.some(c=>c.code===coupon.code))return false;
+  arr.push(coupon);
+  try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));return true;}catch(e){return false;}
+}
+function getApplicableCoupon(category, amount){
+  // 카테고리당 1개만, 결제액이 쿠폰액보다 클 때만 적용. 만료 빠른 것 우선.
+  const all=_loadValidCoupons().filter(c=>!c.used && amount > c.amount);
+  if(!all.length)return null;
+  all.sort((a,b)=>a.exp-b.exp);
+  return all[0];
+}
+function consumeCoupon(code, orderId){
+  const arr=_loadValidCoupons();
+  const idx=arr.findIndex(c=>c.code===code);
+  if(idx<0)return false;
+  arr[idx].used=true; arr[idx].usedAt=Date.now(); arr[idx].usedOrderId=orderId||null;
+  try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));}catch(e){}
+  return true;
+}
+function _loadReviewSubmittedMap(){
+  try{const r=localStorage.getItem(_REVIEW_SUBMITTED_LS_KEY);return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+}
+function _saveReviewSubmittedMap(m){
+  try{localStorage.setItem(_REVIEW_SUBMITTED_LS_KEY,JSON.stringify(m||{}));}catch(e){}
+}
+function isReviewSubmittedFor(sid){
+  if(!sid)return false;
+  const m=_loadReviewSubmittedMap();
+  return !!m[sid];
+}
+function _markReviewSubmitted(sid, cat, reviewId, couponIssued){
+  if(!sid)return;
+  const m=_loadReviewSubmittedMap();
+  m[sid]={submittedAt:Date.now(), cat:cat||null, reviewId:reviewId||null, couponIssued:!!couponIssued};
+  _saveReviewSubmittedMap(m);
+}
+function _loadReviewEligible(){
+  let m={};
+  try{m=JSON.parse(localStorage.getItem(_REVIEW_ELIGIBLE_LS_KEY)||'{}')||{};}catch(e){m={};}
+  const now=Date.now(); let changed=false;
+  Object.keys(m).forEach(k=>{if(!m[k]||!(m[k].eligibleUntil>now)){delete m[k];changed=true;}});
+  if(changed){try{localStorage.setItem(_REVIEW_ELIGIBLE_LS_KEY,JSON.stringify(m));}catch(e){}}
+  return m;
+}
+function _markReviewEligible(sid, cat){
+  if(!sid)return;
+  const m=_loadReviewEligible();
+  // 같은 sid가 이미 있어도 가장 늦은 만료로 갱신
+  const next={cat:cat||null, eligibleUntil:Date.now()+_REVIEW_ELIGIBLE_TTL_MS};
+  if(!m[sid] || (m[sid].eligibleUntil||0) < next.eligibleUntil) m[sid]=next;
+  try{localStorage.setItem(_REVIEW_ELIGIBLE_LS_KEY,JSON.stringify(m));}catch(e){}
+}
+function isReviewEligibleFor(sid){
+  if(!sid)return false;
+  // 결제 토큰 24h 또는 별도 자격 키 7d 중 하나라도 살아 있으면 자격 있음
+  try{
+    const tokens=(typeof _loadValidPaidTokens==='function')?_loadValidPaidTokens():[];
+    if(tokens.some(t=>t&&t.sajuId===sid))return true;
+  }catch(e){}
+  const m=_loadReviewEligible();
+  return !!m[sid];
+}
+// ── 후기 작성 모달 UI ──
+let _reviewStarVal=5;
+function openReviewWrite(){
+  _renderReviewWriteBody();
+  const ov=document.getElementById('reviewWriteOverlay');
+  if(ov){ov.classList.add('vis');document.body.style.overflow='hidden';}
+}
+function closeReviewWrite(){
+  const ov=document.getElementById('reviewWriteOverlay');
+  if(ov)ov.classList.remove('vis');
+  document.body.style.overflow='';
+}
+// 사용자 ID — partnerUserId (saju_user_id_v1) 우선 활용, 없으면 즉석 생성
+function _getOrCreateUserId(){
+  try{
+    let u=localStorage.getItem('saju_user_id_v1');
+    if(!u){u='U-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);localStorage.setItem('saju_user_id_v1',u);}
+    return u;
+  }catch(e){return 'U-anon';}
+}
+function _renderReviewWriteBody(){
+  const body=document.getElementById('reviewWriteBody');
+  if(!body)return;
+  // 1) 사주·메타 존재 확인
+  if(!_saju||!_meta){
+    body.innerHTML='<div class="rv-block-msg">먼저 사주 분석을 진행해 주세요.<br><span style="color:var(--muted);font-size:.72rem">메인 화면에서 카테고리를 선택해 입력을 완료하면 후기 작성이 열려요.</span></div>';
+    return;
+  }
+  const sid=sajuIdOf(_saju,_meta);
+  if(!sid){
+    body.innerHTML='<div class="rv-block-msg">사주 ID를 확인할 수 없어요.</div>';
+    return;
+  }
+  // 2) 결제·자격 확인
+  if(!isReviewEligibleFor(sid)){
+    body.innerHTML='<div class="rv-block-msg">결제 후 운세를 보신 분만 후기 작성이 가능해요.<br><span style="color:var(--muted);font-size:.72rem">결제 후 7일 이내에 한 번 작성하실 수 있어요.</span></div>';
+    return;
+  }
+  // 3) 중복 확인 (로컬)
+  if(isReviewSubmittedFor(sid)){
+    body.innerHTML='<div class="rv-block-msg">이미 후기를 작성하신 사주입니다.<br><span style="color:var(--muted);font-size:.72rem">한 사주당 후기 작성·할인 쿠폰은 1회만 발급돼요.</span></div>';
+    return;
+  }
+  // 4) 폼 렌더
+  const cat=_category||'life';
+  const catLabel=(typeof CAT_LABEL==='object'&&CAT_LABEL[cat])?CAT_LABEL[cat]:cat;
+  _reviewStarVal=5;
+  body.innerHTML=`
+    <div class="review-form">
+      <div class="rv-row">
+        <span class="rv-label">카테고리</span>
+        <span class="rv-cat-tag">${catLabel}</span>
+      </div>
+      <div class="rv-row">
+        <span class="rv-label">별점</span>
+        <div class="rv-stars" id="rvStars" role="radiogroup" aria-label="별점 선택">
+          ${[1,2,3,4,5].map(i=>`<span class="rv-st" data-v="${i}" onclick="_rvSetStars(${i})" role="radio" aria-checked="${i<=5?'true':'false'}">★</span>`).join('')}
+        </div>
+      </div>
+      <div class="rv-row">
+        <span class="rv-label">닉네임 (자동 마스킹)</span>
+        <input id="rvNickname" class="rv-input" maxlength="10" placeholder="예: 김민수 → 김** 님" autocomplete="off">
+      </div>
+      <div class="rv-row">
+        <span class="rv-label">후기 (${_REVIEW_MIN_LENGTH}~${_REVIEW_MAX_LENGTH}자)</span>
+        <textarea id="rvText" class="rv-text" maxlength="${_REVIEW_MAX_LENGTH}" placeholder="이용 경험을 ${_REVIEW_MIN_LENGTH}자 이상 자세히 작성해 주세요.&#10;어떤 풀이가 도움이 되었는지, 어떤 점이 좋았는지 알려주세요." oninput="_rvUpdateCounter()"></textarea>
+        <div class="rv-counter" id="rvCounter"><span id="rvLen">0</span>/${_REVIEW_MAX_LENGTH} (최소 ${_REVIEW_MIN_LENGTH})</div>
+      </div>
+      <div class="rv-policy">
+        검토 후 게시되며, 욕설·광고·허위 내용은 거절될 수 있어요.<br>
+        닉네임은 자동 마스킹 처리되고, 한 사주당 1회만 발급돼요.
+      </div>
+      <button id="rvSubmitBtn" class="rv-submit" onclick="submitReview()" disabled>후기 제출하고 2,000원 쿠폰 받기</button>
+    </div>`;
+  _rvUpdateCounter();
+}
+function _rvSetStars(v){
+  _reviewStarVal=Math.max(1,Math.min(5,v|0));
+  const stars=document.querySelectorAll('#rvStars .rv-st');
+  stars.forEach(el=>{
+    const i=parseInt(el.getAttribute('data-v'),10);
+    el.classList.toggle('dim', i>_reviewStarVal);
+    el.setAttribute('aria-checked', i===_reviewStarVal?'true':'false');
+  });
+}
+function _rvUpdateCounter(){
+  const ta=document.getElementById('rvText'); if(!ta)return;
+  const len=(ta.value||'').trim().length;
+  const lenEl=document.getElementById('rvLen');
+  const counter=document.getElementById('rvCounter');
+  if(lenEl)lenEl.textContent=String(len);
+  if(counter)counter.classList.toggle('warn', len>0 && len<_REVIEW_MIN_LENGTH);
+  const btn=document.getElementById('rvSubmitBtn');
+  if(btn)btn.disabled=!(len>=_REVIEW_MIN_LENGTH && len<=_REVIEW_MAX_LENGTH);
+}
+async function submitReview(){
+  const ta=document.getElementById('rvText'); if(!ta)return;
+  const nick=document.getElementById('rvNickname');
+  const btn=document.getElementById('rvSubmitBtn');
+  const text=(ta.value||'').trim();
+  if(text.length<_REVIEW_MIN_LENGTH||text.length>_REVIEW_MAX_LENGTH){alert(`후기는 ${_REVIEW_MIN_LENGTH}~${_REVIEW_MAX_LENGTH}자로 작성해 주세요.`);return;}
+  const sid=sajuIdOf(_saju,_meta);
+  if(!sid){alert('사주 ID를 확인할 수 없어요.');return;}
+  if(isReviewSubmittedFor(sid)){alert('이미 후기를 작성하신 사주입니다.');return;}
+  if(btn){btn.disabled=true;btn.textContent='제출 중…';}
+  const base=_reviewWorkerBase();
+  if(!base||base.includes('example.workers.dev')){
+    if(btn){btn.disabled=false;btn.textContent='후기 제출하고 2,000원 쿠폰 받기';}
+    alert('후기 시스템이 일시 점검 중입니다.\n잠시 후 다시 시도해 주세요.');
+    return;
+  }
+  const payload={
+    sajuId:sid,
+    cat:_category||'life',
+    stars:_reviewStarVal,
+    text,
+    nickname:(nick&&nick.value||'').trim()||'익명',
+    partnerUserId:_getOrCreateUserId()
+  };
+  try{
+    const res=await fetch(base+'/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.ok){
+      if(btn){btn.disabled=false;btn.textContent='후기 제출하고 2,000원 쿠폰 받기';}
+      const msg=(data&&data.message)||'후기 제출에 실패했어요. 잠시 후 다시 시도해 주세요.';
+      // 서버측 중복은 로컬도 마킹
+      if(data&&data.code==='DUPLICATE')_markReviewSubmitted(sid, payload.cat, null, false);
+      alert(msg);
+      return;
+    }
+    // 성공 — 쿠폰 발급·마킹
+    const expiresAt=(data.coupon&&data.coupon.expiresAt)||(Date.now()+_REVIEW_COUPON_TTL_MS);
+    const amount=(data.coupon&&data.coupon.amount)||_REVIEW_COUPON_AMOUNT;
+    const code='RC-'+sid.replace(/[^a-zA-Z0-9]/g,'').slice(-6).toUpperCase()+'-'+Date.now().toString(36).toUpperCase();
+    _saveReviewCoupon({code, sajuId:sid, amount, exp:expiresAt, used:false, usedAt:null, usedOrderId:null, reviewId:data.reviewId||null, issuedAt:Date.now()});
+    _markReviewSubmitted(sid, payload.cat, data.reviewId||null, true);
+    // 결과 화면 — 쿠폰 발급 카드
+    const body=document.getElementById('reviewWriteBody');
+    if(body){
+      body.innerHTML=`
+        <div style="display:flex;flex-direction:column;gap:14px;padding:8px 0">
+          <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--accent-bright)">🎉 후기 접수 완료</div>
+          <div class="coupon-badge">
+            <div style="font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.04em">다음 결제 시 자동 차감</div>
+            <div class="coupon-amount">-${amount.toLocaleString('ko-KR')}원</div>
+            <div class="coupon-meta">유효기간 ${new Date(expiresAt).toLocaleDateString('ko-KR')}까지<br>다음 결제 시 자동 적용됩니다 (결제액이 ${amount.toLocaleString('ko-KR')}원 이하인 경우 적용 안 됨)</div>
+          </div>
+          <div style="font-size:.74rem;color:var(--muted);text-align:center;line-height:1.7">
+            후기는 운영자 검토 후 사이트에 게시됩니다.
+          </div>
+          <button class="rv-submit" onclick="closeReviewWrite()">확인</button>
+        </div>`;
+    }
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='후기 제출하고 2,000원 쿠폰 받기';}
+    alert('네트워크 오류로 후기를 제출하지 못했어요.\n잠시 후 다시 시도해 주세요.');
+  }
+}
+// 결제 완료 모달에서 후기 작성 카드 클릭
+function payDoneClickReview(){
+  closePayDone();
+  setTimeout(()=>openReviewWrite(), 200);
 }
 function chatRemaining(cat){
   const c=cat||_category||'life';

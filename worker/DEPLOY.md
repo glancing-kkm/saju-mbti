@@ -213,3 +213,97 @@ const KAKAO_PAYMENT_BASE='https://kakao-payment-worker.your-subdomain.workers.de
 | "결제 정보가 만료되었습니다" | 결제 도중 브라우저 종료 또는 다른 기기에서 콜백. 영수증 기반 수동 환불·재처리. |
 | CORS 에러 | `ALLOWED_ORIGIN`이 실제 사이트 도메인과 다름. 콤마로 여러 개 등록 가능. |
 | 금액 불일치 `AMOUNT_MISMATCH` | 클라이언트가 보낸 amount와 worker의 `CATEGORY_PRICE` 차이. 가격 변경 시 양쪽 다 수정 필수. |
+
+---
+
+# 후기 → 2,000원 할인 쿠폰 시스템 운영 가이드
+
+## 1. KV namespace 생성 (1회만)
+
+```sh
+wrangler kv:namespace create REVIEWS_KV --config wrangler.kakao-payment.toml
+wrangler kv:namespace create REVIEWS_KV --preview --config wrangler.kakao-payment.toml
+```
+
+출력된 `id` / `preview_id`를 `worker/wrangler.kakao-payment.toml`의 주석 처리된 `[[kv_namespaces]]` 블록에 채워 넣고 주석을 해제합니다:
+
+```toml
+[[kv_namespaces]]
+binding = "REVIEWS_KV"
+id = "abcd1234…"
+preview_id = "efgh5678…"
+```
+
+이후 `wrangler deploy --config wrangler.kakao-payment.toml` 재실행.
+
+## 2. ADMIN_TOKEN 시크릿 등록
+
+```sh
+wrangler secret put ADMIN_TOKEN --config wrangler.kakao-payment.toml
+# → 16자 이상 무작위 문자열 (생성: openssl rand -hex 24)
+```
+
+이 토큰은 `/admin/reviews` 조회 시 필요. 운영자만 보관.
+
+## 3. KV 후기 조회 (CLI)
+
+```sh
+# 대기 중인 후기 목록 (최신순으로 인덱싱됨)
+wrangler kv:key list --binding REVIEWS_KV --prefix "review_idx:pending:" \
+  --config wrangler.kakao-payment.toml
+
+# 개별 후기 본문
+wrangler kv:key get --binding REVIEWS_KV "review:male_갑자을축병인정묘:1719000000000" \
+  --config wrangler.kakao-payment.toml
+
+# rate limit 상태 확인
+wrangler kv:key list --binding REVIEWS_KV --prefix "ratelimit:review:" \
+  --config wrangler.kakao-payment.toml
+
+# 차단된 사주ID 목록
+wrangler kv:key list --binding REVIEWS_KV --prefix "review_blocked:" \
+  --config wrangler.kakao-payment.toml
+```
+
+## 4. 후기 검토 흐름
+
+1. **조회**: 위 CLI 또는 `GET /admin/reviews?token=XXX&status=pending` 호출
+2. **검토**: 후기 본문·별점·카테고리 확인. 욕설·광고·허위 의심 시 거절
+3. **승인** (현재 수동 방식): 좋은 후기를 골라 `index.html`의 `REVIEWS` 배열에 직접 추가
+   ```js
+   {stars:5, cat:'인생총운', text:'…', name:'김** 님', date:'2026.06.05'}
+   ```
+4. **거절**: KV에서 `review_blocked:{sajuId}` 키를 `1`로 추가 → 해당 사주는 재작성 불가
+   ```sh
+   wrangler kv:key put --binding REVIEWS_KV "review_blocked:male_갑자을축병인정묘" "1" \
+     --config wrangler.kakao-payment.toml
+   ```
+
+## 5. 클라이언트 측 동작
+
+- **자격**: 결제 후 24시간 이내 (`saju_paid_tokens_v1`) **또는** 7일 이내 (`saju_review_eligible_v1`)에만 후기 작성 가능
+- **중복 방지**: 사주ID 기준 1회만 (`saju_review_submitted_v1` + 서버 KV `review_submitted:{sajuId}`)
+- **쿠폰 발급**: 후기 작성 즉시 `saju_review_coupon_v1`에 30일 유효 쿠폰 저장
+- **차감**: 다음 결제 시 결제액 > 쿠폰액인 경우에만 자동 적용 (daypick 1,500원·chatpack1 1,000원은 제외)
+- **카테고리 무관**: 어느 카테고리에서 발급되었든 다른 카테고리 결제에 사용 가능
+
+## 6. 어뷰징 방지 (3중 레이어)
+
+| 레이어 | 키 | 한도 |
+|---|---|---|
+| 사주ID | `ratelimit:review:saju:{sajuId}` | 10분 1회 |
+| 사용자ID | `ratelimit:review:user:{partnerUserId}` | 10분 1회 |
+| IP | `ip_review_count:{ip}:{date}` | 24시간 5건 |
+
+추가로 결제 토큰 없는 사주ID는 클라이언트 측에서 폼 자체가 노출되지 않음.
+
+## 7. 문제 해결
+
+| 증상 | 원인 / 해결 |
+|------|-------------|
+| "후기 시스템이 일시 점검 중입니다" | `REVIEWS_KV` 바인딩 미설정. 1단계 다시 확인. |
+| "이미 후기를 작성하신 사주입니다" | 정상. 같은 사주는 1회만 작성 가능. |
+| "결제 후 운세를 보신 분만 후기 작성이 가능해요" | 미결제·자격 만료. 결제 후 7일 이내 작성 가능. |
+| "잠시 후 다시 시도해 주세요" | Rate limit. 10분 후 재시도. |
+| "오늘 후기 작성 한도를 초과했습니다" | 같은 IP에서 24시간 5건 초과. 다음 날 재시도. |
+| 쿠폰이 결제 모달에 표시 안 됨 | 결제액이 쿠폰액(2,000원) 이하. daypick·chatpack1는 적용 불가. |

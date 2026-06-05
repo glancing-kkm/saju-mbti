@@ -38,13 +38,25 @@ const CATEGORY_PRICE = {
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;
 
-function isAmountValid(category, amount) {
+// 후기 보상 쿠폰 — 최대 차감액 (서버 강제 캡)
+const MAX_COUPON_AMOUNT = 2000;
+const REVIEW_MIN_LENGTH = 30;
+const REVIEW_MAX_LENGTH = 500;
+const REVIEW_RATE_LIMIT_SEC = 600;        // 같은 sajuId/userId 10분 1회
+const REVIEW_IP_DAILY_LIMIT = 5;          // 같은 IP 24시간 5건
+const REVIEW_TTL_SEC = 90 * 24 * 60 * 60; // KV 후기 90일 보관
+
+// 결제액과 쿠폰액이 합쳐서 원가가 되는지 검증 (서버에서 쿠폰 금액 강제)
+function isAmountValid(category, amount, couponAmount = 0) {
+  const c = Number(couponAmount) || 0;
+  if (c < 0 || c > MAX_COUPON_AMOUNT) return false;
+  const gross = amount + c;
   if (category === 'monthly') {
-    if (amount % MONTHLY_UNIT !== 0) return false;
-    const cnt = amount / MONTHLY_UNIT;
+    if (gross % MONTHLY_UNIT !== 0) return false;
+    const cnt = gross / MONTHLY_UNIT;
     return cnt >= 1 && cnt <= MONTHLY_MAX;
   }
-  return CATEGORY_PRICE[category] === amount;
+  return CATEGORY_PRICE[category] === gross;
 }
 
 export default {
@@ -68,6 +80,15 @@ export default {
     if (url.pathname === '/approve' && request.method === 'POST') {
       return await handleApprove(request, env, cid, corsHeaders);
     }
+    if (url.pathname === '/review' && request.method === 'POST') {
+      return await handleReviewSubmit(request, env, corsHeaders);
+    }
+    if (url.pathname === '/review/check' && request.method === 'POST') {
+      return await handleReviewCheck(request, env, corsHeaders);
+    }
+    if (url.pathname.startsWith('/admin/reviews') && request.method === 'GET') {
+      return await handleAdminReviews(request, env, corsHeaders);
+    }
 
     return json({ ok: false, code: 'NOT_FOUND', message: 'Endpoint not found' }, 404, corsHeaders);
   },
@@ -79,14 +100,14 @@ async function handleReady(request, env, cid, corsHeaders) {
   try { body = await request.json(); }
   catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
 
-  const { category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl, cancelUrl, failUrl } = body || {};
+  const { category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl, cancelUrl, failUrl, couponAmount } = body || {};
   if (!category || typeof amount !== 'number' || !partnerOrderId || !partnerUserId || !itemName || !approvalUrl) {
     return json({ ok: false, code: 'MISSING_FIELDS', message: 'category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl required' }, 400, corsHeaders);
   }
   if (!CATEGORY_PRICE[category]) {
     return json({ ok: false, code: 'UNKNOWN_CATEGORY', message: `Unknown category: ${category}` }, 400, corsHeaders);
   }
-  if (!isAmountValid(category, amount)) {
+  if (!isAmountValid(category, amount, couponAmount || 0)) {
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch for ${category}` }, 400, corsHeaders);
   }
 
@@ -139,12 +160,12 @@ async function handleApprove(request, env, cid, corsHeaders) {
   try { body = await request.json(); }
   catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
 
-  const { tid, partnerOrderId, partnerUserId, pgToken, category, amount } = body || {};
+  const { tid, partnerOrderId, partnerUserId, pgToken, category, amount, couponAmount } = body || {};
   if (!tid || !partnerOrderId || !partnerUserId || !pgToken) {
     return json({ ok: false, code: 'MISSING_FIELDS', message: 'tid, partnerOrderId, partnerUserId, pgToken required' }, 400, corsHeaders);
   }
-  // 카테고리·금액 재검증 (위조 방지)
-  if (category && amount != null && !isAmountValid(category, amount)) {
+  // 카테고리·금액 재검증 (위조 방지) — 쿠폰 금액 포함
+  if (category && amount != null && !isAmountValid(category, amount, couponAmount || 0)) {
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch` }, 400, corsHeaders);
   }
 
@@ -197,8 +218,8 @@ function buildCorsHeaders(request, env) {
   const allowOrigin = allowed.length === 0 ? '*' : (allowed.includes(origin) ? origin : allowed[0]);
   return {
     'Access-Control-Allow-Origin': allowOrigin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Token',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   };
@@ -209,4 +230,195 @@ function json(body, status, extraHeaders) {
     status,
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...(extraHeaders || {}) },
   });
+}
+
+// ═════════════════════════════════════════════════════════════
+//  후기(Review) 시스템 — KV 저장, 관리자 검토 후 정적 REVIEWS 반영
+// ═════════════════════════════════════════════════════════════
+
+// sajuId 형식: "<gender>_<8자 한글기둥 또는 XX>"  예: male_갑자을축병인정묘
+const SAJU_ID_RE = /^[a-zA-Z]+_[가-힣XxA-Za-z]{8,16}$/;
+
+function sanitizeText(s) {
+  if (typeof s !== 'string') return '';
+  return s.replace(/<[^>]*>/g, '').replace(/[ -]/g, '').trim();
+}
+
+function maskNickname(n) {
+  const s = sanitizeText(n).slice(0, 10);
+  if (s.length === 0) return '익명 님';
+  const head = s.slice(0, 1);
+  return head + '** 님';
+}
+
+async function sha256Hex(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function genReviewId(sajuId, text) {
+  const h = await sha256Hex(sajuId + '|' + text);
+  return 'rv_' + h.slice(0, 16);
+}
+
+function getClientIp(request) {
+  return request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+}
+
+// 단순 rate limit — KV에 키 존재하면 차단. TTL로 자동 해제.
+async function checkRateLimit(env, key, ttlSec) {
+  if (!env.REVIEWS_KV) return { ok: true };
+  const v = await env.REVIEWS_KV.get(key);
+  if (v) return { ok: false, key };
+  await env.REVIEWS_KV.put(key, '1', { expirationTtl: ttlSec });
+  return { ok: true };
+}
+
+// IP 일일 한도 — 같은 IP가 24h 내 N건 초과 시 차단
+async function checkIpDailyLimit(env, ip) {
+  if (!env.REVIEWS_KV || ip === 'unknown') return { ok: true };
+  const day = new Date().toISOString().slice(0, 10);
+  const key = `ip_review_count:${ip}:${day}`;
+  const cur = parseInt((await env.REVIEWS_KV.get(key)) || '0', 10) || 0;
+  if (cur >= REVIEW_IP_DAILY_LIMIT) return { ok: false };
+  await env.REVIEWS_KV.put(key, String(cur + 1), { expirationTtl: 86400 });
+  return { ok: true };
+}
+
+// ─── /review — 후기 제출 ───
+async function handleReviewSubmit(request, env, corsHeaders) {
+  if (!env.REVIEWS_KV) {
+    return json({ ok: false, code: 'SERVICE_NOT_CONFIGURED', message: '후기 시스템이 일시 점검 중입니다.' }, 503, corsHeaders);
+  }
+  let body;
+  try { body = await request.json(); }
+  catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
+
+  const { sajuId, cat, stars, text, nickname, partnerUserId } = body || {};
+  if (!sajuId || !cat || !stars || !text || !partnerUserId) {
+    return json({ ok: false, code: 'MISSING_FIELDS', message: 'sajuId, cat, stars, text, partnerUserId required' }, 400, corsHeaders);
+  }
+  if (!SAJU_ID_RE.test(sajuId)) {
+    return json({ ok: false, code: 'BAD_SAJU_ID', message: 'Invalid sajuId format' }, 400, corsHeaders);
+  }
+  if (!CATEGORY_PRICE[cat]) {
+    return json({ ok: false, code: 'UNKNOWN_CATEGORY', message: `Unknown category: ${cat}` }, 400, corsHeaders);
+  }
+  const s = parseInt(stars, 10);
+  if (!(s >= 1 && s <= 5)) {
+    return json({ ok: false, code: 'BAD_STARS', message: 'stars must be 1~5' }, 400, corsHeaders);
+  }
+  const cleanText = sanitizeText(text);
+  if (cleanText.length < REVIEW_MIN_LENGTH || cleanText.length > REVIEW_MAX_LENGTH) {
+    return json({ ok: false, code: 'BAD_TEXT_LENGTH', message: `text ${REVIEW_MIN_LENGTH}~${REVIEW_MAX_LENGTH} chars` }, 400, corsHeaders);
+  }
+  const maskedNick = maskNickname(nickname);
+
+  // 차단 리스트 확인
+  const blocked = await env.REVIEWS_KV.get(`review_blocked:${sajuId}`);
+  if (blocked) {
+    return json({ ok: false, code: 'BLOCKED', message: '후기 작성이 제한된 사주입니다.' }, 403, corsHeaders);
+  }
+
+  // 사주ID 기준 1회 제한
+  // 인덱스 키로 빠르게 확인
+  const submittedFlag = await env.REVIEWS_KV.get(`review_submitted:${sajuId}`);
+  if (submittedFlag) {
+    return json({ ok: false, code: 'DUPLICATE', message: '이미 후기를 작성하신 사주입니다.' }, 409, corsHeaders);
+  }
+
+  // Rate limit (sajuId, userId 별도)
+  const rlSaju = await checkRateLimit(env, `ratelimit:review:saju:${sajuId}`, REVIEW_RATE_LIMIT_SEC);
+  if (!rlSaju.ok) return json({ ok: false, code: 'RATE_LIMIT', message: '잠시 후 다시 시도해 주세요.' }, 429, corsHeaders);
+  const rlUser = await checkRateLimit(env, `ratelimit:review:user:${partnerUserId}`, REVIEW_RATE_LIMIT_SEC);
+  if (!rlUser.ok) return json({ ok: false, code: 'RATE_LIMIT', message: '잠시 후 다시 시도해 주세요.' }, 429, corsHeaders);
+
+  // IP 일일 한도
+  const ip = getClientIp(request);
+  const ipCheck = await checkIpDailyLimit(env, ip);
+  if (!ipCheck.ok) {
+    return json({ ok: false, code: 'IP_LIMIT', message: '오늘 후기 작성 한도를 초과했습니다.' }, 429, corsHeaders);
+  }
+
+  const ts = Date.now();
+  const reviewId = await genReviewId(sajuId, cleanText);
+
+  // Idempotency: 동일 reviewId가 이미 있으면 그대로 반환
+  const existing = await env.REVIEWS_KV.get(`review_id_idx:${reviewId}`);
+  if (existing) {
+    return json({
+      ok: true, reviewId,
+      coupon: { amount: MAX_COUPON_AMOUNT, expiresAt: ts + 30 * 86400 * 1000 },
+      message: '후기가 이미 접수되어 있습니다.',
+    }, 200, corsHeaders);
+  }
+
+  const record = {
+    reviewId, sajuId, cat, stars: s,
+    text: cleanText, nickname: maskedNick, partnerUserId,
+    ip, ua: (request.headers.get('User-Agent') || '').slice(0, 200),
+    status: 'pending', createdAt: ts,
+  };
+
+  const reviewKey = `review:${sajuId}:${ts}`;
+  await env.REVIEWS_KV.put(reviewKey, JSON.stringify(record), { expirationTtl: REVIEW_TTL_SEC });
+  await env.REVIEWS_KV.put(`review_idx:pending:${ts}`, reviewKey, { expirationTtl: REVIEW_TTL_SEC });
+  await env.REVIEWS_KV.put(`review_id_idx:${reviewId}`, reviewKey, { expirationTtl: REVIEW_TTL_SEC });
+  await env.REVIEWS_KV.put(`review_submitted:${sajuId}`, ts.toString()); // 영구 (중복방지)
+
+  return json({
+    ok: true,
+    reviewId,
+    coupon: { amount: MAX_COUPON_AMOUNT, expiresAt: ts + 30 * 86400 * 1000 },
+    message: '후기가 접수되었습니다. 검토 후 게시됩니다.',
+  }, 200, corsHeaders);
+}
+
+// ─── /review/check — 사주ID 사전 중복 확인 ───
+async function handleReviewCheck(request, env, corsHeaders) {
+  if (!env.REVIEWS_KV) {
+    // KV 없으면 클라이언트 localStorage만으로 동작 (열린 상태)
+    return json({ ok: true, alreadySubmitted: false, kvEnabled: false }, 200, corsHeaders);
+  }
+  let body;
+  try { body = await request.json(); }
+  catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
+  const { sajuId } = body || {};
+  if (!sajuId || !SAJU_ID_RE.test(sajuId)) {
+    return json({ ok: false, code: 'BAD_SAJU_ID', message: 'Invalid sajuId' }, 400, corsHeaders);
+  }
+  const flag = await env.REVIEWS_KV.get(`review_submitted:${sajuId}`);
+  const blocked = await env.REVIEWS_KV.get(`review_blocked:${sajuId}`);
+  return json({ ok: true, alreadySubmitted: !!flag, blocked: !!blocked, kvEnabled: true }, 200, corsHeaders);
+}
+
+// ─── /admin/reviews?token=X&status=pending|approved|rejected ───
+async function handleAdminReviews(request, env, corsHeaders) {
+  if (!env.ADMIN_TOKEN || !env.REVIEWS_KV) {
+    return json({ ok: false, code: 'SERVICE_NOT_CONFIGURED' }, 503, corsHeaders);
+  }
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token') || request.headers.get('X-Admin-Token');
+  if (!token || token !== env.ADMIN_TOKEN) {
+    return json({ ok: false, code: 'UNAUTHORIZED' }, 401, corsHeaders);
+  }
+  const status = url.searchParams.get('status') || 'pending';
+  if (!['pending', 'approved', 'rejected', 'published'].includes(status)) {
+    return json({ ok: false, code: 'BAD_STATUS' }, 400, corsHeaders);
+  }
+  const cursor = url.searchParams.get('cursor') || undefined;
+  const list = await env.REVIEWS_KV.list({ prefix: `review_idx:${status}:`, limit: 100, cursor });
+  const items = [];
+  for (const k of list.keys) {
+    const reviewKey = await env.REVIEWS_KV.get(k.name);
+    if (!reviewKey) continue;
+    const raw = await env.REVIEWS_KV.get(reviewKey);
+    if (raw) {
+      try { items.push(JSON.parse(raw)); } catch (e) {}
+    }
+  }
+  return json({
+    ok: true, status, items,
+    cursor: list.list_complete ? null : list.cursor,
+  }, 200, corsHeaders);
 }

@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin-reviews.html
 
 # 검색엔진 사이트맵
 Sitemap: https://saju-mbti-9h1.pages.dev/sitemap.xml
