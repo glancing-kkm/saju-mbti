@@ -719,6 +719,16 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
+/* TL-DD: 타임라인 카드 접기/펼치기 */
+.tl-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
+.tl-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
+.tl-collapsible.tl-open .tl-chevron{transform:rotate(180deg)}
+.tl-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:1px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.tl-hint:hover{background:rgba(212,175,55,.16)}
+.tl-collapsible.tl-open .tl-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
+.tl-body-wrap{display:none}
+.tl-collapsible.tl-open .tl-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
+@keyframes tlOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .nb-body p{margin-bottom:11px}
 .nb-body p:last-child{margin-bottom:0}
@@ -952,6 +962,32 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
   .menu-card{padding:16px 8px 14px}
   .tog-row{gap:6px}
   .row3{gap:6px}
+}
+
+/* ══ 반응형 (RSP): 폰 크기별 유동 스케일 → 태블릿 → PC ══
+   루트 폰트가 rem 기반 UI 전체를 스케일 — 320px 폰 14px ~ 390px+ 16px */
+html{font-size:clamp(14px,4.1vw,16px)}
+
+/* 태블릿 (600~899px): 컨테이너 한 단계 확장 */
+@media (min-width:600px){
+  #app{max-width:560px}
+}
+
+/* PC (900px+): 넓은 컨테이너 + 앱 프레임 + 메뉴 4열 + 타이포 확대 */
+@media (min-width:900px){
+  html{font-size:17px}
+  #app{max-width:768px;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 90px rgba(0,0,0,.5)}
+  .home-hero h1{font-size:2.5rem}
+  .menu-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+  .form-body{max-width:640px;margin-left:auto;margin-right:auto;width:100%}
+  .reviews-grid{grid-template-columns:1fr 1fr 1fr}
+  .next-actions-grid{grid-template-columns:1fr 1fr 1fr}
+  .sinsal-mini-grid{grid-template-columns:1fr 1fr}
+}
+
+/* 와이드 PC (1280px+): 결과 카드 가독 폭 한 단계 더 */
+@media (min-width:1280px){
+  #app{max-width:840px}
 }
 .chat-btn{padding:0 20px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border:none;border-radius:50px;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-family:inherit}
 .chat-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -10714,14 +10750,18 @@ async function downloadGunghapSummary(fmt){
 }
 
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
-  const cls='nb-card'+(isPrimary?' primary':'');
+  // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
+  const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
+  const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'');
   const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
   // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
   // id="card-XXX" 추가 — TOC 점프 링크용 (BT)
+  // 주의: _generateTOC 정규식이 <div class="nb-title">를 리터럴 매칭 — 이 태그에 속성 추가 금지
   const safeId='card-'+catLabel.replace(/[^A-Za-z0-9_-]/g,'_');
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
     ${badge}<div class="nb-cat">${catLabel}</div>
-    <div class="nb-title">${emoji} ${title}</div>
+    <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':''}</div>
+    ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><div class="tl-body-wrap">':''}
     <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
@@ -10749,14 +10789,41 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   if(catLabel!=='TOC' && catLabel!=='MASTER' && catLabel!=='EPILOGUE'){
     h+=`<div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);text-align:center;font-size:.7rem;color:var(--muted);line-height:1.5">↓ 다음 카드로 이어져요 <span style="opacity:.6">(맨 위 📋 목차에서 다른 카드로 바로 이동 가능)</span></div>`;
   }
+  if(isTl)h+=`</div>`; // .tl-body-wrap 닫기
   h+=`</div><!--CARD_END:${catLabel}-->`;
   return h;
+}
+
+// TL-DD: 타임라인 카드 접기/펼치기
+function _tlToggle(card,forceOpen){
+  if(!card)return;
+  const open=forceOpen===true?true:!card.classList.contains('tl-open');
+  card.classList.toggle('tl-open',open);
+  const btn=card.querySelector('.tl-hint');
+  if(btn){
+    btn.textContent=open?'▲ 접어두기':'👆 탭하면 시기별 상세 풀이가 펼쳐져요';
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  }
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('.term'))return; // 용어 툴팁 클릭은 토글 제외
+  const card=e.target.closest('.tl-collapsible');
+  if(!card)return;
+  if(e.target.closest('.nb-title')||e.target.closest('.tl-hint'))_tlToggle(card);
+});
+// TOC 점프 — 접힌 타임라인 카드면 펼친 뒤 스크롤
+function jumpToCard(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(el.classList.contains('tl-collapsible')&&!el.classList.contains('tl-open'))_tlToggle(el,true);
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // BT: 카드 목차(TOC) 자동 생성 — 본문 h에서 카드 추출 → TOC HTML 반환
 function _generateTOC(h, scopeLabel){
   try{
-    const tocMatches=[...h.matchAll(/<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)<\/div>/g)];
+    // ([^<]+) 뒤 </div> 요구 제거 — 타임라인 카드는 제목 끝에 <span class="tl-chevron">가 붙음 (TL-DD)
+    const tocMatches=[...h.matchAll(/<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)/g)];
     if(tocMatches.length<3)return ''; // 카드 3개 미만이면 TOC 생략
     const seenIds=new Set();
     const items=tocMatches.filter(m=>{
@@ -10767,7 +10834,7 @@ function _generateTOC(h, scopeLabel){
     }).map(m=>{
       const safeId='card-'+m[1].replace(/[^A-Za-z0-9_-]/g,'_');
       const title=m[2].trim();
-      return `<button type="button" onclick="document.getElementById('${safeId}').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${title}</button>`;
+      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${title}</button>`;
     });
     return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
       <div class="nb-cat">TOC</div>
