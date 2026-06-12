@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>천지인 사주 — 숏츠 모션 데모</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═════════════════════════════════════════════
+   9:16 세로 캔버스 (1080×1920) — 화면녹화용
+   화면녹화 가이드:
+     맥:  ⌘+Shift+5 → 부분 캡처 → 이 캔버스 영역
+     윈도: Win+Alt+R (Xbox Game Bar)
+     모바일: 시뮬레이션은 BrowserStack/Chrome DevTools Device Toolbar
+   ═════════════════════════════════════════════ */
+:root{
+  --bg-deep:#0c0f12;
+  --bg-mid:#1b1f25;
+  --card:#1f242b;
+  --border:#2a313a;
+  --accent:#d4af37;
+  --accent-bright:#f5d77c;
+  --accent-soft:rgba(212,175,55,.15);
+  --text:#d8dee5;
+  --sub:#9aa3b1;
+  --muted:#6b7280;
+  --wood:#a3c7a8;
+  --fire:#e0a8a0;
+  --earth:#d8c4a8;
+  --metal:#bfc6de;
+  --water:#a8b8d8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;overflow:hidden;height:100%;font-family:'Noto Sans KR',sans-serif}
+
+.stage-wrap{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#000}
+.stage{
+  width:1080px;height:1920px;
+  /* 화면녹화 시 1:1로 캡처. 화면이 작으면 transform으로 미리보기 */
+  transform-origin:center center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 30%, #2a1f0e 0%, #0c0f12 55%, #000 100%);
+  color:var(--text);
+}
+/* 미리보기용 — 작은 화면에서 자동 축소 (녹화 시엔 1:1 사이즈 권장) */
+@media (max-height:1920px){
+  .stage{transform:scale(min(calc(100vh / 1920), calc(100vw / 1080)))}
+}
+
+/* 별빛 배경 */
+.stars{position:absolute;inset:0;pointer-events:none;opacity:.7}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;
+  box-shadow:0 0 8px #fff;animation:twinkle 3s ease-in-out infinite}
+.star:nth-child(2n){width:1px;height:1px;opacity:.6}
+.star:nth-child(3n){width:3px;height:3px;animation-duration:4.5s}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* 골드 글로우 광원 */
+.glow{position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle, rgba(212,175,55,.25) 0%, transparent 70%);
+  filter:blur(40px);pointer-events:none}
+
+/* ── Scene 컨테이너 ── */
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 60px;opacity:0;pointer-events:none;transition:opacity .6s ease}
+.scene.on{opacity:1;pointer-events:auto}
+
+/* ── Scene 1: 인트로 ── */
+#sc1 .logo{font-family:'Do Hyeon',serif;font-size:160px;color:var(--accent);text-shadow:0 0 40px rgba(212,175,55,.5);letter-spacing:.04em;line-height:1;opacity:0;animation:none}
+#sc1.on .logo{animation:logoIn 1.2s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes logoIn{from{opacity:0;transform:translateY(40px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+#sc1 .tagline{margin-top:30px;font-family:'Noto Serif KR',serif;font-size:62px;font-weight:700;color:var(--text);letter-spacing:.04em;opacity:0}
+#sc1.on .tagline{animation:fadeUp .9s .5s ease forwards}
+#sc1 .sub{margin-top:24px;font-size:42px;color:var(--sub);font-weight:600;letter-spacing:.05em;opacity:0}
+#sc1.on .sub{animation:fadeUp .9s .9s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Scene 2: 문제 ── */
+#sc2 .question{font-family:'Noto Serif KR',serif;font-size:72px;font-weight:700;text-align:center;line-height:1.4;color:var(--text);opacity:0}
+#sc2.on .question{animation:fadeUp .8s ease forwards}
+#sc2 .compare{margin-top:80px;display:flex;gap:40px;width:100%;opacity:0}
+#sc2.on .compare{animation:fadeUp .8s .4s ease forwards}
+#sc2 .col{flex:1;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:38px 28px;text-align:center}
+#sc2 .col.bad{opacity:.55}
+#sc2 .col.bad .col-tag{color:var(--sub)}
+#sc2 .col-tag{font-size:32px;font-weight:800;color:var(--accent-bright);letter-spacing:.08em;margin-bottom:18px;text-transform:uppercase}
+#sc2 .col-list{font-size:34px;line-height:1.9;color:var(--text);text-align:left}
+#sc2 .col-list li{list-style:none;padding-left:42px;position:relative;margin-bottom:14px}
+#sc2 .col-list li:before{content:'·';position:absolute;left:18px;color:var(--accent)}
+#sc2 .col.bad .col-list li:before{content:'×';color:var(--fire);font-size:26px;top:2px}
+
+/* ── Scene 3: 28카드 ── */
+#sc3 .head{font-family:'Noto Serif KR',serif;font-size:70px;font-weight:800;color:var(--accent-bright);text-align:center;margin-bottom:50px;opacity:0}
+#sc3.on .head{animation:fadeUp .8s ease forwards}
+#sc3 .head em{font-style:normal;color:var(--accent);font-size:120px;display:block;margin-bottom:10px}
+#sc3 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;width:100%;opacity:0}
+#sc3.on .grid{animation:fadeUp .8s .3s ease forwards}
+#sc3 .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px 16px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:12px;transform:translateY(20px) scale(.92);opacity:0}
+#sc3.on .card{animation:cardPop .55s cubic-bezier(.34,1.56,.64,1) forwards}
+#sc3 .card:nth-child(1){animation-delay:.5s}
+#sc3 .card:nth-child(2){animation-delay:.6s}
+#sc3 .card:nth-child(3){animation-delay:.7s}
+#sc3 .card:nth-child(4){animation-delay:.8s}
+#sc3 .card:nth-child(5){animation-delay:.9s}
+#sc3 .card:nth-child(6){animation-delay:1.0s}
+#sc3 .card:nth-child(7){animation-delay:1.1s}
+#sc3 .card:nth-child(8){animation-delay:1.2s}
+@keyframes cardPop{to{opacity:1;transform:translateY(0) scale(1)}}
+#sc3 .card-emoji{font-size:54px}
+#sc3 .card-name{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.01em;text-align:center;line-height:1.3}
+
+/* ── Scene 4: 일주 × MBTI ── */
+#sc4 .head{font-family:'Noto Serif KR',serif;font-size:70px;font-weight:800;color:var(--accent-bright);text-align:center;margin-bottom:60px;opacity:0}
+#sc4.on .head{animation:fadeUp .8s ease forwards}
+#sc4 .match-row{display:flex;align-items:center;justify-content:center;gap:50px;opacity:0}
+#sc4.on .match-row{animation:fadeUp .8s .4s ease forwards}
+#sc4 .pillar-box{width:260px;height:260px;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg, var(--wood) 0%, #6cbf7e 100%);color:#0c0f12;font-weight:900}
+#sc4 .pillar-box.mbti{background:linear-gradient(135deg, var(--metal) 0%, #6c8cc8 100%);color:#0c0f12}
+#sc4 .pillar-lab{font-size:30px;font-weight:700;opacity:.7;margin-bottom:8px}
+#sc4 .pillar-big{font-family:'Noto Serif KR',serif;font-size:108px;line-height:1}
+#sc4 .x{font-size:80px;color:var(--accent);font-weight:900}
+#sc4 .match-pct{margin-top:60px;text-align:center;opacity:0}
+#sc4.on .match-pct{animation:fadeUp .9s 1.2s ease forwards}
+#sc4 .pct-num{font-family:'Do Hyeon',serif;font-size:200px;color:var(--accent-bright);line-height:1;text-shadow:0 0 50px rgba(245,215,124,.6)}
+#sc4 .pct-lab{font-size:42px;color:var(--text);margin-top:10px;font-weight:700}
+
+/* ── Scene 5: AI 채팅 ── */
+#sc5 .head{font-family:'Noto Serif KR',serif;font-size:70px;font-weight:800;color:var(--accent-bright);text-align:center;margin-bottom:50px;opacity:0}
+#sc5.on .head{animation:fadeUp .8s ease forwards}
+#sc5 .chat{width:100%;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:38px 30px;opacity:0}
+#sc5.on .chat{animation:fadeUp .8s .3s ease forwards}
+#sc5 .msg{padding:24px 30px;border-radius:20px;font-size:36px;line-height:1.6;margin-bottom:18px;opacity:0;transform:translateY(15px)}
+#sc5.on .msg.q{animation:msgIn .5s 1.1s ease forwards;background:var(--bg-mid);border:1px solid var(--border);align-self:flex-end;color:var(--text);max-width:88%;margin-left:auto;border-bottom-right-radius:6px}
+#sc5.on .msg.a{animation:msgIn .5s 2.4s ease forwards;background:var(--bg-deep);border:1px solid var(--border);max-width:96%;color:var(--text);border-bottom-left-radius:6px}
+@keyframes msgIn{to{opacity:1;transform:translateY(0)}}
+#sc5 .msg .lab{font-size:24px;font-weight:800;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+#sc5 .msg.q .lab{color:var(--accent)}
+#sc5 .msg.a .lab{color:var(--accent-bright)}
+
+/* ── Scene 6: CTA ── */
+#sc6 .cta-circle{width:480px;height:480px;border-radius:50%;background:radial-gradient(circle, rgba(212,175,55,.3), rgba(212,175,55,0));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;animation:none}
+#sc6.on .cta-circle{animation:ctaIn 1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes ctaIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+#sc6 .cta-emoji{font-size:140px;margin-bottom:14px}
+#sc6 .cta-title{font-family:'Do Hyeon',serif;font-size:120px;color:var(--accent-bright);line-height:1;letter-spacing:-.02em;text-shadow:0 0 30px rgba(245,215,124,.5)}
+#sc6 .cta-sub{margin-top:50px;font-family:'Noto Serif KR',serif;font-size:54px;color:var(--text);font-weight:700;letter-spacing:.04em;text-align:center;opacity:0}
+#sc6.on .cta-sub{animation:fadeUp .8s .6s ease forwards}
+#sc6 .cta-url{margin-top:28px;font-size:42px;color:var(--accent);font-weight:800;letter-spacing:.05em;opacity:0;padding:18px 36px;background:rgba(212,175,55,.12);border:1px dashed var(--accent);border-radius:50px}
+#sc6.on .cta-url{animation:fadeUp .8s 1s ease forwards}
+#sc6 .cta-foot{position:absolute;bottom:90px;font-size:34px;color:var(--sub);font-weight:600;letter-spacing:.04em;opacity:0}
+#sc6.on .cta-foot{animation:fadeUp .8s 1.4s ease forwards}
+
+/* 진행바 (녹화 시 안 보이게 .hide-ui로 토글) */
+.progress{position:absolute;top:0;left:0;height:6px;background:linear-gradient(90deg,var(--accent),var(--accent-bright));z-index:1000;transition:width .2s linear}
+.scene-tag{position:absolute;top:30px;right:40px;font-size:24px;color:var(--muted);font-weight:700;letter-spacing:.04em;z-index:1000}
+.hide-ui .progress,.hide-ui .scene-tag{display:none}
+
+/* 컨트롤 패널 (캔버스 밖) */
+.control{position:fixed;top:14px;left:14px;background:rgba(0,0,0,.75);border:1px solid #333;border-radius:10px;padding:12px 14px;color:#ddd;font-size:13px;line-height:1.6;z-index:99999;max-width:280px}
+.control button{background:var(--accent);color:#1b1f25;border:0;padding:6px 12px;border-radius:5px;margin-top:6px;margin-right:6px;cursor:pointer;font-weight:700;font-family:inherit}
+.control button.sec{background:#333;color:#ddd}
+.control kbd{background:#222;border:1px solid #444;padding:1px 6px;border-radius:3px;font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="control" id="ctrlPanel">
+  <div><b style="color:#f5d77c">🎬 천지인 사주 숏츠 데모</b></div>
+  <div style="margin-top:6px">길이: 25초 · 비율 9:16 (1080×1920)</div>
+  <button onclick="playSequence()">▶ 처음부터 재생</button>
+  <button class="sec" onclick="toggleUi()">🖥 UI 숨김</button>
+  <button class="sec" onclick="document.getElementById('ctrlPanel').style.display='none'">컨트롤 패널 닫기</button>
+  <div style="margin-top:8px;color:#aaa;font-size:11.5px">
+    <b>녹화 안내</b><br>
+    1. 「UI 숨김」 클릭 → 우상단 라벨·진행바 제거<br>
+    2. 「컨트롤 패널 닫기」 클릭<br>
+    3. 맥: <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd> 영역 선택 녹화<br>
+    &nbsp;&nbsp;&nbsp;윈도: <kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>R</kbd> Game Bar<br>
+    4. 재생 시작 → 25초 후 정지 → CapCut에 임포트
+  </div>
+</div>
+
+<div class="stage-wrap">
+  <div class="stage" id="stage">
+    <div class="progress" id="progress" style="width:0"></div>
+    <div class="scene-tag" id="sceneTag">Scene 1 / 6</div>
+
+    <!-- 별빛 배경 -->
+    <div class="stars" id="stars"></div>
+    <div class="glow" style="top:-100px;left:-150px"></div>
+    <div class="glow" style="bottom:-150px;right:-200px"></div>
+
+    <!-- Scene 1: 인트로 (0-4초) -->
+    <div class="scene" id="sc1">
+      <div class="logo">天地人</div>
+      <div class="tagline">사주팔자 × MBTI</div>
+      <div class="sub">— 동양 운명학과 현대 심리학의 만남 —</div>
+    </div>
+
+    <!-- Scene 2: 문제 (4-8초) -->
+    <div class="scene" id="sc2">
+      <div class="question">또 단순한 사주 풀이?<br><span style="color:var(--accent-bright)">이젠 다르게 보세요.</span></div>
+      <div class="compare">
+        <div class="col bad">
+          <div class="col-tag">기존 사이트</div>
+          <ul class="col-list">
+            <li>일반 운세</li>
+            <li>3~5줄 풀이</li>
+            <li>MBTI 따로</li>
+            <li>설명 부족</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-tag">천지인</div>
+          <ul class="col-list">
+            <li>28카드 인생총운</li>
+            <li>일주×MBTI 통합</li>
+            <li>AI 역술가 채팅</li>
+            <li>한자 작명·81수리</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: 28카드 (8-12초) -->
+    <div class="scene" id="sc3">
+      <div class="head"><em>28</em>카드 인생총운</div>
+      <div class="grid">
+        <div class="card"><div class="card-emoji">💼</div><div class="card-name">직업·관운</div></div>
+        <div class="card"><div class="card-emoji">💰</div><div class="card-name">재물·재운</div></div>
+        <div class="card"><div class="card-emoji">💞</div><div class="card-name">애정·결혼</div></div>
+        <div class="card"><div class="card-emoji">👨‍👩‍👧</div><div class="card-name">가족·자녀</div></div>
+        <div class="card"><div class="card-emoji">🏥</div><div class="card-name">건강·체질</div></div>
+        <div class="card"><div class="card-emoji">📚</div><div class="card-name">학업·시험</div></div>
+        <div class="card"><div class="card-emoji">🌟</div><div class="card-name">대운·시기</div></div>
+        <div class="card"><div class="card-emoji">⋯</div><div class="card-name">+ 21장 더</div></div>
+      </div>
+    </div>
+
+    <!-- Scene 4: 일주 × MBTI (12-17초) -->
+    <div class="scene" id="sc4">
+      <div class="head">일주 × MBTI 통합 분석</div>
+      <div class="match-row">
+        <div class="pillar-box">
+          <div class="pillar-lab">일주</div>
+          <div class="pillar-big">甲子</div>
+        </div>
+        <div class="x">×</div>
+        <div class="pillar-box mbti">
+          <div class="pillar-lab">MBTI</div>
+          <div class="pillar-big">INFJ</div>
+        </div>
+      </div>
+      <div class="match-pct">
+        <div class="pct-num">87%</div>
+        <div class="pct-lab">닮음 — 본인의 분위기와 일치</div>
+      </div>
+    </div>
+
+    <!-- Scene 5: AI 채팅 (17-22초) -->
+    <div class="scene" id="sc5">
+      <div class="head">AI 역술가에게 직접 질문</div>
+      <div class="chat">
+        <div class="msg q"><div class="lab">질문</div>올해 이직해도 될까요?</div>
+        <div class="msg a"><div class="lab">🔮 역술가</div>올해 庚午 대운이 들어와 본인 일간을 도와요. 정관 흐름이 강해 6월·9월에 결정하시면 좋은 자리로 옮길 수 있는 분위기입니다.</div>
+      </div>
+    </div>
+
+    <!-- Scene 6: CTA (22-26초) -->
+    <div class="scene" id="sc6">
+      <div class="cta-circle">
+        <div class="cta-emoji">☯</div>
+        <div class="cta-title">지금<br>무료로</div>
+      </div>
+      <div class="cta-sub">단 1분이면, 내 인생의 흐름이<br>한눈에 보입니다.</div>
+      <div class="cta-url">saju-mbti-9h1.pages.dev</div>
+      <div class="cta-foot">천지인 사주 · 만세력 + AI 통합 분석</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// 별 200개 생성
+(function makeStars(){
+  const sc=document.getElementById('stars');
+  for(let i=0;i<200;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=(Math.random()*3)+'s';
+    sc.appendChild(s);
+  }
+})();
+
+// 시퀀스 타이밍 (밀리초)
+const SEQ=[
+  {id:'sc1', dur:4000, tag:'Scene 1 / 6 · 인트로'},
+  {id:'sc2', dur:4000, tag:'Scene 2 / 6 · 비교'},
+  {id:'sc3', dur:4000, tag:'Scene 3 / 6 · 28카드'},
+  {id:'sc4', dur:5000, tag:'Scene 4 / 6 · 일주×MBTI'},
+  {id:'sc5', dur:5000, tag:'Scene 5 / 6 · AI 채팅'},
+  {id:'sc6', dur:5000, tag:'Scene 6 / 6 · CTA'}
+];
+const TOTAL=SEQ.reduce((s,x)=>s+x.dur,0);
+
+let _seqTimers=[];
+function clearTimers(){_seqTimers.forEach(clearTimeout);_seqTimers=[]}
+function hideAllScenes(){document.querySelectorAll('.scene').forEach(s=>s.classList.remove('on'))}
+
+function playSequence(){
+  clearTimers();
+  hideAllScenes();
+  document.getElementById('progress').style.width='0';
+
+  let acc=0;
+  SEQ.forEach((sc,idx)=>{
+    _seqTimers.push(setTimeout(()=>{
+      hideAllScenes();
+      document.getElementById(sc.id).classList.add('on');
+      document.getElementById('sceneTag').textContent=sc.tag;
+    }, acc));
+    acc+=sc.dur;
+  });
+
+  // 진행바 — 50ms 단위 갱신
+  const start=Date.now();
+  const tick=()=>{
+    const elapsed=Date.now()-start;
+    const pct=Math.min(100, (elapsed/TOTAL)*100);
+    document.getElementById('progress').style.width=pct+'%';
+    if(elapsed<TOTAL)_seqTimers.push(setTimeout(tick,50));
+  };
+  tick();
+}
+
+function toggleUi(){
+  document.getElementById('stage').classList.toggle('hide-ui');
+}
+
+// 자동 재생
+playSequence();
+</script>
+</body>
+</html>
