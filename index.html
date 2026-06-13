@@ -11054,9 +11054,9 @@ function _generateTOC(h, scopeLabel){
     const seenIds=new Set();
     const items=tocMatches.filter(m=>{
       const id=m[1];
-      // 타임라인 계열 카드(평생 ~ 타임라인·공망 시기·시기 일치도 등)는 모든 카테고리 목차에서 제외
-      if(id&&(/TIMELINE/.test(id)||/_TL$/.test(id)))return false;
-      if(m[2]&&m[2].includes('타임라인'))return false; // 제목에 '타임라인'이 든 카드도 제외(보조)
+      // 타임라인 계열 카드(평생 ~ 타임라인·공망 시기·시기 일치도·통합 마스터 차트 등)는 모든 카테고리 목차에서 제외
+      if(id&&(/TIMELINE/.test(id)||/_TL$/.test(id)||/HEATMAP/.test(id)))return false;
+      if(m[2]&&(m[2].includes('타임라인')||m[2].includes('마스터 차트')))return false; // 제목에 '타임라인'·'마스터 차트'가 든 카드도 제외(보조)
       if(seenIds.has(id))return false;
       seenIds.add(id);
       return true;
