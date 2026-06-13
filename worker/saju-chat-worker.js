@@ -167,6 +167,7 @@ function buildSystemPrompt(ctx) {
 【용신(用神)】 ${ctx.yongsin || '미상'}
 【오행 분포】 ${ctx.ohaeng || '미상'}
 【신강·신약】 ${ctx.strength || '미상'}
+【기질 시그널 (여덟 글자 종합)】 ${ctx.persona || '미상'} — 답변할 때 일간 하나가 아니라 이 종합 기질을 근거로 개인화해서 말하세요.
 【사주 내 신살】 ${ctx.sinsal || '특별한 신살 없음'}
 【공망(空亡)】 ${ctx.gongmang || '미상'}
 【현재 대운】 ${ctx.daeun || '미상'}
