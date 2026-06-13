@@ -719,6 +719,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
+/* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
+.chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(45,52,71,.22));border-left:5px solid var(--accent-bright);border-radius:11px}
+.chapter-divider:first-child{margin-top:6px}
+.chapter-divider .ch-no{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
+.chapter-divider .ch-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:var(--accent)}
+.chapter-divider .ch-desc{flex-basis:100%;font-size:.76rem;color:var(--sub);line-height:1.55}
+/* CHX: TOC 장별 그룹 소제목 */
+.toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
+.toc-chapter-head:first-child{margin-top:0}
 /* TL-DD: 타임라인 카드 접기/펼치기 */
 .tl-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
 .tl-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
@@ -4280,7 +4289,14 @@ function renderDaypickFortune(saju,y,m,d,extra){
     <div class="nb-title">📌 ${y}년 ${m}월 ${d}일을 사는 분위기</div>
     <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. ${myStemKo}일간이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
-  // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤)
+  // CHX: 4장 흐름 — 진단 → 분야 → 실행 → 마무리 (장 헤더 삽입; 카드 순서는 기존과 동일)
+  h=reorderByChapters(h,[
+    {no:1,title:'이 날의 진단',desc:'본인 10년 흐름 안에서 본 이 날',labels:['DAEUN','TOTAL']},
+    {no:2,title:'분야별 흐름',desc:'재물·연애·직업·건강·공부',labels:['WEALTH','LOVE','CAREER','HEALTH','STUDY']},
+    {no:3,title:'하루 실행 가이드',desc:'시간대·활동·길방위·신살',labels:['HOUR','ACTION','LUCKY','SINSAL']},
+    {no:4,title:'행동 처방과 마무리',desc:'고전이 전하는 한 줄',labels:['CLASSIC']}
+  ]);
+  // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤) — 재배치 후 끌어올려 우선 노출 유지
   h=_ctxPromoteAfterScore(h,_primaryDpCard);
   // BT: 카드 목차
   h=_generateTOC(h,'지정일 운세')+h;
@@ -4401,6 +4417,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   // ③ 어떻게
   totBody+=`<p><span class="body-q">이 기간을 어떻게 활용하면 좋을까요?</span><br><b>🍀 가장 잘 풀리는 시기 — ${luckyMonths.join(', ')}월</b><br>새 시작·확장·계약·이직·결혼 진전·중요한 발표 같은 큰 결정을 이 시기에 배치하시면 결실이 가장 커요. 특히 <b>${decisive.yy}.${decisive.mm}</b>이 가장 강한 결정적 시기예요.</p>`;
   totBody+=`<p><b>⚠️ 조심할 시기 — ${toughMonths.join(', ')}월</b><br>큰 결정·확장·이동·새 거래는 미루시고, 정리·내실·휴식·점검의 카드를 꺼내기 좋은 시기예요. 흉이라기보다 「잠시 멈추고 살펴보라는 신호의 달」로 받아들이시면 좋아요.</p>`;
+  // CHX: 3장 흐름 — 진단 → 달별·분야 상세 → 결정시기·마무리 (장 헤더 삽입)
+  h+=chapterDivider(1,'이 기간 진단','본인 10년 흐름과 이 기간의 큰 그림');
   // 본인 10년 흐름(대운) ↔ 이 기간 결합 카드
   try{
     if(!_meta||!_meta.sy)throw new Error('_meta missing');
@@ -4453,6 +4471,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
        `매달 모든 영역에 무리하기 — 분야별 평균이 다르므로 강한 영역에 집중`
      ]});
 
+  h+=chapterDivider(2,'달별·분야별 상세 흐름','한 달 한 달의 색깔과 분야별 평균');
   // ── 월별 카드 (각 paidWrapBody)
   monthsData.forEach(o=>{
     const{yy,mm,mi,mp,sc}=o;
@@ -4570,6 +4589,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
       critBody+=`<div style="margin-top:14px;padding:12px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent-bright);border-radius:8px"><b style="color:var(--accent)">📍 「${ctxLabel}」에 가장 흐름이 좋은 시기</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">본인이 가장 알고 싶다고 선택하신 영역만 따로 보면, ${ctxTop.map(o=>`<b>${o.yy}.${String(o.mm).padStart(2,'0')}월(${o.sc[ctxKey]}점)</b>`).join(', ')}이 가장 운이 좋아요. 「${ctxLabel}」 관련 큰 결정은 가능하면 이 시기에 잡으세요.</span></div>`;
     }
   }
+  h+=chapterDivider(3,'결정적 시기와 마무리','가장 흐름이 강한 달 + 고전이 전하는 한 줄');
   h+=paidWrapBody('CRITICAL','🎯','결정적 시기 — 가장 흐름이 강한 달',critBody);
 
   // ── 통합 가이드 + 고전
@@ -4878,8 +4898,10 @@ function renderNewyearFortune(saju,y){
   // 8 분야 풀이 — paidWrapBody 사용
   const fieldBody=(emoji,name,score,bodyHtml,goodWarn)=>{
     const g=dailyGrade(score);
+    // CHX: 한글 이름은 카드 id 충돌(card-___)을 부르므로 안정적 ASCII 라벨로 매핑
+    const _lab={'재물운':'NY_WEALTH','연애·결혼운':'NY_LOVE','직업·사업운':'NY_CAREER','인간관계·인맥':'NY_RELATION','건강운':'NY_HEALTH','공부·시험운':'NY_STUDY','주거·이동운':'NY_HOME','가족·자녀운':'NY_FAMILY'}[name]||('NY_'+name.replace(/[^A-Za-z0-9]/g,''))||'NY_FIELD';
     const head=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:.82rem;color:var(--muted)">올해 평균 점수</span><span style="padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;color:${g.color};background:${g.bg};border:1px solid ${g.color}55">${g.lab} · ${score}점</span></div>`;
-    return paidWrapBody(name.toUpperCase(),emoji,`${name} — ${y}년 한 해의 분위기`,head+bodyHtml,goodWarn);
+    return paidWrapBody(_lab,emoji,`${name} — ${y}년 한 해의 분위기`,head+bodyHtml,goodWarn);
   };
 
   // 점수 추정 (분야별, 연 평균)
@@ -5167,7 +5189,7 @@ function renderNewyearFortune(saju,y){
   h+=paidWrapBody('QUARTERS','📊','분기별 행동 지침',qBody);
 
   // 8개 분야 — 모두 paidWrapBody로
-  h+=`<div style="margin:18px 6px 10px;font-size:.8rem;color:var(--sub);text-align:center;line-height:1.7">⤵ 지금부터는 위에서 본 12개월 큰 그림을 <b style="color:var(--accent)">8개 분야</b>로 나눠 하나씩 짚어볼게요.</div>`;
+  // CHX: 분야 카드를 시간 세분화(월별)보다 앞으로 재배치하므로 「12개월→8분야」 안내문은 제거 (장 헤더가 대체)
   // PSN: 분야별 「본인 8글자 기준」 한 줄 — 같은 세운이라도 사주마다 다른 의미
   const _nyPP=buildPersonaProfile(saju);
   const _nyAx=_nyPP.axisSorted[0][0];
@@ -5335,6 +5357,14 @@ function renderNewyearFortune(saju,y){
     <div class="nb-body"><p>신년운세는 입춘부터 다음 입춘까지의 외부 기운이에요. 절대적인 길흉이 아니라 <b>한 해가 어떤 흐름으로 들어오는지</b>의 안내판이에요. 길월에 굵직한 결정을 배치하고, 주의월에는 정리와 내실에 무게를 두는 것이 한 해를 잘 사는 흐름이에요.</p></div>
   </div>`;
   // BT: 카드 목차
+  // CHX: 5장 내러티브 — 분야별을 시간 세분화보다 앞으로
+  h=reorderByChapters(h,[
+    {no:1,title:'올해의 큰 그림',desc:'세운 진단과 사계절 흐름부터',labels:['DAEUN','TOTAL','SEASONS']},
+    {no:2,title:'분야별 한 해 운세',desc:'재물·연애·직업 등 8개 영역',labels:['NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','NY_STUDY','NY_HOME','NY_FAMILY']},
+    {no:3,title:'시간의 흐름',desc:'월별·분기별로 좁혀 보는 한 해',labels:['MONTHS','MONTHDETAIL','QUARTERS']},
+    {no:4,title:'올해의 특이 요소',desc:'신살·띠·공망·삼재 등 올해만의 변수',labels:['SINSAL','ZODIAC','GONGMANG','SAMJAE','STAR12']},
+    {no:5,title:'한 해를 살아가는 마음',desc:'고전이 전하는 마무리',labels:['CLASSIC']}
+  ]);
   h=_generateTOC(h,'신년 운세')+h;
   return h;
 }
@@ -7649,19 +7679,19 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   // ⑥ 한 줄 정리
   sajuBody+=`<p style="margin-top:14px"><b>⑤ 한 줄로 정리하면</b><br>본인은 <em>${dm.n.split('(')[0]}</em>의 본질을 가진 <em>${gk.name}${gk.nick?'('+gk.nick.split('·')[0]+'형)':''}</em>의 사주예요.<br>· <b>강점</b> — ${dm.pos.slice(0,3).join(', ')}<br>· <b>의식해서 다스릴 부분</b> — ${dm.neg.slice(0,2).join(', ')}<br>본인을 도와주는 기운 <b>${OHNAME[ys.main]}</b>의 색·방향·음식·활동을 일상에 한 가지만 들여도 평생의 흐름이 자연스럽게 풀려요.</p>`;
-  // ⑦ PSN: 여덟 글자 종합 — 같은 일간이라도 본인만 가진 무늬
-  sajuBody+=`<p style="margin-top:18px"><b>⑥ 여덟 글자가 말하는 「본인만의 무늬」</b></p>`;
-  sajuBody+=personaDeepHTML(saju,'full');
+  // ⑥ 여덟 글자 무늬는 별도 카드(PERSONA)로 분리 — 1장에 노출 (CHX)
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만) — 사주팔자 종합 풀이 안에 직접 끼움
   sajuBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', '평생의 흐름을 읽을 때 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 본인의 본질이 더 또렷이 보여요.');
   sajuBody=_sajuContextHeader(saju,ys,gk,'사주팔자 종합')+sajuBody;
   sajuBody+=_generalAreaConclusion(saju,ys,'사주팔자 종합');
 
-  h+=`<div class="nb-card">
+  h+=`<!--CARD_START:SAJUCORE--><div class="nb-card" data-cardid="SAJUCORE" id="card-SAJUCORE">
     <div class="nb-cat">SAJU PALJA</div>
     <div class="nb-title">🌱 사주팔자 종합 풀이</div>
     <div class="nb-body">${preventOrphan(sajuBody)}</div>
-  </div>`;
+  </div><!--CARD_END:SAJUCORE-->`;
+  // PSN: 여덟 글자가 말하는 본인만의 무늬 — 독립 카드(1장 노출)
+  h+=paidWrapBody('PERSONA','🧬','여덟 글자가 말하는 본인만의 무늬',personaDeepHTML(saju,'full'));
 
   // ═════════════════════════════════════
   // 총운
@@ -9532,11 +9562,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div>`;
   });
   dBody+=`<div class="tl">${tlh}</div>`;
-  h+=`<div class="nb-card">
+  h+=`<!--CARD_START:DAEUN10--><div class="nb-card" data-cardid="DAEUN10" id="card-DAEUN10">
     <div class="nb-cat">DAEUN × 10년</div>
     <div class="nb-title">📅 대운 시기별 풀이 — 인생의 큰 흐름</div>
     <div class="nb-body">${preventOrphan(dBody)}</div>
-  </div>`;
+  </div><!--CARD_END:DAEUN10-->`;
 
   // ═════════════════════════════════════
   // 세운 (올해)
@@ -9749,6 +9779,15 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     <div style="font-size:.95rem;font-weight:700;margin-bottom:8px">🎋 마무리</div>
     <div style="font-size:.82rem;line-height:1.85;color:var(--text)">사주는 인생의 지도이지, 운명의 족쇄가 아닙니다.<br>본인이 타고난 ${dm.pos.slice(0,2).join('과 ')}을 의식적으로 발현시키고, ${dm.neg.slice(0,1).join(',')}을 다스리는 노력이 곧 좋은 사주를 완성하는 길이에요.</div>
   </div>`;
+
+  // CHX: 5장 내러티브로 카드 재배치 (진단 → 기질·관계 → 분야 → 시간 → 실천)
+  h=reorderByChapters(h,[
+    {no:1,title:'나는 누구인가',desc:'타고난 본질과 사주 구조부터 읽어요',labels:['SAJUCORE','TOTAL','PERSONA','SINGANG','PILLAR4','BRANCH12','GYEOKGUK','STAGE12']},
+    {no:2,title:'내 기질과 관계',desc:'사주 속 관계·신살·별자리가 만드는 기질의 무늬',labels:['SAJU_REL','SINSAL','STAR12','YOOKCHIN']},
+    {no:3,title:'분야별 운세',desc:'재물·직업·연애·건강 등 삶의 영역별 흐름',labels:['WEALTH','WEALTH_TIMELINE','CAREER','CAREER_TIMELINE','LOVE','LOVE_TIMELINE','FAMILY_TIMELINE','HEALTH','HEALTH_TIMELINE','MOVE_TIMELINE','STUDY','STUDY_TIMELINE','SPIRIT_TIMELINE','HUMAN','HUMAN_TIMELINE','JOB']},
+    {no:4,title:'시간의 흐름',desc:'대운·세운으로 보는 「언제」의 지도',labels:['DAEUN10','SEWOON','YEAR10','TIMELINE','GONGMANG_TL','LIFE_HEATMAP']},
+    {no:5,title:'개운과 실천',desc:'타고난 흐름을 살리는 일상 실천',labels:['GAEWOON']}
+  ]);
 
   // ─── BT: 카드 목차(TOC) 자동 생성 후 맨 위에 prepend ───
   const _tocCard=_generateTOC(h,'본인 사주풀이');
@@ -11045,32 +11084,83 @@ function jumpToCard(id){
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+// CHX: 장(章) 구분 헤더 — 본문 시각 구분 + TOC 그룹화용 <!--CHAPTER--> 마커 동반
+function chapterDivider(no,title,desc){
+  return `<!--CHAPTER:${no}|${title}--><div class="chapter-divider"><span class="ch-no">${no}장</span><span class="ch-title">${title}</span>${desc?`<span class="ch-desc">${desc}</span>`:''}</div>`;
+}
+
+// CHX: CARD 마커 기반 후처리 재배치 — 카드 생성 코드는 그대로 두고 출력 순서만 장별로 재조립.
+// plan = [{no, title, desc, labels:['TOTAL','SINGANG',...]}]. preamble/endmatter(loose)는 보존,
+// 플랜에 없는 카드는 누락 방지를 위해 원래 순서로 끝에 붙인다.
+function reorderByChapters(h,plan){
+  const re=/<!--CARD_START:(.+?)-->[\s\S]*?<!--CARD_END:\1-->/g; // 라벨에 한글·기호가 와도 매칭
+  const segs=[];let m,last=0;
+  while((m=re.exec(h))){
+    if(m.index>last)segs.push({t:'loose',x:h.slice(last,m.index)});
+    segs.push({t:'card',label:m[1],x:m[0]});
+    last=re.lastIndex;
+  }
+  if(last<h.length)segs.push({t:'loose',x:h.slice(last)});
+  const cardIdxs=segs.map((s,i)=>s.t==='card'?i:-1).filter(i=>i>=0);
+  if(cardIdxs.length<2)return h; // 재배치할 카드가 없으면 원본 유지
+  const firstC=cardIdxs[0],lastC=cardIdxs[cardIdxs.length-1];
+  const cardMap=new Map();
+  segs.forEach(s=>{if(s.t==='card'&&!cardMap.has(s.label))cardMap.set(s.label,s.x);});
+  let pre='',mid='',post='';
+  segs.forEach((s,i)=>{if(s.t==='loose'){if(i<firstC)pre+=s.x;else if(i>lastC)post+=s.x;else mid+=s.x;}});
+  const used=new Set();let out=pre;
+  plan.forEach(ch=>{
+    const present=ch.labels.filter(l=>cardMap.has(l)&&!used.has(l));
+    if(!present.length)return;
+    out+=chapterDivider(ch.no,ch.title,ch.desc);
+    present.forEach(l=>{out+=cardMap.get(l);used.add(l);});
+  });
+  segs.forEach(s=>{if(s.t==='card'&&!used.has(s.label)){out+=s.x;used.add(s.label);}}); // 미배치 카드 보존
+  return out+mid+post;
+}
+
 // BT: 카드 목차(TOC) 자동 생성 — 본문 h에서 카드 추출 → TOC HTML 반환
 function _generateTOC(h, scopeLabel){
   try{
-    // ([^<]+) 뒤 </div> 요구 제거 — 타임라인 카드는 제목 끝에 <span class="tl-chevron">가 붙음 (TL-DD)
-    const tocMatches=[...h.matchAll(/<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)/g)];
-    if(tocMatches.length<3)return ''; // 카드 3개 미만이면 TOC 생략
+    // CHX: CHAPTER 마커 + 카드를 문서 순서로 함께 스캔 → 각 카드가 속한 장 추적
+    const re=/<!--CHAPTER:([^>]*?)-->|<!--CARD_START:([^-]+(?:-+[^-]+)*?)-->[\s\S]*?<div class="nb-title">([^<]+)/g;
+    let m;const seq=[];let curCh=null;
+    while((m=re.exec(h))){
+      if(m[1]!==undefined){ const p=m[1].split('|'); curCh={no:p[0],title:p[1]||''}; }
+      else seq.push({id:m[2],title:(m[3]||'').trim(),ch:curCh});
+    }
+    if(seq.length<3)return ''; // 카드 3개 미만이면 TOC 생략
     const seenIds=new Set();
-    const items=tocMatches.filter(m=>{
-      const id=m[1];
+    const items=seq.filter(it=>{
+      const id=it.id;
       // 타임라인 계열 카드(평생 ~ 타임라인·공망 시기·시기 일치도·통합 마스터 차트 등)는 모든 카테고리 목차에서 제외
       if(id&&(/TIMELINE/.test(id)||/_TL$/.test(id)||/HEATMAP/.test(id)))return false;
-      if(m[2]&&(m[2].includes('타임라인')||m[2].includes('마스터 차트')))return false; // 제목에 '타임라인'·'마스터 차트'가 든 카드도 제외(보조)
+      if(it.title&&(it.title.includes('타임라인')||it.title.includes('마스터 차트')))return false;
       if(seenIds.has(id))return false;
       seenIds.add(id);
       return true;
-    }).map(m=>{
-      const safeId='card-'+m[1].replace(/[^A-Za-z0-9_-]/g,'_');
-      const title=m[2].trim();
-      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${title}</button>`;
     });
+    if(items.length<3)return '';
+    const btn=(it)=>{
+      const safeId='card-'+it.id.replace(/[^A-Za-z0-9_-]/g,'_');
+      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${it.title}</button>`;
+    };
+    // CHX: 장 정보가 있으면 장별 소제목으로 그룹화, 없으면 평면 그리드(하위 호환)
+    let grid='';
+    if(items.some(it=>it.ch)){
+      let lastNo=' ';
+      items.forEach(it=>{
+        const key=it.ch?it.ch.no:'';
+        if(key!==lastNo){ if(it.ch)grid+=`<div class="toc-chapter-head">${it.ch.no}장 · ${it.ch.title}</div>`; lastNo=key; }
+        grid+=btn(it);
+      });
+    }else grid=items.map(btn).join('');
     return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">📋 ${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
         <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">아래 ${items.length}개 카드 중 보고 싶은 항목을 클릭하면 해당 카드로 자동 이동해요.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px">${items.join('')}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px">${grid}</div>
       </div>
     </div><!--CARD_END:TOC-->`;
   }catch(e){return '';}
@@ -15148,6 +15238,13 @@ function renderNamePaid(saju, nmExtra){
     </div>`;
   }catch(e){}
 
+  // CHX: 4장 흐름 — 종합 → 글자 분석 → 사주와의 조화 → 추천·실천 (장 헤더 삽입)
+  h=reorderByChapters(h,[
+    {no:1,title:'이름 종합 진단',desc:'점수와 한눈 요약부터',labels:['NAME']},
+    {no:2,title:'글자 하나하나 풀이',desc:'한자 4격·자원오행·한글오행·음양',labels:['SURI','HANZAWON','HANGUL','YINYANG']},
+    {no:3,title:'사주와의 조화',desc:'사주 오행과 합쳐 본 균형·강점',labels:['COMBINE','STRENGTH']},
+    {no:4,title:'추천과 실천',desc:'어울리는 이름·한자 조합 추천',labels:['RECOMMEND','SAME_PHONIC_HAN']}
+  ]);
   // BT: 카드 목차
   h=_generateTOC(h,'이름풀이')+h;
   return h;
@@ -15591,6 +15688,14 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
       </div>`;
     }
   }catch(e){}
+  // CHX: 5장 내러티브 — 두 사람 진단 → 관계의 결 → 깊이 통찰 → 시간 → 마무리
+  h=reorderByChapters(h,[
+    {no:1,title:'두 사람은 누구인가',desc:'종합 궁합과 8글자·격국·별자리 비교',labels:['GUNGHAP','PERSONA8','STAGE_GK','ZODIAC_DAEUN']},
+    {no:2,title:'관계의 결',desc:'연애·결혼·동반자·가족·혼인 후 일상',labels:['LOVE','MARRIAGE','PARTNER','FAMILY','MARRIED_LIFE']},
+    {no:3,title:'깊이 통찰',desc:'두 사람 신살·공망의 교차',labels:['SINSAL_GM']},
+    {no:4,title:'시간 — 언제',desc:'결혼·큰 결정의 시기 일치도',labels:['TIMELINE_MATCH']},
+    {no:5,title:'마무리와 부가',desc:'MBTI 궁합 등',labels:['MBTICOMPAT']}
+  ]);
   // BT: 카드 목차
   h=_generateTOC(h,'궁합')+h;
   return h;
