@@ -6385,6 +6385,50 @@ function buildPersonaProfile(saju){
     iljuKey:STEMKO[d]+BRCHKO[saju.dp.branch]};
 }
 
+// PS: 강점/다스릴 부분을 십신축·앉은 자리(일지)·신살 기반으로 뽑는다.
+// 주의 — 오행 dom/weak 기반 항목은 의도적으로 제외(총운 카드에서 바로 위 문단이 이미 오행 강약을 서술하므로 중복 방지).
+function personaStrengths(saju){
+  const p=buildPersonaProfile(saju);
+  const ax=p.axisSorted;
+  const topAxis=ax[0][0], lowAxis=ax[ax.length-1][0];
+  const AXIS_STR={
+    self:'스스로 결정하고 끝까지 끌고 가는 추진력',
+    out:'생각과 재능을 밖으로 풀어내는 표현력',
+    wealth:'눈에 보이는 결과로 만들어내는 현실 감각',
+    gwan:'맡은 일을 끝까지 책임지는 완성력',
+    in_:'배우고 깊이 받아들여 단단해지는 수용력'
+  };
+  const AXIS_OVER={
+    self:'내 결정을 앞세우다 주변과 부딪히기 쉬움',
+    out:'표현이 앞서 규율·권위와 마찰이 생기기 쉬움',
+    wealth:'결과에 매여 조급해지기 쉬움',
+    gwan:'책임을 과하게 떠안아 스스로를 소진하기 쉬움',
+    in_:'생각만 깊어져 실행이 늦어지기 쉬움'
+  };
+  const AXIS_LACK={
+    self:'혼자 결단을 내려 밀어붙이는 힘이 약함',
+    out:'속마음·재능을 밖으로 꺼내는 표현이 약함',
+    wealth:'눈앞의 현실·실리를 챙기는 감각이 약함',
+    gwan:'체계·마무리·책임의 끈을 느슨하게 두기 쉬움',
+    in_:'한 박자 멈춰 배우고 점검하는 여유가 약함'
+  };
+  const SEAT_STR={
+    '비견':'스스로에 대한 확신','겁재':'승부처에서 밀어붙이는 추진력','식신':'사람을 편하게 하는 여유와 표현력','상관':'번뜩이는 아이디어와 순발력','편재':'발 빠른 현실 감각과 수완','정재':'꼼꼼하고 안정적인 관리력','편관':'압박을 견뎌내는 단단함','정관':'반듯한 책임감과 신뢰','편인':'깊이 파고드는 직관','정인':'배움을 빨아들이는 수용력'
+  };
+  const SIN_STR={'천을귀인':'위기마다 돕는 사람이 나타나는 인복','천덕귀인':'덕과 신망이 따르는 흐름','월덕귀인':'주변의 도움이 자연스러운 흐름','문창귀인':'글·시험·기획에 강한 머리','역마':'활동 반경이 넓고 기회를 찾아 움직이는 힘','화개':'한 분야를 깊이 파고드는 집중력','도화':'사람을 끌어당기는 매력'};
+  const SIN_CAU={'양인':'결단이 과하거나 욱하는 기운을 다스릴 필요','백호':'급변·사고에 한 박자 더 조심','괴강':'세고 곧은 기운이 관계에선 모나게 보일 수 있음'};
+  const sinNm=(p.sins||[]).map(s=>String(s.n||'').split(' ')[0]);
+  const strengths=[AXIS_STR[topAxis]];
+  if(SEAT_STR[p.seatTg])strengths.push(`앉은 자리에서 배어나는 ${SEAT_STR[p.seatTg]}`);
+  for(const n of sinNm){for(const k in SIN_STR){if(n.includes(k)){strengths.push(SIN_STR[k]);break;}}}
+  const cautions=[AXIS_OVER[topAxis]];
+  if(lowAxis!==topAxis)cautions.push(AXIS_LACK[lowAxis]);
+  for(const n of sinNm){for(const k in SIN_CAU){if(n.includes(k)){cautions.push(SIN_CAU[k]);break;}}}
+  const KEYWORD={self:'주도력',out:'표현력',wealth:'현실 감각',gwan:'책임감',in_:'수용력'};
+  const uniq=a=>[...new Set(a.filter(Boolean))];
+  return {strengths:uniq(strengths).slice(0,3),cautions:uniq(cautions).slice(0,2),keyword:KEYWORD[topAxis]||'본인의 강점'};
+}
+
 // 「본인이 누구인지」 종합 서술 — mode: 'full'(인생총운) / 'brief'(만세력) / 'line'(리드 한 줄)
 function personaDeepHTML(saju, mode){
   const p=buildPersonaProfile(saju);
@@ -7777,6 +7821,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const rel=getStemBranchRelation(dp.stem,dp.branch);
   const sinNames=sins.map(s=>s.n.split(' ')[0]);
   const has=(n)=>sinNames.includes(n);
+  const _ps=personaStrengths(saju); // 강점/약점 — 십신축·앉은 자리·신살 기반(일간 전용 dm.pos/neg 대체), 카드 전반 공용
   const dStemOh=SOH[dp.stem];
   const wealthOh=(dStemOh+2)%5;   // 재성 오행
   const officerOh=(dStemOh+4)%5;  // 관성 오행
@@ -7837,7 +7882,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }
 
   // ⑥ 한 줄 정리
-  sajuBody+=`<p style="margin-top:14px"><b>⑤ 한 줄로 정리하면</b><br>본인은 <em>${dm.n.split('(')[0]}</em>의 본질을 가진 <em>${gk.name}${gk.nick?'('+gk.nick.split('·')[0]+'형)':''}</em>의 사주예요.<br>· <b>강점</b> — ${dm.pos.slice(0,3).join(', ')}<br>· <b>의식해서 다스릴 부분</b> — ${dm.neg.slice(0,2).join(', ')}<br>본인을 도와주는 기운 <b>${OHNAME[ys.main]}</b>의 색·방향·음식·활동을 일상에 한 가지만 들여도 평생의 흐름이 자연스럽게 풀려요.</p>`;
+  sajuBody+=`<p style="margin-top:14px"><b>⑤ 한 줄로 정리하면</b><br>본인은 <em>${dm.n.split('(')[0]}</em>의 본질을 가진 <em>${gk.name}${gk.nick?'('+gk.nick.split('·')[0]+'형)':''}</em>의 사주예요.<br>· <b>강점</b> — ${_ps.strengths.join(', ')}<br>· <b>의식해서 다스릴 부분</b> — ${_ps.cautions.join(', ')}<br>본인을 도와주는 기운 <b>${OHNAME[ys.main]}</b>의 색·방향·음식·활동을 일상에 한 가지만 들여도 평생의 흐름이 자연스럽게 풀려요.</p>`;
   // ⑥ 여덟 글자 무늬는 별도 카드(PERSONA)로 분리 — 1장에 노출 (CHX)
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만) — 사주팔자 종합 풀이 안에 직접 끼움
   sajuBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', '평생의 흐름을 읽을 때 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 본인의 본질이 더 또렷이 보여요.');
@@ -7893,8 +7938,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   totBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 사람인가요?</span><br>본인의 본질은 <b>${stemRich(dp.stem)}</b>이에요. ${STEM_META[dp.stem].body} 이 본질이 <em>${gk.name}</em> 유형으로 자리잡아 ${gk.desc}</p>`;
   totBody+=`<p>다섯 기운 중 <b>${OHNAME[dom]}</b>이 가장 두텁게 자리잡아 <em>${domStrength}</em>이 본인의 큰 무기예요. 반대로 <b>${OHNAME[weak]}</b>이 가장 부족해서 <em>${weakArea}</em>은 일상에서 의식해서 채워주는 게 좋아요.${keySinsal?` 여기에 <b>${keySinsal.n}</b>이 자리잡고 있어 ${keySinsal.d}이 한 단계 더 얹혀 있어요.`:''}</p>`;
 
-  // ② 본인 강점·그림자
-  totBody+=`<p><span class="body-q">💡 본인의 강점과 의식해서 다스릴 부분</span><br>· <b>강점</b>: ${dm.pos.slice(0,3).join(', ')}<br>· <b>다스릴 부분</b>: ${dm.neg.slice(0,2).join(', ')}<br>${isStrong?'본인 사업·리더 자리·새로운 도전을 망설이지 마세요. 큰 책임과 큰 결정에도 흔들리지 않는 포용력이 큰 그릇이에요.':'먼저 공부·자격증·전문성으로 본인 그릇을 키운 뒤 큰 무대로 나가세요. 큰 조직에서 자리잡고 천천히 독립하는 패턴이 본인에게 안전해요.'}</p>`;
+  // ② 본인 강점·그림자 — 바로 위 오행 dom/weak 문단과 중복 피하려 십신축·앉은 자리·신살 기반(상단 _ps 재사용)
+  totBody+=`<p><span class="body-q">💡 본인의 강점과 의식해서 다스릴 부분</span><br>· <b>강점</b>: ${_ps.strengths.join(', ')}<br>· <b>다스릴 부분</b>: ${_ps.cautions.join(', ')}<br>${isStrong?'본인 사업·리더 자리·새로운 도전을 망설이지 마세요. 큰 책임과 큰 결정에도 흔들리지 않는 포용력이 큰 그릇이에요.':'먼저 공부·자격증·전문성으로 본인 그릇을 키운 뒤 큰 무대로 나가세요. 큰 조직에서 자리잡고 천천히 독립하는 패턴이 본인에게 안전해요.'}</p>`;
 
   // ③ 대운·세운에서 도움 글자 (사용자 요청 핵심)
   totBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
@@ -7920,17 +7965,17 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   totBody+=`<p style="margin-top:14px"><span class="body-q">✦ 매일 한 가지 — 본인 흐름을 지키는 가장 쉬운 길</span><br>도움 기운 <b>${OHNAME[ys.main]}</b>을 일상에 한 가지만 들여보세요.<br>· 옷·소품 색 — <b>${yColor}</b> 계열<br>· 자리·여행 방향 — <b>${yDir}</b><br>· 식단에 한 가지 — <b>${yFood}</b><br>셋 중 한 가지만 들여도 본인의 흐름이 자연스럽게 살아나요.</p>`;
   h+=paidWrapBody('TOTAL','✨','총운 — 인생 흐름의 큰 그림',totBody,
     {strengths:[
-       `타고난 <b>${dm.pos.slice(0,2).join('·')}</b>의 분위기 — 본인의 본질이 사회적 자산이 됨`,
+       `타고난 <b>${_ps.strengths[0]}</b> — 본인의 본질이 사회적 자산이 됨`,
        `용신 <b>${OHNAME[ys.main]}</b> 활용 — 색·방향·음식·활동을 가까이 두면 자연스럽게 흐름이 살아남`,
        `격국 <b>${gk.name}</b> — 본인 인생관·진로의 핵심이 또렷함`
      ],todos:[
        `용신 ${OHNAME[ys.main]} 색의 옷·소품을 일상에 한 가지 추가`,
        `용신 방향(${ys.main===0?'동쪽':ys.main===1?'남쪽':ys.main===2?'중앙·서남':ys.main===3?'서쪽':'북쪽'})의 자리·이동·여행을 의식적으로`,
-       `${dm.pos[0]||'본인의 강점'}을 살릴 수 있는 한 분야에 평생 깊이 들어가기`
+       `${_ps.keyword}을 살릴 수 있는 한 분야에 평생 깊이 들어가기`
      ],avoids:[
        `${oh[0]>=4?'<b>목 과다</b> — 고집·분노 폭주':oh[1]>=4?'<b>화 과다</b> — 성급함·산만':oh[2]>=4?'<b>토 과다</b> — 고집·답답함':oh[3]>=4?'<b>금 과다</b> — 냉정·고립':oh[4]>=4?'<b>수 과다</b> — 우유부단·방황':'<b>균형 깨짐</b>'}을 경계`,
        `약한 오행 <b>${OHNAME[oh.indexOf(Math.min(...oh))]}</b> 영역 (${['간·근육·시력','심혈관·혈액','소화·면역','폐·대장·호흡','신장·생식기'][oh.indexOf(Math.min(...oh))]}) 의식적 보강`,
-       `${dm.neg[0]||'본인의 그림자 분위기'}이 깊어지지 않게 한 사람과 깊은 관계 유지`
+       `${_ps.cautions[0]} — 이 부분이 깊어지지 않게 한 사람과 깊은 관계 유지`
      ]});
 
   // ═════════════════════════════════════
@@ -8215,7 +8260,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const lovePillars=['day']; // 일지(배우자궁)는 무조건 강조
   const loveTGPillars=findTenGodPillars(saju,gender==='male'?['정재','편재']:['정관','편관']);
   loveTGPillars.forEach(p=>{if(!lovePillars.includes(p))lovePillars.push(p);});
-  const loveHeadline=has('도화')?'매력과 끼가 풍부한 인기형 사주':has('홍염')?'은밀하고 깊은 매력의 진정성형 사주':dm.pos[0]+'의 흐름으로 진실한 만남에서 행복을 찾는 사주';
+  const loveHeadline=has('도화')?'매력과 끼가 풍부한 인기형 사주':has('홍염')?'은밀하고 깊은 매력의 진정성형 사주':_ps.keyword+'의 흐름으로 진실한 만남에서 행복을 찾는 사주';
   const partnerWord=gender==='male'?'아내':'남편';
   let lBody='';
   // ─── CF-3 LOVE 본문 재작성 ───
@@ -8237,7 +8282,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=miniManseWithPointer(saju,lovePillars,'↑ 강조된 자리: 본인이 앉은 의자(일지) + '+(gender==='male'?'아내 자리':'남편 자리'));
   // [승] 그래서 본인은 어떤 관계를?
   lBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 관계를 만드는 사람인가요?</span><br>본인 글자 <em>${dm.n.split('(')[0]}</em>이 배우자 자리에 <b>${rel.desc}</b>로 앉아 있어요. ${rel.imp}</p>`;
-  lBody+=`<p>${has('도화')?'본인 사주에는 <b>매력·끼의 별자리(도화)</b>가 있어 이성을 끌어당기는 힘이 강한 흐름이라, 다양한 인연 속에서 진중한 만남을 의식해 고르는 자세가 필요해요.':has('홍염')?'본인 사주에는 <b>깊은 매력의 별자리(홍염)</b>가 있어 한번 빠지면 깊어지는 인연이 본인과 어울리고, 진정성이 관계의 핵심.':'본인 본연의 성품 <em>'+dm.pos[0]+'</em>으로 인연을 차근차근 만들어가는 흐름이에요.'}</p>`;
+  lBody+=`<p>${has('도화')?'본인 사주에는 <b>매력·끼의 별자리(도화)</b>가 있어 이성을 끌어당기는 힘이 강한 흐름이라, 다양한 인연 속에서 진중한 만남을 의식해 고르는 자세가 필요해요.':has('홍염')?'본인 사주에는 <b>깊은 매력의 별자리(홍염)</b>가 있어 한번 빠지면 깊어지는 인연이 본인과 어울리고, 진정성이 관계의 핵심.':'본인 본연의 성품 <em>'+_ps.keyword+'</em>으로 인연을 차근차근 만들어가는 흐름이에요.'}</p>`;
   // [전] 강점·주의
   lBody+=`<p><span class="body-q">💡 본인의 연애 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${rel.key==='비화'?'본인과 닮은꼴이라 편안한 인연':rel.key==='인성'?'배우자가 후원자가 되는 관계':rel.key==='식상'?'배우자에게 표현·돌봄을 주는 관계':rel.key==='재성'?'배우자가 본인 활동의 무대가 되는 관계':'배우자에게서 추진력을 받는 관계'}<br>· <b>주의</b>: ${has('도화')?'삼각관계·외도 유혹에 휘말리지 않도록 의식적 절제 필요':has('백호')?'급격한 변화 흐름이 부부 충돌로 — 짧고 자주 대화':'본인 입장만 고집 말고 한 발 양보하는 태도'}</p>`;
   // [분위기] 도움 글자
@@ -9363,7 +9408,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   // 인간관계
   // ═════════════════════════════════════
-  const humanHeadline=has('천을귀인')?'평생 위기마다 귀인이 나타나는 인덕 풍부형':has('역마')?'활동 반경이 넓고 다양한 인연을 맺는 사교형':oh[dStemOh]>=3?'형제·친구가 많고 자기 주장이 또렷한 동료형':oh[dStemOh]<2?'깊이 있는 일대일 인연이 잘 맞는 내향형':dm.pos[0]+'의 성품으로 인덕을 만들어가는 진정성형';
+  const humanHeadline=has('천을귀인')?'평생 위기마다 귀인이 나타나는 인덕 풍부형':has('역마')?'활동 반경이 넓고 다양한 인연을 맺는 사교형':oh[dStemOh]>=3?'형제·친구가 많고 자기 주장이 또렷한 동료형':oh[dStemOh]<2?'깊이 있는 일대일 인연이 잘 맞는 내향형':_ps.keyword+'의 성품으로 인덕을 만들어가는 진정성형';
   // CH-PRO: HUMAN 본문 통째 5분야 패턴 재작성
   let huBody='';
   huBody+=miniManseWithSinsal(saju);
@@ -9568,7 +9613,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     let jobBody='';
     jobBody+=miniManseWithPointer(saju,['month'],'↑ 월주가 본인 직업 색깔의 핵심');
     jobBody+=`<p><span class="body-q">📖 본인 사주의 「일터 색깔」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 <b>${gk.name}</b> 유형으로 자라서, 본인에게 가장 자연스러운 일터는 <b>${_jobMain.title}</b>이에요. ${_jobMain.body}</p>`;
-    jobBody+=`<p><span class="body-q">💡 본인 직업 색깔이 정해지는 원리</span><br>본인 사주 안에서 어떤 자리(동료·표현·재물·책임·학습)가 가장 두텁게 자리잡았는지, 그리고 어떤 별자리가 자리잡았는지가 본인 일터의 색깔을 결정해요.<br>${_hasYM?'· 역마 ★ — 이동·외근·해외 활동 자연스러움<br>':''}${_hasHG?'· 화개 ★ — 한 분야 깊이 파는 전문 학자형<br>':''}${_hasCU?'· 천을귀인 ★ — 사람을 통해 기회가 들어오는 분위기<br>':''}${_hasMC?'· 문창귀인 ★ — 글·문서·기획에 강함<br>':''}${_hasYI?'· 양인 ★ — 결단력·강도 높은 일에 강함<br>':''}${_hasBH?'· 백호 ★ — 위기관리·외과·법조에 두각<br>':''}${(!_hasYM&&!_hasHG&&!_hasCU&&!_hasMC&&!_hasYI&&!_hasBH)?'본인 본연의 성품 <em>'+dm.pos[0]+'</em>을 살리는 분야가 가장 자연스러워요.':''}</p>`;
+    jobBody+=`<p><span class="body-q">💡 본인 직업 색깔이 정해지는 원리</span><br>본인 사주 안에서 어떤 자리(동료·표현·재물·책임·학습)가 가장 두텁게 자리잡았는지, 그리고 어떤 별자리가 자리잡았는지가 본인 일터의 색깔을 결정해요.<br>${_hasYM?'· 역마 ★ — 이동·외근·해외 활동 자연스러움<br>':''}${_hasHG?'· 화개 ★ — 한 분야 깊이 파는 전문 학자형<br>':''}${_hasCU?'· 천을귀인 ★ — 사람을 통해 기회가 들어오는 분위기<br>':''}${_hasMC?'· 문창귀인 ★ — 글·문서·기획에 강함<br>':''}${_hasYI?'· 양인 ★ — 결단력·강도 높은 일에 강함<br>':''}${_hasBH?'· 백호 ★ — 위기관리·외과·법조에 두각<br>':''}${(!_hasYM&&!_hasHG&&!_hasCU&&!_hasMC&&!_hasYI&&!_hasBH)?'본인 본연의 성품 <em>'+_ps.keyword+'</em>을 살리는 분야가 가장 자연스러워요.':''}</p>`;
     jobBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 직업 결정의 길</span><br>${_userStage==='school'?'본인 직업 색깔에 맞는 학과·진로를 조기 발견':_userStage==='youth'?'대학·전공·국가고시·첫 직장 선택 시 본인 일터 색깔 우선':_userStage==='young'||_userStage==='prime'?'본인 일터 색깔이 가장 빛나는 분야에 깊이 들어가기 + 승진·이직 결정':_userStage==='mid'?'본인 분야 정점 시기 — 후학·자문 역할도 시작':'은퇴 설계·인생 2막·자문 역할 — 본인 평생 자산 풀어내기'} · 추천 액션: <em>${stageActionOf('career',_userAge)}</em></p>`;
     const _ssKo={bigeop:'동료·라이벌의 분위기',siksang:'표현·풀어내는 분위기',jaesung:'현실·자원의 분위기',gwansung:'책임·규칙의 분위기',insung:'학습·받아들이는 분위기'};
     jobBody+=`<p><span class="body-q">본인 직업 적성은 어떻게 보나요?</span><br>본인 사주에 가장 두텁게 흐르는 흐름은 <b>${_ssKo[_topSS]}</b>(${_topSSCnt}자리)예요. 이 흐름은 본인이 평생 가장 자연스럽게 쓰는 「일터에서의 색깔」을 결정해요.</p>`;
@@ -9951,7 +9996,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   h+=`<div class="nb-card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));text-align:center">
     <div style="font-size:.95rem;font-weight:700;margin-bottom:8px">🎋 마무리</div>
-    <div style="font-size:.82rem;line-height:1.85;color:var(--text)">사주는 인생의 지도이지, 운명의 족쇄가 아닙니다.<br>본인이 타고난 ${dm.pos.slice(0,2).join('과 ')}을 의식적으로 발현시키고, ${dm.neg.slice(0,1).join(',')}을 다스리는 노력이 곧 좋은 사주를 완성하는 길이에요.</div>
+    <div style="font-size:.82rem;line-height:1.85;color:var(--text)">사주는 인생의 지도이지, 운명의 족쇄가 아닙니다.<br>본인이 타고난 ${_ps.keyword}을 의식적으로 발현시키고, 의식해서 다스릴 부분을 꾸준히 보살피는 노력이 곧 좋은 사주를 완성하는 길이에요.</div>
   </div>`;
 
   // CHX: 5장 내러티브로 카드 재배치 (진단 → 기질·관계 → 분야 → 시간 → 실천)
