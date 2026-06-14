@@ -784,6 +784,26 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-warn{margin-top:8px;padding:12px 14px;background:var(--fire-bg);border-radius:9px;border-left:3px solid var(--fire)}
 .nb-warn-lab{font-size:.66rem;font-weight:800;color:var(--fire);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
 .nb-gw-body{font-size:inherit;line-height:1.75;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.reading-brief{margin:12px 0 12px;padding:12px 13px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(12,15,16,.35));border:1px solid rgba(212,175,55,.24);border-radius:10px;line-height:1.72;color:var(--sub);font-size:.88rem}
+.reading-brief.compact{padding:10px 11px;font-size:.82rem;line-height:1.58}
+.reading-brief-row{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:start;padding:7px 0;border-bottom:1px solid rgba(212,175,55,.12)}
+.reading-brief.compact .reading-brief-row{grid-template-columns:42px 1fr;padding:4px 0;gap:6px}
+.reading-brief-row:first-child{padding-top:0}
+.reading-brief-row:last-child{border-bottom:0;padding-bottom:0}
+.reading-brief-lab{color:var(--accent);font-size:.72rem;font-weight:900;letter-spacing:.04em}
+.reading-brief.compact .reading-brief-lab{font-size:.68rem}
+.reading-brief-main{color:var(--text);font-weight:700}
+.reading-brief-help{margin-top:9px;display:grid;grid-template-columns:1fr;gap:7px}
+.reading-brief.compact .reading-brief-help{margin-top:7px;gap:5px}
+.reading-brief-chip{padding:9px 10px;border-radius:8px;border-left:3px solid;line-height:1.65;background:rgba(12,15,16,.35)}
+.reading-brief.compact .reading-brief-chip{padding:7px 8px;line-height:1.52}
+.reading-brief-chip b{display:block;margin-bottom:2px;font-size:.72rem;letter-spacing:.04em}
+.reading-brief.compact .reading-brief-chip b{font-size:.68rem}
+.reading-brief-chip.help{border-left-color:var(--wood)}
+.reading-brief-chip.help b{color:var(--wood)}
+.reading-brief-chip.warn{border-left-color:var(--fire)}
+.reading-brief-chip.warn b{color:var(--fire)}
+.remember-line{margin-top:10px;padding:10px 12px;background:rgba(216,196,168,.07);border:1px dashed rgba(212,175,55,.32);border-radius:9px;color:var(--accent-bright);font-size:.82rem;font-weight:800;line-height:1.65}
 
 /* ── 행동 지침 3박스 (강점·해야 할 일·피할 일) ── */
 .action-guide{margin-top:14px;display:flex;flex-direction:column;gap:8px}
@@ -1007,6 +1027,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
   .nb-title{font-size:1rem;line-height:1.45}
   .nb-body{font-size:.9rem;line-height:1.82}
   .lead-card{padding:12px 13px;line-height:1.72}
+  .reading-brief{font-size:.84rem;padding:11px 12px}
+  .reading-brief.compact{font-size:.8rem;padding:9px 10px}
+  .reading-brief-row{grid-template-columns:50px 1fr;gap:7px}
+  .reading-brief.compact .reading-brief-row{grid-template-columns:40px 1fr}
   .chapter-divider{margin:24px 2px 12px;padding:11px 13px}
   .chapter-divider .ch-title{font-size:1rem}
   .action-guide .ag-block{padding:10px 12px}
@@ -11289,13 +11313,92 @@ async function downloadGunghapSummary(fmt){
 }
 
 let _paidFoldMode='';
+function _plainReadingText(html){
+  if(!html)return '';
+  return normalizeReadingText(String(html))
+    .replace(/<style[\s\S]*?<\/style>/gi,' ')
+    .replace(/<script[\s\S]*?<\/script>/gi,' ')
+    .replace(/<br\s*\/?>/gi,' ')
+    .replace(/<\/(?:p|div|li|h\d|ul|ol)>/gi,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/g,' ')
+    .replace(/&amp;/g,'&')
+    .replace(/&lt;/g,'<')
+    .replace(/&gt;/g,'>')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function _readingSentences(html){
+  const text=_plainReadingText(html);
+  if(!text)return [];
+  return text
+    .replace(/([.!?。！？]|요\.|다\.)\s+/g,'$1|')
+    .split('|')
+    .map(s=>s.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]\s*/,'').trim())
+    .filter(s=>s.length>=14&&s.length<=180);
+}
+function _shortReadingSentence(s,maxLen=92){
+  s=_plainReadingText(s||'');
+  if(!s)return '';
+  if(s.length<=maxLen)return s;
+  const cut=s.slice(0,maxLen);
+  const p=Math.max(cut.lastIndexOf(' '),cut.lastIndexOf('요.'),cut.lastIndexOf('다.'));
+  return (p>38?cut.slice(0,p):cut).replace(/[,.·\s]+$/,'')+'…';
+}
+function _firstFromGoodWarn(goodWarn,key){
+  if(!goodWarn)return '';
+  if(key==='help'){
+    if(goodWarn.good)return _shortReadingSentence(goodWarn.good,86);
+    if(Array.isArray(goodWarn.strengths)&&goodWarn.strengths[0])return _shortReadingSentence(goodWarn.strengths[0],86);
+    if(Array.isArray(goodWarn.todos)&&goodWarn.todos[0])return _shortReadingSentence(goodWarn.todos[0],86);
+  }else{
+    if(goodWarn.warn)return _shortReadingSentence(goodWarn.warn,86);
+    if(Array.isArray(goodWarn.avoids)&&goodWarn.avoids[0])return _shortReadingSentence(goodWarn.avoids[0],86);
+  }
+  return '';
+}
+function _memoryLineForCard(title,action){
+  const t=_plainReadingText(title);
+  if(/재물|돈|이름/.test(t))return '오늘 기억할 한 가지 — 큰돈보다 기록과 확인을 먼저 챙기면 흐름이 안정돼요.';
+  if(/연애|결혼|궁합|관계|가족/.test(t))return '오늘 기억할 한 가지 — 중요한 말은 짧게, 확인은 부드럽게 하는 쪽이 관계 운을 살려요.';
+  if(/직업|사업|일터|승진|이직/.test(t))return '오늘 기억할 한 가지 — 성과를 밖으로 꺼내기 전에 기준과 순서를 먼저 정리하세요.';
+  if(/건강|컨디션/.test(t))return '오늘 기억할 한 가지 — 무리해서 밀어붙이기보다 몸의 신호를 먼저 확인하세요.';
+  if(/학업|시험|공부|문서/.test(t))return '오늘 기억할 한 가지 — 새 진도보다 정리와 반복이 운을 더 오래 붙잡아줘요.';
+  if(action)return '오늘 기억할 한 가지 — '+_shortReadingSentence(action,74);
+  return '오늘 기억할 한 가지 — 핵심만 먼저 확인하고, 자세한 근거는 필요할 때 펼쳐보세요.';
+}
+function _buildReadingBrief(catLabel,title,bodyHtml,goodWarn,compact){
+  const skip=new Set(['TOC','MASTER','EPILOGUE','QUICK','RECOMMEND']);
+  if(skip.has(catLabel))return '';
+  const sents=_readingSentences(bodyHtml);
+  if(!sents.length)return '';
+  const lead=sents.find(s=>/본인|두 분|이름|올해|이달|이 날|기간|흐름/.test(s))||sents[0];
+  const reason=sents.find(s=>s!==lead&&/왜|기준|글자|기운|사주|자리|근거|작용|만나/.test(s))||sents.find(s=>s!==lead)||'이 흐름은 본인에게 들어오는 기운과 타고난 성향이 만나는 방식에서 나와요.';
+  const action=sents.find(s=>s!==lead&&/하세요|좋아요|필요|활용|챙기|줄이|미루|잡으|정리|확인|주의/.test(s))||sents.find(s=>s!==lead&&s!==reason)||'큰 결정 전에는 핵심만 먼저 보고, 필요한 부분만 자세히 확인하세요.';
+  const help=_firstFromGoodWarn(goodWarn,'help')||'도움이 되는 흐름은 본인을 차분하게 정리하고, 현실에서 바로 쓸 수 있는 선택으로 이어져요.';
+  const warn=_firstFromGoodWarn(goodWarn,'warn')||'주의할 흐름은 속도가 빨라지거나 감정이 앞설 때 커져요. 중요한 결정은 한 번 더 확인하세요.';
+  const leadLen=compact?72:96;
+  const subLen=compact?74:104;
+  return `<div class="reading-brief${compact?' compact':''}" aria-label="핵심 요약">
+    <div class="reading-brief-row"><div class="reading-brief-lab">결론</div><div class="reading-brief-main">${preventOrphan(_shortReadingSentence(lead,leadLen))}</div></div>
+    <div class="reading-brief-row"><div class="reading-brief-lab">이유</div><div>${preventOrphan(_shortReadingSentence(reason,subLen))}</div></div>
+    <div class="reading-brief-row"><div class="reading-brief-lab">활용</div><div>${preventOrphan(_shortReadingSentence(action,subLen))}</div></div>
+    <div class="reading-brief-help">
+      <div class="reading-brief-chip help"><b>도움</b>${preventOrphan(_shortReadingSentence(help,compact?62:86))}</div>
+      <div class="reading-brief-chip warn"><b>주의</b>${preventOrphan(_shortReadingSentence(warn,compact?62:86))}</div>
+    </div>
+  </div>`;
+}
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
+  bodyHtml=normalizeReadingText(bodyHtml||'');
   // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
   const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
-  const foldCats=new Set(['life','monthly','newyear','name','gunghap']);
+  const foldCats=new Set(['life','daypick','monthly','newyear','name','gunghap']);
   const noFoldLabels=new Set(['TOC','MASTER','EPILOGUE','QUICK','RECOMMEND']);
   const isDetail=foldCats.has(_paidFoldMode)&&!isTl&&!noFoldLabels.has(catLabel);
+  const briefHtml=_buildReadingBrief(catLabel,title,bodyHtml,goodWarn,isDetail||isTl);
+  const memoryHtml=briefHtml?`<div class="remember-line">${preventOrphan(_memoryLineForCard(title,(_readingSentences(bodyHtml).find(s=>/하세요|좋아요|필요|활용|챙기|줄이|미루|잡으|정리|확인|주의/.test(s))||'')))}</div>`:'';
   const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
   const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
   // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
@@ -11305,9 +11408,10 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
     ${badge}<div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
+    ${briefHtml}
     ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">★ 현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
-    <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
+    <div class="nb-body">${preventOrphan(bodyHtml)}${memoryHtml}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
     const has3=Array.isArray(goodWarn.strengths)||Array.isArray(goodWarn.todos)||Array.isArray(goodWarn.avoids);
@@ -11384,6 +11488,7 @@ function jumpToCard(id){
   const el=document.getElementById(id);
   if(!el)return;
   if(el.classList.contains('tl-collapsible')&&!el.classList.contains('tl-open'))_tlToggle(el,true);
+  if(el.classList.contains('detail-collapsible')&&!el.classList.contains('detail-open'))_detailToggle(el,true);
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
