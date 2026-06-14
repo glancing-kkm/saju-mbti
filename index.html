@@ -765,6 +765,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .quick-summary-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}
 .quick-summary-item{padding:11px 13px;background:rgba(12,15,16,.42);border:1px solid var(--border);border-radius:9px;line-height:1.7}
 .quick-summary-item b{display:block;color:var(--accent);margin-bottom:4px}
+.name-compare{margin:12px 0 14px;padding:12px;background:rgba(108,191,126,.08);border:1px solid rgba(108,191,126,.28);border-radius:9px}
+.name-compare-head{color:var(--accent);font-size:.82rem;font-weight:800;line-height:1.6;margin-bottom:9px}
+.name-compare-grid{display:flex;flex-direction:column;gap:7px}
+.name-compare-row{display:grid;grid-template-columns:34px 72px 1fr;gap:8px;align-items:start;padding:10px 11px;background:rgba(12,15,16,.4);border:1px solid var(--border);border-radius:8px;line-height:1.55}
+.ncr-rank{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(212,175,55,.16);color:var(--accent-bright);font-weight:900;font-size:.78rem}
+.ncr-name{color:var(--accent);font-weight:900;word-break:keep-all}
+.ncr-reason{color:var(--sub);font-size:.78rem}
+.ncr-use{grid-column:2/4;color:var(--muted);font-size:.72rem}
 @keyframes tlOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .nb-body p{margin-bottom:11px}
@@ -11254,7 +11262,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
   const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
   const foldCats=new Set(['life','monthly','newyear','name','gunghap']);
-  const noFoldLabels=new Set(['TOC','MASTER','EPILOGUE','QUICK']);
+  const noFoldLabels=new Set(['TOC','MASTER','EPILOGUE','QUICK','RECOMMEND']);
   const isDetail=foldCats.has(_paidFoldMode)&&!isTl&&!noFoldLabels.has(catLabel);
   const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
   const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
@@ -15343,7 +15351,21 @@ function renderNamePaid(saju, nmExtra){
       </div>`;
     }
   }
+  const compareRows=recommended.map((r,i)=>{
+    const use=i===0?'가장 먼저 검토할 이름이에요':i===1?'부드러운 대안으로 좋아요':i===2?'활동감을 더하는 선택이에요':i===3?'부족한 흐름을 보강해요':'차분하게 균형을 맞춰요';
+    return `<div class="name-compare-row">
+      <div class="ncr-rank">${i+1}</div>
+      <div class="ncr-name">${surname}${r.name}</div>
+      <div class="ncr-reason">${r.reason}</div>
+      <div class="ncr-use">${use}</div>
+    </div>`;
+  }).join('');
+  const compareTable=`<div class="name-compare">
+    <div class="name-compare-head">먼저 비교표로 후보를 고르고, 마음에 드는 이름만 아래에서 펼쳐보세요.</div>
+    <div class="name-compare-grid">${compareRows}</div>
+  </div>`;
   let recBody=`<p style="margin-bottom:14px">본인 사주를 가장 잘 받쳐주는 오행은 <b style="color:${OHCOLOR[recommendOh]}">${ohNames[recommendOh]}</b>이에요. 이 흐름을 채워주는 자음(${recommendOh===0?'ㄱ·ㅋ':recommendOh===1?'ㄴ·ㄷ·ㄹ·ㅌ':recommendOh===2?'ㅇ·ㅎ':recommendOh===3?'ㅅ·ㅈ·ㅊ':'ㅁ·ㅂ·ㅍ'})이 들어간 이름을 우선으로 추천해드려요. 자녀 작명을 고민 중이시거나 본인 개명을 생각하신다면 참고하세요.</p>
+    ${compareTable}
     <div style="display:flex;flex-direction:column;gap:9px">`;
   // 성씨 한자 (사용자 입력 우선, 없으면 사전 첫 후보)
   const surnameHan=(han.surname)||(getHanCandidates(surname.charAt(0))[0]&&getHanCandidates(surname.charAt(0))[0].han)||'';
