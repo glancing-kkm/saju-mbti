@@ -3968,7 +3968,7 @@ function resultHeroHTML(saju, mbti, cat){
     <div class="result-hero-tag">${tag}</div>
     <h2 class="result-hero-headline">${headline}</h2>
     ${extraLine}
-    <div class="result-hero-keys">${(STEM_META[dStem]?STEM_META[dStem].keys:'').split('·').slice(0,4).map(k=>`<span>${k.trim()}</span>`).join('')}</div>
+    <div class="result-hero-keys">${(()=>{const p=buildPersonaProfile(saju);const gkn=getGyeokguk(saju);const ax=(SIPSIN_AXIS_LABEL[p.axisSorted[0][0]]||{}).n;const chips=[...(STEM_META[dStem]?STEM_META[dStem].keys.split('·').slice(0,2):[]),gkn.nick?gkn.nick.split('·')[0]:(gkn.name||'').split(' ')[0],ax,OHNAME[p.top]+' 기운'].filter(Boolean);return chips.slice(0,5).map(k=>`<span>${String(k).trim()}</span>`).join('');})()}</div>
   </header>`;
 }
 
@@ -5422,6 +5422,7 @@ function renderNewyearFortune(saju,y){
     if(k==='동')return '본인과 ' +y+ '년 띠가 같은 글자예요. 본인 색깔이 평소보다 진하게 드러나는 해예요. 자기 분위기에 자신감을 갖되, 한 발 더 욕심내는 일은 다음 해로 미루세요.';
     return '두 띠는 무난하게 만나, 한 해가 자기 페이스대로 흘러가요.';
   })()}</p>`;
+  zBody+=`<p>다만 같은 띠라도 본인 사주의 분위기는 달라요. 본인은 <b>${gkX.name}${gkX.nick?' · '+gkX.nick.split('·')[0]+'형':''}</b>이라, 올해 이 띠 작용을 본인을 돕는 <b>${OHNAME[ysX.main]} 기운</b>을 살리는 쪽으로 풀면 흐름이 한결 부드러워져요.</p>`;
   h+=paidWrapBody('ZODIAC',ZODIAC_EMOJI[yearZodiac],`띠 작용 — 본인 띠 vs ${y}년 띠`,zBody);
 
   // 공망(空亡) 채워짐 — 본인 공망 자리가 올해 세운으로 채워지는지
@@ -6457,6 +6458,15 @@ function personaStrengths(saju){
   const KEYWORD={self:'주도력',out:'표현력',wealth:'현실 감각',gwan:'책임감',in_:'수용력'};
   const uniq=a=>[...new Set(a.filter(Boolean))];
   return {strengths:uniq(strengths).slice(0,3),cautions:uniq(cautions).slice(0,2),keyword:KEYWORD[topAxis]||'본인의 강점'};
+}
+
+// PT: 같은 천간(일간)이라도 갈리게 하는 한 구절 — 계절·신강약·앉은 자리(전체 사주) 기반.
+function personaTwist(saju){
+  const p=buildPersonaProfile(saju);
+  const strongWord=p.strength==='강'?'기운이 두터운 신강':p.strength==='중강'?'균형 잡힌 중강':p.strength==='중약'?'섬세한 중약':'주변과 함께 쓰는 신약';
+  const seatMap={'비견':'스스로 중심을 잡는','겁재':'밀어붙이는','식신':'여유롭게 풀어내는','상관':'반짝이는','편재':'발 빠른','정재':'꼼꼼한','편관':'단단한','정관':'반듯한','편인':'깊이 파고드는','정인':'받아들이는'};
+  const seat=seatMap[p.seatTg]||'';
+  return ` 다만 같은 기운이라도 본인은 ${p.season} 태생에 ${strongWord}이라, ${seat?seat+' ':''}본인만의 색으로 또렷해져요.`;
 }
 
 // 「본인이 누구인지」 종합 서술 — mode: 'full'(인생총운) / 'brief'(만세력) / 'line'(리드 한 줄)
@@ -7873,7 +7883,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ① 한 줄 결론 — 친근 존댓말로 본인이 어떤 사람인지 한눈에
   sajuBody+=`<div class="lead-card">본인은 <b>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</b> — <em>${stemNick(dp.stem)}</em> 같은 본질을 타고난 사람이세요. 사주의 유형은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>이고, 본인을 가장 잘 도와주는 기운은 <b>${OHNAME[ys.main]}</b>입니다.</div>`;
   sajuBody+=miniManse(saju);
-  sajuBody+=`<p>🪄 <b>본인이 어떤 사람인지 비유로 풀어보면</b><br>${stemPoetic(dp.stem)} 이러한 본질은 본인이 세상과 만날 때 가장 먼저 전해지는 인상으로, 사람들에게 자연스럽게 본인만의 온도와 색을 느끼게 해요.</p>`;
+  sajuBody+=`<p>🪄 <b>본인이 어떤 사람인지 비유로 풀어보면</b><br>${stemPoetic(dp.stem)}${personaTwist(saju)} 이러한 본질은 본인이 세상과 만날 때 가장 먼저 전해지는 인상으로, 사람들에게 자연스럽게 본인만의 온도와 색을 느끼게 해요.</p>`;
 
   // ② 일주
   sajuBody+=`<p style="margin-top:14px"><b>① 본인 자리 — 사주의 중심</b></p>`;
@@ -12744,7 +12754,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     h+=`<p><b>②-2 두 사람 사주의 전체 교차 작용</b><br>두 분 사주의 자리들이 서로 만나는 지점에서 ${_parts.join(' · ')} 작용이 보여요. ${_crGood>_crBad?'<em style="color:var(--wood)">화합·결속 기운이 우세</em>하여 전반적으로 부드러운 흐름이에요.':_crBad>_crGood?'<em style="color:var(--fire)">부딪힘·거슬림·깎임 기운이 우세</em>하여 의식적인 소통과 거리 조절이 필요해요.':'화합과 충돌이 비슷한 비중으로 균형 잡힌 분위기예요.'}</p>`;
   }
   h+=`<p><b>③ 십신 작용</b><br>본인이 상대를 보는 관계는 <em>${tg12}</em>이며, 상대가 본인을 보는 관계는 <em>${tg21}</em>입니다. ${getTgPairDesc(tg12,tg21,g1,g2)}</p>`;
-  h+=`<p><b>④ 성격 궁합</b><br>${getPersonalityCompat(dm1,dm2,e1,e2)}</p>`;
+  h+=`<p><b>④ 성격 궁합</b><br>${getPersonalityCompat(dm1,dm2,e1,e2,s1,s2)}</p>`;
   { // PSN: 일간을 넘어 — 두 사람 여덟 글자 전체 비교
     const _p1=buildPersonaProfile(s1), _p2=buildPersonaProfile(s2);
     const _a1=SIPSIN_AXIS_LABEL[_p1.axisSorted[0][0]], _a2=SIPSIN_AXIS_LABEL[_p2.axisSorted[0][0]];
@@ -12855,8 +12865,11 @@ function getTgPairDesc(tg12,tg21,g1,g2){
   return '잔잔한 동반자형 관계로, 시간이 갈수록 깊어지는 인연이 될 수 있어요.';
 }
 
-function getPersonalityCompat(dm1,dm2,e1,e2){
-  return `${dm1.n.split('(')[0]}의 ${dm1.pos[0]}과 ${dm2.n.split('(')[0]}의 ${dm2.pos[0]}이 만나는 조합으로, ${e1===e2?'비슷한 성향이라 편안하지만 새로움은 부족할 수 있고':'서로 다른 강점을 보완하는 만큼 처음에 적응 시간이 필요하지만 익숙해지면 든든해요'}.`;
+function getPersonalityCompat(dm1,dm2,e1,e2,s1,s2){
+  const axName=s=>{try{const p=buildPersonaProfile(s);return (SIPSIN_AXIS_LABEL[p.axisSorted[0][0]]||{}).n||'';}catch(e){return '';}};
+  const a1=s1?axName(s1):'', a2=s2?axName(s2):'';
+  const axLine=(a1&&a2)?`본인은 <b>${a1}</b> 힘이, 상대는 <b>${a2}</b> 힘이 가장 두터워서 ${a1===a2?'같은 동력을 가져 금세 통하지만 같은 자리를 두고는 부딪힐 수 있고':'서로 다른 동력이라 빈 곳을 채워주는 조합이고'}, `:'';
+  return `${axLine}${dm1.n.split('(')[0]}의 ${dm1.pos[0]}과 ${dm2.n.split('(')[0]}의 ${dm2.pos[0]}이 만나는 조합이라, ${e1===e2?'비슷한 성향이라 편안하지만 새로움은 부족할 수 있어요':'서로 다른 강점을 보완하는 만큼 처음엔 적응이 필요해도 익숙해지면 든든해요'}.`;
 }
 
 function getValueCompat(s1,s2,result){
