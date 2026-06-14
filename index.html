@@ -2842,8 +2842,10 @@ function _dailyLuckCard(saju, f){
   const luckDir=['동쪽','남쪽','중앙','서쪽','북쪽'][luckOh];
   const luckNum=['3·8','2·7','5·10','4·9','1·6'][luckOh];
   const luckFood=['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][luckOh];
-  // 좋은 띠
-  const goodZs=luckyZodiacsForBranch(f.dp.branch).map(b=>`${ZODIAC_EMOJI[b]}${ZODIAC_KO[b]}띠`).slice(0,3);
+  // 좋은/피할 띠 — 본인 일지+용신 기준(그날 지지는 보조)
+  const _zm=userMatchZodiacs(saju, ys.main, f.dp.branch);
+  const goodZs=_zm.good.slice(0,3).map(zodiacLabel);
+  const badZs=_zm.bad.slice(0,2).map(zodiacLabel);
   // 용신 보강 한 줄
   const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
@@ -2855,7 +2857,8 @@ function _dailyLuckCard(saju, f){
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🔢 행운 숫자</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckNum}</div></div>
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🍽 도움 음식</div><div style="font-size:.78rem;color:var(--text);font-weight:600;line-height:1.4">${luckFood}</div></div>
     </div>
-    ${goodZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">🤝 오늘 만나면 좋은 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${goodZs.join(' · ')}</div></div>`:''}
+    ${goodZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">🤝 본인과 잘 맞는 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${goodZs.join(' · ')}</div></div>`:''}
+    ${badZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">⚡ 본인과 부딪히기 쉬운 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${badZs.join(' · ')}</div></div>`:''}
     <div style="padding:9px 11px;background:rgba(212,175,55,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.74rem;color:var(--sub);line-height:1.8">💡 본인을 평생 가장 든든히 받쳐주는 기운은 <b style="color:var(--accent)">${OHNAME[ys.main]} (${yongsinColor})</b>이에요. 일상에서 이 색·기운을 가까이 두시면 운의 흐름이 자연스럽게 풀려요.</div>
   </div>`;
 }
@@ -2996,6 +2999,36 @@ function avoidZodiacsForBranch(b){
   CHUNG.forEach(([a,c])=>{if(a===b)out.add(c);else if(c===b)out.add(a);});
   return [...out];
 }
+// ZM: 사용자 원국(일지)+용신 기준 — 본인에게 잘 맞는/부딪히는 띠. 시점(그날·세운 지지)은 보조 변수로만 얹는다.
+function userMatchZodiacs(saju, ysMain, ctxBranch){
+  const me=saju.dp.branch; // 일지 = 띠 궁합의 기준 자리
+  const rows=[];
+  for(let b=0;b<12;b++){
+    if(b===me)continue; // 본인 띠 자체는 제외
+    const r=brRel(me,b); let s=0;
+    // 1차: 일지와의 합/삼합(좋음) · 충/원진(피함)
+    if(r.kind==='합')s+=4;
+    else if(r.kind==='반합')s+=3.5;
+    else if(r.kind==='반합약')s+=2.5;
+    else if(r.kind==='충')s-=4;
+    else if(r.kind==='원진')s-=3;
+    else if(r.kind==='형'||r.kind==='자형')s-=1.5;
+    else if(r.kind==='파'||r.kind==='해')s-=0.5;
+    // 2차: 용신 오행을 띠는 띠에 가산점
+    if(typeof ysMain==='number'&&BOH[b]===ysMain)s+=1.5;
+    // 보조: 그날·세운 지지와의 관계는 소폭만
+    if(typeof ctxBranch==='number'&&ctxBranch>=0){
+      const rc=brRel(ctxBranch,b);
+      if(rc.kind==='합'||rc.kind==='반합'||rc.kind==='반합약')s+=0.6;
+      else if(rc.kind==='충'||rc.kind==='원진')s-=0.6;
+    }
+    rows.push({b,s});
+  }
+  const good=rows.filter(x=>x.s>=2).sort((a,b)=>b.s-a.s).map(x=>x.b);
+  const bad=rows.filter(x=>x.s<=-2).sort((a,b)=>a.s-b.s).map(x=>x.b);
+  return {good,bad};
+}
+function zodiacLabel(b){return `${ZODIAC_EMOJI[b]}${ZODIAC_KO[b]}띠`;}
 function ohBalance(saju){
   // 8글자 오행 카운트 (천간·지지 정기)
   const cnt=[0,0,0,0,0]; // 木,火,土,金,水
@@ -4037,8 +4070,9 @@ function renderDaypickFortune(saju,y,m,d,extra){
   const stemTG=f.tg, branchTG=f.branchTG, rel=f.rel;
 
   // 좋은 띠 / 피할 띠
-  const goodZ=luckyZodiacsForBranch(dpBranch).map(b=>`${ZODIAC_EMOJI[b]}${ZODIAC_KO[b]}띠`);
-  const badZ=avoidZodiacsForBranch(dpBranch).map(b=>`${ZODIAC_EMOJI[b]}${ZODIAC_KO[b]}띠`);
+  const _zmDp=userMatchZodiacs(saju, ys.main, dpBranch);
+  const goodZ=_zmDp.good.slice(0,4).map(zodiacLabel);
+  const badZ=_zmDp.bad.slice(0,3).map(zodiacLabel);
 
   // 길방위·색·수
   const dirs=[...new Set([...LUCKY_DIR_BY_OH[myStemOh],...LUCKY_DIR_BY_OH[ys.main]])].slice(0,3);
@@ -4302,9 +4336,9 @@ function renderDaypickFortune(saju,y,m,d,extra){
   luckyBody+=`<p><b>🧭 길방위</b><br>${dirs.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">중요한 미팅·면접·계약 시 이 방향에서 들어오는 자리(또는 이 방향을 향한 자리)가 길해요.</span></p>`;
   luckyBody+=`<p><b>🎨 길색</b><br>${colors.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">옷·가방·소품·넥타이에 이 색을 한 가지 더하면 그날 기운과 잘 어우러져요.</span></p>`;
   luckyBody+=`<p><b>🔢 길수</b><br>${nums.join(', ')}<br><span style="color:var(--sub);font-size:.78rem">약속 시각(예: 오후 ${nums[0]}시)·차량 번호 끝자리·자리 번호·방 번호 선택에 작게 활용하세요.</span></p>`;
-  luckyBody+=`<p><b style="color:#6cbf7e">🤝 만나면 좋은 띠</b><br>${goodZ.length?goodZ.join(' · '):'특별히 강한 합을 부르는 띠는 없어요.'}<br><span style="color:var(--sub);font-size:.78rem">이 띠의 사람과 만남·식사·미팅에 길운이 따릅니다. 중요한 사람을 만난다면 이 띠인지 확인해 보세요.</span></p>`;
-  luckyBody+=`<p><b style="color:#e57462">⚡ 한 번 더 살필 띠</b><br>${badZ.length?badZ.join(' · '):'강한 충을 부르는 띠는 없어요.'}<br><span style="color:var(--sub);font-size:.78rem">이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
-  h+=paidWrapBody('LUCKY','🧭','길방위 · 길색 · 길수 · 만나면 좋은 띠',luckyBody);
+  luckyBody+=`<p><b style="color:#6cbf7e">🤝 본인과 잘 맞는 띠</b><br>${goodZ.length?goodZ.join(' · '):'본인 일지와 강하게 어울리는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 사주(일지)와 자연스럽게 어울리는 띠라, 이 띠의 사람과 만남·협업·미팅에 흐름이 부드러워요. 중요한 자리라면 이 띠인지 살펴보세요.</span></p>`;
+  luckyBody+=`<p><b style="color:#e57462">⚡ 본인과 부딪히기 쉬운 띠</b><br>${badZ.length?badZ.join(' · '):'본인 일지와 강하게 부딪히는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 일지와 충·원진으로 만나는 띠라, 이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
+  h+=paidWrapBody('LUCKY','🧭','길방위 · 길색 · 길수 · 본인과 맞는 띠',luckyBody);
 
   // ── 활성 신살 (미니 박스로) + 개인화 부스트
   if(activeSins.length>0){
