@@ -735,6 +735,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* CHX: TOC 장별 그룹 소제목 */
 .toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
 .toc-chapter-head:first-child{margin-top:0}
+.toc-grid{display:flex;flex-direction:column;gap:7px}
+.toc-details{border:1px solid var(--border);border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
+.toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
+.toc-details summary::-webkit-details-marker{display:none}
+.toc-details summary::after{content:'▾';float:right;color:var(--accent);transition:transform .15s}
+.toc-details[open] summary::after{transform:rotate(180deg)}
+.toc-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:5px;padding:0 9px 10px}
 /* TL-DD: 타임라인 카드 접기/펼치기 */
 .tl-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
 .tl-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
@@ -746,6 +753,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tl-collapsible.tl-open .tl-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
 .tl-body-wrap{display:none}
 .tl-collapsible.tl-open .tl-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
+.detail-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
+.detail-collapsible .detail-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
+.detail-collapsible.detail-open .detail-chevron{transform:rotate(180deg)}
+.detail-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:1px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.detail-hint:hover{background:rgba(212,175,55,.16)}
+.detail-collapsible.detail-open .detail-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
+.detail-body-wrap{display:none}
+.detail-collapsible.detail-open .detail-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
+.quick-summary{background:linear-gradient(135deg,rgba(108,191,126,.12),rgba(45,52,71,.5));border:1px solid rgba(108,191,126,.38)}
+.quick-summary-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}
+.quick-summary-item{padding:11px 13px;background:rgba(12,15,16,.42);border:1px solid var(--border);border-radius:9px;line-height:1.7}
+.quick-summary-item b{display:block;color:var(--accent);margin-bottom:4px}
 @keyframes tlOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .nb-body p{margin-bottom:11px}
@@ -1005,6 +1024,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
   .menu-card{min-height:116px;padding:18px 14px 16px}
   .menu-card .mc-desc{margin-left:0;margin-right:0}
   .lt-svg-wrap svg{min-width:100%;width:100%}
+  .daeun-scroll{overflow-x:visible!important}
+  .daeun-strip{display:grid!important;grid-template-columns:repeat(4,1fr);gap:6px!important;min-width:0!important;width:100%}
+  .daeun-strip>div{min-width:0!important}
 }
 
 /* ══ 반응형 (RSP): 폰 크기별 유동 스케일 → 태블릿 → PC ══
@@ -2500,7 +2522,7 @@ function ensurePaidPanel(){
   if(!p5||p5.dataset.rendered==='1'||!_saju||!_meta)return;
   const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
   p5.innerHTML=fixKoreanJosa(back+(_paidUnlocked
-    ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
+    ?(()=>{const prev=_paidFoldMode;_paidFoldMode='life';try{return renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);}finally{_paidFoldMode=prev;}})()
     :renderSajuLock(_saju)));
   if(_paidUnlocked)enrichTerms(p5);
   p5.dataset.rendered='1';
@@ -2517,7 +2539,7 @@ function tab(n){
     if(p5){
       const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
       p5.innerHTML=fixKoreanJosa(back+(lifeUnlocked
-        ?renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)
+        ?(()=>{const prev=_paidFoldMode;_paidFoldMode='life';try{return renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);}finally{_paidFoldMode=prev;}})()
         :renderPaidLock('life',_saju)));
       if(lifeUnlocked)enrichTerms(p5);
       p5.dataset.rendered='1';
@@ -5868,8 +5890,8 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
     <div class="ctitle big">📅 대운 — 10년 운세 주기</div>
     <div class="irow"><span class="ikey">10년 흐름 방향</span><span class="ival">${dir}</span></div>
     <div class="irow"><span class="ikey">10년 흐름 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
-    <div style="margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch">
-    <div style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
+    <div class="daeun-scroll" style="margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <div class="daeun-strip" style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
   for(const du of d.daeuns){
     const se=SOH[du.stem],be=BOH[du.branch];
     h+=`<div style="text-align:center;min-width:50px">
@@ -7096,11 +7118,17 @@ function unlockAndRender(category){
   const heroHTML=resultHeroHTML(_saju, mbti, category);
   const tldrHTML=''; // TLDR 카드 노출 안 함 (사용자 요청)
   // CA-3: 지정일·월별·일일·만세력·이름풀이는 MBTI 분석/배지 숨김 (입력란 hideMbti와 동일 조건)
-  const _hideMbtiHeader=(category==='daypick'||category==='monthly'||category==='daily'||category==='manse'||category==='name');
+  const _hideMbtiHeader=(category==='daypick'||category==='monthly'||category==='daily'||category==='manse'||category==='name'||category==='life'||category==='newyear'||category==='gunghap');
   const mbtiAnalysis=(mbti && !_hideMbtiHeader)?mbtiAnalysisHTML(_saju, mbti):'';
-  const mbtiBadge=(mbti && !_hideMbtiHeader)?mbtiBadgeHTML(_saju, mbti):'';
+  const mbtiBadge=(mbti && category!=='daypick'&&category!=='monthly'&&category!=='daily'&&category!=='manse'&&category!=='name')?mbtiBadgeHTML(_saju, mbti):'';
   const headerBlock=heroHTML+tldrHTML+mbtiAnalysis+mbtiBadge;
   const nextActions=nextActionsHTML(category);
+  const renderFolded=(cat,fn)=>{
+    const prev=_paidFoldMode;
+    _paidFoldMode=cat;
+    try{return fn();}
+    finally{_paidFoldMode=prev;}
+  };
   const renderTarget=(panelId,html)=>{
     const el=document.getElementById(panelId);
     if(!el)return;
@@ -7112,19 +7140,19 @@ function unlockAndRender(category){
     renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d,_meta.dpExtra));
     gotoCard(2);
   }else if(category==='monthly'){
-    renderTarget('p3',renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra));
+    renderTarget('p3',renderFolded('monthly',()=>renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra)));
     gotoCard(3);
   }else if(category==='newyear'){
-    renderTarget('p4',renderNewyearFortune(_saju,_meta.nyExtra.y));
+    renderTarget('p4',renderFolded('newyear',()=>renderNewyearFortune(_saju,_meta.nyExtra.y)));
     gotoCard(4);
   }else if(category==='life'){
-    renderTarget('p5',renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
+    renderTarget('p5',renderFolded('life',()=>renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)));
     gotoCard(5);
   }else if(category==='gunghap'){
-    renderTarget('p6',renderGunghapPaid(_saju,_meta.gnExtra));
+    renderTarget('p6',renderFolded('gunghap',()=>renderGunghapPaid(_saju,_meta.gnExtra)));
     gotoCard(6);
   }else if(category==='name'){
-    renderTarget('p7',renderNamePaid(_saju,_meta.nmExtra));
+    renderTarget('p7',renderFolded('name',()=>renderNamePaid(_saju,_meta.nmExtra)));
     gotoCard(7);
   }else{
     // 알 수 없는 카테고리는 거짓 성공 방지
@@ -9904,6 +9932,21 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ─── BT: 카드 목차(TOC) 자동 생성 후 맨 위에 prepend ───
   const _tocCard=_generateTOC(h,'본인 사주풀이');
 
+  // ─── 모바일 우선 3분 요약 — 긴 인생총운의 첫 진입 피로를 줄이는 카드 ───
+  const _quickCard=`<!--CARD_START:QUICK--><div class="nb-card quick-summary" data-cardid="QUICK" id="card-QUICK">
+    <div class="nb-cat">3 MIN SUMMARY</div>
+    <div class="nb-title">⏱ 인생총운 3분 요약 — 지금 먼저 볼 것</div>
+    <div class="nb-body">
+      <div class="lead-card"><b>본인은 ${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${stemNick(dp.stem)}</b> 같은 본질을 가진 사람이에요. 지금은 <b>${_userStageLabel}</b> 단계라, 모든 풀이를 다 읽기보다 현재 선택에 직접 닿는 카드부터 보면 좋아요.</div>
+      <div class="quick-summary-grid">
+        <div class="quick-summary-item"><b>1. 지금의 핵심</b>본인을 도와주는 기운은 <em>${OHNAME[ys.main]}</em>이에요. 일·관계·재물에서 이 기운을 살리는 선택이 가장 편하게 이어져요.</div>
+        <div class="quick-summary-item"><b>2. 먼저 펼칠 카드</b>재물·직업·연애·건강 중 지금 고민에 가까운 카드만 먼저 펼치세요. 나머지는 필요할 때 천천히 봐도 충분해요.</div>
+        <div class="quick-summary-item"><b>3. 주의할 점</b><em>${OHNAME[weak]}</em> 기운은 의식적으로 보강해야 해요. 무리한 확장보다 생활 리듬과 환경을 먼저 정리하면 흐름이 안정돼요.</div>
+        <div class="quick-summary-item"><b>4. 오늘 할 일</b>${['동쪽 산책 20분','햇볕 쬐기 10분','책상 위 한 구역 정리','호흡 길게 5분','물 충분히 마시기'][ys.main]}처럼 작은 행동 하나부터 시작하세요.</div>
+      </div>
+    </div>
+  </div><!--CARD_END:QUICK-->`;
+
   // ─── BW: 본인 사주 한눈에 보기 마스터 카드 ───
   let _masterCard='';
   try{
@@ -9958,7 +10001,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div><!--CARD_END:MASTER-->`;
   }catch(e){}
 
-  h=_masterCard+_tocCard+h;
+  h=_quickCard+_masterCard+_tocCard+h;
 
   return h;
 }
@@ -11126,11 +11169,15 @@ async function downloadGunghapSummary(fmt){
   }
 }
 
+let _paidFoldMode='';
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
   // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
   const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
-  const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'');
+  const foldCats=new Set(['life','monthly','newyear','name','gunghap']);
+  const noFoldLabels=new Set(['TOC','MASTER','EPILOGUE','QUICK']);
+  const isDetail=foldCats.has(_paidFoldMode)&&!isTl&&!noFoldLabels.has(catLabel);
+  const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
   const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
   // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
   // id="card-XXX" 추가 — TOC 점프 링크용 (BT)
@@ -11138,8 +11185,9 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   const safeId='card-'+catLabel.replace(/[^A-Za-z0-9_-]/g,'_');
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
     ${badge}<div class="nb-cat">${catLabel}</div>
-    <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':''}</div>
+    <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
     ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">★ 현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
+    ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
     <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
@@ -11163,10 +11211,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
       if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
     }
   }
-  // CD-2: 카드 끝 자동 연결 멘트 (TOC·MASTER·EPILOGUE 제외)
-  if(catLabel!=='TOC' && catLabel!=='MASTER' && catLabel!=='EPILOGUE'){
-    h+=`<div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);text-align:center;font-size:.7rem;color:var(--muted);line-height:1.5">↓ 다음 카드로 이어져요 <span style="opacity:.6">(맨 위 📋 목차에서 다른 카드로 바로 이동 가능)</span></div>`;
-  }
+  if(isDetail)h+=`</div>`; // .detail-body-wrap 닫기
   if(isTl)h+=`</div>`; // .tl-body-wrap 닫기
   h+=`</div><!--CARD_END:${catLabel}-->`;
   return h;
@@ -11198,6 +11243,22 @@ document.addEventListener('click',function(e){
   if(!card)return;
   if(e.target.closest('.tl-current')){_tlOpenCurrent(card);return;}
   if(e.target.closest('.nb-title')||e.target.closest('.tl-hint'))_tlToggle(card);
+});
+function _detailToggle(card,forceOpen){
+  if(!card)return;
+  const open=forceOpen===true?true:!card.classList.contains('detail-open');
+  card.classList.toggle('detail-open',open);
+  const btn=card.querySelector('.detail-hint');
+  if(btn){
+    btn.textContent=open?'▲ 자세한 풀이 접기':'핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요';
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  }
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('.term'))return;
+  const card=e.target.closest('.detail-collapsible');
+  if(!card)return;
+  if(e.target.closest('.nb-title')||e.target.closest('.detail-hint'))_detailToggle(card);
 });
 // TOC 점프 — 접힌 타임라인 카드면 펼친 뒤 스크롤
 function jumpToCard(id){
@@ -11273,19 +11334,25 @@ function _generateTOC(h, scopeLabel){
     // CHX: 장 정보가 있으면 장별 소제목으로 그룹화, 없으면 평면 그리드(하위 호환)
     let grid='';
     if(items.some(it=>it.ch)){
-      let lastNo=' ';
+      let lastNo=' ',group='';
       items.forEach(it=>{
         const key=it.ch?it.ch.no:'';
-        if(key!==lastNo){ if(it.ch)grid+=`<div class="toc-chapter-head">${it.ch.no}장 · ${it.ch.title}</div>`; lastNo=key; }
+        if(key!==lastNo){
+          if(group)grid+=`</div></details>`;
+          if(it.ch)grid+=`<details class="toc-details"${grid?'':' open'}><summary>${it.ch.no}장 · ${it.ch.title}</summary><div class="toc-detail-grid">`;
+          else grid+=`<div class="toc-detail-grid">`;
+          group='open';lastNo=key;
+        }
         grid+=btn(it);
       });
+      if(group)grid+=`</div></details>`;
     }else grid=items.map(btn).join('');
     return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">📋 ${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
-        <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">아래 ${items.length}개 카드 중 보고 싶은 항목을 클릭하면 해당 카드로 자동 이동해요.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:5px">${grid}</div>
+        <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">먼저 장 단위로 훑어보고, 필요한 장만 펼쳐서 이동하세요.</p>
+        <div class="toc-grid">${grid}</div>
       </div>
     </div><!--CARD_END:TOC-->`;
   }catch(e){return '';}
