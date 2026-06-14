@@ -3174,6 +3174,11 @@ function preventOrphan(html){
 function normalizeReadingText(html){
   if(html==null||typeof html!=='string')return html;
   return html
+    .replaceAll('두 분의 8글자','두 분의 사주 글자')
+    .replaceAll('사주 8글자','사주 전체 글자')
+    .replaceAll('8글자','사주 전체 글자')
+    .replaceAll('여덟 글자','사주 전체 글자')
+    .replaceAll('4기둥','인생의 네 자리')
     .replaceAll('분위기이','분위기가')
     .replaceAll('분위기을','분위기를')
     .replaceAll('흐름로','흐름으로')
@@ -3190,9 +3195,9 @@ function normalizeReadingText(html){
     .replaceAll('공망','비어 있는 자리')
     .replaceAll('대운','10년 흐름')
     .replaceAll('세운','올해 흐름')
-    .replaceAll('일간','본인 자신을 뜻하는 글자')
-    .replaceAll('일지','본인이 앉은 자리')
-    .replaceAll('오행','다섯 기운');
+    .replace(/(^|[^가-힣])일간(?=$|[^가-힣])/g,'$1본인 중심 기운')
+    .replace(/(^|[^가-힣])일지(?=$|[^가-힣])/g,'$1본인이 앉은 자리')
+    .replace(/(^|[^가-힣])오행(?=$|[^가-힣])/g,'$1다섯 기운');
 }
 function _glueOrphanSegment(text){
   let result=text;
@@ -3237,6 +3242,21 @@ const STEM_META=[
   {ko:'임',oh:'水',ohKo:'수',nick:'큰 바다·강',body:'깊고 넓은 큰 바다와 강. 포용력 있고 지혜로우며 변화에 능한 성품',keys:'지혜·포용·유연·변화·기획'},
   {ko:'계',oh:'水',ohKo:'수',nick:'이슬비·옹달샘',body:'맑은 이슬비와 옹달샘 물. 깨끗하고 겸손하며 조용히 스며드는 섬세하고 총명한 성품',keys:'겸손·순수·섬세·총명·자정'}
 ];
+const STEM_POETIC=[
+  '본인의 기운은 하늘로 곧게 뻗는 큰 나무를 떠올리게 해요. 바르게 서려는 힘과 시작을 밀고 나가는 추진력이 강하고, 주변 사람에게 든든한 기준점이 되어주는 성품이에요.',
+  '본인의 기운은 바람에 흔들려도 다시 자리를 잡는 풀잎과 덩굴을 닮았어요. 부드럽지만 끈질기고, 상황을 읽어가며 조용히 원하는 방향으로 자라나는 성품이에요.',
+  '본인의 기운은 환하게 빛을 퍼뜨리는 태양을 떠올리게 해요. 밝고 솔직한 에너지가 사람을 움직이게 하고, 본인이 있는 곳에 활기와 방향감을 만들어주는 성품이에요.',
+  '본인의 기운은 어둠 속에서 오래 빛나는 촛불과 화롯불을 닮았어요. 겉으로 요란하게 드러나기보다 마음 깊은 곳의 온기와 섬세함으로 사람을 오래 붙드는 성품이에요.',
+  '본인의 기운은 쉽게 흔들리지 않는 큰 산과 언덕을 떠올리게 해요. 사람과 일을 품어내는 힘이 있고, 시간이 지날수록 신뢰가 쌓이는 묵직한 성품이에요.',
+  '본인의 기운은 곡식을 길러내는 논밭과 정원을 닮았어요. 조용히 돌보고 키워내는 힘이 있으며, 주변 사람이 편히 기대어 성장할 수 있게 해주는 성품이에요.',
+  '본인의 기운은 단단한 바위와 잘 벼린 강철을 떠올리게 해요. 기준이 분명하고 결단력이 있으며, 어려운 상황에서도 물러서지 않고 길을 내는 성품이에요.',
+  '본인의 기운은 잘 다듬어진 보석과 예리한 칼날을 닮았어요. 섬세하게 구분하고 완성도를 높이는 힘이 강하며, 허술한 것을 그냥 지나치지 않는 성품이에요.',
+  '본인의 기운은 깊고 넓은 바다와 큰 강을 떠올리게 해요. 생각의 폭이 넓고 변화에 유연하며, 여러 사람과 상황을 품으면서도 자기 흐름을 잃지 않는 성품이에요.',
+  '본인의 기운은 맑은 이슬비와 깊은 옹달샘의 물을 떠올리게 해요. 깨끗하고 겸손한 성품 속에 섬세한 통찰력과 총명함이 깃들어 있으며, 본인을 과하게 드러내지 않아도 자연스럽게 주변에 스며드는 매력을 지녔어요.'
+];
+function stemPoetic(stem){
+  return STEM_POETIC[stem]||STEM_META[stem].body;
+}
 // ── 지지 비유 사전 (12개) ──
 const BRANCH_META=[
   {ko:'자',animal:'쥐',oh:'水',ohKo:'수',nick:'한밤중의 깊은 물',body:'자정·동지의 응축된 물. 지혜롭고 영민하며 잠재력이 풍부한 자리',keys:'지혜·계획·잠재·시작'},
@@ -3311,8 +3331,8 @@ function sajuMbtiMatch(saju, mbti){
   const dm=DM[saju.dp.stem];
   const dStemKo=STEMKO[saju.dp.stem];
   const dBrAnimal=ANIMAL[saju.dp.branch];
-  const headline=`${dStemKo}${BRCHKO[saju.dp.branch]}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — <b>${match}% 닮음</b>`;
-  let body=`「${stemNick(saju.dp.stem)}」 같은 ${dStemKo}일간`;
+  const headline=`${dStemKo}${BRCHKO[saju.dp.branch]} 본인 자리 × ${mbti}(${MBTI_LABEL[mbti]||''}) — <b>${match}% 닮음</b>`;
+  let body=`「${stemNick(saju.dp.stem)}」 같은 ${dStemKo} 기운`;
   if(stemNick(saju.dp.stem))body+=`(${dm.n.split('(')[0]})`;
   body+=`이 ${mbti}와 만나면 <b>${best[0].split('/')[best[2]==='E'||best[2]==='N'||best[2]==='T'||best[2]==='J'?0:1]}</b> 영역에서 리듬이 잘 맞고, <b>${worst[0].split('/')[worst[2]==='E'||worst[2]==='N'||worst[2]==='T'||worst[2]==='J'?0:1]}</b> 영역은 한 번 더 보완이 필요해요.`;
   return {match, headline, body, best, worst};
@@ -3480,7 +3500,7 @@ function mbtiAnalysisHTML(saju, mbti){
   let h=`<section class="mbti-analysis" aria-label="사주 × MBTI 4지표 통합 분석">
     <div class="mbti-analysis-head">
       <div class="mbti-analysis-cat">SAJU(타고난 기질) × MBTI(학습된 성격)</div>
-      <h2>${dStemKo}${dBrKo}일주 × ${mbti}(${MBTI_LABEL[mbti]||''}) — 4지표 통합 풀이</h2>
+      <h2>${dStemKo}${dBrKo} 본인 자리 × ${mbti}(${MBTI_LABEL[mbti]||''}) — 4지표 통합 풀이</h2>
       <div class="mbti-intro">
         <p><b>사주</b>는 태어날 때 받은 천간·지지 8글자에 새겨진 <b>본래의 분위기</b>예요. 환경이 바뀌어도 변하지 않는 「타고난 기질」이며, 본인이 자연스럽게 끌리는 방향·회복하는 방식·관계 맺는 흐름이 모두 여기에 담겨 있어요.</p>
         <p><b>MBTI</b>는 살아오는 과정에서 환경·경험·관계를 통해 굳어진 <b>학습된 성격</b>이에요. 가정 분위기·학교·직업·중요한 관계 같은 요인들이 본인이 「실제로 사용하는」 사고·감정·행동의 패턴을 만들어 왔어요.</p>
@@ -3633,7 +3653,7 @@ function tldrCardHTML(saju, mbti, cat, meta){
   }
 
   // 헤드라인
-  const ilju=`${dStemKo}${dBrKo}일주`;
+  const ilju=`${dStemKo}${dBrKo} 본인 자리`;
   const headline=`「${stemNk}」 같은 ${ilju}${mbti?` × ${mbti}`:''}`;
   const tagline=mbti?`${ilju} × ${mbti}`:ilju;
 
@@ -3789,7 +3809,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 function nextActionsHTML(currentCat){
   // 현재 카테고리 외 추천 카드 3-4개 + 공유/저장
   const allCats=[
-    {key:'manse',icon:'📅',title:'만세력',desc:'사주 8글자 정확 산출',price:'무료'},
+    {key:'manse',icon:'📅',title:'만세력',desc:'태어난 사주 구조 정확 산출',price:'무료'},
     {key:'daily',icon:'✨',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
     {key:'daypick',icon:'🎯',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
     {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
@@ -3859,7 +3879,7 @@ function mbtiSajuFusionParagraph(saju, mbti, contextHint){
   const dom=oh.indexOf(Math.max(...oh)), weak=oh.indexOf(Math.min(...oh));
 
   // 사주 본질 한 줄
-  const sajuTrait=`「${stemNk}」 같은 ${dStemKo}일간(${dm.n.split('(')[0]}, ${OHNAME[SOH[dStem]]} ${yang?'양':'음'})`;
+  const sajuTrait=`「${stemNk}」 같은 ${dStemKo} 기운(${dm.n.split('(')[0]}, ${OHNAME[SOH[dStem]]} ${yang?'양':'음'})`;
   // MBTI 본질 한 줄
   const mbtiTrait=`${ie}·${ns}·${tf}·${jp}의 ${MBTI_LABEL[mbti]||mbti}`;
 
@@ -3917,29 +3937,30 @@ function mbtiSajuFusionParagraph(saju, mbti, contextHint){
 function resultHeroHTML(saju, mbti, cat){
   const dStem=saju.dp.stem, dBr=saju.dp.branch;
   const dStemKo=STEMKO[dStem], dBrKo=BRCHKO[dBr];
-  const ilju=`${dStemKo}${dBrKo}일주`;
+  const centerLabel=`${dStemKo}${dBrKo} 본인 자리`;
   const stemNickStr=stemNick(dStem)||'';
   const branchNickStr=branchNick(dBr)||'';
+  const poeticHead=`${stemNickStr}의 기운이 흐르는 본인`;
   // 카테고리별 한 줄 헤드라인
   const catHeadlines={
-    manse:`${ilju} — 「${stemNickStr}」 같은 본인의 사주 원국`,
-    daily:`「${stemNickStr}」 같은 ${ilju}의 오늘`,
-    daypick:`「${stemNickStr}」 같은 ${ilju}의 결정적 하루`,
-    monthly:`「${stemNickStr}」 같은 ${ilju}의 12개월 흐름`,
-    newyear:`「${stemNickStr}」 같은 ${ilju}의 한 해`,
-    gunghap:`「${stemNickStr}」 같은 ${ilju}의 인연 궁합`,
-    name:`「${stemNickStr}」 같은 ${ilju}의 이름 분위기`,
-    life:`「${stemNickStr}」 같은 ${ilju}의 평생 분위기`
+    manse:`${poeticHead}의 사주 원국`,
+    daily:`${poeticHead}의 오늘 흐름`,
+    daypick:`${poeticHead}의 결정적 하루`,
+    monthly:`${poeticHead}의 12개월 흐름`,
+    newyear:`${poeticHead}의 한 해`,
+    gunghap:`${poeticHead}의 인연 궁합`,
+    name:`${poeticHead}의 이름 분위기`,
+    life:`${poeticHead}의 평생 분위기`
   };
   const headline=catHeadlines[cat]||catHeadlines.manse;
 
   // MBTI가 있으면 매칭 점수 추가
-  let tag=ilju;
+  let tag=centerLabel;
   let extraLine='';
   if(mbti){
     const m=sajuMbtiMatch(saju,mbti);
     if(m){
-      tag=`${ilju} × ${mbti}`;
+      tag=`${centerLabel} × ${mbti}`;
       extraLine=`<div class="result-hero-match">${m.match}% 닮음 — ${MBTI_LABEL[mbti]||''}</div>`;
     }
   }
@@ -4386,7 +4407,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
           <div class="summary-intro">
             <p>이 날의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
             <ul>
-              <li>📊 본인 사주 4기둥 + 그날 점수</li>
+              <li>📊 본인 사주의 네 자리 + 그날 점수</li>
               <li>🗓 본인 10년 흐름 안에서 본 이 날</li>
               <li>✦ 별자리 + 그날 분위기</li>
               <li>⏰ 핵심 시간대 (길시·주의시)</li>
@@ -4410,7 +4431,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
     <div class="nb-title">📌 ${y}년 ${m}월 ${d}일을 사는 분위기</div>
-    <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. ${myStemKo}일간이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
+    <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. 본인의 ${myStemKo} 기운이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
   // CHX: 4장 흐름 — 진단 → 분야 → 실행 → 마무리 (장 헤더 삽입; 카드 순서는 기존과 동일)
   h=reorderByChapters(h,[
@@ -4853,15 +4874,15 @@ function getZodiacSajuFusion(zod, sajuMainOh, dmName){
   const sheng=[1,2,3,4,0],ke=[2,3,4,0,1];
   let fusion='';
   if(sameRoot){
-    fusion=`<b>본인 사주 일간(${dmName})의 ${OHNAME[sajuMainOh]} 분위기와 별자리의 ${zEl} 원소가 같은 흐름</b>이라, 동·서양 두 체계가 본인을 같은 색깔로 가리켜요. 본인 색이 한 단계 더 또렷한 기류라, ${zod.trait}의 강점이 사주 성품 그대로 발휘돼요.`;
+    fusion=`<b>본인 중심 기운(${dmName})의 ${OHNAME[sajuMainOh]} 흐름과 별자리의 ${zEl} 원소가 같은 방향</b>이라, 동·서양 두 체계가 본인을 비슷한 색깔로 가리켜요. 본인 색이 한 단계 더 또렷한 기류라, ${zod.trait}의 강점이 사주 성품 그대로 발휘돼요.`;
   }else if(sheng[matchOh]===sajuMainOh){
-    fusion=`별자리의 ${zEl} 원소가 본인 사주 일간(${OHNAME[sajuMainOh]})을 도와주는 분위기라, 외부 자극·교류가 본인 흐름을 한 단계 살리는 자리예요. ${zod.trait}의 성품이 사주 흐름을 보완해 줘요.`;
+    fusion=`별자리의 ${zEl} 원소가 본인 중심 기운(${OHNAME[sajuMainOh]})을 도와주는 흐름이라, 외부 자극·교류가 본인 흐름을 한 단계 살리는 자리예요. ${zod.trait}의 성품이 사주 흐름을 보완해 줘요.`;
   }else if(sheng[sajuMainOh]===matchOh){
-    fusion=`본인 사주 일간(${OHNAME[sajuMainOh]})이 별자리 ${zEl} 원소를 도와주는 흐름이라, 본인이 ${zod.trait}의 영역을 잘 다듬어내는 자리예요.`;
+    fusion=`본인 중심 기운(${OHNAME[sajuMainOh]})이 별자리 ${zEl} 원소를 도와주는 흐름이라, 본인이 ${zod.trait}의 영역을 잘 다듬어내는 자리예요.`;
   }else if(ke[matchOh]===sajuMainOh){
     fusion=`별자리의 ${zEl} 원소가 본인 사주 일간을 다잡는 분위기라, 외부에서 들어오는 자극이 본인을 한 번 더 단련시키는 자리예요. ${zod.trait}의 성품이 약점이 될 수도, 큰 강점이 될 수도 있어요.`;
   }else{
-    fusion=`본인 사주 일간(${OHNAME[sajuMainOh]})과 별자리 ${zEl} 원소가 서로 보완하는 흐름이에요. 동·서양 두 체계가 본인의 두 다른 면을 가리키니, ${zod.trait}의 성품이 사주 분위기와 다른 색깔로 발휘돼요.`;
+    fusion=`본인 중심 기운(${OHNAME[sajuMainOh]})과 별자리 ${zEl} 원소가 서로 보완하는 흐름이에요. 동·서양 두 체계가 본인의 두 다른 면을 가리키니, ${zod.trait}의 성품이 사주 분위기와 다른 색깔로 발휘돼요.`;
   }
   return fusion;
 }
@@ -5441,7 +5462,7 @@ function renderNewyearFortune(saju,y){
       const _sajuMainOh=SOH[saju.dp.stem];
       const _dmName=dm.n.split('(')[0];
       let starBody=`<div class="lead-card">본인 별자리는 <b>${_zod.emoji} ${_zod.ko}</b>(${_zod.el} 원소)예요. ${_zod.body}.</div>`;
-      starBody+=`<p><span class="body-q">동·서양 두 체계로 본 본인은?</span><br>사주(<em>${myStemKo}</em> 일간)와 별자리(<em>${_zod.ko}</em> · ${_zod.el} 원소)를 겹쳐 보면 한 해의 그림이 더 입체적으로 보여요.</p>`;
+      starBody+=`<p><span class="body-q">동·서양 두 체계로 본 본인은?</span><br>사주에서 보는 본인 중심 기운(<em>${myStemKo}</em>)과 별자리(<em>${_zod.ko}</em> · ${_zod.el} 원소)를 겹쳐 보면 한 해의 그림이 더 입체적으로 보여요.</p>`;
       starBody+=`<p>${getZodiacSajuFusion(_zod,_sajuMainOh,_dmName)}</p>`;
       starBody+=`<p><span class="body-q">${y}년 본인 별자리 한 줄 가이드는?</span><br>${y}년은 본인의 ${_zod.trait} 성품을 ${tg==='정관'||tg==='편관'?'책임지는 자리에 한 번 더 활용':tg==='편재'||tg==='상관'?'새 시도·표현으로 발신':tg==='정재'||tg==='정인'?'안정과 학습으로 다지기':'본인 페이스로 꾸준히 가져가기'} 좋은 해예요. 동·서양 두 관점이 모두 본인 안에 있으니, 한쪽에 치우치지 말고 양쪽의 강점을 함께 활용하세요.</p>`;
       h+=paidWrapBody('STAR12','✦',`별자리 + 사주 — 동·서양 이중 해석`,starBody);
@@ -5475,7 +5496,7 @@ function renderNewyearFortune(saju,y){
           <div class="summary-intro">
             <p>${y}년 한 해의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
             <ul>
-              <li>📊 본인 사주 4기둥 + ${y}년 총점</li>
+              <li>📊 본인 사주의 네 자리 + ${y}년 총점</li>
               <li>🗓 본인 10년 흐름 안에서 본 ${y}년 — 대운 단계</li>
               <li>✦ 별자리 + 사주 동·서양 이중 해석</li>
               <li>📅 12개월 막대그래프 + 길월·주의월·결정적 시기</li>
@@ -6452,18 +6473,18 @@ function personaDeepHTML(saju, mode){
   }
 
   if(mode==='brief'){
-    let b=`<p>본인 일주는 <b>${p.iljuKey}</b> — ${ilju}. 같은 ${dm.n} 일간이라도 앉은 자리와 나머지 여섯 글자에 따라 전혀 다른 사람이 되는데, 본인 여덟 글자에서는 <b>${a1.n}</b>의 힘(${a1.d})이 가장 진하게 흘러요.</p>`;
+    let b=`<p>본인은 <b>${p.iljuKey}</b>의 조합을 타고났어요. ${ilju}. 같은 ${dm.n} 기운이라도 앉은 자리와 주변 기운에 따라 전혀 다른 사람처럼 펼쳐지는데, 본인 사주에서는 <b>${a1.n}</b>의 힘(${a1.d})이 가장 진하게 흘러요.</p>`;
     b+=`<p>${OHNAME[p.top]} 기운이 가장 두텁고 ${p.missing.length?`${p.missing.map(i=>OHNAME[i]).join('·')} 기운은 비어 있어서`:`${OHNAME[p.lack]} 기운이 옅어서`}, 그 빈자리를 채우는 방향이 본인 개운의 핵심이에요. ${seasonLine}.</p>`;
     return b;
   }
 
   // mode==='full'
   let h='';
-  h+=`<p><span class="body-q">같은 ${dm.n}이라도 본인은 왜 다를까요?</span><br>일간만 보면 ${dm.n}은 모두 비슷해 보여요. 하지만 사주는 여덟 글자가 한 팀이에요. 본인 일주는 <b>${p.iljuKey}</b> — ${ilju}. 본인이 앉은 자리(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})에서는 <b>${seatDesc}</b>이 배어 나와, 같은 ${dm.n}이라도 본인만의 색이 분명해요.</p>`;
-  h+=`<p><span class="body-q">본인 성격을 움직이는 두 개의 엔진은?</span><br>여덟 글자의 기운을 세어 보면 본인은 <b>${a1.n}</b>(${a1.d})이 ${p.axisSorted[0][1]}자리로 가장 강하고, 그다음이 <b>${a2.n}</b>(${a2.d})이에요. 결정의 순간마다 이 두 힘이 본인을 끌고 가요. ${p.axisSorted[0][0]==='self'?'남이 정해주는 길보다 본인이 정한 길에서 힘이 나는 타입이에요.':p.axisSorted[0][0]==='out'?'담아두면 답답하고, 꺼내놓아야 풀리는 타입이에요.':p.axisSorted[0][0]==='wealth'?'추상적인 말보다 눈에 보이는 성과가 본인을 움직여요.':p.axisSorted[0][0]==='gwan'?'맡은 자리의 무게를 견디는 데서 자부심을 느끼는 타입이에요.':'새로 배우고 흡수할 때 가장 살아있다고 느끼는 타입이에요.'}</p>`;
-  h+=`<p><span class="body-q">기운의 균형은 어떤가요?</span><br><b>${OHNAME[p.top]}</b> 기운이 가장 두텁고, ${p.missing.length?`<b>${p.missing.map(i=>OHNAME[i]).join('·')}</b> 기운은 여덟 글자에 아예 없어요. 없는 기운은 평생 「채우고 싶은 갈증」으로 작동해서, 그 영역의 사람·활동에 끌리는 이유가 돼요`:`<b>${OHNAME[p.lack]}</b> 기운이 가장 옅어요. 옅은 기운의 영역은 의식적으로 챙길 때 삶이 한층 부드러워져요`}.${p.excess.length?` 반대로 ${p.excess.map(i=>OHNAME[i]).join('·')} 기운은 넘치는 편이라, 과할 때 브레이크를 거는 것도 본인 과제예요.`:''} 음양으로는 ${p.yangRatio>=60?'밖으로 뻗는 양의 기운이 우세해 움직이며 충전되는 분':p.yangRatio<=40?'안으로 모으는 음의 기운이 우세해 혼자만의 시간으로 충전되는 분':'음양이 고르게 섞여 상황에 따라 양쪽을 오갈 수 있는 분'}이에요.</p>`;
+  h+=`<p><span class="body-q">같은 ${dm.n}이라도 본인은 왜 다를까요?</span><br>겉으로 같은 기운을 타고나도, 태어난 날의 자리와 주변 글자들이 다르면 전혀 다른 사람처럼 펼쳐져요. 본인은 <b>${p.iljuKey}</b>의 조합을 타고났고, 본인이 앉은 자리(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})에서는 <b>${seatDesc}</b>이 배어 나와요. 그래서 같은 ${dm.n}이라도 본인만의 색이 분명해요.</p>`;
+  h+=`<p><span class="body-q">본인 성격을 움직이는 두 개의 힘은?</span><br>사주 전체의 흐름을 보면 본인은 <b>${a1.n}</b>(${a1.d})이 ${p.axisSorted[0][1]}자리로 가장 강하고, 그다음이 <b>${a2.n}</b>(${a2.d})이에요. 결정의 순간마다 이 두 힘이 본인을 끌고 가요. ${p.axisSorted[0][0]==='self'?'남이 정해주는 길보다 본인이 정한 길에서 힘이 나는 타입이에요.':p.axisSorted[0][0]==='out'?'담아두면 답답하고, 꺼내놓아야 풀리는 타입이에요.':p.axisSorted[0][0]==='wealth'?'추상적인 말보다 눈에 보이는 성과가 본인을 움직여요.':p.axisSorted[0][0]==='gwan'?'맡은 자리의 무게를 견디는 데서 자부심을 느끼는 타입이에요.':'새로 배우고 흡수할 때 가장 살아있다고 느끼는 타입이에요.'}</p>`;
+  h+=`<p><span class="body-q">기운의 균형은 어떤가요?</span><br><b>${OHNAME[p.top]}</b> 기운이 가장 두텁고, ${p.missing.length?`<b>${p.missing.map(i=>OHNAME[i]).join('·')}</b> 기운은 사주 안에서 거의 드러나지 않아요. 약한 기운은 평생 「채우고 싶은 갈증」으로 작동해서, 그 영역의 사람·활동에 끌리는 이유가 돼요`:`<b>${OHNAME[p.lack]}</b> 기운이 가장 옅어요. 옅은 기운의 영역은 의식적으로 챙길 때 삶이 한층 부드러워져요`}.${p.excess.length?` 반대로 ${p.excess.map(i=>OHNAME[i]).join('·')} 기운은 넘치는 편이라, 과할 때 브레이크를 거는 것도 본인 과제예요.`:''} 음양으로는 ${p.yangRatio>=60?'밖으로 뻗는 양의 기운이 우세해 움직이며 충전되는 분':p.yangRatio<=40?'안으로 모으는 음의 기운이 우세해 혼자만의 시간으로 충전되는 분':'음양이 고르게 섞여 상황에 따라 양쪽을 오갈 수 있는 분'}이에요.</p>`;
   h+=`<p><span class="body-q">기운의 총량은 어떻게 쓰면 좋을까요?</span><br>본인 일간의 힘은 전체의 ${p.pct}%로 <b>${p.strength==='강'?'아주 단단한 신강':p.strength==='중강'?'균형 잡힌 중강':p.strength==='중약'?'섬세한 중약':'주변을 빌려 쓰는 신약'}</b>이에요. ${p.strength==='강'?'기운이 넘치는 만큼 내 힘을 「펼칠 곳」을 찾는 게 평생 주제예요. 도전·확장·자기 사업처럼 에너지를 쏟을 출구가 있을 때 가장 빛나요.':p.strength==='중강'?'밀어붙일 때와 받아들일 때를 둘 다 쓸 수 있는 균형형이라, 상황 판단이 본인 최고의 무기예요.':p.strength==='중약'?'혼자 다 끌고 가기보다 좋은 사람·좋은 환경과 함께할 때 몇 배로 커지는 타입이에요. 팀과 파트너 선택이 인생의 절반이에요.':'기운을 보태주는 사람·배움·환경이 본인 운의 연료예요. 무리한 단독 승부보다 기댈 언덕을 먼저 만드는 전략이 평생 유리해요.'}</p>`;
-  if(seasonLine)h+=`<p><span class="body-q">태어난 계절은 본인에게 어떤 온도일까요?</span><br>본인은 ${p.season}에 태어난 ${OHNAME[SOH[saju.dp.stem]]} 기운이에요. ${seasonLine}. 이 계절의 온도가 같은 일간끼리도 전혀 다른 인생 질감을 만들어요.</p>`;
+  if(seasonLine)h+=`<p><span class="body-q">태어난 계절은 본인에게 어떤 온도일까요?</span><br>본인은 ${p.season}에 태어난 ${OHNAME[SOH[saju.dp.stem]]} 기운이에요. ${seasonLine}. 이 계절의 온도가 같은 기운을 타고난 사람들 사이에서도 전혀 다른 인생 질감을 만들어요.</p>`;
   // 내면 — 신살 위치 + 합충 + 공망
   let innerBits=[];
   p.sins.forEach(s=>{
@@ -6837,12 +6858,12 @@ const PAID_META={
   },
   gunghap:{
     icon:'💑',title:'궁합',
-    desc:'본인과 상대(배우자·연인)의 사주를 나란히 비교해 결혼·연애·동업·가족 흐름을 풀어드려요.<br>두 사주의 8글자가 만나는 16개 자리를 모두 들여다봐요.',
+    desc:'본인과 상대(배우자·연인)의 사주를 나란히 비교해 결혼·연애·동업·가족 흐름을 풀어드려요.<br>두 사람의 사주가 서로 만나는 지점을 함께 살펴봐요.',
     features:[
       '· 종합 궁합 점수 + 등급 (천생연분~노력형)',
       '· 4가지 영역 점수 (본질·서로를 보는 분위기·자리 작용·기운 균형)',
       '· 배우자 자리 작용 12가지 케이스 풀이',
-      '· 본인 글자끼리 끌어당김/부딪힘 + 8글자 16자리 교차 작용',
+      '· 본인 글자끼리 끌어당김/부딪힘 + 두 사람 사주의 교차 작용',
       '· 두 사람의 중심 글자 비교 + 관계 분위기',
       '· 연애·데이트 분위기 / 결혼 생활 분위기',
       '· 동업·동거 분위기 / 가족·자녀 분위기',
@@ -7110,7 +7131,7 @@ function renderLifeTeaser(saju){
   const dm=DM[saju.dp.stem];
   const stemNk=stemNick(saju.dp.stem)||STEMKO[saju.dp.stem];
   const branchNk=branchNick(saju.dp.branch)||BRCHKO[saju.dp.branch];
-  const ilju=`${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}일주`;
+  const ilju=`${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]} 본인 자리`;
   const lead=`본인은 <b>${ilju}</b> — 「${stemNk}」 같은 흐름을 타고난 분이세요. 사주 유형은 <b>${gk.name||'평이한 흐름'}</b>이고, 본인을 가장 도와주는 기운은 <b>${OHNAME[ys.main]}</b>입니다. ${dm&&dm.pos?'타고난 강점은 「'+(dm.pos.slice(0,2).join('·'))+'」이고, 의식해야 할 부분은 「'+(dm.neg?dm.neg.slice(0,1).join(','):'균형')+'」이에요.':''}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">본인 사주 평생 분위기 살짝 보기</span></div>
@@ -7123,7 +7144,7 @@ function renderLifeTeaser(saju){
     </div>
     <div class="teaser-headline">🌼 「${stemNk}」 × 「${branchNk}」의 분위기</div>
     <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (4기둥 글자 단위)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 10년 단위 흐름 + 올해 흐름'])}
+    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (네 자리 흐름)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 10년 단위 흐름 + 올해 흐름'])}
     ${_teaserCta('life')}
   </div>`;
 }
@@ -7852,11 +7873,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ① 한 줄 결론 — 친근 존댓말로 본인이 어떤 사람인지 한눈에
   sajuBody+=`<div class="lead-card">본인은 <b>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</b> — <em>${stemNick(dp.stem)}</em> 같은 본질을 타고난 사람이세요. 사주의 유형은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>이고, 본인을 가장 잘 도와주는 기운은 <b>${OHNAME[ys.main]}</b>입니다.</div>`;
   sajuBody+=miniManse(saju);
-  sajuBody+=`<p>🪄 <b>본인이 어떤 사람인지 비유로 풀어보면</b><br>${stemRich(dp.stem)} — ${STEM_META[dp.stem].body}. 이 본질이 본인이 세상을 만나는 첫 번째 분위기예요.</p>`;
+  sajuBody+=`<p>🪄 <b>본인이 어떤 사람인지 비유로 풀어보면</b><br>${stemPoetic(dp.stem)} 이러한 본질은 본인이 세상과 만날 때 가장 먼저 전해지는 인상으로, 사람들에게 자연스럽게 본인만의 온도와 색을 느끼게 해요.</p>`;
 
   // ② 일주
-  sajuBody+=`<p style="margin-top:14px"><b>① 일주 — 「본인 자신」의 자리</b></p>`;
-  sajuBody+=miniManseWithPointer(saju,'day','↑ 가운데 강조된 일주가 「본인 자신」의 자리예요');
+  sajuBody+=`<p style="margin-top:14px"><b>① 본인 자리 — 사주의 중심</b></p>`;
+  sajuBody+=miniManseWithPointer(saju,'day','↑ 가운데 강조된 자리가 「본인 자신」을 보여주는 자리예요');
   sajuBody+=`<p>본인을 뜻하는 위쪽 글자 <em>${STEMKO[dp.stem]}</em>이 아래 글자 <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em> 위에 앉아 있는 모습이에요. 아래 글자는 본인이 평소에 어디에 마음을 두는지, 그리고 결혼하면 배우자가 어떤 사람일지를 함께 보여주는 자리예요.</p>`;
   sajuBody+=`<p>쉽게 말하면 「${stemNick(dp.stem)}」 같은 본인이 「${branchNick(dp.branch)}」라는 의자에 앉아 살아가는 흐름이에요. ${rel.imp}</p>`;
   { const _dpBrTG=tenGod(dp.stem,BR_MAIN_STEM[dp.branch]); const _r=getTenGodLocReading(_dpBrTG,'일지'); if(_r)sajuBody+=`<p style="margin-top:6px;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>본인이 앉은 자리는 ${plainTG(_dpBrTG)}의 분위기</b> — ${_r}</p>`; }
@@ -7904,7 +7925,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     <div class="nb-body">${preventOrphan(sajuBody)}</div>
   </div><!--CARD_END:SAJUCORE-->`;
   // PSN: 여덟 글자가 말하는 본인만의 무늬 — 독립 카드(1장 노출)
-  h+=paidWrapBody('PERSONA','🧬','여덟 글자가 말하는 본인만의 무늬',personaDeepHTML(saju,'full'));
+  h+=paidWrapBody('PERSONA','🧬','타고난 성향과 본인만의 색',personaDeepHTML(saju,'full'));
 
   // ═════════════════════════════════════
   // 총운
@@ -7934,9 +7955,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _badOhIdx=(ys.main+2)%5;
   const _badOhKo=OHNAME[_badOhIdx];
   totBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
-    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌟 본인 사주의 핵심 — 어떤 글자가 어디에 있나</div>
+    <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌟 본인 사주의 핵심 — 어떤 힘이 본인을 돕고 있나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>본인이 앉은 자리(일지)</b>: <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em> — ${branchNick(dp.branch)} · 결혼 후 배우자 자리<br>
       · <b>사주 유형</b>(격국): <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>${keySinsal?` · 별자리 <em>${keySinsal.n}</em>`:''}<br>
       · <b>본인 기운 강약</b>: <em>${isStrong?'신강(기운 두터움 '+strongPct+'%)':'신약(기운 약함 '+strongPct+'%)'}</em>
@@ -7944,7 +7965,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
 
   // ① 본인 본질 — 일간 + 격국으로 어떤 사람
-  totBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 사람인가요?</span><br>본인의 본질은 <b>${stemRich(dp.stem)}</b>이에요. ${STEM_META[dp.stem].body} 이 본질이 <em>${gk.name}</em> 유형으로 자리잡아 ${gk.desc}</p>`;
+  totBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 사람인가요?</span><br>${stemPoetic(dp.stem)} 이 성향이 본인 사주의 큰 방향과 만나면서, ${gk.desc}</p>`;
   totBody+=`<p>다섯 기운 중 <b>${OHNAME[dom]}</b>이 가장 두텁게 자리잡아 <em>${domStrength}</em>이 본인의 큰 무기예요. 반대로 <b>${OHNAME[weak]}</b>이 가장 부족해서 <em>${weakArea}</em>은 일상에서 의식해서 채워주는 게 좋아요.${keySinsal?` 여기에 <b>${keySinsal.n}</b>이 자리잡고 있어 ${keySinsal.d}이 한 단계 더 얹혀 있어요.`:''}</p>`;
 
   // ② 본인 강점·그림자 — 바로 위 오행 dom/weak 문단과 중복 피하려 십신축·앉은 자리·신살 기반(상단 _ps 재사용)
@@ -8001,7 +8022,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   wBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💰 본인 사주의 「돈 자리」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>돈 자리(재성)</b>: <em>${OHNAME[wealthOh]}</em> 기운 (천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b>)<br>
       · <b>사주 안 돈 글자 분포</b>: 안정 재물 ${wealth.pj}개 · 활동 재물 ${wealth.pp}개<br>
       · <b>본인 사주 돈 유형</b>: <em>${wealthHeadline}</em>
@@ -8147,7 +8168,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   cBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💼 본인 사주의 「직업 자리」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>책임·직책 자리(관성)</b>: <em>${OHNAME[officerOh]}</em> 기운 (천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b>)<br>
       · <b>표현·창작 자리(식상)</b>: <em>${OHNAME[outputOh]}</em> 기운 (천간 <b>${_careerStemCh[outputOh]}</b> · 지지 <b>${_careerBrCh[outputOh]}</b>)<br>
       · <b>본인 사주 직업 유형</b>: <em>${gk.name}</em> — ${careerHeadline}
@@ -8281,7 +8302,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">💕 본인 사주의 「배우자 자리」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>본인이 앉은 자리(일지·배우자 자리)</b>: <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em> — ${getSpouseImage(dp.branch)} 분<br>
       · <b>${partnerWord}를 뜻하는 기운</b>: <em>${OHNAME[_loveSpouseOh]}</em> (천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b>)<br>
       · <b>잘 어울리는 짝 글자</b>: 일지(${BRCHKO[dp.branch]})와 자연스럽게 어울리는 <em>${_hapBranch}</em><br>
@@ -8492,7 +8513,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   hBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌿 본인 사주의 「건강 체질」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>가장 두터운 기운</b>: <em>${OHNAME[maxOhIdx]}</em>(${maxCnt}개) — ${organMap[maxOhIdx]}<br>
       · <b>가장 부족한 기운</b>: <em>${OHNAME[minOhIdx]}</em>(${minCnt}개) — ${organMap[minOhIdx]} 영역 보강 필요<br>
       · <b>본인을 도와주는 기운</b>: <em>${OHNAME[ys.main]}</em> (천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>)<br>
@@ -8503,7 +8524,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     hBody+=miniManseWithPointer(saju,healthPillars,`↑ 강조된 자리에 ${OHNAME[maxOhIdx]} 기운이 강하게 자리잡고 있어요`);
   }
   // [승] 그래서 본인 체질은?
-  hBody+=`<p><span class="body-q">📖 그래서 본인의 체질은 어떤가요?</span><br>본인 사주 8글자에서 다섯 기운이 어떻게 자리잡았는지가 본인 체질의 큰 그림이에요.</p>`;
+  hBody+=`<p><span class="body-q">📖 그래서 본인의 체질은 어떤가요?</span><br>사주 전체에서 다섯 기운이 어떻게 섞여 있는지가 본인 체질의 큰 그림이에요.</p>`;
   hBody+=`<p>· 🌳 <b>나무(목)</b> ${oh[0]}개 — ${organMap[0]}<br>· 🔥 <b>불(화)</b> ${oh[1]}개 — ${organMap[1]}<br>· ⛰️ <b>흙(토)</b> ${oh[2]}개 — ${organMap[2]}<br>· ⚒️ <b>금속(금)</b> ${oh[3]}개 — ${organMap[3]}<br>· 💧 <b>물(수)</b> ${oh[4]}개 — ${organMap[4]}</p>`;
   // [전] 강점·주의
   hBody+=`<p><span class="body-q">💡 본인의 건강 강점과 주의해야 할 부분</span><br>· <b>주의</b>: ${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b>이 4개 이상이라 '+overSymptom[maxOhIdx]+'에 평생 주의':'가장 비중 높은 '+OHNAME[maxOhIdx]+'이 '+overSymptom[maxOhIdx].split('·')[0]+' 경향'}<br>· <b>보강</b>: ${minCnt===0?'<b>'+OHNAME[minOhIdx]+'</b>이 0개 — '+lackSymptom[minOhIdx]+' 영역 의식적 보강':'부족한 기운 두드러지지 않아 균형 잡힌 편'}<br>· <b>별자리 작용</b>: ${has('백호')||has('양인')?'급격한 변화 별자리 — 사고·외상·급성 질환 한 단계 더 주의':has('역마')?'이동 별자리 — 이동 중 사고와 컨디션 관리가 평생 과제':'특별한 위험 별자리는 두드러지지 않아요. 무리하지 않는 생활 리듬이 본인을 지켜줘요.'}</p>`;
@@ -8687,7 +8708,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">📚 본인 사주의 「학습 자리」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신(일간)</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
       · <b>받아들이는 학습 자리(인성)</b>: <em>${OHNAME[resourceOh]}</em> (천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b>)<br>
       · <b>풀어내는 표현 자리(식상)</b>: <em>${OHNAME[outputOh]}</em> (천간 <b>${_studyStemCh[outputOh]}</b> · 지지 <b>${_studyBrCh[outputOh]}</b>)<br>
       · <b>본인 사주 학업 유형</b>: <em>${studyHeadline}</em>${has('문창')?' · 문창귀인 ★':has('화개')?' · 화개 ★':''}
@@ -9070,7 +9091,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     // CH-PRO: SAJU_REL 통째 5분야 패턴 재작성
     let rsBody='';
     rsBody+=miniManse(saju);
-    rsBody+=`<p><span class="body-q">📖 본인 사주 8글자가 만드는 관계 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 사주 안의 다른 글자들과 어떻게 만나는지가 본인의 「평생 자산과 평생 과제」를 결정해요. 본인 사주에는 자연스러운 어울림(합) <em>${_goodRels.length}개</em>, 양면 관계(반합·동) <em>${_midRels.length}개</em>, 부딪힘(충·형·원진) <em>${_badRels.length}개</em>가 자리잡았어요.</p>`;
+    rsBody+=`<p><span class="body-q">📖 본인 사주가 만드는 관계의 흐름</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 다른 기운들과 어떻게 어울리는지가 본인의 「평생 자산과 평생 과제」를 결정해요. 본인 사주에는 자연스러운 어울림(합) <em>${_goodRels.length}개</em>, 양면 관계(반합·동) <em>${_midRels.length}개</em>, 부딪힘(충·형·원진) <em>${_badRels.length}개</em>가 자리잡았어요.</p>`;
     rsBody+=`<p><span class="body-q">💡 본인 사주 관계의 의미</span><br>· <b>합(어울림)</b>은 평생 본인을 자연스럽게 살려주는 자산 — 사람·협력·관계 활동에서 본인이 빛남<br>· <b>반합·동(양면)</b>은 어떻게 쓰느냐로 흐름이 갈리는 분위기 — 의식적 활용이 핵심<br>· <b>충·형·원진(부딪힘)</b>은 평생 의식해서 다스려야 할 과제 — 잘 다듬으면 오히려 인생 자산<br>${_hasAny?'본인 사주에는 두드러진 관계들이 자리잡아 인생 색채가 풍부한 분위기예요.':'두드러진 관계가 적어 본인 본연의 분위기가 잔잔히 이어지는 흐름이에요.'}</p>`;
     rsBody+=`<p><span class="body-q">💡 본인 강점과 평생 과제</span><br>· <b>강점</b>: ${_goodRels.length>=2?'합 관계가 두 개 이상이라 협력·관계 활동에서 평생 자산':_goodRels.length>=1?'합 관계가 있어 사람을 통해 결실이 따라오는 분위기':'외부 관계보다 본인 본연의 분위기로 평생 깊이를 모으는 분위기'}<br>· <b>과제</b>: ${_badRels.length>=2?'충·형이 두 개 이상이라 변동·갈등이 평생 의식할 분위기 — 미리 알면 자산으로 전환':_badRels.length>=1?'한 가지 부딪힘이 평생 의식할 분위기 — 잘 다스리면 본인 본연의 분위기':'두드러진 과제 적어 본연의 흐름 유지가 핵심'}</p>`;
     rsBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
@@ -9125,7 +9146,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     // CH-PRO: SINGANG 통째 5분야 패턴 재작성
     let sjBody='';
     sjBody+=miniManse(saju);
-    sjBody+=`<p><span class="body-q">📖 본인 사주의 「그릇 크기」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 사주 8글자에서 차지하는 비중과, 본인을 받쳐주는 동료·학습 기운이 얼마나 두터운지가 본인의 그릇 크기를 만들어요. 본인은 <b>${_kind} — ${_kindLabel}</b>이에요.</p>`;
+    sjBody+=`<p><span class="body-q">📖 본인 사주의 「그릇 크기」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 사주 안에서 얼마나 힘을 얻는지, 또 본인을 받쳐주는 주변 기운이 얼마나 두터운지가 본인의 그릇 크기를 만들어요. 본인은 <b>${_kind} — ${_kindLabel}</b>이에요.</p>`;
     sjBody+=`<p>· <b>본인 강화 기운</b>: 비겁(같은 동료) ${_bigeop}개 + 인성(받쳐주는 학습) ${_insung}개 = <em>${_myPower}자리 (${_myPct}%)</em><br>· <b>본인 약화 기운</b>: 식상(표현) ${_siksang}개 + 재성(돈) ${_jaesung}개 + 관성(책임) ${_gwansung}개 = <em>${_outPower}자리 (${100-_myPct}%)</em><br>${_kind==='신강'?'본인 기운이 더 두터워 큰 책임을 감당할 수 있는 포용력이 큰 그릇':_kind==='신약'?'본인 기운이 한 박자 약해 깊이를 모으는 신중함의 분위기':'본인과 외부 기운이 비슷해 어느 흐름에도 적응할 수 있는 균형형'}이에요.</p>`;
     sjBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
       <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
@@ -9181,7 +9202,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       {key:'hour',label:'시주(時柱)',sub:'자녀·말년 (60세 이후)',emoji:'🌙',pillar:saju.hp,bg:'rgba(229,116,162,.05)',border:'#e574a2',
        meaning:'본인이 태어난 시의 두 글자예요. 자녀·말년·노년 결실을 보여주는 자리예요.'}
     ];
-    let plBody=`<p><span class="body-q">본인 사주 4기둥은 어떻게 인생을 나타내나요?</span><br>본인 사주 8글자는 4기둥(년·월·일·시)으로 나눠져, 인생의 4가지 단계와 영역을 보여줘요. 각 자리에 어떤 글자(천간·지지)가 자리잡았느냐로 그 영역의 흐름이 결정돼요.</p>`;
+    let plBody=`<p><span class="body-q">인생의 네 자리는 무엇을 보여줄까요?</span><br>사주는 태어난 해·달·날·시간을 네 자리로 나누어 봐요. 이 네 자리는 어린 시절, 사회생활, 본인 중심, 미래와 자녀의 흐름을 각각 보여줘요. 어느 자리에 어떤 기운이 놓였는지에 따라 삶의 장면마다 드러나는 모습이 달라져요.</p>`;
     plBody+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
     _pillars.forEach(p=>{
       if(!p.pillar)return;
@@ -9216,8 +9237,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       </div>`;
     });
     plBody+=`</div>`;
-    plBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>4기둥이 알려주는 것</b><br>본인 사주는 한 가지 색이 아니라 4가지 영역의 흐름이 합쳐진 그림이에요. 어린 시절(년주)·청년기(월주)·중년(일주)·말년(시주)이 각각 다른 흐름으로 펼쳐지니, 지금 인생 단계에서 본인이 어느 자리의 색채를 가장 자주 쓰는지 보세요.</p>`;
-    h+=paidWrapBody('PILLAR4','🏛','4기둥 자리별 인생 영역 — 조상·부모·본인·자녀',plBody);
+    plBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>네 자리가 알려주는 것</b><br>본인 삶은 한 가지 색만으로 설명되지 않아요. 어린 시절의 환경, 사회에서 쓰는 힘, 본인 중심의 성향, 미래로 이어지는 흐름이 합쳐져 지금의 본인을 만들어요. 지금 인생 단계에서 어느 자리가 가장 자주 드러나는지 살펴보세요.</p>`;
+  h+=paidWrapBody('PILLAR4','🏛','인생의 네 자리 — 어린 시절·사회생활·본인·미래',plBody);
   }catch(e){}
 
   // 12지지 자리별 의미 카드 — 본인 사주 4지지 풀이
@@ -9256,8 +9277,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       </div>`;
     });
     brBody+=`</div>`;
-    brBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 본인 사주에 자리잡은 4지지 동물들이 본인 인생의 4가지 영역에 각자 다른 성품을 새겨놓아요. 본인이 의식적으로 어느 자리의 흐름을 가장 자주 쓰는지 살펴보세요.</p>`;
-    h+=paidWrapBody('BRANCH12','🐭','12지지 — 4기둥 자리의 동물·계절 의미',brBody);
+    brBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 본인 사주에 자리잡은 동물과 계절의 기운은 삶의 장면마다 다른 성품을 남겨요. 본인이 의식적으로 어느 자리의 흐름을 가장 자주 쓰는지 살펴보세요.</p>`;
+  h+=paidWrapBody('BRANCH12','🐭','태어난 자리의 동물과 계절 의미',brBody);
   }catch(e){}
 
   // 격국 종합 깊이 카드 — 격국별 인생·결혼·과제·강점 종합
@@ -9700,7 +9721,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const _sajuMainOh=SOH[saju.dp.stem];
       const _dmName=dm.n.split('(')[0];
       let starBody=`<div class="lead-card">본인 별자리는 <b>${_zod.emoji} ${_zod.ko}</b>(${_zod.el} 원소)예요. ${_zod.body}.</div>`;
-      starBody+=`<p><span class="body-q">동·서양 두 체계로 본 본인 인생은?</span><br>사주는 동양의 명리학, 별자리는 서양의 점성학이에요. 같은 본인이라는 한 사람을 다른 각도에서 보는 두 흐름이에요. 사주에선 본인을 <em>${STEMKO[saju.dp.stem]}(${OHNAME[_sajuMainOh]} 일간)</em>으로, 별자리에선 <em>${_zod.ko}(${_zod.el} 원소)</em>로 가리켜요.</p>`;
+      starBody+=`<p><span class="body-q">동·서양 두 체계로 본 본인 인생은?</span><br>사주는 동양의 명리학, 별자리는 서양의 점성학이에요. 같은 본인이라는 한 사람을 다른 각도에서 보는 두 흐름이에요. 사주에선 본인을 <em>${STEMKO[saju.dp.stem]}(${OHNAME[_sajuMainOh]} 기운)</em>으로, 별자리에선 <em>${_zod.ko}(${_zod.el} 원소)</em>로 가리켜요.</p>`;
       starBody+=`<p>${getZodiacSajuFusion(_zod,_sajuMainOh,_dmName)}</p>`;
       starBody+=`<p><span class="body-q">인생 관점에서 두 흐름을 어떻게 활용할까요?</span><br>본인의 ${_zod.trait} 성품(별자리)과 사주의 ${OHNAME[_sajuMainOh]} 강점이 함께 본인 인생을 만들어가요. 사주는 「언제 무엇이 들어오는가」(시간의 분위기)를, 별자리는 「본인이 어떤 성품인가」(본질의 분위기)를 가리키니, 두 흐름을 서로 보완해서 보세요.</p>`;
       h+=paidWrapBody('STAR12','✦',`별자리 + 사주 — 동·서양 이중 해석`,starBody);
@@ -9718,7 +9739,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       {label:'일주(중년·본인)',br:saju.dp.branch,age:'40~60세'},
     ];
     if(saju.hp)pillarsForStage.push({label:'시주(말년·자녀)',br:saju.hp.branch,age:'60세 이후'});
-    let stageBody=`<p><span class="body-q">본인 기운은 인생에서 어떻게 변할까요?</span><br>고전 사주명리의 12운성은 본인의 기운이 4기둥(년·월·일·시) 각 자리에서 어떤 단계에 있는지 보여줘요. 12단계는 식물의 한살이(씨앗→성장→성숙→갈무리)처럼 본인 기운의 흐름을 그려요.</p>`;
+    let stageBody=`<p><span class="body-q">본인 기운은 인생에서 어떻게 변할까요?</span><br>본인의 기운은 태어난 해·달·날·시간의 자리마다 조금씩 다른 모습으로 드러나요. 식물의 한살이처럼 씨앗이 자라고, 꽃피고, 열매 맺고, 다시 갈무리되는 흐름으로 본인 인생의 리듬을 볼 수 있어요.</p>`;
     stageBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     pillarsForStage.forEach(p=>{
       const st=twelveStage(dStem,p.br);
@@ -9738,7 +9759,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     stageBody+=`</div>`;
     stageBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>12운성이 알려주는 것</b><br>본인 기운이 「언제 가장 진하고, 언제 가장 잠재기인지」를 알려주는 기운이에요. 활기차게 펼치는 시기(<b style="color:#6cbf7e">장생·관대·임관·제왕</b>)에는 큰 결정을 적극적으로, 갈무리·잠재 시기(<b style="color:#d4a849">쇠·병·사·묘</b>·<b style="color:#6c8cc8">절·태·양</b>)에는 정리·휴식·내실 다지기에 무게를 두세요.</p>`;
-    h+=paidWrapBody('STAGE12','🌱',`12운성 — 본인 기운의 4기둥 단계 변화`,stageBody);
+    h+=paidWrapBody('STAGE12','🌱',`본인 기운의 성장 단계`,stageBody);
   }catch(e){}
 
   // ═════════════════════════════════════
@@ -10010,7 +10031,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   // CHX: 5장 내러티브로 카드 재배치 (진단 → 기질·관계 → 분야 → 시간 → 실천)
   h=reorderByChapters(h,[
-    {no:1,title:'나는 누구인가',desc:'타고난 본질과 사주 구조부터 읽어요',labels:['SAJUCORE','TOTAL','PERSONA','SINGANG','PILLAR4','BRANCH12','GYEOKGUK','STAGE12']},
+    {no:1,title:'나는 누구인가',desc:'타고난 성향과 삶의 큰 방향부터 읽어요',labels:['SAJUCORE','TOTAL','PERSONA','SINGANG','PILLAR4','BRANCH12','GYEOKGUK','STAGE12']},
     {no:2,title:'내 기질과 관계',desc:'사주 속 관계·신살·별자리가 만드는 기질의 무늬',labels:['SAJU_REL','SINSAL','STAR12','YOOKCHIN']},
     {no:3,title:'분야별 운세',desc:'재물·직업·연애·건강 등 삶의 영역별 흐름',labels:['WEALTH','WEALTH_TIMELINE','CAREER','CAREER_TIMELINE','LOVE','LOVE_TIMELINE','FAMILY_TIMELINE','HEALTH','HEALTH_TIMELINE','MOVE_TIMELINE','STUDY','STUDY_TIMELINE','SPIRIT_TIMELINE','HUMAN','HUMAN_TIMELINE','JOB']},
     {no:4,title:'시간의 흐름',desc:'10년·올해 흐름으로 보는 「언제」의 지도',labels:['DAEUN10','SEWOON','YEAR10','TIMELINE','GONGMANG_TL','LIFE_HEATMAP']},
@@ -10731,7 +10752,7 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
       <div class="summary-intro">
         <p>본인의 인생 전체 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
         <ul>
-          <li>📊 사주팔자 4기둥 도식 + 다섯 기운 분포</li>
+          <li>📊 사주팔자 네 자리 도식 + 다섯 기운 분포</li>
           <li>🔄 다섯 기운의 돕고 누르는 관계도</li>
           <li>🔗 사주의 핵심 관계 — 좋게 작용 vs 주의</li>
           <li>📅 10년 단위 서술식 풀이 (현재 시기 강조)</li>
@@ -10764,13 +10785,13 @@ function buildLifeSummaryA4Html(){
   let h=`<div class="a4-page">
     <div class="a4-header">
       <div class="a4-title">📋 인생총운 요약본</div>
-      <div class="a4-subtitle">${dm.n.split('(')[0]} 본인 글자 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'두터움':'약함'} (본인 글자가 사주의 ${Math.round(me/tot*100)}%)</div>
+    <div class="a4-subtitle">${dm.n.split('(')[0]} 본인 글자 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'두터움':'약함'} (본인 글자가 사주의 ${Math.round(me/tot*100)}%)</div>
     </div>
     <div class="a4-body">
       <div class="a4-col-left">
 
         <div class="a4-section">
-          <div class="a4-h">📊 사주팔자 4기둥 — 본인 사주의 「뼈대」</div>
+          <div class="a4-h">📊 사주팔자 네 자리 — 본인 사주의 「뼈대」</div>
           ${buildA4Pillars(saju,gender)}
           <div class="a4-oh-legend" style="margin-top:6px">각 기둥 위는 겉으로 드러나는 기운, 아래는 속에 자리잡은 기운이에요. 본인 자리는 <b>가운데 강조 칸</b>이에요.</div>
         </div>
@@ -11040,7 +11061,7 @@ function buildNewyearSummaryA4Html(){
       <div class="a4-col-left">
 
         <div class="a4-section">
-          <div class="a4-h">📊 본인 사주 4기둥</div>
+          <div class="a4-h">📊 본인 사주의 네 자리</div>
           ${buildA4Pillars(saju,gender)}
           <div class="a4-oh-legend" style="margin-top:4px">본인 자리는 <b>일주</b>. ${y}년 들어오는 글자(${ypStemKo}${ypBrKo})와 이 자리가 어떻게 만나는지가 한 해 흐름을 결정.</div>
         </div>
@@ -11172,11 +11193,11 @@ function buildGunghapSummaryA4Html(){
     <div class="a4-body">
       <div class="a4-col-left">
         <div class="a4-section">
-          <div class="a4-h">📊 본인 사주 4기둥</div>
+          <div class="a4-h">📊 본인 사주의 네 자리</div>
           ${buildA4Pillars(saju1,gen1)}
         </div>
         <div class="a4-section">
-          <div class="a4-h">📊 상대 사주 4기둥</div>
+          <div class="a4-h">📊 상대 사주의 네 자리</div>
           ${buildA4Pillars(saju2,gen2)}
         </div>
         <div class="a4-section">
@@ -11454,7 +11475,7 @@ function _sajuContextHeader(saju, ys, gk, fieldLabel){
   if(_ctxHeaderN>1){
     const me=`${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}`;
     const vars=[
-      `이번엔 「${fieldLabel}」 차례예요. 기준은 변함없이 본인 자신을 뜻하는 글자 <em>${me}</em>이에요.`,
+      `이번엔 「${fieldLabel}」 차례예요. 기준은 변함없이 본인 중심 기운 <em>${me}</em>이에요.`,
       `「${fieldLabel}」을 같은 사주, 다른 각도에서 읽어볼게요.`,
       `이어서 「${fieldLabel}」 — 첫 카드에서 본 <em>${gk.name}</em> 그릇을 그대로 깔고 들어가요.`,
       `「${fieldLabel}」도 결국 본인 여덟 글자 안에 있어요. 이 영역의 눈으로 다시 볼게요.`,
@@ -11470,7 +11491,7 @@ function _sajuContextHeader(saju, ys, gk, fieldLabel){
   return `<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">📍 본인 사주의 「${fieldLabel||'영역'}」 자리 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
-      · <b>본인 자신을 뜻하는 글자</b>: <em>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(saju.dp.stem)}<br>
+      · <b>본인 중심 기운</b>: <em>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(saju.dp.stem)}<br>
       · <b>본인이 앉은 자리</b>: <em>${BRCHKO[saju.dp.branch]}(${ANIMAL[saju.dp.branch]})</em>${branchNick(saju.dp.branch)?` — ${branchNick(saju.dp.branch)}`:''}<br>
       · <b>사주 유형</b>: <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em><br>
       · <b>본인을 도와주는 글자</b>: <em>${OHNAME[ys.main]}</em> 기운 (천간 <b>${_ctxStemCh[ys.main]}</b> · 지지 <b>${_ctxBrCh[ys.main]}</b>)
@@ -12703,9 +12724,9 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
   h+=`<p><b>② 배우자 자리 작용</b><br>본인 자리 <em>${BRCHKO[s1.dp.branch]}</em>와 상대 자리 <em>${BRCHKO[s2.dp.branch]}</em>는 ${_brBodyMap[_brK]||_brBodyMap['평']}</p>`;
   // 천간합·천간충 — 일간 사이
   if(result.dayStemRel&&result.dayStemRel.kind==='합'){
-    h+=`<p><b>②-1 일간 천간합</b><br>두 분의 일간이 <em style="color:var(--wood)">${STEMKO[s1.dp.stem]}${STEMKO[s2.dp.stem]} 합</em>으로 묶이에요. 「부부 합」으로 부르며 서로 끌어당기는 결속력이 매우 강한 자리예요.</p>`;
+    h+=`<p><b>②-1 두 사람의 중심 기운이 끌어당기는 자리</b><br>두 분의 중심 기운이 <em style="color:var(--wood)">${STEMKO[s1.dp.stem]}${STEMKO[s2.dp.stem]} 합</em>으로 묶여요. 서로 끌어당기는 결속력이 매우 강한 자리예요.</p>`;
   }else if(result.dayStemRel&&result.dayStemRel.kind==='충'){
-    h+=`<p><b>②-1 일간 천간충</b><br>두 분의 일간이 정면으로 충을 이룹니다. 가치관·결정 방식에서 부딪힐 수 있어, 큰 결정 전에 서로의 입장을 한 번 더 확인하는 자세가 필요해요.</p>`;
+    h+=`<p><b>②-1 두 사람의 중심 기운이 부딪히는 자리</b><br>두 분의 중심 기운이 정면으로 부딪히는 흐름이에요. 가치관·결정 방식에서 부딪힐 수 있어, 큰 결정 전에 서로의 입장을 한 번 더 확인하는 자세가 필요해요.</p>`;
   }
   // 4기둥 전체 교차 작용 (있을 때만 추가)
   const _cr=result.crossRel||{};
@@ -12720,14 +12741,14 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     if(_cr.형)_parts.push(`서로 깎임 ${_cr.형}건`);
     if(_cr.파)_parts.push(`마무리 어긋남 ${_cr.파}건`);
     if(_cr.해)_parts.push(`은근한 방해 ${_cr.해}건`);
-    h+=`<p><b>②-2 4기둥 전체 교차 작용</b><br>두 분의 8글자 지지가 만나는 16개 자리에서 ${_parts.join(' · ')} 작용이 검출돼요. ${_crGood>_crBad?'<em style="color:var(--wood)">화합·결속 기운이 우세</em>하여 전반적으로 부드러운 흐름이에요.':_crBad>_crGood?'<em style="color:var(--fire)">부딪힘·거슬림·깎임 기운이 우세</em>하여 의식적인 소통과 거리 조절이 필요해요.':'화합과 충돌이 비슷한 비중으로 균형 잡힌 분위기예요.'}</p>`;
+    h+=`<p><b>②-2 두 사람 사주의 전체 교차 작용</b><br>두 분 사주의 자리들이 서로 만나는 지점에서 ${_parts.join(' · ')} 작용이 보여요. ${_crGood>_crBad?'<em style="color:var(--wood)">화합·결속 기운이 우세</em>하여 전반적으로 부드러운 흐름이에요.':_crBad>_crGood?'<em style="color:var(--fire)">부딪힘·거슬림·깎임 기운이 우세</em>하여 의식적인 소통과 거리 조절이 필요해요.':'화합과 충돌이 비슷한 비중으로 균형 잡힌 분위기예요.'}</p>`;
   }
   h+=`<p><b>③ 십신 작용</b><br>본인이 상대를 보는 관계는 <em>${tg12}</em>이며, 상대가 본인을 보는 관계는 <em>${tg21}</em>입니다. ${getTgPairDesc(tg12,tg21,g1,g2)}</p>`;
   h+=`<p><b>④ 성격 궁합</b><br>${getPersonalityCompat(dm1,dm2,e1,e2)}</p>`;
   { // PSN: 일간을 넘어 — 두 사람 여덟 글자 전체 비교
     const _p1=buildPersonaProfile(s1), _p2=buildPersonaProfile(s2);
     const _a1=SIPSIN_AXIS_LABEL[_p1.axisSorted[0][0]], _a2=SIPSIN_AXIS_LABEL[_p2.axisSorted[0][0]];
-    h+=`<p><b>④-1 여덟 글자로 본 두 사람</b><br>본인은 <em>${_p1.iljuKey}</em> 일주 — ${ILJU_60[_p1.iljuKey]||''}. 상대는 <em>${_p2.iljuKey}</em> 일주 — ${ILJU_60[_p2.iljuKey]||''}. 본인의 주 동력은 <b>${_a1.n}</b>(${_a1.d}), 상대는 <b>${_a2.n}</b>(${_a2.d})${_p1.axisSorted[0][0]===_p2.axisSorted[0][0]?' — 같은 엔진이라 서로를 금방 알아보지만, 같은 자리를 두고 겨룰 때는 부딪힐 수 있어요':' — 엔진이 달라 서로의 빈 곳을 채워줄 수 있는 조합이에요'}.</p>`;
+    h+=`<p><b>④-1 사주 전체로 본 두 사람</b><br>본인은 <em>${_p1.iljuKey}</em> 일주 — ${ILJU_60[_p1.iljuKey]||''}. 상대는 <em>${_p2.iljuKey}</em> 일주 — ${ILJU_60[_p2.iljuKey]||''}. 본인의 주 동력은 <b>${_a1.n}</b>(${_a1.d}), 상대는 <b>${_a2.n}</b>(${_a2.d})${_p1.axisSorted[0][0]===_p2.axisSorted[0][0]?' — 같은 엔진이라 서로를 금방 알아보지만, 같은 자리를 두고 겨룰 때는 부딪힐 수 있어요':' — 엔진이 달라 서로의 빈 곳을 채워줄 수 있는 조합이에요'}.</p>`;
     h+=`<p>에너지로는 본인이 ${_p1.yangRatio>=55?'밖으로 뻗는 발산형':_p1.yangRatio<=45?'안으로 모으는 수렴형':'상황 따라 오가는 중간형'}, 상대가 ${_p2.yangRatio>=55?'발산형':_p2.yangRatio<=45?'수렴형':'중간형'}이에요. 그리고 본인에게 옅은 <b>${OHNAME[_p1.lack]}</b> 기운을 상대가 ${_p2.oh[_p1.lack]>=2?'넉넉히 갖고 있어, 함께 있을 때 채워지는 안정감을 받는 인연이에요':'상대도 옅게 갖고 있어, 그 영역만큼은 둘이 함께 의식적으로 채워가야 해요'}.</p>`;
   }
   h+=`<p><b>⑤ 가치관·생활 리듬</b><br>${getValueCompat(s1,s2,result)}</p>`;
@@ -13746,7 +13767,7 @@ function renderGunghapResult(saju1,saju2,result){
   if(cr.형)crossNotes.push(`서로 깎임 <b style="color:#d4a849">${cr.형}건</b>`);
   if(cr.파)crossNotes.push(`마무리 어긋남 <b style="color:#d4a849">${cr.파}건</b>`);
   if(cr.해)crossNotes.push(`은근한 방해 <b style="color:#d4a849">${cr.해}건</b>`);
-  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:12px"><div class="atitle">🔄 두 분 8글자가 만드는 16개 자리 작용</div><div class="abody">두 분의 8글자 자리가 만나는 16개 교차에서 ${crossNotes.join(' · ')}이 검출돼요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌보다 우세</b>해 전반적으로 부드러운 흐름이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충돌·거슬림 기운이 화합보다 우세</b>해 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 분위기예요.'}</div></div>`:'';
+  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:12px"><div class="atitle">🔄 두 분 사주가 만나는 자리</div><div class="abody">두 분의 사주 자리가 서로 만나는 지점에서 ${crossNotes.join(' · ')}이 보여요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌보다 우세</b>해 전반적으로 부드러운 흐름이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충돌·거슬림 기운이 화합보다 우세</b>해 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 분위기예요.'}</div></div>`:'';
 
   let interpBody=`<p style="margin-bottom:12px">두 분의 사주를 5가지 각도로 풀어드릴게요. 각 영역을 함께 보시면 인연의 전체 그림이 보여요.</p>
     <div class="asec"><div class="atitle">🌳 오행 관계 — ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
@@ -15690,7 +15711,7 @@ function buildDaypickSummaryA4Html(){
     <div class="a4-body">
       <div class="a4-col-left">
         <div class="a4-section">
-          <div class="a4-h">📊 본인 사주 4기둥</div>
+          <div class="a4-h">📊 본인 사주의 네 자리</div>
           ${buildA4Pillars(d.saju,d.gender)}
         </div>
         <div class="a4-section">
@@ -15794,7 +15815,7 @@ function buildMonthlySummaryA4Html(){
     <div class="a4-body">
       <div class="a4-col-left">
         <div class="a4-section">
-          <div class="a4-h">📊 본인 사주 4기둥</div>
+          <div class="a4-h">📊 본인 사주의 네 자리</div>
           ${buildA4Pillars(d.saju,d.gender)}
         </div>
         <div class="a4-section">
@@ -15966,9 +15987,9 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
           <div class="summary-intro">
             <p>두 분의 궁합을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
             <ul>
-              <li>📊 두 분 사주 4기둥 비교 (본인 vs 상대)</li>
+              <li>📊 두 분 사주의 네 자리 비교 (본인 vs 상대)</li>
               <li>📈 종합 점수 + 4가지 세부 점수 (오행·십신·일지·균형)</li>
-              <li>💞 일지(배우자 자리) 관계 + 일간 천간합</li>
+              <li>💞 배우자 자리 관계 + 중심 기운의 끌림</li>
               <li>✦ 별자리 4원소 궁합 (점성학)</li>
               <li>🗓 두 분 현재 10년 흐름 단계 비교</li>
             </ul>
@@ -15984,7 +16005,7 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   }catch(e){}
   // CHX: 5장 내러티브 — 두 사람 진단 → 관계의 결 → 깊이 통찰 → 시간 → 마무리
   h=reorderByChapters(h,[
-    {no:1,title:'두 사람은 누구인가',desc:'종합 궁합과 8글자·격국·별자리 비교',labels:['GUNGHAP','PERSONA8','STAGE_GK','ZODIAC_DAEUN']},
+    {no:1,title:'두 사람은 누구인가',desc:'종합 궁합과 타고난 성향·별자리 비교',labels:['GUNGHAP','PERSONA8','STAGE_GK','ZODIAC_DAEUN']},
     {no:2,title:'관계의 결',desc:'연애·결혼·동반자·가족·혼인 후 일상',labels:['LOVE','MARRIAGE','PARTNER','FAMILY','MARRIED_LIFE']},
     {no:3,title:'깊이 통찰',desc:'두 사람 신살·공망의 교차',labels:['SINSAL_GM']},
     {no:4,title:'시간 — 언제',desc:'결혼·큰 결정의 시기 일치도',labels:['TIMELINE_MATCH']},
@@ -16026,7 +16047,7 @@ function renderGunghapPersonaCard(s1, s2){
   else if(d1.includes('중간')||d2.includes('중간'))energyLine='한쪽이 상황 따라 오가는 유연한 기운이라, 두 분의 리듬을 자연스럽게 맞춰가기 좋은 조합이에요.';
   else energyLine='한 분은 움직이며, 다른 분은 쉬며 충전해요. 리듬이 달라 처음엔 어긋날 수 있지만, 서로의 페이스를 배우면 가장 균형 잡힌 한 쌍이 돼요.';
   const fill12=p2.oh[p1.lack]>=2, fill21=p1.oh[p2.lack]>=2;
-  let body=`<p><span class="body-q">일간을 넘어, 여덟 글자로 두 분은 누구일까요?</span><br>일간 하나가 아니라 두 분 각자의 여덟 글자 전체에서 「어떤 사람인지」를 뽑아 나란히 놓고 비교했어요.</p>`;
+  let body=`<p><span class="body-q">두 분의 타고난 성향은 어떻게 다를까요?</span><br>한 가지 글자만 보지 않고 두 분 각자의 사주 전체에서 「어떤 사람인지」를 뽑아 나란히 놓고 비교했어요.</p>`;
   body+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
     <div style="padding:11px 12px;background:rgba(108,140,200,.06);border-radius:8px;border-left:3px solid #6c8cc8">
       <div style="font-size:.74rem;color:var(--sub);font-weight:700">본인</div>
@@ -16045,7 +16066,7 @@ function renderGunghapPersonaCard(s1, s2){
   body+=`<p><b>🔋 에너지 방향</b><br><span style="font-size:.82rem;line-height:1.85">본인은 ${d1}, 상대는 ${d2}이에요. ${energyLine}</span></p>`;
   body+=`<p><b>⚖ 오행 상호보완</b><br><span style="font-size:.82rem;line-height:1.85">본인에게 옅은 <b>${OHNAME[p1.lack]}</b> 기운을 상대가 ${fill12?'넉넉히 갖고 있어, 함께 있을 때 채워지는 안정감을 받아요':'옅게 가져, 그 영역은 둘이 함께 의식적으로 채워가야 해요'}. 반대로 상대에게 옅은 <b>${OHNAME[p2.lack]}</b> 기운은 본인이 ${fill21?'받쳐줄 수 있어, 서로의 빈자리를 메워주는 인연이에요':'마찬가지로 옅어, 그 부분은 함께 바깥에서 보충하면 좋아요'}.</span></p>`;
   body+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 두 분의 「같은 점」은 빠르게 통하는 힘, 「다른 점」은 서로를 키우는 힘이에요. 닮은 곳은 함께 즐기고 다른 곳은 인정하면 두 분만의 흐름이 가장 잘 풀려요.</p>`;
-  return paidWrapBody('PERSONA8','🧬','여덟 글자로 본 두 사람',body);
+  return paidWrapBody('PERSONA8','🧬','타고난 성향으로 본 두 사람',body);
 }
 
 // 두 사람 12운성·격국 비교 카드
@@ -16109,7 +16130,7 @@ function renderGunghapMarriedLifeCard(saju1, saju2, gen1, gen2){
   if(isHarmony)dailyTone='두 분의 자리가 자연스럽게 어우러져 일상 리듬이 잘 맞아요. 같은 시간에 잠들고 같은 시간에 일어나는 작은 일상이 자연스럽게 정착돼요.';
   else if(isTough)dailyTone='두 분의 자리에 부딪힘이 있어 일상 리듬을 의식적으로 맞추는 자세가 필요해요. 작은 다툼이 평소 쌓이지 않도록 「작은 불편을 그때 풀기」가 핵심이에요.';
   else dailyTone='두 분의 자리가 평이한 흐름으로 만나, 일상 리듬은 두 분이 함께 만들어가는 자리예요. 의식적인 「공유 시간」이 가정의 흐름을 만들어줘요.';
-  let body=`<p><span class="body-q">결혼 후 두 분의 일상은 어떻게 흐를까요?</span><br>두 분 사주의 일지(배우자 자리)·일간(본인 분위기)·오행 합산을 종합해 결혼 후 일상·재물·자녀·노후 4가지 영역의 흐름을 풀어드릴게요.</p>`;
+  let body=`<p><span class="body-q">결혼 후 두 분의 일상은 어떻게 흐를까요?</span><br>두 분의 배우자 자리, 중심 기운, 다섯 기운의 균형을 함께 보며 결혼 후 일상·재물·자녀·노후 4가지 영역의 흐름을 풀어드릴게요.</p>`;
   body+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
   // 1. 일상 분위기
   body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
@@ -16135,7 +16156,7 @@ function renderGunghapMarriedLifeCard(saju1, saju2, gen1, gen2){
   const lateGood=brR.kind==='합'||brR.kind==='반합'||stR.kind==='합';
   body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
     <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">🌙 노후의 분위기</div>
-    <div style="font-size:.82rem;line-height:1.85">${lateGood?'두 분의 일지·일간이 자연스럽게 잘 통하는 분위기라, 노후로 갈수록 결속이 더 깊어지는 분위기. 함께 늙어가며 평생 동반자로 흐름이 풀려가요.':isTough?'두 분의 자리에 부딪힘이 있어 노후로 갈수록 의식적인 「함께하는 활동」(여행·취미·식사)이 흐름을 만들어줘요. 가만히 두면 거리감이 생길 수 있는 분위기.':'평이한 분위기라 노후의 색깔은 두 분이 함께 만들어가는 자리예요. 「오래 함께 사는 작은 습관」 한 가지를 만드시면 평생 동반자 느낌이 깊어져요.'}</div>
+    <div style="font-size:.82rem;line-height:1.85">${lateGood?'두 분의 배우자 자리와 중심 기운이 자연스럽게 잘 통하는 흐름이라, 노후로 갈수록 결속이 더 깊어져요. 함께 늙어가며 평생 동반자로 흐름이 풀려가요.':isTough?'두 분의 자리에 부딪힘이 있어 노후로 갈수록 의식적인 「함께하는 활동」(여행·취미·식사)이 흐름을 만들어줘요. 가만히 두면 거리감이 생길 수 있는 분위기.':'평이한 분위기라 노후의 색깔은 두 분이 함께 만들어가는 자리예요. 「오래 함께 사는 작은 습관」 한 가지를 만드시면 평생 동반자 느낌이 깊어져요.'}</div>
   </div>`;
   body+=`</div>`;
   body+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>결혼 생활의 흐름을 잘 쓰는 법</b><br>위 풀이는 사주가 보여주는 「자연스러운 경향」이에요. 같은 사주라도 두 분의 노력·소통·환경에 따라 결과는 달라져요. 좋은 부분은 의식적으로 활용하고, 약한 부분은 의식적으로 채워가시면 「두 분만의 결혼 생활」이 만들어져요.</p>`;
@@ -16374,7 +16395,7 @@ function renderGunghapMarriageCard(s1,s2,r){
   }else{
     body=`평이한 기류라 결혼 생활의 색은 둘이 함께 만들어가는 자리예요. 매주 정기적인 「우리 시간」(외식·산책·여행) 1회를 정해두면 결혼 흐름이 단단해져요.`;
   }
-  const stemBonus=stRel==='합'?'<br><br>특히 두 분의 일간이 <b>천간합 — 부부 합</b>을 이뤄, 결혼 생활에서 서로를 끌어당기는 결속력이 매우 강한 자리예요.':stRel==='충'?'<br><br>두 분의 일간이 천간충 — 가치관·결정 방식에서 부딪힐 수 있어요. 큰 결정 전에 「각자의 입장 1분씩 말하기」 룰을 두면 흐름이 부드러워져요.':'';
+  const stemBonus=stRel==='합'?'<br><br>특히 두 분의 중심 기운이 서로 끌어당겨, 결혼 생활에서 결속력이 매우 강한 자리예요.':stRel==='충'?'<br><br>두 분의 중심 기운이 부딪히는 흐름이라 가치관·결정 방식에서 충돌이 생길 수 있어요. 큰 결정 전에 「각자의 입장 1분씩 말하기」 룰을 두면 흐름이 부드러워져요.':'';
   const marBody=`<div class="asec"><div class="atitle">두 분이 함께 살 때의 분위기</div><div class="abody">${body}${stemBonus}</div></div>
     <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--earth)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${sc>=75?'결혼 생활은 두 분 모두에게 안정과 성장을 주는 자리가 돼요.':sc>=60?'결혼 후 「작은 약속을 꼭 지키는」 습관이 신뢰를 두텁게 만들어요.':'결혼 결정 전에 둘이 함께 「3개월 동거」 같은 충분한 시간을 갖는 게 좋아요.'}</div></div>`;
   return paidWrapBody('MARRIAGE','💍','결혼 생활 분위기',marBody,
@@ -16389,14 +16410,14 @@ function renderGunghapPartnerCard(s1,s2,r){
   const badCnt=(cr.충||0)+(cr.원진||0)+(cr.형||0);
   let body='';
   if(goodCnt>badCnt){
-    body=`두 분의 사주 8글자가 만나는 16칸에서 화합 작용이 우세해요. 함께 일하거나 같이 생활할 때 시너지가 나는 흐름이라, 동업·공동 사업·동거에 잘 어울려요. 역할 분담만 명확히 하면 큰 갈등 없이 흘러가요.`;
+    body=`두 분의 사주가 서로 만나는 지점에서 화합 작용이 우세해요. 함께 일하거나 같이 생활할 때 시너지가 나는 흐름이라, 동업·공동 사업·동거에 잘 어울려요. 역할 분담만 명확히 하면 큰 갈등 없이 흘러가요.`;
   }else if(badCnt>goodCnt){
     body=`충·원진·형 작용이 많아 함께 일하거나 같이 살면 작은 마찰이 잦은 모양새예요. 동업보다는 각자 영역을 분명히 나누고 「계약서·약속 메모」를 꼼꼼히 두는 게 흐름을 지켜요.`;
   }else{
     body=`화합과 충돌이 비슷한 비중이라 균형 잡힌 흐름이에요. 동업·동거 모두 가능하지만, 시작 전에 「3개월 시범 기간」을 두고 서로의 흐름을 확인하는 게 안전해요.`;
   }
   const partBody=`<div class="asec"><div class="atitle">함께 일하거나 같이 살 때의 분위기</div><div class="abody">${body}</div></div>
-    <div class="asec" style="margin-top:12px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 8글자가 만나는 16칸 교차에서 <b>화합 ${goodCnt}건</b> / <b>갈등 ${badCnt}건</b>이 검출됐어요. ${goodCnt>=badCnt?'시너지가 우세한 흐름':'갈등이 우세한 흐름'}이에요.</div></div>`;
+    <div class="asec" style="margin-top:12px"><div class="atitle">교차 작용 요약</div><div class="abody">두 분의 사주가 서로 만나는 지점에서 <b>화합 ${goodCnt}건</b> / <b>갈등 ${badCnt}건</b>이 보여요. ${goodCnt>=badCnt?'시너지가 우세한 흐름':'갈등이 우세한 흐름'}이에요.</div></div>`;
   return paidWrapBody('PARTNER','🤝','동업·동거 분위기',partBody,
     {good:`${goodCnt>badCnt?'화합 우세 — 동업·공동 사업·동거에 시너지. 역할 분담만 명확하면 큰 갈등 없이 흐름':goodCnt===badCnt?'균형 — 「3개월 시범 기간」으로 서로의 흐름 확인 후 본격 진행':'갈등 우세지만, 각자 영역 분명히 나누면 흐름 가능 — 계약서·약속 메모 필수'}.`,
      warn:`${badCnt>goodCnt?'동업 시 작은 마찰 잦음 — 자금·역할·기간을 처음부터 문서화':'친한 사이일수록 금전 거래·동업 자금은 명확한 기록 필수'}.`});
