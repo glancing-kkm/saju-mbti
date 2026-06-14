@@ -734,6 +734,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tl-collapsible.tl-open .tl-chevron{transform:rotate(180deg)}
 .tl-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:1px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
 .tl-hint:hover{background:rgba(212,175,55,.16)}
+.tl-current{display:block;width:100%;margin-top:8px;padding:10px 12px;background:rgba(108,191,126,.08);border:1px solid rgba(108,191,126,.45);border-radius:9px;color:var(--wood);font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.tl-current:hover{background:rgba(108,191,126,.16)}
 .tl-collapsible.tl-open .tl-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
 .tl-body-wrap{display:none}
 .tl-collapsible.tl-open .tl-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
@@ -967,10 +969,34 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 @media (max-width:380px){
   .chat-input::placeholder{font-size:.72rem}
   /* 초소형 화면(SE·미니 등) — 카드 폭·여백 보정으로 터치 타깃 유지 */
+  .nb-card{padding:16px 14px 18px}
+  .nb-title{font-size:1rem;line-height:1.45}
+  .nb-body{font-size:.9rem;line-height:1.82}
+  .lead-card{padding:12px 13px;line-height:1.72}
+  .chapter-divider{margin:24px 2px 12px;padding:11px 13px}
+  .chapter-divider .ch-title{font-size:1rem}
+  .action-guide .ag-block{padding:10px 12px}
+  .summary-actions,.easypay-row{flex-direction:column}
+  .summary-btn,.easypay-btn{width:100%}
   .menu-grid{gap:8px}
   .menu-card{padding:16px 8px 14px}
   .tog-row{gap:6px}
   .row3{gap:6px}
+}
+@media (max-width:599px){
+  html,body{width:100%;overflow-x:hidden}
+  #app{width:100%;max-width:100%;overflow-x:hidden}
+  .home-hero{padding:52px 18px 42px}
+  .home-hero::before{width:280px;height:280px}
+  .home-hero::after{width:150px;height:150px}
+  .home-hero h1{font-size:1.72rem;letter-spacing:.14em;line-height:1.25;margin-left:.14em;white-space:normal}
+  .home-hero .h-sub{font-size:.73rem;line-height:1.8;letter-spacing:0;max-width:292px;margin:0 auto}
+  .home-hero .h-sub span{display:block;margin-top:2px}
+  .home-hero .h-deco{letter-spacing:.36em;margin-left:.36em}
+  .home-cards{padding:24px 16px 28px}
+  .menu-grid{grid-template-columns:1fr;gap:12px}
+  .menu-card{min-height:116px;padding:18px 14px 16px}
+  .menu-card .mc-desc{margin-left:0;margin-right:0}
 }
 
 /* ══ 반응형 (RSP): 폰 크기별 유동 스케일 → 태블릿 → PC ══
@@ -3650,7 +3676,7 @@ function lifeTimelineSVG(saju, daeuns, currentAge, ys){
   // 범례
   let legend=`<div class="lt-legend" aria-hidden="true">
     <span><i style="background:#52796f"></i>용신 대운</span>
-    <span><i style="background:#6cbf7e"></i>희신</span>
+    <span><i style="background:#6cbf7e"></i>보조 도움</span>
     <span><i style="background:#d4a849"></i>한신</span>
     <span><i style="background:#e57462"></i>기신</span>
     <span><i style="background:#a8a29e"></i>평이</span>
@@ -4170,7 +4196,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   let cBody2=(_primaryDpCard==='CAREER'?ctxCallOut('daypick',_ctxTag,_ctxNote):'')+`<p>${y}/${m}/${d}의 직업·관운 점수는 <b>${f.career}점</b>이에요. 본인 기준 그날 위 글자가 <b>${plainTG(stemTG)}</b>의 흐름으로 다가온다는 건, ${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어오는 분위기 — 책임·공식·승진·면접 무게가 표면화':stemTG==='상관'?'창의·표현이 강해지는 분위기 — 두각은 보이지만 권위와의 마찰 가능':stemTG==='식신'?'사람과 함께 일하는 자리에 운이 좋은 날':stemTG==='정인'||stemTG==='편인'?'학습·자료 정리·인허가 처리에 운이 좋은 날':'평이한 직업 흐름의 날'}입니다.</p>`;
   cBody2+=`<div class="cat-where">📍 <b>어디를 보나요?</b> 그날 천간 십신이 관성·식상·인성 중 어느 분위기인지를 핵심으로 봐요. 본인 사주 유형 ${gk.name}의 분위기도 함께 작용해요.</div>`;
   cBody2+=`<p>${stemTG==='정관'?'<b>① 공식 자리에 길한 날</b><br>발표·결재·승인·면접·시상·승진 보고에 가장 기운이 좋아요. 평소보다 격식·디테일·문서 정확성에 신경 쓰면 결실이 커요. 미뤄둔 공식 절차가 있다면 오늘 처리하세요.':stemTG==='편관'?'<b>① 도전·압박이 들어오는 날</b><br>경쟁·시험·승진 압박·도전적 미팅에 무게가 실려요. 정면 돌파보다 측면 우회 — 강한 사람 앞에서는 한 걸음 양보가 진짜 승리예요.':stemTG==='상관'?'<b>① 창의·표현이 빛나는 날</b><br>기획·콘텐츠·강연·창작 활동에 빛나지만 권위(상사·규율)와의 마찰이 일어나요. 표현 톤을 한 단계 부드럽게 가져가면 흐름을 그대로 살릴 수 있어요.':stemTG==='식신'?'<b>① 협업·소통이 빛나는 날</b><br>사람과 함께 일하는 자리·점심 미팅·팀 회의에 흐름이 좋아요. 자기 단독 결정보다 협업으로 풀어가세요.':stemTG==='편재'?'<b>① 영업·이동·외근의 날</b><br>외부 영업·미팅·새 거래·이동을 동반한 비즈니스을 하기 좋은 때예요. 발이 부지런할수록 결실이 커요.':stemTG==='정재'?'<b>① 정리·점검이 흐름이 좋은 날</b><br>새 시작보다 미뤄둔 정리·점검·문서 처리에 운이 좋은 날이에요.':stemTG==='정인'?'<b>① 학습·자격에 빛나는 날</b><br>학습·자격·시험·문서·인허가 처리에 매우 기운이 좋아요. 어른·멘토에게 조언을 청하기 좋은 날.':stemTG==='편인'?'<b>① 전문 학습이 깊어지는 날</b><br>전문 분야 깊이 있는 학습·연구·자기 점검에 흐름이 좋아요.':'<b>① 자기 결정이 빛나는 날</b><br>본인 색깔이 강해지는 날 — 자기 결정에 자신감을 가지세요.'}</p>`;
-  cBody2+=`<p>② <b>본인 사주 유형 ${gk.name}의 분위기</b><br>${gk.desc}. 그날 ${stemTG}의 색채가 본인 격국의 ${OHNAME[ys.main]===OHNAME[dpStemOh]?'용신을 직접 보강':OHNAME[ys.main]===OHNAME[(dpStemOh+2)%5]?'용신을 극하는':'평이한'} 흐름으로 작용해요.</p>`;
+  cBody2+=`<p>② <b>본인 사주 유형 ${gk.name}의 분위기</b><br>${gk.desc}. 그날 ${stemTG}의 색채가 본인 사주 유형에 ${OHNAME[ys.main]===OHNAME[dpStemOh]?'도움 기운을 직접 보강하는':OHNAME[ys.main]===OHNAME[(dpStemOh+2)%5]?'도움 기운을 누르는':'평이한'} 흐름으로 작용해요.</p>`;
   cBody2+=`<p>③ <b>이직·면접 결정 시</b><br>${stemTG==='정관'||stemTG==='편관'?'관성이 직접 들어와 면접·승진·이직 결정에 매우 길해요. 미뤄둔 결정이 있다면 오늘 행동에 옮기세요.':rel.kind==='충'?'일지 충이 들어 변동의 폭이 큰 날 — 이직 결정은 한 호흡 더 살핀 후에.':'평이한 흐름이므로 평소 페이스를 유지하세요.'}</p>`;
   h+=paidWrapBody('CAREER','🏛️','직업·관운',cBody2,
     {good:`${stemTG==='정관'||stemTG==='편관'?'공식 자리·면접·승진 보고 등 관운 활동에 흐름이 가장 잘 맞는 날':stemTG==='상관'||stemTG==='식신'?'창의·표현·협업 활동에 운이 좋아요 — 본인 색깔을 한 줄 정리해 발신하세요':'평이한 흐름이므로 정리·점검에 시간을 투자'} 하세요.`,
@@ -4395,6 +4421,11 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   const luckyMonths=sorted.slice(0,topN).map(o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`);
   const toughMonths=sorted.slice(-Math.min(2,Math.ceil(totalMonths/4))).map(o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`);
   const decisive=sorted[0]; // 결정적 시기
+  const _flowLetters={0:'갑·을 / 인·묘',1:'병·정 / 사·오',2:'무·기 / 진·술·축·미',3:'경·신 / 신·유',4:'임·계 / 해·자'};
+  const _helpOh=ys.main,_warnOh=(ys.main+2)%5;
+  const _helpMonths=monthsData.filter(o=>SOH[o.mp.stem]===_helpOh||BOH[o.mp.branch]===_helpOh).map(o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`).slice(0,4);
+  const _warnMonths=monthsData.filter(o=>SOH[o.mp.stem]===_warnOh||BOH[o.mp.branch]===_warnOh).map(o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`).slice(0,4);
+  const _periodRange=`${sy}.${String(sm).padStart(2,'0')} ~ ${ey}.${String(em).padStart(2,'0')}`;
 
   const avg=k=>Math.round(monthsData.reduce((s,o)=>s+o.sc[k],0)/monthsData.length);
   const avgTotal=avg('total');
@@ -4433,6 +4464,12 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   let totBody='';
   // ① 한 줄 결론
   totBody+=`<div class="lead-card"><b>${sy}.${sm} ~ ${ey}.${em} · 평균 ${avgTotal}점 (${avgGrade.lab})</b>의 흐름이에요. ${totalMonths}개월 중 흐름이 가장 잘 맞는 결정적 시기는 <b>${decisive.yy}.${decisive.mm}</b>월이에요.</div>`;
+  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:10px;line-height:1.85;font-size:.86rem">
+    <div><b>기 — 이 기간의 결론</b><br>${_periodRange}은 평균 ${avgTotal}점이에요. 새 시작은 <b>${luckyMonths.join(', ')}</b>월에 두고, 가장 큰 결정은 <b>${decisive.yy}.${String(decisive.mm).padStart(2,'0')}</b>월에 맞추면 좋아요.</div>
+    <div style="margin-top:9px"><b>승 — 어떤 글자가 근거인가요?</b><br>매달 들어오는 위아래 글자를 본인 글자와 대조했어요. 특히 <b>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</b>월의 글자가 본인에게 가장 부드럽게 작용해요.</div>
+    <div style="margin-top:9px"><b>전 — 도움 글자와 주의 글자</b><br>도움이 되는 쪽은 <b>${OHNAME[_helpOh]}</b> 계열(${_flowLetters[_helpOh]})이에요${_helpMonths.length?` — ${_helpMonths.join(', ')}월에 잘 살아나요`:''}. 주의할 쪽은 <b>${OHNAME[_warnOh]}</b> 계열(${_flowLetters[_warnOh]})이에요${_warnMonths.length?` — ${_warnMonths.join(', ')}월엔 속도를 낮추세요`:''}.</div>
+    <div style="margin-top:9px"><b>결 — 이렇게 쓰세요</b><br>좋은 달엔 계약·이직·고백·발표처럼 밖으로 드러나는 일을 잡으세요. 주의 달엔 정리·검토·휴식처럼 안쪽을 다지는 선택이 좋아요.</div>
+  </div>`;
   // ② 왜
   totBody+=miniManseWithPointer(saju,'month','↑ 본인의 사주 유형이 잡힌 자리 — 매달 들어오는 글자가 이 자리와 어떻게 호응하는지가 핵심');
   totBody+=`<p><span class="body-q">왜 이런 흐름이 나올까요?</span><br>본인 사주 유형 <em>${gk.name}</em>과 본인을 도와주는 기운 <em>${OHNAME[ys.main]}</em>을 기준으로 매달 절기마다 들어오는 새 글자가 본인과 어떻게 만나는지 ${totalMonths}개월 동안 누적해서 계산한 평균이에요.</p>`;
@@ -4981,7 +5018,7 @@ function renderNewyearFortune(saju,y){
     '동':'본인 페이스가 진해지는 해. 평소 루틴을 일관되게 유지하세요.'
   };
   const healthBody=`<p>${y}년의 건강 운은 평균 <b>${healthYr}점</b>이에요. ${_yearRelHealth[rel.kind]||_yearRelHealth['평']}</p><p>본인 사주에서 부족한 오행은 <em>${OHNAME[weak]}</em>이므로, 한 해 동안 ${weak===0?'간·담·근육·시력':weak===1?'심장·소장·혈액순환':weak===2?'위장·비장·소화':weak===3?'폐·대장·면역':'신장·방광·생식기'} 영역을 한 번 더 살펴주세요. 보강 음식은 ${weak===0?'녹색 채소·신맛 과일':weak===1?'붉은 식재료·쓴맛 야채':weak===2?'단호박·고구마·곡류':weak===3?'흰 식재료·매운맛 향신료':'검은콩·해조류·짠맛'}이 도움이 돼요.</p><p>${monthLab(tough)}은 검진·휴식·회복의 카드를 꺼내기 좋은 시기예요. 무리한 일정은 이 시기를 피하세요.</p>`;
-  const studyBody=`<p>${y}년의 공부·시험 운은 평균 <b>${studyYr}점</b>이에요. ${tg==='정인'||tg==='편인'?'세운 천간이 인성으로, 학습·자격·시험·문서 운에 매우 길해요. 한 단계 도약을 위한 시험이라면 올해를 활용하세요.':tg==='상관'?'창의·표현·논술형 시험을 하기 좋은 때예요. 다만 객관식 정답률은 한 번 더 검토하세요.':tg==='편관'?'경쟁률 높은 시험에서 도전 정신이 빛나는 해.':'평이한 학습 흐름. 꾸준함이 답이에요.'}</p>`;
+  const studyBody=`<p>${y}년의 공부·시험 운은 평균 <b>${studyYr}점</b>이에요. ${tg==='정인'||tg==='편인'?'올해 위쪽 글자가 학습·자격·시험·문서 운을 도와줘요. 한 단계 도약을 위한 시험이라면 올해를 활용하세요.':tg==='상관'?'창의·표현·논술형 시험을 하기 좋은 때예요. 다만 객관식 정답률은 한 번 더 검토하세요.':tg==='편관'?'경쟁률 높은 시험에서 도전 정신이 빛나는 해.':'평이한 학습 흐름. 꾸준함이 답이에요.'}</p>`;
   const homeBody=`<p>${y}년의 주거·이동 운은 평균 <b>${homeYr}점</b>이에요. ${tg==='편재'||rel.kind==='충'?'이사·이동·해외 출장 등 거주지 변동의 기운이 있는 해예요. 결정 전 길방위와 길월('+monthLab(lucky)+')을 활용하세요.':rel.kind==='파'||rel.kind==='해'?'이사·이주 시 마무리·계약 조항에서 어긋남이 생기기 쉬운 해. 계약 전 한 번 더 검토하세요.':'주거 환경의 큰 변동보다 안정 흐름. 작은 인테리어·정돈이 기운을 다듬어줘요.'}</p>`;
   const _familyByRel={
     '합':'가족 모임·결혼·출산·자녀 진학 등 경사의 기운이 있는 해예요.',
@@ -5053,9 +5090,21 @@ function renderNewyearFortune(saju,y){
   };
   const _yongsinYear=OHNAME[ypStemOh]===OHNAME[ysX.main]||OHNAME[ypBrOh]===OHNAME[ysX.main]?{tone:'길운의 해',msg:'올해 들어오는 기운이 본인을 도와주는 기운을 직접 보강해 흐름이 가장 잘 맞는 해예요.'}:OHNAME[ypStemOh]===OHNAME[(ysX.main+2)%5]||OHNAME[ypBrOh]===OHNAME[(ysX.main+2)%5]?{tone:'정리의 해',msg:'올해 기운이 본인을 도와주는 기운과 부딪치는 흐름이라, 큰 변동보다 정리·관망의 카드를 꺼내기 좋은 해예요.'}:{tone:'평이한 해',msg:'올해 기운과 본인을 도와주는 기운이 특별한 작용을 만들지 않아요. 본인 페이스를 유지하기 좋은 해예요.'};
   const _relYearSummary=rel.kind==='합'?'사람·관계·교섭·계약에 부드러운 흐름의 해':rel.kind==='반합'?'동맹·팀워크에 흐름이 좋은 해':rel.kind==='동'?'본인 색깔이 가장 진해지는 해':rel.kind==='충'?'변동·이동·정리·재정립이 일어나는 해':rel.kind==='원진'?'가까운 관계에 미세한 거슬림이 누적되기 쉬운 해':rel.kind==='형'?'서로의 약점이 깎이는 흐름의 해':'평이한 흐름의 해';
+  const _nyLetters={0:'갑·을 / 인·묘',1:'병·정 / 사·오',2:'무·기 / 진·술·축·미',3:'경·신 / 신·유',4:'임·계 / 해·자'};
+  const _nyHelpOh=ysX.main,_nyWarnOh=(ysX.main+2)%5;
+  const _nyHelpHit=ypStemOh===_nyHelpOh||ypBrOh===_nyHelpOh;
+  const _nyWarnHit=ypStemOh===_nyWarnOh||ypBrOh===_nyWarnOh;
+  const _nyHelpMonths=monthsArr.filter(o=>SOH[o.mp.stem]===_nyHelpOh||BOH[o.mp.branch]===_nyHelpOh).map(o=>`${o.mm}월`).slice(0,4);
+  const _nyWarnMonths=monthsArr.filter(o=>SOH[o.mp.stem]===_nyWarnOh||BOH[o.mp.branch]===_nyWarnOh).map(o=>`${o.mm}월`).slice(0,4);
   let totBody='';
   // ① 한 줄 결론
   totBody+=`<div class="lead-card"><b>${y}년 · ${STEMKO[ypStem]}${BRCHKO[ypBranch]}년 (${TG_EMOJI[tg]||'🌟'} ${plainTG(tg)}의 분위기)</b><br>본인에게 <em>${_yearTGDescMap[tg]||'평이한 흐름의 해'}</em>예요. ${_relYearSummary}입니다.</div>`;
+  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:10px;line-height:1.85;font-size:.86rem">
+    <div><b>기 — 올해의 결론</b><br>${y}년은 종합 ${total}점이에요. 핵심은 <b>${plainTG(tg)}</b>의 분위기를 현실에서 어떻게 쓰느냐예요. ${_relYearSummary}라서 관계와 결정의 속도 조절이 중요해요.</div>
+    <div style="margin-top:9px"><b>승 — 어떤 글자가 근거인가요?</b><br>올해 들어오는 글자는 <b>${ypStemKo}${ypBrKo}</b>예요. 위쪽 <b>${ypStemKo}</b>는 겉으로 드러나는 일, 아래쪽 <b>${ypBrKo}</b>는 속에서 반복되는 흐름을 만들어요.</div>
+    <div style="margin-top:9px"><b>전 — 도움 글자와 주의 글자</b><br>도움이 되는 쪽은 <b>${OHNAME[_nyHelpOh]}</b> 계열(${_nyLetters[_nyHelpOh]})이에요${_nyHelpHit?' — 올해 글자 안에 이 힘이 들어와 직접 도움을 줘요':_nyHelpMonths.length?` — ${_nyHelpMonths.join(', ')}에 보강돼요`:''}. 주의할 쪽은 <b>${OHNAME[_nyWarnOh]}</b> 계열(${_nyLetters[_nyWarnOh]})이에요${_nyWarnHit?' — 올해는 이쪽이 강해질 수 있어요':_nyWarnMonths.length?` — ${_nyWarnMonths.join(', ')}엔 무리하지 마세요`:''}.</div>
+    <div style="margin-top:9px"><b>결 — 이렇게 쓰세요</b><br>길월에는 큰 결정을 밖으로 꺼내세요. 주의월에는 약속·돈·관계 표현을 한 번 더 확인하세요. 올해는 속도보다 순서가 운을 살려요.</div>
+  </div>`;
   // ② 왜
   totBody+=miniManseWithPointer(saju,'day','↑ 본인을 가리키는 두 글자 — 올해 들어오는 기운과 가장 직접 만나는 자리');
   totBody+=`<p><span class="body-q">왜 이렇게 작용할까요?</span><br>${y}년 입춘부터 다음 해 입춘 직전까지 본인 사주에 새로 더해지는 글자가 <em>${STEMKO[ypStem]}${BRCHKO[ypBranch]}</em>예요.</p>`;
@@ -5101,11 +5150,11 @@ function renderNewyearFortune(saju,y){
     h+=paidWrapBody('DAEUN','🗓','본인 10년 흐름 안에서 본 '+y+'년',dsBody);
   }catch(e){}
 
-  h+=paidWrapBody('TOTAL','✨','세운과 사주의 만남 — 심층 진단',totBody,
+  h+=paidWrapBody('TOTAL','✨','올해 글자와 사주의 만남 — 심층 진단',totBody,
     {strengths:[
        `<b>${tg}</b> 기운으로 「${(TG_KEYWORD[tg]||[]).join('·')}」의 색채가 한 해를 채움`,
        rel.kind==='합'?'본인 자리와 자연스럽게 잘 통하는 분위기 — 사람·관계·교섭에 부드러움':rel.kind==='평'?'평이한 흐름 — 자기 페이스 유지에 좋은 해':'본인 기운이 외부 기운과 만나는 해',
-       `세운 글자 ${ypStemKo}${ypBrKo}이 본인 사주에 새로 더해지는 ${y}년 한정 기운`
+       `올해 글자 ${ypStemKo}${ypBrKo}이 본인 사주에 새로 더해지는 ${y}년 한정 기운`
      ],todos:[
        `${tg==='정관'||tg==='편관'?'책임·공식 자리·승진 보고를 적극 수락':tg==='편재'?'활동·새 거래·외부 영업·이동을 한 발 더':tg==='식신'||tg==='상관'?'창작·표현·콘텐츠로 본인의 분위기를 발신':tg==='정인'||tg==='편인'?'학습·자격·시험·문서 처리를 이 해에 배치':tg==='정재'?'정리·점검·꾸준한 자산 관리에 시간 투자':'본인의 강점 한 가지를 한 줄로 정리해 발신'}`,
        `길월(${monthLab(lucky)}월)에 굵직한 결정 배치 — 결혼·이직·창업·계약·이사`,
@@ -5256,7 +5305,7 @@ function renderNewyearFortune(saju,y){
 
   // 신살 작용 + 개인화 부스트 풀이
   if(activeYearSins.length>0){
-    let sinBody=`<p>본인 사주의 신살 중, 세운 일지(${ypBrKo})와 만나며 ${y}년 한 해 동안 강하게 활성화되는 신살이에요.</p>`;
+    let sinBody=`<p>본인 사주의 작은 별자리 중, 올해 아래쪽 글자(${ypBrKo})와 만나며 ${y}년 한 해 동안 강하게 살아나는 별자리예요.</p>`;
     sinBody+=miniManseWithSinsal(saju);
     sinBody+=sinsalMiniHTML(activeYearSins, `아래 신살의 작용이 ${y}년 한 해 동안 강하게 발현돼요.`);
     sinBody+=getPersonalizedSinsalInsight(allSins, activeYearSins, `${y}년`);
@@ -5264,7 +5313,7 @@ function renderNewyearFortune(saju,y){
   }
 
   // 띠 작용
-  let zBody=`<p>본인 띠는 <b>${ZODIAC_EMOJI[myZodiac]}${ZODIAC_KO[myZodiac]}띠</b>(년지 <em>${BRCHKO[myZodiac]}</em>), ${y}년의 띠는 <b>${ZODIAC_EMOJI[yearZodiac]}${ZODIAC_KO[yearZodiac]}띠</b>(세운 지지 <em>${ypBrKo}</em>)입니다.</p>`;
+  let zBody=`<p>본인 띠는 <b>${ZODIAC_EMOJI[myZodiac]}${ZODIAC_KO[myZodiac]}띠</b>(태어난 해의 아래쪽 글자 <em>${BRCHKO[myZodiac]}</em>), ${y}년의 띠는 <b>${ZODIAC_EMOJI[yearZodiac]}${ZODIAC_KO[yearZodiac]}띠</b>(올해 아래쪽 글자 <em>${ypBrKo}</em>)예요.</p>`;
   zBody+=`<p>${(()=>{
     const k=zodiacRel.kind;
     if(k==='합')return `두 띠가 <b style="color:#6cbf7e">자연스럽게 잘 통하는 분위기</b>라, 한 해의 흐름이 본인에게 부드럽게 다가와요. 사람과의 인연·인맥 확장이 잘 풀리는 해예요.`;
@@ -5286,10 +5335,10 @@ function renderNewyearFortune(saju,y){
     const _gm=emptyBranches(saju.dp.stem,saju.dp.branch);
     const _gmFilled=_gm.includes(ypBranch);
     if(_gmFilled){
-      let gmBody=`<div class="lead-card" style="border-left:4px solid #6cbf7e"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 공망(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 세운으로 채워져요.</span></div>`;
-      gmBody+=`<p><span class="body-q">공망이 채워지면 어떤 의미일까요?</span><br>본인 사주의 「비어있는 자리」는 평소 노력 대비 결실이 약하게 느껴지는 영역이에요. 그 자리에 세운 글자가 들어오면 <b>평소 약했던 영역에 결실이 들어오는 보강의 한 해</b>가 돼요.</p>`;
+      let gmBody=`<div class="lead-card" style="border-left:4px solid #6cbf7e"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 비어있는 자리(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 올해 글자로 채워져요.</span></div>`;
+      gmBody+=`<p><span class="body-q">비어있는 자리가 채워지면 어떤 의미일까요?</span><br>본인 사주의 「비어있는 자리」는 평소 노력 대비 결실이 약하게 느껴지는 영역이에요. 그 자리에 올해 글자가 들어오면 <b>평소 약했던 영역에 결실이 들어오는 보강의 한 해</b>가 돼요.</p>`;
       gmBody+=`<p>특히 비어있던 영역이 ${ypBrOh===0?'학습·문서·연구':ypBrOh===1?'사람 관계·인기':ypBrOh===2?'안정·신용·부동산':ypBrOh===3?'결단·체계·제도':'지혜·통찰·내면'}과 관련된 기류라면, ${y}년에 그 영역에서 평소보다 명확한 성과를 만들 수 있어요.</p>`;
-      h+=paidWrapBody('GONGMANG','✨',`공망 채워짐 — ${y}년 비어있던 자리가 채워지는 해`,gmBody);
+      h+=paidWrapBody('GONGMANG','✨',`비어있는 자리 채워짐 — ${y}년 약했던 자리가 보강되는 해`,gmBody);
     }
   }catch(e){}
 
@@ -5327,7 +5376,7 @@ function renderNewyearFortune(saju,y){
   }catch(e){}
 
   // 한 해를 살아가는 분위기 + 고전
-  let closeBody=`<p>${y}년은 본인에게 <b>${total>=70?'우호적인 흐름':total>=55?'평이한 흐름':'한 박자 살피는 흐름'}</b>의 해예요. 세운은 그 해의 외부 기운일 뿐, 결정하는 건 본인의 분위기예요. 본인 사주가 가진 ${OHNAME[dom]}의 강점을 ${tg} 색채로 풀어내면 흐름과 맞아 길이 열려요.</p>`;
+  let closeBody=`<p>${y}년은 본인에게 <b>${total>=70?'우호적인 흐름':total>=55?'평이한 흐름':'한 박자 살피는 흐름'}</b>의 해예요. 올해 흐름은 외부에서 들어오는 기운일 뿐, 결정하는 건 본인의 분위기예요. 본인 사주가 가진 ${OHNAME[dom]}의 강점을 ${plainTG(tg)} 색채로 풀어내면 흐름과 맞아 길이 열려요.</p>`;
   closeBody+=`<p><b>🎯 연초 결심 한 줄</b><br>「${tg==='정관'||tg==='정인'?'올해는 책임지는 자리에 한 발 더 가까이 가겠다':tg==='편재'||tg==='상관'?'올해는 한 가지 새 활동을 시작하겠다':tg==='식신'?'올해는 사람과 함께 무언가를 만들겠다':tg==='편관'?'올해는 한 단계 더 단단해지겠다':tg==='정재'?'올해는 미뤄둔 정리를 마무리하겠다':'올해는 본인의 분위기를 더 정확히 알겠다'}」</p>`;
   closeBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(total)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','한 해를 살아가는 분위기 + 고전',closeBody);
@@ -5383,7 +5432,7 @@ function renderNewyearFortune(saju,y){
   // BT: 카드 목차
   // CHX: 5장 내러티브 — 분야별을 시간 세분화보다 앞으로
   h=reorderByChapters(h,[
-    {no:1,title:'올해의 큰 그림',desc:'세운 진단과 사계절 흐름부터',labels:['DAEUN','TOTAL','SEASONS']},
+    {no:1,title:'올해의 큰 그림',desc:'올해 진단과 사계절 흐름부터',labels:['DAEUN','TOTAL','SEASONS']},
     {no:2,title:'분야별 한 해 운세',desc:'재물·연애·직업 등 8개 영역',labels:['NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','NY_STUDY','NY_HOME','NY_FAMILY']},
     {no:3,title:'시간의 흐름',desc:'월별·분기별로 좁혀 보는 한 해',labels:['MONTHS','MONTHDETAIL','QUARTERS']},
     {no:4,title:'올해의 특이 요소',desc:'신살·띠·공망·삼재 등 올해만의 변수',labels:['SINSAL','ZODIAC','GONGMANG','SAMJAE','STAR12']},
@@ -5809,8 +5858,8 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   const dir=d.forward?'순행 — 시간 방향으로 진행':'역행 — 시간 역방향으로 진행';
   let h=`<div class="card">
     <div class="ctitle big">📅 대운 — 10년 운세 주기</div>
-    <div class="irow"><span class="ikey">대운 방향</span><span class="ival">${dir}</span></div>
-    <div class="irow"><span class="ikey">대운 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
+    <div class="irow"><span class="ikey">10년 흐름 방향</span><span class="ival">${dir}</span></div>
+    <div class="irow"><span class="ikey">10년 흐름 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
     <div style="margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch">
     <div style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
   for(const du of d.daeuns){
@@ -6507,7 +6556,7 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
   const now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
   const months=calc12MonthFortune(saju,cy);
   h+=`<div class="card">
-    <div class="ctitle big">📅 ${cy}년 12개월 세운 흐름</div>
+    <div class="ctitle big">📅 ${cy}년 12개월 흐름</div>
     <div style="font-size:.7rem;color:var(--sub);margin-bottom:8px">절기 기준 월주 (이번 달 강조)</div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px">`;
   for(let dm=1;dm<=12;dm++){
@@ -6559,7 +6608,7 @@ function renderSajuFree(saju){
   // CTA
   h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));text-align:center;padding:18px;margin-top:14px">
     <div style="font-size:.92rem;font-weight:800;margin-bottom:6px">📖 더 깊이 알고 싶다면</div>
-    <div style="font-size:.78rem;color:var(--sub);line-height:1.65;margin-bottom:14px">천간·지지를 글자 단위로 풀이하고, 대운×세운으로 시기별 좋은점/주의사항까지 분석한 자세한 풀이를 확인해보세요.</div>
+    <div style="font-size:.78rem;color:var(--sub);line-height:1.65;margin-bottom:14px">위아래 글자를 쉽게 풀고, 10년 흐름×올해 흐름으로 시기별 좋은점과 주의사항까지 분석한 자세한 풀이를 확인해보세요.</div>
     <button class="lock-btn" style="margin-top:0;padding:11px 22px;width:auto;display:inline-block" onclick="tab(2)">자세한 사주 풀이 보기 🔒</button>
   </div>`;
   return h;
@@ -6616,28 +6665,28 @@ function getSimpleHuman(sins){
 const PAID_META={
   daypick:{
     icon:'🎯',title:'지정일 운세',
-    desc:'중요한 날의 일진을 본인 사주와 교차해 입체적으로 풀어드려요.<br>약속·면접·계약·여행·결혼·이사 — 그 하루의 흐름을 들여다봐요.',
+    desc:'중요한 하루가 본인에게 잘 맞는 날인지 풀어드려요.<br>약속·면접·계약·여행·결혼·이사처럼 날짜 선택이 필요한 순간에 참고하기 좋아요.',
     features:[
-      '· 그날의 천간·지지 글자 단위 풀이',
-      '· 본인 일간과의 십신·합·충·형 작용',
-      '· 12지지 시간대별 길흉 가이드',
-      '· 활동별 권장/회피 (계약·면접·여행·의료 등)',
+      '· 그날 들어오는 위아래 글자 풀이',
+      '· 본인 글자와의 끌림·부딪힘·어긋남 분석',
+      '· 시간대별 좋은 선택과 조심할 선택',
+      '· 활동별 추천/주의 (계약·면접·여행·상담 등)',
       '· 길방위·길색·길수·만나면 좋은 띠',
-      '· 그날 활성화되는 신살 풀이',
-      '· 명리 고전 인용과 함께하는 행동 처방'
+      '· 그날 살아나는 작은 별자리 풀이',
+      '· 하루를 쓰는 행동 처방'
     ],
     price:'1,500원'
   },
   monthly:{
     icon:'📆',title:'월별 운세',
-    desc:'시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드려요.<br>한 달 한 달을 절기 기준 월주로 들여다봐요.',
+    desc:'시작 월부터 종료 월까지 매달의 흐름을 이어서 풀어드려요.<br>언제 움직이고 언제 쉬어야 하는지 월 단위로 판단할 수 있어요.',
     features:[
-      '· 절기 기준 월주 (입춘·경칩…) 정확 산출',
-      '· 월별 십신·합·충 작용과 분야별 점수',
-      '· 매달 5문장 풀이 + 핵심 키워드 3개',
+      '· 절기 기준 월별 글자 정확 산출',
+      '· 월별 끌림·부딪힘과 분야별 점수',
+      '· 매달 5문장 풀이 + 핵심 키워드',
       '· 추천 활동 / 주의 활동 / 그달의 길일 추천',
       '· 기간 통합 베스트 시기 / 주의 시기',
-      '· 본인 사주 일간 기반 맞춤 조언',
+      '· 본인 글자 기반 맞춤 조언',
       '· 최대 6개월 연속 풀이'
     ],
     price:'월당 2,000원 (최대 12,000원)'
@@ -6660,7 +6709,7 @@ const PAID_META={
     icon:'🌼',title:'인생총운',
     desc:'하늘·땅 글자를 글자 단위로 풀이하고,<br>10년 흐름×올해 흐름을 시기별로 분석한 종합 풀이예요.',
     features:[
-      '· 사주팔자 종합 풀이 (천간·지지 글자 단위)',
+      '· 사주팔자 종합 풀이 (위아래 글자 단위)',
       '· 총운 / 직장·사업운 / 재물운',
       '· 연애·결혼운 / 건강운 / 학업·시험운',
       '· 인간관계 / 작은 별자리 종합 분석',
@@ -6677,7 +6726,7 @@ const PAID_META={
       '· 4가지 영역 점수 (본질·서로를 보는 분위기·자리 작용·기운 균형)',
       '· 배우자 자리 작용 12가지 케이스 풀이',
       '· 본인 글자끼리 끌어당김/부딪힘 + 8글자 16자리 교차 작용',
-      '· 두 사람의 일주 비교 + 십신 관계',
+      '· 두 사람의 중심 글자 비교 + 관계 분위기',
       '· 연애·데이트 분위기 / 결혼 생활 분위기',
       '· 동업·동거 분위기 / 가족·자녀 분위기',
       '· 갈등 해소 행동 처방'
@@ -6704,6 +6753,18 @@ const PAID_META={
   chatpack5:{icon:'💬',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'4,000원'},
   chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 카테고리에서 즉시 사용 가능'],price:'7,000원'}
 };
+function getDecisionGuide(category){
+  const m={
+    daypick:'면접·계약·고백·이사처럼 날짜를 바꿀 수 있는 일을 언제 잡을지 판단할 수 있어요.',
+    monthly:'앞으로 몇 달 중 어느 달에 시작·확장·정리를 배치할지 정할 수 있어요.',
+    newyear:'올해의 큰 목표, 조심할 시기, 밀어붙일 시기를 분기와 월 단위로 정리할 수 있어요.',
+    life:'직업·관계·재물·건강 흐름을 큰 인생 흐름 안에서 보고, 지금 우선순위를 정할 수 있어요.',
+    gunghap:'연애·결혼·동업에서 잘 맞는 부분과 반복해서 부딪히는 부분을 구분할 수 있어요.',
+    name:'현재 이름이 본인에게 주는 힘과 보완할 이름 방향을 판단할 수 있어요.'
+  };
+  const t=m[category]||m.life;
+  return `<div class="lock-info" style="margin-top:-8px;margin-bottom:16px">🧭 <b>이 풀이로 결정할 수 있는 것</b><br>${preventOrphan(t)}</div>`;
+}
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
 const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:9900,life:24000,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
@@ -6761,6 +6822,7 @@ function renderPaidLock(category, saju){
     <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
     <div class="lock-title">${m.icon} ${m.title}</div>
     <div class="lock-desc">${m.desc}</div>
+    ${getDecisionGuide(category)}
     ${getUsageGuide(category)}
     <div class="lock-info">
       📋 <b>제공되는 풀이</b><br>
@@ -6941,7 +7003,7 @@ function renderLifeTeaser(saju){
     </div>
     <div class="teaser-headline">🌼 「${stemNk}」 × 「${branchNk}」의 분위기</div>
     <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (4기둥 글자 단위)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 대운 10년 단위 흐름 + 올해 세운'])}
+    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (4기둥 글자 단위)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 10년 단위 흐름 + 올해 흐름'])}
     ${_teaserCta('life')}
   </div>`;
 }
@@ -7486,7 +7548,7 @@ function pillarPlusRow(saju,daeun,sewoon){
     h+=`<div class="dx-col daeun"><div class="dx-col-lab">대운</div><div class="dx-col-s ${OHCLS[SOH[daeun.stem]]}">${STEMS[daeun.stem]}</div><div class="dx-col-b ${OHCLS[BOH[daeun.branch]]}">${BRCH[daeun.branch]}</div></div>`;
   }
   if(sewoon){
-    h+=`<div class="dx-col sewoon"><div class="dx-col-lab">세운</div><div class="dx-col-s ${OHCLS[SOH[sewoon.stem]]}">${STEMS[sewoon.stem]}</div><div class="dx-col-b ${OHCLS[BOH[sewoon.branch]]}">${BRCH[sewoon.branch]}</div></div>`;
+    h+=`<div class="dx-col sewoon"><div class="dx-col-lab">올해</div><div class="dx-col-s ${OHCLS[SOH[sewoon.stem]]}">${STEMS[sewoon.stem]}</div><div class="dx-col-b ${OHCLS[BOH[sewoon.branch]]}">${BRCH[sewoon.branch]}</div></div>`;
   }
   h+='</div></div>';
   return h;
@@ -7763,7 +7825,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   // ③ 대운·세운에서 도움 글자 (사용자 요청 핵심)
   totBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 대운·세운에서 본인을 도와주는 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 10년·올해 흐름에서 본인을 도와주는 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자</b>: <em>${_goodOhKo}</em> 기운 — 천간 <b>${_stemOhCh[ys.main]}</b> · 지지 <b>${_brOhCh[ys.main]}</b><br>
       <b>왜 도움이 되나요?</b> 본인 사주에서 약한 <em>${OHNAME[weak]}</em> 기운을 직접 보강하거나, 본인의 본질 <em>${OHNAME[dStemOh]}</em>을 받쳐주는 기운이라 본인 흐름이 자연스럽게 살아나기 때문이에요.<br>
@@ -7773,7 +7835,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   // ④ 대운·세운에서 주의 글자
   totBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 대운·세운에서 조심해야 할 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 10년·올해 흐름에서 조심해야 할 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: <em>${_badOhKo}</em> 기운 — 천간 <b>${_stemOhCh[_badOhIdx]}</b> · 지지 <b>${_brOhCh[_badOhIdx]}</b><br>
       <b>왜 조심해야 하나요?</b> 본인을 도와주는 용신 <em>${OHNAME[ys.main]}</em>을 직접 깎거나, 본인의 약한 부분을 더 약하게 만드는 기운이라 같은 노력에도 결실이 늦게 따라오기 쉬워요.<br>
@@ -7832,7 +7894,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   wBody+=`<p><span class="body-q">💡 본인의 재물 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${isStrong?(hasWealth?'기운이 두터워 큰 흐름의 돈을 다뤄도 흔들리지 않는 포용력':'본인의 이름값·전문성이 곧 돈이 되는 분위기'):'무리하지 않고 차근차근 본인 그릇에 맞게 쌓아가는 안정성'}<br>· <b>주의</b>: ${has('겁재')?'경쟁심이 깊게 자리잡아 동업·과시 소비·충동 투자로 돈을 잃기 쉬워요. 큰 결정은 24시간 룰':wealth.pp>wealth.pj?'활동 재물이 강해 한 번에 큰돈을 다루다 한순간에 잃을 수도. 분산·절제':'성실하지만 큰 도약 시기에는 외부 조언·인맥 확장이 필요'}</p>`;
   // [분위기] 대운/세운 도움 글자 (큰 박스)
   wBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 재물에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 재물에서 본인을 도와주는 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자</b>: <em>${OHNAME[wealthOh]}</em> 기운(재성 자체) — 천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b><br>
       또는 <em>${OHNAME[outputOh]}</em> 기운(식상 — 재물을 만드는 활동) — 천간 <b>${_wealthStemCh[outputOh]}</b> · 지지 <b>${_wealthBrCh[outputOh]}</b><br>
@@ -7842,7 +7904,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
   // [분위기] 대운/세운 조심 글자
   wBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 재물에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 재물에서 조심해야 할 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: <em>${OHNAME[dStemOh]}</em> 기운(비겁 — 본인과 같은 기운) — 천간 <b>${_wealthStemCh[dStemOh]}</b> · 지지 <b>${_wealthBrCh[dStemOh]}</b><br>
       <b>왜?</b> 본인과 같은 기운이 들어오면 「돈 자리」를 경쟁 상대처럼 나눠 가지게 돼요. 동업·과시 소비·충동 투자로 돈이 새기 쉬운 모양새예요.<br>
@@ -7978,7 +8040,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   cBody+=`<p><span class="body-q">💡 잘 맞는 분야</span><br>${careerDetail.gkc.length>0?'· <b>유형 추천</b>: '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>본질에 맞는 분야</b>: ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· <b>도움 기운을 살리는 분야</b>: ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
   // [분위기] 도움 글자
   cBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 직업에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 직업에서 본인을 도와주는 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자</b>: <em>${OHNAME[officerOh]}</em>(관성 — 책임·승진) — 천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b><br>
       또는 <em>${OHNAME[resourceOh]}</em>(인성 — 자격·문서·학위) — 천간 <b>${_careerStemCh[resourceOh]}</b> · 지지 <b>${_careerBrCh[resourceOh]}</b><br>
@@ -7988,7 +8050,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
   // [분위기] 조심 글자
   cBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 직업에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 직업에서 조심해야 할 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_careerStemCh[outputOh]}</b> · 지지 <b>${_careerBrCh[outputOh]}</b><br>
       <b>왜?</b> 식상이 너무 강해지면 본인 표현·창의가 권위·규율과 마찰을 만들어요. 톡톡 튀는 분위기로 평가가 갈리기 쉬운 시기.<br>
@@ -8107,7 +8169,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=`<p><span class="body-q">💡 본인의 연애 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${rel.key==='비화'?'본인과 닮은꼴이라 편안한 인연':rel.key==='인성'?'배우자가 후원자가 되는 관계':rel.key==='식상'?'배우자에게 표현·돌봄을 주는 관계':rel.key==='재성'?'배우자가 본인 활동의 무대가 되는 관계':'배우자에게서 추진력을 받는 관계'}<br>· <b>주의</b>: ${has('도화')?'삼각관계·외도 유혹에 휘말리지 않도록 의식적 절제 필요':has('백호')?'급격한 변화 흐름이 부부 충돌로 — 짧고 자주 대화':'본인 입장만 고집 말고 한 발 양보하는 태도'}</p>`;
   // [분위기] 도움 글자
   lBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 연애에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 연애에서 본인을 도와주는 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자 ①</b>: <em>${OHNAME[_loveSpouseOh]}</em>(${partnerWord} 자리) — 천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b><br>
       <b>도움 글자 ②</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 자연스럽게 어울리는 <em>${_hapBranch}</em> 글자<br>
@@ -8117,7 +8179,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
   // [분위기] 조심 글자
   lBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 연애에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 연애에서 조심해야 할 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 정면으로 부딪히는 충 글자 또는 미세하게 거슬리는 원진 글자<br>
       <b>왜?</b> 일지가 본인의 「감정 자리·배우자 자리」라, 충/원진 글자가 들어오면 관계 변동·이별·정리의 자연 흐름이 일어나기 쉬워요.<br>
@@ -8320,7 +8382,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   hBody+=`<p><span class="body-q">💡 본인의 건강 강점과 주의해야 할 부분</span><br>· <b>주의</b>: ${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b>이 4개 이상이라 '+overSymptom[maxOhIdx]+'에 평생 주의':'가장 비중 높은 '+OHNAME[maxOhIdx]+'이 '+overSymptom[maxOhIdx].split('·')[0]+' 경향'}<br>· <b>보강</b>: ${minCnt===0?'<b>'+OHNAME[minOhIdx]+'</b>이 0개 — '+lackSymptom[minOhIdx]+' 영역 의식적 보강':'부족한 기운 두드러지지 않아 균형 잡힌 편'}<br>· <b>별자리 작용</b>: ${has('백호')||has('양인')?'급격한 변화 별자리 — 사고·외상·급성 질환 한 단계 더 주의':has('역마')?'이동 별자리 — 이동 중 사고와 컨디션 관리가 평생 과제':'특별한 위험 별자리는 두드러지지 않아요. 무리하지 않는 생활 리듬이 본인을 지켜줘요.'}</p>`;
   // [분위기] 도움 글자
   hBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 건강에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 건강에서 본인을 도와주는 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자</b>: <em>${OHNAME[ys.main]}</em>(용신) — 천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>${minCnt===0?` 또는 부족한 <em>${OHNAME[minOhIdx]}</em> — 천간 <b>${_healthStemCh[minOhIdx]}</b> · 지지 <b>${_healthBrCh[minOhIdx]}</b>`:''}<br>
       <b>왜?</b> 용신 글자는 본인 약한 부분을 보강해주고, 부족한 오행 글자는 비어 있던 자리를 채워줘 컨디션이 자연스럽게 안정돼요.<br>
@@ -8329,7 +8391,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
   // [분위기] 조심 글자
   hBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 건강에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 건강에서 조심해야 할 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: <em>${OHNAME[(ys.main+2)%5]}</em>(용신을 깎는 기운) — 천간 <b>${_healthStemCh[(ys.main+2)%5]}</b> · 지지 <b>${_healthBrCh[(ys.main+2)%5]}</b><br>
       또한 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 충/형 글자도 사고·급성 질환 가능성<br>
@@ -8514,7 +8576,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=`<p><span class="body-q">💡 본인의 학업 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${gk.name.includes('인')?'학문·교육 분야에서 큰 결실':gk.name.includes('식')||gk.name.includes('상관')?'토론·발표·창작 형식의 학습에 강함':has('문창')?'정형 학습·자격증·논문에 두각':'흥미 분야에 깊이 파고드는 집중력'}<br>· <b>주의</b>: ${OHNAME[outputOh]} 기운이 너무 강한 시기엔 본인 표현 활동에 끌려 정통 학문 시험에서 산만해지기 쉬워요. 의식적인 집중 시간 확보 필요.</p>`;
   // [분위기] 도움 글자
   stBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 학업에서 본인을 도와주는 대운·세운 글자</div>
+    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 학업에서 본인을 도와주는 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>도움 글자 ①</b>: <em>${OHNAME[resourceOh]}</em>(인성 — 받아들이는 학습) — 천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b><br>
       <b>도움 글자 ②</b>: <em>${OHNAME[officerOh]}</em>(관성 — 공식 시험·자격) — 천간 <b>${_studyStemCh[officerOh]}</b> · 지지 <b>${_studyBrCh[officerOh]}</b><br>
@@ -8524,7 +8586,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   </div>`;
   // [분위기] 조심 글자
   stBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 학업에서 조심해야 할 대운·세운 글자</div>
+    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 학업에서 조심해야 할 10년·올해 글자</div>
     <div style="font-size:.79rem;line-height:1.9">
       <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_studyStemCh[outputOh]}</b> · 지지 <b>${_studyBrCh[outputOh]}</b><br>
       <b>왜?</b> 식상이 강해지면 본인 표현 활동(SNS·창작·자기 표현)에 끌려서 정통 학문 시험에 집중하기 어려워요.<br>
@@ -8567,7 +8629,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=_fieldConclusion('study',saju,ys,gender);
   stBody+=`<p style="margin-top:10px;font-size:.8rem;color:var(--sub)">⤵ 그 「때」가 몇 살 무렵인지는 이어지는 학업·시험 타임라인에서 연도로 확인할 수 있어요.</p>`;
   h+=paidWrapBody('STUDY','📚','학업·시험운',stBody,
-    {good:`인성(印星)이 강한 시기에 학습 흡수가 빛나요. 큰 시험·자격증 응시는 인성 대운·세운 또는 본인 자리의 합 분위기인 해에 배치하면 합격률이 자연스럽게 올라요.`,
+    {good:`학습을 받아들이는 힘이 강한 시기에 흡수가 빛나요. 큰 시험·자격증 응시는 학습을 돕는 10년·올해 흐름이나 본인 자리와 잘 어울리는 해에 배치하면 합격률이 자연스럽게 올라요.`,
      warn:`상관·겁재가 강한 시기엔 표현·창의 활동이 빛나지만 집중력 분산이 큰 함정이에요. SNS·취미를 의식적으로 줄이고 자습 시간을 확보하세요. 시험은 한 번 더 검토.`});
 
   // 평생 학업·시험 타임라인 — 대운별 학습·자격·시험 시기
@@ -8848,7 +8910,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const grade=score>=80?{lab:'대길',color:'#6cbf7e',bg:'rgba(108,191,126,.1)'}:score>=68?{lab:'길',color:'#a8c878',bg:'rgba(168,200,120,.1)'}:score>=55?{lab:'평',color:'#d4a849',bg:'rgba(212,168,73,.08)'}:{lab:'주의',color:'#e57462',bg:'rgba(229,116,98,.06)'};
       _yearRows.push({yy,age:yy-_meta.sy+1,stem:yp.stem,branch:yp.branch,tg,btg,brR,score,grade,tgKeyword:_tgKeyword[tg]||tg,brKeyword:_brKeyword});
     }
-    let yrBody=`<p><span class="body-q">앞으로 10년, 매년 어떤 흐름이 들어올까요?</span><br>본인 사주 + 향후 10년 세운(매년 외부 기운)을 종합해 매년 핵심 색채와 점수를 한눈에 정리했어요. 큰 결정을 어느 해에 배치할지 미리 보세요.</p>`;
+    let yrBody=`<p><span class="body-q">앞으로 10년, 매년 어떤 흐름이 들어올까요?</span><br>본인 사주 + 향후 10년 동안 매년 들어오는 외부 기운을 종합해 매년 핵심 색채와 점수를 한눈에 정리했어요. 큰 결정을 어느 해에 배치할지 미리 보세요.</p>`;
     yrBody+=`<div style="display:flex;flex-direction:column;gap:7px;margin-top:14px">`;
     _yearRows.forEach((r,i)=>{
       const isCur=i===0;
@@ -8952,7 +9014,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div>`;
     sjBody+=`<p style="margin-top:14px"><span class="body-q">${_kind}이면 어떻게 살면 좋을까요?</span><br>${_kind==='신강'?'<b>본인 사업·전문직·리더 포지션</b>이 가장 잘 맞아요. 큰 책임과 큰 도전도 흔들리지 않고 감당할 수 있는 그릇이라, 본인 흐름을 따라가는 게 가장 자연스럽고 결실도 커요. 다만 본인 색이 강해 협력보다 독자 노선을 걷기 쉬우니, 의식적으로 타인 의견을 듣는 자세가 흐름을 더 살려요.':_kind==='신약'?'<b>학습·자격증·전문성</b>으로 본인 그릇을 키운 뒤 큰 조직에서 입지를 다지는 패턴이 가장 안전해요. 처음부터 큰 무대에 서기보다 차근차근 쌓아가는 흐름이 본인에게 맞고, 사람의 도움·문서·자격이 본인의 큰 자산이 돼요.':'<b>균형형</b>이라 신강·신약의 양쪽 강점을 함께 가질 수 있어요. 시기에 따라 본인 사업이 잘 맞을 때도 있고 큰 조직에서 입지 다질 때도 있어요. 「지금 어느 흐름의 시기인가」를 보고 유연하게 선택하시면 돼요.'}</p>`;
     const _balanceTip=_myPower<_outPower?'강화':'약화';
-    sjBody+=`<p><span class="body-q">${_kind}이 좋아하는 대운/세운은?</span><br>${_kind==='신강'?'본인을 <b>덜어주는 식상·재성·관성</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 표현·돈·책임의 흐름이 들어와 본인의 강한 그릇을 풀어주는 시기예요.':_kind==='신약'?'본인을 <b>받쳐주는 비겁·인성</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 동료의 도움·학습·문서·자격의 흐름이 들어와 본인의 약한 그릇을 채워주는 시기예요.':'균형형은 어느 운이 들어와도 본인의 균형을 활용할 수 있어요. 다만 <b>약간 부족한 쪽</b>(현재 본인 '+_balanceTip+' 기운)이 들어오는 시기가 가장 매끄럽게 흐릅니다.'}</p>`;
+    sjBody+=`<p><span class="body-q">${_kind}이 좋아하는 10년·올해 흐름은?</span><br>${_kind==='신강'?'본인을 <b>덜어주는 표현·현실·책임</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 표현·돈·책임의 흐름이 들어와 본인의 강한 그릇을 풀어주는 시기예요.':_kind==='신약'?'본인을 <b>받쳐주는 동료·학습</b> 운이 들어오는 시기에 결실이 가장 잘 나와요. 동료의 도움·학습·문서·자격의 흐름이 들어와 본인의 약한 그릇을 채워주는 시기예요.':'균형형은 어느 운이 들어와도 본인의 균형을 활용할 수 있어요. 다만 <b>약간 부족한 쪽</b>(현재 본인 '+_balanceTip+' 기운)이 들어오는 시기가 가장 매끄럽게 흐릅니다.'}</p>`;
     sjBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>${_kind}의 균형 가이드</b><br>${_kind==='신강'?'강함이 자산이지만 「내려놓기·기다림·협력」을 의식적으로 들이면 그릇이 한 단계 더 깊어져요. 본인 색이 강한 만큼 가까운 사람의 의견을 한 번 더 듣고 결정하는 습관이 결정적이에요.':_kind==='신약'?'약함이 깊이가 되는 자산이에요. 「본인이 약하다」가 아니라 「깊이 모으는 분위기」로 받아들이세요. 큰 도약보다 차근차근 쌓아가는 흐름이 평생 본인을 살려줘요.':'균형이 가장 큰 강점이에요. 한쪽으로 치우치지 않는 분위기라 어떤 환경에도 적응할 수 있어요. 다만 「본인이 누구인지」를 의식적으로 정하고 가는 자세가 평생 흐름을 만들어줘요.'}</p>`;
     // 강약 + 격국 결합 — 정밀 매칭 추가
     try{
@@ -9139,10 +9201,10 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     if(_myGk){
       // CH-PRO: GYEOKGUK 통째 5분야 패턴 재작성
       let gkBody='';
-      gkBody+=miniManseWithPointer(saju,['month'],'↑ 월주가 본인 사주 유형(격국)을 결정하는 핵심 자리');
-      gkBody+=`<p><span class="body-q">📖 본인 사주 「유형(격국)」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 태어난 달의 글자(월지 <em>${BRCHKO[saju.mp.branch]}</em>)와 만나며 <b>${gk.name}</b>${gk.nick?' · '+gk.nick.split('·')[0]+'형':''} 유형이 정해졌어요. 같은 일간이라도 태어난 달이 다르면 격국이 달라지고, 격국이 다르면 인생 색깔이 크게 달라져요.</p>`;
+      gkBody+=miniManseWithPointer(saju,['month'],'↑ 태어난 달의 글자가 본인 사주 유형을 결정하는 핵심 자리');
+      gkBody+=`<p><span class="body-q">📖 본인 사주 「유형」 자리</span><br>본인의 본질 <b>${stemNick(saju.dp.stem)}</b>(${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]})이 태어난 달의 글자(월지 <em>${BRCHKO[saju.mp.branch]}</em>)와 만나며 <b>${gk.name}</b>${gk.nick?' · '+gk.nick.split('·')[0]+'형':''} 유형이 정해졌어요. 같은 본인 글자라도 태어난 달이 다르면 사주 유형이 달라지고, 인생 색깔도 크게 달라져요.</p>`;
       gkBody+=`<p><span class="body-q">💡 본인 ${gk.name}의 본질·강점·과제</span><br>${gk.desc} 이 유형이 가장 자연스럽게 살려면 본인 본연의 강점을 적극 발휘하고, 평생 과제는 의식적으로 다듬는 자세가 핵심이에요.</p>`;
-      gkBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — ${gk.name} 유형으로 살아가는 길</span><br>${_userStage==='school'?'본인 격국 유형에 맞는 학과·진로 방향을 조기 발견해 깊이 파고들기':_userStage==='youth'?'대학·전공·첫 직장 선택에 본인 격국 유형을 우선 고려':_userStage==='young'||_userStage==='prime'?'본인 격국이 가장 빛나는 분야에 평생 깊이 들어가기':_userStage==='mid'?'본인 격국의 정점 시기 — 사회적 자리를 굳히고 후학 양성도 시작':'본인 격국으로 평생 모은 자산을 인생 2막·자문 역할로 풀어내기'}</p>`;
+      gkBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — ${gk.name} 유형으로 살아가는 길</span><br>${_userStage==='school'?'본인 사주 유형에 맞는 학과·진로 방향을 조기 발견해 깊이 파고들기':_userStage==='youth'?'대학·전공·첫 직장 선택에 본인 사주 유형을 우선 고려':_userStage==='young'||_userStage==='prime'?'본인 사주 유형이 가장 빛나는 분야에 평생 깊이 들어가기':_userStage==='mid'?'본인 사주 유형의 정점 시기 — 사회적 자리를 굳히고 후학 양성도 시작':'본인 사주 유형으로 평생 모은 자산을 인생 2막·자문 역할로 풀어내기'}</p>`;
       gkBody+=`<p><span class="body-q">${gk.name}의 평생 강점은?</span></p>`;
       gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e;margin-top:8px">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 평생 자산</div>
@@ -9160,10 +9222,10 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:5px">⚖ 평생 다듬어야 할 점</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
       </div>`;
-      gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 유형이 알려주는 것</b><br>격국은 본인 사주의 「유형」을 보여줘요. 같은 격국이라도 대운·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 흐름이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 돼요.</p>`;
-      gkBody=_sajuContextHeader(saju,ys,gk,'격국·사주 유형')+gkBody;
+      gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 유형이 알려주는 것</b><br>사주 유형은 본인 사주의 「타고난 방향」을 보여줘요. 같은 유형이라도 10년 흐름·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 흐름이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 돼요.</p>`;
+      gkBody=_sajuContextHeader(saju,ys,gk,'사주 유형')+gkBody;
       gkBody+=_areaDeepConclusion('gyeokguk',saju,ys,gender);
-      h+=paidWrapBody('GYEOKGUK','📜','격국 종합 — 본인 사주 유형',gkBody);
+      h+=paidWrapBody('GYEOKGUK','📜','사주 유형 종합 — 본인 타고난 방향',gkBody);
     }
   }catch(e){}
 
@@ -9187,11 +9249,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     // CH-PRO: GONGMANG_TL 통째 5분야 패턴 재작성
     let gfBody='';
     gfBody+=miniManse(saju);
-    gfBody+=`<p><span class="body-q">📖 본인 사주의 「공망」 자리</span><br>본인의 일주 <b>${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}</b> 기준으로 비어있는 두 글자가 <b>${_gmKo}</b>이에요. 공망은 「있어야 할 자리가 비어 있는」 분위기로, 본인이 평소 노력하는 만큼 결실이 따라오기 어려운 영역을 가리킵니다. 본인 사주에서 ${_gmKo} 자리에 해당하는 인생 영역(학습·관계·재물·자녀 중 어디)이 평소엔 약하게 느껴져요.</p>`;
-    gfBody+=`<p><span class="body-q">💡 공망의 의미 — 약점이 아니라 자리 비어있음</span><br>공망은 「본인이 못한다」가 아니라 「있어야 할 자리가 비어 있다」는 뜻이에요. 평소엔 노력 대비 결실이 약해 보이지만, 그 비어있는 자리에 해당하는 글자가 대운(10년)이나 세운(매년)에 들어오는 시기는 「평소 약했던 영역에 결실이 자연스럽게 들어오는 보강기」예요. 이 시기를 미리 알면 평생 약했던 영역을 의도적으로 채울 수 있어요.</p>`;
-    gfBody+=`<p><span class="body-q">✦ 공망 채워짐 시기 — 본인 인생에서 언제일까</span><br>본인 공망(${_gmKo})에 해당하는 글자가 대운 또는 세운에서 들어오는 시기를 아래에 정리했어요. 이 시기에 의도적으로 그 영역을 챙기시면 평소엔 어렵던 일이 자연스럽게 풀려요.</p>`;
+    gfBody+=`<p><span class="body-q">📖 본인 사주의 「비어있는 자리」</span><br>본인의 중심 자리 <b>${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}</b> 기준으로 비어있는 두 글자가 <b>${_gmKo}</b>이에요. 이 자리는 「있어야 할 자리가 비어 있는」 분위기로, 본인이 평소 노력하는 만큼 결실이 따라오기 어려운 영역을 가리킵니다. 본인 사주에서 ${_gmKo} 자리에 해당하는 인생 영역(학습·관계·재물·자녀 중 어디)이 평소엔 약하게 느껴져요.</p>`;
+    gfBody+=`<p><span class="body-q">💡 비어있는 자리의 의미 — 약점이 아니라 빈자리예요</span><br>비어있는 자리는 「본인이 못한다」가 아니라 「있어야 할 자리가 비어 있다」는 뜻이에요. 평소엔 노력 대비 결실이 약해 보이지만, 그 자리에 해당하는 글자가 10년 흐름이나 매년 흐름에 들어오는 시기는 「평소 약했던 영역에 결실이 자연스럽게 들어오는 보강기」예요. 이 시기를 미리 알면 평생 약했던 영역을 의도적으로 채울 수 있어요.</p>`;
+    gfBody+=`<p><span class="body-q">✦ 비어있는 자리가 채워지는 시기 — 본인 인생에서 언제일까</span><br>본인 비어있는 자리(${_gmKo})에 해당하는 글자가 10년 흐름 또는 매년 흐름에서 들어오는 시기를 아래에 정리했어요. 이 시기에 의도적으로 그 영역을 챙기시면 평소엔 어렵던 일이 자연스럽게 풀려요.</p>`;
     // 채워지는 대운
-    gfBody+=`<div style="margin-top:14px"><b style="color:var(--accent);font-size:.88rem">🗓 공망이 채워지는 10년 흐름 (대운)</b></div>`;
+    gfBody+=`<div style="margin-top:14px"><b style="color:var(--accent);font-size:.88rem">🗓 비어있는 자리가 채워지는 10년 흐름</b></div>`;
     gfBody+=`<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">`;
     if(_filledDaeuns.length>0){
       _filledDaeuns.forEach(du=>{
@@ -9204,12 +9266,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         </div>`;
       });
     }else{
-      gfBody+=`<div style="font-size:.82rem;color:var(--sub);padding:9px 12px;background:var(--bg-deep);border-radius:8px">평생 대운 안에 공망이 채워지는 10년 흐름이 없어요. 세운(매년)으로만 공망이 채워지는 모양새예요.</div>`;
+      gfBody+=`<div style="font-size:.82rem;color:var(--sub);padding:9px 12px;background:var(--bg-deep);border-radius:8px">평생 10년 흐름 안에 비어있는 자리가 채워지는 시기는 뚜렷하지 않아요. 매년 흐름으로만 채워지는 모양새예요.</div>`;
     }
     gfBody+=`</div>`;
     // 채워지는 세운 (향후 30년)
     if(_filledYears.length>0){
-      gfBody+=`<div style="margin-top:14px"><b style="color:var(--accent);font-size:.88rem">📅 공망이 채워지는 한 해 (세운)</b></div>`;
+      gfBody+=`<div style="margin-top:14px"><b style="color:var(--accent);font-size:.88rem">📅 비어있는 자리가 채워지는 한 해</b></div>`;
       gfBody+=`<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">`;
       _filledYears.forEach(o=>{
         const isCur=o.yy===_curYr;
@@ -9219,10 +9281,10 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       });
       gfBody+=`</div>`;
     }
-    gfBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>비어 있는 자리가 채워지는 의미</b>(공망)<br>본인 사주의 공망(비어있는 자리)에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 들어오는 보강의 시기」예요. 위 시기에 의도적으로 그 영역(학습·관계·재물·자녀 등)을 챙기시면 자연스럽게 결실이 따라와요.</p>`;
-    gfBody=_sajuContextHeader(saju,ys,gk,'공망 자리')+gfBody;
+    gfBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>비어 있는 자리가 채워지는 의미</b><br>본인 사주의 비어있는 자리에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 들어오는 보강의 시기」예요. 위 시기에 의도적으로 그 영역(학습·관계·재물·자녀 등)을 챙기시면 자연스럽게 결실이 따라와요.</p>`;
+    gfBody=_sajuContextHeader(saju,ys,gk,'비어있는 자리')+gfBody;
     gfBody+=_areaDeepConclusion('gongmang',saju,ys,gender);
-    h+=paidWrapBody('GONGMANG_TL','✨','평생 공망 채워짐 시기 — 약했던 영역의 결실기',gfBody);
+    h+=paidWrapBody('GONGMANG_TL','✨','평생 비어있는 자리 채워짐 — 약했던 영역의 결실기',gfBody);
   }catch(e){}
 
   // ═════════════════════════════════════
@@ -9824,7 +9886,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     {no:1,title:'나는 누구인가',desc:'타고난 본질과 사주 구조부터 읽어요',labels:['SAJUCORE','TOTAL','PERSONA','SINGANG','PILLAR4','BRANCH12','GYEOKGUK','STAGE12']},
     {no:2,title:'내 기질과 관계',desc:'사주 속 관계·신살·별자리가 만드는 기질의 무늬',labels:['SAJU_REL','SINSAL','STAR12','YOOKCHIN']},
     {no:3,title:'분야별 운세',desc:'재물·직업·연애·건강 등 삶의 영역별 흐름',labels:['WEALTH','WEALTH_TIMELINE','CAREER','CAREER_TIMELINE','LOVE','LOVE_TIMELINE','FAMILY_TIMELINE','HEALTH','HEALTH_TIMELINE','MOVE_TIMELINE','STUDY','STUDY_TIMELINE','SPIRIT_TIMELINE','HUMAN','HUMAN_TIMELINE','JOB']},
-    {no:4,title:'시간의 흐름',desc:'대운·세운으로 보는 「언제」의 지도',labels:['DAEUN10','SEWOON','YEAR10','TIMELINE','GONGMANG_TL','LIFE_HEATMAP']},
+    {no:4,title:'시간의 흐름',desc:'10년·올해 흐름으로 보는 「언제」의 지도',labels:['DAEUN10','SEWOON','YEAR10','TIMELINE','GONGMANG_TL','LIFE_HEATMAP']},
     {no:5,title:'개운과 실천',desc:'타고난 흐름을 살리는 일상 실천',labels:['GAEWOON']}
   ]);
 
@@ -10527,10 +10589,10 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
       <div class="summary-intro">
         <p>본인의 인생 전체 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
         <ul>
-          <li>📊 사주팔자 4기둥 도식 + 오행 분포</li>
-          <li>🔄 음양오행 생/극 관계도 (초보 친화)</li>
+          <li>📊 사주팔자 4기둥 도식 + 다섯 기운 분포</li>
+          <li>🔄 다섯 기운의 돕고 누르는 관계도</li>
           <li>🔗 사주의 핵심 관계 — 좋게 작용 vs 주의</li>
-          <li>📅 대운 10년 단위 서술식 풀이 (현재 대운 강조)</li>
+          <li>📅 10년 단위 서술식 풀이 (현재 시기 강조)</li>
         </ul>
         <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
       </div>
@@ -10560,7 +10622,7 @@ function buildLifeSummaryA4Html(){
   let h=`<div class="a4-page">
     <div class="a4-header">
       <div class="a4-title">📋 인생총운 요약본</div>
-      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'신강(두터움)':'신약(약함)'} (본인 일간이 사주의 ${Math.round(me/tot*100)}%)</div>
+      <div class="a4-subtitle">${dm.n.split('(')[0]} 본인 글자 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'두터움':'약함'} (본인 글자가 사주의 ${Math.round(me/tot*100)}%)</div>
     </div>
     <div class="a4-body">
       <div class="a4-col-left">
@@ -10568,7 +10630,7 @@ function buildLifeSummaryA4Html(){
         <div class="a4-section">
           <div class="a4-h">📊 사주팔자 4기둥 — 본인 사주의 「뼈대」</div>
           ${buildA4Pillars(saju,gender)}
-          <div class="a4-oh-legend" style="margin-top:6px">각 기둥 위는 천간(겉으로 드러나는 기운), 아래는 지지(속에 자리잡은 기운). 본인 자리는 <b>일주(가운데 강조 칸)</b>입니다.</div>
+          <div class="a4-oh-legend" style="margin-top:6px">각 기둥 위는 겉으로 드러나는 기운, 아래는 속에 자리잡은 기운이에요. 본인 자리는 <b>가운데 강조 칸</b>이에요.</div>
         </div>
 
         <div class="a4-section">
@@ -10587,14 +10649,14 @@ function buildLifeSummaryA4Html(){
               <div class="a4-rel-lab">✅ 좋게 작용 — 본인 인생에 도움이 되는 분위기</div>
               ${goodRels.length>0?
                 goodRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 길성 관계는 없어요 — 본인 결대로 잔잔히 흐르는 사주예요.</div>'}
+                '<div class="a4-rel-none">두드러진 도움 관계는 없어요 — 본인 분위기대로 잔잔히 흐르는 사주예요.</div>'}
               ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (귀인의 분위기)')+'</div>':''}
             </div>
             <div class="a4-rel-col bad">
               <div class="a4-rel-lab">⚠️ 주의 — 본인 인생의 평생 과제가 되는 분위기</div>
               ${badRels.length>0?
                 badRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 흉성 관계는 없어요 — 큰 굴곡 없이 흐르는 사주예요.</div>'}
+                '<div class="a4-rel-none">두드러진 주의 관계는 없어요 — 큰 굴곡 없이 흐르는 사주예요.</div>'}
               ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (의식적 다스림이 과제)')+'</div>':''}
             </div>
           </div>
@@ -10655,9 +10717,9 @@ function buildLifeSummaryA4Html(){
             const headers='<div style="padding:2px 4px;font-size:8px;color:#888">나이</div>'+dq.daeuns.map((du,i)=>`<div style="font-size:8px;color:${i===curDIdx?'#d4af37':'#888'};text-align:center;font-weight:${i===curDIdx?700:400}">${du.age}</div>`).join('');
             const cols=dq.daeuns.length;
             return `<div class="a4-section">
-              <div class="a4-h">📊 평생 흐름 마스터 차트 — 12종 분야 × 대운</div>
+              <div class="a4-h">📊 평생 흐름 마스터 차트 — 12종 분야 × 10년 흐름</div>
               <div style="display:grid;grid-template-columns:36px repeat(${cols},1fr);gap:1.5px;margin-top:4px">${headers}${rows}</div>
-              <div style="margin-top:5px;font-size:9px;color:#aaa;line-height:1.5">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동 · ★ 현재 대운(금색 강조)</div>
+              <div style="margin-top:5px;font-size:9px;color:#aaa;line-height:1.5">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동 · ★ 현재 시기(금색 강조)</div>
             </div>`;
           }catch(e){return '';}
         })()}
@@ -10684,7 +10746,7 @@ function buildLifeSummaryA4Html(){
               <div class="a4-daeun-head">
                 <span class="age">${du.age}~${du.age+9}세${isCur?'<span class="cur-mark">현재</span>':''}</span>
                 <span class="pil">${STEMKO[du.stem]}${BRCHKO[du.branch]}</span>
-                <span class="tg">${tg}</span>
+                <span class="tg">${plainTG(tg)}</span>
               </div>
               <div class="a4-daeun-body">${preventOrphan(narrative)}</div>
             </div>`;
@@ -11066,7 +11128,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
     ${badge}<div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':''}</div>
-    ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><div class="tl-body-wrap">':''}
+    ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">★ 현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
@@ -11110,10 +11172,20 @@ function _tlToggle(card,forceOpen){
     btn.setAttribute('aria-expanded',open?'true':'false');
   }
 }
+function _tlOpenCurrent(card){
+  if(!card)return;
+  if(!card.classList.contains('tl-open'))_tlToggle(card,true);
+  requestAnimationFrame(()=>{
+    const cur=card.querySelector('.tl-item.cur')||
+      [...card.querySelectorAll('.tl-body-wrap *')].find(el=>/현재/.test(el.textContent||''));
+    (cur||card).scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
 document.addEventListener('click',function(e){
   if(e.target.closest('.term'))return; // 용어 툴팁 클릭은 토글 제외
   const card=e.target.closest('.tl-collapsible');
   if(!card)return;
+  if(e.target.closest('.tl-current')){_tlOpenCurrent(card);return;}
   if(e.target.closest('.nb-title')||e.target.closest('.tl-hint'))_tlToggle(card);
 });
 // TOC 점프 — 접힌 타임라인 카드면 펼친 뒤 스크롤
@@ -11491,9 +11563,9 @@ function getDaeunDescDetail(tg,btg,du,saju,isStrong,ys){
   // 용신 합치 여부
   const stemOh=SOH[du.stem],branchOh=BOH[du.branch];
   if(stemOh===ys.main||branchOh===ys.main){
-    r+=` <b style="color:var(--wood)">용신 ${OHNAME[ys.main]}${ohIp(ys.main)} 들어와 매우 길한 흐름</b>이에요.`;
+    r+=` <b style="color:var(--wood)">도움 기운 ${OHNAME[ys.main]}${ohIp(ys.main)} 들어와 매우 길한 흐름</b>이에요.`;
   }else if(stemOh===(ys.main+2)%5||branchOh===(ys.main+2)%5){
-    r+=` <b style="color:var(--fire)">용신을 극하는 기운이 들어와 보수적 운영</b>이 필요해요.`;
+    r+=` <b style="color:var(--fire)">도움 기운을 누르는 기운이 들어와 보수적 운영</b>이 필요해요.`;
   }
   // ── 대운 지지 vs 본인 사주 4지지 사이 합/충/원진/형/파/해 ──
   const daeunBr=du.branch;
@@ -12723,11 +12795,11 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   const ys=getYongsin(oh);
   h+=`<div class="card"><div class="ctitle">용신 — 도움이 되는 기운</div>
     <div class="irow">
-      <span class="ikey">주 용신</span>
+      <span class="ikey">주 도움 기운</span>
       <span class="ival" style="color:${OHCOLOR[ys.main]}">${OHNAME[ys.main]} ★</span>
     </div>
     <div class="irow">
-      <span class="ikey">희신</span>
+      <span class="ikey">보조 도움 기운</span>
       <span class="ival" style="color:${OHCOLOR[ys.support]}">${OHNAME[ys.support]}</span>
     </div>
     <div style="font-size:.76rem;color:var(--sub);margin-top:8px;line-height:1.6">${ys.desc}<br>용신에 해당하는 색상·방향·음식·직업을 가까이하면 도움이 돼요.</div>
@@ -12826,7 +12898,7 @@ function renderSajuAnalysis(saju){
   h+=`<div class="card">
     <div class="ctitle big">💎 용신 활용법</div>
     <div class="asec">
-      <div class="atitle" style="color:${OHCOLOR[ys.main]}">주 용신: ${OHNAME[ys.main]}</div>
+      <div class="atitle" style="color:${OHCOLOR[ys.main]}">주 도움 기운: ${OHNAME[ys.main]}</div>
       <div class="abody">${ys.desc}</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
@@ -16329,7 +16401,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const gmLocs=findGongmangLoc(saju,gm);
   h+=`<div class="card">
     <div class="ctitle big">🌀 공망 — 비어있는 자리</div>
-    <div class="irow"><span class="ikey">공망 지지</span><span class="ival">${BRCHKO[gm[0]]} · ${BRCHKO[gm[1]]}</span></div>
+    <div class="irow"><span class="ikey">비어있는 자리</span><span class="ival">${BRCHKO[gm[0]]} · ${BRCHKO[gm[1]]}</span></div>
     ${gmLocs.length>0?
       `<div class="asec" style="margin-top:10px">
         <div class="atitle">사주 내 공망 발견</div>
@@ -16412,8 +16484,8 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const wealth=getWealthDetail(saju,oh);
   h+=`<div class="card">
     <div class="ctitle big">💰 재물운 상세</div>
-    <div class="irow"><span class="ikey">정재 갯수</span><span class="ival">${wealth.pj}개</span></div>
-    <div class="irow"><span class="ikey">편재 갯수</span><span class="ival">${wealth.pp}개</span></div>
+    <div class="irow"><span class="ikey">안정 재물 개수</span><span class="ival">${wealth.pj}개</span></div>
+    <div class="irow"><span class="ikey">활동 재물 개수</span><span class="ival">${wealth.pp}개</span></div>
     <div class="irow"><span class="ikey">신강·신약</span><span class="ival" style="color:${wealth.isStrong?'var(--wood)':'var(--earth)'}">${wealth.isStrong?'신강':'신약'}</span></div>
     <div class="asec" style="margin-top:10px">
       <div class="atitle">재물 성향</div>
