@@ -8048,7 +8048,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   cBody+=`<p><span class="body-q">📖 그래서 본인은 어떤 일에 잘 맞나요?</span><br>본인의 본질 <b>${stemNick(dp.stem)}</b>이 <em>${gk.name}</em> 유형으로 자라서 ${gk.desc}${careerSinsalLine?` ${careerSinsalLine}`:''}</p>`;
   cBody+=`<p>본인 사주에서 직업은 두 가지 흐름으로 봐요.<br>· <b>책임·직책</b>(${OHNAME[officerOh]}) — 외부에서 들어오는 직책·자격·명예<br>· <b>표현·창작</b>(${OHNAME[outputOh]}) — 본인이 밖으로 내놓는 콘텐츠·서비스·돌봄</p>`;
   // [전] 분야 추천
-  cBody+=`<p><span class="body-q">💡 잘 맞는 분야</span><br>${careerDetail.gkc.length>0?'· <b>유형 추천</b>: '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>본질에 맞는 분야</b>: ${careerDetail.dmCareer.slice(0,4).join(', ')}<br>· <b>도움 기운을 살리는 분야</b>: ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
+  cBody+=`<p><span class="body-q">💡 잘 맞는 분야</span><br>${careerDetail.gkc.length>0?'· <b>유형 추천</b>: '+careerDetail.gkc.slice(0,4).join(', ')+'<br>':''}· <b>본질에 맞는 분야</b>: ${careerProfile(saju).careers.slice(0,4).join(', ')}<br>· <b>도움 기운을 살리는 분야</b>: ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]}</p>`;
   // [분위기] 도움 글자
   cBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
     <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 직업에서 본인을 도와주는 10년·올해 글자</div>
@@ -16296,6 +16296,46 @@ function getCareerDetail(saju,gk,ys){
   return{dmCareer,gkc:gkCareer[k]||[]};
 }
 
+// CAREER-FULL: 직업 적성을 일간 오행 5버킷이 아니라 「우세 십신축 + 신살 + 격국」으로 뽑는다.
+// 기존 careers[]·gkCareer[] 어휘(getCareerDetail)를 재활용하고, 일간 오행 버킷은 완전 폴백으로만 쓴다.
+function careerProfile(saju){
+  const p=buildPersonaProfile(saju);
+  const gk=getGyeokguk(saju);
+  const cd=getCareerDetail(saju,gk,getYongsin(p.oh)); // gkc(격국)·dmCareer(폴백) 어휘 재활용
+  const topAxis=p.axisSorted[0][0], secAxis=p.axisSorted[1][0];
+  // 1차 기준 — 우세 십신축이 정하는 직업 분위기
+  const AXIS_CAREER={
+    self:['자유 전문직','1인 사업·자영업','전문 기술','프리랜서'],
+    out:['기획·창작','콘텐츠·방송','강사·교육','IT·미디어'],
+    wealth:['사업·무역','영업·마케팅','금융·투자','부동산·유통'],
+    gwan:['공무원·공직','대기업 관리직','법조·법무','군경·전략'],
+    in_:['교수·교사','연구·학술','상담·심리','출판·문학']
+  };
+  const picks=(AXIS_CAREER[topAxis]||[]).slice(0,3);
+  const sec=(AXIS_CAREER[secAxis]||[])[0];
+  // 신살 가중
+  const sinNm=(p.sins||[]).map(s=>String(s.n||'').split(' ')[0]);
+  const hasS=n=>sinNm.some(x=>x.includes(n));
+  const sinAdd=[];
+  if(hasS('역마'))sinAdd.push('무역·물류','영업·항공');
+  if(hasS('문창'))sinAdd.push('학문·시험','글·자격');
+  if(hasS('양인')||hasS('괴강'))sinAdd.push('의료·외과','군경·기술');
+  if(hasS('도화'))sinAdd.push('대인·서비스','예능·방송');
+  // 합치기: 신살(가장 구체) → 우세축 → 보조축 → 격국, 중복 제거
+  const seen=new Set(), careers=[];
+  const add=arr=>(arr||[]).forEach(c=>{
+    const key=String(c).replace(/\s/g,'');
+    if(!c||seen.has(key))return;
+    if(careers.some(x=>{const a=x.replace(/\s/g,'');return a.includes(key)||key.includes(a);}))return; // 부분중복 방지
+    seen.add(key);careers.push(c);
+  });
+  add(sinAdd); add(picks); add(sec?[sec]:[]); add((cd.gkc||[]).slice(0,2));
+  if(careers.length<3)add(cd.dmCareer); // 완전 폴백 — 위 신호가 빌 때만 일간 오행 버킷
+  const axLab=(SIPSIN_AXIS_LABEL[topAxis]||{}).n||'본인 기질';
+  const desc=`여덟 글자에서 <b>${axLab}</b> 기운이 가장 두터워${sinAdd.length?', 타고난 별자리 기운까지 더해져':''} 위 분야가 본인에게 가장 자연스럽게 맞아요.`;
+  return {careers:careers.slice(0,5),desc,topAxis,axisLabel:axLab};
+}
+
 function getWealthDetail(saju,oh){
   const dStem=saju.dp.stem;
   const stems=[saju.yp.stem,saju.mp.stem,saju.hp?saju.hp.stem:null].filter(s=>s!==null);
@@ -16478,8 +16518,8 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   h+=`<div class="card">
     <div class="ctitle big">💼 직업·적성 상세</div>
     <div class="asec">
-      <div class="atitle">일간 ${DM[saju.dp.stem].n} 적성 분야</div>
-      <div class="tag-wrap">${career.dmCareer.map(c=>`<span class="tag tag-y">${c}</span>`).join('')}</div>
+      <div class="atitle">본인 기질 적성 분야</div>
+      <div class="tag-wrap">${careerProfile(saju).careers.map(c=>`<span class="tag tag-y">${c}</span>`).join('')}</div>
     </div>
     ${career.gkc.length>0?`<div class="asec" style="margin-top:10px">
       <div class="atitle">${gk.name} 추천 분야</div>
