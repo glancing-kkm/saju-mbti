@@ -13027,7 +13027,7 @@ function renderSajuAnalysis(saju){
     <div class="ctitle big">🌟 일간으로 보는 천성 (타고난 기질)</div>
     <div class="asec">
       <div class="atitle">${dm.n}</div>
-      <div class="abody">${dm.core}. ${getDMDesc(saju.dp.stem)}</div>
+      <div class="abody">${dm.core}. ${getDMDesc(saju.dp.stem)}${personaTwist(saju)}</div>
     </div>
     <div style="margin-top:10px"><div style="font-size:.73rem;color:var(--sub);font-weight:700;margin-bottom:5px">핵심 강점</div>
     <div class="tag-wrap">${dm.pos.map(p=>`<span class="tag tag-g">${p}</span>`).join('')}</div></div>
@@ -13379,8 +13379,8 @@ function getHarmonyGuide(saju,mbti,info,oh,dm){
     lines.push('<b>차이 있음</b>: 타고난 기질과 현재 성격 사이에 상당한 차이가 있어요. 성장 과정에서 다양한 경험이 성격 형성에 영향을 미쳤어요.');
   }
 
-  lines.push(`<b>성장 방향</b>: ${dm.pos[0]}이라는 본래 강점과 ${info.pos[0]}이라는 현재 강점을 함께 활용하면 더욱 균형 잡힌 삶을 살 수 있어요.`);
-  lines.push(`<b>보완 영역</b>: ${dm.neg[0]} 경향(사주)과 ${info.neg[0]} 경향(MBTI)은 서로 보완하여 극복해야 할 공통 과제예요.`);
+  lines.push(`<b>성장 방향</b>: ${personaStrengths(saju).keyword}이라는 본래 강점과 ${info.pos[0]}이라는 현재 강점을 함께 활용하면 더욱 균형 잡힌 삶을 살 수 있어요.`);
+  lines.push(`<b>보완 영역</b>: ${personaStrengths(saju).cautions[0]} 경향(사주)과 ${info.neg[0]} 경향(MBTI)은 서로 보완하여 극복해야 할 공통 과제예요.`);
 
   return lines.map(l=>`<p style="margin-bottom:9px;line-height:1.7">${l}</p>`).join('');
 }
@@ -13398,7 +13398,7 @@ function sameTFScore(saju,info){
 
 function getCombinedWarnings(saju,mbti,info,oh,dm){
   const warns=[];
-  warns.push(`<b>사주의 그림자</b>: ${dm.neg.join(', ')}`);
+  warns.push(`<b>사주의 그림자</b>: ${personaStrengths(saju).cautions.join(', ')}`);
   warns.push(`<b>MBTI의 약점</b>: ${info.neg.join(', ')}`);
 
   // Double negative
