@@ -4499,7 +4499,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   // ── 마무리 가이드
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
-    <div class="nb-title">📌 ${y}년 ${m}월 ${d}일을 사는 분위기</div>
+    <div class="nb-title">${y}년 ${m}월 ${d}일을 사는 분위기</div>
     <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. 본인의 ${myStemKo} 기운이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
   // CHX: 4장 흐름 — 진단 → 분야 → 실행 → 마무리 (장 헤더 삽입; 카드 순서는 기존과 동일)
@@ -4864,7 +4864,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   // ── 마무리
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
-    <div class="nb-title">📌 ${totalMonths}개월을 사는 분위기</div>
+    <div class="nb-title">${totalMonths}개월을 사는 분위기</div>
     <div class="nb-body"><p>월별 운세는 절기 기준 월주 천간·지지가 본인 일간과 만들어내는 분위기예요. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판이에요. 때를 알면 운과 다투지 않고 그 방향을 따라 한 가지를 더 잘할 수 있어요.</p></div>
   </div>`;
   // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤)
@@ -5590,7 +5590,7 @@ function renderNewyearFortune(saju,y){
   // 마무리
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
-    <div class="nb-title">📌 ${y}년을 사는 분위기</div>
+    <div class="nb-title">${y}년을 사는 분위기</div>
     <div class="nb-body"><p>신년운세는 입춘부터 다음 입춘까지의 외부 기운이에요. 절대적인 길흉이 아니라 <b>한 해가 어떤 흐름으로 들어오는지</b>의 안내판이에요. 길월에 굵직한 결정을 배치하고, 주의월에는 정리와 내실에 무게를 두는 것이 한 해를 잘 사는 흐름이에요.</p></div>
   </div>`;
   // BT: 카드 목차
@@ -12635,7 +12635,7 @@ function renderShareCtaInChat(){
 function renderGunghapSection(){
   return `<div class="nb-card">
     <div class="nb-cat">COMPATIBILITY</div>
-    <div class="nb-title">💑 궁합 풀이 — 배우자·연인 사주 비교</div>
+    <div class="nb-title">궁합 풀이 — 배우자·연인 사주 비교</div>
     <div class="nb-body">
       <p>배우자(또는 연인)의 사주를 입력하면 두 사람의 사주팔자를 나란히 비교해 종합 궁합을 풀이해드려요. 일간의 상생·상극, 일지의 합·충, 십신 작용을 중심으로 분석해요.</p>
     </div>
@@ -15670,7 +15670,7 @@ function renderNamePaid(saju, nmExtra){
     };
     h+=`<div class="nb-card summary-card">
       <div class="nb-cat">🎯 SUMMARY</div>
-      <div class="nb-title">✒️ 이름풀이 요약본 다운로드</div>
+      <div class="nb-title">이름풀이 요약본 다운로드</div>
       <div class="nb-body">
         <div class="summary-intro">
           <p>「${full}」 이름풀이를 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
@@ -16120,7 +16120,7 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
       _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1,mbti2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
       h+=`<div class="nb-card summary-card">
         <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">💑 궁합 요약본 다운로드</div>
+        <div class="nb-title">궁합 요약본 다운로드</div>
         <div class="nb-body">
           <div class="summary-intro">
             <p>두 분의 궁합을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
