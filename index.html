@@ -3206,6 +3206,8 @@ function normalizeReadingText(html){
     .replaceAll('채소을','채소를')
     .replaceAll('사주 에','사주에')
     .replaceAll('형 의','형의')
+    .replaceAll('천간 본인 기준 관계이','그날 위 글자가')
+    .replaceAll('본인 일간과 그 달 월주의 본인 기준 관계·끌림·부딪힘 작용','본인 중심 기운과 그 달 흐름이 어떻게 만나고 움직이는지')
     .replaceAll('장년기이라면','장년기라면')
     .replaceAll('청년기이라면','청년기라면')
     .replaceAll('중년기이라면','중년기라면')
@@ -3220,6 +3222,7 @@ function normalizeReadingText(html){
     .replaceAll('용신은','도움 기운은')
     .replaceAll('용신의','도움 기운의')
     .replaceAll('용신','도움 기운')
+    .replaceAll('십신','본인 기준 관계')
     .replaceAll('정관격','신뢰·책임형')
     .replaceAll('편관격','도전·책임형')
     .replaceAll('정재격','안정 재물형')
@@ -3250,7 +3253,12 @@ function normalizeReadingText(html){
     .replaceAll('관성','책임·규칙의 분위기')
     .replaceAll('인성','학습·받아들이는 분위기')
     .replaceAll('합충','끌림·부딪힘')
+    .replaceAll('합·충','끌림·부딪힘')
     .replaceAll('합·반합','끌림·같은 방향의 묶임')
+    .replaceAll('있어요..','있어요.')
+    .replaceAll('이에요..','이에요.')
+    .replaceAll('해요..','해요.')
+    .replaceAll('돼요..','돼요.')
     .replace(/(^|[^가-힣])일간(?=$|[^가-힣])/g,'$1본인 중심 기운')
     .replace(/(^|[^가-힣])일지(?=$|[^가-힣])/g,'$1본인이 앉은 자리')
     .replace(/(^|[^가-힣])오행(?=$|[^가-힣])/g,'$1다섯 기운');
@@ -11216,7 +11224,7 @@ function buildGunghapSummaryA4Html(){
           <div class="a4-rel">
             <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
               <div>🔄 오행 상생·상극 <b>${result.ohScore}점</b></div>
-              <div>👁 십신 관계 <b>${result.tgScore}점</b></div>
+              <div>👁 본인 기준 관계 <b>${result.tgScore}점</b></div>
             </div>
             <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
               <div>💞 일지 합·충 <b>${result.brScore}점</b></div>
@@ -11326,7 +11334,9 @@ function _softenBodySubheads(html){
       .replace(/^왜\s+이렇게\s+작용할까요\??$/,'이렇게 보는 이유는 올해 들어오는 글자가 본인 사주에 새 흐름을 더하기 때문이에요.')
       .replace(/^그래서\s+(.+?)을\s+어떻게\s+보내면\s+좋을까요\??$/,'그래서 $1은 이렇게 쓰면 좋아요.')
       .replace(/^그래서\s+이\s+날\s+어떻게\s+보내면\s+좋을까요\??$/,'그래서 이 날은 이렇게 쓰면 좋아요.')
+      .replace(/^이\s+달이\s+본인에게\s+어떻게\s+다가올까요\??$/,'이 달은 본인에게 이런 방식으로 다가와요.')
       .replace(/^이\s+기간을\s+어떻게\s+활용하면\s+좋을까요\??$/,'이 기간은 좋은 시기와 쉬어갈 시기를 나눠 쓰면 좋아요.')
+      .replace(/^분야별\s+점수와\s+흐름$/,'분야별 점수도 함께 보면 흐름이 더 선명해져요.')
       .replace(/^10년\s+흐름\s+안에서\s+이\s+날은\s+어떤\s+자리일까요\??$/,'이 날은 현재 10년 흐름 안에서 이런 위치예요.')
       .replace(/^10년\s+흐름\s+안에서\s+이\s+기간은\s+어떤\s+자리일까요\??$/,'이 기간은 현재 10년 흐름 안에서 이런 위치예요.')
       .replace(/^10년\s+흐름과\s+올해는\s+어떻게\s+만날까요\??$/,'올해 흐름은 현재 10년 흐름 위에 이렇게 겹쳐져요.')
@@ -11348,9 +11358,21 @@ function _softenBodySubheads(html){
     return `<span class="body-q">${t}</span> `;
   };
   return String(html)
+    .replace(/<div class="cat-where">📍\s*<b>어디를 보나요\?<\/b>\s*/g,'<div class="cat-where"><b>이 부분은</b> ')
     .replace(/<span class="body-q">[📖💡✦🎯🟢🔴⚠️✅\s]*(?:기|승|전|마무리)\s*[—-]\s*([^<]+)<\/span><br>/g,(m,t)=>lead(t))
     .replace(/<span class="body-q">([^<]+)<\/span><br>/g,(m,t)=>lead(t))
     .replace(/<span class="body-q">([^<]+)<\/span>\s+/g,(m,t)=>lead(t))
+    .replace(/<p>([①②③④⑤⑥⑦⑧⑨⑩])\s*<b>([^<]+)<\/b><br>/g,(m,n,t)=>`<p>${lead(t)}`)
+    .replace(/<p>([①②③④⑤⑥⑦⑧⑨⑩])\s*<b>([^<]+)<\/b>\s*·\s*/g,(m,n,t)=>`<p>${lead(t)}`)
+    .replace(/<p><b>([①②③④⑤⑥⑦⑧⑨⑩])\s*([^<]+)<\/b><br>/g,(m,n,t)=>`<p>${lead(t)}`)
+    .replace(/<p><b>([①②③④⑤⑥⑦⑧⑨⑩])\s*([^<]+)<\/b>\s*·\s*/g,(m,n,t)=>`<p>${lead(t)}`)
+    .replace(/<p><b>(🍀\s*)?가장 잘 풀리는 시기\s*[—-]\s*([^<]+)<\/b><br>/g,(m,icon,t)=>`<p>${lead(`${t}에 흐름이 가장 잘 살아나요`)}`)
+    .replace(/<p><b>(⚠️\s*)?조심할 시기\s*[—-]\s*([^<]+)<\/b><br>/g,(m,icon,t)=>`<p>${lead(`${t}에는 속도를 낮추면 좋아요`)}`)
+    .replace(/<p>🎯\s*<b>결정적 시기\s*[—-]\s*([^<]+)<\/b><br>/g,(m,t)=>`<p>${lead(`${t}이 이 흐름의 중심 시기예요`)}`)
+    .replace(/<b>도움 글자(?:\s*[①②])?<\/b>:/g,'<b>도움이 되는 글자</b>는')
+    .replace(/<b>주의 글자<\/b>:/g,'<b>속도를 낮출 글자</b>는')
+    .replace(/<b>올해 해당 여부<\/b>:/g,'<b>올해에는</b>')
+    .replace(/<b>이 시기에는<\/b>:/g,'<b>이 시기에는</b>')
     .replace(/<p style="margin-top:14px"><b>[①②③④⑤⑥⑦⑧⑨⑩]\s*([^<]+)<\/b><\/p>/g,'<p style="margin-top:14px"><span class="body-q">$1.</span></p>')
     .replace(/<p style="margin-top:14px"><b>([^<]+)<\/b><br>/g,'<p style="margin-top:14px"><span class="body-q">$1.</span> ');
 }
@@ -12842,7 +12864,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     if(_cr.해)_parts.push(`은근한 방해 ${_cr.해}건`);
     h+=`<p><b>②-2 두 사람 사주의 전체 교차 작용</b><br>두 분 사주의 자리들이 서로 만나는 지점에서 ${_parts.join(' · ')} 작용이 보여요. ${_crGood>_crBad?'<em style="color:var(--wood)">화합·결속 기운이 우세</em>하여 전반적으로 부드러운 흐름이에요.':_crBad>_crGood?'<em style="color:var(--fire)">부딪힘·거슬림·깎임 기운이 우세</em>하여 의식적인 소통과 거리 조절이 필요해요.':'화합과 충돌이 비슷한 비중으로 균형 잡힌 분위기예요.'}</p>`;
   }
-  h+=`<p><b>③ 십신 작용</b><br>본인이 상대를 보는 관계는 <em>${tg12}</em>이며, 상대가 본인을 보는 관계는 <em>${tg21}</em>입니다. ${getTgPairDesc(tg12,tg21,g1,g2)}</p>`;
+  h+=`<p><b>본인 기준 관계</b><br>본인이 상대를 보는 관계는 <em>${tg12}</em>이며, 상대가 본인을 보는 관계는 <em>${tg21}</em>입니다. ${getTgPairDesc(tg12,tg21,g1,g2)}</p>`;
   h+=`<p><b>④ 성격 궁합</b><br>${getPersonalityCompat(dm1,dm2,e1,e2,s1,s2)}</p>`;
   { // PSN: 일간을 넘어 — 두 사람 여덟 글자 전체 비교
     const _p1=buildPersonaProfile(s1), _p2=buildPersonaProfile(s2);
@@ -12860,7 +12882,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     <div style="font-size:.78rem;font-weight:700;color:var(--sub);margin-bottom:8px">📊 세부 점수</div>
     <div class="bars">`;
   [{label:'오행 상생·상극',score:result.ohScore},
-   {label:'십신 관계',score:result.tgScore},
+   {label:'본인 기준 관계',score:result.tgScore},
    {label:'일지 합·충',score:result.brScore},
    {label:'오행 균형',score:result.balScore}].forEach(c=>{
     const color=c.score>=80?'var(--wood)':c.score>=65?'var(--earth)':'var(--fire)';
@@ -12888,7 +12910,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     <div class="ny-sec-title">📋 점수 산출 근거 + 보완 방법</div>
     <div class="ny-sec-body" style="font-size:.78rem;line-height:1.78">
       <p><b>① 오행 상생·상극 ${result.ohScore}점</b> — ${getOhRelDesc(e1,e2).split('.')[0]}<br><span style="color:var(--accent)">💡 보완:</span> 두 분 모두 ${OHNAME[coupleWeak]} 부족 → ${fix.color} 인테리어, ${fix.dir} 방향 신혼집, ${fix.food} 식단</p>
-      <p><b>② 십신 관계 ${result.tgScore}점</b> — 본인↔상대 ${tg12}/${tg21}<br><span style="color:var(--accent)">💡 보완:</span> ${tg12==='정관'||tg12==='정재'?'안정형 관계 — 자연스러움 유지':tg12==='편관'||tg12==='편재'?'자극형 관계 — 강한 끌림을 일상의 안정으로 다듬기':'서로 보완형 — 차이를 강점으로 받아들이기'}</p>
+      <p><b>본인 기준 관계 ${result.tgScore}점</b> — 본인↔상대 ${tg12}/${tg21}<br><span style="color:var(--accent)">💡 보완:</span> ${tg12==='정관'||tg12==='정재'?'안정형 관계 — 자연스러움 유지':tg12==='편관'||tg12==='편재'?'자극형 관계 — 강한 끌림을 일상의 안정으로 다듬기':'서로 보완형 — 차이를 강점으로 받아들이기'}</p>
       <p><b>③ 일지 합·충 ${result.brScore}점</b> — ${(()=>{const k=result.dayBrRel?result.dayBrRel.kind:'평';return ({'합':'자연스럽게 어울림','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'같은 글자가 만남','평':'평이한 관계','해':'은근한 방해 — 미세한 어긋남','파':'어긋남 — 마무리 흔들림','원진':'미세한 거슬림','형':'서로 깎임 — 약점을 건드림','자형':'같은 글자가 겹쳐 내면 모순 공명','충':'정면 부딪힘'})[k]||'평이한 관계';})()}<br><span style="color:var(--accent)">💡 보완:</span> ${(()=>{const k=result.dayBrRel?result.dayBrRel.kind:'평';return ({'합':'이미 좋은 분위기 — 일상의 작은 정성이 흐름을 더 빛나게','반합':'같은 방향을 바라보는 강점을 살려 큰 목표를 함께 설계','반합약':'잔잔한 협력을 유지하며 새 자극을 의식적으로 들여오기','동':'닮은 만큼 함께 부족한 부분은 의식적으로 채우기','평':'대화로 흐름을 함께 만들어가기','해':'작은 어긋남 즉답 금지 — 숨 고르고 말하기','파':'중요 약속·계약은 한 번 더 확인하는 습관','원진':'「말하지 않아도 알아주겠지」 내려놓기 + 짧고 자주 소통 + 의식적 거리감(혼자 시간 확보)','형':'서로의 약점은 건드리지 않기 + 「깎임」을 자기계발로 승화','자형':'외부 자극(취미·운동)을 함께 들여와 내면 공명 풀기','충':'24시간 룰(즉답 금지) + 정기 대화 시간 + 함께하는 변화로 승화'})[k]||'대화로 흐름을 함께 만들어가기';})()}</p>
       <p><b>④ 오행 균형 ${result.balScore}점</b> — 두 사주 합산 시 가장 부족한 오행은 <em>${OHNAME[coupleWeak]}</em>, 가장 강한 오행은 <em>${OHNAME[coupleDom]}</em><br><span style="color:var(--accent)">💡 보완:</span> ${OHNAME[coupleWeak]} 영역(${fix.activity})을 함께하는 활동으로 부족함 채우기</p>
     </div>
@@ -16690,7 +16712,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
       <div style="display:inline-block;padding:9px 24px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-radius:50px;font-size:1.05rem;font-weight:800;letter-spacing:.05em">${gk.name}</div>
     </div>
     <div class="abody">${gk.desc}</div>
-    <div style="font-size:.7rem;color:var(--sub);margin-top:8px;line-height:1.6">※ 월지의 정기를 기준으로 일간과의 십신 관계로 산출해요.</div>
+    <div style="font-size:.7rem;color:var(--sub);margin-top:8px;line-height:1.6">※ 태어난 달의 중심 기운이 본인 중심 기운과 어떻게 만나는지 기준으로 산출해요.</div>
   </div>`;
 
   // 신살
