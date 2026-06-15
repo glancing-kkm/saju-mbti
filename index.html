@@ -122,6 +122,12 @@
   --metal-bg:rgba(184,194,220,0.18);
   --water-bg:rgba(111,136,216,0.18);
 
+  /* 읽기 본문 전용 — 도움/주의 시맨틱(오행 차트보다 차분) */
+  --good:#8fb597;
+  --warn:#d39184;
+  --good-bg:rgba(143,181,151,0.10);
+  --warn-bg:rgba(211,145,132,0.10);
+
   --radius:14px;
   --radius-lg:18px;
 }
@@ -576,7 +582,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── 사주 × MBTI 배지 (분위기와 헤로 아래) ── */
 .mbti-badge{display:block;margin:10px 12px 14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.5));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden;letter-spacing:normal;font-size:initial;font-weight:normal;color:inherit}
-.mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
 .mbti-badge-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
 .mbti-badge-head b{color:var(--accent-bright)}
 .mbti-badge-body{font-size:.95rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -584,7 +590,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── 사주 × MBTI 4지표 상세 분석 ── */
 .mbti-analysis{margin:14px 12px 18px;padding:18px 16px 16px;background:linear-gradient(135deg,var(--card),rgba(45,52,71,.55));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
-.mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
 .mbti-analysis-head{margin-bottom:14px}
 .mbti-analysis-cat{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.62rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--border-strong);letter-spacing:.08em;margin-bottom:8px;text-transform:uppercase}
 .mbti-analysis h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.01em}
@@ -598,10 +604,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-indicator header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .mbti-indicator h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
 .mbti-ind-grade{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:50px;letter-spacing:.04em;text-transform:uppercase;border:1px solid}
-.mbti-indicator.match-strong .mbti-ind-grade{color:#6cbf7e;background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
+.mbti-indicator.match-strong .mbti-ind-grade{color:var(--good);background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
 .mbti-indicator.match-good .mbti-ind-grade{color:#a3c7a8;background:rgba(163,199,168,.12);border-color:rgba(163,199,168,.35)}
 .mbti-indicator.match-medium .mbti-ind-grade{color:#d4a849;background:rgba(212,168,73,.12);border-color:rgba(212,168,73,.4)}
-.mbti-indicator.match-mixed .mbti-ind-grade{color:#e57462;background:rgba(229,116,98,.12);border-color:rgba(229,116,98,.4)}
+.mbti-indicator.match-mixed .mbti-ind-grade{color:var(--warn);background:rgba(229,116,98,.12);border-color:rgba(229,116,98,.4)}
 .mbti-indicator.match-mismatch .mbti-ind-grade{color:#e0533f;background:rgba(224,83,63,.16);border-color:rgba(224,83,63,.45)}
 .mbti-ind-reason{font-size:.95rem;line-height:1.85;color:var(--sub);margin:0 0 8px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-ind-reason em{color:var(--accent);font-style:normal;font-weight:700}
@@ -622,15 +628,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-indicator-block header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .mbti-indicator-block h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
 .mbti-match-badge{font-size:.66rem;font-weight:800;padding:3px 10px;border-radius:50px;letter-spacing:.04em;border:1px solid}
-.mbti-match-aligned{color:#6cbf7e;background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
-.mbti-match-misaligned{color:#e57462;background:rgba(229,116,98,.14);border-color:rgba(229,116,98,.42)}
+.mbti-match-aligned{color:var(--good);background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
+.mbti-match-misaligned{color:var(--warn);background:rgba(229,116,98,.14);border-color:rgba(229,116,98,.42)}
 .mbti-axis{display:flex;flex-direction:column;gap:10px}
 .mbti-axis-row{padding:12px 13px;background:var(--card);border:1px solid var(--border);border-radius:10px}
 .mbti-axis-row.row-innate{background:linear-gradient(135deg,rgba(108,191,126,.06),var(--card));border-color:rgba(108,191,126,.3)}
 .mbti-axis-row.row-learned{background:linear-gradient(135deg,rgba(212,175,55,.06),var(--card));border-color:rgba(212,175,55,.3)}
 .mbti-axis-row.row-evolution{background:linear-gradient(135deg,rgba(120,140,180,.06),var(--card));border-color:rgba(120,140,180,.3)}
 .mbti-axis-tag{font-size:.72rem;font-weight:800;letter-spacing:.02em;margin-bottom:6px;color:var(--accent)}
-.mbti-axis-row.row-innate .mbti-axis-tag{color:#6cbf7e}
+.mbti-axis-row.row-innate .mbti-axis-tag{color:var(--good)}
 .mbti-axis-row.row-learned .mbti-axis-tag{color:var(--accent-bright)}
 .mbti-axis-row.row-evolution .mbti-axis-tag{color:#a3b8d4}
 .mbti-axis-body{font-size:.95rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -650,7 +656,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tldr-times{background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(45,52,71,.5))}
 .tldr-card h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
 .tldr-strengths h3{color:#a3c7a8}
-.tldr-cautions h3{color:#e57462}
+.tldr-cautions h3{color:var(--warn)}
 .tldr-times h3{color:var(--accent-bright)}
 .tldr-card ol,.tldr-card ul{margin:0;padding-left:20px;font-size:.95rem;line-height:1.855;color:var(--sub)}
 .tldr-card li{margin-bottom:5px}
@@ -696,7 +702,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── 인생 타임라인 SVG 차트 ── */
 .life-timeline{margin:14px 0 12px;padding:14px 12px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;position:relative;overflow:hidden}
-.life-timeline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.5}
+.life-timeline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
 .lt-svg-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .lt-svg-wrap svg{display:block;min-width:420px}
 .lt-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0 6px;font-size:.68rem;color:var(--muted)}
@@ -718,8 +724,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
-.nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:14px;position:relative;overflow:hidden}
-.nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+.nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0}
 .nb-card.primary{background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card) 60%);border:2px solid var(--accent-bright);box-shadow:0 4px 16px rgba(212,175,55,.18)}
 .nb-card.primary::before{height:3px;opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright) 30%,var(--accent-bright) 70%,transparent)}
 .nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
@@ -727,7 +733,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 /* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
-.chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(45,52,71,.22));border-left:5px solid var(--accent-bright);border-radius:11px}
+.chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(45,52,71,.18));border-left:3px solid var(--accent-bright);border-radius:11px}
 .chapter-divider:first-child{margin-top:6px}
 .chapter-divider .ch-no{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
 .chapter-divider .ch-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:var(--accent)}
@@ -778,19 +784,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-body p{margin-bottom:11px}
 .nb-body p:last-child{margin-bottom:0}
 .nb-body b{color:var(--text)}
-.nb-body em{font-style:normal;color:var(--accent);font-weight:700}
-.nb-good{margin-top:14px;padding:12px 14px;background:var(--wood-bg);border-radius:9px;border-left:3px solid var(--wood)}
-.nb-good-lab{font-size:.66rem;font-weight:800;color:var(--wood);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
-.nb-warn{margin-top:8px;padding:12px 14px;background:var(--fire-bg);border-radius:9px;border-left:3px solid var(--fire)}
-.nb-warn-lab{font-size:.66rem;font-weight:800;color:var(--fire);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
+.nb-body em{font-style:normal;color:inherit;font-weight:600}
+.nb-good{margin-top:14px;padding:12px 14px;background:var(--good-bg);border-radius:9px;border-left:3px solid var(--good)}
+.nb-good-lab{font-size:.66rem;font-weight:800;color:var(--good);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
+.nb-warn{margin-top:8px;padding:12px 14px;background:var(--warn-bg);border-radius:9px;border-left:3px solid var(--warn)}
+.nb-warn-lab{font-size:.66rem;font-weight:800;color:var(--warn);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
 .nb-gw-body{font-size:inherit;line-height:1.75;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.reading-brief{margin:12px 0 14px;padding:14px 15px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(12,15,16,.35));border:1px solid rgba(212,175,55,.24);border-left:4px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
+.reading-brief{margin:12px 0 14px;padding:14px 15px;background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(12,15,16,.3));border:1px solid rgba(212,175,55,.18);border-left:3px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
 .reading-brief.compact{padding:12px 13px;font-size:.84rem;line-height:1.7}
 .reading-brief p{margin:0 0 9px}
 .reading-brief p:last-child{margin-bottom:0}
 .reading-brief .rb-lead{color:var(--text);font-weight:700}
 .reading-brief .rb-action{color:var(--accent-bright);font-weight:800}
-.reading-brief em{font-style:normal;color:var(--accent);font-weight:800}
+.reading-brief em{font-style:normal;color:inherit;font-weight:600}
 .remember-line{margin-top:10px;padding:10px 12px;background:rgba(216,196,168,.07);border:1px dashed rgba(212,175,55,.32);border-radius:9px;color:var(--accent-bright);font-size:.82rem;font-weight:800;line-height:1.65}
 
 /* ── 행동 지침 3박스 (강점·해야 할 일·피할 일) ── */
@@ -800,12 +806,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ag-block ul{margin:0;padding-left:18px;font-size:inherit;line-height:1.78;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .ag-block li{margin-bottom:3px}
 .ag-block li b{color:var(--text)}
-.ag-strengths{background:var(--wood-bg);border-left-color:var(--wood)}
-.ag-strengths .ag-lab{color:var(--wood)}
+.ag-strengths{background:var(--good-bg);border-left-color:var(--good)}
+.ag-strengths .ag-lab{color:var(--good)}
 .ag-todos{background:var(--accent-soft);border-left-color:var(--accent)}
 .ag-todos .ag-lab{color:var(--accent-bright)}
-.ag-avoids{background:var(--fire-bg);border-left-color:var(--fire)}
-.ag-avoids .ag-lab{color:var(--fire)}
+.ag-avoids{background:var(--warn-bg);border-left-color:var(--warn)}
+.ag-avoids .ag-lab{color:var(--warn)}
 
 /* ── Timeline (대운×세운) ── */
 .tl{display:flex;flex-direction:column;gap:9px;margin-top:14px}
@@ -883,9 +889,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .cat-where b{color:var(--accent)}
 
 /* ── 한 줄 결론 리드 카드 ── */
-.lead-card{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(216,196,168,.06));border-left:4px solid var(--accent-bright);border-radius:10px;margin:6px 0 16px;font-size:inherit;line-height:1.78;color:var(--text);font-weight:500;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.lead-card{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(216,196,168,.04));border-left:3px solid var(--accent-bright);border-radius:10px;margin:6px 0 16px;font-size:inherit;line-height:1.78;color:var(--text);font-weight:500;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .lead-card b{color:var(--accent-bright);font-weight:800}
-.lead-card em{font-style:normal;color:var(--accent);font-weight:700}
+.lead-card em{font-style:normal;color:inherit;font-weight:600}
 .body-q{font-weight:700;color:var(--text);font-size:inherit;letter-spacing:0}
 .body-q::after{content:' ';white-space:pre}
 
@@ -938,8 +944,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* 관계도 */
 .a4-rel{font-size:10px;line-height:1.55;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
 .a4-rel-col{padding:7px 9px;border-radius:6px;min-width:0;overflow:visible}
-.a4-rel-col.good{background:#eaf6ec;border-left:3px solid #6cbf7e}
-.a4-rel-col.bad{background:#fceae6;border-left:3px solid #e57462}
+.a4-rel-col.good{background:#eaf6ec;border-left:3px solid var(--good)}
+.a4-rel-col.bad{background:#fceae6;border-left:3px solid var(--warn)}
 .a4-rel-lab{font-size:10px;font-weight:800;margin-bottom:3px;word-break:keep-all}
 .a4-rel-col.good .a4-rel-lab{color:#2e7d32}
 .a4-rel-col.bad .a4-rel-lab{color:#c44}
@@ -964,12 +970,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-mo-lab{font-size:9px;color:#1a1c1d;font-weight:600}
 .a4-mo.dec{background:rgba(212,168,73,.18);border-radius:4px;padding:1px}
 .a4-mo.dec::after{content:'⭐';position:absolute;top:-8px;font-size:9px}
-.a4-mo.lk .a4-mo-lab{color:#6cbf7e;font-weight:800}
-.a4-mo.tg .a4-mo-lab{color:#e57462;font-weight:800}
+.a4-mo.lk .a4-mo-lab{color:var(--good);font-weight:800}
+.a4-mo.tg .a4-mo-lab{color:var(--warn);font-weight:800}
 
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(216,196,168,.06));border:1px solid rgba(212,175,55,.32);border-radius:14px;position:relative;overflow:hidden}
-.term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.6}
+.term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
 .term-notice-icon{font-size:1.4rem;flex-shrink:0;line-height:1.2}
 .term-notice-body{font-size:.79rem;line-height:1.78;color:var(--sub)}
 .term-notice-body b{color:var(--accent-bright);font-weight:700}
@@ -2643,10 +2649,10 @@ function stemRel(s1,s2){
   return{kind:'평',mod:0,desc:''};
 }
 function dailyGrade(score){
-  if(score>=85)return{lab:'대길',color:'#6cbf7e',bg:'rgba(108,191,126,.18)'};
+  if(score>=85)return{lab:'대길',color:'var(--good)',bg:'rgba(108,191,126,.18)'};
   if(score>=70)return{lab:'길',color:'#a3c7a8',bg:'rgba(108,191,126,.12)'};
   if(score>=55)return{lab:'평',color:'#d4a849',bg:'rgba(212,168,73,.16)'};
-  if(score>=40)return{lab:'주의',color:'#e57462',bg:'rgba(229,116,98,.14)'};
+  if(score>=40)return{lab:'주의',color:'var(--warn)',bg:'rgba(229,116,98,.14)'};
   return{lab:'흉',color:'#e0533f',bg:'rgba(224,83,63,.18)'};
 }
 function calcDailyFortune(saju,date){
@@ -2820,8 +2826,8 @@ function _dailyDaeunStageCard(saju, f){
       <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
       <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
       ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:8px;font-size:.78rem;line-height:1.75">
-        ${_luckyHours.length?`<div><b style="color:#6cbf7e">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
-        ${_cautionHours.length?`<div><b style="color:#e57462">⚠️ 오늘의 주의시</b> — ${_cautionHours.join(', ')}</div>`:''}
+        ${_luckyHours.length?`<div><b style="color:var(--good)">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
+        ${_cautionHours.length?`<div><b style="color:var(--warn)">⚠️ 오늘의 주의시</b> — ${_cautionHours.join(', ')}</div>`:''}
       </div>`:''}
     </div>`;
   }catch(e){return '';}
@@ -2836,10 +2842,10 @@ function _dailyHourCard(saju, f){
     const r=brRel(myBranch,bi);
     const stRel=brRel(dpBranch,bi);
     let kind='평시', accent='var(--sub)', note='';
-    if(r.kind==='합'){kind='길시';accent='#6cbf7e';note='본인 자리와 자연스럽게 잘 통하는 시간 — 협의·만남이 부드럽게 풀려요';}
-    else if(r.kind==='충'){kind='주의';accent='#e57462';note='본인 자리와 정면으로 부딪히는 시간 — 결정·운전·논쟁은 다음 길일로 넘기세요';}
-    else if(stRel.kind==='합'){kind='길시';accent='#6cbf7e';note='오늘 흐름과 잘 맞아 일이 술술 풀리는 시간이에요';}
-    else if(stRel.kind==='충'){kind='주의';accent='#e57462';note='오늘 흐름과 부딪히는 시간 — 변동·번복이 일어나기 쉬워요';}
+    if(r.kind==='합'){kind='길시';accent='var(--good)';note='본인 자리와 자연스럽게 잘 통하는 시간 — 협의·만남이 부드럽게 풀려요';}
+    else if(r.kind==='충'){kind='주의';accent='var(--warn)';note='본인 자리와 정면으로 부딪히는 시간 — 결정·운전·논쟁은 다음 길일로 넘기세요';}
+    else if(stRel.kind==='합'){kind='길시';accent='var(--good)';note='오늘 흐름과 잘 맞아 일이 술술 풀리는 시간이에요';}
+    else if(stRel.kind==='충'){kind='주의';accent='var(--warn)';note='오늘 흐름과 부딪히는 시간 — 변동·번복이 일어나기 쉬워요';}
     else{note='평이한 시간대 — 본인 페이스로 보내세요';}
     cards.push({bi,kind,accent,note});
   }
@@ -3756,8 +3762,8 @@ function lifeTimelineSVG(saju, daeuns, currentAge, ys){
   function colorFor(du){
     const duOh=SOH[du.stem];
     if(duOh===ys.main)return '#52796f';        // 용신 — 청록
-    if(SHENG[duOh]===ys.main)return '#6cbf7e';  // 희신 — 녹
-    if(KE[ys.main]===duOh)return '#e57462';     // 기신 — 주
+    if(SHENG[duOh]===ys.main)return 'var(--good)';  // 희신 — 녹
+    if(KE[ys.main]===duOh)return 'var(--warn)';     // 기신 — 주
     if(KE[duOh]===ys.main)return '#d4a849';     // 한신 보조 — 골드
     return '#a8a29e';                            // 평이 — 회색
   }
@@ -3818,9 +3824,9 @@ function lifeTimelineSVG(saju, daeuns, currentAge, ys){
   // 범례
   let legend=`<div class="lt-legend" aria-hidden="true">
     <span><i style="background:#52796f"></i>도움 흐름</span>
-    <span><i style="background:#6cbf7e"></i>보조 도움</span>
+    <span><i style="background:var(--good)"></i>보조 도움</span>
     <span><i style="background:#d4a849"></i>조절 필요</span>
-    <span><i style="background:#e57462"></i>주의 흐름</span>
+    <span><i style="background:var(--warn)"></i>주의 흐름</span>
     <span><i style="background:#a8a29e"></i>평이</span>
   </div>`;
 
@@ -4170,10 +4176,10 @@ function renderDaypickFortune(saju,y,m,d,extra){
     const stRel=brRel(dpBranch,bi);
     const hourTG=tenGod(myStem,BR_MAIN_STEM[bi]);
     let kind='평시', accent='var(--sub)', note='';
-    if(r.kind==='합'){kind='길시';accent='#6cbf7e';note=`본인 자리(${myBrKo})와 자연스럽게 잘 통하는 분위기 — 약속·만남·교섭에 흐름이 부드럽게 풀려요. ${HOUR_GENERAL[bi]}`;}
-    else if(r.kind==='충'){kind='주의';accent='#e57462';note=`본인 일지(${myBrKo})와 충 — 결정·운전·논쟁은 서두르지 말고 미뤄두세요. ${HOUR_GENERAL[bi]}`;}
-    else if(stRel.kind==='합'){kind='길시';accent='#6cbf7e';note=`그날 일지(${dpBrKo})와 합 — 외부 기운과 잘 맞아 일이 풀려요. ${HOUR_GENERAL[bi]}`;}
-    else if(stRel.kind==='충'){kind='주의';accent='#e57462';note=`그날 일지(${dpBrKo})와 충 — 변동·번복이 일어나기 쉬운 시간. ${HOUR_GENERAL[bi]}`;}
+    if(r.kind==='합'){kind='길시';accent='var(--good)';note=`본인 자리(${myBrKo})와 자연스럽게 잘 통하는 분위기 — 약속·만남·교섭에 흐름이 부드럽게 풀려요. ${HOUR_GENERAL[bi]}`;}
+    else if(r.kind==='충'){kind='주의';accent='var(--warn)';note=`본인 일지(${myBrKo})와 충 — 결정·운전·논쟁은 서두르지 말고 미뤄두세요. ${HOUR_GENERAL[bi]}`;}
+    else if(stRel.kind==='합'){kind='길시';accent='var(--good)';note=`그날 일지(${dpBrKo})와 합 — 외부 기운과 잘 맞아 일이 풀려요. ${HOUR_GENERAL[bi]}`;}
+    else if(stRel.kind==='충'){kind='주의';accent='var(--warn)';note=`그날 일지(${dpBrKo})와 충 — 변동·번복이 일어나기 쉬운 시간. ${HOUR_GENERAL[bi]}`;}
     else{note=HOUR_GENERAL[bi];}
     hourCards.push({bi,kind,accent,hourTG,note});
   }
@@ -4196,7 +4202,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
     </div>
     <div class="daily-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab}</div>
     <div class="daily-headline">${TG_EMOJI[stemTG]||'🌟'} ${plainTG(stemTG)} 흐름의 날</div>
-    <div class="daily-pillar">이 날은 <em>${plainTG(stemTG)}</em> 기운이 들어오는 흐름${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${rel.kind==='합'?'#6cbf7e':'#e57462'}">${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
+    <div class="daily-pillar">이 날은 <em>${plainTG(stemTG)}</em> 기운이 들어오는 흐름${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${rel.kind==='합'?'var(--good)':'var(--warn)'}">${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
   </div>
 
   <div class="daily-cats">
@@ -4290,14 +4296,14 @@ function renderDaypickFortune(saju,y,m,d,extra){
   const lBody2=(()=>{
     const k=rel.kind;
     const kindLabelMap={
-      '합':'<b style="color:#6cbf7e">자연스럽게 잘 통하는 분위기</b>',
-      '반합':'<b style="color:#6cbf7e">같은 방향으로 묶이는 분위기</b>',
-      '반합약':'<b style="color:#6cbf7e">잔잔하게 협력하는 분위기</b>',
+      '합':'<b style="color:var(--good)">자연스럽게 잘 통하는 분위기</b>',
+      '반합':'<b style="color:var(--good)">같은 방향으로 묶이는 분위기</b>',
+      '반합약':'<b style="color:var(--good)">잔잔하게 협력하는 분위기</b>',
       '동':'<b>같은 글자가 만나는 분위기</b> — 본인 색이 진해지는 닮은꼴 분위기',
       '평':'평이한 흐름',
-      '충':'<b style="color:#e57462">정면으로 부딪히는 분위기</b> — 변동·이동의 기운',
-      '원진':'<b style="color:#e57462">미세하게 거슬리는 분위기</b>',
-      '형':'<b style="color:#e57462">서로 깎이는 분위기</b> — 약점을 건드리는 분위기',
+      '충':'<b style="color:var(--warn)">정면으로 부딪히는 분위기</b> — 변동·이동의 기운',
+      '원진':'<b style="color:var(--warn)">미세하게 거슬리는 분위기</b>',
+      '형':'<b style="color:var(--warn)">서로 깎이는 분위기</b> — 약점을 건드리는 분위기',
       '자형':'<b style="color:#d4a849">같은 글자가 겹치는 분위기</b> — 내면 모순이 공명하는 분위기',
       '파':'<b style="color:#d4a849">어긋나는 분위기</b> — 마무리가 흔들리는 분위기',
       '해':'<b style="color:#d4a849">은근한 방해가 끼는 분위기</b>'
@@ -4405,9 +4411,9 @@ function renderDaypickFortune(saju,y,m,d,extra){
   if(actAvoid.length===0)actAvoid.push('<b>⚠️ 큰 변동을 일으키는 결정만 한 번 더 짚어보세요</b>');
 
   let actBody=`<p>그날 분위기에 잘 맞는 활동(권장)과 한 박자 미뤄야 할 활동(회피)을 구체적으로 정리했어요. 본인 사주 유형 ${gk.name}과 그날 ${dpStemKo}${dpBrKo}이 만나는 흐름을 종합한 결과예요.</p>`;
-  actBody+=`<p style="color:#6cbf7e;font-weight:700">✅ 권장 활동</p>`;
+  actBody+=`<p style="color:var(--good);font-weight:700">✅ 권장 활동</p>`;
   actBody+=actRecommend.map(a=>`<p>${a}</p>`).join('');
-  actBody+=`<p style="color:#e57462;font-weight:700;margin-top:8px">⚠️ 회피·주의 활동</p>`;
+  actBody+=`<p style="color:var(--warn);font-weight:700;margin-top:8px">⚠️ 회피·주의 활동</p>`;
   actBody+=actAvoid.map(a=>`<p>${a}</p>`).join('');
   h+=paidWrapBody('ACTION','🎯','활동별 권장·회피 매트릭스',actBody);
 
@@ -4416,8 +4422,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
   luckyBody+=`<p><b>🧭 길방위</b><br>${dirs.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">중요한 미팅·면접·계약 시 이 방향에서 들어오는 자리(또는 이 방향을 향한 자리)가 길해요.</span></p>`;
   luckyBody+=`<p><b>🎨 길색</b><br>${colors.join(' · ')}<br><span style="color:var(--sub);font-size:.78rem">옷·가방·소품·넥타이에 이 색을 한 가지 더하면 그날 기운과 잘 어우러져요.</span></p>`;
   luckyBody+=`<p><b>🔢 길수</b><br>${nums.join(', ')}<br><span style="color:var(--sub);font-size:.78rem">약속 시각(예: 오후 ${nums[0]}시)·차량 번호 끝자리·자리 번호·방 번호 선택에 작게 활용하세요.</span></p>`;
-  luckyBody+=`<p><b style="color:#6cbf7e">🤝 본인과 잘 맞는 띠</b><br>${goodZ.length?goodZ.join(' · '):'본인 일지와 강하게 어울리는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 사주(일지)와 자연스럽게 어울리는 띠라, 이 띠의 사람과 만남·협업·미팅에 흐름이 부드러워요. 중요한 자리라면 이 띠인지 살펴보세요.</span></p>`;
-  luckyBody+=`<p><b style="color:#e57462">⚡ 본인과 부딪히기 쉬운 띠</b><br>${badZ.length?badZ.join(' · '):'본인 일지와 강하게 부딪히는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 일지와 충·원진으로 만나는 띠라, 이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
+  luckyBody+=`<p><b style="color:var(--good)">🤝 본인과 잘 맞는 띠</b><br>${goodZ.length?goodZ.join(' · '):'본인 일지와 강하게 어울리는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 사주(일지)와 자연스럽게 어울리는 띠라, 이 띠의 사람과 만남·협업·미팅에 흐름이 부드러워요. 중요한 자리라면 이 띠인지 살펴보세요.</span></p>`;
+  luckyBody+=`<p><b style="color:var(--warn)">⚡ 본인과 부딪히기 쉬운 띠</b><br>${badZ.length?badZ.join(' · '):'본인 일지와 강하게 부딪히는 띠는 두드러지지 않아요.'}<br><span style="color:var(--sub);font-size:.78rem">본인 일지와 충·원진으로 만나는 띠라, 이 띠의 사람과는 평소보다 한 톤 부드럽게. 큰 결정·계약은 가능하면 다른 띠와의 자리에서.</span></p>`;
   h+=paidWrapBody('LUCKY','🧭','길방위 · 길색 · 길수 · 본인과 맞는 띠',luckyBody);
 
   // ── 활성 신살 (미니 박스로) + 개인화 부스트
@@ -4692,7 +4698,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     mBody+=`<p>② <b>이 달이 본인에게 어떻게 다가올까요?</b><br>${sc.tg==='정관'?'이달은 직장에서 책임 있는 자리가 들어오는 달이에요. 면접·승진 보고·결재·공식 발표 같은 격식 있는 일들이 평소보다 깔끔하게 풀려요. 미뤄둔 공식 절차가 있다면 이달에 처리하시고, 사양보다 수락이 흐름을 만들어요.':sc.tg==='편관'?'이달은 도전·압박·경쟁·시험의 흐름이 들어오는 달이에요. 정면 돌파보다 한 박자 쉬었다가 측면으로 풀어가는 게 흐름이고, 강한 사람 앞에서는 한 걸음 양보가 진짜 승리예요. 큰 결정 전에 24시간 룰을 적용해보세요.':sc.tg==='정재'?'이달은 정기적이고 예측 가능한 재물 흐름이 자연스럽게 들어오는 달이에요. 큰 변동보다 차분한 정리·점검·꾸준함이 결실을 줘요. 가계부·예산·예금 정비를 하기에 좋은 때예요.':sc.tg==='편재'?'이달은 바깥으로 나가서 움직일수록 운이 따라오는 달이에요. 영업·외근·새 거래·이동을 동반한 비즈니스에 흐름이 잘 맞으니 발이 부지런할수록 기회가 들어와요. 미뤄둔 거래가 있다면 이달에 추진하세요.':sc.tg==='식신'?'이달은 사람과 함께 무언가 만들고 표현하기 좋은 달이에요. 식사 자리·팀 미팅·창작 활동이 자연스럽게 풀리고, 협업이 단독 작업보다 결실이 커요. 맛집·여행·취미 모임을 이달에 잡아보세요.':sc.tg==='상관'?'이달은 창의력과 아이디어가 빛나는 달이에요. 글·콘텐츠·강연·기획 작업이 잘 풀리지만, 윗사람·권위와의 마찰이 일어날 수 있어요. 표현 톤만 한 단계 부드럽게 가져가시면 흐름이 살아나요.':sc.tg==='정인'?'이달은 학습과 어른의 도움이 자연스럽게 흘러들어오는 달이에요. 자료 정리·시험 준비·자격 학습·인허가 처리에 매우 기운이 좋고, 어른이나 멘토에게 조언을 청하기에도 알맞아요. 작은 감사 인사 한 통이 큰 인연을 열어줘요.':sc.tg==='편인'?'이달은 깊이 파고드는 학습과 자기 점검에 흐름이 좋은 달이에요. 전문 분야 연구·명상·종교·예술 활동에서 통찰이 와요. 큰 결정보다는 안으로 다지는 시간으로 쓰세요.':sc.tg==='비견'?'이달은 본인 색깔이 평소보다 진해지고 동료·친구의 만남이 늘어나는 달이에요. 자기 결정·자기 사업의 결단에 운이 좋고, 같은 흐름의 사람들과 큰 일을 도모하기에 알맞아요.':'이달은 경쟁심과 충동이 평소보다 살짝 올라오는 달이에요. 동업 자금 거래·고가품 구매·도박성 투자는 한 박자 살피시는 게 안전해요. 운동이나 경쟁 활동으로 에너지를 풀면 흐름이 부드러워져요.'}</p>`;
     { // PSN: 같은 십신 달이라도 '본인 사주'에는 다른 의미 — 용신·부족 오행 관점
       const _mOh=SOH[mp.stem];
-      if(OHNAME[_mOh]===OHNAME[ys.main])mBody+=`<p style="padding:8px 12px;background:rgba(108,191,126,.08);border-left:2px solid #6cbf7e;border-radius:6px">＋ <b>본인 맞춤</b> — 이달 위 글자는 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운 그 자체예요. 같은 ${plainTG(sc.tg)} 달이라도 본인에게는 한 등급 높은 달이에요.</p>`;
+      if(OHNAME[_mOh]===OHNAME[ys.main])mBody+=`<p style="padding:8px 12px;background:rgba(108,191,126,.08);border-left:2px solid var(--good);border-radius:6px">＋ <b>본인 맞춤</b> — 이달 위 글자는 본인을 도와주는 <b>${OHNAME[ys.main]}</b> 기운 그 자체예요. 같은 ${plainTG(sc.tg)} 달이라도 본인에게는 한 등급 높은 달이에요.</p>`;
       else if(_mPP.missing.includes(_mOh))mBody+=`<p style="padding:8px 12px;background:var(--bg-deep);border-left:2px solid var(--accent);border-radius:6px">＋ <b>본인 맞춤</b> — 본인 사주에서 부족했던 <b>${OHNAME[_mOh]}</b> 기운이 채워지는 달이라, 평소 약하게 느끼던 영역이 이달에 깨어나요.</p>`;
       else if(_mPP.excess.includes(_mOh))mBody+=`<p style="padding:8px 12px;background:var(--bg-deep);border-left:2px solid var(--earth);border-radius:6px">＋ <b>본인 맞춤</b> — 이미 두터운 <b>${OHNAME[_mOh]}</b> 기운이 더 진해지는 달이에요. 잘 풀리는 만큼 과속만 조심하면 돼요.</p>`;
     }
@@ -4700,17 +4706,17 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
       const k=sc.rel.kind;
       const monthBranchKo=BRCHKO[mp.branch];
       if(k==='합'){
-        mBody+=`<p>③ <b>본인 자리와 자연스럽게 잘 통하는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#6cbf7e">자연스럽게 잘 통하는</b> 흐름이라, 사람·교섭·관계·계약 활동이 부드럽게 풀려요. 결혼·약혼·소개팅·재회·가족 모임 같은 「관계 한 발 더」 활동이 잘 풀리는 달이에요.</p>`;
+        mBody+=`<p>③ <b>본인 자리와 자연스럽게 잘 통하는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:var(--good)">자연스럽게 잘 통하는</b> 흐름이라, 사람·교섭·관계·계약 활동이 부드럽게 풀려요. 결혼·약혼·소개팅·재회·가족 모임 같은 「관계 한 발 더」 활동이 잘 풀리는 달이에요.</p>`;
       }else if(k==='반합'||k==='반합약'){
         mBody+=`<p>③ <b>같은 방향으로 협력하는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 같은 큰 흐름으로 묶여서, 동맹·팀워크·협업·큰 목표 추진에 운이 좋은 달이에요.</p>`;
       }else if(k==='동'){
         mBody+=`<p>③ <b>본인 색깔이 가장 진해지는 달</b><br>본인 자리와 이달 자리가 같은 글자라, 본인 색깔이 평소의 두 배로 진해져요. 자기 페이스로 결정·실행하기에 리듬이 잘 맞아요.</p>`;
       }else if(k==='충'){
-        mBody+=`<p>③ <b>정면으로 부딪히는 달 — 변동의 변수</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#e57462">정면으로 부딪히는</b> 기류라, 변동·이동·번복·정리의 변수가 커요. 큰 결정은 미루고, 자연스럽게 정리되는 일은 흐름을 따라 정리하는 달로 활용하세요.</p>`;
+        mBody+=`<p>③ <b>정면으로 부딪히는 달 — 변동의 변수</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:var(--warn)">정면으로 부딪히는</b> 기류라, 변동·이동·번복·정리의 변수가 커요. 큰 결정은 미루고, 자연스럽게 정리되는 일은 흐름을 따라 정리하는 달로 활용하세요.</p>`;
       }else if(k==='원진'){
-        mBody+=`<p>③ <b>이유 없는 거슬림이 쌓이는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:#e57462">미세하게 거슬리는</b> 흐름이에요. 정면 충돌은 아닌데 가까운 사람의 사소한 말투·습관에 「딱히 이유는 없는데」 신경이 쓰여요. 친밀한 관계일수록 의식적인 거리감을 유지하세요.</p>`;
+        mBody+=`<p>③ <b>이유 없는 거슬림이 쌓이는 달</b><br>본인 자리(<em>${myBrKo}</em>)와 이달 자리(<em>${monthBranchKo}</em>)가 <b style="color:var(--warn)">미세하게 거슬리는</b> 흐름이에요. 정면 충돌은 아닌데 가까운 사람의 사소한 말투·습관에 「딱히 이유는 없는데」 신경이 쓰여요. 친밀한 관계일수록 의식적인 거리감을 유지하세요.</p>`;
       }else if(k==='형'){
-        mBody+=`<p>③ <b>서로 깎이는 달 — 갈등의 분위기</b><br>본인 자리와 이달 자리가 <b style="color:#e57462">서로 깎는</b> 흐름이라, 시비·법적 마찰·서로의 약점을 건드리는 폭이 큰 달이에요. 무관·법조·의료 종사자에게는 오히려 직업 성취로 풀리지만, 일반 관계에서는 갈등을 회피하는 자세가 필요해요.</p>`;
+        mBody+=`<p>③ <b>서로 깎이는 달 — 갈등의 분위기</b><br>본인 자리와 이달 자리가 <b style="color:var(--warn)">서로 깎는</b> 흐름이라, 시비·법적 마찰·서로의 약점을 건드리는 폭이 큰 달이에요. 무관·법조·의료 종사자에게는 오히려 직업 성취로 풀리지만, 일반 관계에서는 갈등을 회피하는 자세가 필요해요.</p>`;
       }else if(k==='자형'){
         mBody+=`<p>③ <b>내면 갈등이 올라오는 달</b><br>본인 자리와 이달 자리가 같은 글자라 내면의 모순·집착·우울이 올라오기 쉬운 달이에요. 외부 자극(여행·새 취미·운동)을 들여와 흐름을 풀어주세요.</p>`;
       }else if(k==='파'){
@@ -5006,18 +5012,18 @@ function getDaeunSewoonDeepInsight(saju, daeun, sewoonStem, sewoonBranch, y){
 
   // (1) 천간끼리 — 합/충/평
   let stemLine='';
-  if(stemR.kind==='합')stemLine=`<b style="color:#6cbf7e">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 자석처럼 묶여 새 기운으로 변하는 분위기</b>예요. 본인의 10년 색깔이 ${y}년에 한 단계 더 부드러워지거나 새 방향으로 묶여, 인생 큰 흐름의 분위기가 바뀌는 해예요.`;
-  else if(stemR.kind==='충')stemLine=`<b style="color:#e57462">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 정면으로 부딪히는 분위기</b>예요. 본인 10년 흐름의 결정 방식이 ${y}년에 한 번 흔들려, 가치관·진로·관계의 큰 점검이 들어오는 해예요.`;
+  if(stemR.kind==='합')stemLine=`<b style="color:var(--good)">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 자석처럼 묶여 새 기운으로 변하는 분위기</b>예요. 본인의 10년 색깔이 ${y}년에 한 단계 더 부드러워지거나 새 방향으로 묶여, 인생 큰 흐름의 분위기가 바뀌는 해예요.`;
+  else if(stemR.kind==='충')stemLine=`<b style="color:var(--warn)">10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}이 정면으로 부딪히는 분위기</b>예요. 본인 10년 흐름의 결정 방식이 ${y}년에 한 번 흔들려, 가치관·진로·관계의 큰 점검이 들어오는 해예요.`;
   else stemLine=`10년 흐름의 위 글자 ${dStemKo}과 올해 위 글자 ${sStemKo}은 무난하게 만나, 본인 페이스를 그대로 이어가는 해예요.`;
 
   // (2) 지지끼리 — 합/충/원진/형/파/해
   const brLabel={'합':'자연스럽게 잘 통하는','반합':'같은 방향으로 묶이는','반합약':'잔잔하게 협력하는','동':'같은 글자가 만나는','충':'정면으로 부딪히는','원진':'미세하게 거슬리는','형':'서로 깎이는','자형':'같은 글자가 겹치는','파':'어긋나는','해':'은근한 방해가 끼는','평':'평이한'}[brR.kind]||'평이한';
   let brLine='';
   if(brR.kind==='평'||brR.kind==='동')brLine=`10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}은 ${brLabel} 분위기라, 본인이 앉은 자리의 큰 색깔을 그대로 유지하는 분위기예요.`;
-  else if(['합','반합','반합약'].includes(brR.kind))brLine=`<b style="color:#6cbf7e">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 ${brLabel} 분위기</b>라, 본인의 환경·자리에 협력·동맹의 기류가 한 해 동안 더 강화되는 해예요.`;
-  else if(brR.kind==='충')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 정면으로 부딪히는 분위기</b>라, 본인이 앉은 환경·자리에 변동·이동·재정립의 큰 기운이 들어오는 해예요. 큰 결정·이동은 길월에 넣으세요.`;
-  else if(brR.kind==='원진')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 미세하게 거슬리는 분위기</b>라, 환경 안의 가까운 사람과 「딱히 큰 일은 없는데 거슬리는」 신경 쓰임이 한 해 동안 누적되기 쉬워요.`;
-  else if(brR.kind==='형'||brR.kind==='자형')brLine=`<b style="color:#e57462">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 서로 깎이는 분위기</b>라, 환경 안에서 시비·약점 노출의 자리가 들어와요. 공직·법조·의료 분야엔 오히려 큰 성취의 흐름으로 풀려요.`;
+  else if(['합','반합','반합약'].includes(brR.kind))brLine=`<b style="color:var(--good)">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 ${brLabel} 분위기</b>라, 본인의 환경·자리에 협력·동맹의 기류가 한 해 동안 더 강화되는 해예요.`;
+  else if(brR.kind==='충')brLine=`<b style="color:var(--warn)">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 정면으로 부딪히는 분위기</b>라, 본인이 앉은 환경·자리에 변동·이동·재정립의 큰 기운이 들어오는 해예요. 큰 결정·이동은 길월에 넣으세요.`;
+  else if(brR.kind==='원진')brLine=`<b style="color:var(--warn)">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 미세하게 거슬리는 분위기</b>라, 환경 안의 가까운 사람과 「딱히 큰 일은 없는데 거슬리는」 신경 쓰임이 한 해 동안 누적되기 쉬워요.`;
+  else if(brR.kind==='형'||brR.kind==='자형')brLine=`<b style="color:var(--warn)">10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 서로 깎이는 분위기</b>라, 환경 안에서 시비·약점 노출의 자리가 들어와요. 공직·법조·의료 분야엔 오히려 큰 성취의 흐름으로 풀려요.`;
   else brLine=`10년 흐름의 아래 글자 ${dBrKo}과 올해 아래 글자 ${sBrKo}이 ${brLabel} 분위기로 만나, 한 해 동안 작은 어긋남·구설에 한 박자 살피는 자세가 필요한 해예요.`;
 
   // (3) 십신 색채 비교 — 같으면 강화, 다르면 어떤 색채가 더해지나
@@ -5120,13 +5126,13 @@ function renderNewyearFortune(saju,y){
   // 분야별 본문 (각 4-5문장)
   const wealthBody=`<p>${y}년의 재물 흐름은 평균 <b>${wealthYr}점</b>이에요. 본인 기준으로 이 해 위 글자가 <b>${plainTG(tg)}</b>의 흐름이라, ${tg==='정재'?'정기적·안정적 수입과 저축이 빛나는 해':tg==='편재'?'활동·이동·새 거래·외부 영업으로 큰 흐름의 돈이 움직이는 해':tg==='겁재'?'경쟁심·충동 지출 주의의 해 — 동업·금전 거래는 기록을 남겨두세요':tg==='식신'||tg==='상관'?'본인의 표현·창작·재능이 돈으로 바뀌는 해':'재물의 큰 변동보다 평이한 흐름의 해'}예요.</p><p>특히 ${monthLab(lucky)}에는 재물 활동에 흐름이 잘 맞으니 큰 결정을 이 시기에 배치하시고, ${monthLab(tough)}에는 가계부와 카드 사용 패턴을 한 번 점검하세요.</p><p>본인 사주에 부족한 기운이 <em>${OHNAME[weak]}</em>이라, 재물 활동도 그 영역(${weak===0?'친환경·식음료':weak===1?'에너지·전기·디자인':weak===2?'부동산·교육·서비스':weak===3?'금융·기계·의료':'유체·물류·해외'})과 연결되는 일이 본인에게 더 잘 맞아요.</p>`;
   const _yearRelLove={
-    '합':'올해 들어오는 자리가 본인 자리와 <b style="color:#6cbf7e">자연스럽게 잘 통하는</b> 기류라, 관계에 부드러움이 깃들어요. 새 인연·재회·결혼 진전 모두 흐름이 좋은 해예요.',
-    '반합':'올해 자리와 본인 자리가 <b style="color:#6cbf7e">같은 방향으로 묶이는</b> 흐름이라, 협력·동맹의 기운이 들어오는 해예요. 큰 목표를 함께할 동반자가 나타나기 좋아요.',
+    '합':'올해 들어오는 자리가 본인 자리와 <b style="color:var(--good)">자연스럽게 잘 통하는</b> 기류라, 관계에 부드러움이 깃들어요. 새 인연·재회·결혼 진전 모두 흐름이 좋은 해예요.',
+    '반합':'올해 자리와 본인 자리가 <b style="color:var(--good)">같은 방향으로 묶이는</b> 흐름이라, 협력·동맹의 기운이 들어오는 해예요. 큰 목표를 함께할 동반자가 나타나기 좋아요.',
     '반합약':'올해 자리와 본인 자리가 잔잔하게 협력하는 분위기라, 천천히 깊어지는 인연이 자연스레 생겨요.',
     '동':'올해 자리가 본인 자리와 같은 글자라, 본인 색깔이 가장 진해지는 해예요. 인연도 본인을 닮은 사람이 들어와요.',
-    '충':'올해 자리와 본인 자리가 <b style="color:#e57462">정면으로 부딪히는</b> 흐름이라, 관계의 변동·정리·재정립이 일어나는 해예요. 갈등이 무조건 흉은 아니고, 정리해야 할 관계는 자연스럽게 정리돼요.',
-    '원진':'올해 자리와 본인 자리가 <b style="color:#e57462">이유 없는 거슬림</b>이 쌓이는 기류라, 가까운 사람과의 사소한 원망이 누적되기 쉬워요. 정면 충돌은 아닌데 속이 미묘하게 불편하니, 가까운 관계일수록 의식적인 거리감과 「말하지 않아도 알아주겠지」를 내려놓고 짧고 자주 소통하는 습관이 결정적이에요.',
-    '형':'올해 자리와 본인 자리가 <b style="color:#e57462">서로 깎는</b> 흐름이라, 관계에서 서로의 약점을 건드리기 쉬워요. 의식적으로 「상대의 아픈 자리는 말로 짚지 않기」가 필요해요.',
+    '충':'올해 자리와 본인 자리가 <b style="color:var(--warn)">정면으로 부딪히는</b> 흐름이라, 관계의 변동·정리·재정립이 일어나는 해예요. 갈등이 무조건 흉은 아니고, 정리해야 할 관계는 자연스럽게 정리돼요.',
+    '원진':'올해 자리와 본인 자리가 <b style="color:var(--warn)">이유 없는 거슬림</b>이 쌓이는 기류라, 가까운 사람과의 사소한 원망이 누적되기 쉬워요. 정면 충돌은 아닌데 속이 미묘하게 불편하니, 가까운 관계일수록 의식적인 거리감과 「말하지 않아도 알아주겠지」를 내려놓고 짧고 자주 소통하는 습관이 결정적이에요.',
+    '형':'올해 자리와 본인 자리가 <b style="color:var(--warn)">서로 깎는</b> 흐름이라, 관계에서 서로의 약점을 건드리기 쉬워요. 의식적으로 「상대의 아픈 자리는 말로 짚지 않기」가 필요해요.',
     '자형':'올해 자리가 본인 자리와 같은 글자라, 본인 내면의 모순이 관계 결정을 흔들 수 있는 해예요. 외부 자극(여행·새 취미)을 의식적으로 들여오세요.',
     '파':'올해 자리와 본인 자리가 <b style="color:#d4a849">마무리에서 어긋나는</b> 분위기라, 약속·이행 단계에서 어긋남이 생기기 쉬운 해예요. 큰 결정 전 한 번 더 확인하시면 흐름이 부드러워져요.',
     '해':'올해 자리와 본인 자리가 <b style="color:#d4a849">은근한 방해</b>가 끼는 흐름이라, 제3자 개입·구설로 관계가 늦어질 수 있어요. 입조심·말조심이 흐름을 지켜줘요.',
@@ -5207,7 +5213,7 @@ function renderNewyearFortune(saju,y){
     </div>
     <div class="daily-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab}</div>
     <div class="daily-headline">${TG_EMOJI[tg]||'🌟'} ${plainTG(tg)} 기운의 한 해</div>
-    <div class="daily-pillar">올해 들어오는 두 글자 <em>${ypStemKo}${ypBrKo}</em> · 본인(${dm.n.split('(')[0]}) 기준으로 <em>${plainTG(tg)}</em>의 분위기${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${(rel.kind==='합'||rel.kind==='반합'||rel.kind==='반합약'||rel.kind==='동')?'#6cbf7e':(rel.kind==='파'||rel.kind==='해'||rel.kind==='자형')?'#d4a849':'#e57462'}">${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
+    <div class="daily-pillar">올해 들어오는 두 글자 <em>${ypStemKo}${ypBrKo}</em> · 본인(${dm.n.split('(')[0]}) 기준으로 <em>${plainTG(tg)}</em>의 분위기${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${(rel.kind==='합'||rel.kind==='반합'||rel.kind==='반합약'||rel.kind==='동')?'var(--good)':(rel.kind==='파'||rel.kind==='해'||rel.kind==='자형')?'#d4a849':'var(--warn)'}">${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
     <div style="margin-top:14px">${yearKeywords.map(k=>`<span style="display:inline-block;padding:3px 12px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.74rem;font-weight:700;margin:2px">${k}</span>`).join('')}</div>
   </div>
 
@@ -5318,7 +5324,7 @@ function renderNewyearFortune(saju,y){
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)">${s.name}</div>
         ${sg?`<div style="padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;color:${sg.color};background:${sg.bg};border:1px solid ${sg.color}55">${sg.lab} ${s.score}</div>`:''}
       </div>
-      <p style="font-size:.82rem;line-height:1.85;color:var(--sub);margin:0">${s.hint}이 흐르는 계절. ${s.body} 월지로 진행되는 ${s.score>=70?'<b style="color:#6cbf7e">때가 잘 맞는</b>':s.score<=50?'<b style="color:#e57462">한 템포 살피는</b>':'평이한'} 시기예요. ${s.score>=70?'이 계절에 미뤄둔 일을 시작하면 결실이 커요.':s.score<=50?'큰 결정은 다른 계절로 미루고 정리·관망에 무게를 두세요.':'자기 페이스 유지에 좋은 평이한 흐름.'}</p>
+      <p style="font-size:.82rem;line-height:1.85;color:var(--sub);margin:0">${s.hint}이 흐르는 계절. ${s.body} 월지로 진행되는 ${s.score>=70?'<b style="color:var(--good)">때가 잘 맞는</b>':s.score<=50?'<b style="color:var(--warn)">한 템포 살피는</b>':'평이한'} 시기예요. ${s.score>=70?'이 계절에 미뤄둔 일을 시작하면 결실이 커요.':s.score<=50?'큰 결정은 다른 계절로 미루고 정리·관망에 무게를 두세요.':'자기 페이스 유지에 좋은 평이한 흐름.'}</p>
     </div>`;
   });
   h+=paidWrapBody('SEASONS','🍃','사계절 흐름 — 한 해의 큰 분위기',`<p>한 해를 입춘·입하·입추·입동 4계절로 나눠본 분위기예요. 계절은 12개월보다 큰 단위의 기운으로, 그 계절 내내 본인에게 어떤 색채가 들어오는지를 보여줘요.</p>${seasonHTML}`);
@@ -5383,13 +5389,13 @@ function renderNewyearFortune(saju,y){
     else if(fldMax.k==='love')tipLine=`이 달은 관계 활동(소개팅·고백·진전 대화·재회)에 무게를 두면 흐름이 부드러워요`;
     else if(fldMax.k==='career')tipLine=`이 달은 직업 활동(이직 면접·승진 추진·창업 준비)에 무게를 두면 흐름이 잘 맞아요`;
     else tipLine=`이 달은 건강·일상 루틴 정비(운동·식단·수면)에 무게를 두면 한 해 체력이 든든해져요`;
-    monthDetailBody+=`<div style="padding:11px 13px;background:${isDecisive?'rgba(212,175,73,.12)':isLucky?'rgba(108,191,126,.06)':isTough?'rgba(229,116,98,.05)':'var(--bg-deep)'};border-radius:9px;border-left:4px solid ${isDecisive?'var(--accent)':isLucky?'#6cbf7e':isTough?'#e57462':'var(--border)'}">
+    monthDetailBody+=`<div style="padding:11px 13px;background:${isDecisive?'rgba(212,175,73,.12)':isLucky?'rgba(108,191,126,.06)':isTough?'rgba(229,116,98,.05)':'var(--bg-deep)'};border-radius:9px;border-left:4px solid ${isDecisive?'var(--accent)':isLucky?'var(--good)':isTough?'var(--warn)':'var(--border)'}">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">📅 <b>${o.mm}월</b> · ${STEMKO[o.mp.stem]}${BRCHKO[o.mp.branch]} 흐름</div>
         <span style="padding:2px 9px;border-radius:12px;background:${gM.bg};color:${gM.color};font-size:.7rem;font-weight:700;border:1px solid ${gM.color}55">${gM.lab} ${sc.total}점</span>
       </div>
-      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:#6cbf7e;font-weight:700">✓ 좋은점:</span> ${goodLine}</div>
-      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:#e57462;font-weight:700">⚠ 주의점:</span> ${warnLine}</div>
+      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:var(--good);font-weight:700">✓ 좋은점:</span> ${goodLine}</div>
+      <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:var(--warn);font-weight:700">⚠ 주의점:</span> ${warnLine}</div>
       <div style="font-size:.78rem;line-height:1.78;margin:3px 0"><span style="color:var(--accent);font-weight:700">✦ 추천 행동:</span> ${tipLine}</div>
     </div>`;
   });
@@ -5460,11 +5466,11 @@ function renderNewyearFortune(saju,y){
   let zBody=`<p>본인 띠는 <b>${ZODIAC_EMOJI[myZodiac]}${ZODIAC_KO[myZodiac]}띠</b>(태어난 해의 아래쪽 글자 <em>${BRCHKO[myZodiac]}</em>), ${y}년의 띠는 <b>${ZODIAC_EMOJI[yearZodiac]}${ZODIAC_KO[yearZodiac]}띠</b>(올해 아래쪽 글자 <em>${ypBrKo}</em>)예요.</p>`;
   zBody+=`<p>${(()=>{
     const k=zodiacRel.kind;
-    if(k==='합')return `두 띠가 <b style="color:#6cbf7e">자연스럽게 잘 통하는 분위기</b>라, 한 해의 흐름이 본인에게 부드럽게 다가와요. 사람과의 인연·인맥 확장이 잘 풀리는 해예요.`;
-    if(k==='반합'||k==='반합약')return `두 띠가 <b style="color:#6cbf7e">${k==='반합'?'같은 방향으로 묶이는 분위기':'잔잔하게 협력하는 분위기'}</b>이에요. 함께 큰 목표를 추진할 동반자가 들어오기 좋은 해예요.`;
-    if(k==='충')return `두 띠가 <b style="color:#e57462">정면으로 부딪히는 분위기</b>라, 한 해 동안 환경 변동·자리 이동·관계 정리 기운이 커요. 흉이 아니라 자연스러운 자리 이동의 신호로 받아들이세요.`;
-    if(k==='원진')return `두 띠 사이에 <b style="color:#e57462">미묘하게 거슬리는 분위기</b>이 들어, 한 해 동안 이유 없는 신경 쓰임·구설·인내심을 시험하는 자리가 따라붙기 쉬워요. 정면으로 깨지진 않지만 속이 불편한 분위기라, 「말하지 않아도 알겠지」를 내려놓고 의식적인 거리감을 만드는 자세가 흐름을 풉니다.`;
-    if(k==='형')return `두 띠 사이에 <b style="color:#e57462">서로 깎이는 분위기</b>이 들어, 한 해 동안 시비·다툼·서로의 약점을 건드리는 자리에 주의가 필요해요. 공직·법조·의료 분야에서는 오히려 직업 성취의 흐름으로 풀려요.`;
+    if(k==='합')return `두 띠가 <b style="color:var(--good)">자연스럽게 잘 통하는 분위기</b>라, 한 해의 흐름이 본인에게 부드럽게 다가와요. 사람과의 인연·인맥 확장이 잘 풀리는 해예요.`;
+    if(k==='반합'||k==='반합약')return `두 띠가 <b style="color:var(--good)">${k==='반합'?'같은 방향으로 묶이는 분위기':'잔잔하게 협력하는 분위기'}</b>이에요. 함께 큰 목표를 추진할 동반자가 들어오기 좋은 해예요.`;
+    if(k==='충')return `두 띠가 <b style="color:var(--warn)">정면으로 부딪히는 분위기</b>라, 한 해 동안 환경 변동·자리 이동·관계 정리 기운이 커요. 흉이 아니라 자연스러운 자리 이동의 신호로 받아들이세요.`;
+    if(k==='원진')return `두 띠 사이에 <b style="color:var(--warn)">미묘하게 거슬리는 분위기</b>이 들어, 한 해 동안 이유 없는 신경 쓰임·구설·인내심을 시험하는 자리가 따라붙기 쉬워요. 정면으로 깨지진 않지만 속이 불편한 분위기라, 「말하지 않아도 알겠지」를 내려놓고 의식적인 거리감을 만드는 자세가 흐름을 풉니다.`;
+    if(k==='형')return `두 띠 사이에 <b style="color:var(--warn)">서로 깎이는 분위기</b>이 들어, 한 해 동안 시비·다툼·서로의 약점을 건드리는 자리에 주의가 필요해요. 공직·법조·의료 분야에서는 오히려 직업 성취의 흐름으로 풀려요.`;
     if(k==='자형')return `두 띠가 같은 글자라, 본인 내면의 모순·집착이 한 해 동안 올라오기 쉬운 기운이에요. 외부 자극(여행·운동·새 취미)으로 흐름을 풀어주세요.`;
     if(k==='파')return `두 띠 사이에 <b style="color:#d4a849">어긋나는 분위기</b>이 들어, 한 해 동안 시작은 좋아도 마무리·약속 이행에서 흔들림이 생기기 쉬워요. 중요한 결정 전 한 번 더 확인하세요.`;
     if(k==='해')return `두 띠 사이에 <b style="color:#d4a849">은근한 방해가 끼는 분위기</b>이 들어, 한 해 동안 구설·말 옮김·딴지가 따라붙기 쉬워요. 입조심·말조심이 흐름을 지킵니다.`;
@@ -5480,7 +5486,7 @@ function renderNewyearFortune(saju,y){
     const _gm=emptyBranches(saju.dp.stem,saju.dp.branch);
     const _gmFilled=_gm.includes(ypBranch);
     if(_gmFilled){
-      let gmBody=`<div class="lead-card" style="border-left:4px solid #6cbf7e"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 비어있는 자리(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 올해 글자로 채워져요.</span></div>`;
+      let gmBody=`<div class="lead-card" style="border-left:4px solid var(--good)"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 비어있는 자리(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 올해 글자로 채워져요.</span></div>`;
       gmBody+=`<p><span class="body-q">비어있는 자리가 채워지면 어떤 의미일까요?</span><br>본인 사주의 「비어있는 자리」는 평소 노력 대비 결실이 약하게 느껴지는 영역이에요. 그 자리에 올해 글자가 들어오면 <b>평소 약했던 영역에 결실이 들어오는 보강의 한 해</b>가 돼요.</p>`;
       gmBody+=`<p>특히 비어있던 영역이 ${ypBrOh===0?'학습·문서·연구':ypBrOh===1?'사람 관계·인기':ypBrOh===2?'안정·신용·부동산':ypBrOh===3?'결단·체계·제도':'지혜·통찰·내면'}과 관련된 기류라면, ${y}년에 그 영역에서 평소보다 명확한 성과를 만들 수 있어요.</p>`;
       h+=paidWrapBody('GONGMANG','✨',`비어있는 자리 채워짐 — ${y}년 약했던 자리가 보강되는 해`,gmBody);
@@ -5493,13 +5499,13 @@ function renderNewyearFortune(saju,y){
     if(_sj){
       let sjBody='';
       if(_sj.active){
-        sjBody=`<div class="lead-card" style="border-left:4px solid #e57462"><b>⚠️ ${y}년은 본인에게 ${_sj.phase}의 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹에 속해요. 이 그룹은 12년 주기로 3년 연속 삼재가 들어와요.</span></div>`;
+        sjBody=`<div class="lead-card" style="border-left:4px solid var(--warn)"><b>⚠️ ${y}년은 본인에게 ${_sj.phase}의 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹에 속해요. 이 그룹은 12년 주기로 3년 연속 삼재가 들어와요.</span></div>`;
         sjBody+=`<p><span class="body-q">${_sj.phase}란 무엇일까요?</span><br>삼재는 12년에 한 번 들어오는 3년 주기의 큰 변동기예요. 첫째 해(들삼재)는 변화의 시작, 둘째 해(눌삼재)는 작용이 가장 강한 가운데, 셋째 해(날삼재)는 후유증의 마무리예요.</p>`;
         sjBody+=`<p>${_sj.desc}</p>`;
         sjBody+=`<p><span class="body-q">${y}년을 어떻게 보내면 좋을까요?</span><br>${_sj.idx===0?'들삼재는 흐름의 「변화 신호」예요. 큰 결정·확장·새 사업·결혼·이주 같은 큰 결정은 한 박자 늦추고 흐름을 관찰하세요. 평소대로 일상을 이어가되, 충동적 결정만 피하면 큰 문제는 없어요.':_sj.idx===1?'눌삼재는 사주에서 가장 신중해야 할 해예요. 새 사업·이직·창업·큰 거래·법적 분쟁은 가능한 피하시고, 정리·내실·점검·자기계발에 무게를 두세요. 건강 검진·꾸준한 운동·휴식을 평소보다 더 챙기세요.':'날삼재는 「잘 보내야 9년이 편한」 마무리 단계예요. 미뤄둔 정리·청산·인연 정리·과거의 짐 풀기에 시간을 쓰시고, 큰 새 시작은 다음 해로 미루세요. 한 해만 잘 견디면 9년 동안 삼재가 들어오지 않아요.'}</p>`;
         sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 삼재가 흉만 의미하진 않아요</b><br>삼재는 인생의 「전환점」이기도 해요. 사주에 길성·천을귀인이 있는 분은 오히려 삼재 기간에 큰 도약을 이룬 케이스도 많아요. 핵심은 「큰 결정은 신중하게, 작은 정리는 적극적으로」예요.</p>`;
       }else{
-        sjBody=`<div class="lead-card" style="border-left:4px solid #6cbf7e"><b>✓ ${y}년은 본인에게 삼재가 아닌 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹이라, ${ZODIAC_KO[_sj.nextYear]||'다음'}년부터 3년이 다음 삼재 기간이에요.</span></div>`;
+        sjBody=`<div class="lead-card" style="border-left:4px solid var(--good)"><b>✓ ${y}년은 본인에게 삼재가 아닌 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹이라, ${ZODIAC_KO[_sj.nextYear]||'다음'}년부터 3년이 다음 삼재 기간이에요.</span></div>`;
         sjBody+=`<p>삼재가 아닌 해는 큰 변동·후유증의 흐름이 없어요. 본인 사주의 결대로 자유롭게 큰 결정·확장·새 시작을 추진하기 좋은 시기예요.</p>`;
       }
       h+=paidWrapBody('SAMJAE','🔮',`삼재(三災) — ${y}년 본인 띠 점검`,sjBody);
@@ -8031,23 +8037,17 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ② 본인 강점·그림자 — 바로 위 오행 dom/weak 문단과 중복 피하려 십신축·앉은 자리·신살 기반(상단 _ps 재사용)
   totBody+=`<p><span class="body-q">💡 본인의 강점과 의식해서 다스릴 부분</span><br>· <b>강점</b>: ${_ps.strengths.join(', ')}<br>· <b>다스릴 부분</b>: ${_ps.cautions.join(', ')}<br>${isStrong?'본인 사업·리더 자리·새로운 도전을 망설이지 마세요. 큰 책임과 큰 결정에도 흔들리지 않는 포용력이 큰 그릇이에요.':'먼저 공부·자격증·전문성으로 본인 그릇을 키운 뒤 큰 무대로 나가세요. 큰 조직에서 자리잡고 천천히 독립하는 패턴이 본인에게 안전해요.'}</p>`;
 
-  // ③ 대운·세운에서 도움 글자 (사용자 요청 핵심)
-  totBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 10년·올해 흐름에서 본인을 도와주는 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // ③④ 대운·세운 도움·주의 글자 — 한 박스 안에 두 단락
+  totBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">10년·올해 흐름에서 본인을 도와주는 글자</div>
+    <div>
       <b>도움 글자</b>: <em>${_goodOhKo}</em> 기운 — 천간 <b>${_stemOhCh[ys.main]}</b> · 지지 <b>${_brOhCh[ys.main]}</b><br>
-      <b>왜 도움이 되나요?</b> 본인 사주에서 약한 <em>${OHNAME[weak]}</em> 기운을 직접 보강하거나, 본인의 본질 <em>${OHNAME[dStemOh]}</em>을 받쳐주는 기운이라 본인 흐름이 자연스럽게 살아나기 때문이에요.<br>
-      <b>이 시기에는</b>: 큰 결정·이직·창업·결혼·중요한 발표 같은 굵직한 일을 배치하시면 결실이 따라와요. 미뤄둔 계획을 꺼내기 가장 좋은 시기예요.
+      본인 사주에서 약한 <em>${OHNAME[weak]}</em> 기운을 직접 보강하거나, 본인의 본질 <em>${OHNAME[dStemOh]}</em>을 받쳐주는 기운이라 본인 흐름이 자연스럽게 살아나요. 큰 결정·이직·창업·결혼·중요한 발표 같은 굵직한 일을 이때 배치하면 결실이 따라오고, 미뤄둔 계획을 꺼내기 가장 좋은 시기예요.
     </div>
-  </div>`;
-
-  // ④ 대운·세운에서 주의 글자
-  totBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 10년·올해 흐름에서 조심해야 할 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 글자</div>
+    <div>
       <b>주의 글자</b>: <em>${_badOhKo}</em> 기운 — 천간 <b>${_stemOhCh[_badOhIdx]}</b> · 지지 <b>${_brOhCh[_badOhIdx]}</b><br>
-      <b>왜 조심해야 하나요?</b> 본인을 도와주는 용신 <em>${OHNAME[ys.main]}</em>을 직접 깎거나, 본인의 약한 부분을 더 약하게 만드는 기운이라 같은 노력에도 결실이 늦게 따라오기 쉬워요.<br>
-      <b>이 시기에는</b>: 큰 결정·확장·이동·새 거래를 서두르지 말고, 정리·내실·휴식·자기 점검에 무게를 두세요. 흉이 아니라 「잠시 멈춰 보살피라는 신호」로 받아들이는 게 가장 좋아요.
+      본인을 도와주는 도움 기운 <em>${OHNAME[ys.main]}</em>을 직접 깎거나 본인의 약한 부분을 더 약하게 만드는 기운이라, 같은 노력에도 결실이 늦게 따라오기 쉬워요. 큰 결정·확장·이동·새 거래를 서두르지 말고 정리·내실·휴식·자기 점검에 무게를 두세요. 흉이 아니라 「잠시 멈춰 보살피라는 신호」로 받아들이는 게 가장 좋아요.
     </div>
   </div>`;
 
@@ -8094,23 +8094,18 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   wBody+=`<p>월급·예금·정기 수입처럼 예측 가능한 돈은 본인의 생활 기반을 잡아주고, 사업·투자·영업처럼 움직이는 돈은 성장의 통로가 돼요. 중요한 건 둘 중 하나만 고르는 게 아니라, <b>안정 수입으로 바닥을 만들고 활동 재물은 검증된 범위에서 키우는 것</b>이에요.</p>`;
   // [전] 본인 강점·주의
   wBody+=`<p>강점은 ${isStrong?(hasWealth?'큰 흐름의 돈을 다뤄도 쉽게 흔들리지 않는 포용력':'본인의 이름값과 전문성이 돈으로 이어지는 힘'):'무리하지 않고 차근차근 본인 그릇에 맞게 쌓아가는 안정성'}이에요. 다만 ${has('겁재')?'경쟁심이 올라올 때 동업·과시 소비·충동 투자로 돈이 새기 쉬워요. 큰 결정은 하루 묵혀두는 습관이 필요해요.':wealth.pp>wealth.pj?'활동 재물이 강해서 한 번에 크게 움직이다가 손실도 크게 맞을 수 있어요. 분산과 절제가 본인 돈을 지켜줘요.':'성실함만으로는 큰 도약이 늦을 수 있어요. 중요한 투자나 확장 앞에서는 외부 조언과 인맥을 함께 쓰는 편이 좋아요.'}</p>`;
-  // [분위기] 대운/세운 도움 글자 (큰 박스)
-  wBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 재물에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // [분위기] 대운/세운 도움·조심 글자 — 한 박스 안에 도움/주의 두 단락
+  wBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">재물에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자</b>: <em>${OHNAME[wealthOh]}</em> 기운(재성 자체) — 천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b><br>
       또는 <em>${OHNAME[outputOh]}</em> 기운(식상 — 재물을 만드는 활동) — 천간 <b>${_wealthStemCh[outputOh]}</b> · 지지 <b>${_wealthBrCh[outputOh]}</b><br>
-      <b>왜?</b> 재성 글자는 본인의 「돈 자리」 자체가 강해지는 시기이고, 식상 글자는 본인 표현·활동이 돈으로 바뀌는 통로를 열어주기 때문이에요.<br>
-      <b>이 시기에는</b>: 큰 매수·계약·창업·새 거래·이직·결혼 자금 결정을 적극 넣으세요. 미뤄둔 결정의 결실이 자연스럽게 따라와요.
+      재성 글자는 본인의 「돈 자리」 자체가 강해지는 시기이고, 식상 글자는 본인 표현·활동이 돈으로 바뀌는 통로를 열어줘요. 큰 매수·계약·창업·새 거래·이직·결혼 자금 결정을 이때 적극 넣으면 미뤄둔 결정의 결실이 자연스럽게 따라와요.
     </div>
-  </div>`;
-  // [분위기] 대운/세운 조심 글자
-  wBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 재물에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
       <b>주의 글자</b>: <em>${OHNAME[dStemOh]}</em> 기운(비겁 — 본인과 같은 기운) — 천간 <b>${_wealthStemCh[dStemOh]}</b> · 지지 <b>${_wealthBrCh[dStemOh]}</b><br>
-      <b>왜?</b> 본인과 같은 기운이 들어오면 「돈 자리」를 경쟁 상대처럼 나눠 가지게 돼요. 동업·과시 소비·충동 투자로 돈이 새기 쉬운 모양새예요.<br>
-      <b>이 시기에는</b>: 큰 매수·동업·고가품 구매·새 사업 결정을 하루 이틀 묵혀두세요. 24시간 룰을 적용하고, 친한 사이일수록 명확한 기록이 본인을 지켜줘요.
+      본인과 같은 기운이 들어오면 「돈 자리」를 경쟁 상대처럼 나눠 가지게 돼요. 동업·과시 소비·충동 투자로 돈이 새기 쉬워요. 큰 매수·동업·고가품 구매·새 사업 결정은 하루 이틀 묵혀두고, 24시간 룰을 적용하며, 친한 사이일수록 명확한 기록이 본인을 지켜줘요.
     </div>
   </div>`;
   // [분위기+실천] 인생 단계 + 일상 행동
@@ -8191,7 +8186,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       wtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8234,23 +8229,18 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   cBody+=`<p>일에서는 두 흐름이 함께 움직여요. 하나는 직책·자격·명예처럼 바깥에서 인정받는 흐름이고, 다른 하나는 본인이 콘텐츠·서비스·성과를 밖으로 꺼내는 흐름이에요. 그래서 본인은 <b>기준이 분명한 환경에서 전문성을 쌓고, 그 전문성을 결과물로 보여줄 때</b> 가장 안정적으로 성장해요.</p>`;
   // [전] 분야 추천
   cBody+=`<p>잘 맞는 분야는 ${careerDetail.gkc.length>0?careerDetail.gkc.slice(0,4).join(', ')+' 같은 전문 영역과 ':''}${careerProfile(saju).careers.slice(0,4).join(', ')} 쪽이에요. 여기에 본인을 도와주는 기운을 살리면 ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]} 분야도 잘 맞아요. 직업을 고를 때는 이름보다 <b>본인이 오래 파고들 수 있는 구조인지</b>를 먼저 보세요.</p>`;
-  // [분위기] 도움 글자
-  cBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 직업에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
+  cBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">직업에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자</b>: <em>${OHNAME[officerOh]}</em>(관성 — 책임·승진) — 천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b><br>
       또는 <em>${OHNAME[resourceOh]}</em>(인성 — 자격·문서·학위) — 천간 <b>${_careerStemCh[resourceOh]}</b> · 지지 <b>${_careerBrCh[resourceOh]}</b><br>
-      <b>왜?</b> 관성은 본인 책임 자리가 직접 강해지는 시기, 인성은 자격·학위로 사회 인정의 토대가 두터워지는 시기예요.<br>
-      <b>이 시기에는</b>: 승진 추진·이직·새 직장·자격증 응시·국가고시·창업 결정에 적기. 한 분야에서 본인 자리를 굳히세요.
+      관성은 본인 책임 자리가 직접 강해지는 시기, 인성은 자격·학위로 사회 인정의 토대가 두터워지는 시기예요. 승진 추진·이직·새 직장·자격증 응시·국가고시·창업 결정에 적기이니 한 분야에서 본인 자리를 굳히세요.
     </div>
-  </div>`;
-  // [분위기] 조심 글자
-  cBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 직업에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
       <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_careerStemCh[outputOh]}</b> · 지지 <b>${_careerBrCh[outputOh]}</b><br>
-      <b>왜?</b> 식상이 너무 강해지면 본인 표현·창의가 권위·규율과 마찰을 만들어요. 톡톡 튀는 분위기로 평가가 갈리기 쉬운 시기.<br>
-      <b>이 시기에는</b>: 상사·규율과의 마찰을 의식적으로 다스리고, 톤을 한 단계 부드럽게. 사직·이직 결정은 다음 길일로 넘기세요.
+      식상이 너무 강해지면 본인 표현·창의가 권위·규율과 마찰을 만들어요. 톡톡 튀는 분위기로 평가가 갈리기 쉬운 시기라, 상사·규율과의 마찰을 의식적으로 다스리고 톤을 한 단계 부드럽게 하세요. 사직·이직 결정은 다음 길일로 넘기는 편이 좋아요.
     </div>
   </div>`;
   // [분위기+실천] 인생 단계
@@ -8316,7 +8306,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       ctBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8356,23 +8346,18 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   lBody+=`<p>${has('도화')?'본인 사주에는 사람을 끌어당기는 매력이 있어 인연이 쉽게 생길 수 있어요. 그래서 더더욱 설렘만 보고 들어가기보다, 오래 갈 수 있는 사람인지 천천히 확인하는 태도가 중요해요.':has('홍염')?'본인 사주에는 깊게 끌리는 매력이 있어 한번 마음이 열리면 관계가 진하게 흘러요. 그래서 가벼운 호감보다 진정성과 신뢰가 관계의 핵심이에요.':'본인은 본연의 <em>'+_ps.keyword+'</em> 분위기로 인연을 차근차근 만들어가는 편이에요. 빠른 불꽃보다, 시간이 지나도 서로의 생활을 존중할 수 있는 관계가 잘 맞아요.'}</p>`;
   // [전] 강점·주의
   lBody+=`<p>연애의 강점은 ${rel.key==='비화'?'닮은 사람과 만났을 때 빠르게 편안해지는 점':rel.key==='인성'?'상대가 본인에게 정서적 후원자가 되어주는 점':rel.key==='식상'?'본인이 상대를 세심하게 돌보고 표현할 수 있는 점':rel.key==='재성'?'상대와 함께 현실적인 생활 기반을 만들 수 있는 점':'상대에게서 추진력과 자극을 받으며 성장하는 점'}이에요. 다만 ${has('도화')?'선택지가 많아질수록 마음이 흔들릴 수 있으니 관계의 기준을 분명히 세워야 해요.':has('백호')?'감정이 급격히 올라올 때 말이 세게 나갈 수 있어요. 갈등은 길게 몰아치기보다 짧고 자주 풀어야 해요.':'본인 입장만 고집하면 좋은 관계도 답답해질 수 있어요. 중요한 대화에서는 한 발 물러나 상대 입장을 먼저 확인해보세요.'}</p>`;
-  // [분위기] 도움 글자
-  lBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 연애에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
+  lBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">연애에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자 ①</b>: <em>${OHNAME[_loveSpouseOh]}</em>(${partnerWord} 자리) — 천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b><br>
       <b>도움 글자 ②</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 자연스럽게 어울리는 <em>${_hapBranch}</em> 글자<br>
-      <b>왜?</b> ${partnerWord} 자리 글자는 본인에게 인연이 들어오는 통로이고, 일지와 어울리는 글자는 본인이 앉은 자리와 짝을 이뤄 만남이 부드럽게 흘러요.<br>
-      <b>이 시기에는</b>: 소개팅·고백·결혼 결정·재회 결정에 적기. 미뤄둔 진전 대화를 이 시기에 풀어내세요.
+      ${partnerWord} 자리 글자는 본인에게 인연이 들어오는 통로이고, 일지와 어울리는 글자는 본인이 앉은 자리와 짝을 이뤄 만남이 부드럽게 흘러요. 소개팅·고백·결혼 결정·재회 결정에 적기이니 미뤄둔 진전 대화를 이 시기에 풀어내세요.
     </div>
-  </div>`;
-  // [분위기] 조심 글자
-  lBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 연애에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
       <b>주의 글자</b>: 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 정면으로 부딪히는 충 글자 또는 미세하게 거슬리는 원진 글자<br>
-      <b>왜?</b> 일지가 본인의 「감정 자리·배우자 자리」라, 충/원진 글자가 들어오면 관계 변동·이별·정리의 자연 흐름이 일어나기 쉬워요.<br>
-      <b>이 시기에는</b>: 큰 결정(결혼·이별 통보)을 한 박자 미루고, 관계 정리는 「자연 흐름」으로 받아들이세요. 본인 톤만 고집하지 말고 상대 입장 이해.
+      일지가 본인의 「감정 자리·배우자 자리」라, 충/원진 글자가 들어오면 관계 변동·이별·정리의 자연 흐름이 일어나기 쉬워요. 큰 결정(결혼·이별 통보)은 한 박자 미루고, 관계 정리는 「자연 흐름」으로 받아들이며, 본인 톤만 고집하지 말고 상대 입장을 이해해 보세요.
     </div>
   </div>`;
   // [분위기+실천] 시기 안내
@@ -8451,7 +8436,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(229,116,162,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#e574a2':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'#e574a2':'var(--border)';
       ltBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8519,7 +8504,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isCur=i===_curIdxF;
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       ftBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8562,23 +8547,17 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   hBody+=`<p>관리 포인트로 보면 <b>${OHNAME[maxOhIdx]}</b> 기운은 ${organMap[maxOhIdx]} 쪽의 과열·과부하 신호를 살피는 자리이고, <b>${OHNAME[minOhIdx]}</b> 기운은 ${organMap[minOhIdx]} 쪽을 꾸준히 보강하는 자리예요. 몸이 보내는 신호를 늦게 알아차리기보다, 수면·식단·운동 강도를 조금씩 조절하는 방식이 본인에게 잘 맞아요.</p>`;
   // [전] 강점·주의
   hBody+=`<p>주의할 흐름은 ${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b>이 과해질 때 '+overSymptom[maxOhIdx]+' 쪽으로 나타나기 쉬워요.':'가장 비중 높은 '+OHNAME[maxOhIdx]+'이 과해질 때 '+overSymptom[maxOhIdx].split('·')[0]+' 쪽 신호로 나타나기 쉬워요.'} ${minCnt===0?`또 <b>${OHNAME[minOhIdx]}</b> 기운이 약해서 ${lackSymptom[minOhIdx]} 쪽은 의식적으로 보강해야 해요.`:'다만 부족한 기운이 아주 심하게 비어 있지는 않아, 생활 리듬만 잘 잡아도 균형이 돌아오는 편이에요.'} ${has('백호')||has('양인')?'급격한 변화가 생기기 쉬운 별자리도 있으니 무리한 운동·운전·수면 부족은 한 단계 더 조심하세요.':has('역마')?'이동이 잦을수록 컨디션이 흔들릴 수 있으니 이동 전후 휴식 시간을 따로 잡아두세요.':'특별히 강한 위험 신호보다, 무리하지 않는 생활 리듬이 본인을 지켜주는 흐름이에요.'}</p>`;
-  // [분위기] 도움 글자
-  hBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 건강에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
+  hBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">건강에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자</b>: <em>${OHNAME[ys.main]}</em>(용신) — 천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>${minCnt===0?` 또는 부족한 <em>${OHNAME[minOhIdx]}</em> — 천간 <b>${_healthStemCh[minOhIdx]}</b> · 지지 <b>${_healthBrCh[minOhIdx]}</b>`:''}<br>
-      <b>왜?</b> 용신 글자는 본인 약한 부분을 보강해주고, 부족한 오행 글자는 비어 있던 자리를 채워줘 컨디션이 자연스럽게 안정돼요.<br>
-	      <b>이 시기에는</b>: 건강 회복·운동 시작·식단 변화·검진·전문의 상담을 시작하기 좋아요. 정기 검진을 미루지 마세요.
+      용신 글자는 본인 약한 부분을 보강해주고, 부족한 오행 글자는 비어 있던 자리를 채워줘 컨디션이 자연스럽게 안정돼요. 건강 회복·운동 시작·식단 변화·검진·전문의 상담을 시작하기 좋은 시기이니 정기 검진을 미루지 마세요.
     </div>
-  </div>`;
-  // [분위기] 조심 글자
-  hBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 건강에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
-      <b>주의 글자</b>: <em>${OHNAME[(ys.main+2)%5]}</em>(용신을 깎는 기운) — 천간 <b>${_healthStemCh[(ys.main+2)%5]}</b> · 지지 <b>${_healthBrCh[(ys.main+2)%5]}</b><br>
-      또한 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 충/형 글자도 사고·급성 질환 가능성<br>
-      <b>왜?</b> 용신이 깎이면 약한 부분 회복이 늦어지고, 일지 충/형은 본인 컨디션 자리에 직접 충격을 줘요.<br>
-      <b>이 시기에는</b>: 무리한 활동·수면 부족·과음 절제. 운전·운동 강도 한 단계 낮추고, 정기 검진을 자주.
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
+      <b>주의 글자</b>: <em>${OHNAME[(ys.main+2)%5]}</em>(용신을 깎는 기운) — 천간 <b>${_healthStemCh[(ys.main+2)%5]}</b> · 지지 <b>${_healthBrCh[(ys.main+2)%5]}</b>. 또한 본인 일지(<em>${BRCHKO[dp.branch]}</em>)와 충/형 글자도 사고·급성 질환 가능성이 있어요.<br>
+      용신이 깎이면 약한 부분 회복이 늦어지고, 일지 충/형은 본인 컨디션 자리에 직접 충격을 줘요. 무리한 활동·수면 부족·과음을 절제하고, 운전·운동 강도를 한 단계 낮추며, 정기 검진을 자주 받으세요.
     </div>
   </div>`;
   // [분위기+실천]
@@ -8651,7 +8630,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       htBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8713,7 +8692,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isCur=i===_curIdxM;
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       mtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8756,23 +8735,18 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   stBody+=`<p>${has('문창')?'본인 사주에 <b>지적 활동 별자리(문창귀인)</b>가 자리잡아 글재주와 논리력이 두드러져 자격증·시험·논문 같은 정형 학습에 특히 강해요.':has('화개')?'본인 사주에 <b>깊이 파는 별자리(화개)</b>가 자리잡아 한 분야 전문 학습·연구에 특히 강해요.':'특별한 학업 별자리는 없지만 두 자리가 잘 어우러져 꾸준한 학습력을 만들어요.'}</p>`;
   // [전] 강점·주의
   stBody+=`<p><span class="body-q">💡 본인의 학업 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${gk.name.includes('인')?'학문·교육 분야에서 큰 결실':gk.name.includes('식')||gk.name.includes('상관')?'토론·발표·창작 형식의 학습에 강함':has('문창')?'정형 학습·자격증·논문에 두각':'흥미 분야에 깊이 파고드는 집중력'}<br>· <b>주의</b>: ${OHNAME[outputOh]} 기운이 너무 강한 시기엔 본인 표현 활동에 끌려 정통 학문 시험에서 산만해지기 쉬워요. 의식적인 집중 시간 확보 필요.</p>`;
-  // [분위기] 도움 글자
-  stBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 학업에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
+  stBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">학업에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자 ①</b>: <em>${OHNAME[resourceOh]}</em>(인성 — 받아들이는 학습) — 천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b><br>
       <b>도움 글자 ②</b>: <em>${OHNAME[officerOh]}</em>(관성 — 공식 시험·자격) — 천간 <b>${_studyStemCh[officerOh]}</b> · 지지 <b>${_studyBrCh[officerOh]}</b><br>
-      <b>왜?</b> 인성은 본인 학습 자리가 직접 강해지는 시기, 관성은 공식 자격·시험을 받쳐주는 사회 인정의 토대예요.<br>
-      <b>이 시기에는</b>: 자격증·국가고시·대학 입시·대학원·논문·저술을 적극 배치. 미뤄둔 큰 시험을 응시하세요.
+      인성은 본인 학습 자리가 직접 강해지는 시기, 관성은 공식 자격·시험을 받쳐주는 사회 인정의 토대예요. 자격증·국가고시·대학 입시·대학원·논문·저술을 이때 적극 배치하고 미뤄둔 큰 시험을 응시하세요.
     </div>
-  </div>`;
-  // [분위기] 조심 글자
-  stBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 학업에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
       <b>주의 글자</b>: <em>${OHNAME[outputOh]}</em>(식상 — 표현이 강한 기운) — 천간 <b>${_studyStemCh[outputOh]}</b> · 지지 <b>${_studyBrCh[outputOh]}</b><br>
-      <b>왜?</b> 식상이 강해지면 본인 표현 활동(SNS·창작·자기 표현)에 끌려서 정통 학문 시험에 집중하기 어려워요.<br>
-      <b>이 시기에는</b>: 의식적인 집중 시간 차단(폰 분리·자습실), 표현 활동은 시험 후로 미루세요.
+      식상이 강해지면 본인 표현 활동(SNS·창작·자기 표현)에 끌려서 정통 학문 시험에 집중하기 어려워요. 의식적으로 집중 시간을 차단하고(폰 분리·자습실), 표현 활동은 시험 후로 미루세요.
     </div>
   </div>`;
   // 격국 + 신살 기반 추천 학과·자격증 추가
@@ -8872,7 +8846,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,140,200,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6c8cc8':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'#6c8cc8':'var(--border)';
       stlBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -8934,7 +8908,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isCur=i===_curIdxS;
       const hasGood=e.tags.some(t=>t.type==='good');
       const bg=isCur?'rgba(212,175,73,.12)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasGood?'var(--good)':'var(--border)';
       spBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -9023,19 +8997,19 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     gwBody+=`<p><span class="body-q">💡 개운법이 작동하는 원리</span><br>${_ohName[_yongOh]} 기운은 본인 일간 <em>${OHNAME[dStemOh]}</em>을 ${_yongOh===dStemOh?'본인과 같은 분위기로 받쳐주는':(_yongOh+1)%5===dStemOh?'본인을 낳아주는 어머니 자리로 채워주는':'본인의 부족한 부분을 보강하는'} 역할이에요. 거창한 부적·의식이 아니라 매일 작은 색·방향·음식·습관으로 도움 기운을 일상에 들이는 것이 평생 흐름을 부드럽게 만드는 가장 강력한 방법이에요.</p>`;
     gwBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 매일 한 가지부터</span><br>아래 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요. 매일 작은 한 가지가 거창한 의식보다 훨씬 큰 흐름을 만들어요.</p>`;
     gwBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
-      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid var(--good)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">🎨 길색</div>
         <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.color}</div>
       </div>
-      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid var(--good)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">🧭 길방위</div>
         <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.dir}</div>
       </div>
-      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid var(--good)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">⏰ 길시간</div>
         <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.time}</div>
       </div>
-      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid var(--good)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">🍂 길계절</div>
         <div style="font-size:.82rem;line-height:1.7;margin-top:4px">${_yong.season}</div>
       </div>
@@ -9051,7 +9025,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     // 강한 오행 절제
     if(_strongOh!==_yongOh&&oh[_strongOh]>=4){
-      gwBody+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid #e57462;font-size:.82rem"><b>⚖ 가장 강한 ${_ohEmoji[_strongOh]} ${_ohName[_strongOh]} 기운 절제법</b><br>본인 사주에 과한 기운이라, ${_ohName[_strongOh]}을 줄이는 색·음식은 평소보다 한 박자 줄이세요. 균형이 본인을 살려요.</p>`;
+      gwBody+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid var(--warn);font-size:.82rem"><b>⚖ 가장 강한 ${_ohEmoji[_strongOh]} ${_ohName[_strongOh]} 기운 절제법</b><br>본인 사주에 과한 기운이라, ${_ohName[_strongOh]}을 줄이는 색·음식은 평소보다 한 박자 줄이세요. 균형이 본인을 살려요.</p>`;
     }
     gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>개운법의 핵심은 「작은 일상 실천」</b><br>거창한 부적·의식보다 매일 작은 색·음식·습관을 일상에 들이는 것이 평생 흐름을 만들어요. 위 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요.</p>`;
     gwBody=_sajuContextHeader(saju,ys,gk,'개운법')+gwBody;
@@ -9089,7 +9063,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       if(brR.kind==='충'||brR.kind==='형'||brR.kind==='원진')score-=8;
       if(ohS===(ys.main+2)%5)score-=8;
       score=Math.max(35,Math.min(95,score));
-      const grade=score>=80?{lab:'대길',color:'#6cbf7e',bg:'rgba(108,191,126,.1)'}:score>=68?{lab:'길',color:'#a8c878',bg:'rgba(168,200,120,.1)'}:score>=55?{lab:'평',color:'#d4a849',bg:'rgba(212,168,73,.08)'}:{lab:'주의',color:'#e57462',bg:'rgba(229,116,98,.06)'};
+      const grade=score>=80?{lab:'대길',color:'var(--good)',bg:'rgba(108,191,126,.1)'}:score>=68?{lab:'길',color:'#a8c878',bg:'rgba(168,200,120,.1)'}:score>=55?{lab:'평',color:'#d4a849',bg:'rgba(212,168,73,.08)'}:{lab:'주의',color:'var(--warn)',bg:'rgba(229,116,98,.06)'};
       _yearRows.push({yy,age:yy-_meta.sy+1,stem:yp.stem,branch:yp.branch,tg,btg,brR,score,grade,tgKeyword:_tgKeyword[tg]||tg,brKeyword:_brKeyword});
     }
     let yrBody=`<p><span class="body-q">앞으로 10년, 매년 어떤 흐름이 들어올까요?</span><br>본인 사주 + 향후 10년 동안 매년 들어오는 외부 기운을 종합해 매년 핵심 색채와 점수를 한눈에 정리했어요. 큰 결정을 어느 해에 배치할지 미리 보세요.</p>`;
@@ -9131,7 +9105,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     rsBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     // 좋은 관계
     if(_goodRels.length>0){
-      rsBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e">
+      rsBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid var(--good)">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:6px">✓ 본인 인생의 「큰 자산」 — 좋은 흐름으로 작용하는 관계</div>
         ${_goodRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
       </div>`;
@@ -9145,7 +9119,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     // 주의 관계
     if(_badRels.length>0){
-      rsBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid #e57462">
+      rsBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid var(--warn)">
         <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:6px">⚠ 평생 과제 — 주의가 필요한 관계</div>
         ${_badRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
       </div>`;
@@ -9175,7 +9149,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _myPct=Math.round(_myPower/(_myPower+_outPower)*100);
     let _kind, _kindCol, _kindLabel;
     if(_balanced){_kind='중화';_kindCol='#d4a849';_kindLabel='균형형';}
-    else if(_strong){_kind='신강';_kindCol='#6cbf7e';_kindLabel='기운이 두터운 사주';}
+    else if(_strong){_kind='신강';_kindCol='var(--good)';_kindLabel='기운이 두터운 사주';}
     else{_kind='신약';_kindCol='#6c8cc8';_kindLabel='깊이를 모으는 사주';}
     // CH-PRO: SINGANG 통째 5분야 패턴 재작성
     let sjBody='';
@@ -9183,12 +9157,12 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     sjBody+=`<p><span class="body-q">본인의 그릇은 혼자 밀어붙이는 쪽보다 도움을 받아 깊어지는 쪽이에요.</span> 본인의 본질 <b>${stemNick(saju.dp.stem)}</b>이 사주 안에서 얼마나 힘을 얻는지 보면, 본인은 <b>${_kind} — ${_kindLabel}</b>에 가까워요. 이 말은 좋고 나쁨이 아니라, 인생을 운전하는 방식의 차이를 뜻해요.</p>`;
     sjBody+=`<p>본인을 받쳐주는 힘은 <em>${_myPower}자리 (${_myPct}%)</em>, 바깥으로 에너지를 쓰게 만드는 힘은 <em>${_outPower}자리 (${100-_myPct}%)</em>예요. ${_kind==='신강'?'본인 기운이 더 두터워 큰 책임과 큰 결정을 감당할 수 있는 그릇이에요. 다만 혼자 다 하려는 습관은 조심해야 해요.':_kind==='신약'?'본인 기운이 한 박자 섬세해서 좋은 사람·배움·환경을 만날 때 훨씬 크게 자라요. 무리한 단독 승부보다 기반을 먼저 만드는 전략이 좋아요.':'본인과 외부 기운이 비슷해 상황에 맞춰 유연하게 움직일 수 있어요. 다만 한 방향을 정하지 않으면 힘이 흩어질 수 있어요.'}</p>`;
     sjBody+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
-      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid #6cbf7e">
+      <div style="padding:11px 12px;background:rgba(108,191,126,.06);border-radius:8px;border-left:3px solid var(--good)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">본인 강화 기운</div>
         <div style="font-size:.85rem;font-weight:700;margin-top:4px">${_myPower}자리 (${_myPct}%)</div>
         <div style="font-size:.75rem;line-height:1.65;margin-top:5px;color:var(--sub)">비겁 ${_bigeop} · 인성 ${_insung}</div>
       </div>
-      <div style="padding:11px 12px;background:rgba(229,116,98,.06);border-radius:8px;border-left:3px solid #e57462">
+      <div style="padding:11px 12px;background:rgba(229,116,98,.06);border-radius:8px;border-left:3px solid var(--warn)">
         <div style="font-size:.74rem;color:var(--sub);font-weight:700">본인 약화 기운</div>
         <div style="font-size:.85rem;font-weight:700;margin-top:4px">${_outPower}자리 (${100-_myPct}%)</div>
         <div style="font-size:.75rem;line-height:1.65;margin-top:5px;color:var(--sub)">식상 ${_siksang} · 재성 ${_jaesung} · 관성 ${_gwansung}</div>
@@ -9229,7 +9203,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _pillars=[
       {key:'year',label:'년주(年柱)',sub:'조상·초년 (1~20세)',emoji:'🌅',pillar:saju.yp,bg:'rgba(108,140,200,.06)',border:'#6c8cc8',
        meaning:'본인이 태어난 해의 두 글자예요. 조상·뿌리·어린 시절의 환경을 보여주는 자리예요.'},
-      {key:'month',label:'월주(月柱)',sub:'부모·청년기·직장 (20~40세)',emoji:'🌳',pillar:saju.mp,bg:'rgba(108,191,126,.06)',border:'#6cbf7e',
+      {key:'month',label:'월주(月柱)',sub:'부모·청년기·직장 (20~40세)',emoji:'🌳',pillar:saju.mp,bg:'rgba(108,191,126,.06)',border:'var(--good)',
        meaning:'본인이 태어난 달의 두 글자예요. 부모와의 인연·청년기 진로·격국이 잡히는 자리예요.'},
       {key:'day',label:'일주(日柱)',sub:'본인·배우자 (40~60세)',emoji:'☀️',pillar:saju.dp,bg:'rgba(212,175,73,.1)',border:'#d4a849',
        meaning:'본인이 태어난 날의 두 글자예요. 위 글자는 「본인 그 자체」, 아래 글자는 「배우자 자리」예요.'},
@@ -9388,7 +9362,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gkBody+=`<p>${gk.desc} 이 유형은 본인이 억지로 꾸며내는 모습이 아니라, 오래 갈수록 자연스럽게 드러나는 방향이에요. 강점은 더 자주 쓰고, 반복해서 부딪히는 과제는 미리 알아차려 다듬는 쪽이 좋아요.</p>`;
       gkBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — ${gk.name} 유형으로 살아가는 길</span><br>${_userStage==='school'?'본인 사주 유형에 맞는 학과·진로 방향을 조기 발견해 깊이 파고들기':_userStage==='youth'?'대학·전공·첫 직장 선택에 본인 사주 유형을 우선 고려':_userStage==='young'||_userStage==='prime'?'본인 사주 유형이 가장 빛나는 분야에 평생 깊이 들어가기':_userStage==='mid'?'본인 사주 유형의 정점 시기 — 사회적 자리를 굳히고 후학 양성도 시작':'본인 사주 유형으로 평생 모은 자산을 인생 2막·자문 역할로 풀어내기'}</p>`;
       gkBody+=`<p><span class="body-q">${gk.name}의 평생 강점은?</span></p>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid #6cbf7e;margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid var(--good);margin-top:8px">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 평생 자산</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.gift}</div>
       </div>`;
@@ -9400,7 +9374,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         <div style="font-weight:700;color:#a84480;font-size:.88rem;margin-bottom:5px">💑 결혼·연애의 분위기</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.marriage}</div>
       </div>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:4px solid #e57462;margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:4px solid var(--warn);margin-top:8px">
         <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:5px">⚖ 평생 다듬어야 할 점</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
       </div>`;
@@ -9442,7 +9416,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         const isPast=du.age+9<_curAgeGm;
         const isCur=_curAgeGm>=du.age&&_curAgeGm<=du.age+9;
         const sy=_meta.sy+du.age, ey=sy+9;
-        gfBody+=`<div style="padding:9px 12px;background:${isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)'};border-radius:8px;border-left:4px solid ${isCur?'var(--accent)':isPast?'var(--border)':'#6cbf7e'};font-size:.82rem">
+        gfBody+=`<div style="padding:9px 12px;background:${isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)'};border-radius:8px;border-left:4px solid ${isCur?'var(--accent)':isPast?'var(--border)':'var(--good)'};font-size:.82rem">
           <b>${du.age}~${du.age+9}세</b> (${sy}~${ey}) · <em>${STEMKO[du.stem]}${BRCHKO[du.branch]}</em> 10년 흐름 ${isCur?'<span style="background:var(--accent);color:#1a1c1d;padding:1px 7px;border-radius:9px;font-size:.7rem;margin-left:4px">현재</span>':isPast?'<span style="color:var(--sub);margin-left:4px">(지난 시기)</span>':'<span style="color:#2e7d32;margin-left:4px">(앞으로)</span>'}
           <div style="font-size:.76rem;color:var(--sub);margin-top:3px">공망 자리 <b>${BRCHKO[du.branch]}</b>가 10년 동안 채워지는 시기 — 약했던 영역에 가장 큰 결실</div>
         </div>`;
@@ -9457,7 +9431,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gfBody+=`<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">`;
       _filledYears.forEach(o=>{
         const isCur=o.yy===_curYr;
-        gfBody+=`<div style="padding:6px 11px;background:${isCur?'rgba(212,175,73,.15)':'rgba(108,191,126,.06)'};border-radius:50px;border:1px solid ${isCur?'var(--accent)':'#6cbf7e'};font-size:.78rem">
+        gfBody+=`<div style="padding:6px 11px;background:${isCur?'rgba(212,175,73,.15)':'rgba(108,191,126,.06)'};border-radius:50px;border:1px solid ${isCur?'var(--accent)':'var(--good)'};font-size:.78rem">
           <b>${o.yy}</b><span style="color:var(--sub);margin-left:3px">(${o.age}세·${BRCHKO[o.branch]})</span>${isCur?' ★':''}
         </div>`;
       });
@@ -9539,7 +9513,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isCur=i===_curIdxH;
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
-      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'#e57462':hasGood?'#6cbf7e':'var(--border)';
+      const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
       httBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
@@ -9595,20 +9569,20 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _spouse=_isMale?_sip.jaesung:_sip.gwansung;
     const _spouseLabel=_isMale?'아내·여성 인연 (현실·자원의 분위기)':'남편·남성 인연 (책임·규칙의 분위기)';
     const _spouseEmoji=_isMale?'💑':'💑';
-    yckBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid #e57462">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid var(--warn)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">${_spouseEmoji} ${_spouseLabel}</div>
-        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#e57462;color:#1a1c1d;font-weight:700">${_strLabel(_spouse)}</span>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:var(--warn);color:#1a1c1d;font-weight:700">${_strLabel(_spouse)}</span>
       </div>
       <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('배우자',_spouse,_isMale?'아내·여성 인연이 풍부한 흐름이에요. 매력적인 이성과 자연스럽게 만나고, 결혼 후에도 가정 안에서 본인이 책임지고 다루는 흐름이 강해요. 다양한 인연 속 진중한 선택이 핵심.':'남편·남성 인연이 풍부한 모양새예요. 책임감 있고 신뢰할 만한 남성과 자연스럽게 만나는 흐름으로, 결혼 후 안정적인 가정을 꾸리기 좋아요.',_isMale?'아내·여성과의 인연이 옅거나 늦게 만나는 흐름이에요. 한 사람과 깊이 만나는 흐름으로, 본인이 의식적으로 다가가는 자세가 운을 만들어요.':'남편·남성과의 인연이 옅거나 늦게 만나는 기운이에요. 본인 영역과 자기 일을 가꾸는 자세가 인연의 흐름을 만들어요.','배우자 인연이 평이한 흐름으로, 본인의 일상 톤이 자연스레 인연의 흐름을 결정해요.')}</div>
     </div>`;
     // 자녀
     const _child=_isMale?_sip.gwansung:_sip.siksang;
     const _childLabel=_isMale?'자녀 인연 (책임·규칙의 분위기)':'자녀 인연 (표현·풀어내는 분위기)';
-    yckBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid #6cbf7e">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid var(--good)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">👶 ${_childLabel}</div>
-        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#6cbf7e;color:#1a1c1d;font-weight:700">${_strLabel(_child)}</span>
+        <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:var(--good);color:#1a1c1d;font-weight:700">${_strLabel(_child)}</span>
       </div>
       <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('자녀',_child,_isMale?'자녀 인연이 풍부한 흐름이에요. 자녀가 본인에게 큰 책임감과 사회적 성장을 가져다주는 분위기.':'자녀 인연이 풍부한 분위기예요. 자녀를 통해 본인의 표현·창작·돌봄의 흐름이 자연스레 펼쳐져요.',_isMale?'자녀 인연이 옅은 흐름이에요. 자녀를 늦게 보거나 자녀와의 정서적 거리감이 있을 수 있어요. 자녀 외 후배·아랫사람을 돌보는 활동도 그 영역을 채워줘요.':'자녀 인연이 옅은 모양새예요. 자녀를 늦게 보거나 자녀와의 거리감이 있을 수 있어요. 표현·창작·교육 활동이 그 흐름을 채워줘요.','자녀 인연이 평이한 흐름으로, 본인의 결혼 후 자연스럽게 운을 만들어가는 분위기.')}</div>
     </div>`;
@@ -9693,7 +9667,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     if(_hasMC)_bonusJobs.push('📜 <b>학문의 별(문창귀인)</b>이 있어 교육·연구·시험·문서 처리에 특별한 강점이 있어요');
     if(_bonusJobs.length>0){
       jobBody+=`<p style="margin-top:14px"><span class="body-q">사주 별자리가 더해주는 직업 색채는?</span></p>`;
-      jobBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_bonusJobs.map(j=>`<div style="padding:8px 12px;background:rgba(108,191,126,.06);border-left:3px solid #6cbf7e;border-radius:5px;font-size:.82rem">${j}</div>`).join('')}</div>`;
+      jobBody+=`<div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">${_bonusJobs.map(j=>`<div style="padding:8px 12px;background:rgba(108,191,126,.06);border-left:3px solid var(--good);border-radius:5px;font-size:.82rem">${j}</div>`).join('')}</div>`;
     }
     // 창업 vs 직장
     const _isCreator=_topSS==='bigeop'||_topSS==='jaesung'||_topSS==='siksang';
@@ -9781,7 +9755,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const locReading=getStageLocReading(st,p.label.split('(')[0])||'';
       const stageType=['장생','관대','임관','제왕'].includes(st)?'g':['목욕','쇠','병','사','묘'].includes(st)?'y':['절','태','양'].includes(st)?'b':'';
       const bg=stageType==='g'?'rgba(108,191,126,.08)':stageType==='y'?'rgba(212,175,73,.06)':stageType==='b'?'rgba(108,140,200,.06)':'var(--bg-deep)';
-      const border=stageType==='g'?'#6cbf7e':stageType==='y'?'#d4a849':stageType==='b'?'#6c8cc8':'var(--border)';
+      const border=stageType==='g'?'var(--good)':stageType==='y'?'#d4a849':stageType==='b'?'#6c8cc8':'var(--border)';
       stageBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-weight:700;color:var(--accent);font-size:.78rem"><b>${p.label}</b> · ${p.age}</div>
@@ -9792,7 +9766,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       </div>`;
     });
     stageBody+=`</div>`;
-    stageBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>12운성이 알려주는 것</b><br>본인 기운이 「언제 가장 진하고, 언제 가장 잠재기인지」를 알려주는 기운이에요. 활기차게 펼치는 시기(<b style="color:#6cbf7e">장생·관대·임관·제왕</b>)에는 큰 결정을 적극적으로, 갈무리·잠재 시기(<b style="color:#d4a849">쇠·병·사·묘</b>·<b style="color:#6c8cc8">절·태·양</b>)에는 정리·휴식·내실 다지기에 무게를 두세요.</p>`;
+    stageBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>12운성이 알려주는 것</b><br>본인 기운이 「언제 가장 진하고, 언제 가장 잠재기인지」를 알려주는 기운이에요. 활기차게 펼치는 시기(<b style="color:var(--good)">장생·관대·임관·제왕</b>)에는 큰 결정을 적극적으로, 갈무리·잠재 시기(<b style="color:#d4a849">쇠·병·사·묘</b>·<b style="color:#6c8cc8">절·태·양</b>)에는 정리·휴식·내실 다지기에 무게를 두세요.</p>`;
     h+=paidWrapBody('STAGE12','🌱',`본인 기운의 성장 단계`,stageBody);
   }catch(e){}
 
@@ -9857,20 +9831,16 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   swBody+=`<div class="lead-card">${cy}년은 본인에게 <b>${plainTG(swTG)}</b>의 분위기가 앞에 서고, 아래에서는 <b>${plainTG(swBTG)}</b>의 분위기가 받쳐주는 해예요. ${_swGoodHit?'본인을 도와주는 글자가 함께 들어와 중요한 일을 펼치기 좋아요.':_swBadHit?'본인을 도와주는 기운을 약하게 하는 글자가 보여서 큰 결정은 한 번 더 점검하는 해예요.':'크게 치우치기보다 본인 페이스를 다지는 해예요.'}</div>`;
   swBody+=`<p><span class="body-q">올해 들어오는 글자부터 볼게요.</span><br>${cy}년에 들어오는 글자는 <b>${STEMKO[swStem]}${BRCHKO[swBranch]}</b>예요. 위쪽 <em>${STEMKO[swStem]}</em>${eun(STEMKO[swStem])} 본인에게 <b>${plainTG(swTG)}</b>의 흐름으로 작용하고, 아래쪽 <em>${BRCHKO[swBranch]}</em>의 핵심 기운은 <b>${plainTG(swBTG)}</b>의 흐름으로 작용해요.</p>`;
   swBody+=`<p><span class="body-q">현재 10년 흐름 위에 올해가 겹쳐져요.</span><br>현재 본인의 10년 흐름은 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b>(${plainTG(tenGod(saju.dp.stem,curDaeun.stem))})이에요. ${getDaeunSewoonCombo(saju,curDaeun,swSaewoon,ys)} 시기로, 큰 장의 흐름 위에 올해 한 해의 색깔이 더해져요.</p>`;
-  swBody+=`<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 올해 힘을 보태는 쪽</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  swBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">올해 힘을 보태는 쪽</div>
+    <div>
       <b>도움 글자</b>: <em>${OHNAME[_swGoodOh]}</em> 기운 — 천간 <b>${_swStemCh[_swGoodOh]}</b> · 지지 <b>${_swBrCh[_swGoodOh]}</b><br>
-      <b>올해 해당 여부</b>: ${_swGoodHit?`올해 글자 안에 <b>${OHNAME[_swGoodOh]}</b> 기운이 들어와 있어요. 본인에게 힘을 보태는 신호예요.`:`올해 글자 안에 직접 들어오진 않아요. 대신 이 기운의 색·방향·습관을 일상에서 보강하면 좋아요.`}<br>
-      <b>이 시기에는</b>: 중요한 약속·신청·계약·관계 회복처럼 앞으로 뻗는 일을 배치해보세요.
+      ${_swGoodHit?`올해 글자 안에 <b>${OHNAME[_swGoodOh]}</b> 기운이 들어와 있어요. 본인에게 힘을 보태는 신호예요.`:`올해 글자 안에 직접 들어오진 않아요. 대신 이 기운의 색·방향·습관을 일상에서 보강하면 좋아요.`} 중요한 약속·신청·계약·관계 회복처럼 앞으로 뻗는 일을 이 시기에 배치해보세요.
     </div>
-  </div>`;
-  swBody+=`<div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 올해 속도를 낮출 쪽</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">올해 속도를 낮출 쪽</div>
+    <div>
       <b>주의 글자</b>: <em>${OHNAME[_swBadOh]}</em> 기운 — 천간 <b>${_swStemCh[_swBadOh]}</b> · 지지 <b>${_swBrCh[_swBadOh]}</b><br>
-      <b>올해 해당 여부</b>: ${_swBadHit?`올해 글자 안에 <b>${OHNAME[_swBadOh]}</b> 기운이 보여요. 서두른 결정은 한 템포 늦추는 편이 좋아요.`:`올해 직접 강하게 보이진 않아요. 그래도 이 기운이 강한 달에는 무리하지 마세요.`}<br>
-      <b>이 시기에는</b>: 과로·충동 결정·말실수·무리한 지출을 줄이고, 기록과 확인을 늘리세요.
+      ${_swBadHit?`올해 글자 안에 <b>${OHNAME[_swBadOh]}</b> 기운이 보여요. 서두른 결정은 한 템포 늦추는 편이 좋아요.`:`올해 직접 강하게 보이진 않아요. 그래도 이 기운이 강한 달에는 무리하지 마세요.`} 과로·충동 결정·말실수·무리한 지출을 줄이고, 기록과 확인을 늘리세요.
     </div>
   </div>`;
   swBody+=`<p><span class="body-q">${_userAge}세 ${_userStageLabel} 기준으로 올해를 이렇게 쓰면 좋아요.</span><br>${getSewoonDesc(swTG,swBTG,curDaeun,saju,_userAge)}</p>`;
@@ -10108,9 +10078,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       <div class="nb-body">
         <p style="font-size:.85rem;line-height:1.9;margin-bottom:14px">아래 카드들을 하나하나 보기 전, 본인 사주의 핵심을 한 그림으로 정리해드려요. 자세한 풀이는 각 카드에서 이어져요.</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px">
-          <div style="padding:11px 13px;background:rgba(108,191,126,.08);border-left:3px solid #6cbf7e;border-radius:8px">
+          <div style="padding:11px 13px;background:rgba(108,191,126,.08);border-left:3px solid var(--good);border-radius:8px">
             <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">본인 본질</div>
-            <div style="font-weight:700;color:#6cbf7e;font-size:.92rem">${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${dm.n.split('(')[0]}</div>
+            <div style="font-weight:700;color:var(--good);font-size:.92rem">${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${dm.n.split('(')[0]}</div>
             <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${stemNick(dp.stem)}</div>
           </div>
           <div style="padding:11px 13px;background:rgba(212,175,73,.08);border-left:3px solid var(--accent);border-radius:8px">
@@ -10123,9 +10093,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
             <div style="font-weight:700;color:var(--accent-bright);font-size:.92rem">${OHNAME[ys.main]}</div>
             <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">${_helpFood} · ${_helpDir}</div>
           </div>
-          <div style="padding:11px 13px;background:rgba(229,116,98,.06);border-left:3px solid #e57462;border-radius:8px">
+          <div style="padding:11px 13px;background:rgba(229,116,98,.06);border-left:3px solid var(--warn);border-radius:8px">
             <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">보강 필요 기운</div>
-            <div style="font-weight:700;color:#e57462;font-size:.92rem">${OHNAME[_weakOh]}</div>
+            <div style="font-weight:700;color:var(--warn);font-size:.92rem">${OHNAME[_weakOh]}</div>
             <div style="font-size:.72rem;color:var(--sub);margin-top:3px;line-height:1.5">의식적인 활동·환경으로 채우기</div>
           </div>
           ${_topSins?`<div style="padding:11px 13px;background:rgba(150,120,200,.08);border-left:3px solid #9678c8;border-radius:8px">
@@ -10898,7 +10868,7 @@ function buildLifeSummaryA4Html(){
               if(key==='gongmang')return isG?'good':'flat';
               return 'flat';
             };
-            const bgM={good:'#6cbf7e',flat:'#444',warn:'#d4a849',bad:'#e57462'};
+            const bgM={good:'var(--good)',flat:'#444',warn:'#d4a849',bad:'var(--warn)'};
             let rows='';
             _fieldsA.forEach(f=>{
               rows+=`<div style="display:contents"><div style="padding:2px 4px;font-size:8.5px;color:#bbb;white-space:nowrap">${f.ko}</div>`;
@@ -11081,7 +11051,7 @@ function buildNewyearSummaryA4Html(){
   // 별자리
   const zodLine=zod?`${zod.emoji} <b>${zod.ko}</b>(${zod.el} 원소) — ${zod.body}`:'';
   // 띠 작용
-  const tCol=(zodiacRel.kind==='합'||zodiacRel.kind==='반합'||zodiacRel.kind==='반합약')?'#6cbf7e':(zodiacRel.kind==='충'||zodiacRel.kind==='원진'||zodiacRel.kind==='형')?'#e57462':'#d4a849';
+  const tCol=(zodiacRel.kind==='합'||zodiacRel.kind==='반합'||zodiacRel.kind==='반합약')?'var(--good)':(zodiacRel.kind==='충'||zodiacRel.kind==='원진'||zodiacRel.kind==='형')?'var(--warn)':'#d4a849';
   const tLab={'합':'자연스럽게 어울림','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'본인 본명년','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[zodiacRel.kind]||'평이';
   // 신살 부스트
   const matchedSins=[...new Set(activeYearSins.map(s=>s.n.split(' ')[0]))].slice(0,4);
@@ -11131,7 +11101,7 @@ function buildNewyearSummaryA4Html(){
               else if(relM.kind==='형')hint+='/형 시비';
               else if(relM.kind==='원진')hint+='/원진 거슬림';
               const mark=isD?'🎯':isL?'🍀':isT?'⚠️':'·';
-              const col=isD?'#d4af37':isL?'#6cbf7e':isT?'#e57462':'#666';
+              const col=isD?'#d4af37':isL?'var(--good)':isT?'var(--warn)':'#666';
               return `<div style="color:${col}"><b>${mark}${o.mm}월</b>(${o.sc.total}): ${hint}</div>`;
             }).join('')}
           </div>
@@ -11214,7 +11184,7 @@ function buildGunghapSummaryA4Html(){
   const date=new Date().toISOString().slice(0,10);
   const brK=result.dayBrRel?result.dayBrRel.kind:'평';
   const brLabel={'합':'자연스럽게 어울림','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'같은 글자 만남','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[brK]||'평이';
-  const brCol=(brK==='합'||brK==='반합'||brK==='반합약')?'#6cbf7e':(brK==='충'||brK==='원진'||brK==='형')?'#e57462':'#d4a849';
+  const brCol=(brK==='합'||brK==='반합'||brK==='반합약')?'var(--good)':(brK==='충'||brK==='원진'||brK==='형')?'var(--warn)':'#d4a849';
   const tg1=plainTG(tenGod(saju1.dp.stem,cd1.stem));
   const tg2=plainTG(tenGod(saju2.dp.stem,cd2.stem));
   const sw=(age,du)=>{const v=age-du.age;return v<=2?'초입':v<=5?'중반':v<=8?'후반':'끝자락';};
@@ -11653,7 +11623,7 @@ function _generalAreaConclusion(saju, ys, areaLabel){
   const _stemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
   const _brCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.07),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;line-height:1.85">
-    ${areaLabel}에서 큰 결정을 잡을 때는 <b style="color:#6cbf7e">${goodOh}</b> 기운이 들어오는 시기를 먼저 보세요. 이 기운은 본인 바탕을 받쳐주거나 약한 부분을 채워줘서 같은 선택도 덜 무리하게 풀려요. 반대로 <b style="color:#e57462">${badOh}</b> 기운이 강한 때는 속도를 늦추고, 확인·정리·휴식 쪽에 무게를 두는 편이 좋아요.
+    ${areaLabel}에서 큰 결정을 잡을 때는 <b style="color:var(--good)">${goodOh}</b> 기운이 들어오는 시기를 먼저 보세요. 이 기운은 본인 바탕을 받쳐주거나 약한 부분을 채워줘서 같은 선택도 덜 무리하게 풀려요. 반대로 <b style="color:var(--warn)">${badOh}</b> 기운이 강한 때는 속도를 늦추고, 확인·정리·휴식 쪽에 무게를 두는 편이 좋아요.
   </div>`;
 }
 
@@ -11676,20 +11646,18 @@ function _areaDeepConclusion(area, saju, ys, gender){
     sewoon:{label:'올해 흐름',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'올해 들어오는 글자가 본인을 도와주는 기운과 같은 흐름이면 큰 결정을 배치하기 좋아요.',badWhy:'올해 글자가 본인을 도와주는 기운을 약하게 하면 큰 결정을 서두르지 말고 정리·내실에 무게를 두세요.',action:'좋은 달에는 굵직한 결정, 주의 달에는 정리·내실'}
   };
   const a=A[area]||{label:'영역',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인 용신',badWhy:'용신 극하는 기운',action:'본인 흐름 따라가기'};
-  return `<div style="margin-top:14px;padding:13px 15px;background:linear-gradient(135deg,rgba(108,191,126,.1),var(--earth-bg));border-radius:9px;border-left:3px solid #6cbf7e">
-	    <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:8px">🟢 ${a.label}에서 본인을 도와주는 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+  return `<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--good);margin-bottom:8px">${a.label}에서 본인을 도와주는 10년·올해 글자</div>
+    <div>
       <b>도움 글자</b>: <em>${OHNAME[a.helpOh]}</em> 기운 — 천간 <b>${stemCh[a.helpOh]}</b> · 지지 <b>${brCh[a.helpOh]}</b><br>
-      <b>왜?</b> ${a.helpWhy}<br>
-      <b>이 시기에는</b>: ${a.action}
+      ${a.helpWhy}<br>
+      실천: ${a.action}
     </div>
-  </div>
-  <div style="margin-top:10px;padding:13px 15px;background:linear-gradient(135deg,rgba(229,116,98,.07),var(--earth-bg));border-radius:9px;border-left:3px solid #e57462">
-	    <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:8px">🔴 ${a.label}에서 조심해야 할 10년·올해 글자</div>
-    <div style="font-size:.79rem;line-height:1.9">
+    <div style="font-weight:700;color:var(--warn);margin:13px 0 8px;padding-top:13px;border-top:1px solid var(--border)">조심해야 할 10년·올해 글자</div>
+    <div>
       <b>주의 글자</b>: <em>${OHNAME[a.badOh]}</em> 기운 — 천간 <b>${stemCh[a.badOh]}</b> · 지지 <b>${brCh[a.badOh]}</b><br>
-      <b>왜?</b> ${a.badWhy}<br>
-      <b>이 시기에는</b>: 큰 결정 한 박자 미루고 평소보다 의식적인 다스림이 필요해요.
+      ${a.badWhy}<br>
+      큰 결정은 한 박자 미루고 평소보다 의식적인 다스림이 필요해요.
     </div>
   </div>`;
 }
@@ -11744,12 +11712,12 @@ function _fieldConclusion(field, saju, ys, gender){
   }
   return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.79rem;line-height:1.85">
     <div style="font-weight:700;color:var(--accent);font-size:.85rem;margin-bottom:8px">💡 본인 사주 「${dStemKo}${OHNAME[dStemOh]}」 기준 — 이 분야 결론</div>
-    <div style="margin-bottom:6px"><b style="color:#6cbf7e">✓ 장점:</b> ${pros}</div>
+    <div style="margin-bottom:6px"><b style="color:var(--good)">✓ 장점:</b> ${pros}</div>
     <div style="margin-bottom:6px"><b style="color:var(--accent)">✦ 필요한 것:</b> ${needs}</div>
-    <div style="margin-bottom:6px"><b style="color:#e57462">⚠ 주의:</b> ${cautions}</div>
+    <div style="margin-bottom:6px"><b style="color:var(--warn)">⚠ 주의:</b> ${cautions}</div>
     <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)">
-      <div style="margin-bottom:5px"><b style="color:#6cbf7e">🟢 대운·세운에서 본인을 도와주는 글자:</b> ${helpStems}</div>
-      <div><b style="color:#e57462">🔴 대운·세운에서 조심해야 할 글자:</b> ${avoidStems}</div>
+      <div style="margin-bottom:5px"><b style="color:var(--good)">🟢 대운·세운에서 본인을 도와주는 글자:</b> ${helpStems}</div>
+      <div><b style="color:var(--warn)">🔴 대운·세운에서 조심해야 할 글자:</b> ${avoidStems}</div>
     </div>
   </div>`;
 }
@@ -11910,8 +11878,8 @@ function getDaeunDescDetail(tg,btg,du,saju,isStrong,ys){
     // 원진·형이 일지에 들어오면 부부궁·자기궁 흔들림 보강 안내
     const dayWonjin=brRel(saju.dp.branch,daeunBr).kind==='원진';
     const dayHyung=['형','자형'].includes(brRel(saju.dp.branch,daeunBr).kind);
-    if(dayWonjin)r+=` <b style="color:#e57462">본인 배우자 자리에 이유 없는 거슬림이 들어와</b> 10년간 부부·연인 사이에 미묘한 거슬림이 누적될 수 있어요. 가까운 관계일수록 의식적인 거리감과 짧고 자주 소통하는 습관이 결정적이에요.`;
-    if(dayHyung)r+=` <b style="color:#e57462">본인 자리가 서로 깎이는 흐름으로 들어와</b> 10년간 부부·자기 자리에 갈등의 기류가 생길 수 있어요. 무관·법조·의료 같은 직업으로 풀면 오히려 큰 성취로 승화돼요.`;
+    if(dayWonjin)r+=` <b style="color:var(--warn)">본인 배우자 자리에 이유 없는 거슬림이 들어와</b> 10년간 부부·연인 사이에 미묘한 거슬림이 누적될 수 있어요. 가까운 관계일수록 의식적인 거리감과 짧고 자주 소통하는 습관이 결정적이에요.`;
+    if(dayHyung)r+=` <b style="color:var(--warn)">본인 자리가 서로 깎이는 흐름으로 들어와</b> 10년간 부부·자기 자리에 갈등의 기류가 생길 수 있어요. 무관·법조·의료 같은 직업으로 풀면 오히려 큰 성취로 승화돼요.`;
   }
   return r;
 }
@@ -13896,8 +13864,8 @@ function renderGunghapResult(saju1,saju2,result){
   const crossNotes=[];
   if(cr.합)crossNotes.push(`자연스럽게 어울림 <b>${cr.합}건</b>`);
   if(cr.반합)crossNotes.push(`같은 방향 협력 <b>${cr.반합}건</b>`);
-  if(cr.충)crossNotes.push(`정면 부딪힘 <b style="color:#e57462">${cr.충}건</b>`);
-  if(cr.원진)crossNotes.push(`이유 없는 거슬림 <b style="color:#e57462">${cr.원진}건</b>`);
+  if(cr.충)crossNotes.push(`정면 부딪힘 <b style="color:var(--warn)">${cr.충}건</b>`);
+  if(cr.원진)crossNotes.push(`이유 없는 거슬림 <b style="color:var(--warn)">${cr.원진}건</b>`);
   if(cr.형)crossNotes.push(`서로 깎임 <b style="color:#d4a849">${cr.형}건</b>`);
   if(cr.파)crossNotes.push(`마무리 어긋남 <b style="color:#d4a849">${cr.파}건</b>`);
   if(cr.해)crossNotes.push(`은근한 방해 <b style="color:#d4a849">${cr.해}건</b>`);
@@ -15250,21 +15218,21 @@ function renderNamePaid(saju, nmExtra){
     <p style="font-size:.83rem;line-height:1.9">100점에 가까울수록 본인 사주의 약한 부분을 이름이 자연스럽게 채워주고, 본인을 도와주는 기운(용신)을 이름이 더해주는 기운이에요. 점수가 낮다고 무조건 나쁜 이름은 아니고, 의식적으로 보완해야 할 부분이 더 많다는 뜻으로 봐주시면 돼요.</p>
 
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px">
-      <div style="padding:12px 14px;background:rgba(108,191,126,.08);border-left:3px solid #6cbf7e;border-radius:8px">
-        <div style="font-weight:700;color:#6cbf7e;font-size:.88rem;margin-bottom:6px">✓ 이 이름의 좋은점</div>
+      <div style="padding:12px 14px;background:rgba(108,191,126,.08);border-left:3px solid var(--good);border-radius:8px">
+        <div style="font-weight:700;color:var(--good);font-size:.88rem;margin-bottom:6px">✓ 이 이름의 좋은점</div>
         <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_goods.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
       </div>
       <div style="padding:12px 14px;background:rgba(212,175,73,.07);border-left:3px solid var(--accent);border-radius:8px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem;margin-bottom:6px">✦ 보완해야 할 점</div>
         <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_improves.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
       </div>
-      <div style="padding:12px 14px;background:rgba(229,116,98,.06);border-left:3px solid #e57462;border-radius:8px">
-        <div style="font-weight:700;color:#e57462;font-size:.88rem;margin-bottom:6px">⚠ 주의해야 할 점</div>
+      <div style="padding:12px 14px;background:rgba(229,116,98,.06);border-left:3px solid var(--warn);border-radius:8px">
+        <div style="font-weight:700;color:var(--warn);font-size:.88rem;margin-bottom:6px">⚠ 주의해야 할 점</div>
         <ul style="margin:0;padding-left:18px;font-size:.79rem;line-height:1.85">${_cautions.map(s=>`<li style="margin-bottom:4px">${s}</li>`).join('')}</ul>
       </div>
     </div>
 
-    ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid #6cbf7e;font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 자동 매핑해 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능해요.</div>':''}`;
+    ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid var(--good);font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 자동 매핑해 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능해요.</div>':''}`;
   h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
 
   // ── ② 한자 4격 + 81수리 (한자 있을 때만)
@@ -15399,7 +15367,7 @@ function renderNamePaid(saju, nmExtra){
     const _yinPct=100-_yangPct;
     let _balance,_balanceCol,_meaning,_advice;
     if(Math.abs(_yang-_yin)<=1){
-      _balance='균형형';_balanceCol='#6cbf7e';
+      _balance='균형형';_balanceCol='var(--good)';
       _meaning='이름의 양(밝음·움직임) 기운과 음(고요·내면) 기운이 균형 잡힌 흐름이에요. 정통 작명학 기준 가장 이상적인 형태로, 본인의 외향성·내향성이 조화롭게 발휘되도록 도와줘요.';
       _advice='이 균형이 평생 자산이에요. 외부 활동과 내면 다스림을 모두 잘 다루는 흐름으로, 어떤 환경에도 적응하기 좋아요.';
     }else if(_yang>_yin){
@@ -15636,7 +15604,7 @@ function renderNamePaid(saju, nmExtra){
       top5.forEach((c,i)=>{
         const hanStr=c.cg2?`${c.cs.han}${c.cg1.han}${c.cg2.han}`:`${c.cs.han}${c.cg1.han}`;
         const strokeStr=c.cg2?`${c.sS}+${c.sG1}+${c.sG2}획`:`${c.sS}+${c.sG1}획`;
-        const goodColor=c.goodCnt===4?'#6cbf7e':c.goodCnt===3?'var(--wood)':c.goodCnt===2?'var(--accent)':'var(--sub)';
+        const goodColor=c.goodCnt===4?'var(--good)':c.goodCnt===3?'var(--wood)':c.goodCnt===2?'var(--accent)':'var(--sub)';
         const sMeaning=getHanMeaning(c.cs.han)||'';
         const g1Meaning=getHanMeaning(c.cg1.han)||'';
         const g2Meaning=c.cg2?(getHanMeaning(c.cg2.han)||''):'';
@@ -16272,7 +16240,7 @@ function renderGunghapMarriedLifeCard(saju1, saju2, gen1, gen2){
     <div style="font-size:.82rem;line-height:1.85">${dailyTone}</div>
   </div>`;
   // 2. 재물 분위기
-  body+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid #6cbf7e">
+  body+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid var(--good)">
     <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">💰 재물의 분위기</div>
     <div style="font-size:.82rem;line-height:1.85">${wealthGood?'두 분 모두 재성(현실·자원의 분위기)이 두터워 가정 안 재물 활동이 활발한 흐름. 합쳐서 ${wealthCnt}자리의 재성으로 부부 공동 자산이 잘 쌓이는 분위기예요.'.replace('${wealthCnt}',wealthCnt):wealthCnt>=2?`재성이 함께 ${wealthCnt}자리 — 평이한 재물 흐름. 한쪽이 안정 재물을 책임지고 다른 한쪽이 활동 재물을 책임지는 분담이 살림을 살려요.`:`두 분 모두 재성이 약한 분위기라, 본인 그릇·전문성·이름값으로 부가 따라오는 흐름. 큰 재물보다 정신적·문화적 풍요를 추구하는 가정이 본인들에게 더 맞아요.`}</div>
   </div>`;
@@ -16353,7 +16321,7 @@ function renderGunghapTimelineMatchCard(saju1, saju2, gen1, gen2){
   body+=`</div>`;
   // 겹치는 시기
   if(overlapYears.length>0){
-    body+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:3px solid #6cbf7e;font-size:.82rem"><b>🎯 두 분 결혼·큰 결정 시기가 겹치는 시기</b><br>${overlapYears.map(o=>`<b>${o.start}~${o.end}년</b>`).join(' · ')}에 두 분 모두 결혼·만남·큰 결정의 흐름이 함께 들어와요. 이 시기에 결혼·약혼·동거·이주 같은 큰 결정을 배치하면 흐름이 가장 잘 맞아요.</p>`;
+    body+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:3px solid var(--good);font-size:.82rem"><b>🎯 두 분 결혼·큰 결정 시기가 겹치는 시기</b><br>${overlapYears.map(o=>`<b>${o.start}~${o.end}년</b>`).join(' · ')}에 두 분 모두 결혼·만남·큰 결정의 흐름이 함께 들어와요. 이 시기에 결혼·약혼·동거·이주 같은 큰 결정을 배치하면 흐름이 가장 잘 맞아요.</p>`;
   }else{
     body+=`<p style="margin-top:14px;padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849;font-size:.82rem"><b>📌 결혼 시기가 정확히 겹치는 해는 없어요</b><br>각자의 결혼 적기가 다르지만, 사주는 「가능성」이지 「필연」이 아니에요. 두 분이 의식적으로 흐름을 맞춰가시면 어느 시기에도 좋은 결정을 만들 수 있어요.</p>`;
   }
@@ -16361,7 +16329,7 @@ function renderGunghapTimelineMatchCard(saju1, saju2, gen1, gen2){
   const changes1=tl1.filter(t=>t.tags.includes('change'));
   const changes2=tl2.filter(t=>t.tags.includes('change'));
   if(changes1.length||changes2.length){
-    body+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid #e57462;font-size:.82rem"><b>⚠️ 큰 변동기 (정면 부딪힘) — 큰 결정 한 박자 살피세요</b><br>${changes1.length?`본인 <b>${changes1.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''}${changes1.length&&changes2.length?' · ':''}${changes2.length?`상대 <b>${changes2.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''} — 이 시기엔 결혼·이주·창업 같은 큰 결정보다 관계 정리·재정립의 자연스러운 시기로 받아들이는 자세가 관계를 지킵니다.</p>`;
+    body+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid var(--warn);font-size:.82rem"><b>⚠️ 큰 변동기 (정면 부딪힘) — 큰 결정 한 박자 살피세요</b><br>${changes1.length?`본인 <b>${changes1.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''}${changes1.length&&changes2.length?' · ':''}${changes2.length?`상대 <b>${changes2.map(c=>c.age+'~'+c.endAge+'세').join(', ')}</b>`:''} — 이 시기엔 결혼·이주·창업 같은 큰 결정보다 관계 정리·재정립의 자연스러운 시기로 받아들이는 자세가 관계를 지킵니다.</p>`;
   }
   return paidWrapBody('TIMELINE_MATCH','📅','두 분 결혼·큰 결정 시기 일치도',body);
 }
@@ -17592,7 +17560,7 @@ function searchHanziBySound(sound){
     });
     html+='</div>';
     box.innerHTML=html;
-  }catch(e){box.innerHTML=`<div style="text-align:center;color:#e57462;font-size:.78rem;padding:14px">검색 오류: ${e.message}</div>`;}
+  }catch(e){box.innerHTML=`<div style="text-align:center;color:var(--warn);font-size:.78rem;padding:14px">검색 오류: ${e.message}</div>`;}
 }
 
 // 캔버스에서 고른 한자 → 지정된 입력란에 채움 (없으면 비어있는 첫 칸)
@@ -17777,7 +17745,7 @@ function searchHanziByStrokeFromCanvas(){
     if(d[i+3]>50 && (d[i]+d[i+1]+d[i+2])<400)filled++;
   }
   if(filled<200){
-    document.getElementById('hanziSearchResult').innerHTML='<div style="text-align:center;color:#e57462;font-size:.78rem;padding:14px">⚠️ 캔버스에 한자를 그려주세요.</div>';
+    document.getElementById('hanziSearchResult').innerHTML='<div style="text-align:center;color:var(--warn);font-size:.78rem;padding:14px">⚠️ 캔버스에 한자를 그려주세요.</div>';
     return;
   }
   const strokeApprox=Math.max(1,Math.min(30,Math.round(filled/420)));
@@ -17837,7 +17805,7 @@ function _renderHanziSearchPage(){
     const simPct=Math.round((c.sim||0)*100);
     const tip=c.meaning?`${c.meaning} · ${c.stroke}획 · 모양 ${simPct}%`:`${c.stroke}획 · 모양 ${simPct}% · U+${code}`;
     // 모양 유사도 80%+ 초록색, 60%+ 황금색, 그 외 회색
-    const simColor=simPct>=80?'#6cbf7e':simPct>=60?'var(--accent)':'var(--sub)';
+    const simColor=simPct>=80?'var(--good)':simPct>=60?'var(--accent)':'var(--sub)';
     html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" title="${tip}" style="padding:7px 2px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;${c.inDict?'':'opacity:.85'}" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
       <span style="font-family:'Noto Serif KR',serif;font-size:1.25rem;color:var(--accent);font-weight:700;line-height:1">${c.han}</span>
       <span style="font-size:.54rem;color:var(--sub)">${c.stroke}획 <span style="color:${simColor};font-weight:700">${simPct}%</span></span>
