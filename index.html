@@ -315,7 +315,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tag-y{background:var(--earth-bg);color:var(--earth);border-color:rgba(216,196,168,.3)}
 
 /* Compare items */
-.citem{border-left:4px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
+.citem{border-left:3px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
 .clabel{font-size:.69rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
 .cbody{font-size:.95rem;line-height:1.85}
 .citem.match{border-left-color:var(--wood)}
@@ -842,7 +842,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mm{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0 6px;background:var(--bg-deep);padding:9px 7px;border-radius:10px;border:1px solid var(--border)}
 .mm-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 4px 8px;text-align:center;transition:.2s;position:relative}
 .mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(212,175,55,.15);background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.5));transform:translateY(-2px);z-index:2}
-.mm-col.hl::after{content:'★';position:absolute;top:-9px;right:-5px;color:var(--accent-bright);font-size:.95rem;text-shadow:0 0 6px rgba(212,175,55,.5)}
 .mm-lab{font-size:.78rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
 .mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
@@ -4472,7 +4471,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
       _daypickSummaryData={saju,y,m,d,wDay,f,grade,stemTG,rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo,curDaeun:_curD,zod:_zod,hourCards,activeSins,dm,gender:_g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
       h+=`<div class="nb-card summary-card">
         <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">📅 ${y}.${m}.${d} 지정일 운세 요약본 다운로드</div>
+        <div class="nb-title">${y}.${m}.${d} 지정일 운세 요약본 다운로드</div>
         <div class="nb-body">
           <div class="summary-intro">
             <p>이 날의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
@@ -4837,7 +4836,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
       _monthlySummaryData={saju,sy,sm,ey,em,totalMonths,monthsData,luckyMonths,toughMonths,decisive,avgTotal,avgGrade,gk,ys,curDaeun:_startD,zod:_zod,dm,gender:_g,wealthAvg:avg('wealth'),loveAvg:avg('love'),careerAvg:avg('career'),healthAvg:avg('health'),metaSy:_meta.sy};
       h+=`<div class="nb-card summary-card">
         <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">📅 ${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div>
+        <div class="nb-title">${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div>
         <div class="nb-body">
           <div class="summary-intro">
             <p>${totalMonths}개월의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
@@ -5403,7 +5402,7 @@ function renderNewyearFortune(saju,y){
     else if(fldMax.k==='love')tipLine=`이 달은 관계 활동(소개팅·고백·진전 대화·재회)에 무게를 두면 흐름이 부드러워요`;
     else if(fldMax.k==='career')tipLine=`이 달은 직업 활동(이직 면접·승진 추진·창업 준비)에 무게를 두면 흐름이 잘 맞아요`;
     else tipLine=`이 달은 건강·일상 루틴 정비(운동·식단·수면)에 무게를 두면 한 해 체력이 든든해져요`;
-    monthDetailBody+=`<div style="padding:11px 13px;background:${isDecisive?'rgba(212,175,73,.12)':isLucky?'rgba(108,191,126,.06)':isTough?'rgba(229,116,98,.05)':'var(--bg-deep)'};border-radius:9px;border-left:4px solid ${isDecisive?'var(--accent)':isLucky?'var(--good)':isTough?'var(--warn)':'var(--border)'}">
+    monthDetailBody+=`<div style="padding:11px 13px;background:${isDecisive?'rgba(212,175,73,.12)':isLucky?'rgba(108,191,126,.06)':isTough?'rgba(229,116,98,.05)':'var(--bg-deep)'};border-radius:9px;border-left:3px solid ${isDecisive?'var(--accent)':isLucky?'var(--good)':isTough?'var(--warn)':'var(--border)'}">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">📅 <b>${o.mm}월</b> · ${STEMKO[o.mp.stem]}${BRCHKO[o.mp.branch]} 흐름</div>
         <span style="padding:2px 9px;border-radius:12px;background:${gM.bg};color:${gM.color};font-size:.7rem;font-weight:700;border:1px solid ${gM.color}55">${gM.lab} ${sc.total}점</span>
@@ -5500,7 +5499,7 @@ function renderNewyearFortune(saju,y){
     const _gm=emptyBranches(saju.dp.stem,saju.dp.branch);
     const _gmFilled=_gm.includes(ypBranch);
     if(_gmFilled){
-      let gmBody=`<div class="lead-card" style="border-left:4px solid var(--good)"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 비어있는 자리(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 올해 글자로 채워져요.</span></div>`;
+      let gmBody=`<div class="lead-card" style="border-left:3px solid var(--good)"><b>✨ ${y}년은 본인 사주의 비어있는 자리가 채워지는 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 사주의 비어있는 자리(${BRCHKO[_gm[0]]}·${BRCHKO[_gm[1]]}) 중 <b>${BRCHKO[ypBranch]}</b>가 ${y}년 올해 글자로 채워져요.</span></div>`;
       gmBody+=`<p><span class="body-q">비어있는 자리가 채워지면 어떤 의미일까요?</span><br>본인 사주의 「비어있는 자리」는 평소 노력 대비 결실이 약하게 느껴지는 영역이에요. 그 자리에 올해 글자가 들어오면 <b>평소 약했던 영역에 결실이 들어오는 보강의 한 해</b>가 돼요.</p>`;
       gmBody+=`<p>특히 비어있던 영역이 ${ypBrOh===0?'학습·문서·연구':ypBrOh===1?'사람 관계·인기':ypBrOh===2?'안정·신용·부동산':ypBrOh===3?'결단·체계·제도':'지혜·통찰·내면'}과 관련된 기류라면, ${y}년에 그 영역에서 평소보다 명확한 성과를 만들 수 있어요.</p>`;
       h+=paidWrapBody('GONGMANG','✨',`비어있는 자리 채워짐 — ${y}년 약했던 자리가 보강되는 해`,gmBody);
@@ -5513,13 +5512,13 @@ function renderNewyearFortune(saju,y){
     if(_sj){
       let sjBody='';
       if(_sj.active){
-        sjBody=`<div class="lead-card" style="border-left:4px solid var(--warn)"><b>⚠️ ${y}년은 본인에게 ${_sj.phase}의 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹에 속해요. 이 그룹은 12년 주기로 3년 연속 삼재가 들어와요.</span></div>`;
+        sjBody=`<div class="lead-card" style="border-left:3px solid var(--warn)"><b>⚠️ ${y}년은 본인에게 ${_sj.phase}의 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹에 속해요. 이 그룹은 12년 주기로 3년 연속 삼재가 들어와요.</span></div>`;
         sjBody+=`<p><span class="body-q">${_sj.phase}란 무엇일까요?</span><br>삼재는 12년에 한 번 들어오는 3년 주기의 큰 변동기예요. 첫째 해(들삼재)는 변화의 시작, 둘째 해(눌삼재)는 작용이 가장 강한 가운데, 셋째 해(날삼재)는 후유증의 마무리예요.</p>`;
         sjBody+=`<p>${_sj.desc}</p>`;
         sjBody+=`<p><span class="body-q">${y}년을 어떻게 보내면 좋을까요?</span><br>${_sj.idx===0?'들삼재는 흐름의 「변화 신호」예요. 큰 결정·확장·새 사업·결혼·이주 같은 큰 결정은 한 박자 늦추고 흐름을 관찰하세요. 평소대로 일상을 이어가되, 충동적 결정만 피하면 큰 문제는 없어요.':_sj.idx===1?'눌삼재는 사주에서 가장 신중해야 할 해예요. 새 사업·이직·창업·큰 거래·법적 분쟁은 가능한 피하시고, 정리·내실·점검·자기계발에 무게를 두세요. 건강 검진·꾸준한 운동·휴식을 평소보다 더 챙기세요.':'날삼재는 「잘 보내야 9년이 편한」 마무리 단계예요. 미뤄둔 정리·청산·인연 정리·과거의 짐 풀기에 시간을 쓰시고, 큰 새 시작은 다음 해로 미루세요. 한 해만 잘 견디면 9년 동안 삼재가 들어오지 않아요.'}</p>`;
         sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>📌 삼재가 흉만 의미하진 않아요</b><br>삼재는 인생의 「전환점」이기도 해요. 사주에 길성·천을귀인이 있는 분은 오히려 삼재 기간에 큰 도약을 이룬 케이스도 많아요. 핵심은 「큰 결정은 신중하게, 작은 정리는 적극적으로」예요.</p>`;
       }else{
-        sjBody=`<div class="lead-card" style="border-left:4px solid var(--good)"><b>✓ ${y}년은 본인에게 삼재가 아닌 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹이라, ${ZODIAC_KO[_sj.nextYear]||'다음'}년부터 3년이 다음 삼재 기간이에요.</span></div>`;
+        sjBody=`<div class="lead-card" style="border-left:3px solid var(--good)"><b>✓ ${y}년은 본인에게 삼재가 아닌 해예요.</b><br><span style="font-size:.82rem;color:var(--sub)">본인 띠(${ZODIAC_KO[myZodiac]}띠)는 ${_sj.group} 그룹이라, ${ZODIAC_KO[_sj.nextYear]||'다음'}년부터 3년이 다음 삼재 기간이에요.</span></div>`;
         sjBody+=`<p>삼재가 아닌 해는 큰 변동·후유증의 흐름이 없어요. 본인 사주의 결대로 자유롭게 큰 결정·확장·새 시작을 추진하기 좋은 시기예요.</p>`;
       }
       h+=paidWrapBody('SAMJAE','🔮',`삼재(三災) — ${y}년 본인 띠 점검`,sjBody);
@@ -5562,7 +5561,7 @@ function renderNewyearFortune(saju,y){
       _newyearSummaryData={saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod:_zodN,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage:_stageWordN,curDaeun:_curDN,dm,gender:_gN,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd,sh:_meta.hour||12,smin:_meta.min||0};
       h+=`<div class="nb-card summary-card">
         <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">📅 ${y}년 신년 운세 요약본 다운로드</div>
+        <div class="nb-title">${y}년 신년 운세 요약본 다운로드</div>
         <div class="nb-body">
           <div class="summary-intro">
             <p>${y}년 한 해의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
@@ -7906,11 +7905,11 @@ function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
   let body=paragraphs.map(p=>`<p>${preventOrphan(p)}</p>`).join('');
   let h=`<div class="nb-card">
     <div class="nb-cat">${catLabel}</div>
-    <div class="nb-title">${emoji} ${title}</div>
+    <div class="nb-title">${title}</div>
     <div class="nb-body">${body}</div>`;
   if(goodWarn){
-    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
-    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
+    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
+    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
   }
   h+='</div>';
   return h;
@@ -8001,8 +8000,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
 
   h+=`<!--CARD_START:SAJUCORE--><div class="nb-card" data-cardid="SAJUCORE" id="card-SAJUCORE">
     <div class="nb-cat">SAJU PALJA</div>
-    <div class="nb-title">🌱 사주팔자 종합 풀이</div>
-    <div class="nb-body">${preventOrphan(sajuBody)}</div>
+    <div class="nb-title">사주팔자 종합 풀이</div>
+    <div class="nb-body">${preventOrphan(_calmReadingHtml(sajuBody))}</div>
   </div><!--CARD_END:SAJUCORE-->`;
   // PSN: 여덟 글자가 말하는 본인만의 무늬 — 독립 카드(1장 노출)
   h+=paidWrapBody('PERSONA','🧬','타고난 성향과 본인만의 색',personaDeepHTML(saju,'full'));
@@ -8201,7 +8200,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      wtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      wtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8321,7 +8320,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      ctBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      ctBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8451,7 +8450,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(229,116,162,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'#e574a2':'var(--border)';
-      ltBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      ltBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8519,7 +8518,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      ftBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      ftBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8645,7 +8644,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      htBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      htBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8707,7 +8706,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      mtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      mtBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8861,7 +8860,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,140,200,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'#6c8cc8':'var(--border)';
-      stlBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      stlBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -8923,7 +8922,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good');
       const bg=isCur?'rgba(212,175,73,.12)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasGood?'var(--good)':'var(--border)';
-      spBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      spBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -9084,7 +9083,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     yrBody+=`<div style="display:flex;flex-direction:column;gap:7px;margin-top:14px">`;
     _yearRows.forEach((r,i)=>{
       const isCur=i===0;
-      yrBody+=`<div style="padding:9px 12px;background:${r.grade.bg};border-radius:8px;border-left:4px solid ${r.grade.color};display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      yrBody+=`<div style="padding:9px 12px;background:${r.grade.bg};border-radius:8px;border-left:3px solid ${r.grade.color};display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-weight:800;color:var(--accent);font-size:.85rem;min-width:65px">${r.yy}년${isCur?' ★':''}</div>
           <div style="font-size:.74rem;color:var(--sub)">${r.age}세 · ${STEMKO[r.stem]}${BRCHKO[r.branch]}</div>
@@ -9119,27 +9118,27 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     rsBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     // 좋은 관계
     if(_goodRels.length>0){
-      rsBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid var(--good)">
+      rsBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:3px solid var(--good)">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:6px">✓ 본인 인생의 「큰 자산」 — 좋은 흐름으로 작용하는 관계</div>
         ${_goodRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
       </div>`;
     }
     // 중성 관계
     if(_midRels.length>0){
-      rsBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+      rsBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849">
         <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:6px">⚖ 양면이 있는 관계 — 어떻게 쓰느냐로 흐름이 갈림</div>
         ${_midRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
       </div>`;
     }
     // 주의 관계
     if(_badRels.length>0){
-      rsBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid var(--warn)">
+      rsBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:3px solid var(--warn)">
         <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:6px">⚠ 평생 과제 — 주의가 필요한 관계</div>
         ${_badRels.map(r=>`<div style="font-size:.81rem;line-height:1.75;margin:3px 0">· <b>${r.type.replace(/\s*\([^)]*\)\s*/g,'')}</b> (${r.places.join('·')}) — ${r.d.replace(/\s+/g,' ').trim()}</div>`).join('')}
       </div>`;
     }
     if(!_hasAny){
-      rsBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:4px solid var(--border)"><div style="font-size:.82rem;color:var(--sub)">본인 사주 안에 두드러진 합·충 관계가 없어요. 큰 굴곡 없이 본연의 흐름이 잔잔히 이어지는 분위기예요.</div></div>`;
+      rsBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:3px solid var(--border)"><div style="font-size:.82rem;color:var(--sub)">본인 사주 안에 두드러진 합·충 관계가 없어요. 큰 굴곡 없이 본연의 흐름이 잔잔히 이어지는 분위기예요.</div></div>`;
     }
     rsBody+=`</div>`;
     rsBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 안의 관계가 알려주는 것</b><br>본인 사주의 좋은 관계는 평생 본인을 「자연스럽게 살려주는 자산」이고, 주의 관계는 「평생 의식해서 다스려야 할 과제」예요. 좋은 관계는 의식적으로 활용하고, 주의 관계는 의식적으로 다듬으면 같은 사주도 다른 흐름으로 펼쳐져요.</p>`;
@@ -9233,7 +9232,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const stemKo=STEMKO[p.pillar.stem];
       const brKo=BRCHKO[p.pillar.branch];
       const isMyDay=p.key==='day';
-      plBody+=`<div style="padding:11px 13px;background:${p.bg};border-radius:9px;border-left:4px solid ${p.border}">
+      plBody+=`<div style="padding:11px 13px;background:${p.bg};border-radius:9px;border-left:3px solid ${p.border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
           <div style="font-weight:700;color:${p.border};font-size:.78rem">${p.emoji} ${p.label}</div>
           <div style="font-size:.74rem;color:var(--sub);font-weight:600">${p.sub}</div>
@@ -9290,7 +9289,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     _myBrs.forEach(p=>{
       const m=_BR_MEANING[p.b];
       if(!m)return;
-      brBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:4px solid var(--accent)">
+      brBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-radius:9px;border-left:3px solid var(--accent)">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.86rem">${p.label} · ${m.animal}<b style="margin-left:5px;color:var(--text)">${m.ko}</b></div>
           <div style="font-size:.72rem;color:var(--sub)">${p.sub}</div>
@@ -9377,19 +9376,19 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gkBody+=`<p>${gk.desc} 이 유형은 본인이 억지로 꾸며내는 모습이 아니라, 오래 갈수록 자연스럽게 드러나는 방향이에요. 강점은 더 자주 쓰고, 반복해서 부딪히는 과제는 미리 알아차려 다듬는 쪽이 좋아요.</p>`;
       gkBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — ${gk.name} 유형으로 살아가는 길</span><br>${_userStage==='school'?'본인 사주 유형에 맞는 학과·진로 방향을 조기 발견해 깊이 파고들기':_userStage==='youth'?'대학·전공·첫 직장 선택에 본인 사주 유형을 우선 고려':_userStage==='young'||_userStage==='prime'?'본인 사주 유형이 가장 빛나는 분야에 평생 깊이 들어가기':_userStage==='mid'?'본인 사주 유형의 정점 시기 — 사회적 자리를 굳히고 후학 양성도 시작':'본인 사주 유형으로 평생 모은 자산을 인생 2막·자문 역할로 풀어내기'}</p>`;
       gkBody+=`<p><span class="body-q">${gk.name}의 평생 강점은?</span></p>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:4px solid var(--good);margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.08);border-radius:9px;border-left:3px solid var(--good);margin-top:8px">
         <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">🌟 평생 자산</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.gift}</div>
       </div>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849;margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849;margin-top:8px">
         <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">💪 가장 빛나는 강점</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.strength}</div>
       </div>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,162,.05);border-radius:9px;border-left:4px solid #e574a2;margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,162,.05);border-radius:9px;border-left:3px solid #e574a2;margin-top:8px">
         <div style="font-weight:700;color:#a84480;font-size:.88rem;margin-bottom:5px">💑 결혼·연애의 분위기</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.marriage}</div>
       </div>`;
-      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:4px solid var(--warn);margin-top:8px">
+      gkBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid var(--warn);margin-top:8px">
         <div style="font-weight:700;color:#c44;font-size:.88rem;margin-bottom:5px">⚖ 평생 다듬어야 할 점</div>
         <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
       </div>`;
@@ -9431,7 +9430,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         const isPast=du.age+9<_curAgeGm;
         const isCur=_curAgeGm>=du.age&&_curAgeGm<=du.age+9;
         const sy=_meta.sy+du.age, ey=sy+9;
-        gfBody+=`<div style="padding:9px 12px;background:${isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)'};border-radius:8px;border-left:4px solid ${isCur?'var(--accent)':isPast?'var(--border)':'var(--good)'};font-size:.82rem">
+        gfBody+=`<div style="padding:9px 12px;background:${isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)'};border-radius:8px;border-left:3px solid ${isCur?'var(--accent)':isPast?'var(--border)':'var(--good)'};font-size:.82rem">
           <b>${du.age}~${du.age+9}세</b> (${sy}~${ey}) · <em>${STEMKO[du.stem]}${BRCHKO[du.branch]}</em> 10년 흐름 ${isCur?'<span style="background:var(--accent);color:#1a1c1d;padding:1px 7px;border-radius:9px;font-size:.7rem;margin-left:4px">현재</span>':isPast?'<span style="color:var(--sub);margin-left:4px">(지난 시기)</span>':'<span style="color:#2e7d32;margin-left:4px">(앞으로)</span>'}
           <div style="font-size:.76rem;color:var(--sub);margin-top:3px">공망 자리 <b>${BRCHKO[du.branch]}</b>가 10년 동안 채워지는 시기 — 약했던 영역에 가장 큰 결실</div>
         </div>`;
@@ -9529,7 +9528,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const hasGood=e.tags.some(t=>t.type==='good'), hasWarn=e.tags.some(t=>t.type==='warn');
       const bg=isCur?'rgba(212,175,73,.12)':hasWarn&&!hasGood?'rgba(229,116,98,.05)':hasGood?'rgba(108,191,126,.06)':'var(--bg-deep)';
       const border=isCur?'var(--accent)':hasWarn&&!hasGood?'var(--warn)':hasGood?'var(--good)':'var(--border)';
-      httBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      httBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름</div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':''}
@@ -9565,7 +9564,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     yckBody+=`<p><span class="body-q">💡 본인 사주에서 가장 두터운/약한 가족 자리</span><br>${oh[(dStemOh+4)%5]>=3?'인성이 두터워 어머니·스승의 도움이 평생 자산':oh[(dStemOh+4)%5]===0?'인성이 비어 어머니·스승 인연이 의식적인 가꿈 필요':''} ${oh[(dStemOh+2)%5]>=3?'재성 두터워 '+(gender==='male'?'아내':'아버지')+' 인연이 평생 자산':oh[(dStemOh+2)%5]===0?(gender==='male'?'재성 비어 결혼 인연을 의식적으로 가꿈 필요':'재성 비어 아버지 인연이 약하기 쉬움'):''} ${oh[(dStemOh+1)%5]>=3?'식상 두터워 자녀·후배 인연이 풍성':oh[(dStemOh+1)%5]===0?'식상 비어 자녀와 의식적 소통 필요':''}</p>`;
     yckBody+=`<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">`;
     // 부모 (인성)
-    yckBody+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:3px solid #6c8cc8">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">👨‍👩 부모·은사 인연 (학습·받아들이는 분위기)</div>
         <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#6c8cc8;color:#1a1c1d;font-weight:700">${_strLabel(_sip.insung)}</span>
@@ -9573,7 +9572,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       <div style="margin-top:6px;font-size:.81rem;line-height:1.85;color:var(--sub)">${_readingPos('부모',_sip.insung,'부모·스승·어른의 덕이 두터운 흐름이에요. 평생 좋은 멘토·후원자가 따라붙고, 어려울 때마다 어른의 도움이 와요.','부모와 정서적 거리가 있는 분위기라 어린 시절부터 본인 힘으로 길을 여는 자립형이에요. 부모 덕보다 본인의 노력으로 만들어가는 인생.','부모·어른과의 인연이 평이한 기운이에요. 의식적으로 부모님과 자주 연락하고 관계를 가꾸시면 인덕이 더 살아나요.')}</div>
     </div>`;
     // 형제·동료 (비겁)
-    yckBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">👫 형제·동료 인연 (같은 흐름의 동료)</div>
         <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:#d4a849;color:#1a1c1d;font-weight:700">${_strLabel(_sip.bigeop)}</span>
@@ -9584,7 +9583,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _spouse=_isMale?_sip.jaesung:_sip.gwansung;
     const _spouseLabel=_isMale?'아내·여성 인연 (현실·자원의 분위기)':'남편·남성 인연 (책임·규칙의 분위기)';
     const _spouseEmoji=_isMale?'💑':'💑';
-    yckBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:4px solid var(--warn)">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(229,116,98,.06);border-radius:9px;border-left:3px solid var(--warn)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">${_spouseEmoji} ${_spouseLabel}</div>
         <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:var(--warn);color:#1a1c1d;font-weight:700">${_strLabel(_spouse)}</span>
@@ -9594,7 +9593,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     // 자녀
     const _child=_isMale?_sip.gwansung:_sip.siksang;
     const _childLabel=_isMale?'자녀 인연 (책임·규칙의 분위기)':'자녀 인연 (표현·풀어내는 분위기)';
-    yckBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid var(--good)">
+    yckBody+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:3px solid var(--good)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-weight:700;color:var(--accent);font-size:.88rem">👶 ${_childLabel}</div>
         <span style="font-size:.72rem;padding:2px 8px;border-radius:10px;background:var(--good);color:#1a1c1d;font-weight:700">${_strLabel(_child)}</span>
@@ -9771,7 +9770,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const stageType=['장생','관대','임관','제왕'].includes(st)?'g':['목욕','쇠','병','사','묘'].includes(st)?'y':['절','태','양'].includes(st)?'b':'';
       const bg=stageType==='g'?'rgba(108,191,126,.08)':stageType==='y'?'rgba(212,175,73,.06)':stageType==='b'?'rgba(108,140,200,.06)':'var(--bg-deep)';
       const border=stageType==='g'?'var(--good)':stageType==='y'?'#d4a849':stageType==='b'?'#6c8cc8':'var(--border)';
-      stageBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:4px solid ${border}">
+      stageBody+=`<div style="padding:11px 13px;background:${bg};border-radius:9px;border-left:3px solid ${border}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-weight:700;color:var(--accent);font-size:.78rem"><b>${p.label}</b> · ${p.age}</div>
           <span style="font-size:.74rem;padding:2px 9px;border-radius:12px;background:${border};color:#1a1c1d;font-weight:700">${st}</span>
@@ -9821,7 +9820,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   dBody+=`<div class="tl">${tlh}</div>`;
   h+=`<!--CARD_START:DAEUN10--><div class="nb-card" data-cardid="DAEUN10" id="card-DAEUN10">
     <div class="nb-cat">10YEAR × 큰 흐름</div>
-    <div class="nb-title">📅 10년 흐름 시기별 풀이 — 인생의 큰 장</div>
+    <div class="nb-title">10년 흐름 시기별 풀이 — 인생의 큰 장</div>
     <div class="nb-body">${preventOrphan(dBody)}</div>
   </div><!--CARD_END:DAEUN10-->`;
 
@@ -9877,7 +9876,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const isPast=e.du.age+9<_userAge;
       const bgCol=isCur?'rgba(212,175,73,.12)':isPast?'var(--bg-deep)':'rgba(108,191,126,.06)';
       const borderCol=isCur?'var(--accent)':isPast?'var(--border)':'var(--wood)';
-      tlBody+=`<div style="padding:11px 13px;background:${bgCol};border-radius:9px;border-left:4px solid ${borderCol}">
+      tlBody+=`<div style="padding:11px 13px;background:${bgCol};border-radius:9px;border-left:3px solid ${borderCol}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-weight:700;color:var(--accent);font-size:.88rem"><b>${e.ageRange}</b> · ${STEMKO[e.du.stem]}${BRCHKO[e.du.branch]} 흐름 <span style="font-size:.74rem;font-weight:600;color:var(--sub);margin-left:5px">${plainTG(e.tg)}</span></div>
           ${isCur?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--accent);color:#1a1c1d;font-weight:700">현재</span>':isPast?'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--border);color:var(--sub);font-weight:600">지난 시기</span>':'<span style="font-size:.7rem;padding:2px 9px;border-radius:12px;background:var(--wood);color:#1a1c1d;font-weight:700">앞으로</span>'}
@@ -10063,7 +10062,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ─── 모바일 우선 3분 요약 — 긴 인생총운의 첫 진입 피로를 줄이는 카드 ───
   const _quickCard=`<!--CARD_START:QUICK--><div class="nb-card quick-summary" data-cardid="QUICK" id="card-QUICK">
     <div class="nb-cat">3 MIN SUMMARY</div>
-    <div class="nb-title">⏱ 인생총운 3분 요약 — 지금 먼저 볼 것</div>
+    <div class="nb-title">인생총운 3분 요약 — 지금 먼저 볼 것</div>
     <div class="nb-body">
       <div class="lead-card"><b>본인은 ${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${stemNick(dp.stem)}</b> 같은 본질을 가진 사람이에요. 지금은 <b>${_userStageLabel}</b> 단계라, 먼저 현재 흐름을 잡고 돈·일·관계·건강처럼 실제 고민에 닿는 카드로 내려가면 이해가 가장 쉬워요.</div>
       <div class="quick-summary-grid">
@@ -10089,7 +10088,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _helpDir=ys.main===0?'동쪽':ys.main===1?'남쪽':ys.main===2?'중앙':ys.main===3?'서쪽':'북쪽';
     _masterCard=`<!--CARD_START:MASTER--><div class="nb-card" data-cardid="MASTER" id="card-MASTER" style="background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(45,52,71,.5));border:1px solid rgba(212,175,55,.35)">
       <div class="nb-cat">MASTER</div>
-      <div class="nb-title">🌟 본인 사주 한눈에 보기 — 핵심 요약</div>
+      <div class="nb-title">본인 사주 한눈에 보기 — 핵심 요약</div>
       <div class="nb-body">
         <p style="font-size:.85rem;line-height:1.9;margin-bottom:14px">아래 카드들을 하나하나 보기 전, 본인 사주의 핵심을 한 그림으로 정리해드려요. 자세한 풀이는 각 카드에서 이어져요.</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px">
@@ -10766,15 +10765,15 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
   _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo:_sgInfo,jobShort:_jobShort,yckShort:_yckShort,gwShort:_gwShort};
   return `<div class="nb-card summary-card">
     <div class="nb-cat">🎯 SUMMARY</div>
-    <div class="nb-title">📋 인생총운 요약본 다운로드</div>
+    <div class="nb-title">인생총운 요약본 다운로드</div>
     <div class="nb-body">
       <div class="summary-intro">
         <p>본인의 인생 전체 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
         <ul>
-          <li>📊 사주팔자 네 자리 도식 + 다섯 기운 분포</li>
-          <li>🔄 다섯 기운의 돕고 누르는 관계도</li>
-          <li>🔗 사주의 핵심 관계 — 좋게 작용 vs 주의</li>
-          <li>📅 10년 단위 서술식 풀이 (현재 시기 강조)</li>
+          <li>사주팔자 네 자리 도식 + 다섯 기운 분포</li>
+          <li>다섯 기운의 돕고 누르는 관계도</li>
+          <li>사주의 핵심 관계 — 좋게 작용 vs 주의</li>
+          <li>10년 단위 서술식 풀이 (현재 시기 강조)</li>
         </ul>
         <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
       </div>
@@ -11332,6 +11331,14 @@ function _shortReadingSentence(s,maxLen=92){
   const p=Math.max(cut.lastIndexOf(' '),cut.lastIndexOf('요.'),cut.lastIndexOf('다.'));
   return (p>38?cut.slice(0,p):cut).replace(/[,.·\s]+$/,'')+'…';
 }
+// 본문에서 장식성 이모지를 덜어낸다. 차트·범례의 기능성 이모지(🟢🟡🔴⬜★☆✓▾)는 보존.
+function _calmReadingHtml(html){
+  if(!html||typeof html!=='string')return html;
+  const deco=['📌','💡','📖','🪄','🔄','📍','⤵','🎯','✦','✧','🌟','✨','🧬','🌱','🔗','⚡','🐭','🩺','🤝','🚄','🪷','📊','🗓','📋','⏱','🏛','💑','✒️','🌙','🧭','🔮','🎉','🌼','📅','📜','🗒','🪙','🍀','💎','💰','💼','💕','💍','🌿','👥','📚','🔬','⚔️','👨‍👩‍👧‍👦','👨‍👩‍👧'];
+  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re=new RegExp('(?:'+deco.map(esc).join('|')+')\\uFE0F?\\s*','gu');
+  return html.replace(re,'');
+}
 function _softenBodySubheads(html){
   if(!html)return '';
   const lead=(text)=>{
@@ -11409,7 +11416,7 @@ function _timelineTagHtml(tags, fallback){
   if(!tags||!tags.length)return `<div style="color:var(--sub)">${preventOrphan(fallback||'이 시기는 크게 튀기보다 본인 페이스를 지키기 좋은 흐름이에요.')}</div>`;
   return tags.map(t=>{
     const reason=String(t.reason||'').replace(/^[^—]+—\s*/,'').trim();
-    return `<p style="margin:4px 0">${t.emoji||''} <b>${t.label}</b>이에요. <span style="color:var(--sub)">${preventOrphan(reason||'본인 흐름을 살피며 차분히 움직이면 좋아요.')}</span></p>`;
+    return `<p style="margin:4px 0"><b>${t.label}</b>이에요. <span style="color:var(--sub)">${preventOrphan(reason||'본인 흐름을 살피며 차분히 움직이면 좋아요.')}</span></p>`;
   }).join('');
 }
 function _buildReadingBrief(catLabel,title,bodyHtml,goodWarn,compact){
@@ -11433,7 +11440,7 @@ function _buildReadingBrief(catLabel,title,bodyHtml,goodWarn,compact){
 }
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
-  bodyHtml=_softenBodySubheads(normalizeReadingText(bodyHtml||''));
+  bodyHtml=_calmReadingHtml(_softenBodySubheads(normalizeReadingText(bodyHtml||'')));
   // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
   const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
   const foldCats=new Set(['life','daypick','monthly','newyear','name','gunghap']);
@@ -11449,9 +11456,9 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   const safeId='card-'+catLabel.replace(/[^A-Za-z0-9_-]/g,'_');
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
     ${badge}<div class="nb-cat">${catLabel}</div>
-    <div class="nb-title">${emoji} ${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
+    <div class="nb-title">${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
     ${briefHtml}
-    ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">👆 탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">★ 현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
+    ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
     <div class="nb-body">${preventOrphan(bodyHtml)}${memoryHtml}</div>`;
   if(goodWarn){
@@ -11461,19 +11468,19 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
       const li=arr=>(arr||[]).filter(Boolean).map(s=>`<li>${preventOrphan(s)}</li>`).join('');
       h+=`<div class="action-guide">`;
       if(goodWarn.strengths&&goodWarn.strengths.length){
-        h+=`<div class="ag-block ag-strengths"><div class="ag-lab">✅ 이 흐름의 강점</div><ul>${li(goodWarn.strengths)}</ul></div>`;
+        h+=`<div class="ag-block ag-strengths"><div class="ag-lab">이 흐름의 강점</div><ul>${li(goodWarn.strengths)}</ul></div>`;
       }
       if(goodWarn.todos&&goodWarn.todos.length){
-        h+=`<div class="ag-block ag-todos"><div class="ag-lab">🎯 해야 할 일</div><ul>${li(goodWarn.todos)}</ul></div>`;
+        h+=`<div class="ag-block ag-todos"><div class="ag-lab">해야 할 일</div><ul>${li(goodWarn.todos)}</ul></div>`;
       }
       if(goodWarn.avoids&&goodWarn.avoids.length){
-        h+=`<div class="ag-block ag-avoids"><div class="ag-lab">⚠️ 피할 일</div><ul>${li(goodWarn.avoids)}</ul></div>`;
+        h+=`<div class="ag-block ag-avoids"><div class="ag-lab">피할 일</div><ul>${li(goodWarn.avoids)}</ul></div>`;
       }
       h+=`</div>`;
     }else{
       // 하위 호환 — 기존 good/warn 2박스
-      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">✓ 좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
-      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">⚠ 주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
+      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">좋은 점</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
+      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">주의 사항</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
     }
   }
   if(isDetail)h+=`</div>`; // .detail-body-wrap 닫기
@@ -11489,7 +11496,7 @@ function _tlToggle(card,forceOpen){
   card.classList.toggle('tl-open',open);
   const btn=card.querySelector('.tl-hint');
   if(btn){
-    btn.textContent=open?'▲ 접어두기':'👆 탭하면 시기별 상세 풀이가 펼쳐져요';
+    btn.textContent=open?'▲ 접어두기':'탭하면 시기별 상세 풀이가 펼쳐져요';
     btn.setAttribute('aria-expanded',open?'true':'false');
   }
 }
@@ -11615,7 +11622,7 @@ function _generateTOC(h, scopeLabel){
     }else grid=items.map(btn).join('');
     return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
       <div class="nb-cat">TOC</div>
-      <div class="nb-title">📋 ${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
+      <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
         <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">먼저 장 단위로 훑어보고, 필요한 장만 펼쳐서 이동하세요.</p>
         <div class="toc-grid">${grid}</div>
@@ -12929,7 +12936,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
     <div class="ny-sec-title">💑 이 커플의 실천 가이드</div>
     <div class="action-guide">
       <div class="ag-block ag-strengths">
-        <div class="ag-lab">✅ 함께하면 좋은 활동</div>
+        <div class="ag-lab">함께하면 좋은 활동</div>
         <ul>
           <li>${fix.activity} — ${OHNAME[coupleWeak]} 부족 보강</li>
           <li>${seasonByWeak[coupleWeak]} 결혼·이사·여행 — 흐름이 가장 잘 맞는 시기</li>
@@ -12937,7 +12944,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
         </ul>
       </div>
       <div class="ag-block ag-todos">
-        <div class="ag-lab">🎯 갈등 시 해결 패턴</div>
+        <div class="ag-lab">갈등 시 해결 패턴</div>
         <ul>
           <li>${(()=>{const k=result.dayBrRel?result.dayBrRel.kind:'평';return ({'충':'정면 부딪힘이 발현될 땐 즉답 금지 — 24시간 후 대화','원진':'미세한 거슬림 — 쌓이기 전에 짧고 자주 표현, 「혼자만의 시간」 확보','형':'서로 깎이는 분위기 — 아픈 자리는 말로 짚지 않는 규칙 세우기','파':'어긋남 — 중요 약속·계약은 두 번 확인','해':'은근한 방해 — 작은 어긋남은 그날 풀어두기','자형':'같은 글자가 겹침 — 함께 가라앉지 않도록 외부 자극(취미·운동)을 함께'})[k]||'정기 대화 시간 확보(주 1회 30분)';})()}</li>
           <li>${dm1.n.split('(')[0]}이 먼저 말 걸고, ${dm2.n.split('(')[0]}이 받아주기 (오행 ${e1<e2?'생':'극'} 흐름 활용)</li>
@@ -12945,7 +12952,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
         </ul>
       </div>
       <div class="ag-block ag-avoids">
-        <div class="ag-lab">⚠️ 이 커플이 피할 일</div>
+        <div class="ag-lab">이 커플이 피할 일</div>
         <ul>
           <li>${(()=>{const k=result.dayBrRel?result.dayBrRel.kind:'평';return ({'충':'장거리 이동·큰 결정·시비 — 정면 부딪힘으로 변동성 큼','원진':'「말하지 않아도 알겠지」 식 침묵 — 미세한 거슬림은 침묵 속에 자란다','형':'서로의 약점·과거를 말로 짚는 일 — 깎이는 흐름이 발현된다','파':'마무리 안 된 약속·미루는 일 — 어긋남이 커진다','해':'사소한 어긋남을 「이건 아무것도 아니야」로 덮는 일','자형':'둘이서만 갇혀 우울감을 공유하는 일'})[k]||'일방적 희생 — 한쪽이 일방적으로 양보하면 흐름이 깨짐';})()}</li>
           <li>${OHNAME[coupleDom]} 과다 환경(예: ${coupleDom===1?'너무 화려한 인테리어':coupleDom===3?'차가운 분위기':coupleDom===0?'정리 안 된 환경':coupleDom===4?'너무 어두운 공간':'단조로운 일상'}) 지속 노출</li>
@@ -15408,7 +15415,7 @@ function renderNamePaid(saju, nmExtra){
       _meaning='음 기운('+_yinPct+'%)이 양 기운('+_yangPct+'%)보다 우세한 흐름이에요. 내면·사색·고요가 강해 깊이 있는 작업·예술·연구에 잘 맞지만, 외부 표현·활동에서는 한 박자 신중한 모양새예요.';
       _advice='의식적으로 산책·운동·사람 만남을 일상에 들이세요. 음 우세는 깊이의 자산이니, 양의 활동력을 더하면 평생 자산이 돼요.';
     }
-    let yyBody=`<div class="lead-card" style="border-left:4px solid ${_balanceCol}"><b>이름의 음양: ${_balance}</b><br><span style="font-size:.82rem;color:var(--sub)">양 ${_yang}자(${_yangPct}%) · 음 ${_yin}자(${_yinPct}%)</span></div>`;
+    let yyBody=`<div class="lead-card" style="border-left:3px solid ${_balanceCol}"><b>이름의 음양: ${_balance}</b><br><span style="font-size:.82rem;color:var(--sub)">양 ${_yang}자(${_yangPct}%) · 음 ${_yin}자(${_yinPct}%)</span></div>`;
     yyBody+=`<p><span class="body-q">음양은 어떻게 판단하나요?</span><br>한글 모음(중성)을 양(ㅏ·ㅑ·ㅗ·ㅛ·ㅐ·ㅒ 등)과 음(ㅓ·ㅕ·ㅜ·ㅠ·ㅡ·ㅣ 등)으로 분류해, 이름 전체의 음양 비율로 봐요. 양은 밝음·움직임·외향, 음은 고요·내면·사색을 의미해요.</p>`;
     yyBody+=`<div style="display:flex;align-items:stretch;height:32px;border-radius:8px;overflow:hidden;margin-top:14px;border:1px solid var(--border)">
       <div style="flex:${_yangPct};background:linear-gradient(90deg,#d4a849,#e8c578);display:flex;align-items:center;justify-content:center;color:#1a1c1d;font-weight:800;font-size:.82rem">☀ 양 ${_yangPct}%</div>
@@ -16264,28 +16271,28 @@ function renderGunghapMarriedLifeCard(saju1, saju2, gen1, gen2){
   let body=`<p><span class="body-q">결혼 후 두 분의 일상은 어떻게 흐를까요?</span><br>두 분의 배우자 자리, 중심 기운, 다섯 기운의 균형을 함께 보며 결혼 후 일상·재물·자녀·노후 4가지 영역의 흐름을 풀어드릴게요.</p>`;
   body+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
   // 1. 일상 분위기
-  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849">
     <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">🏠 일상의 분위기</div>
     <div style="font-size:.82rem;line-height:1.85">${dailyTone}</div>
   </div>`;
   // 2. 재물 분위기
-  body+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:4px solid var(--good)">
+  body+=`<div style="padding:11px 13px;background:rgba(108,191,126,.06);border-radius:9px;border-left:3px solid var(--good)">
     <div style="font-weight:700;color:#2e7d32;font-size:.88rem;margin-bottom:5px">💰 재물의 분위기</div>
     <div style="font-size:.82rem;line-height:1.85">${wealthGood?'두 분 모두 재성(현실·자원의 분위기)이 두터워 가정 안 재물 활동이 활발한 흐름. 합쳐서 ${wealthCnt}자리의 재성으로 부부 공동 자산이 잘 쌓이는 분위기예요.'.replace('${wealthCnt}',wealthCnt):wealthCnt>=2?`재성이 함께 ${wealthCnt}자리 — 평이한 재물 흐름. 한쪽이 안정 재물을 책임지고 다른 한쪽이 활동 재물을 책임지는 분담이 살림을 살려요.`:`두 분 모두 재성이 약한 분위기라, 본인 그릇·전문성·이름값으로 부가 따라오는 흐름. 큰 재물보다 정신적·문화적 풍요를 추구하는 가정이 본인들에게 더 맞아요.`}</div>
   </div>`;
   // 3. 자녀 분위기
-  body+=`<div style="padding:11px 13px;background:rgba(229,116,162,.06);border-radius:9px;border-left:4px solid #e574a2">
+  body+=`<div style="padding:11px 13px;background:rgba(229,116,162,.06);border-radius:9px;border-left:3px solid #e574a2">
     <div style="font-weight:700;color:#a84480;font-size:.88rem;margin-bottom:5px">👶 자녀의 분위기</div>
     <div style="font-size:.82rem;line-height:1.85">${childGood?`두 분의 자녀 인연이 두터운 분위기(합계 ${childCnt}자리). 자녀가 가정에 큰 활기와 행복을 가져다주는 흐름. 자녀를 둘 이상 두기에 좋은 분위기예요.`:childMid?`자녀 인연이 평이한 흐름(합계 ${childCnt}자리). 한 자녀에게 깊이 있는 사랑을 주는 분위기로, 자녀와의 정서적 거리가 가까운 분위기예요.`:`자녀 인연이 약한 흐름(합계 ${childCnt}자리). 자녀를 늦게 보거나 한 자녀에게 깊이 집중하는 분위기예요. 자녀 외에도 후배·아랫사람 돌봄 활동이 그 흐름을 채워줘요.`}</div>
   </div>`;
   // 4. 가정 오행 균형
-  body+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:4px solid #6c8cc8">
+  body+=`<div style="padding:11px 13px;background:rgba(108,140,200,.06);border-radius:9px;border-left:3px solid #6c8cc8">
     <div style="font-weight:700;color:#4a6699;font-size:.88rem;margin-bottom:5px">⚖ 가정 오행 균형</div>
     <div style="font-size:.82rem;line-height:1.85">두 사주 합산 시 <b>${ohE[dom]} ${ohN[dom]}</b>(${coupleOh[dom]}자리) 기운이 가장 두텁고, <b>${ohE[weak]} ${ohN[weak]}</b>(${coupleOh[weak]}자리) 기운이 가장 부족해요. 부족한 ${ohN[weak]} 기운에 해당하는 ${['녹색·동쪽','적색·남쪽','황색·중앙','흰색·서쪽','검정·북쪽'][weak]} 인테리어·식단을 가정에 들이시면 두 분의 흐름이 더 균형 잡혀요.</div>
   </div>`;
   // 5. 노후 분위기
   const lateGood=brR.kind==='합'||brR.kind==='반합'||stR.kind==='합';
-  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:4px solid #d4a849">
+  body+=`<div style="padding:11px 13px;background:rgba(212,175,73,.06);border-radius:9px;border-left:3px solid #d4a849">
     <div style="font-weight:700;color:#a8732e;font-size:.88rem;margin-bottom:5px">🌙 노후의 분위기</div>
     <div style="font-size:.82rem;line-height:1.85">${lateGood?'두 분의 배우자 자리와 중심 기운이 자연스럽게 잘 통하는 흐름이라, 노후로 갈수록 결속이 더 깊어져요. 함께 늙어가며 평생 동반자로 흐름이 풀려가요.':isTough?'두 분의 자리에 부딪힘이 있어 노후로 갈수록 의식적인 「함께하는 활동」(여행·취미·식사)이 흐름을 만들어줘요. 가만히 두면 거리감이 생길 수 있는 분위기.':'평이한 분위기라 노후의 색깔은 두 분이 함께 만들어가는 자리예요. 「오래 함께 사는 작은 습관」 한 가지를 만드시면 평생 동반자 느낌이 깊어져요.'}</div>
   </div>`;
