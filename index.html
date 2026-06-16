@@ -7453,19 +7453,37 @@ function _updatePayPriceByCoupon(coupon){
   const priceEl=document.getElementById('payProductPrice');
   if(priceEl)priceEl.textContent=formatWon(_payFinalAmount);
 }
-function applyPromoCode(){
+async function applyPromoCode(){
   const input=document.getElementById('payPromoCode');
   const msg=document.getElementById('payPromoMsg');
-  const raw=input?input.value:'';
-  const result=getApplicableCoupon(_payCategory,_payBaseAmount,raw);
-  if(!result.ok){
+  const code=_normalizePromoCode(input?input.value:'');
+  if(!code){
     _updatePayPriceByCoupon(null);
-    if(msg){msg.className='pay-promo-msg err';msg.textContent=result.message||'보상코드를 확인해 주세요.';}
+    if(msg){msg.className='pay-promo-msg err';msg.textContent='프로모션 코드를 입력해 주세요.';}
     return false;
   }
-  if(input)input.value=result.coupon.code;
-  _updatePayPriceByCoupon(result.coupon);
-  return true;
+  if(!KAKAO_PAYMENT_BASE||KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
+    _updatePayPriceByCoupon(null);
+    if(msg){msg.className='pay-promo-msg err';msg.textContent='보상 시스템이 준비 중이에요. 잠시 후 다시 시도해 주세요.';}
+    return false;
+  }
+  if(msg){msg.className='pay-promo-msg';msg.textContent='확인 중…';}
+  try{
+    const res=await fetch(KAKAO_PAYMENT_BASE+'/promo/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code, category:_payCategory, amount:_payBaseAmount})});
+    const data=await res.json().catch(()=>({}));
+    if(!data||!data.ok){
+      _updatePayPriceByCoupon(null);
+      if(msg){msg.className='pay-promo-msg err';msg.textContent=(data&&data.message)||'보상코드를 확인해 주세요.';}
+      return false;
+    }
+    if(input)input.value=data.code;
+    _updatePayPriceByCoupon({code:data.code, amount:data.amount, type:data.type});
+    return true;
+  }catch(e){
+    _updatePayPriceByCoupon(null);
+    if(msg){msg.className='pay-promo-msg err';msg.textContent='네트워크 오류로 코드를 확인하지 못했어요.';}
+    return false;
+  }
 }
 function openPaymentConsent(category,method){
   _payCategory=category;
@@ -7521,15 +7539,9 @@ async function startKakaoPayment(){
   const cat=_payCategory; if(!cat){return;}
   const m=PAID_META[cat];
   const baseAmount=computePayAmount(cat,_meta);
-  const couponCheck=_payCoupon ? getApplicableCoupon(cat, baseAmount, _payCoupon.code) : {ok:true,coupon:null};
+  // 코드 검증은 서버에서 (applyPromoCode→/promo/validate, /ready·/approve 재검증). 여기선 적용된 코드만 사용.
   const statusEl=document.getElementById('payStatus');
-  if(_payCoupon && !couponCheck.ok){
-    statusEl.className='pay-status err';
-    statusEl.textContent=couponCheck.message||'프로모션 코드를 다시 확인해 주세요.';
-    _updatePayPriceByCoupon(null);
-    return;
-  }
-  const coupon=couponCheck.coupon||null;
+  const coupon=_payCoupon||null;
   const couponAmount=coupon?coupon.amount:0;
   const amount=baseAmount-couponAmount;
   if(KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
@@ -7635,7 +7647,8 @@ async function _handlePaymentReturn(){
         pgToken:pgToken,
         category:pending.category,
         amount:pending.amount,
-        couponAmount:pending.couponAmount||0
+        couponAmount:pending.couponAmount||0,
+        couponCode:pending.couponCode||null
       })
     });
     if(!res.ok){
@@ -12113,19 +12126,25 @@ function _saveShareBonusMap(m){
 }
 // 공유 액션 실행 시 호출 — channel: 'kakao'|'band'|'instagram' 등.
 // 같은 사주·채널 조합이 처음이면 할인코드를 발급하고 알림. 중복이면 조용히 무시.
-function claimShareBonus(channel){
+async function claimShareBonus(channel){
   if(!_saju||!_category)return;
   const sid=sajuIdOf(_saju,_meta);
   if(!sid)return;
   const key=sid+'_'+channel;
   const m=_loadShareBonusMap();
-  if(m[key])return; // 이미 받은 채널
-  const coupon=_issueRewardCoupon('share', _SHARE_COUPON_AMOUNT, sid, channel);
-  m[key]={issuedAt:Date.now(), code:coupon&&coupon.code||null};
-  _saveShareBonusMap(m);
-  _showRewardCode(coupon, '🎁 공유 보상코드가 발급됐어요.');
-  // 공유 CTA UI 동기화 (있으면 다시 그리기)
-  try{ if(typeof renderShareCtaInChat==='function') renderShareCtaInChat(); }catch(e){}
+  if(m[key])return; // 이미 받은 채널 (로컬 캐시)
+  if(!KAKAO_PAYMENT_BASE||KAKAO_PAYMENT_BASE.includes('example.workers.dev'))return; // 서버 미설정 시 조용히 패스
+  try{
+    const res=await fetch(KAKAO_PAYMENT_BASE+'/promo/issue-share',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({partnerUserId:_getOrCreateUserId(), sajuId:sid, channel})});
+    const data=await res.json().catch(()=>({}));
+    if(!data||!data.ok||!data.code)return;
+    const coupon={code:data.code, type:'share', amount:data.amount, exp:data.expiresAt};
+    m[key]={issuedAt:Date.now(), code:data.code};
+    _saveShareBonusMap(m);
+    _saveReviewCoupon(coupon); // 표시용 로컬 캐시(검증은 서버)
+    _showRewardCode(coupon, '🎁 공유 보상코드가 발급됐어요.');
+    try{ if(typeof renderShareCtaInChat==='function') renderShareCtaInChat(); }catch(e){}
+  }catch(e){}
 }
 // 현재 사주 기준 아직 보상 안 받은 공유 채널 목록 반환
 const _SHARE_CHANNELS=[
@@ -12380,18 +12399,14 @@ async function submitReview(){
       alert(msg);
       return;
     }
-    // 성공 — 쿠폰 발급·마킹
+    // 성공 — 서버가 발급한 보상코드 사용 (검증·1회용은 서버)
     const expiresAt=(data.coupon&&data.coupon.expiresAt)||(Date.now()+_REVIEW_COUPON_TTL_MS);
     const amount=(data.coupon&&data.coupon.amount)||_REVIEW_COUPON_AMOUNT;
-    const coupon=_issueRewardCoupon('review', amount, sid, data.reviewId||null);
-    if(coupon){
-      coupon.exp=expiresAt;
-      coupon.reviewId=data.reviewId||null;
-      const arr=_loadValidCoupons().map(c=>c.code===coupon.code?coupon:c);
-      try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));}catch(e){}
-    }
+    const serverCode=(data.coupon&&data.coupon.code)||null;
+    const coupon=serverCode?{code:serverCode, type:'review', amount, exp:expiresAt, reviewId:data.reviewId||null}:null;
+    if(coupon)_saveReviewCoupon(coupon); // 표시용 로컬 캐시
     _markReviewSubmitted(sid, payload.cat, data.reviewId||null, true);
-    _showRewardCode(coupon, '💝 후기 보상코드가 발급됐어요.');
+    if(coupon)_showRewardCode(coupon, '💝 후기 보상코드가 발급됐어요.');
     // 결과 화면 — 쿠폰 발급 카드
     const body=document.getElementById('reviewWriteBody');
     if(body){

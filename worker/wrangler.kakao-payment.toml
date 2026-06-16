@@ -25,10 +25,14 @@ compatibility_date = "2024-11-01"
 #     wrangler kv:namespace create REVIEWS_KV --preview --config wrangler.kakao-payment.toml
 #     → 출력된 id / preview_id 를 아래 [[kv_namespaces]] 블록에 채워 넣어 deploy
 #
-# [[kv_namespaces]]
-# binding = "REVIEWS_KV"
-# id = "<wrangler kv:namespace create REVIEWS_KV 결과>"
-# preview_id = "<--preview 명령 결과>"
+# 후기·보상코드 저장 — 아래 id/preview_id를 본인 네임스페이스 값으로 교체 후 deploy.
+#   wrangler kv:namespace create REVIEWS_KV --config worker/wrangler.kakao-payment.toml
+#   wrangler kv:namespace create REVIEWS_KV --preview --config worker/wrangler.kakao-payment.toml
+# ※ 교체 전에는 deploy가 실패합니다(의도적). KV 미바인딩 시 보상코드 기능은 503으로 비활성, 결제는 정상.
+[[kv_namespaces]]
+binding = "REVIEWS_KV"
+id = "REPLACE_WITH_REVIEWS_KV_ID"
+preview_id = "REPLACE_WITH_REVIEWS_KV_PREVIEW_ID"
 
 [observability]
 enabled = true

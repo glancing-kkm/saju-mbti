@@ -46,6 +46,13 @@ const REVIEW_RATE_LIMIT_SEC = 600;        // 같은 sajuId/userId 10분 1회
 const REVIEW_IP_DAILY_LIMIT = 5;          // 같은 IP 24시간 5건
 const REVIEW_TTL_SEC = 90 * 24 * 60 * 60; // KV 후기 90일 보관
 
+// 보상 프로모션 코드 (공유·후기) — 서버 발급·검증·1회용
+const SHARE_COUPON_AMOUNT = 1000;             // 공유 보상 할인액
+const PROMO_TTL_SEC = 30 * 24 * 60 * 60;      // 코드 유효 30일
+const PROMO_KV_TTL_SEC = 35 * 24 * 60 * 60;   // KV 보관(used 추적 여유)
+const SHARE_IP_DAILY_LIMIT = 5;               // 같은 IP 24h 공유코드 발급 한도
+const PROMO_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 혼동문자 제외
+
 // 결제액과 쿠폰액이 합쳐서 원가가 되는지 검증 (서버에서 쿠폰 금액 강제)
 function isAmountValid(category, amount, couponAmount = 0) {
   const c = Number(couponAmount) || 0;
@@ -86,6 +93,12 @@ export default {
     if (url.pathname === '/review/check' && request.method === 'POST') {
       return await handleReviewCheck(request, env, corsHeaders);
     }
+    if (url.pathname === '/promo/issue-share' && request.method === 'POST') {
+      return await handleIssueShare(request, env, corsHeaders);
+    }
+    if (url.pathname === '/promo/validate' && request.method === 'POST') {
+      return await handlePromoValidate(request, env, corsHeaders);
+    }
     if (url.pathname.startsWith('/admin/reviews') && request.method === 'GET') {
       return await handleAdminReviews(request, env, corsHeaders);
     }
@@ -100,7 +113,7 @@ async function handleReady(request, env, cid, corsHeaders) {
   try { body = await request.json(); }
   catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
 
-  const { category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl, cancelUrl, failUrl, couponAmount } = body || {};
+  const { category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl, cancelUrl, failUrl, couponAmount, couponCode } = body || {};
   if (!category || typeof amount !== 'number' || !partnerOrderId || !partnerUserId || !itemName || !approvalUrl) {
     return json({ ok: false, code: 'MISSING_FIELDS', message: 'category, amount, partnerOrderId, partnerUserId, itemName, approvalUrl required' }, 400, corsHeaders);
   }
@@ -110,6 +123,9 @@ async function handleReady(request, env, cid, corsHeaders) {
   if (!isAmountValid(category, amount, couponAmount || 0)) {
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch for ${category}` }, 400, corsHeaders);
   }
+  // 쿠폰 사전 검증 (사용 처리는 /approve에서) — 위조 할인 차단
+  const couponPre = await verifyCouponForPayment(env, couponCode, couponAmount || 0, category, amount);
+  if (!couponPre.ok) return json({ ok: false, code: couponPre.code, message: couponPre.message }, couponPre.status || 400, corsHeaders);
 
   const reqBody = {
     cid,
@@ -160,7 +176,7 @@ async function handleApprove(request, env, cid, corsHeaders) {
   try { body = await request.json(); }
   catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
 
-  const { tid, partnerOrderId, partnerUserId, pgToken, category, amount, couponAmount } = body || {};
+  const { tid, partnerOrderId, partnerUserId, pgToken, category, amount, couponAmount, couponCode } = body || {};
   if (!tid || !partnerOrderId || !partnerUserId || !pgToken) {
     return json({ ok: false, code: 'MISSING_FIELDS', message: 'tid, partnerOrderId, partnerUserId, pgToken required' }, 400, corsHeaders);
   }
@@ -168,6 +184,10 @@ async function handleApprove(request, env, cid, corsHeaders) {
   if (category && amount != null && !isAmountValid(category, amount, couponAmount || 0)) {
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch` }, 400, corsHeaders);
   }
+  // 쿠폰 검증 — 실제 코드 존재·미사용·금액 일치 (위조 할인 차단)
+  const cAmt = Number(couponAmount) || 0;
+  const couponChk = await verifyCouponForPayment(env, couponCode, cAmt, category, amount, partnerOrderId);
+  if (!couponChk.ok) return json({ ok: false, code: couponChk.code, message: couponChk.message }, couponChk.status || 400, corsHeaders);
 
   const reqBody = {
     cid,
@@ -194,6 +214,14 @@ async function handleApprove(request, env, cid, corsHeaders) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     return json({ ok: false, code: data.error_code || 'KAKAO_REJECTED', message: data.error_message || `Kakao API ${res.status}` }, res.status, corsHeaders);
+  }
+
+  // 결제 승인 성공 → 보상코드 1회용 처리 (최선노력; 같은 주문 재요청은 멱등)
+  if (couponChk.rec && !(couponChk.rec.used && couponChk.rec.orderId === partnerOrderId)) {
+    couponChk.rec.used = true;
+    couponChk.rec.usedAt = Date.now();
+    couponChk.rec.orderId = partnerOrderId;
+    try { await savePromo(env, couponChk.rec); } catch (e) {}
   }
 
   // 카카오페이 승인 응답: aid, tid, cid, sid?, partner_order_id, partner_user_id, payment_method_type, amount, item_name, ...
@@ -350,9 +378,10 @@ async function handleReviewSubmit(request, env, corsHeaders) {
   // Idempotency: 동일 reviewId가 이미 있으면 그대로 반환
   const existing = await env.REVIEWS_KV.get(`review_id_idx:${reviewId}`);
   if (existing) {
+    const rc = await getOrMintReviewCode(env, sajuId, partnerUserId);
     return json({
       ok: true, reviewId,
-      coupon: { amount: MAX_COUPON_AMOUNT, expiresAt: ts + 30 * 86400 * 1000 },
+      coupon: { code: (rc && rc.code) || null, amount: MAX_COUPON_AMOUNT, expiresAt: (rc && rc.expiresAt) || (ts + 30 * 86400 * 1000) },
       message: '후기가 이미 접수되어 있습니다.',
     }, 200, corsHeaders);
   }
@@ -370,10 +399,11 @@ async function handleReviewSubmit(request, env, corsHeaders) {
   await env.REVIEWS_KV.put(`review_id_idx:${reviewId}`, reviewKey, { expirationTtl: REVIEW_TTL_SEC });
   await env.REVIEWS_KV.put(`review_submitted:${sajuId}`, ts.toString()); // 영구 (중복방지)
 
+  const rc = await getOrMintReviewCode(env, sajuId, partnerUserId);
   return json({
     ok: true,
     reviewId,
-    coupon: { amount: MAX_COUPON_AMOUNT, expiresAt: ts + 30 * 86400 * 1000 },
+    coupon: { code: (rc && rc.code) || null, amount: MAX_COUPON_AMOUNT, expiresAt: (rc && rc.expiresAt) || (ts + 30 * 86400 * 1000) },
     message: '후기가 접수되었습니다. 검토 후 게시됩니다.',
   }, 200, corsHeaders);
 }
@@ -425,4 +455,154 @@ async function handleAdminReviews(request, env, corsHeaders) {
     ok: true, status, items,
     cursor: list.list_complete ? null : list.cursor,
   }, 200, corsHeaders);
+}
+
+// ═════════════════════════════════════════════════════════════
+//  보상 프로모션 코드 — 서버 발급·검증·1회용 (REVIEWS_KV 재사용)
+// ═════════════════════════════════════════════════════════════
+
+function wonStr(n) { return Number(n || 0).toLocaleString('en-US'); }
+
+function normalizePromoCode(code) {
+  return String(code || '').trim().toUpperCase().replace(/\s+/g, '');
+}
+function promoKey(code) { return `promo:${normalizePromoCode(code)}`; }
+
+function genPromoCode(prefix) {
+  let s = '';
+  for (let i = 0; i < 6; i++) s += PROMO_CODE_ALPHABET[Math.floor(Math.random() * PROMO_CODE_ALPHABET.length)];
+  return `${prefix}-${s}`;
+}
+
+async function loadPromo(env, code) {
+  if (!env.REVIEWS_KV || !code) return null;
+  const raw = await env.REVIEWS_KV.get(promoKey(code));
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+async function savePromo(env, rec) {
+  await env.REVIEWS_KV.put(promoKey(rec.code), JSON.stringify(rec), { expirationTtl: PROMO_KV_TTL_SEC });
+}
+
+// 코드 발급 (충돌 시 재시도). idxKey가 있으면 멱등 인덱스도 기록.
+async function mintPromo(env, { type, amount, partnerUserId, sajuId, channel, idxKey }) {
+  const now = Date.now();
+  const expiresAt = now + PROMO_TTL_SEC * 1000;
+  const prefix = type === 'share' ? 'SHARE' : 'REVIEW';
+  for (let i = 0; i < 8; i++) {
+    const code = genPromoCode(prefix);
+    if (await env.REVIEWS_KV.get(promoKey(code))) continue; // 충돌 회피
+    const rec = {
+      code, type, amount, used: false, usedAt: null, orderId: null,
+      expiresAt, partnerUserId: partnerUserId || null, sajuId: sajuId || null,
+      channel: channel || null, createdAt: now,
+    };
+    await savePromo(env, rec);
+    if (idxKey) await env.REVIEWS_KV.put(idxKey, code, { expirationTtl: PROMO_KV_TTL_SEC });
+    return rec;
+  }
+  return null;
+}
+
+// 후기 보상코드 — 사주별 1개 (멱등)
+async function getOrMintReviewCode(env, sajuId, partnerUserId) {
+  if (!env.REVIEWS_KV) return null;
+  const idxKey = `promo_review_idx:${sajuId}`;
+  const existing = await env.REVIEWS_KV.get(idxKey);
+  if (existing) {
+    const rec = await loadPromo(env, existing);
+    if (rec) return rec;
+  }
+  return await mintPromo(env, { type: 'review', amount: MAX_COUPON_AMOUNT, partnerUserId, sajuId, idxKey });
+}
+
+// 코드 상태 검증 (사용 처리 안 함). amount를 주면 적용 가능(결제액>할인액) 여부도 확인.
+function evalPromo(rec, amount) {
+  if (!rec) return { ok: false, code: 'NOT_FOUND', message: '등록된 보상코드를 찾을 수 없어요.' };
+  if (rec.used) return { ok: false, code: 'USED', message: '이미 사용한 보상코드예요.' };
+  if (!(rec.expiresAt > Date.now())) return { ok: false, code: 'EXPIRED', message: '유효기간이 지난 보상코드예요.' };
+  if (typeof amount === 'number' && !(amount > rec.amount)) {
+    return { ok: false, code: 'MIN_AMOUNT', message: `결제 금액이 ${wonStr(rec.amount)}원보다 커야 사용할 수 있어요.` };
+  }
+  return { ok: true };
+}
+
+// 결제(/ready·/approve) 공용 쿠폰 검증. couponAmount<=0이면 통과(코드 불필요).
+// 반환: { ok, code?, message?, status?, rec? }  rec는 approve에서 used 처리에 사용.
+async function verifyCouponForPayment(env, couponCode, couponAmount, category, amount, orderId) {
+  const cAmt = Number(couponAmount) || 0;
+  if (cAmt <= 0) return { ok: true, rec: null };
+  if (!env.REVIEWS_KV) return { ok: false, code: 'SERVICE_NOT_CONFIGURED', message: '보상 시스템이 일시 점검 중입니다.', status: 503 };
+  if (!couponCode) return { ok: false, code: 'COUPON_REQUIRED', message: '보상코드 정보가 없어요.', status: 400 };
+  const rec = await loadPromo(env, couponCode);
+  // 같은 주문으로 이미 사용된 코드면 멱등 허용 (approve 재시도 대비)
+  if (orderId && rec && rec.used && rec.orderId === orderId) return { ok: true, rec };
+  const gross = (typeof amount === 'number') ? amount + cAmt : undefined;
+  const ev = evalPromo(rec, gross);
+  if (!ev.ok) return { ok: false, code: 'INVALID_COUPON', message: ev.message, status: 400 };
+  if (rec.amount !== cAmt) return { ok: false, code: 'COUPON_AMOUNT_MISMATCH', message: '할인 금액이 보상코드와 달라요.', status: 400 };
+  return { ok: true, rec };
+}
+
+// ─── /promo/issue-share — 공유 보상코드 발급 ───
+async function handleIssueShare(request, env, corsHeaders) {
+  if (!env.REVIEWS_KV) {
+    return json({ ok: false, code: 'SERVICE_NOT_CONFIGURED', message: '보상 시스템이 일시 점검 중입니다.' }, 503, corsHeaders);
+  }
+  let body;
+  try { body = await request.json(); }
+  catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
+
+  const { partnerUserId, sajuId, channel } = body || {};
+  if (!partnerUserId || !sajuId || !channel) {
+    return json({ ok: false, code: 'MISSING_FIELDS', message: 'partnerUserId, sajuId, channel required' }, 400, corsHeaders);
+  }
+  if (!SAJU_ID_RE.test(sajuId)) {
+    return json({ ok: false, code: 'BAD_SAJU_ID', message: 'Invalid sajuId' }, 400, corsHeaders);
+  }
+  const ch = String(channel).toLowerCase();
+  if (!/^[a-z]{1,16}$/.test(ch)) {
+    return json({ ok: false, code: 'BAD_CHANNEL', message: 'Invalid channel' }, 400, corsHeaders);
+  }
+
+  // 멱등 — 같은 사주·채널이면 기존 코드 반환
+  const idxKey = `promo_share_idx:${sajuId}:${ch}`;
+  const existingCode = await env.REVIEWS_KV.get(idxKey);
+  if (existingCode) {
+    const rec = await loadPromo(env, existingCode);
+    if (rec) return json({ ok: true, code: rec.code, amount: rec.amount, type: 'share', expiresAt: rec.expiresAt, reused: true }, 200, corsHeaders);
+  }
+
+  // IP 일일 한도
+  const ip = getClientIp(request);
+  if (ip !== 'unknown') {
+    const day = new Date().toISOString().slice(0, 10);
+    const ipKey = `ip_promo_share:${ip}:${day}`;
+    const cur = parseInt((await env.REVIEWS_KV.get(ipKey)) || '0', 10) || 0;
+    if (cur >= SHARE_IP_DAILY_LIMIT) {
+      return json({ ok: false, code: 'IP_LIMIT', message: '오늘 공유 보상 발급 한도를 초과했어요.' }, 429, corsHeaders);
+    }
+    await env.REVIEWS_KV.put(ipKey, String(cur + 1), { expirationTtl: 86400 });
+  }
+
+  const rec = await mintPromo(env, { type: 'share', amount: SHARE_COUPON_AMOUNT, partnerUserId, sajuId, channel: ch, idxKey });
+  if (!rec) return json({ ok: false, code: 'MINT_FAILED', message: '코드 발급에 실패했어요. 잠시 후 다시 시도해 주세요.' }, 500, corsHeaders);
+  return json({ ok: true, code: rec.code, amount: rec.amount, type: 'share', expiresAt: rec.expiresAt }, 200, corsHeaders);
+}
+
+// ─── /promo/validate — 코드 검증 (결제 전 입력 확인) ───
+async function handlePromoValidate(request, env, corsHeaders) {
+  if (!env.REVIEWS_KV) {
+    return json({ ok: false, code: 'SERVICE_NOT_CONFIGURED', message: '보상 시스템이 일시 점검 중입니다.' }, 503, corsHeaders);
+  }
+  let body;
+  try { body = await request.json(); }
+  catch { return json({ ok: false, code: 'BAD_JSON', message: 'Invalid JSON' }, 400, corsHeaders); }
+
+  const { code, amount } = body || {};
+  if (!code) return json({ ok: false, code: 'EMPTY', message: '프로모션 코드를 입력해 주세요.' }, 400, corsHeaders);
+  const rec = await loadPromo(env, code);
+  const ev = evalPromo(rec, typeof amount === 'number' ? amount : undefined);
+  if (!ev.ok) return json({ ok: false, code: ev.code, message: ev.message }, 200, corsHeaders);
+  return json({ ok: true, code: rec.code, amount: rec.amount, type: rec.type, expiresAt: rec.expiresAt }, 200, corsHeaders);
 }
