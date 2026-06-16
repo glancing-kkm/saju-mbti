@@ -537,16 +537,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .usage-list li b{color:var(--text);font-weight:700}
 .lock-pay{margin-top:12px;width:100%;padding:14px;background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:50px;font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.05em;font-family:inherit;text-transform:uppercase}
 
-/* 간편결제 버튼 (카카오페이·네이버페이) */
+/* 간편결제 버튼 (카카오페이) */
 .easypay-row{margin-top:20px;display:flex;flex-direction:column;gap:10px}
 .easypay-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 16px;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;border:0;transition:.18s;letter-spacing:-.01em}
 .easypay-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
 .easypay-btn:active{transform:translateY(0)}
 .easypay-btn .ep-logo{display:inline-flex;align-items:center;justify-content:center;height:22px;font-weight:900;letter-spacing:-.02em}
-.easypay-kakao{background:#FEE500;color:#191919}
-.easypay-kakao .ep-logo{font-size:1.02rem}
-.easypay-naver{background:#03C75A;color:#FFFFFF}
-.easypay-naver .ep-logo{font-size:1.02rem}
+.easypay-kakao{background:#FEE500;color:#191919;padding:10px 16px;min-height:58px}
+.kakao-pay-img{display:block;width:auto;height:34px;object-fit:contain;flex-shrink:0}
+.easypay-kakao .kakao-pay-img{height:38px}
 .easypay-price{font-weight:700;font-size:.92rem;opacity:.85}
 .easypay-foot{margin-top:12px;font-size:.7rem;color:var(--muted);text-align:center;line-height:1.7}
 .easypay-foot a{color:var(--sub);text-decoration:underline}
@@ -596,7 +595,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pay-cta-go{flex:2;padding:13px;background:#FFEB00;border:0;color:#3C1E1E;border-radius:10px;font-size:.92rem;font-weight:800;cursor:pointer;letter-spacing:.02em;font-family:inherit;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .pay-cta-go:disabled{opacity:.45;cursor:not-allowed;background:var(--card);color:var(--muted)}
 .pay-cta-go:not(:disabled):hover{filter:brightness(.97)}
-.pay-cta-go .kakao-logo{display:inline-block;background:#3C1E1E;color:#FFEB00;padding:2px 7px;border-radius:4px;font-size:.78rem;font-weight:900;letter-spacing:.04em}
+.pay-cta-go .kakao-pay-img{height:30px}
+.pay-cta-text{font-size:.86rem;font-weight:900;white-space:nowrap}
 .pay-status{display:none;padding:10px 12px;border-radius:9px;font-size:.8rem;margin-bottom:10px;line-height:1.6}
 .pay-status.err{display:block;background:rgba(229,116,98,.12);border:1px solid var(--fire);color:var(--fire)}
 .pay-status.info{display:block;background:rgba(212,175,55,.1);border:1px solid var(--accent);color:var(--accent-bright)}
@@ -1835,11 +1835,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <div class="pay-cta-row">
       <button class="pay-cta-cancel" type="button" onclick="closePaymentConsent()">취소</button>
-      <button class="pay-cta-go" type="button" id="payCtaGo" onclick="startKakaoPayment()" disabled><span class="kakao-logo">pay</span>카카오페이로 결제하기</button>
+      <button class="pay-cta-go" type="button" id="payCtaGo" onclick="startKakaoPayment()" disabled aria-label="카카오페이로 결제하기">
+        <img class="kakao-pay-img" src="assets/kakaopay-button-sm.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="97px" alt="카카오페이">
+        <span class="pay-cta-text">결제하기</span>
+      </button>
     </div>
 
     <div class="pay-foot">
-      안전 결제: 카카오페이·네이버페이<br>
+      안전 결제: 카카오페이<br>
       결제 정보(카드번호 등)는 회사가 직접 수집·보관하지 않아요.
     </div>
   </div>
@@ -7064,16 +7067,12 @@ function renderPaidLock(category, saju){
     ${getDecisionGuide(category)}
     <div class="pay-prep">
       <div class="pay-prep-badge">💳 안전 결제</div>
-      <div class="pay-prep-body">카카오페이·네이버페이로 간편하게 결제하실 수 있어요. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
+      <div class="pay-prep-body">카카오페이로 간편하게 결제하실 수 있어요. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
       <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 2,000원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
     </div>
     <div class="easypay-row">
       <button type="button" class="easypay-btn easypay-kakao" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 결제">
-        <span class="ep-logo">kakao<span style="background:#191919;color:#FEE500;border-radius:4px;padding:1px 5px;margin-left:2px">pay</span></span>
-        <span class="easypay-price">${formatWon(computePayAmount(category,_meta))}</span>
-      </button>
-      <button type="button" class="easypay-btn easypay-naver" onclick="openPaymentConsent('${category}','NAVERPAY')" aria-label="네이버페이로 결제">
-        <span class="ep-logo"><span style="background:#FFFFFF;color:#03C75A;border-radius:4px;padding:1px 5px;margin-right:2px;font-weight:900">N</span>Pay</span>
+        <img class="kakao-pay-img" src="assets/kakaopay-button-md.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="121px" alt="카카오페이">
         <span class="easypay-price">${formatWon(computePayAmount(category,_meta))}</span>
       </button>
     </div>
@@ -7444,9 +7443,9 @@ function openPaymentConsent(category,method){
     if(couponRow)couponRow.style.display='none';
   }
   document.getElementById('payProductPrice').textContent=formatWon(_payFinalAmount);
-  // 카카오페이 Cobranding — pay 로고 + 결제 라벨 (HTML 사용을 위해 innerHTML)
+  // 카카오페이 Cobranding — 공식 버튼 이미지 + 결제 라벨 (HTML 사용을 위해 innerHTML)
   const cta=document.getElementById('payCtaGo');
-  cta.innerHTML=`<span class="kakao-logo">pay</span>카카오페이로 결제하기`;
+  cta.innerHTML=`<img class="kakao-pay-img" src="assets/kakaopay-button-sm.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="97px" alt="카카오페이"><span class="pay-cta-text">결제하기</span>`;
   // 동의 체크 초기화
   document.querySelectorAll('#payAgree input[type="checkbox"]').forEach(c=>c.checked=false);
   cta.disabled=true;
