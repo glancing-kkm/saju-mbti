@@ -7530,6 +7530,8 @@ async function startKakaoPayment(){
       amount:amount,
       couponAmount:couponAmount,
       couponCode:coupon?coupon.code:null,
+      saju:_saju||null,
+      meta:_meta||null,
       startedAt:Date.now()
     }));
     // 모바일은 next_redirect_mobile_url, PC는 next_redirect_pc_url
@@ -7595,6 +7597,11 @@ async function _handlePaymentReturn(){
     const data=await res.json();
     if(!(data&&data.ok)){
       throw new Error((data&&data.message)||'승인 실패');
+    }
+    if((!_saju||!_meta)&&pending.saju&&pending.meta){
+      _saju=pending.saju;
+      _meta=pending.meta;
+      _category=pending.category||cat;
     }
     sessionStorage.removeItem(KAKAO_PAY_SS_KEY);
     history.replaceState({},'',location.pathname);
