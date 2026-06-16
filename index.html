@@ -7406,7 +7406,7 @@ function _secretUnlockTap(category){
 //   - 베이스 URL 뒤에 /ready, /approve 가 붙음
 //   - Worker 코드: worker/kakao-payment-worker.js
 //   - 운영자 작업: biz.kakaopay.com 가맹점 신청 → SECRET_KEY/CID 발급 → wrangler secret 등록 → 배포
-const KAKAO_PAYMENT_BASE='https://kakao-payment.example.workers.dev'; // 배포 후 교체
+const KAKAO_PAYMENT_BASE='https://kakao-payment-worker.na37zzang.workers.dev';
 const KAKAO_PAY_SS_KEY='kakao_pay_pending_v1'; // sessionStorage 키 (tid·orderId·category·amount 보존)
 const PAY_METHOD_LABEL={KAKAOPAY:'카카오페이'};
 let _payCategory=null;

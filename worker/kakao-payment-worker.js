@@ -213,8 +213,8 @@ async function handleApprove(request, env, cid, corsHeaders) {
 }
 
 function buildCorsHeaders(request, env) {
-  const origin = request.headers.get('Origin') || '';
-  const allowed = (env.ALLOWED_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+  const origin = normalizeOrigin(request.headers.get('Origin') || '');
+  const allowed = (env.ALLOWED_ORIGIN || '').split(',').map(s => normalizeOrigin(s)).filter(Boolean);
   const allowOrigin = allowed.length === 0 ? '*' : (allowed.includes(origin) ? origin : allowed[0]);
   return {
     'Access-Control-Allow-Origin': allowOrigin,
@@ -223,6 +223,10 @@ function buildCorsHeaders(request, env) {
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   };
+}
+
+function normalizeOrigin(value) {
+  return String(value || '').trim().replace(/\/+$/, '');
 }
 
 function json(body, status, extraHeaders) {
