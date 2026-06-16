@@ -137,6 +137,28 @@ html,body{font-family:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',
 h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-spacing:-.01em}
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
+/* 본문 읽기 품질 — 고아글자 예방 + 오른쪽 들쭉날쭉함 완화 */
+:where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body){
+  line-break:strict;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+  text-wrap:pretty;
+}
+@media (min-width:380px){
+  :where(.nb-body,.daily-cat-body,.abody,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief) p,
+  :where(.nb-gw-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.lead-card,.summary-intro,.chat-msg-body){
+    text-align:justify;
+    text-align-last:left;
+    text-justify:inter-character;
+  }
+}
+@media (max-width:379px){
+  :where(.nb-body,.daily-cat-body,.abody,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief) p,
+  :where(.nb-gw-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.lead-card,.summary-intro,.chat-msg-body){
+    text-align:left;
+  }
+}
+
 /* ── Header ── */
 .hdr{background:linear-gradient(140deg,var(--bg-deep),var(--bg-mid) 50%,var(--bg-deep));color:var(--text);padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--border)}
 .hdr h1{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.3rem;font-weight:700;letter-spacing:.15em;color:var(--accent)}
