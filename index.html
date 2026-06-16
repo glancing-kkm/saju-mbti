@@ -579,6 +579,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pay-product-desc{font-size:.78rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
 .pay-product-price{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);font-size:.82rem;color:var(--sub)}
 .pay-product-price b{font-size:1.15rem;color:var(--accent-bright);font-weight:800;font-family:'Do Hyeon','Noto Serif KR',serif}
+.pay-promo{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.pay-promo-label{display:block;font-size:.74rem;font-weight:800;color:var(--accent-bright);margin-bottom:7px;letter-spacing:.01em}
+.pay-promo-row{display:flex;gap:7px}
+.pay-promo-input{flex:1;min-width:0;padding:11px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:inherit;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.pay-promo-input::placeholder{text-transform:none;letter-spacing:0;color:var(--muted);font-weight:500}
+.pay-promo-btn{padding:0 13px;background:var(--accent);border:0;border-radius:9px;color:var(--bg-mid);font-family:inherit;font-size:.78rem;font-weight:900;cursor:pointer;white-space:nowrap}
+.pay-promo-msg{display:none;margin-top:7px;font-size:.72rem;line-height:1.55;color:var(--sub)}
+.pay-promo-msg.ok{display:block;color:var(--accent-bright)}
+.pay-promo-msg.err{display:block;color:var(--fire)}
 .pay-notice{padding:11px 13px;background:var(--earth-bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:14px}
 .pay-notice b{color:var(--accent-bright)}
 .pay-agree{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
@@ -1345,7 +1354,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <h2 class="reviews-title" id="reviewsTitle">⭐ 이용자 후기</h2>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="reviews-sub">베타 이용자 후기</span>
-          <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 다음 결제 2,000원 할인 받기">✏️ 후기 작성</button>
+          <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 2,000원 보상코드 받기">✏️ 후기 작성</button>
         </div>
       </div>
       <div class="reviews-grid" id="reviewsGrid">
@@ -1796,11 +1805,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
       <!-- 할인 (쿠폰 적용 시 노출) -->
       <div class="pay-product-price" id="payPriceCouponRow" style="display:none;font-size:.74rem">
-        <span style="color:var(--accent-bright)">💝 후기 작성 보상 할인</span><b id="payPriceCoupon" style="font-weight:700;color:var(--accent-bright)">-0원</b>
+        <span id="payPriceCouponLabel" style="color:var(--accent-bright)">🎟 프로모션 코드 할인</span><b id="payPriceCoupon" style="font-weight:700;color:var(--accent-bright)">-0원</b>
       </div>
       <!-- 결제 금액 (항상 노출) -->
       <div class="pay-product-price">
         <span>결제 금액</span><b id="payProductPrice">0원</b>
+      </div>
+      <div class="pay-promo">
+        <label class="pay-promo-label" for="payPromoCode">프로모션 코드</label>
+        <div class="pay-promo-row">
+          <input id="payPromoCode" class="pay-promo-input" type="text" placeholder="공유·후기 보상코드 입력" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromoCode();}">
+          <button type="button" class="pay-promo-btn" onclick="applyPromoCode()">적용</button>
+        </div>
+        <div class="pay-promo-msg" id="payPromoMsg"></div>
       </div>
     </div>
 
@@ -1865,8 +1882,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <!-- 카톡 공유 인센티브 카드 -->
     <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.6));border:1px dashed #FFEB00;border-radius:12px">
-      <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">🎁 카카오톡으로 공유하고 +2회 받기</div>
-      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주를 알려주시면, 역술가에게 질문하는 횟수가 <b style="color:#FFEB00">+2회</b> 추가돼요.</div>
+      <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">🎁 카카오톡으로 공유하고 1,000원 할인코드 받기</div>
+      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주를 알려주시면, 다음 결제에 쓸 수 있는 <b style="color:#FFEB00">SHARE 보상코드</b>가 발급돼요.</div>
       <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
         <span class="kakao-logo">talk</span>카카오톡으로 공유하기
       </button>
@@ -1875,7 +1892,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <!-- 후기 작성 인센티브 카드 -->
     <div id="payDoneReviewCard" style="margin-top:10px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(45,52,71,.6));border:1px dashed var(--accent);border-radius:12px">
       <div style="font-size:.82rem;font-weight:800;color:var(--accent-bright);letter-spacing:.02em;margin-bottom:6px">💝 후기 쓰고 다음 결제 2,000원 할인</div>
-      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">짧은 후기 한 줄로 다음 결제 시 <b style="color:var(--accent-bright)">-2,000원</b>이 자동 적용돼요.</div>
+      <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">후기를 남기면 다음 결제에 직접 입력해서 쓸 수 있는 <b style="color:var(--accent-bright)">REVIEW 보상코드</b>가 발급돼요.</div>
       <button type="button" id="payDoneReviewBtn" onclick="payDoneClickReview()" style="width:100%;padding:11px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer">
         ✏️ 후기 작성하고 쿠폰 받기
       </button>
@@ -7013,11 +7030,12 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
-// 후기 보상 쿠폰 — 후기 작성 시 다음 결제 -2,000원
+// 보상 프로모션 코드 — 공유/후기 작성 시 다음 결제 할인
 const _REVIEW_COUPON_LS_KEY='saju_review_coupon_v1';
 const _REVIEW_SUBMITTED_LS_KEY='saju_review_submitted_v1';
 const _REVIEW_ELIGIBLE_LS_KEY='saju_review_eligible_v1';
 const _REVIEW_COUPON_AMOUNT=2000;
+const _SHARE_COUPON_AMOUNT=1000;
 const _REVIEW_COUPON_TTL_MS=30*24*60*60*1000;
 const _REVIEW_ELIGIBLE_TTL_MS=7*24*60*60*1000;
 const _REVIEW_MIN_LENGTH=30;
@@ -7051,7 +7069,7 @@ function getUsageGuide(category){
     items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있어요.`);
   }
   items.push(`<b>역술가 질문</b> — 풀이에 대한 궁금한 점을 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전돼요. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>해요.`);
-  items.push(`<b>공유 보너스</b> — 카카오톡·밴드·인스타그램 각각 공유 시 <b>질문 2회씩</b> 추가돼요(채널별 1회, 같은 사주 최대 6회).`);
+  items.push(`<b>공유 보너스</b> — 카카오톡·밴드·인스타그램 각각 공유 시 <b>1,000원 할인코드</b>가 발급돼요(채널별 1회).`);
   return `<div class="usage-guide">
     <div class="usage-head">📖 이용방법 안내</div>
     <ol class="usage-list">${items.map(t=>`<li>${t}</li>`).join('')}</ol>
@@ -7414,6 +7432,41 @@ let _payCoupon=null; // 현재 결제에 적용될 쿠폰 (없으면 null)
 let _payBaseAmount=0; // 쿠폰 적용 전 원가
 let _payFinalAmount=0; // 결제 금액 (원가 - 쿠폰)
 
+function _updatePayPriceByCoupon(coupon){
+  _payCoupon=coupon||null;
+  const couponAmt=_payCoupon?_payCoupon.amount:0;
+  _payFinalAmount=Math.max(0,_payBaseAmount-couponAmt);
+  const baseRow=document.getElementById('payPriceBaseRow');
+  const couponRow=document.getElementById('payPriceCouponRow');
+  const couponLabel=document.getElementById('payPriceCouponLabel');
+  const promoMsg=document.getElementById('payPromoMsg');
+  if(_payCoupon){
+    if(baseRow){baseRow.style.display='flex';document.getElementById('payPriceBase').textContent=formatWon(_payBaseAmount);}
+    if(couponRow){couponRow.style.display='flex';document.getElementById('payPriceCoupon').textContent='-'+formatWon(couponAmt);}
+    if(couponLabel)couponLabel.textContent=`🎟 ${_promoTypeLabel(_payCoupon.type)} 할인`;
+    if(promoMsg){promoMsg.className='pay-promo-msg ok';promoMsg.textContent=`${_payCoupon.code} 적용 완료 · ${formatWon(couponAmt)} 할인돼요.`;}
+  }else{
+    if(baseRow)baseRow.style.display='none';
+    if(couponRow)couponRow.style.display='none';
+    if(promoMsg){promoMsg.className='pay-promo-msg';promoMsg.textContent='';}
+  }
+  const priceEl=document.getElementById('payProductPrice');
+  if(priceEl)priceEl.textContent=formatWon(_payFinalAmount);
+}
+function applyPromoCode(){
+  const input=document.getElementById('payPromoCode');
+  const msg=document.getElementById('payPromoMsg');
+  const raw=input?input.value:'';
+  const result=getApplicableCoupon(_payCategory,_payBaseAmount,raw);
+  if(!result.ok){
+    _updatePayPriceByCoupon(null);
+    if(msg){msg.className='pay-promo-msg err';msg.textContent=result.message||'보상코드를 확인해 주세요.';}
+    return false;
+  }
+  if(input)input.value=result.coupon.code;
+  _updatePayPriceByCoupon(result.coupon);
+  return true;
+}
 function openPaymentConsent(category,method){
   _payCategory=category;
   _payMethod=method||'KAKAOPAY';
@@ -7426,23 +7479,12 @@ function openPaymentConsent(category,method){
     descPlain+=` · ${cnt}개월 (${e.sy}.${String(e.sm).padStart(2,'0')} ~ ${e.ey}.${String(e.em).padStart(2,'0')})`;
   }
   document.getElementById('payProductDesc').textContent=descPlain;
-  // 원가 계산 + 후기 쿠폰 적용
+  // 원가 계산 + 프로모션 코드 입력 대기
   const baseAmount=computePayAmount(category,_meta);
   _payBaseAmount=baseAmount;
-  _payCoupon=(typeof getApplicableCoupon==='function')?getApplicableCoupon(category, baseAmount):null;
-  const couponAmt=_payCoupon?_payCoupon.amount:0;
-  _payFinalAmount=baseAmount-couponAmt;
-  // UI: 쿠폰 있으면 원가/할인 줄 노출
-  const baseRow=document.getElementById('payPriceBaseRow');
-  const couponRow=document.getElementById('payPriceCouponRow');
-  if(_payCoupon){
-    if(baseRow){baseRow.style.display='flex';document.getElementById('payPriceBase').textContent=formatWon(baseAmount);}
-    if(couponRow){couponRow.style.display='flex';document.getElementById('payPriceCoupon').textContent='-'+formatWon(couponAmt);}
-  }else{
-    if(baseRow)baseRow.style.display='none';
-    if(couponRow)couponRow.style.display='none';
-  }
-  document.getElementById('payProductPrice').textContent=formatWon(_payFinalAmount);
+  const promoInput=document.getElementById('payPromoCode');
+  if(promoInput)promoInput.value='';
+  _updatePayPriceByCoupon(null);
   // 카카오페이 Cobranding — 공식 버튼 이미지 + 결제 라벨 (HTML 사용을 위해 innerHTML)
   const cta=document.getElementById('payCtaGo');
   cta.innerHTML=`<img class="kakao-pay-img" src="assets/kakaopay-button-sm.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="97px" alt="카카오페이"><span class="pay-cta-text">결제하기</span>`;
@@ -7479,11 +7521,17 @@ async function startKakaoPayment(){
   const cat=_payCategory; if(!cat){return;}
   const m=PAID_META[cat];
   const baseAmount=computePayAmount(cat,_meta);
-  // 모달 열기 직후 _payCoupon이 세팅되어 있지 않거나, 그 사이 다른 쿠폰이 발급된 경우 재조회
-  const coupon=_payCoupon&&!_payCoupon.used ? _payCoupon : ((typeof getApplicableCoupon==='function')?getApplicableCoupon(cat, baseAmount):null);
+  const couponCheck=_payCoupon ? getApplicableCoupon(cat, baseAmount, _payCoupon.code) : {ok:true,coupon:null};
+  const statusEl=document.getElementById('payStatus');
+  if(_payCoupon && !couponCheck.ok){
+    statusEl.className='pay-status err';
+    statusEl.textContent=couponCheck.message||'프로모션 코드를 다시 확인해 주세요.';
+    _updatePayPriceByCoupon(null);
+    return;
+  }
+  const coupon=couponCheck.coupon||null;
   const couponAmount=coupon?coupon.amount:0;
   const amount=baseAmount-couponAmount;
-  const statusEl=document.getElementById('payStatus');
   if(KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
     statusEl.className='pay-status err';
     statusEl.textContent='결제 서버가 아직 배포되지 않았습니다. 운영자 설정 후 이용해주세요.';
@@ -7685,11 +7733,11 @@ function payDoneClickShare(){
     const before=(typeof _category!=='undefined'?_category:null)||'life';
     // shareToKakao 가 closeShareModal 부터 호출하므로 그쪽 모달이 없는 상황에서도 안전
     shareToKakao();
-    // 즉시 UI 갱신 — 공유 보상 적립 인지
+    // 즉시 UI 갱신 — 공유 보상코드 발급 인지
     const shareBtn=document.getElementById('payDoneShareBtn');
     if(shareBtn){
       shareBtn.disabled=true;
-      shareBtn.innerHTML='✅ 공유 완료 — 질문 +2회 적립';
+      shareBtn.innerHTML='✅ 공유 완료 — 할인코드 발급';
       shareBtn.style.background='var(--accent)';
       shareBtn.style.color='var(--bg-mid)';
     }
@@ -12055,9 +12103,8 @@ function addChatBonus(cat,n){
   m[k]=(parseInt(m[k]||0,10)||0)+n;
   _saveChatBonusMap(m);
 }
-// 공유 보너스 — 사주별·채널별 1회 한도, 채널당 +2회 질문 보상
+// 공유 보너스 — 사주별·채널별 1회 한도, 채널당 1,000원 할인코드 발급
 const _SHARE_BONUS_LS_KEY='saju_share_bonus_v1';
-const _SHARE_BONUS_COUNT=2; // 공유 1회당 추가 질문 횟수
 function _loadShareBonusMap(){
   try{const r=localStorage.getItem(_SHARE_BONUS_LS_KEY);return r?JSON.parse(r)||{}:{};}catch(e){return {};}
 }
@@ -12065,7 +12112,7 @@ function _saveShareBonusMap(m){
   try{localStorage.setItem(_SHARE_BONUS_LS_KEY,JSON.stringify(m||{}));}catch(e){}
 }
 // 공유 액션 실행 시 호출 — channel: 'kakao'|'band'|'instagram' 등.
-// 같은 사주·채널 조합이 처음이면 보너스 +2 추가하고 알림. 중복이면 조용히 무시.
+// 같은 사주·채널 조합이 처음이면 할인코드를 발급하고 알림. 중복이면 조용히 무시.
 function claimShareBonus(channel){
   if(!_saju||!_category)return;
   const sid=sajuIdOf(_saju,_meta);
@@ -12073,22 +12120,10 @@ function claimShareBonus(channel){
   const key=sid+'_'+channel;
   const m=_loadShareBonusMap();
   if(m[key])return; // 이미 받은 채널
-  m[key]=Date.now();
+  const coupon=_issueRewardCoupon('share', _SHARE_COUPON_AMOUNT, sid, channel);
+  m[key]={issuedAt:Date.now(), code:coupon&&coupon.code||null};
   _saveShareBonusMap(m);
-  addChatBonus(_category, _SHARE_BONUS_COUNT);
-  // 채팅 UI 즉시 갱신
-  try{
-    const r=document.getElementById('chatRemaining');
-    if(r)r.textContent=`${chatRemaining(_category)}회 남음`;
-    const inp=document.getElementById('chatInput');
-    if(inp)inp.disabled=false;
-    const btn=document.getElementById('chatBtn');
-    if(btn&&chatRemaining(_category)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
-  }catch(e){}
-  // 사용자 알림 (간단 토스트 대신 alert — 짧고 명확)
-  setTimeout(()=>{
-    try{alert(`🎁 공유 보상이 적립되었습니다!\n질문 ${_SHARE_BONUS_COUNT}회가 추가되었어요.`);}catch(e){}
-  },300);
+  _showRewardCode(coupon, '🎁 공유 보상코드가 발급됐어요.');
   // 공유 CTA UI 동기화 (있으면 다시 그리기)
   try{ if(typeof renderShareCtaInChat==='function') renderShareCtaInChat(); }catch(e){}
 }
@@ -12122,20 +12157,55 @@ function _saveReviewCoupon(coupon){
   arr.push(coupon);
   try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));return true;}catch(e){return false;}
 }
-function getApplicableCoupon(category, amount){
-  // 카테고리당 1개만, 결제액이 쿠폰액보다 클 때만 적용. 만료 빠른 것 우선.
-  const all=_loadValidCoupons().filter(c=>!c.used && amount > c.amount);
-  if(!all.length)return null;
-  all.sort((a,b)=>a.exp-b.exp);
-  return all[0];
+function _normalizePromoCode(code){
+  return String(code||'').trim().toUpperCase().replace(/\s+/g,'');
+}
+function _promoTypeLabel(type){
+  return type==='share'?'공유 보상':type==='review'?'후기 보상':'프로모션 코드';
+}
+function _genRewardCode(prefix){
+  const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s='';
+  for(let i=0;i<6;i++)s+=alphabet[Math.floor(Math.random()*alphabet.length)];
+  return `${prefix}-${s}`;
+}
+function _issueRewardCoupon(type, amount, sid, source){
+  const prefix=type==='share'?'SHARE':'REVIEW';
+  for(let i=0;i<8;i++){
+    const code=_genRewardCode(prefix);
+    const coupon={code, type, source:source||null, sajuId:sid||null, amount, exp:Date.now()+_REVIEW_COUPON_TTL_MS, used:false, usedAt:null, usedOrderId:null, issuedAt:Date.now()};
+    if(_saveReviewCoupon(coupon))return coupon;
+  }
+  return null;
+}
+function getApplicableCoupon(category, amount, code){
+  const normalized=_normalizePromoCode(code);
+  if(!normalized)return {ok:false, code:'EMPTY', message:'프로모션 코드를 입력해 주세요.'};
+  const all=_loadValidCoupons();
+  const coupon=all.find(c=>_normalizePromoCode(c.code)===normalized);
+  if(!coupon)return {ok:false, code:'NOT_FOUND', message:'등록된 보상코드를 찾을 수 없어요.'};
+  if(coupon.used)return {ok:false, code:'USED', message:'이미 사용한 보상코드예요.'};
+  if(!(coupon.exp>Date.now()))return {ok:false, code:'EXPIRED', message:'유효기간이 지난 보상코드예요.'};
+  if(!(amount>coupon.amount))return {ok:false, code:'MIN_AMOUNT', message:`결제 금액이 ${coupon.amount.toLocaleString('ko-KR')}원보다 커야 사용할 수 있어요.`};
+  return {ok:true, coupon};
 }
 function consumeCoupon(code, orderId){
   const arr=_loadValidCoupons();
-  const idx=arr.findIndex(c=>c.code===code);
+  const normalized=_normalizePromoCode(code);
+  const idx=arr.findIndex(c=>_normalizePromoCode(c.code)===normalized);
   if(idx<0)return false;
   arr[idx].used=true; arr[idx].usedAt=Date.now(); arr[idx].usedOrderId=orderId||null;
   try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));}catch(e){}
   return true;
+}
+function _showRewardCode(coupon, title){
+  if(!coupon)return;
+  try{navigator.clipboard&&navigator.clipboard.writeText(coupon.code).catch(()=>{});}catch(e){}
+  const amount=(coupon.amount||0).toLocaleString('ko-KR');
+  const exp=new Date(coupon.exp).toLocaleDateString('ko-KR');
+  setTimeout(()=>{
+    try{alert(`${title||'보상코드가 발급됐어요.'}\n\n코드: ${coupon.code}\n할인: ${amount}원\n유효기간: ${exp}까지\n\n결제창의 프로모션 코드 칸에 입력하면 적용돼요.`);}catch(e){}
+  },250);
 }
 function _loadReviewSubmittedMap(){
   try{const r=localStorage.getItem(_REVIEW_SUBMITTED_LS_KEY);return r?JSON.parse(r)||{}:{};}catch(e){return {};}
@@ -12313,9 +12383,15 @@ async function submitReview(){
     // 성공 — 쿠폰 발급·마킹
     const expiresAt=(data.coupon&&data.coupon.expiresAt)||(Date.now()+_REVIEW_COUPON_TTL_MS);
     const amount=(data.coupon&&data.coupon.amount)||_REVIEW_COUPON_AMOUNT;
-    const code='RC-'+sid.replace(/[^a-zA-Z0-9]/g,'').slice(-6).toUpperCase()+'-'+Date.now().toString(36).toUpperCase();
-    _saveReviewCoupon({code, sajuId:sid, amount, exp:expiresAt, used:false, usedAt:null, usedOrderId:null, reviewId:data.reviewId||null, issuedAt:Date.now()});
+    const coupon=_issueRewardCoupon('review', amount, sid, data.reviewId||null);
+    if(coupon){
+      coupon.exp=expiresAt;
+      coupon.reviewId=data.reviewId||null;
+      const arr=_loadValidCoupons().map(c=>c.code===coupon.code?coupon:c);
+      try{localStorage.setItem(_REVIEW_COUPON_LS_KEY,JSON.stringify(arr));}catch(e){}
+    }
     _markReviewSubmitted(sid, payload.cat, data.reviewId||null, true);
+    _showRewardCode(coupon, '💝 후기 보상코드가 발급됐어요.');
     // 결과 화면 — 쿠폰 발급 카드
     const body=document.getElementById('reviewWriteBody');
     if(body){
@@ -12323,9 +12399,10 @@ async function submitReview(){
         <div style="display:flex;flex-direction:column;gap:14px;padding:8px 0">
           <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--accent-bright)">🎉 후기 접수 완료</div>
           <div class="coupon-badge">
-            <div style="font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.04em">다음 결제 시 자동 차감</div>
+            <div style="font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.04em">결제창에 입력해서 사용하세요</div>
+            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.22rem;color:var(--text);font-weight:900;letter-spacing:.08em">${coupon?coupon.code:'REVIEW 코드'}</div>
             <div class="coupon-amount">-${amount.toLocaleString('ko-KR')}원</div>
-            <div class="coupon-meta">유효기간 ${new Date(expiresAt).toLocaleDateString('ko-KR')}까지<br>다음 결제 시 자동 적용돼요 (결제액이 ${amount.toLocaleString('ko-KR')}원 이하인 경우 적용 안 됨)</div>
+            <div class="coupon-meta">유효기간 ${new Date(expiresAt).toLocaleDateString('ko-KR')}까지<br>다음 결제 시 프로모션 코드 칸에 입력해 주세요.</div>
           </div>
           <div style="font-size:.74rem;color:var(--muted);text-align:center;line-height:1.7">
             후기는 운영자 검토 후 사이트에 게시돼요.
@@ -12374,8 +12451,8 @@ function showChatLimitUpsell(currentCat){
   const unusedShare=(typeof _getUnusedShareChannels==='function')?_getUnusedShareChannels():[];
   const shareBlock=unusedShare.length>0 ? `
     <div style="margin:14px 0;padding:14px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.5));border:1px dashed #FFEB00;border-radius:11px">
-      <div style="font-size:.84rem;font-weight:800;color:#FFEB00;margin-bottom:6px">🎁 또는 무료로 — 공유하면 +${_SHARE_BONUS_COUNT}회</div>
-      <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">+${_SHARE_BONUS_COUNT}회</b>가 즉시 적립돼요.</div>
+      <div style="font-size:.84rem;font-weight:800;color:#FFEB00;margin-bottom:6px">🎁 공유하면 1,000원 할인코드</div>
+      <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${unusedShare.map(c=>{
           const fn=c.key==='kakao'?'shareToKakao()':c.key==='band'?'shareToBand()':'shareToInstagram()';
@@ -12388,7 +12465,7 @@ function showChatLimitUpsell(currentCat){
     <div class="upsell-head">
       <div class="upsell-icon">🎟</div>
       <div class="upsell-title">추가 질문 한도 도달</div>
-      <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하거나 친구에게 공유하시면 같은 풀이에서 바로 추가 질문이 가능해요.</div>
+      <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하거나 공유 보상코드를 받아 다음 결제에 사용해 보세요.</div>
     </div>
     ${shareBlock}
     ${cardsHtml}
@@ -12629,15 +12706,11 @@ function renderShareCtaInChat(){
   const unused=_getUnusedShareChannels();
   if(unused.length===0){
     // 모든 채널 다 사용함 — 결제 안내로 대체 (간단 메시지)
-    el.innerHTML=`<div class="chat-share-cta-done">공유 보상은 모두 받으셨어요. 추가 질문이 필요하시면 아래 「＋ 질문 추가 구매」를 이용해 주세요.</div>`;
+    el.innerHTML=`<div class="chat-share-cta-done">공유 보상코드는 모두 받으셨어요. 추가 질문이 필요하시면 아래 「＋ 질문 추가 구매」를 이용해 주세요.</div>`;
     return;
   }
-  const headTitle=remaining===0
-    ? `🎁 공유하면 질문 +${_SHARE_BONUS_COUNT}회 무료로 받기`
-    : `🎁 마지막 1회 남았어요 — 공유하면 +${_SHARE_BONUS_COUNT}회 추가`;
-  const desc=remaining===0
-    ? `친구에게 천지인 사주를 알려주세요. 채널별로 한 번씩 <b style="color:#FFEB00">+${_SHARE_BONUS_COUNT}회</b>씩 적립돼요.`
-    : `채널별로 한 번씩만 받을 수 있어요. 지금 공유하시면 <b style="color:#FFEB00">+${_SHARE_BONUS_COUNT}회</b>가 적립돼요.`;
+  const headTitle=`🎁 공유하면 1,000원 할인코드 받기`;
+  const desc=`친구에게 천지인 사주를 알려주세요. 채널별로 한 번씩 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.`;
   const btns=unused.map(c=>{
     const fn= c.key==='kakao'?'shareToKakao()'
             : c.key==='band'?'shareToBand()'
