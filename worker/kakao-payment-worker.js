@@ -470,7 +470,9 @@ function promoKey(code) { return `promo:${normalizePromoCode(code)}`; }
 
 function genPromoCode(prefix) {
   let s = '';
-  for (let i = 0; i < 6; i++) s += PROMO_CODE_ALPHABET[Math.floor(Math.random() * PROMO_CODE_ALPHABET.length)];
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  for (let i = 0; i < 6; i++) s += PROMO_CODE_ALPHABET[bytes[i] % PROMO_CODE_ALPHABET.length];
   return `${prefix}-${s}`;
 }
 
