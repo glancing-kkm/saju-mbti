@@ -1286,60 +1286,46 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
       <div class="menu-grid" role="list">
         <button class="menu-card" onclick="goToInput('manse')" aria-label="만세력 — 정확한 사주 원국 (무료)" role="listitem">
-          <div class="mc-icon" aria-hidden="true">📅</div>
           <div class="mc-title">만세력</div>
           <div class="mc-desc">진태양시 보정으로 사주 원국을 정확하게 계산</div>
           <div class="mc-tag t-free">무료</div>
         </button>
         <button class="menu-card" onclick="goToInput('daily')" aria-label="일일운세 — 오늘의 일진 풀이 (무료)" role="listitem">
-          <div class="mc-icon" aria-hidden="true">✨</div>
           <div class="mc-title">일일운세</div>
           <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
           <div class="mc-tag t-free">무료</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
-          <div class="mc-lock" aria-label="시그니처 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">🌼</div>
           <div class="mc-title">인생총운</div>
           <div class="mc-desc">10년 흐름으로 보는 평생의 중요한 시기</div>
           <div class="mc-tag t-signature">시그니처</div>
           <div class="mc-price">24,000원</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 19,000원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">🎉</div>
           <div class="mc-title">신년운세</div>
           <div class="mc-desc">사주와 올해·10년 흐름을 함께 보는 한 해 분석</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">19,000원</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 1,500원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">🎯</div>
           <div class="mc-title">지정일 운세</div>
           <div class="mc-desc">중요한 면접·계약·여행 날의 일진을 깊이 있게 풀이</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 월당 2,000원, 최대 12,000원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">📆</div>
           <div class="mc-title">월별 운세</div>
           <div class="mc-desc">최대 6개월의 운세 흐름을 연속적으로 추적</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">월당 2,000원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 12,000원 (6개월)</span></div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">💑</div>
           <div class="mc-title">궁합</div>
           <div class="mc-desc">본인과 상대의 사주를 나란히 비교해 8영역 풀이</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">5,900원</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이·작명 — 9,900원" role="listitem">
-          <div class="mc-lock" aria-label="프리미엄 풀이">🔒</div>
-          <div class="mc-icon" aria-hidden="true">✒️</div>
           <div class="mc-title">이름풀이·작명</div>
           <div class="mc-desc">이름의 다섯 기운 분석 + 사주에 어울리는 추천 이름 5개</div>
           <div class="mc-tag t-paid">프리미엄</div>
@@ -1351,10 +1337,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <!-- ───── 이용자 후기 (정적 placeholder — 운영자가 실제 베타 테스터 후기로 교체) ───── -->
     <section class="reviews-sec" aria-labelledby="reviewsTitle">
       <div class="reviews-head">
-        <h2 class="reviews-title" id="reviewsTitle">⭐ 이용자 후기</h2>
+        <h2 class="reviews-title" id="reviewsTitle">이용자 후기</h2>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="reviews-sub">베타 이용자 후기</span>
-          <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 2,000원 보상코드 받기">✏️ 후기 작성</button>
+          <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 2,000원 보상코드 받기">후기 작성</button>
         </div>
       </div>
       <div class="reviews-grid" id="reviewsGrid">
@@ -1555,7 +1541,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <!-- 지정일 운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraDaypick" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">🎯</span><span class="cat-extra-title">지정일 운세 — 보고 싶은 날짜</span></div></legend>
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">지정일 운세 — 보고 싶은 날짜</span></div></legend>
         <div class="cat-extra-desc">중요한 약속·면접·계약·여행 등 특정 날짜를 입력하면 그날의 일진이 본인 사주와 어떻게 맞물리는지 풀어드려요.</div>
         <div class="row3">
           <div class="ig" style="flex:2.2">
@@ -1591,7 +1577,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <!-- 월별 운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraMonthly" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">📆</span><span class="cat-extra-title">월별 운세 — 기간 선택</span></div></legend>
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">월별 운세 — 기간 선택</span></div></legend>
         <div class="cat-extra-desc">시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드려요 (최대 6개월 · 월당 2,000원).</div>
         <div class="row3">
           <div class="ig">
@@ -1634,7 +1620,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <!-- 신년운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraNewyear" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">🎉</span><span class="cat-extra-title">신년운세 — 보고 싶은 해</span></div></legend>
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">신년운세 — 보고 싶은 해</span></div></legend>
         <div class="cat-extra-desc">한 해의 흐름을 사주와 올해·10년 흐름까지 함께 보며 입체적으로 풀어드려요.</div>
         <div class="ig">
           <label for="nyY">연도 (예: 2026)</label>
@@ -1644,7 +1630,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <!-- 이름풀이·작명 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraName" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">✒️</span><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
         <div class="cat-extra-desc">한글 이름을 입력하면 각 글자에 맞는 한자 후보가 자동으로 나와요. 한자를 선택하시면 획수도 자동으로 채워져요. 정통 작명학 기준 한글 자모의 다섯 기운 + 한자 자원 기운 + 4격(원형이정) + 81수리 길흉을 모두 풀어드려요.</div>
         <div class="row3">
           <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off" oninput="_onNameHangulChange('surname')"></div>
@@ -1685,7 +1671,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <!-- 궁합 추가 입력 - 상대방 사주 -->
       <fieldset class="cat-extra" id="catExtraGunghap" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-icon" aria-hidden="true">💑</span><span class="cat-extra-title">궁합 — 상대방 정보</span></div></legend>
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">궁합 — 상대방 정보</span></div></legend>
         <div class="cat-extra-desc">위에 본인 사주를 입력하고, 아래에 상대(배우자·연인)의 사주를 입력하면 두 사람의 사주팔자를 나란히 비교해서 8영역 궁합을 풀어드려요.</div>
         <div class="tog-row" style="margin-bottom:9px">
           <button type="button" class="tog on" id="gnGm" onclick="setGnGender('male')">남성</button>
@@ -1766,13 +1752,13 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="share-preview" id="sharePreview"></div>
     <div class="sns-grid">
       <button class="sns-btn" onclick="shareToKakao()">
-        <div class="sns-icon ic-kakao">💬</div>카카오톡
+        <div class="sns-icon ic-kakao" style="font-weight:900">톡</div>카카오톡
       </button>
       <button class="sns-btn" onclick="shareToBand()">
-        <div class="sns-icon ic-band">📢</div>밴드
+        <div class="sns-icon ic-band" style="font-size:1.3rem;font-weight:900">B</div>밴드
       </button>
       <button class="sns-btn" onclick="shareToInstagram()">
-        <div class="sns-icon ic-insta">📷</div>인스타그램
+        <div class="sns-icon ic-insta" style="font-size:.92rem;font-weight:900">IG</div>인스타그램
       </button>
       <button class="sns-btn" onclick="shareToFacebook()">
         <div class="sns-icon ic-fb" style="font-size:1.3rem;font-weight:900">f</div>페이스북
@@ -1784,7 +1770,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="sns-icon ic-line" style="font-size:.72rem;font-weight:800;letter-spacing:-.5px">LINE</div>라인
       </button>
     </div>
-    <button class="share-copy-btn" onclick="copyShareText()">📋 텍스트 복사하기</button>
+    <button class="share-copy-btn" onclick="copyShareText()">텍스트 복사하기</button>
   </div>
 </div>
 
@@ -1792,7 +1778,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <div class="pay-overlay" id="payOverlay" onclick="if(event.target===this)closePaymentConsent()" role="dialog" aria-modal="true" aria-labelledby="payTitle">
   <div class="pay-sheet">
     <div class="pay-head">
-      <h2 class="pay-title" id="payTitle">💳 결제 동의</h2>
+      <h2 class="pay-title" id="payTitle">결제 동의</h2>
       <button class="pay-close" type="button" onclick="closePaymentConsent()" aria-label="닫기">✕</button>
     </div>
 
@@ -1805,7 +1791,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
       <!-- 할인 (쿠폰 적용 시 노출) -->
       <div class="pay-product-price" id="payPriceCouponRow" style="display:none;font-size:.74rem">
-        <span id="payPriceCouponLabel" style="color:var(--accent-bright)">🎟 프로모션 코드 할인</span><b id="payPriceCoupon" style="font-weight:700;color:var(--accent-bright)">-0원</b>
+        <span id="payPriceCouponLabel" style="color:var(--accent-bright)">프로모션 코드 할인</span><b id="payPriceCoupon" style="font-weight:700;color:var(--accent-bright)">-0원</b>
       </div>
       <!-- 결제 금액 (항상 노출) -->
       <div class="pay-product-price">
@@ -1869,7 +1855,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <div class="pay-overlay" id="payDoneOverlay" onclick="if(event.target===this)closePayDone()" role="dialog" aria-modal="true" aria-labelledby="payDoneTitle">
   <div class="pay-sheet" style="max-width:440px">
     <div class="pay-head">
-      <h2 class="pay-title" id="payDoneTitle">✅ 결제 완료</h2>
+      <h2 class="pay-title" id="payDoneTitle">결제 완료</h2>
       <button class="pay-close" type="button" onclick="closePayDone()" aria-label="닫기">✕</button>
     </div>
     <div class="pay-product">
@@ -1882,7 +1868,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <!-- 카톡 공유 인센티브 카드 -->
     <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.6));border:1px dashed #FFEB00;border-radius:12px">
-      <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">🎁 카카오톡으로 공유하고 1,000원 할인코드 받기</div>
+      <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">카카오톡으로 공유하고 1,000원 할인코드 받기</div>
       <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주를 알려주시면, 다음 결제에 쓸 수 있는 <b style="color:#FFEB00">SHARE 보상코드</b>가 발급돼요.</div>
       <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
         <span class="kakao-logo">talk</span>카카오톡으로 공유하기
@@ -1891,14 +1877,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <!-- 후기 작성 인센티브 카드 -->
     <div id="payDoneReviewCard" style="margin-top:10px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(45,52,71,.6));border:1px dashed var(--accent);border-radius:12px">
-      <div style="font-size:.82rem;font-weight:800;color:var(--accent-bright);letter-spacing:.02em;margin-bottom:6px">💝 후기 쓰고 다음 결제 2,000원 할인</div>
+      <div style="font-size:.82rem;font-weight:800;color:var(--accent-bright);letter-spacing:.02em;margin-bottom:6px">후기 쓰고 다음 결제 2,000원 할인</div>
       <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">후기를 남기면 다음 결제에 직접 입력해서 쓸 수 있는 <b style="color:var(--accent-bright)">REVIEW 보상코드</b>가 발급돼요.</div>
       <button type="button" id="payDoneReviewBtn" onclick="payDoneClickReview()" style="width:100%;padding:11px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer">
         ✏️ 후기 작성하고 쿠폰 받기
       </button>
     </div>
     <!-- 이미 후기를 작성한 사용자에게는 위 카드 대신 감사 인사만 -->
-    <div id="payDoneReviewThanks" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(212,175,55,.08);border-radius:10px;font-size:.78rem;color:var(--sub);text-align:center">💝 후기를 이미 남겨주셨어요. 감사해요!</div>
+    <div id="payDoneReviewThanks" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(212,175,55,.08);border-radius:10px;font-size:.78rem;color:var(--sub);text-align:center">후기를 이미 남겨주셨어요. 감사해요!</div>
 
     <div class="pay-cta-row" style="margin-top:14px">
       <button class="pay-cta-cancel" type="button" onclick="closePayDone()">닫기</button>
@@ -1911,7 +1897,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <div class="pay-overlay" id="reviewWriteOverlay" onclick="if(event.target===this)closeReviewWrite()" role="dialog" aria-modal="true" aria-labelledby="reviewWriteTitle">
   <div class="pay-sheet" style="max-width:480px">
     <div class="pay-head">
-      <h2 class="pay-title" id="reviewWriteTitle">💝 후기 작성하고 2,000원 할인</h2>
+      <h2 class="pay-title" id="reviewWriteTitle">후기 작성하고 2,000원 할인</h2>
       <button class="pay-close" type="button" onclick="closeReviewWrite()" aria-label="닫기">✕</button>
     </div>
     <div id="reviewWriteBody">
@@ -3002,19 +2988,18 @@ function dailyAdvice(saju,f){
 // ══════════════════════════════════════════════
 function renderFeeLock(kind){
   const data={
-    daypick:{icon:'🎯',title:'지정일 운세',desc:'중요한 약속·면접·계약·여행 등 특정 날짜를 지정하면, 그날의 일진이 본인 사주와 어떻게 맞물리는지 입체적으로 풀어드려요.',features:['📍 지정한 날짜의 천간·지지 분석','📍 그날의 십신과 길흉 점수','📍 합·충·형으로 보는 변수','📍 시간대별 추천/주의 활동','📍 채팅 1회로 추가 질문 가능']},
-    monthly:{icon:'📆',title:'월별 운세',desc:'시작 월부터 종료 월까지 범위를 지정하면, 매달의 운세 흐름을 연속적으로 풀어드려요 (1개월 단위 결제).',features:['📍 월별 하늘·땅 글자 분석','📍 월별 총운/재물/연애/건강 점수','📍 10년 흐름과의 만남','📍 월별 추천 활동·살펴볼 부분','📍 채팅 3회로 추가 질문 가능']},
-    newyear:{icon:'🎉',title:'신년운세',desc:`${new Date().getFullYear()+1}년 한 해의 흐름을 사주와 올해·10년 흐름까지 함께 보며 입체적으로 풀어드려요.`,features:['📍 신년 글자 심층 분석','📍 12개월 운세 흐름 그래프','📍 분야별(재물·연애·건강·관계) 연간 운','📍 좋은 달·주의 달 + 결정적 시기 특정','📍 채팅 5회로 추가 질문 가능']}
+    daypick:{icon:'',title:'지정일 운세',desc:'중요한 약속·면접·계약·여행 등 특정 날짜를 지정하면, 그날의 일진이 본인 사주와 어떻게 맞물리는지 입체적으로 풀어드려요.',features:['· 지정한 날짜의 천간·지지 분석','· 그날의 십신과 길흉 점수','· 합·충·형으로 보는 변수','· 시간대별 추천/주의 활동','· 채팅 1회로 추가 질문 가능']},
+    monthly:{icon:'',title:'월별 운세',desc:'시작 월부터 종료 월까지 범위를 지정하면, 매달의 운세 흐름을 연속적으로 풀어드려요 (1개월 단위 결제).',features:['· 월별 하늘·땅 글자 분석','· 월별 총운/재물/연애/건강 점수','· 10년 흐름과의 만남','· 월별 추천 활동·살펴볼 부분','· 채팅 3회로 추가 질문 가능']},
+    newyear:{icon:'',title:'신년운세',desc:`${new Date().getFullYear()+1}년 한 해의 흐름을 사주와 올해·10년 흐름까지 함께 보며 입체적으로 풀어드려요.`,features:['· 신년 글자 심층 분석','· 12개월 운세 흐름 그래프','· 분야별(재물·연애·건강·관계) 연간 운','· 좋은 달·주의 달 + 결정적 시기 특정','· 채팅 5회로 추가 질문 가능']}
   };
   const d=data[kind];
   return `<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>
     <div class="fee-lock">
-      <div class="fee-lock-icon">${d.icon}</div>
       <div class="fee-lock-title">${d.title}</div>
       <div class="fee-lock-desc">${d.desc}</div>
       <div class="fee-lock-features">${d.features.map(f=>`<div>${f}</div>`).join('')}</div>
       <div style="font-size:.72rem;color:var(--muted);margin-bottom:18px;line-height:1.7">곧 만나보실 수 있는 풀이예요.<br>현재는 「인생총운」으로 깊이 있는 사주 풀이를 먼저 만나보세요.</div>
-      <button class="lock-btn" onclick="gotoCard(5)">🌼 인생총운 보러가기</button>
+      <button class="lock-btn" onclick="gotoCard(5)">인생총운 보러가기</button>
     </div>`;
 }
 
@@ -3626,9 +3611,9 @@ function mbtiAnalysisHTML(saju, mbti){
     h+=`<article class="mbti-indicator-block">
       <header><h3>${idx+1}. ${ind.label}</h3>${badge}</header>
       <div class="mbti-axis">
-        <div class="mbti-axis-row row-innate"><div class="mbti-axis-tag">🌱 타고난 기질 (사주의 분위기)</div><div class="mbti-axis-body">${ind.innate}</div></div>
-        <div class="mbti-axis-row row-learned"><div class="mbti-axis-tag">🧭 학습된 성격 (지금의 MBTI)</div><div class="mbti-axis-body">${ind.learned}</div></div>
-        <div class="mbti-axis-row row-evolution"><div class="mbti-axis-tag">📖 변화의 흐름 (환경·경험과 사주의 영향)</div><div class="mbti-axis-body">${ind.evolution}</div></div>
+        <div class="mbti-axis-row row-innate"><div class="mbti-axis-tag">타고난 기질 (사주의 분위기)</div><div class="mbti-axis-body">${ind.innate}</div></div>
+        <div class="mbti-axis-row row-learned"><div class="mbti-axis-tag">학습된 성격 (지금의 MBTI)</div><div class="mbti-axis-body">${ind.learned}</div></div>
+        <div class="mbti-axis-row row-evolution"><div class="mbti-axis-tag">변화의 흐름 (환경·경험과 사주의 영향)</div><div class="mbti-axis-body">${ind.evolution}</div></div>
       </div>
     </article>`;
   });
@@ -3920,24 +3905,23 @@ function sinsalMiniHTML(activeSins, contextDesc){
 function nextActionsHTML(currentCat){
   // 현재 카테고리 외 추천 카드 3-4개 + 공유/저장
   const allCats=[
-    {key:'manse',icon:'📅',title:'만세력',desc:'태어난 사주 구조 정확 계산',price:'무료'},
-    {key:'daily',icon:'✨',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
-    {key:'daypick',icon:'🎯',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
-    {key:'monthly',icon:'📆',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
-    {key:'newyear',icon:'🎉',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
-    {key:'gunghap',icon:'💑',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
-    {key:'name',icon:'✒️',title:'이름풀이·작명',desc:'이름의 다섯 기운 + 추천 이름 5개',price:'프리미엄'},
-    {key:'life',icon:'🌼',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'}
+    {key:'manse',icon:'',title:'만세력',desc:'태어난 사주 구조 정확 계산',price:'무료'},
+    {key:'daily',icon:'',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
+    {key:'daypick',icon:'',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
+    {key:'monthly',icon:'',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
+    {key:'newyear',icon:'',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
+    {key:'gunghap',icon:'',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
+    {key:'name',icon:'',title:'이름풀이·작명',desc:'이름의 다섯 기운 + 추천 이름 5개',price:'프리미엄'},
+    {key:'life',icon:'',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'}
   ];
   const others=allCats.filter(c=>c.key!==currentCat).slice(0,3);
 
   let h=`<section class="next-actions" aria-label="다음 단계 안내">
-    <h3 class="next-actions-title">👉 이런 분석도 받아보세요</h3>
+    <h3 class="next-actions-title">이런 분석도 받아보세요</h3>
     <div class="next-actions-grid">`;
   others.forEach(c=>{
     const priceClass=c.price==='무료'?'free':c.price==='시그니처'?'signature':'paid';
     h+=`<button type="button" class="next-action-card" onclick="goToInput('${c.key}')" aria-label="${c.title} — ${c.desc}">
-      <div class="na-icon" aria-hidden="true">${c.icon}</div>
       <div class="na-title">${c.title}</div>
       <div class="na-desc">${c.desc}</div>
       <div class="na-tag ${priceClass}">${c.price}</div>
@@ -3945,19 +3929,16 @@ function nextActionsHTML(currentCat){
   });
   // 공유 / 저장 / 가이드 카드
   h+=`<button type="button" class="next-action-card highlight" onclick="showShareModal()" aria-label="결과를 친구에게 공유">
-      <div class="na-icon" aria-hidden="true">🎁</div>
       <div class="na-title">친구에게 공유</div>
       <div class="na-desc">「○○일주 × MBTI」 한 줄 요약을 공유하세요</div>
       <div class="na-tag share">SHARE</div>
     </button>
     <button type="button" class="next-action-card" onclick="saveAsImage(this)" aria-label="결과를 이미지로 저장">
-      <div class="na-icon" aria-hidden="true">📥</div>
       <div class="na-title">이미지로 저장</div>
       <div class="na-desc">분위기와 카드를 갤러리에 보관 (워터마크 포함)</div>
       <div class="na-tag save">SAVE</div>
     </button>
     <a class="next-action-card" href="/blog/" aria-label="사주 가이드 모음 보기">
-      <div class="na-icon" aria-hidden="true">📚</div>
       <div class="na-title">사주 가이드 보기</div>
       <div class="na-desc">60갑자·MBTI·작은 별자리·시기별 풀이 100+편</div>
       <div class="na-tag guide">GUIDE</div>
@@ -4086,7 +4067,7 @@ function resultHeroHTML(saju, mbti, cat){
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
 function termNoticeHTML(){
   return `<div class="term-notice">
-    <div class="term-notice-icon">💡</div>
+
     <div class="term-notice-body">
       <b>용어가 어렵게 느껴지나요?</b><br>
       본문 안에서 <span class="term-notice-demo">점선 밑줄</span>이 그어진 용어를 <b>탭(클릭)</b>하면 쉬운 설명이 팝업으로 나타나요. 사주를 처음 보시는 분도 막힘없이 읽으실 수 있도록 50여 개의 핵심 용어에 풀이를 달아두었어요.
@@ -4527,8 +4508,8 @@ function renderDaypickFortune(saju,y,m,d,extra){
             <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
           </div>
           <div class="summary-actions">
-            <button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">📷 이미지(PNG)</button>
-            <button class="summary-btn dp-summary-btn secondary" onclick="downloadDaypickSummary('pdf')">📄 PDF 다운로드</button>
+            <button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button>
+            <button class="summary-btn dp-summary-btn secondary" onclick="downloadDaypickSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -4653,7 +4634,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
       <div class="daily-score-lab">${totalMonths}개월 평균</div>
     </div>
     <div class="daily-grade" style="color:${avgGrade.color};background:${avgGrade.bg};border:1px solid ${avgGrade.color}55">${avgGrade.lab}</div>
-    <div class="daily-headline">📅 ${totalMonths}개월의 흐름을 본인 사주에 비춰</div>
+    <div class="daily-headline">${totalMonths}개월의 흐름을 본인 사주에 비춰</div>
     <div class="daily-pillar">본인 <em>${myStemKo}</em>(${dm.n.split('(')[0]}) 기준으로 매달 들어오는 기운의 흐름</div>
   </div>
 
@@ -4892,8 +4873,8 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
             <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
           </div>
           <div class="summary-actions">
-            <button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">📷 이미지(PNG)</button>
-            <button class="summary-btn mo-summary-btn secondary" onclick="downloadMonthlySummary('pdf')">📄 PDF 다운로드</button>
+            <button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button>
+            <button class="summary-btn mo-summary-btn secondary" onclick="downloadMonthlySummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -5261,7 +5242,7 @@ function renderNewyearFortune(saju,y){
 
   // 점수 링 헤로
   let h=`<div class="daily-card">
-    <div class="daily-date">🎉 ${y}년 신년운세</div>
+    <div class="daily-date">${y}년 신년운세</div>
     <div class="daily-score-ring" style="border-color:${grade.color};background:${grade.bg}">
       <div class="daily-score-num" style="color:${grade.color}">${total}</div>
       <div class="daily-score-lab">${y}년 종합</div>
@@ -5618,8 +5599,8 @@ function renderNewyearFortune(saju,y){
             <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
           </div>
           <div class="summary-actions">
-            <button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">📷 이미지(PNG)</button>
-            <button class="summary-btn ny-summary-btn secondary" onclick="downloadNewyearSummary('pdf')">📄 PDF 다운로드</button>
+            <button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button>
+            <button class="summary-btn ny-summary-btn secondary" onclick="downloadNewyearSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -6063,7 +6044,7 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   const d=calcDaeun(saju,sy,sm,sd,sh,smin,gender);
   const dir=d.forward?'순행 — 시간 방향으로 진행':'역행 — 시간 역방향으로 진행';
   let h=`<div class="card">
-    <div class="ctitle big">📅 대운 — 10년 운세 주기</div>
+    <div class="ctitle big">대운 — 10년 운세 주기</div>
     <div class="irow"><span class="ikey">10년 흐름 방향</span><span class="ival">${dir}</span></div>
     <div class="irow"><span class="ikey">10년 흐름 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
     <div class="daeun-scroll" style="margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch">
@@ -6793,7 +6774,7 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
   // 신살 요약
   const sins=findSinsal(saju);
   if(sins.length>0){
-    h+=`<div class="card"><div class="ctitle big">⚡ 신살 요약</div>
+    h+=`<div class="card"><div class="ctitle big">신살 요약</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">`;
     const seen=new Set();
     sins.forEach(s=>{
@@ -6815,7 +6796,7 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
   const now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
   const months=calc12MonthFortune(saju,cy);
   h+=`<div class="card">
-    <div class="ctitle big">📅 ${cy}년 12개월 흐름</div>
+    <div class="ctitle big">${cy}년 12개월 흐름</div>
     <div style="font-size:.7rem;color:var(--sub);margin-bottom:8px">절기 기준 월주 (이번 달 강조)</div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px">`;
   for(let dm=1;dm<=12;dm++){
@@ -6852,21 +6833,20 @@ function renderSajuFree(saju){
   let h='';
   // 사주팔자 핵심 카드
   h+=`<div class="simple-card">
-    <div class="simple-emoji">🌱</div>
     <div class="simple-body">
       <div class="simple-title">사주팔자 핵심</div>
       <div class="simple-text">일간 <b>${dm.n}</b>로 ${dm.core}을 본질로 해요. 격국은 <b>${gk.name.split(' ')[0]}</b>이며, 용신은 <b>${OHNAME[ys.main]}</b> 기운이 도움이 돼요.</div>
       <div class="simple-text" style="margin-top:8px">${personaDeepHTML(saju,'brief')}</div>
     </div>
   </div>`;
-  h+=simpleCard('💰','재물운',wScore,wealth.style.split('.').slice(0,1).join('.')+'.');
-  h+=simpleCard('💕','연애·결혼운',lScore,getSimpleLove(saju,sins));
-  h+=simpleCard('🌿','건강운',hScore,getSimpleHealth(oh));
-  h+=simpleCard('💼','직업·직장운',cScore,getSimpleCareer(gk));
-  h+=simpleCard('👥','인간관계',rScore,getSimpleHuman(sins));
+  h+=simpleCard('','재물운',wScore,wealth.style.split('.').slice(0,1).join('.')+'.');
+  h+=simpleCard('','연애·결혼운',lScore,getSimpleLove(saju,sins));
+  h+=simpleCard('','건강운',hScore,getSimpleHealth(oh));
+  h+=simpleCard('','직업·직장운',cScore,getSimpleCareer(gk));
+  h+=simpleCard('','인간관계',rScore,getSimpleHuman(sins));
   // CTA
   h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));text-align:center;padding:18px;margin-top:14px">
-    <div style="font-size:.92rem;font-weight:800;margin-bottom:6px">📖 더 깊이 알고 싶다면</div>
+    <div style="font-size:.92rem;font-weight:800;margin-bottom:6px">더 깊이 알고 싶다면</div>
     <div style="font-size:.78rem;color:var(--sub);line-height:1.65;margin-bottom:14px">위아래 글자를 쉽게 풀고, 10년 흐름×올해 흐름으로 시기별로 살아나는 부분과 한 번 더 살필 부분까지 분석한 자세한 풀이를 확인해보세요.</div>
     <button class="lock-btn" style="margin-top:0;padding:11px 22px;width:auto;display:inline-block" onclick="tab(2)">자세한 사주 풀이 보기 🔒</button>
   </div>`;
@@ -6876,7 +6856,6 @@ function renderSajuFree(saju){
 function simpleCard(emoji,title,score,text){
   const stars=[1,2,3,4,5].map(j=>`<span class="${j<=score?'star-on':'star-off'}">${j<=score?'★':'☆'}</span>`).join('');
   return `<div class="simple-card">
-    <div class="simple-emoji">${emoji}</div>
     <div class="simple-body">
       <div class="simple-title">${title}</div>
       <div class="simple-stars">${stars}</div>
@@ -6923,7 +6902,7 @@ function getSimpleHuman(sins){
 // ══════════════════════════════════════════════
 const PAID_META={
   daypick:{
-    icon:'🎯',title:'지정일 운세',
+    icon:'',title:'지정일 운세',
     desc:'중요한 하루가 본인에게 잘 맞는 날인지 풀어드려요.<br>약속·면접·계약·여행·결혼·이사처럼 날짜 선택이 필요한 순간에 참고하기 좋아요.',
     features:[
       '· 그날 들어오는 위아래 글자 풀이',
@@ -6937,7 +6916,7 @@ const PAID_META={
     price:'1,500원'
   },
   monthly:{
-    icon:'📆',title:'월별 운세',
+    icon:'',title:'월별 운세',
     desc:'시작 월부터 종료 월까지 매달의 흐름을 이어서 풀어드려요.<br>언제 움직이고 언제 쉬어야 하는지 월 단위로 판단할 수 있어요.',
     features:[
       '· 절기 기준 월별 글자 정확 계산',
@@ -6951,7 +6930,7 @@ const PAID_META={
     price:'월당 2,000원 (최대 12,000원)'
   },
   newyear:{
-    icon:'🎉',title:'신년운세',
+    icon:'',title:'신년운세',
     desc:'한 해의 흐름을 사주와 올해·10년 흐름까지 함께 보며 입체적으로 풀어드려요.<br>입춘부터 다음 입춘까지의 기운을 사계절·12개월·8분야로 풀이해요.',
     features:[
       '· 올해 하늘·땅 글자 단위 심층 분석',
@@ -6965,7 +6944,7 @@ const PAID_META={
     price:'19,000원'
   },
   life:{
-    icon:'🌼',title:'인생총운',
+    icon:'',title:'인생총운',
     desc:'하늘·땅 글자를 글자 단위로 풀이하고,<br>10년 흐름×올해 흐름을 시기별로 분석한 종합 풀이예요.',
     features:[
       '· 사주팔자 종합 풀이 (위아래 글자 단위)',
@@ -6978,7 +6957,7 @@ const PAID_META={
     price:'24,000원'
   },
   gunghap:{
-    icon:'💑',title:'궁합',
+    icon:'',title:'궁합',
     desc:'본인과 상대(배우자·연인)의 사주를 나란히 비교해 결혼·연애·동업·가족 흐름을 풀어드려요.<br>두 사람의 사주가 서로 만나는 지점을 함께 살펴봐요.',
     features:[
       '· 종합 궁합 점수 + 등급 (천생연분~노력형)',
@@ -6993,7 +6972,7 @@ const PAID_META={
     price:'5,900원'
   },
   name:{
-    icon:'✒️',title:'이름풀이·작명',
+    icon:'',title:'이름풀이·작명',
     desc:'본인 이름을 한글 자모의 다섯 기운으로 분석하고, 사주에서 도와주는 기운·주의 기운과의 궁합을 풀어드려요.<br>본인 사주에 어울리는 추천 이름 5개도 함께 받아보세요.',
     features:[
       '· 이름 글자별 한글 자모의 다섯 기운 분석 (목·화·토·금·수)',
@@ -7007,10 +6986,10 @@ const PAID_META={
     price:'9,900원'
   },
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
-  chatpack1:{icon:'💬',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'1,000원'},
-  chatpack3:{icon:'💬',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,500원'},
-  chatpack5:{icon:'💬',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'4,000원'},
-  chatpack10:{icon:'💬',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'7,000원'}
+  chatpack1:{icon:'',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'1,000원'},
+  chatpack3:{icon:'',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,500원'},
+  chatpack5:{icon:'',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 20% 할인.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'4,000원'},
+  chatpack10:{icon:'',title:'추가 질문 10회 패키지',desc:'현재 풀이에 대한 역술가 질문 10회 추가. 30% 할인 · 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'7,000원'}
 };
 function getDecisionGuide(category){
   const m={
@@ -7022,7 +7001,7 @@ function getDecisionGuide(category){
     name:'현재 이름이 본인에게 주는 힘과 보완할 이름 방향을 판단할 수 있어요.'
   };
   const t=m[category]||m.life;
-  return `<div class="lock-info" style="margin-top:-8px;margin-bottom:16px">🧭 <b>이 풀이로 결정할 수 있는 것</b><br>${preventOrphan(t)}</div>`;
+  return `<div class="lock-info" style="margin-top:-8px;margin-bottom:16px"><b>이 풀이로 결정할 수 있는 것</b><br>${preventOrphan(t)}</div>`;
 }
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
 const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:9900,life:24000,
@@ -7071,7 +7050,7 @@ function getUsageGuide(category){
   items.push(`<b>역술가 질문</b> — 풀이에 대한 궁금한 점을 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전돼요. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>해요.`);
   items.push(`<b>공유 보너스</b> — 카카오톡·밴드·인스타그램 각각 공유 시 <b>1,000원 할인코드</b>가 발급돼요(채널별 1회).`);
   return `<div class="usage-guide">
-    <div class="usage-head">📖 이용방법 안내</div>
+    <div class="usage-head">이용방법 안내</div>
     <ol class="usage-list">${items.map(t=>`<li>${t}</li>`).join('')}</ol>
   </div>`;
 }
@@ -7080,11 +7059,11 @@ function renderPaidLock(category, saju){
   const m=PAID_META[category]||PAID_META.life;
   return `<div class="lock-wrap">
     <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
-    <div class="lock-title">${m.icon} ${m.title}</div>
+    <div class="lock-title">${m.title}</div>
     <div class="lock-desc">${m.desc}</div>
     ${getDecisionGuide(category)}
     <div class="pay-prep">
-      <div class="pay-prep-badge">💳 안전 결제</div>
+      <div class="pay-prep-badge">안전 결제</div>
       <div class="pay-prep-body">카카오페이로 간편하게 결제하실 수 있어요. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
       <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 2,000원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
     </div>
@@ -7118,7 +7097,7 @@ function renderSajuLock(saju){return renderPaidLock('life',saju);}
 function _teaserCta(category){
   const m=PAID_META[category]||PAID_META.life;
   const priceText=m.price||'결제';
-  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">💳 ${priceText} 결제하고 전체 풀이 보기 →</button>`;
+  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">${priceText} 결제하고 전체 풀이 보기 →</button>`;
 }
 // 블러 영역 — 본문 카드 placeholder
 function _teaserBlurArea(fakeTitles){
@@ -7132,7 +7111,7 @@ function _teaserBlurArea(fakeTitles){
   return `<div class="teaser-blur-area">
     <div class="teaser-blurred">${fakeCards}</div>
     <div class="teaser-blur-overlay">
-      <div class="teaser-blur-overlay-text">🔒 결제하면 이 아래 전체 풀이가 펼쳐져요</div>
+      <div class="teaser-blur-overlay-text">결제하면 이 아래 전체 풀이가 펼쳐져요</div>
     </div>
   </div>`;
 }
@@ -7173,7 +7152,7 @@ function renderDaypickTeaser(saju, dpExtra){
         <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'✦'} ${tg} 기운</div>
       </div>
     </div>
-    <div class="teaser-headline">🌟 ${headline}</div>
+    <div class="teaser-headline">${headline}</div>
     <div class="teaser-leadline">${lead}</div>
     ${_teaserBlurArea(['💰 재물 흐름','💕 연애·관계','🏛️ 직업·관운','⏰ 12지지 시간대 가이드'])}
     ${_teaserCta('daypick')}
@@ -7208,7 +7187,7 @@ function renderMonthlyTeaser(saju, moExtra){
         <div class="teaser-score-grade">${grade.lab} · ${totalMonths}개월</div>
       </div>
     </div>
-    <div class="teaser-headline">📅 결정적 시기 — ${best.yy}년 ${best.mm}월</div>
+    <div class="teaser-headline">결정적 시기 — ${best.yy}년 ${best.mm}월</div>
     <div class="teaser-leadline">이 기간 중 본인에게 흐름이 가장 잘 맞는 시기는 <b>${best.yy}년 ${best.mm}월(${best.sc.total}점)</b>이에요. 큰 결정·계약·결혼 진전·이직 같은 굵직한 행동을 이 시기에 배치하시면 결실이 커요.</div>
     ${_teaserBlurArea(['📊 매월 상세 풀이 ('+totalMonths+'개월)','💰 재물 흐름 평균','💕 연애·관계 평균','🎯 결정적 시기 + 길월·흉월'])}
     ${_teaserCta('monthly')}
@@ -7234,7 +7213,7 @@ function renderNewyearTeaser(saju, y){
         <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'🎉'} ${tg} 기운</div>
       </div>
     </div>
-    <div class="teaser-headline">🎉 ${y}년은 ${headline}</div>
+    <div class="teaser-headline">${y}년은 ${headline}</div>
     <div class="teaser-leadline">본인 기준 ${y}년 위 글자가 <b>${plainTG(tg)}</b>의 흐름으로 들어와 ${tg.includes('관')?'사회적 책임과 결단의 분위기':tg.includes('재')?'재물의 분위기':tg.includes('인')?'학습·정인의 분위기':tg.includes('식')||tg.includes('상')?'표현·창의의 분위기':'본인 색깔의 분위기'}이 한 해 전반에 흐릅니다. 결정적 시기는 12개월 카드에서 확인하세요.</div>
     ${_teaserBlurArea(['🌸 사계절 흐름 (봄·여름·가을·겨울)','📆 12개월 상세 풀이','💰 재물 / 💕 연애 / 🏛️ 직업 / 🌿 건강 (8분야)','🎯 길월·흉월·결정적 시기'])}
     ${_teaserCta('newyear')}
@@ -7260,7 +7239,7 @@ function renderLifeTeaser(saju){
         <div class="teaser-score-grade">${gk.name||'평이한 흐름'} · 용신 ${OHNAME[ys.main]}</div>
       </div>
     </div>
-    <div class="teaser-headline">🌼 「${stemNk}」 × 「${branchNk}」의 분위기</div>
+    <div class="teaser-headline">「${stemNk}」 × 「${branchNk}」의 분위기</div>
     <div class="teaser-leadline">${lead}</div>
     ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (네 자리 흐름)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 10년 단위 흐름 + 올해 흐름'])}
     ${_teaserCta('life')}
@@ -7285,7 +7264,7 @@ function renderGunghapTeaser(saju1, gnExtra){
         <div class="teaser-score-grade">${result.grade} · ${grade.lab}</div>
       </div>
     </div>
-    <div class="teaser-headline">💑 「${stemNick(saju1.dp.stem)||STEMKO[saju1.dp.stem]}」 × 「${stemNick(saju2.dp.stem)||STEMKO[saju2.dp.stem]}」 인연</div>
+    <div class="teaser-headline">「${stemNick(saju1.dp.stem)||STEMKO[saju1.dp.stem]}」 × 「${stemNick(saju2.dp.stem)||STEMKO[saju2.dp.stem]}」 인연</div>
     <div class="teaser-leadline">${lead}</div>
     ${_teaserBlurArea(['📊 4가지 세부 점수 (본질·서로 보는 분위기·자리 만남·기운 균형)','💬 12가지 자리 만남 + 끌어당김/부딪힘','💕 연애·데이트 분위기 / 💍 결혼 생활 분위기','🤝 동업·동거 분위기 / 👨‍👩‍👧 가족·자녀 분위기'])}
     ${_teaserCta('gunghap')}
@@ -7318,7 +7297,7 @@ function renderNameTeaser(saju, nmExtra){
         <div class="teaser-score-grade">${grade}</div>
       </div>
     </div>
-    <div class="teaser-headline">✒️ ${full} 사주 궁합</div>
+    <div class="teaser-headline">${full} 사주 궁합</div>
     <div class="teaser-leadline">${lead}</div>
     ${_teaserBlurArea(['🪷 이름 글자별 오행 풀이 (초성·종성·음양)','㊗ 한자 수리오행 4격 · 81수리 길흉','⚖ 사주 + 이름 종합 기운 균형','🪷 본인 사주에 어울리는 추천 이름 5개'])}
     ${_teaserCta('name')}
@@ -7443,7 +7422,7 @@ function _updatePayPriceByCoupon(coupon){
   if(_payCoupon){
     if(baseRow){baseRow.style.display='flex';document.getElementById('payPriceBase').textContent=formatWon(_payBaseAmount);}
     if(couponRow){couponRow.style.display='flex';document.getElementById('payPriceCoupon').textContent='-'+formatWon(couponAmt);}
-    if(couponLabel)couponLabel.textContent=`🎟 ${_promoTypeLabel(_payCoupon.type)} 할인`;
+    if(couponLabel)couponLabel.textContent=`${_promoTypeLabel(_payCoupon.type)} 할인`;
     if(promoMsg){promoMsg.className='pay-promo-msg ok';promoMsg.textContent=`${_payCoupon.code} 적용 완료 · ${formatWon(couponAmt)} 할인돼요.`;}
   }else{
     if(baseRow)baseRow.style.display='none';
@@ -7489,7 +7468,7 @@ function openPaymentConsent(category,method){
   _payCategory=category;
   _payMethod=method||'KAKAOPAY';
   const m=PAID_META[category]; if(!m){return;}
-  document.getElementById('payProductName').textContent=`${m.icon} ${m.title}`;
+  document.getElementById('payProductName').textContent=`${m.title}`;
   let descPlain=m.desc.replace(/<br>/g,' · ').replace(/<[^>]+>/g,'');
   if(category==='monthly'&&_meta&&_meta.moExtra){
     const e=_meta.moExtra;
@@ -7683,7 +7662,7 @@ async function _handlePaymentReturn(){
         const inp=document.getElementById('chatInput');
         if(inp)inp.disabled=false;
         const btn=document.getElementById('chatBtn');
-        if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
+        if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent='질문하기';}
         if(typeof renderShareCtaInChat==='function')renderShareCtaInChat();
       }catch(e){}
       openPayDoneModal({orderId, cat, isChatpack:true, chatpackCount:pack.count});
@@ -7751,7 +7730,7 @@ function payDoneClickShare(){
     const shareBtn=document.getElementById('payDoneShareBtn');
     if(shareBtn){
       shareBtn.disabled=true;
-      shareBtn.innerHTML='✅ 공유 완료 — 할인코드 발급';
+      shareBtn.innerHTML='공유 완료 — 할인코드 발급';
       shareBtn.style.background='var(--accent)';
       shareBtn.style.color='var(--bg-mid)';
     }
@@ -10864,8 +10843,8 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
         <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
       </div>
       <div class="summary-actions">
-        <button class="summary-btn" onclick="downloadLifeSummary('png')">📷 이미지(PNG)</button>
-        <button class="summary-btn secondary" onclick="downloadLifeSummary('pdf')">📄 PDF 다운로드</button>
+        <button class="summary-btn" onclick="downloadLifeSummary('png')">이미지(PNG)</button>
+        <button class="summary-btn secondary" onclick="downloadLifeSummary('pdf')">PDF 다운로드</button>
       </div>
     </div>
   </div>`;
@@ -10888,7 +10867,7 @@ function buildLifeSummaryA4Html(){
 
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">📋 인생총운 요약본</div>
+      <div class="a4-title">인생총운 요약본</div>
     <div class="a4-subtitle">${dm.n.split('(')[0]} 본인 글자 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'두터움':'약함'} (본인 글자가 사주의 ${Math.round(me/tot*100)}%)</div>
     </div>
     <div class="a4-body">
@@ -11158,7 +11137,7 @@ function buildNewyearSummaryA4Html(){
 
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">📅 ${y}년 신년 운세 요약본</div>
+      <div class="a4-title">${y}년 신년 운세 요약본</div>
       <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · ${y}년 ${ypStemKo}${ypBrKo}(<em>${plainTG(tg)}</em>의 분위기) · 총점 <b style="color:${grade.color}">${total}점 (${grade.lab})</b></div>
     </div>
     <div class="a4-body">
@@ -11291,7 +11270,7 @@ function buildGunghapSummaryA4Html(){
   const sameTG=tg1===tg2;
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">💑 두 분 궁합 요약본</div>
+      <div class="a4-title">두 분 궁합 요약본</div>
       <div class="a4-subtitle">${dmName1} × ${dmName2} 일간 · 총점 <b style="color:${result.gradeColor}">${result.score}점 (${result.grade})</b></div>
     </div>
     <div class="a4-body">
@@ -11535,7 +11514,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   const briefHtml='';
   const memoryHtml=briefHtml?`<div class="remember-line">${preventOrphan(_memoryLineForCard(title,(_readingSentences(bodyHtml).find(s=>/하세요|좋아요|필요|활용|챙기|줄이|미루|잡으|정리|확인|주의/.test(s))||'')))}</div>`:'';
   const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
-  const badge=isPrimary?`<div class="nb-primary-badge">★ 본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
+  const badge=isPrimary?`<div class="nb-primary-badge">본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
   // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
   // id="card-XXX" 추가 — TOC 점프 링크용 (BT)
   // 주의: _generateTOC 정규식이 <div class="nb-title">를 리터럴 매칭 — 이 태그에 속성 추가 금지
@@ -12143,7 +12122,7 @@ async function claimShareBonus(channel){
     m[key]={issuedAt:Date.now(), code:data.code};
     _saveShareBonusMap(m);
     _saveReviewCoupon(coupon); // 표시용 로컬 캐시(검증은 서버)
-    _showRewardCode(coupon, '🎁 공유 보상코드가 발급됐어요.');
+    _showRewardCode(coupon, '공유 보상코드가 발급됐어요.');
     try{ if(typeof renderShareCtaInChat==='function') renderShareCtaInChat(); }catch(e){}
   }catch(e){}
 }
@@ -12407,13 +12386,13 @@ async function submitReview(){
     const coupon=serverCode?{code:serverCode, type:'review', amount, exp:expiresAt, reviewId:data.reviewId||null}:null;
     if(coupon)_saveReviewCoupon(coupon); // 표시용 로컬 캐시
     _markReviewSubmitted(sid, payload.cat, data.reviewId||null, true);
-    if(coupon)_showRewardCode(coupon, '💝 후기 보상코드가 발급됐어요.');
+    if(coupon)_showRewardCode(coupon, '후기 보상코드가 발급됐어요.');
     // 결과 화면 — 쿠폰 발급 카드
     const body=document.getElementById('reviewWriteBody');
     if(body){
       body.innerHTML=`
         <div style="display:flex;flex-direction:column;gap:14px;padding:8px 0">
-          <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--accent-bright)">🎉 후기 접수 완료</div>
+          <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--accent-bright)">후기 접수 완료</div>
           <div class="coupon-badge">
             <div style="font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.04em">결제창에 입력해서 사용하세요</div>
             <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.22rem;color:var(--text);font-weight:900;letter-spacing:.08em">${coupon?coupon.code:'REVIEW 코드'}</div>
@@ -12455,7 +12434,7 @@ function showChatLimitUpsell(currentCat){
     const unitPrice=Math.round(p.price/p.count);
     const badge=p.badge?`<span style="display:inline-block;margin-left:6px;font-size:.62rem;font-weight:700;color:var(--accent-bright);background:var(--accent-soft);padding:2px 7px;border-radius:50px;letter-spacing:-.02em">${p.badge}</span>`:'';
     return `<button type="button" class="upsell-card" onclick="window._chatUpsellGo('${p.cat}')">
-      <div class="upsell-card-icon">💬</div>
+
       <div class="upsell-card-body">
         <div class="upsell-card-title">추가 질문 ${p.label} 추가${badge}</div>
         <div class="upsell-card-desc">현재 풀이에 즉시 사용 · 회당 ${formatWon(unitPrice)}</div>
@@ -12467,7 +12446,7 @@ function showChatLimitUpsell(currentCat){
   const unusedShare=(typeof _getUnusedShareChannels==='function')?_getUnusedShareChannels():[];
   const shareBlock=unusedShare.length>0 ? `
     <div style="margin:14px 0;padding:14px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.5));border:1px dashed #FFEB00;border-radius:11px">
-      <div style="font-size:.84rem;font-weight:800;color:#FFEB00;margin-bottom:6px">🎁 공유하면 1,000원 할인코드</div>
+      <div style="font-size:.84rem;font-weight:800;color:#FFEB00;margin-bottom:6px">공유하면 1,000원 할인코드</div>
       <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${unusedShare.map(c=>{
@@ -12479,7 +12458,6 @@ function showChatLimitUpsell(currentCat){
   overlay.innerHTML=`<div class="upsell-modal">
     <button type="button" class="upsell-close" onclick="document.getElementById('chatLimitUpsell')&&(document.getElementById('chatLimitUpsell').classList.remove('on'),setTimeout(()=>document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove(),220))" aria-label="닫기">×</button>
     <div class="upsell-head">
-      <div class="upsell-icon">🎟</div>
       <div class="upsell-title">추가 질문 한도 도달</div>
       <div class="upsell-sub"><b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하거나 공유 보상코드를 받아 다음 결제에 사용해 보세요.</div>
     </div>
@@ -12659,7 +12637,7 @@ async function chatAsk(){
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
       try{ renderShareCtaInChat(); }catch(e){}
       if(chatRemaining(curCat)===0){
-        chatAppend('error',`🎟 ${curMax}회 질문 한도가 모두 소진되었어요. 다른 풀이에서 추가 질문을 열어보세요.`);
+        chatAppend('error',`${curMax}회 질문 한도가 모두 소진되었어요. 다른 풀이에서 추가 질문을 열어보세요.`);
         document.getElementById('chatInput').disabled=true;
         btn.disabled=true;btn.textContent='소진';
         // 한도 마지막 답변 직후 결제 유도 모달도 자동 표출
@@ -12671,7 +12649,7 @@ async function chatAsk(){
     if(loadingEl)loadingEl.remove();
     chatAppendError('네트워크 오류가 발생했어요: '+(e.message||'unknown'),question);
   }finally{
-    if(chatRemaining(curCat)>0){btn.disabled=false;btn.textContent='🔮 질문하기';}
+    if(chatRemaining(curCat)>0){btn.disabled=false;btn.textContent='질문하기';}
   }
 }
 
@@ -12693,7 +12671,7 @@ function renderChatSection(catOpt){
   };
   return `<div class="chat-card">
     <div class="chat-head">
-      <div class="chat-title">💬 역술가에게 직접 물어보기</div>
+      <div class="chat-title">역술가에게 직접 물어보기</div>
       <div class="chat-sub">${subText[cat]||subText.life}</div>
       <div class="chat-remaining" id="chatRemaining">${remaining}회 남음</div>
     </div>
@@ -12704,7 +12682,7 @@ function renderChatSection(catOpt){
       <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었어요':'궁금한 점을 입력하세요'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
-    <div class="chat-tip">💡 Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 바탕으로 답변돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
+    <div class="chat-tip">Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 바탕으로 답변돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
     <div id="chatShareCta"></div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;
@@ -12725,7 +12703,7 @@ function renderShareCtaInChat(){
     el.innerHTML=`<div class="chat-share-cta-done">공유 보상코드는 모두 받으셨어요. 추가 질문이 필요하시면 아래 「＋ 질문 추가 구매」를 이용해 주세요.</div>`;
     return;
   }
-  const headTitle=`🎁 공유하면 1,000원 할인코드 받기`;
+  const headTitle=`공유하면 1,000원 할인코드 받기`;
   const desc=`친구에게 천지인 사주를 알려주세요. 채널별로 한 번씩 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.`;
   const btns=unused.map(c=>{
     const fn= c.key==='kakao'?'shareToKakao()'
@@ -12859,7 +12837,7 @@ function renderGunghapSection(){
         </select>
       </div>
       <div class="err" id="g2err"></div>
-      <button class="lock-btn" style="width:100%;margin-top:6px" onclick="analyzeGunghapDetail()">💕 궁합 분석하기</button>
+      <button class="lock-btn" style="width:100%;margin-top:6px" onclick="analyzeGunghapDetail()">궁합 분석하기</button>
     </div>
     <div id="ggResultBox"></div>
   </div>`;
@@ -13034,7 +13012,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
   ];
   const fix=fixByOh[coupleWeak];
   h+=`<div class="couple-breakdown" style="margin-top:18px">
-    <div class="ny-sec-title">📋 점수가 나온 이유 + 보완 방법</div>
+    <div class="ny-sec-title">점수가 나온 이유 + 보완 방법</div>
     <div class="ny-sec-body" style="font-size:.78rem;line-height:1.78">
       <p><b>① 오행 상생·상극 ${result.ohScore}점</b> — ${getOhRelDesc(e1,e2).split('.')[0]}<br><span style="color:var(--accent)">💡 보완:</span> 두 분 모두 ${OHNAME[coupleWeak]} 부족 → ${fix.color} 인테리어, ${fix.dir} 방향 신혼집, ${fix.food} 식단</p>
       <p><b>본인 기준 관계 ${result.tgScore}점</b> — 본인↔상대 ${tg12}/${tg21}<br><span style="color:var(--accent)">💡 보완:</span> ${tg12==='정관'||tg12==='정재'?'안정형 관계 — 자연스러움 유지':tg12==='편관'||tg12==='편재'?'자극형 관계 — 강한 끌림을 일상의 안정으로 다듬기':'서로 보완형 — 차이를 강점으로 받아들이기'}</p>
@@ -13046,7 +13024,7 @@ function renderGunghapDetailFull(s1,s2,g1,g2){
   // 커플 실천 가이드
   const seasonByWeak=['봄(3~5월)','여름(6~8월)','환절기(3·6·9·12월)','가을(9~11월)','겨울(12~2월)'];
   h+=`<div class="couple-action-guide" style="margin-top:14px">
-    <div class="ny-sec-title">💑 이 커플의 실천 가이드</div>
+    <div class="ny-sec-title">이 커플의 실천 가이드</div>
     <div class="action-guide">
       <div class="ag-block ag-strengths">
         <div class="ag-lab">두 분은 이런 활동을 함께할 때 흐름이 살아나요.</div>
@@ -13262,7 +13240,7 @@ function renderSajuAnalysis(saju){
 
   // 천성 - 일간
   h+=`<div class="card">
-    <div class="ctitle big">🌟 일간으로 보는 천성 (타고난 기질)</div>
+    <div class="ctitle big">일간으로 보는 천성 (타고난 기질)</div>
     <div class="asec">
       <div class="atitle">${dm.n}</div>
       <div class="abody">${dm.core}. ${getDMDesc(saju.dp.stem)}${personaTwist(saju)}</div>
@@ -13275,7 +13253,7 @@ function renderSajuAnalysis(saju){
 
   // 오행 분석
   h+=`<div class="card">
-    <div class="ctitle big">⚖️ 오행 균형과 성격 특성</div>
+    <div class="ctitle big">오행 균형과 성격 특성</div>
     <div class="asec">
       <div class="atitle">강한 기운: ${strong.join(', ')}</div>
       <div class="abody">${strong.map(s=>getOhPersonality(OHNAME.indexOf(s),'strong')).join(' ')}</div>
@@ -13292,7 +13270,7 @@ function renderSajuAnalysis(saju){
 
   // 환경 분석
   h+=`<div class="card">
-    <div class="ctitle big">🏠 성장 환경과 사회적 성향</div>
+    <div class="ctitle big">성장 환경과 사회적 성향</div>
     <div class="asec">
       <div class="atitle">년주 — 조상·유년기·사회적 배경</div>
       <div class="abody">${getPillarDesc(saju.yp.stem,saju.yp.branch,'year')}</div>
@@ -13307,7 +13285,7 @@ function renderSajuAnalysis(saju){
   const yTG=tenGod(saju.dp.stem,saju.yp.stem);
   const mTG=tenGod(saju.dp.stem,saju.mp.stem);
   h+=`<div class="card">
-    <div class="ctitle big">🔮 십신 분석</div>
+    <div class="ctitle big">십신 분석</div>
     <div class="asec">
       <div class="atitle">년주 천간 십신: ${yTG}</div>
       <div class="abody">${getTenGodDesc(yTG,'년주')}</div>
@@ -13334,7 +13312,7 @@ function renderSajuAnalysis(saju){
     '철학·상담·IT·해양·유통·연구',
   ];
   h+=`<div class="card">
-    <div class="ctitle big">💎 용신 활용법</div>
+    <div class="ctitle big">용신 활용법</div>
     <div class="asec">
       <div class="atitle" style="color:${OHCOLOR[ys.main]}">주 도움 기운: ${OHNAME[ys.main]}</div>
       <div class="abody">${ys.desc}</div>
@@ -13361,7 +13339,7 @@ function renderSajuAnalysis(saju){
 
   // 살펴볼 부분
   h+=`<div class="card">
-    <div class="ctitle big">⚠️ 사주로 보면 한 번 더 살펴볼 부분</div>
+    <div class="ctitle big">사주로 보면 한 번 더 살펴볼 부분</div>
     ${getWarnings(saju,oh)}
   </div>`;
 
@@ -13532,7 +13510,7 @@ function renderMBTI(saju,mbtiStr){
   </div>`;
 
   // 천성(사주) vs 현재성격(MBTI)
-  h+=`<div class="card"><div class="ctitle big">🔍 천성(사주) vs 현재 성격(MBTI)</div>`;
+  h+=`<div class="card"><div class="ctitle big">천성(사주) vs 현재 성격(MBTI)</div>`;
 
   // Compare E/I
   const sajuEI=([0,1,4].includes(dmOh))?'E':'I'; // 木火水→E, 土金→I (rough approximation)
@@ -13567,7 +13545,7 @@ function renderMBTI(saju,mbtiStr){
   // 오행과 MBTI 오행 친화성
   const ohMatch=info.oh.includes(maxOh);
   h+=`<div class="card">
-    <div class="ctitle big">🌿 오행 친화성 분석</div>
+    <div class="ctitle big">오행 친화성 분석</div>
     <div class="asec">
       <div class="atitle">${ohMatch?'✅ 오행과 MBTI 친화성 높음':'⚡ 오행과 MBTI 친화성 차이'}</div>
       <div class="abody">
@@ -13579,13 +13557,13 @@ function renderMBTI(saju,mbtiStr){
 
   // 종합 조화 가이드
   h+=`<div class="card">
-    <div class="ctitle big">🌱 천성과 현재 성격의 통합 가이드</div>
+    <div class="ctitle big">천성과 현재 성격의 통합 가이드</div>
     <div class="abody">${getHarmonyGuide(saju,mbti,info,oh,dm)}</div>
   </div>`;
 
   // 살펴볼 부분
   h+=`<div class="card">
-    <div class="ctitle big">⚠️ 사주 + MBTI를 함께 볼 때 살펴볼 부분</div>
+    <div class="ctitle big">사주 + MBTI를 함께 볼 때 살펴볼 부분</div>
     ${getCombinedWarnings(saju,mbti,info,oh,dm)}
   </div>`;
 
@@ -13807,7 +13785,7 @@ function renderFortune(saju){
   const sc=TG_SCORES[yearTG]||{love:3,wealth:3,health:3,study:3};
 
   let h=`<div class="card">
-    <div class="ctitle big">📅 ${cy}년 세운 — ${STEMKO[cyStem]}${BRCHKO[cyBranch]}년</div>
+    <div class="ctitle big">${cy}년 세운 — ${STEMKO[cyStem]}${BRCHKO[cyBranch]}년</div>
     <div class="irow"><span class="ikey">올해의 오행 기운</span><span class="ival">${OHNAME[SOH[cyStem]]} · ${OHNAME[BOH[cyBranch]]}</span></div>
     <div class="irow"><span class="ikey">일간 기준 세운 십신</span><span class="ival"><b>${yearTG}</b></span></div>
     <div class="irow"><span class="ikey">이달 월운 십신</span><span class="ival">${monthTG}</span></div>
@@ -14004,9 +13982,9 @@ function renderGunghapResult(saju1,saju2,result){
 
   const stRel=result.dayStemRel||{kind:'평'};
   const stemDetail=stRel.kind==='합'
-    ? `<div class="asec" style="margin-top:12px"><div class="atitle">🔗 본인 글자와 상대 글자가 자연스럽게 어울림 — 부부 합</div><div class="abody">두 분의 본인 글자가 <b>자석처럼 묶이는 분위기</b>예요. 「부부 합」이라 부르는 매우 특별한 자리로, 서로 끌어당기는 결속력이 가장 강한 형태예요.</div></div>`
+    ? `<div class="asec" style="margin-top:12px"><div class="atitle">본인 글자와 상대 글자가 자연스럽게 어울림 — 부부 합</div><div class="abody">두 분의 본인 글자가 <b>자석처럼 묶이는 분위기</b>예요. 「부부 합」이라 부르는 매우 특별한 자리로, 서로 끌어당기는 결속력이 가장 강한 형태예요.</div></div>`
     : stRel.kind==='충'
-    ? `<div class="asec" style="margin-top:12px"><div class="atitle">⚡ 본인 글자와 상대 글자가 정면으로 부딪힘</div><div class="abody">두 분의 본인 글자가 정면으로 부딪혀요. 가치관·결정 방식에서 부딪힐 수 있으니, 큰 결정 전에 서로의 입장을 한 번 더 듣는 자세가 필요해요.</div></div>`
+    ? `<div class="asec" style="margin-top:12px"><div class="atitle">본인 글자와 상대 글자가 정면으로 부딪힘</div><div class="abody">두 분의 본인 글자가 정면으로 부딪혀요. 가치관·결정 방식에서 부딪힐 수 있으니, 큰 결정 전에 서로의 입장을 한 번 더 듣는 자세가 필요해요.</div></div>`
     : '';
 
   const cr=result.crossRel||{};
@@ -14018,14 +13996,14 @@ function renderGunghapResult(saju1,saju2,result){
   if(cr.형)crossNotes.push(`서로 깎임 <b style="color:#d4a849">${cr.형}건</b>`);
   if(cr.파)crossNotes.push(`마무리 어긋남 <b style="color:#d4a849">${cr.파}건</b>`);
   if(cr.해)crossNotes.push(`은근한 방해 <b style="color:#d4a849">${cr.해}건</b>`);
-  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:12px"><div class="atitle">🔄 두 분 사주가 만나는 자리</div><div class="abody">두 분의 사주 자리가 서로 만나는 지점에서 ${crossNotes.join(' · ')}이 보여요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌보다 우세</b>해 전반적으로 부드러운 흐름이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충돌·거슬림 기운이 화합보다 우세</b>해 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 분위기예요.'}</div></div>`:'';
+  const crossSummary=crossNotes.length?`<div class="asec" style="margin-top:12px"><div class="atitle">두 분 사주가 만나는 자리</div><div class="abody">두 분의 사주 자리가 서로 만나는 지점에서 ${crossNotes.join(' · ')}이 보여요. ${cr.합+cr.반합>cr.충+cr.원진+cr.형?'<b>화합·결속 기운이 충돌보다 우세</b>해 전반적으로 부드러운 흐름이에요.':cr.충+cr.원진+cr.형>cr.합+cr.반합?'<b>충돌·거슬림 기운이 화합보다 우세</b>해 의식적인 소통과 거리 조절이 필요해요.':'<b>화합과 충돌이 비슷한 비중</b>으로 균형 잡힌 분위기예요.'}</div></div>`:'';
 
   let interpBody=`<p style="margin-bottom:12px">두 분의 사주를 5가지 각도로 풀어드릴게요. 각 영역을 함께 보시면 인연의 전체 그림이 보여요.</p>
-    <div class="asec"><div class="atitle">🌳 오행 관계 — ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
-    <div class="asec" style="margin-top:12px"><div class="atitle">💞 ${brDetail.title}</div><div class="abody">${brDetail.body}</div></div>
+    <div class="asec"><div class="atitle">오행 관계 — ${result.ohRelType}</div><div class="abody">${ohDescs[result.ohRelType]||''}</div></div>
+    <div class="asec" style="margin-top:12px"><div class="atitle">${brDetail.title}</div><div class="abody">${brDetail.body}</div></div>
     ${stemDetail}
     ${crossSummary}
-    <div class="asec" style="margin-top:12px"><div class="atitle">👁 서로를 바라보는 분위기 — ${result.tg12}</div><div class="abody">${tgDescs[result.tg12]||''}</div></div>
+    <div class="asec" style="margin-top:12px"><div class="atitle">서로를 바라보는 분위기 — ${result.tg12}</div><div class="abody">${tgDescs[result.tg12]||''}</div></div>
     <div class="asec" style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 ${advice}</div></div>`;
   h+=paidWrapBody('INTERP','💬','두 분 궁합 종합 해석',interpBody);
 
@@ -15797,8 +15775,8 @@ function renderNamePaid(saju, nmExtra){
           <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
         </div>
         <div class="summary-actions">
-          <button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">📷 이미지(PNG)</button>
-          <button class="summary-btn nm-summary-btn secondary" onclick="downloadNameSummary('pdf')">📄 PDF 다운로드</button>
+          <button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button>
+          <button class="summary-btn nm-summary-btn secondary" onclick="downloadNameSummary('pdf')">PDF 다운로드</button>
         </div>
       </div>
     </div>`;
@@ -15870,7 +15848,7 @@ function buildNameSummaryA4Html(){
   }
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">✒️ 이름풀이 요약본 — ${d.full}</div>
+      <div class="a4-title">이름풀이 요약본 — ${d.full}</div>
       <div class="a4-subtitle">${d.hasHan?`한자 ${d.han.surname||''}${d.han.given1||''}${d.han.given2||''} · ${d.strokes.surname}+${d.strokes.given1}${d.strokes.given2?'+'+d.strokes.given2:''}획 · `:''}종합 점수 <b style="color:${d.gradeColor}">${d.nameScore}점 (${d.grade})</b></div>
     </div>
     <div class="a4-body">
@@ -15956,7 +15934,7 @@ function buildDaypickSummaryA4Html(){
   const cautionHours=d.hourCards.filter(g=>g.kind==='주의').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">📅 ${d.y}.${d.m}.${d.d} 지정일 운세 요약본</div>
+      <div class="a4-title">${d.y}.${d.m}.${d.d} 지정일 운세 요약본</div>
       <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · 그날 ${d.dpStemKo}${d.dpBrKo}(<em>${plainTG(d.stemTG)}</em>의 분위기) · 총점 <b style="color:${d.grade.color}">${d.f.total}점 (${d.grade.lab})</b></div>
     </div>
     <div class="a4-body">
@@ -16060,7 +16038,7 @@ function buildMonthlySummaryA4Html(){
   const zodLine=d.zod?`${d.zod.emoji} <b>${d.zod.ko}</b>(${d.zod.el} 원소) — ${d.zod.body}.`:'';
   let h=`<div class="a4-page">
     <div class="a4-header">
-      <div class="a4-title">📅 ${d.sy}.${d.sm}~${d.ey}.${d.em} 월별 운세 요약본</div>
+      <div class="a4-title">${d.sy}.${d.sm}~${d.ey}.${d.em} 월별 운세 요약본</div>
       <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · ${d.totalMonths}개월 평균 <b style="color:${d.avgGrade.color}">${d.avgTotal}점 (${d.avgGrade.lab})</b> · 결정적 시기 <b>${d.decisive.yy}.${d.decisive.mm}</b></div>
     </div>
     <div class="a4-body">
@@ -16247,8 +16225,8 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
             <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
           </div>
           <div class="summary-actions">
-            <button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">📷 이미지(PNG)</button>
-            <button class="summary-btn gh-summary-btn secondary" onclick="downloadGunghapSummary('pdf')">📄 PDF 다운로드</button>
+            <button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button>
+            <button class="summary-btn gh-summary-btn secondary" onclick="downloadGunghapSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -16834,7 +16812,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   // 격국
   const gk=getGyeokguk(saju);
   h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:2px solid var(--accent)">
-    <div class="ctitle big">🎭 격국 — 사주의 대표 형태</div>
+    <div class="ctitle big">격국 — 사주의 대표 형태</div>
     <div style="text-align:center;margin:10px 0 8px">
       <div style="display:inline-block;padding:9px 24px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-radius:50px;font-size:1.05rem;font-weight:800;letter-spacing:.05em">${gk.name}</div>
     </div>
@@ -16845,7 +16823,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   // 신살
   const sinsals=findSinsal(saju);
   h+=`<div class="card">
-    <div class="ctitle big">⚡ 신살 — 타고난 별자리</div>`;
+    <div class="ctitle big">신살 — 타고난 별자리</div>`;
   if(sinsals.length===0){
     h+=`<div class="abody" style="color:var(--sub)">특별한 신살이 발견되지 않았어요. 사주가 평이한 흐름이에요.</div>`;
   }else{
@@ -16872,7 +16850,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
     saju.hp?{label:'시주',branch:saju.hp.branch}:null
   ].filter(Boolean);
   h+=`<div class="card">
-    <div class="ctitle big">🌗 십이운성 — 일간 기준 자리별 기운</div>
+    <div class="ctitle big">십이운성 — 일간 기준 자리별 기운</div>
     <div style="display:grid;grid-template-columns:repeat(${stagePillars.length},1fr);gap:6px;margin:8px 0">`;
   stagePillars.forEach(p=>{
     const stage=twelveStage(saju.dp.stem,p.branch);
@@ -16892,7 +16870,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const gm=emptyBranches(saju.dp.stem,saju.dp.branch);
   const gmLocs=findGongmangLoc(saju,gm);
   h+=`<div class="card">
-    <div class="ctitle big">🌀 공망 — 비어있는 자리</div>
+    <div class="ctitle big">공망 — 비어있는 자리</div>
     <div class="irow"><span class="ikey">비어있는 자리</span><span class="ival">${BRCHKO[gm[0]]} · ${BRCHKO[gm[1]]}</span></div>
     ${gmLocs.length>0?
       `<div class="asec" style="margin-top:10px">
@@ -16909,7 +16887,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const rels=findBranchRelations(saju);
   if(rels.length>0){
     h+=`<div class="card">
-      <div class="ctitle big">🔗 지지 합충형파해</div>
+      <div class="ctitle big">지지 합충형파해</div>
       <div style="display:flex;flex-direction:column;gap:7px">`;
     rels.forEach(r=>{
       const bdr=r.tag==='g'?'var(--wood)':r.tag==='r'?'var(--fire)':'var(--earth)';
@@ -16924,7 +16902,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
     </div>`;
   }else{
     h+=`<div class="card">
-      <div class="ctitle big">🔗 지지 합충형파해</div>
+      <div class="ctitle big">지지 합충형파해</div>
       <div class="abody" style="color:var(--sub)">사주 4지지 사이에 뚜렷한 합·충·형·파·해 관계가 없어요. 잔잔한 흐름이에요.</div>
     </div>`;
   }
@@ -16934,7 +16912,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const cy=now.getFullYear(),cm=now.getMonth()+1;
   const months=calc12MonthFortune(saju,cy);
   h+=`<div class="card">
-    <div class="ctitle big">📊 ${cy}년 12개월 세운 흐름</div>
+    <div class="ctitle big">${cy}년 12개월 세운 흐름</div>
     <div style="font-size:.7rem;color:var(--sub);margin-bottom:8px">절기 기준 월주 변화 (이번 달 강조)</div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px">`;
   for(let dispMonth=1;dispMonth<=12;dispMonth++){
@@ -16957,7 +16935,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   const ys=getYongsin(oh);
   const career=getCareerDetail(saju,gk,ys);
   h+=`<div class="card">
-    <div class="ctitle big">💼 직업·적성 상세</div>
+    <div class="ctitle big">직업·적성 상세</div>
     <div class="asec">
       <div class="atitle">본인 기질 적성 분야</div>
       <div class="tag-wrap">${careerProfile(saju).careers.map(c=>`<span class="tag tag-y">${c}</span>`).join('')}</div>
@@ -16975,7 +16953,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   // 재물 상세
   const wealth=getWealthDetail(saju,oh);
   h+=`<div class="card">
-    <div class="ctitle big">💰 재물운 상세</div>
+    <div class="ctitle big">재물운 상세</div>
     <div class="irow"><span class="ikey">안정 재물 개수</span><span class="ival">${wealth.pj}개</span></div>
     <div class="irow"><span class="ikey">활동 재물 개수</span><span class="ival">${wealth.pp}개</span></div>
     <div class="irow"><span class="ikey">신강·신약</span><span class="ival" style="color:${wealth.isStrong?'var(--wood)':'var(--earth)'}">${wealth.isStrong?'신강':'신약'}</span></div>
@@ -16991,7 +16969,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   // 건강 상세
   const health=getHealthDetail(oh);
   h+=`<div class="card">
-    <div class="ctitle big">🌿 건강운 — 오행과 장부</div>
+    <div class="ctitle big">건강운 — 오행과 장부</div>
     <div style="display:flex;flex-direction:column;gap:7px;margin-top:6px">`;
   health.forEach(o=>{
     const stateColor=o.state==='과다'?'var(--fire)':o.state==='결핍'?'var(--water)':o.state==='왕성'?'var(--earth)':'var(--sub)';
@@ -17011,7 +16989,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   // 개운법
   const gw=getGaewoon(ys.main);
   h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4))">
-    <div class="ctitle big">🍀 나만의 개운법 — 용신 ${OHNAME[ys.main]} 기반</div>
+    <div class="ctitle big">나만의 개운법 — 용신 ${OHNAME[ys.main]} 기반</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <div style="background:var(--card);border-radius:8px;padding:10px"><div style="font-size:.66rem;color:var(--sub);font-weight:700;margin-bottom:4px">유리한 색상</div><div style="font-size:.85rem;font-weight:600;color:${OHCOLOR[ys.main]}">${gw.color}</div></div>
       <div style="background:var(--card);border-radius:8px;padding:10px"><div style="font-size:.66rem;color:var(--sub);font-weight:700;margin-bottom:4px">유리한 방향</div><div style="font-size:.85rem;font-weight:600">${gw.dir}</div></div>
@@ -17641,8 +17619,8 @@ function openHanziCanvas(targetHanId, targetStrokeId){
       </div>
       <canvas id="hanziDrawCanvas" width="280" height="280" style="display:block;margin:0 auto;border:2px solid var(--accent);border-radius:10px;background:#fff;touch-action:none;cursor:crosshair"></canvas>
       <div style="display:flex;gap:6px;margin-top:8px;justify-content:center">
-        <button onclick="clearHanziCanvas()" style="padding:6px 14px;background:var(--bg-deep);color:var(--sub);border:1px solid var(--border);border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">🧹 지우기</button>
-        <button onclick="searchHanziByStrokeFromCanvas()" style="padding:6px 14px;background:var(--accent);color:#1a1c1d;border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">🔍 비슷한 한자 찾기</button>
+        <button onclick="clearHanziCanvas()" style="padding:6px 14px;background:var(--bg-deep);color:var(--sub);border:1px solid var(--border);border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">지우기</button>
+        <button onclick="searchHanziByStrokeFromCanvas()" style="padding:6px 14px;background:var(--accent);color:#1a1c1d;border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">비슷한 한자 찾기</button>
       </div>
       <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)">
         <label style="font-size:.74rem;color:var(--accent);font-weight:700">또는 한글 음 입력 (정밀 검색)</label>
