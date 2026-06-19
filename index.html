@@ -757,6 +757,30 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .result-hero-match{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:50px;font-size:.74rem;font-weight:700;color:var(--accent-bright);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,215,124,.1));border:1px solid rgba(245,215,124,.4)}
 .result-hero-keys{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .result-hero-keys span{display:inline-block;padding:3px 10px;border-radius:50px;background:var(--bg-deep);border:1px solid var(--border);color:var(--sub);font-size:.7rem;font-weight:600;letter-spacing:-.01em}
+/* 시안 ③ — 분석 완료 이브로 + 골드 글로우 */
+.result-hero-eyebrow{display:block;font-size:.62rem;font-weight:800;letter-spacing:.16em;color:var(--accent-bright);text-transform:uppercase;margin-bottom:8px;opacity:.92}
+.result-hero::after{content:'';position:absolute;left:50%;top:-45%;width:180px;height:180px;transform:translateX(-50%);background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);pointer-events:none}
+/* 시안 ① — 핵심 운명 키워드 카드 */
+.core-keyword{margin:0 12px 14px;padding:16px 18px;background:linear-gradient(135deg,rgba(29,32,33,.85),rgba(12,15,16,.55));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.core-keyword::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.ck-label{font-size:.64rem;font-weight:800;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.ck-keyword{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent-bright);margin:6px 0 9px;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
+.ck-body{font-size:.9rem;line-height:1.8;color:var(--sub);margin:0 0 12px;word-break:keep-all;overflow-wrap:break-word}
+.ck-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ck-chips span{display:inline-block;padding:4px 12px;border-radius:50px;background:var(--accent-soft);border:1px solid var(--border-strong);color:var(--accent);font-size:.74rem;font-weight:700;letter-spacing:-.01em}
+/* 시안 ② — 사주 × MBTI 에너지 균형 바 */
+.mbti-balance{margin:0 0 16px;padding:14px 15px;background:rgba(12,15,16,.4);border:1px solid var(--border);border-radius:12px}
+.mbti-balance-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:8px}
+.mbti-balance-match{font-size:.72rem;font-weight:800;color:var(--accent-bright);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,215,124,.1));border:1px solid rgba(245,215,124,.4);padding:3px 11px;border-radius:50px;flex-shrink:0}
+.bal-row{margin-bottom:13px}
+.bal-row:last-child{margin-bottom:0}
+.bal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:.76rem;color:var(--sub)}
+.bal-pct{font-weight:800;color:var(--accent-bright);font-size:.74rem;flex-shrink:0;margin-left:8px}
+.bal-bar{height:8px;background:rgba(255,255,255,.06);border-radius:50px;overflow:hidden}
+.bal-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--accent),var(--accent-bright));transition:width .7s ease}
+.bal-note{margin-top:5px;font-size:.67rem;color:var(--muted);line-height:1.5}
+.bal-note.ok{color:var(--wood)}
+.bal-note.diff{color:var(--earth)}
 
 /* 캡처 워터마크 — 이미지 저장 시 우하단 고정 */
 .cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
@@ -3611,6 +3635,27 @@ function mbtiAnalysisHTML(saju, mbti){
       </div>
     </div>`;
 
+  // 시안 ② — 사주 기운 × MBTI 에너지 균형 바 (사주 십신으로 산출, 실제 MBTI 글자와 방향 비교)
+  const _balM=sajuMbtiMatch(saju,mbti); const _balMatch=_balM?_balM.match:60;
+  const _pctBal=(a,b)=>{const t=a+b;return t<=0?50:Math.round(a/t*100);};
+  const _balRows=[
+    {leftLabel:'직관 N',rightLabel:'감각 S',left:'N',right:'S',mside:mbti[1],pct:_pctBal(sipsin.insung+sipsin.siksang, sipsin.jaesung+sipsin.gwansung)},
+    {leftLabel:'논리 T',rightLabel:'감정 F',left:'T',right:'F',mside:mbti[2],pct:_pctBal(sipsin.gwansung+sipsin.jaesung, sipsin.siksang+sipsin.insung)},
+    {leftLabel:'계획 J',rightLabel:'유연 P',left:'J',right:'P',mside:mbti[3],pct:_pctBal(sipsin.gwansung+sipsin.insung, sipsin.siksang+sipsin.bigeop)}
+  ];
+  h+=`<div class="mbti-balance"><div class="mbti-balance-head"><span class="ck-label">사주 기운 × MBTI 균형</span><span class="mbti-balance-match">${_balMatch}% 일치</span></div>`;
+  _balRows.forEach(r=>{
+    const leftLeans=r.pct>=50;
+    const sajuLetter=leftLeans?r.left:r.right, sajuPct=leftLeans?r.pct:100-r.pct;
+    const mbtiLeft=r.mside===r.left, agree=leftLeans===mbtiLeft;
+    h+=`<div class="bal-row">
+      <div class="bal-top"><span>${r.leftLabel} ↔ ${r.rightLabel}</span><span class="bal-pct">사주 ${sajuLetter} ${sajuPct}%</span></div>
+      <div class="bal-bar"><div class="bal-fill" style="width:${r.pct}%"></div></div>
+      <div class="bal-note ${agree?'ok':'diff'}">${agree?`✓ MBTI ${r.mside}와 같은 방향`:`↹ MBTI ${r.mside}는 사주와 반대 방향`}</div>
+    </div>`;
+  });
+  h+=`</div>`;
+
   indicators.forEach((ind,idx)=>{
     const badge=ind.aligned
       ? `<span class="mbti-match-badge mbti-match-aligned">✓ 일치</span>`
@@ -4033,6 +4078,26 @@ function mbtiSajuFusionParagraph(saju, mbti, contextHint){
 
 // ── 분위기와 헤더 SNS 후크 헤드라인 ──
 // 카테고리별로 공유하고 싶은 한 줄 헤드라인을 생성
+// 시안 ① — 핵심 운명 키워드 카드 (격국 별칭 + 한 줄 본질 + 강점 해시태그)
+function coreKeywordCardHTML(saju){
+  const dStem=saju.dp.stem;
+  const dm=DM[dStem]||{n:'',core:'',pos:[]};
+  let gk={name:'',nick:'',desc:''};
+  try{gk=getGyeokguk(saju)||gk;}catch(e){}
+  const oh=ohCount(saju);
+  const topOh=oh.indexOf(Math.max(...oh));
+  const keyword=gk.nick||gk.name||dm.n||'본인의 기질';
+  const gkLine=gk.nick?` 격국은 <b>${(gk.name||'').replace(/격$/,'')}격</b>이라, ${((gk.desc||'').split(/[.。]/)[0]||'본인만의 흐름을 타고났어요')}.`:'';
+  const body=`일간 <b>${dm.n}</b>로 ${dm.core}을 본질로 해요.${gkLine} 사주에서 가장 두터운 기운은 <b>${OHNAME[topOh]}</b>이에요.`;
+  const chips=(dm.pos||[]).slice(0,4).map(p=>`<span>#${String(p).replace(/\s+/g,'')}</span>`).join('');
+  return `<section class="core-keyword">
+    <div class="ck-label">핵심 운명 키워드</div>
+    <div class="ck-keyword">${keyword}</div>
+    <p class="ck-body">${body}</p>
+    ${chips?`<div class="ck-chips">${chips}</div>`:''}
+  </section>`;
+}
+
 function resultHeroHTML(saju, mbti, cat){
   const dStem=saju.dp.stem, dBr=saju.dp.branch;
   const dStemKo=STEMKO[dStem], dBrKo=BRCHKO[dBr];
@@ -4064,11 +4129,11 @@ function resultHeroHTML(saju, mbti, cat){
     }
   }
   return `<header class="result-hero">
+    <div class="result-hero-eyebrow">✦ 사주 분석 완료</div>
     <div class="result-hero-tag">${tag}</div>
     <h2 class="result-hero-headline">${headline}</h2>
     ${extraLine}
-    <div class="result-hero-keys">${(()=>{const p=buildPersonaProfile(saju);const gkn=getGyeokguk(saju);const ax=(SIPSIN_AXIS_LABEL[p.axisSorted[0][0]]||{}).n;const chips=[...(STEM_META[dStem]?STEM_META[dStem].keys.split('·').slice(0,2):[]),gkn.nick?gkn.nick.split('·')[0]:(gkn.name||'').split(' ')[0],ax,OHNAME[p.top]+' 기운'].filter(Boolean);return chips.slice(0,5).map(k=>`<span>${String(k).trim()}</span>`).join('');})()}</div>
-  </header>`;
+  </header>${coreKeywordCardHTML(saju)}`;
 }
 
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
