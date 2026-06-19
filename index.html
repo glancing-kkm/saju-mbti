@@ -297,12 +297,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
 .ctitle.big{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
 
-/* Pillars */
-.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+/* Pillars — 사주 원국 보드 (DESIGN 시안: 글래스 기둥 카드 · 일주 골드 글로우 · 십신 라벨) */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
 .pcol{display:flex;flex-direction:column;gap:3px}
-.plabel{font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.06em;text-transform:uppercase}
+.pillars>.pcol{gap:6px;padding:9px 5px 10px;border-radius:12px;background:rgba(29,32,33,.55);border:1px solid rgba(255,255,255,.05);border-top:2px solid rgba(255,255,255,.08)}
+.pillars>.pcol.day{border:1.5px solid var(--accent-bright);background:rgba(212,175,55,.07);box-shadow:0 0 22px rgba(212,175,55,.16)}
+.plabel{font-size:.74rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.04em}
+.pillars>.pcol.day .plabel{color:var(--accent-bright);font-weight:700}
 .pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:1.35rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
+.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:1.5rem;padding:10px 2px}
 .pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
+.pillars>.pcol .sm{font-size:.66rem;font-weight:600;opacity:.95;letter-spacing:.01em}
+.pillars-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
+.pillars-note{font-size:.66rem;color:var(--muted);font-style:italic;letter-spacing:.02em;flex-shrink:0}
 .ew{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.2)}
 .ef{background:var(--fire-bg);color:var(--fire);border-color:rgba(224,168,160,.2)}
 .ee{background:var(--earth-bg);color:var(--earth);border-color:rgba(216,196,168,.25)}
@@ -6027,12 +6034,16 @@ function tenGod(dStem,tStem){
 //  RENDER HELPERS
 // ══════════════════════════════════════════════
 function ecls(oh){return OHCLS[oh];}
-function pillarHTML(label,stem,branch){
+// 지지 지장간 본기(主氣) → 천간 인덱스. 지지 십신은 본기 기준으로 계산
+const BRANCH_MAIN_STEM=[9,5,0,1,4,2,3,5,6,7,4,8]; // 子癸 丑己 寅甲 卯乙 辰戊 巳丙 午丁 未己 申庚 酉辛 戌戊 亥壬
+function pillarHTML(label,stem,branch,dayStem,isDay){
   if(stem===undefined)return`<div class="pcol"><div class="plabel">${label}</div><div class="pstem eu" style="font-size:.72rem">시간<br>미상</div><div class="pbranch eu" style="font-size:.72rem">입력<br>필요</div></div>`;
-  return`<div class="pcol">
+  const stemTG=isDay?'일간':tenGod(dayStem,stem);
+  const branchTG=tenGod(dayStem,BRANCH_MAIN_STEM[branch]);
+  return`<div class="pcol${isDay?' day':''}">
     <div class="plabel">${label}</div>
-    <div class="pstem ${ecls(SOH[stem])}">${STEMKO[stem]}<span class="sm">${OHKO[SOH[stem]]}</span></div>
-    <div class="pbranch ${ecls(BOH[branch])}">${BRCHKO[branch]}<span class="sm">${ANIMAL[branch]}</span></div>
+    <div class="pstem ${ecls(SOH[stem])}">${STEMKO[stem]}<span class="sm">${stemTG}</span></div>
+    <div class="pbranch ${ecls(BOH[branch])}">${BRCHKO[branch]}<span class="sm">${branchTG}</span></div>
   </div>`;
 }
 
@@ -13161,12 +13172,13 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   </div>`;
 
   // Four pillars
-  h+=`<div class="card"><div class="ctitle">사주팔자</div>
+  const _dStem=saju.dp.stem;
+  h+=`<div class="card"><div class="pillars-head"><div class="ctitle" style="margin-bottom:0">사주 원국 (만세력)</div>${sh>=0?'<span class="pillars-note">진태양시 보정 적용</span>':''}</div>
     <div class="pillars">
-      ${pillarHTML('년주',saju.yp.stem,saju.yp.branch)}
-      ${pillarHTML('월주',saju.mp.stem,saju.mp.branch)}
-      ${pillarHTML('일주',saju.dp.stem,saju.dp.branch)}
-      ${saju.hp?pillarHTML('시주',saju.hp.stem,saju.hp.branch):pillarHTML('시주',undefined,undefined)}
+      ${pillarHTML('년주',saju.yp.stem,saju.yp.branch,_dStem,false)}
+      ${pillarHTML('월주',saju.mp.stem,saju.mp.branch,_dStem,false)}
+      ${pillarHTML('일주',saju.dp.stem,saju.dp.branch,_dStem,true)}
+      ${saju.hp?pillarHTML('시주',saju.hp.stem,saju.hp.branch,_dStem,false):pillarHTML('시주',undefined,undefined)}
     </div></div>`;
 
   // Basic info
