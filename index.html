@@ -509,9 +509,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lock-info{margin-top:20px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.76rem;color:var(--sub);line-height:1.78;text-align:left}
 .lock-info b{color:var(--accent)}
 
-/* ── A1 체험판 미리보기 카드 (잠금 화면 뒤 노출) ── */
-.teaser-card{margin:18px 14px 20px;padding:18px 16px 16px;border-radius:18px;background:linear-gradient(135deg,#1d2330 0%,#241a2e 40%,#2a1f1a 100%);border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 28px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}
-.teaser-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);pointer-events:none}
+/* ── 유료 전환 미리보기 카드 ── */
+.teaser-card{margin:12px 14px 18px;padding:18px 16px 16px;border-radius:14px;background:linear-gradient(135deg,#20262c 0%,#25272f 46%,#2d271f 100%);border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 28px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}
 .teaser-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;position:relative;z-index:1}
 .teaser-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 9px;border-radius:99px;font-weight:800;text-transform:uppercase;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .teaser-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:#f4d36b;letter-spacing:.04em;text-shadow:0 1px 6px rgba(212,175,55,.25);position:relative;z-index:1}
@@ -523,6 +522,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .teaser-headline{font-family:'Noto Serif KR',serif;font-size:1.02rem;color:#f4d36b;line-height:1.55;margin-bottom:8px;font-weight:700;letter-spacing:.02em;position:relative;z-index:1}
 .teaser-leadline{font-size:.86rem;color:#e6e6ec;line-height:1.85;margin-bottom:14px;padding:10px 12px;background:rgba(212,175,55,.05);border-left:3px solid rgba(212,175,55,.4);border-radius:8px;position:relative;z-index:1}
 .teaser-leadline b{color:#f4d36b}
+.teaser-insight-list{display:flex;flex-direction:column;gap:7px;margin:0 0 14px;position:relative;z-index:1}
+.teaser-insight{padding:9px 11px;background:rgba(255,255,255,.035);border:1px solid rgba(212,175,55,.16);border-radius:9px;color:#dcdce4;font-size:.8rem;line-height:1.65;text-align:left}
+.teaser-insight b{color:#f4d36b}
 .teaser-blur-area{position:relative;margin:10px 0 14px;border-radius:12px;overflow:hidden;min-height:180px;z-index:1}
 .teaser-blurred{filter:blur(5px);user-select:none;pointer-events:none;opacity:.55}
 .teaser-blur-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(20,15,30,.1) 0%,rgba(20,15,30,.78) 100%);z-index:2}
@@ -535,6 +537,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .teaser-cta{display:block;width:calc(100% - 28px);margin:6px 14px 4px;padding:13px 16px;background:linear-gradient(135deg,#f4d36b 0%,#d4af37 60%,#b8902b 100%);color:#0a0c0d;border:none;border-radius:11px;font-family:'Noto Serif KR',serif;font-size:.96rem;font-weight:700;letter-spacing:.08em;cursor:pointer;box-shadow:0 4px 18px rgba(212,175,55,.35),inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;text-align:center}
 .teaser-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(212,175,55,.5),inset 0 1px 0 rgba(255,255,255,.3)}
 .teaser-cta:active{transform:translateY(0)}
+.lock-wrap-after-teaser{padding-top:18px}
+.teaser-payment-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
 
 /* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
 .usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
@@ -7152,9 +7156,10 @@ function getUsageGuide(category){
 // 통합 잠금 화면 — 모든 유료 카테고리에서 사용
 function renderPaidLock(category, saju){
   const m=PAID_META[category]||PAID_META.life;
-  return `<div class="lock-wrap">
+  const teaser=renderTeaserCard(category,saju,_meta);
+  return `${teaser}<div class="lock-wrap lock-wrap-after-teaser">
     <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
-    <div class="lock-title">${m.title}</div>
+    <div class="teaser-payment-title">전체 풀이 잠금 해제</div>
     <div class="lock-desc">${m.desc}</div>
     ${getDecisionGuide(category)}
     <div class="pay-prep">
@@ -7191,8 +7196,16 @@ function renderSajuLock(saju){return renderPaidLock('life',saju);}
 // 결제 CTA 버튼 — 잠금 화면 결제 영역으로 부드럽게 스크롤
 function _teaserCta(category){
   const m=PAID_META[category]||PAID_META.life;
-  const priceText=m.price||'결제';
-  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">${priceText} 결제하고 전체 풀이 보기 →</button>`;
+  const cta={
+    daypick:'이 날의 시간대별 흐름 보기',
+    monthly:'내 월별 상세 흐름 이어보기',
+    newyear:'내 결정적 시기 확인하기',
+    life:'내 인생 흐름 전체 열어보기',
+    gunghap:'두 사람의 숨은 패턴 보기',
+    name:'이 이름의 보완 방향 보기'
+  }[category]||'전체 풀이 열어보기';
+  const priceText=m.price?` · ${m.price}`:'';
+  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">${cta}${priceText}</button>`;
 }
 // 블러 영역 — 본문 카드 placeholder
 function _teaserBlurArea(fakeTitles){
@@ -7206,9 +7219,42 @@ function _teaserBlurArea(fakeTitles){
   return `<div class="teaser-blur-area">
     <div class="teaser-blurred">${fakeCards}</div>
     <div class="teaser-blur-overlay">
-      <div class="teaser-blur-overlay-text">결제하면 이 아래 전체 풀이가 펼쳐져요</div>
+      <div class="teaser-blur-overlay-text">${preventOrphan('여기부터는 잠금 해제 후 이어서 볼 수 있어요')}</div>
     </div>
   </div>`;
+}
+function _teaserInsights(items){
+  return `<div class="teaser-insight-list">${items.map(t=>`<div class="teaser-insight">${preventOrphan(t)}</div>`).join('')}</div>`;
+}
+function _dailyHookType(tg){
+  const m={
+    '비견':'본인 기준을 분명히 세우기 좋은 날',
+    '겁재':'경쟁심이 올라와 서두르기 쉬운 날',
+    '식신':'말과 행동이 부드럽게 풀리는 날',
+    '상관':'아이디어는 좋은데 말이 앞서기 쉬운 날',
+    '편재':'새 제안과 이동이 들어오기 쉬운 날',
+    '정재':'정리·점검·현실 판단이 잘 맞는 날',
+    '편관':'압박은 있지만 승부를 볼 수 있는 날',
+    '정관':'공식 자리와 약속에 힘이 붙는 날',
+    '편인':'혼자 깊게 따져볼수록 답이 나는 날',
+    '정인':'도움·자료·확인이 힘이 되는 날'
+  };
+  return m[tg]||'무리하지 않으면 흐름을 안정적으로 쓸 수 있는 날';
+}
+function _yearHookType(tg){
+  const m={
+    '정관':'책임과 신뢰가 커지는 해',
+    '편관':'압박 속에서 방향을 다시 잡는 해',
+    '정재':'현실 기반을 차곡차곡 쌓는 해',
+    '편재':'활동 반경과 돈의 흐름이 넓어지는 해',
+    '정인':'도움·자격·문서 운이 살아나는 해',
+    '편인':'깊게 배우고 방향을 고르는 해',
+    '식신':'표현과 결과물이 부드럽게 쌓이는 해',
+    '상관':'아이디어와 기획이 강하게 살아나는 해',
+    '비견':'본인 색깔과 독립심이 또렷해지는 해',
+    '겁재':'비교·경쟁 속에서 선택이 갈리는 해'
+  };
+  return m[tg]||'새로운 기준이 생기는 해';
 }
 // 디스패처
 function renderTeaserCard(category, saju, meta){
@@ -7235,21 +7281,24 @@ function renderDaypickTeaser(saju, dpExtra){
   const f=calcDailyFortune(saju,test);
   const grade=dailyGrade(f.total);
   const tg=f.tg;
-  const tgHead={'비견':'본인 색깔이 또렷해지는 날','겁재':'경쟁심·승부욕이 올라오는 날','식신':'협업·소통이 빛나는 날','상관':'창의·표현이 빛나는 날','편재':'영업·이동·새 거래의 날','정재':'정리·점검이 흐름이 좋은 날','편관':'도전·압박이 들어오는 날','정관':'공식 자리에 길한 날','편인':'전문 학습이 깊어지는 날','정인':'학습·자격에 빛나는 날'};
-  const headline=tgHead[tg]||'평이한 하루';
-  const lead=`${y}년 ${m}월 ${d}일은 본인 기준으로 그날 들어오는 기운과 만나 <b>${headline}</b>이에요. ${f.total>=75?'미뤄둔 결정을 이날에 배치하면 결실이 커요.':f.total>=60?'평이한 흐름 — 본인 페이스 유지에 좋은 날이에요.':'반 박자 천천히 — 정리·내실의 카드로 활용하세요.'}`;
+  const headline=_dailyHookType(tg);
+  const lead=`${y}년 ${m}월 ${d}일은 본인에게 <b>${headline}</b>이에요. ${f.total>=75?'미뤄둔 큰 약속이나 선택을 이 날에 올려두면 흐름을 크게 쓰기 좋아요.':f.total>=60?'무난하지만 대충 넘기면 아쉬워요. 본인 페이스를 지키는 쪽이 가장 좋아요.':'서두르면 말이나 일정이 어긋나기 쉬워요. 반 박자 늦추고 확인을 한 번 더 하세요.'}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">이 날의 분위기 살짝 보기</span></div>
     <div class="teaser-score-row">
       <div class="teaser-score-num">${f.total}</div>
       <div class="teaser-score-meta">
         <div class="teaser-score-label">${y}.${String(m).padStart(2,'0')}.${String(d).padStart(2,'0')} 점수</div>
-        <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'✦'} ${tg} 기운</div>
+        <div class="teaser-score-grade">${grade.lab} · 본인 맞춤 흐름</div>
       </div>
     </div>
-    <div class="teaser-headline">${headline}</div>
-    <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['💰 재물 흐름','💕 연애·관계','🏛️ 직업·관운','⏰ 12지지 시간대 가이드'])}
+    <div class="teaser-headline">${preventOrphan(headline)}</div>
+    <div class="teaser-leadline">${preventOrphan(lead)}</div>
+    ${_teaserInsights([
+      f.total>=75?'<b>좋게 쓰는 법</b> — 먼저 연락하고, 먼저 제안하고, 중요한 일정은 오전부터 정리해 보세요.':'<b>오늘의 핵심</b> — 바로 밀어붙이기보다 확인하고 조율하는 쪽이 더 유리해요.',
+      '<b>잠금 해제 후</b> 재물·연애·직업·건강 흐름과 시간대별 추천 행동까지 이어서 볼 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['재물 흐름','연애·관계 판단','직업·약속·계약 판단','시간대별 추천 행동'])}
     ${_teaserCta('daypick')}
   </div>`;
 }
@@ -7273,6 +7322,7 @@ function renderMonthlyTeaser(saju, moExtra){
   const best=sorted[0];
   const avgTotal=Math.round(data.reduce((s,o)=>s+o.sc.total,0)/data.length);
   const grade=dailyGrade(avgTotal);
+  const tough=[...data].sort((a,b)=>a.sc.total-b.sc.total)[0];
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">${totalMonths}개월 흐름 살짝 보기</span></div>
     <div class="teaser-score-row">
@@ -7282,9 +7332,13 @@ function renderMonthlyTeaser(saju, moExtra){
         <div class="teaser-score-grade">${grade.lab} · ${totalMonths}개월</div>
       </div>
     </div>
-    <div class="teaser-headline">결정적 시기 — ${best.yy}년 ${best.mm}월</div>
-    <div class="teaser-leadline">이 기간 중 본인에게 흐름이 가장 잘 맞는 시기는 <b>${best.yy}년 ${best.mm}월(${best.sc.total}점)</b>이에요. 큰 결정·계약·결혼 진전·이직 같은 굵직한 행동을 이 시기에 배치하시면 결실이 커요.</div>
-    ${_teaserBlurArea(['📊 매월 상세 풀이 ('+totalMonths+'개월)','💰 재물 흐름 평균','💕 연애·관계 평균','🎯 결정적 시기 + 길월·흉월'])}
+    <div class="teaser-headline">${preventOrphan(`가장 힘을 쓰기 좋은 달은 ${best.yy}년 ${best.mm}월이에요`)}</div>
+    <div class="teaser-leadline">${preventOrphan(`이 기간 중 본인에게 가장 잘 맞는 시기는 <b>${best.yy}년 ${best.mm}월(${best.sc.total}점)</b>이에요. 큰 약속·계약·이직 준비처럼 결과가 남는 일은 이 달에 올려두면 좋아요.`)}</div>
+    ${_teaserInsights([
+      `<b>반대로 조심할 달</b> — ${tough.yy}년 ${tough.mm}월은 서두르면 일정이 꼬이기 쉬워요.`,
+      '<b>잠금 해제 후</b> 각 달의 재물·연애·직업·건강 흐름과 추천 행동을 월별로 이어서 볼 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['매월 상세 풀이 '+totalMonths+'개월','재물 흐름 평균','연애·관계 평균','좋은 달·주의 달·결정적 시기'])}
     ${_teaserCta('monthly')}
   </div>`;
 }
@@ -7293,8 +7347,7 @@ function renderMonthlyTeaser(saju, moExtra){
 function renderNewyearTeaser(saju, y){
   const yp=yearPillar(y,6,1,12,0);
   const tg=tenGod(saju.dp.stem,yp.stem);
-  const tgHead={'정관':'책임과 신뢰가 자라는 해','편관':'도전과 압박이 들어오는 해','정재':'꾸준한 재물이 쌓이는 해','편재':'활동·이동·새 거래의 해','정인':'학습·자격이 빛나는 해','편인':'깊이 천착하는 해','식신':'표현과 풍요의 해','상관':'창의·기획이 빛나는 해','비견':'본인 흐름이 또렷해지는 해','겁재':'경쟁과 자극의 해'};
-  const headline=tgHead[tg]||'새 흐름의 해';
+  const headline=_yearHookType(tg);
   // 간이 점수 — 세운 천간 십신 기반
   const tgScoreMap={'정관':82,'편관':68,'정재':80,'편재':75,'정인':78,'편인':70,'식신':80,'상관':72,'비견':68,'겁재':60};
   const yearScore=tgScoreMap[tg]||70;
@@ -7305,12 +7358,16 @@ function renderNewyearTeaser(saju, y){
       <div class="teaser-score-num">${yearScore}</div>
       <div class="teaser-score-meta">
         <div class="teaser-score-label">${y}년 종합 점수</div>
-        <div class="teaser-score-grade">${grade.lab} · ${TG_EMOJI[tg]||'🎉'} ${tg} 기운</div>
+        <div class="teaser-score-grade">${grade.lab} · 올해 맞춤 흐름</div>
       </div>
     </div>
-    <div class="teaser-headline">${y}년은 ${headline}</div>
-    <div class="teaser-leadline">본인 기준 ${y}년 위 글자가 <b>${plainTG(tg)}</b>의 흐름으로 들어와 ${tg.includes('관')?'사회적 책임과 결단의 분위기':tg.includes('재')?'재물의 분위기':tg.includes('인')?'학습·정인의 분위기':tg.includes('식')||tg.includes('상')?'표현·창의의 분위기':'본인 색깔의 분위기'}이 한 해 전반에 흐릅니다. 결정적 시기는 12개월 카드에서 확인하세요.</div>
-    ${_teaserBlurArea(['🌸 사계절 흐름 (봄·여름·가을·겨울)','📆 12개월 상세 풀이','💰 재물 / 💕 연애 / 🏛️ 직업 / 🌿 건강 (8분야)','🎯 길월·흉월·결정적 시기'])}
+    <div class="teaser-headline">${preventOrphan(`${y}년은 ${headline}`)}</div>
+    <div class="teaser-leadline">${preventOrphan(`올해는 본인이 미뤄둔 선택을 다시 보게 되는 해예요. 특히 일·돈·관계 중 하나는 계속 끌고 갈지, 정리할지 기준이 분명해져요.`)}</div>
+    ${_teaserInsights([
+      yearScore>=75?'<b>살릴 흐름</b> — 새 목표를 작게 쪼개고, 문서·계약·일정표로 남기면 결과가 커져요.':'<b>주의할 흐름</b> — 남의 속도에 끌려가면 피로가 커져요. 기준을 먼저 세우세요.',
+      '<b>잠금 해제 후</b> 12개월 중 좋은 달, 조심할 달, 결정적 시기까지 바로 확인할 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['사계절 흐름','12개월 상세 풀이','재물·연애·직업·건강 8분야','좋은 달·주의 달·결정적 시기'])}
     ${_teaserCta('newyear')}
   </div>`;
 }
@@ -7323,20 +7380,26 @@ function renderLifeTeaser(saju){
   const dm=DM[saju.dp.stem];
   const stemNk=stemNick(saju.dp.stem)||STEMKO[saju.dp.stem];
   const branchNk=branchNick(saju.dp.branch)||BRCHKO[saju.dp.branch];
-  const ilju=`${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]} 본인 자리`;
-  const lead=`본인은 <b>${ilju}</b> — 「${stemNk}」 같은 흐름을 타고난 분이세요. 사주 유형은 <b>${gk.name||'평이한 흐름'}</b>이고, 본인을 가장 도와주는 기운은 <b>${OHNAME[ys.main]}</b>입니다. ${dm&&dm.pos?'타고난 강점은 「'+(dm.pos.slice(0,2).join('·'))+'」이고, 의식해야 할 부분은 「'+(dm.neg?dm.neg.slice(0,1).join(','):'균형')+'」이에요.':''}`;
+  const coreLabel=`${stemNk} 같은 본인`;
+  const helperNames=['나무','불','흙','금속','물'];
+  const helperName=helperNames[ys.main]||'균형';
+  const lead=`본인은 <b>${coreLabel}</b>이에요. 겉으로는 담담해 보여도 안쪽 기준은 꽤 분명한 편이에요. ${dm&&dm.pos?'특히 '+dm.pos.slice(0,2).join('·')+' 쪽에서 장점이 빨리 드러나요.':'한쪽으로 과하게 몰리기보다 상황을 보며 균형을 잡는 힘이 있어요.'}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">본인 사주 평생 분위기 살짝 보기</span></div>
     <div class="teaser-score-row">
-      <div class="teaser-score-num" style="font-size:1.6rem;line-height:1.2">${ilju}</div>
+      <div class="teaser-score-num" style="font-size:1.35rem;line-height:1.25">${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}</div>
       <div class="teaser-score-meta">
-        <div class="teaser-score-label">본인의 사주 유형</div>
-        <div class="teaser-score-grade">${gk.name||'평이한 흐름'} · 용신 ${OHNAME[ys.main]}</div>
+        <div class="teaser-score-label">본인을 보여주는 중심 자리</div>
+        <div class="teaser-score-grade">${helperName}의 보완이 중요해요</div>
       </div>
     </div>
-    <div class="teaser-headline">「${stemNk}」 × 「${branchNk}」의 분위기</div>
-    <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['🧭 사주팔자 종합 풀이 (네 자리 흐름)','💰 총운 / 재물운 / 직업·사업운','💕 연애·결혼운 / 건강운 / 학업·시험운','🌀 10년 단위 흐름 + 올해 흐름'])}
+    <div class="teaser-headline">${preventOrphan(`본인은 「${stemNk}」처럼 자기 기준이 선명한 사람이에요`)}</div>
+    <div class="teaser-leadline">${preventOrphan(lead)}</div>
+    ${_teaserInsights([
+      `<b>평생 과제</b> — 본인에게 부족한 ${helperName}의 분위기를 어떻게 채우느냐가 일·관계·돈의 흐름을 크게 바꿔요.`,
+      '<b>잠금 해제 후</b> 재물·직업·연애·건강과 10년 단위 전환점을 한 번에 이어서 볼 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['네 자리 종합 풀이','총운·재물운·직업운','연애·결혼운·건강운·학업운','10년 단위 흐름 + 올해 흐름'])}
     ${_teaserCta('life')}
   </div>`;
 }
@@ -7349,7 +7412,7 @@ function renderGunghapTeaser(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gnExtra.gh,gnExtra.gmin||0);
   const result=calcGunghap(saju1, saju2, gender, gnExtra.gender);
   const grade=dailyGrade(result.score);
-  const lead=`본인 두 글자 <b>${STEMKO[saju1.dp.stem]}${BRCHKO[saju1.dp.branch]}</b>과 상대 두 글자 <b>${STEMKO[saju2.dp.stem]}${BRCHKO[saju2.dp.branch]}</b>이 만나는 기운이에요. 본질 어울림은 <b>${result.ohRelType}</b>, 배우자 자리의 만남은 <b>${result.brLabel||'중립'}</b>이에요. ${result.score>=75?'두 분 흐름이 자연스럽게 맞물리는 인연이에요.':result.score>=60?'서로 다른 흐름이지만 노력으로 잘 가꿔갈 수 있는 인연이에요.':'서로 의식적으로 흐름을 맞춰가야 하는 인연이에요.'}`;
+  const lead=`두 분은 처음 맞물리는 느낌보다, 오래 볼수록 반복되는 패턴이 더 중요한 관계예요. ${result.score>=75?'편하게 통하는 부분이 많아서 작은 오해만 줄이면 안정감이 커져요.':result.score>=60?'서로 다른 속도가 있지만 대화 방식만 맞추면 충분히 가꿔갈 수 있어요.':'끌림과 피로가 같이 올 수 있어요. 그래서 약속 방식과 감정 표현을 분명히 잡는 게 중요해요.'}`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">두 분 궁합 살짝 보기</span></div>
     <div class="teaser-score-row">
@@ -7359,9 +7422,13 @@ function renderGunghapTeaser(saju1, gnExtra){
         <div class="teaser-score-grade">${result.grade} · ${grade.lab}</div>
       </div>
     </div>
-    <div class="teaser-headline">「${stemNick(saju1.dp.stem)||STEMKO[saju1.dp.stem]}」 × 「${stemNick(saju2.dp.stem)||STEMKO[saju2.dp.stem]}」 인연</div>
-    <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['📊 4가지 세부 점수 (본질·서로 보는 분위기·자리 만남·기운 균형)','💬 12가지 자리 만남 + 끌어당김/부딪힘','💕 연애·데이트 분위기 / 💍 결혼 생활 분위기','🤝 동업·동거 분위기 / 👨‍👩‍👧 가족·자녀 분위기'])}
+    <div class="teaser-headline">${preventOrphan(`두 분은 ${result.score>=75?'편하게 맞물리는 부분이 큰 인연':'서로의 속도를 맞추는 게 중요한 인연'}이에요`)}</div>
+    <div class="teaser-leadline">${preventOrphan(lead)}</div>
+    ${_teaserInsights([
+      '<b>관계의 열쇠</b> — 서로의 생활 리듬을 어떻게 다루느냐에 따라 편안함과 피로감이 갈려요.',
+      '<b>잠금 해제 후</b> 연애·결혼·동거·동업에서 반복될 패턴과 갈등을 푸는 행동까지 이어서 볼 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['4가지 세부 점수','서로 끌리는 부분과 부딪히는 부분','연애·데이트 / 결혼 생활 분위기','동업·동거 / 가족·자녀 분위기'])}
     ${_teaserCta('gunghap')}
   </div>`;
 }
@@ -7381,8 +7448,8 @@ function renderNameTeaser(saju, nmExtra){
   if(sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0)score+=Math.min(8,nameOh.oh[sajuMinIdx]*3);
   score=Math.max(45,Math.min(98,score));
   const grade=score>=85?'사주와 잘 어울리는 이름':score>=72?'좋은 이름':score>=60?'보통 이름':'보완이 필요한 이름';
-  const ohNames=['나무(목)','불(화)','흙(토)','금속(금)','물(수)'];
-  const lead=`「${full}」은 한글 자모 오행으로 풀면 본인 사주를 ${nameOh.oh[ys.main]>0?'잘 받쳐주는':sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0?'약점을 채워주는':'평이하게 받는'} 흐름이에요. 본인을 가장 도와주는 기운 <b>${ohNames[ys.main]}</b>${nameOh.oh[ys.main]>0?'을 이름이 보강해 줘요.':'은 이름에 직접 들어오지 않지만, 다른 흐름으로 균형을 맞추면 돼요.'}`;
+  const ohNames=['나무','불','흙','금속','물'];
+  const lead=`「${full}」은 본인에게 ${nameOh.oh[ys.main]>0?'힘을 보태는 이름 쪽에 가까워요.':sajuMinIdx!==ys.main&&nameOh.oh[sajuMinIdx]>0?'부족한 부분을 채워주는 이름 쪽에 가까워요.':'무난하지만 한 가지 보완 포인트가 남는 이름이에요.'} 특히 <b>${ohNames[ys.main]}</b>의 분위기를 어떻게 살리느냐가 이름의 인상을 더 좋게 만들어요.`;
   return `<div class="teaser-card">
     <div class="teaser-head"><span class="teaser-badge">✦ 미리보기</span><span class="teaser-title">본인 이름 살짝 보기</span></div>
     <div class="teaser-score-row">
@@ -7392,9 +7459,13 @@ function renderNameTeaser(saju, nmExtra){
         <div class="teaser-score-grade">${grade}</div>
       </div>
     </div>
-    <div class="teaser-headline">${full} 사주 궁합</div>
-    <div class="teaser-leadline">${lead}</div>
-    ${_teaserBlurArea(['🪷 이름 글자별 오행 풀이 (초성·종성·음양)','㊗ 한자 수리오행 4격 · 81수리 길흉','⚖ 사주 + 이름 종합 기운 균형','🪷 본인 사주에 어울리는 추천 이름 5개'])}
+    <div class="teaser-headline">${preventOrphan(`${full}은 본인 분위기와 ${score>=72?'잘 맞는 편이에요':'조금 더 다듬으면 좋아요'}`)}</div>
+    <div class="teaser-leadline">${preventOrphan(lead)}</div>
+    ${_teaserInsights([
+      `<b>이름의 열쇠</b> — ${ohNames[ys.main]}의 느낌을 살리면 이름이 주는 첫인상과 사주 균형이 더 좋아져요.`,
+      '<b>잠금 해제 후</b> 글자별 풀이, 한자 이름 판단, 보완 방향과 추천 이름까지 이어서 볼 수 있어요.'
+    ])}
+    ${_teaserBlurArea(['이름 글자별 다섯 기운 풀이','한자 이름 판단','사주 + 이름 종합 균형','본인 사주에 어울리는 추천 이름 5개'])}
     ${_teaserCta('name')}
   </div>`;
 }
