@@ -132,10 +132,10 @@
   --radius:14px;
   --radius-lg:18px;
 }
-html,body{font-family:'Hanken Grotesk','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{font-family:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* 전역 고아글자 차단 — 한국어 단어 단위 줄바꿈 (사용자 요청: 모든 글자 영역) */
 *{word-break:keep-all;overflow-wrap:break-word}
-h1,h2,h3,h4,h5{font-family:'Noto Serif KR','Noto Serif',serif;letter-spacing:-.01em}
+h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-spacing:-.01em}
 .material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;vertical-align:middle}
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
@@ -163,7 +163,7 @@ h1,h2,h3,h4,h5{font-family:'Noto Serif KR','Noto Serif',serif;letter-spacing:-.0
 
 /* ── Header ── */
 .hdr{background:linear-gradient(140deg,var(--bg-deep),var(--bg-mid) 50%,var(--bg-deep));color:var(--text);padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--border)}
-.hdr h1{font-family:'Noto Serif KR',serif;font-size:1.3rem;font-weight:700;letter-spacing:.15em;color:var(--accent)}
+.hdr h1{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.3rem;font-weight:700;letter-spacing:.15em;color:var(--accent)}
 .hdr p{font-size:.76rem;margin-top:4px;color:var(--sub);letter-spacing:.05em}
 
 /* ── A11y: 키보드 포커스 가시성 ── */
@@ -240,23 +240,23 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* ── 분위기와 메뉴 (6카드 그리드) ── */
 .menu-wrap{padding:14px}
 .menu-head{text-align:center;margin-bottom:14px}
-.menu-head-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);letter-spacing:.04em;margin-bottom:4px}
+.menu-head-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);letter-spacing:.04em;margin-bottom:4px}
 .menu-head-sub{font-size:.72rem;color:var(--sub);line-height:1.6}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.menu-card{position:relative;padding:18px 12px 16px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:.22s ease;font-family:inherit;min-height:108px;color:var(--text);overflow:hidden}
+.menu-card{position:relative;padding:18px 12px 16px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:.22s ease;font-family:inherit;min-height:108px;color:var(--text);overflow:hidden}
 .menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:.22s}
 .menu-card:hover{border-color:rgba(212,175,55,.55);transform:translateY(-2px);box-shadow:0 8px 22px rgba(212,175,55,.12)}
 .menu-card:hover::before{opacity:.55}
 .menu-card:active{transform:translateY(-1px)}
 .menu-card.locked{background:linear-gradient(135deg,var(--card),rgba(45,52,71,.55))}
 .menu-card .mc-icon{font-size:1.7rem;line-height:1}
-.menu-card .mc-title{font-family:'Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.menu-card .mc-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
 .menu-card .mc-desc{font-size:.7rem;color:var(--muted);line-height:1.55;margin:2px 6px 4px;letter-spacing:-.01em;word-break:keep-all}
 .menu-card .mc-tag{font-size:.6rem;padding:2px 9px;border-radius:50px;font-weight:700;letter-spacing:.06em;border:1px solid;text-transform:uppercase}
 .menu-card .mc-tag.t-free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
 .menu-card .mc-tag.t-paid{color:var(--accent-bright);background:var(--accent-soft);border-color:rgba(212,175,55,.4)}
 .menu-card .mc-tag.t-signature{color:#f5d77c;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(245,215,124,.12));border-color:rgba(245,215,124,.55)}
-.menu-card .mc-price{display:inline-block;margin-top:4px;font-family:'Noto Serif KR',serif;font-size:.86rem;font-weight:800;color:var(--accent-bright);letter-spacing:-.01em}
+.menu-card .mc-price{display:inline-block;margin-top:4px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:800;color:var(--accent-bright);letter-spacing:-.01em}
 .menu-card .mc-lock{position:absolute;top:8px;right:10px;font-size:.78rem;color:var(--accent);opacity:.85}
 .menu-back{display:flex;align-items:center;gap:6px;padding:10px 14px 8px;font-size:.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;letter-spacing:.02em}
 .menu-back:hover{color:var(--accent-bright)}
@@ -268,24 +268,24 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .daily-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.55}
 .daily-date{font-size:.74rem;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
 .daily-score-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;border:5px solid;box-shadow:0 0 30px rgba(212,175,55,.18)}
-.daily-score-num{font-family:'Noto Serif KR',serif;font-size:2.4rem;font-weight:700;line-height:1}
+.daily-score-num{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:2.4rem;font-weight:700;line-height:1}
 .daily-score-lab{font-size:.7rem;color:var(--sub);font-weight:600;letter-spacing:.08em;margin-top:2px;text-transform:uppercase}
 .daily-grade{display:inline-block;padding:5px 16px;border-radius:50px;font-size:.78rem;font-weight:800;margin-bottom:10px;letter-spacing:.02em}
-.daily-headline{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.01em;line-height:1.5}
+.daily-headline{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.01em;line-height:1.5}
 .daily-pillar{font-size:.78rem;color:var(--sub);line-height:1.7}
 .daily-pillar em{font-style:normal;color:var(--accent);font-weight:700}
 .daily-cats{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
 .daily-cat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 12px}
 .daily-cat-head{display:flex;align-items:center;gap:6px;margin-bottom:7px}
 .daily-cat-emoji{font-size:1.05rem}
-.daily-cat-name{font-family:'Noto Serif KR',serif;font-size:.84rem;font-weight:700;color:var(--text)}
+.daily-cat-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;color:var(--text)}
 .daily-cat-score{margin-left:auto;font-size:.76rem;font-weight:800;color:var(--accent-bright);white-space:nowrap}
 .daily-cat-body{font-size:.95rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 
 /* ── 유료 잠금 (지정일/월별/신년) ── */
 .fee-lock{padding:30px 22px 50px;text-align:center}
 .fee-lock-icon{font-size:2.6rem;margin-bottom:14px;color:var(--accent);text-shadow:0 0 30px rgba(212,175,55,.4)}
-.fee-lock-title{font-family:'Noto Serif KR',serif;font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:10px}
+.fee-lock-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:10px}
 .fee-lock-desc{font-size:.82rem;color:var(--sub);line-height:1.85;margin-bottom:20px}
 .fee-lock-features{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:0 auto 20px;text-align:left;font-size:.78rem;color:var(--sub);line-height:1.85;max-width:340px}
 .fee-lock-features b{color:var(--accent)}
@@ -295,19 +295,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .panel.on{display:block}
 
 /* ── Cards ── */
-.card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);padding:18px;margin-bottom:14px}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
-.ctitle.big{font-family:'Noto Serif KR',serif;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
+.ctitle.big{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
 
 /* Pillars — 사주 원국 보드 (DESIGN 시안: 글래스 기둥 카드 · 일주 골드 글로우 · 십신 라벨) */
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
 .pcol{display:flex;flex-direction:column;gap:3px}
-.pillars>.pcol{gap:6px;padding:9px 5px 10px;border-radius:12px;background:rgba(29,32,33,.55);border:1px solid rgba(255,255,255,.05);border-top:2px solid rgba(255,255,255,.08)}
-.pillars>.pcol.day{border:1.5px solid var(--accent-bright);background:rgba(212,175,55,.07);box-shadow:0 0 22px rgba(212,175,55,.16)}
+.pillars>.pcol{gap:6px;padding:9px 5px 10px;border-radius:12px;background:rgba(29,32,33,.55)}
+.pillars>.pcol.day{background:rgba(212,175,55,.1);box-shadow:0 0 22px rgba(212,175,55,.16)}
 .plabel{font-size:.74rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.04em}
 .pillars>.pcol.day .plabel{color:var(--accent-bright);font-weight:700}
 .pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:1.35rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
-.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:1.5rem;padding:10px 2px}
+.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:1.5rem;padding:10px 2px;border-color:transparent}
 .pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
 .pillars>.pcol .sm{font-size:.66rem;font-weight:600;opacity:.95;letter-spacing:.01em}
 .pillars-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
@@ -357,8 +357,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .clabel-warn{color:var(--earth)}
 
 /* Lunar summary */
-.lsummary{background:linear-gradient(135deg,rgba(45,52,71,.6),rgba(26,31,44,.6));border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;margin-bottom:12px}
-.ldate{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent)}
+.lsummary{background:rgba(29,32,33,.8);border:none;border-radius:var(--radius);padding:14px;text-align:center;margin-bottom:14px}
+.ldate{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent)}
 .lsub{font-size:.73rem;color:var(--sub);margin-top:4px}
 
 .mbti-badge{display:inline-block;padding:6px 18px;border-radius:50px;font-size:1.1rem;font-weight:800;letter-spacing:3px;color:var(--bg-mid);background:linear-gradient(135deg,var(--accent),var(--accent-bright))}
@@ -435,25 +435,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .home-hero{background:linear-gradient(180deg,var(--bg-deep),var(--bg-mid) 60%,var(--bg-deep));color:var(--text);padding:64px 22px 50px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
 .home-hero::before{content:'';position:absolute;width:340px;height:340px;background:radial-gradient(circle,rgba(212,175,55,.14),transparent 65%);left:50%;top:35%;transform:translate(-50%,-50%);pointer-events:none}
 .home-hero::after{content:'';position:absolute;width:180px;height:180px;border:1px solid rgba(212,175,55,.12);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
-.home-hero h1{font-family:'Noto Serif KR','Noto Serif',serif;font-size:1.95rem;font-weight:700;letter-spacing:.2em;margin-bottom:12px;color:var(--accent);position:relative;z-index:1}
+.home-hero h1{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;font-size:1.95rem;font-weight:700;letter-spacing:.2em;margin-bottom:12px;color:var(--accent);position:relative;z-index:1}
 .home-hero .h-sub{font-size:.85rem;color:var(--sub);letter-spacing:.04em;position:relative;z-index:1;line-height:1.7}
 .home-hero .h-deco{font-size:.68rem;color:var(--muted);margin-top:18px;letter-spacing:.5em;position:relative;z-index:1;text-transform:uppercase}
 .home-cards{padding:28px 16px 30px}
-.home-card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:22px 22px 24px;margin-bottom:14px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.home-card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius-lg);padding:22px 22px 24px;margin-bottom:14px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
 .home-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
 .home-card:active{transform:scale(.985);border-color:var(--border-strong)}
 .home-card .hc-arrow{position:absolute;right:18px;top:26px;color:var(--accent);font-size:1.4rem;font-weight:300}
 .home-card .hc-emoji{font-size:2.1rem;margin-bottom:10px}
-.home-card .hc-title{font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:var(--text);letter-spacing:-.01em}
+.home-card .hc-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:var(--text);letter-spacing:-.01em}
 .hc-tag{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid transparent}
 .tag-free{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.3)}
 .tag-paid{background:var(--earth-bg);color:var(--accent);border-color:rgba(216,196,168,.35)}
-.home-card .hc-desc{font-size:.8rem;color:var(--sub);line-height:1.75;padding-right:25px;font-family:'Hanken Grotesk','Noto Sans KR',sans-serif}
+.home-card .hc-desc{font-size:.8rem;color:var(--sub);line-height:1.75;padding-right:25px;font-family:'Do Hyeon','Manrope','Noto Sans KR',sans-serif}
 .home-foot{text-align:center;font-size:.7rem;color:var(--muted);padding:24px 14px 30px;line-height:1.85;letter-spacing:.02em}
 /* 이용자 후기 섹션 */
 .reviews-sec{margin:28px 14px 8px;padding-top:24px;border-top:1px solid var(--border)}
 .reviews-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding:0 4px}
-.reviews-title{font-family:'Noto Serif KR',serif;font-size:1.02rem;color:var(--text);letter-spacing:-.01em}
+.reviews-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;color:var(--text);letter-spacing:-.01em}
 .reviews-sub{font-size:.68rem;color:var(--muted)}
 .reviews-grid{display:grid;grid-template-columns:1fr;gap:10px}
 @media (min-width:560px){.reviews-grid{grid-template-columns:1fr 1fr}}
@@ -483,7 +483,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .rv-submit{padding:12px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:.18s}
 .rv-submit:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
 .coupon-badge{padding:18px 16px;background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(255,235,180,.06));border:1px dashed var(--accent);border-radius:12px;text-align:center;display:flex;flex-direction:column;gap:6px}
-.coupon-amount{font-family:'Noto Serif KR',serif;font-size:1.6rem;color:var(--accent-bright);font-weight:800;letter-spacing:-.01em}
+.coupon-amount{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.6rem;color:var(--accent-bright);font-weight:800;letter-spacing:-.01em}
 .coupon-meta{font-size:.72rem;color:var(--sub);line-height:1.6}
 .rv-block-msg{padding:18px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--sub);line-height:1.72;text-align:center}
 
@@ -492,16 +492,16 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .hdr-back .bb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--accent-bright);width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:.18s}
 .hdr-back .bb:active{background:var(--accent-soft);border-color:var(--accent)}
 /* 시안 — 상단 바 브랜드 워드마크 (뒤로가기 유지, 가짜 버튼 없음) */
-.hdr-brand{flex:1;text-align:center;font-family:'Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em}
+.hdr-brand{flex:1;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em}
 .hdr-spacer{width:36px;flex-shrink:0}
 .hdr-back-meta{display:none}
-.hdr-back-title{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
+.hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
 
 /* ── Lock (코드 잠금) ── */
 .lock-wrap{padding:50px 22px 60px;text-align:center;position:relative}
 .lock-icon{font-size:2.8rem;margin-bottom:18px;color:var(--accent);text-shadow:0 0 30px rgba(212,175,55,.4)}
-.lock-title{font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:700;margin-bottom:12px;letter-spacing:.05em;color:var(--accent)}
+.lock-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.25rem;font-weight:700;margin-bottom:12px;letter-spacing:.05em;color:var(--accent)}
 .lock-desc{font-size:.84rem;color:var(--sub);line-height:1.85;margin-bottom:24px}
 .lock-preview{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:22px;text-align:left;font-size:.78rem;color:var(--sub);line-height:1.78;position:relative;overflow:hidden;max-height:140px;font-family:inherit}
 .lock-preview::after{content:'';position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(transparent,var(--card))}
@@ -517,13 +517,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .teaser-card{margin:12px 14px 18px;padding:18px 16px 16px;border-radius:14px;background:linear-gradient(135deg,#20262c 0%,#25272f 46%,#2d271f 100%);border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 28px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}
 .teaser-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;position:relative;z-index:1}
 .teaser-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 9px;border-radius:99px;font-weight:800;text-transform:uppercase;box-shadow:0 2px 8px rgba(212,175,55,.4)}
-.teaser-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:#f4d36b;letter-spacing:.04em;text-shadow:0 1px 6px rgba(212,175,55,.25);position:relative;z-index:1}
+.teaser-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:#f4d36b;letter-spacing:.04em;text-shadow:0 1px 6px rgba(212,175,55,.25);position:relative;z-index:1}
 .teaser-score-row{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:12px;background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.2);border-radius:14px;position:relative;z-index:1}
-.teaser-score-num{font-family:'Noto Serif KR',serif;font-size:2.4rem;font-weight:700;color:#f4d36b;line-height:1;text-shadow:0 2px 12px rgba(212,175,55,.4)}
+.teaser-score-num{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:2.4rem;font-weight:700;color:#f4d36b;line-height:1;text-shadow:0 2px 12px rgba(212,175,55,.4)}
 .teaser-score-meta{flex:1}
 .teaser-score-label{font-size:.7rem;color:#c8c8d0;letter-spacing:.04em;margin-bottom:3px}
 .teaser-score-grade{font-size:.85rem;font-weight:700;color:#f4d36b}
-.teaser-headline{font-family:'Noto Serif KR',serif;font-size:1.02rem;color:#f4d36b;line-height:1.55;margin-bottom:8px;font-weight:700;letter-spacing:.02em;position:relative;z-index:1}
+.teaser-headline{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;color:#f4d36b;line-height:1.55;margin-bottom:8px;font-weight:700;letter-spacing:.02em;position:relative;z-index:1}
 .teaser-leadline{font-size:.86rem;color:#e6e6ec;line-height:1.85;margin-bottom:14px;padding:10px 12px;background:rgba(212,175,55,.05);border-left:3px solid rgba(212,175,55,.4);border-radius:8px;position:relative;z-index:1}
 .teaser-leadline b{color:#f4d36b}
 .teaser-insight-list{display:flex;flex-direction:column;gap:7px;margin:0 0 14px;position:relative;z-index:1}
@@ -538,11 +538,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .teaser-fake-line{height:9px;background:linear-gradient(90deg,var(--border) 30%,var(--bg-deep) 70%);border-radius:4px;margin-bottom:6px}
 .teaser-fake-line.short{width:65%}
 .teaser-fake-line.mid{width:88%}
-.teaser-cta{display:block;width:calc(100% - 28px);margin:6px 14px 4px;padding:13px 16px;background:linear-gradient(135deg,#f4d36b 0%,#d4af37 60%,#b8902b 100%);color:#0a0c0d;border:none;border-radius:11px;font-family:'Noto Serif KR',serif;font-size:.96rem;font-weight:700;letter-spacing:.08em;cursor:pointer;box-shadow:0 4px 18px rgba(212,175,55,.35),inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;text-align:center}
+.teaser-cta{display:block;width:calc(100% - 28px);margin:6px 14px 4px;padding:13px 16px;background:linear-gradient(135deg,#f4d36b 0%,#d4af37 60%,#b8902b 100%);color:#0a0c0d;border:none;border-radius:11px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.96rem;font-weight:700;letter-spacing:.08em;cursor:pointer;box-shadow:0 4px 18px rgba(212,175,55,.35),inset 0 1px 0 rgba(255,255,255,.3);transition:.2s;text-align:center}
 .teaser-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(212,175,55,.5),inset 0 1px 0 rgba(255,255,255,.3)}
 .teaser-cta:active{transform:translateY(0)}
 .lock-wrap-after-teaser{padding-top:18px}
-.teaser-payment-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
+.teaser-payment-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
 .paywall-compact{margin:0 14px 28px;padding:16px 16px 18px;background:var(--card);border:1px solid rgba(212,175,55,.28);border-radius:14px;text-align:center}
 .paywall-compact .lock-desc{margin-bottom:12px;font-size:.78rem;line-height:1.7}
 .paywall-compact .lock-more{margin-top:14px}
@@ -553,7 +553,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
 .usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
 .usage-guide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.7}
-.usage-head{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
+.usage-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
 .usage-list{margin:0;padding-left:20px;font-size:.85rem;line-height:1.78;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .usage-list li{margin-bottom:8px}
 .usage-list li:last-child{margin-bottom:0}
@@ -595,13 +595,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pay-sheet{background:var(--bg-mid);border:1px solid var(--accent);border-radius:16px;width:100%;max-width:440px;max-height:92vh;overflow-y:auto;padding:22px 20px 18px;position:relative;animation:slideUp .25s ease}
 .pay-sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .pay-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
-.pay-title{font-family:'Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0;letter-spacing:-.01em}
+.pay-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0;letter-spacing:-.01em}
 .pay-close{background:none;border:0;color:var(--sub);font-size:1.3rem;cursor:pointer;line-height:1;padding:2px 6px;font-family:inherit}
 .pay-product{padding:14px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px}
-.pay-product-name{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.pay-product-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px}
 .pay-product-desc{font-size:.78rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
 .pay-product-price{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);font-size:.82rem;color:var(--sub)}
-.pay-product-price b{font-size:1.15rem;color:var(--accent-bright);font-weight:800;font-family:'Noto Serif KR',serif}
+.pay-product-price b{font-size:1.15rem;color:var(--accent-bright);font-weight:800;font-family:'Do Hyeon','Noto Serif KR',serif}
 .pay-promo{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
 .pay-promo-label{display:block;font-size:.74rem;font-weight:800;color:var(--accent-bright);margin-bottom:7px;letter-spacing:.01em}
 .pay-promo-row{display:flex;gap:7px}
@@ -637,17 +637,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* ── 사주 × MBTI 배지 (분위기와 헤로 아래) ── */
 .mbti-badge{display:block;margin:10px 12px 14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(45,52,71,.5));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden;letter-spacing:normal;font-size:initial;font-weight:normal;color:inherit}
 .mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
-.mbti-badge-head{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
+.mbti-badge-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
 .mbti-badge-head b{color:var(--accent-bright)}
 .mbti-badge-body{font-size:.95rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-badge-body b{color:var(--text)}
 
 /* ── 사주 × MBTI 4지표 상세 분석 ── */
-.mbti-analysis{margin:14px 12px 18px;padding:20px 18px 18px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);position:relative;overflow:hidden}
+.mbti-analysis{margin:14px 12px 18px;padding:20px 18px 18px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
 .mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
 .mbti-analysis-head{margin-bottom:14px}
 .mbti-analysis-cat{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.62rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--border-strong);letter-spacing:.08em;margin-bottom:8px;text-transform:uppercase}
-.mbti-analysis h2{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.01em}
+.mbti-analysis h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.01em}
 .mbti-analysis-expl{font-size:.74rem;color:var(--muted);margin-top:6px}
 .mbti-analysis-expl summary{cursor:pointer;color:var(--accent);font-weight:700}
 .mbti-analysis-expl summary:hover{color:var(--accent-bright)}
@@ -656,7 +656,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-indicator{padding:14px 0 12px;background:transparent;border:0;border-top:1px solid var(--border);border-radius:0;position:relative}
 .mbti-indicator:first-child{border-top:0;padding-top:4px}
 .mbti-indicator header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.mbti-indicator h3{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
+.mbti-indicator h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
 .mbti-ind-grade{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:50px;letter-spacing:.04em;text-transform:uppercase;border:1px solid}
 .mbti-indicator.match-strong .mbti-ind-grade{color:var(--good);background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
 .mbti-indicator.match-good .mbti-ind-grade{color:#a3c7a8;background:rgba(163,199,168,.12);border-color:rgba(163,199,168,.35)}
@@ -668,7 +668,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-ind-example{font-size:.95rem;line-height:1.85;color:var(--muted);margin:0 0 6px;padding:10px 12px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-ind-advice{font-size:.95rem;line-height:1.85;color:var(--accent);margin:6px 0 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:1px solid var(--accent);border-radius:14px}
-.mbti-analysis-synth h3{font-family:'Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
+.mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
 .mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0 0 10px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth p:last-child{margin-bottom:0}
 .mbti-synth-head{font-weight:700;color:var(--text)}
@@ -680,7 +680,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-indicator-block{padding:16px 0 14px;border-top:1px solid var(--border)}
 .mbti-indicator-block:first-of-type{border-top:0;padding-top:6px}
 .mbti-indicator-block header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.mbti-indicator-block h3{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
+.mbti-indicator-block h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--accent-bright);margin:0;letter-spacing:-.01em}
 .mbti-match-badge{font-size:.66rem;font-weight:800;padding:3px 10px;border-radius:50px;letter-spacing:.04em;border:1px solid}
 .mbti-match-aligned{color:var(--good);background:rgba(108,191,126,.14);border-color:rgba(108,191,126,.4)}
 .mbti-match-misaligned{color:var(--warn);background:rgba(229,116,98,.14);border-color:rgba(229,116,98,.42)}
@@ -702,13 +702,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .result-tldr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .tldr-headline{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .tldr-tag{display:inline-block;padding:3px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border-strong);font-size:.7rem;font-weight:800;letter-spacing:.06em;margin-bottom:8px}
-.tldr-title{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0;line-height:1.55;letter-spacing:-.01em;word-break:keep-all}
+.tldr-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0;line-height:1.55;letter-spacing:-.01em;word-break:keep-all}
 .tldr-grid{display:flex;flex-direction:column;gap:10px}
 .tldr-card{padding:14px 16px;border-radius:14px;border:1px solid var(--accent)}
 .tldr-strengths{background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(45,52,71,.5))}
 .tldr-cautions{background:linear-gradient(135deg,rgba(229,116,98,.08),rgba(45,52,71,.5))}
 .tldr-times{background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(45,52,71,.5))}
-.tldr-card h3{font-family:'Noto Serif KR',serif;font-size:.84rem;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
+.tldr-card h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
 .tldr-strengths h3{color:#a3c7a8}
 .tldr-cautions h3{color:var(--warn)}
 .tldr-times h3{color:var(--accent-bright)}
@@ -718,16 +718,16 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tldr-disclaimer{margin:14px 0 0;font-size:.7rem;color:var(--muted);line-height:1.65;text-align:center;letter-spacing:.02em}
 
 /* ── 분위기와 끝 — 후속 행동 CTA ── */
-.next-actions{margin:24px 12px 18px;padding:20px 18px 18px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);position:relative;overflow:hidden}
+.next-actions{margin:24px 12px 18px;padding:20px 18px 18px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
 .next-actions::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
-.next-actions-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 14px;letter-spacing:-.01em;text-align:center}
+.next-actions-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 14px;letter-spacing:-.01em;text-align:center}
 .next-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (min-width:540px){.next-actions-grid{grid-template-columns:1fr 1fr 1fr}}
-.next-action-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 10px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s;font-family:inherit;text-align:center;position:relative;min-height:118px}
+.next-action-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 10px 12px;background:rgba(255,255,255,.03);border:none;border-radius:12px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s;font-family:inherit;text-align:center;position:relative;min-height:118px}
 .next-action-card:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:0 6px 18px rgba(212,175,55,.1)}
 .next-action-card.highlight{background:linear-gradient(135deg,rgba(212,175,55,.14),var(--bg-deep));border-color:var(--accent)}
 .na-icon{font-size:1.6rem;line-height:1;margin-bottom:2px}
-.na-title{font-family:'Noto Serif KR',serif;font-size:.86rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.na-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
 .na-desc{font-size:.68rem;color:var(--muted);line-height:1.55;letter-spacing:-.01em;padding:0 4px}
 .na-tag{display:inline-block;padding:2px 8px;border-radius:50px;font-size:.56rem;font-weight:800;letter-spacing:.06em;border:1px solid;text-transform:uppercase;margin-top:2px}
 .na-tag.free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
@@ -750,7 +750,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .sinsal-mini-badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:.6rem;font-weight:800;color:currentColor;background:currentColor;letter-spacing:.06em}
 .sinsal-mini-card .sinsal-mini-badge{background:rgba(255,255,255,.04)}
 .sinsal-mini-loc{font-size:.66rem;color:var(--muted);font-weight:700;letter-spacing:.04em}
-.sinsal-mini-name{font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.01em}
+.sinsal-mini-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.01em}
 .sinsal-mini-hj{color:var(--muted);font-weight:400;font-size:.78rem;margin-left:3px}
 .sinsal-mini-desc{font-size:.95rem;color:var(--sub);line-height:1.85}
 
@@ -766,10 +766,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lt-note b{color:var(--accent-bright)}
 
 /* ── 분위기와 헤더 SNS 후크 헤드라인 ── */
-.result-hero{margin:8px 12px 16px;padding:28px 20px 24px;background:radial-gradient(120% 120% at 50% 0%,rgba(212,175,55,.08),transparent 60%),rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);text-align:center;position:relative;overflow:hidden}
+.result-hero{margin:8px 12px 16px;padding:28px 20px 24px;background:radial-gradient(120% 120% at 50% 0%,rgba(212,175,55,.08),transparent 60%),rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);text-align:center;position:relative;overflow:hidden}
 .result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .result-hero-tag{display:inline-block;padding:3px 14px;border-radius:50px;font-size:.7rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);letter-spacing:.04em;margin-bottom:10px}
-.result-hero-headline{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.5;margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
+.result-hero-headline{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.5;margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
 .result-hero-match{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:50px;font-size:.74rem;font-weight:700;color:var(--accent-bright);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,215,124,.1));border:1px solid rgba(245,215,124,.4)}
 .result-hero-keys{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .result-hero-keys span{display:inline-block;padding:3px 10px;border-radius:50px;background:var(--bg-deep);border:1px solid var(--border);color:var(--sub);font-size:.7rem;font-weight:600;letter-spacing:-.01em}
@@ -777,15 +777,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .result-hero-eyebrow{display:block;font-size:.62rem;font-weight:800;letter-spacing:.16em;color:var(--accent-bright);text-transform:uppercase;margin-bottom:8px;opacity:.92}
 .result-hero::after{content:'';position:absolute;left:50%;top:-45%;width:180px;height:180px;transform:translateX(-50%);background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);pointer-events:none}
 /* 시안 ① — 핵심 운명 키워드 카드 */
-.core-keyword{margin:0 12px 16px;padding:20px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);position:relative;overflow:hidden}
+.core-keyword{margin:0 12px 16px;padding:20px;background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
 .core-keyword::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .ck-label{font-size:.64rem;font-weight:800;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
-.ck-keyword{font-family:'Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent-bright);margin:6px 0 9px;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
+.ck-keyword{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent-bright);margin:6px 0 9px;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
 .ck-body{font-size:.9rem;line-height:1.8;color:var(--sub);margin:0 0 12px;word-break:keep-all;overflow-wrap:break-word}
 .ck-chips{display:flex;flex-wrap:wrap;gap:6px}
 .ck-chips span{display:inline-block;padding:4px 12px;border-radius:50px;background:var(--accent-soft);border:1px solid var(--border-strong);color:var(--accent);font-size:.74rem;font-weight:700;letter-spacing:-.01em}
 /* 시안 ② — 사주 × MBTI 에너지 균형 바 */
-.mbti-balance{margin:0 0 16px;padding:14px 15px;background:rgba(12,15,16,.4);border:1px solid var(--border);border-radius:12px}
+.mbti-balance{margin:0 0 16px;padding:14px 15px;background:rgba(255,255,255,.03);border:none;border-radius:12px}
 .mbti-balance-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:8px}
 .mbti-balance-match{font-size:.72rem;font-weight:800;color:var(--accent-bright);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,215,124,.1));border:1px solid rgba(245,215,124,.4);padding:3px 11px;border-radius:50px;flex-shrink:0}
 .bal-row{margin-bottom:13px}
@@ -808,7 +808,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .bn-item.active .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24}
 
 /* 캡처 워터마크 — 이미지 저장 시 우하단 고정 */
-.cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
+.cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
 .nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
@@ -818,15 +818,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
 .nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
-.nb-title{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
+.nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 /* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
 .chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(45,52,71,.18));border-left:3px solid var(--accent-bright);border-radius:11px}
 .chapter-divider:first-child{margin-top:6px}
-.chapter-divider .ch-no{font-family:'Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
-.chapter-divider .ch-title{font-family:'Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:var(--accent)}
+.chapter-divider .ch-no{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
+.chapter-divider .ch-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:var(--accent)}
 .chapter-divider .ch-desc{flex-basis:100%;font-size:.76rem;color:var(--sub);line-height:1.55}
 /* CHX: TOC 장별 그룹 소제목 */
-.toc-chapter-head{grid-column:1/-1;font-family:'Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
+.toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
 .toc-chapter-head:first-child{margin-top:0}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
 .toc-details{border:1px solid var(--border);border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
@@ -911,10 +911,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tl-body b{color:var(--text)}
 
 /* ── 무료 사주 카드 ── */
-.simple-card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:17px;margin-bottom:12px;display:flex;gap:13px;align-items:flex-start}
+.simple-card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);padding:17px;margin-bottom:12px;display:flex;gap:13px;align-items:flex-start}
 .simple-emoji{font-size:1.5rem;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--earth-bg);border:1px solid var(--border);border-radius:50%}
 .simple-body{flex:1}
-.simple-title{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;margin-bottom:5px;color:var(--text);letter-spacing:-.01em}
+.simple-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;margin-bottom:5px;color:var(--text);letter-spacing:-.01em}
 .simple-stars{font-size:.7rem;margin-bottom:6px}
 .simple-text{font-size:.79rem;color:var(--sub);line-height:1.78}
 .simple-text b{color:var(--text)}
@@ -960,7 +960,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* ── 궁합 (배우자 비교) ── */
 .gg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .gg-side{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:10px 7px}
-.gg-side h5{font-family:'Noto Serif KR',serif;font-size:.78rem;font-weight:700;text-align:center;margin-bottom:7px;color:var(--accent);letter-spacing:.05em}
+.gg-side h5{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;font-weight:700;text-align:center;margin-bottom:7px;color:var(--accent);letter-spacing:.05em}
 .gg-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
 .gg-mc{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:5px 1px;text-align:center}
 .gg-mc-l{font-size:.5rem;color:var(--muted);font-weight:600;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
@@ -1008,8 +1008,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .a4-pillar{text-align:center;padding:6px 2px 5px;background:#fff8e8;border:1px solid #c8a888;border-radius:5px}
 .a4-pillar-lab{font-size:9px;color:#888;letter-spacing:.05em;font-weight:700}
-.a4-pillar-h{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:800;color:#1a1c1d;line-height:1.1;margin:2px 0}
-.a4-pillar-glyph{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:800;line-height:1;margin:3px auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1.5px solid;border-radius:6px}
+.a4-pillar-h{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:22px;font-weight:800;color:#1a1c1d;line-height:1.1;margin:2px 0}
+.a4-pillar-glyph{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:22px;font-weight:800;line-height:1;margin:3px auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1.5px solid;border-radius:6px}
 .a4-pillar-ko{font-size:9px;color:#666}
 .a4-pillar-oh{font-size:9px;color:#a8732e;margin-top:3px;font-weight:600}
 .a4-pillar-ten{font-size:9px;color:#5a7a8a;margin-top:1px}
@@ -1044,7 +1044,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .a4-daeun-head{font-weight:800;color:#8b6f47;font-size:10px;margin-bottom:2px;display:grid;grid-template-columns:84px 1fr 56px;align-items:center;gap:6px;letter-spacing:-.01em}
 .a4-daeun-head .age{font-size:10px;display:flex;align-items:center;gap:4px}
 .a4-daeun-head .age .cur-mark{font-size:7.5px;color:#fff;background:#d4a849;padding:1px 4px;border-radius:6px;font-weight:700;letter-spacing:.02em}
-.a4-daeun-head .pil{font-size:10px;color:#1a1c1d;font-family:'Noto Serif KR',serif;text-align:center}
+.a4-daeun-head .pil{font-size:10px;color:#1a1c1d;font-family:'Do Hyeon','Noto Serif KR',serif;text-align:center}
 .a4-daeun-head .tg{font-size:9px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 5px;border-radius:8px;text-align:center}
 .a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
 .a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -1073,7 +1073,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .term.term-active{background:var(--accent-soft);color:var(--accent-bright);text-decoration-color:var(--accent-bright)}
 .term-pop{position:absolute;z-index:9999;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:13px 15px 14px;box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.18);font-size:.8rem;line-height:1.78;color:var(--text);max-width:calc(100vw - 24px);opacity:0;transform:translateY(-4px);transition:opacity .15s,transform .15s;pointer-events:auto}
 .term-pop.vis{opacity:1;transform:translateY(0)}
-.term-pop-name{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:-.01em}
+.term-pop-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:-.01em}
 .term-pop-body{color:var(--sub);font-size:.8rem;line-height:1.78}
 .term-pop-close{position:absolute;top:7px;right:9px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:.85rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
 .term-pop-close:hover{color:var(--accent);border-color:var(--accent)}
@@ -1082,7 +1082,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
 .chat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .chat-head{text-align:center;margin-bottom:14px}
-.chat-title{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--accent);letter-spacing:-.01em}
+.chat-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--accent);letter-spacing:-.01em}
 .chat-sub{font-size:.74rem;color:var(--sub);line-height:1.7}
 .chat-remaining{display:inline-block;margin-top:8px;padding:3px 12px;background:var(--accent-soft);border:1px solid var(--border-strong);border-radius:50px;font-size:.66rem;font-weight:700;color:var(--accent);letter-spacing:.05em;text-transform:uppercase}
 .chat-log{display:flex;flex-direction:column;gap:9px;margin:14px 0;max-height:400px;overflow-y:auto;padding:4px}
@@ -1195,7 +1195,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 .upsell-close:hover{color:var(--accent);border-color:var(--accent)}
 .upsell-head{text-align:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px dashed var(--border)}
 .upsell-icon{font-size:2rem;line-height:1;margin-bottom:8px}
-.upsell-title{font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
+.upsell-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
 .upsell-sub{font-size:.84rem;color:var(--sub);line-height:1.65}
 .upsell-list{display:flex;flex-direction:column;gap:10px}
 .upsell-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:.18s;font-family:inherit;text-align:left;width:100%}
@@ -1230,7 +1230,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .cat-extra-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .cat-extra-icon{font-size:1.2rem}
-.cat-extra-title{font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);letter-spacing:-.01em}
+.cat-extra-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);letter-spacing:-.01em}
 .cat-extra-desc{font-size:.72rem;color:var(--muted);margin-bottom:12px;line-height:1.7}
 .mo-preview{margin-top:12px;padding:11px 13px;background:var(--earth-bg);border:1px solid var(--accent);border-radius:10px;font-size:.85rem;color:var(--sub);line-height:1.55;letter-spacing:-.01em}
 .mo-preview b{color:var(--accent-bright);font-weight:700}
@@ -1241,7 +1241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .daypick-wrap,.monthly-wrap,.newyear-wrap{padding:12px 12px 24px;display:flex;flex-direction:column;gap:14px}
 .dp-card{background:var(--card);border:1px solid var(--border-strong);border-radius:14px;padding:18px 16px;position:relative;overflow:hidden}
 .dp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-.dp-date{text-align:center;font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
+.dp-date{text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
 .dp-pillar{text-align:center;font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px}
 .dp-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
 .dp-grade{display:inline-block;padding:4px 14px;border-radius:50px;font-size:.74rem;font-weight:700;letter-spacing:.04em;margin:0 auto;display:block;width:fit-content}
@@ -1254,7 +1254,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 /* 월별 운세 - 월별 행 */
 .mo-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;margin-bottom:0}
 .mo-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
-.mo-row-month{font-family:'Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)}
+.mo-row-month{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)}
 .mo-row-pillar{font-size:.74rem;color:var(--sub)}
 .mo-row-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
 .mo-row-score{display:inline-block;padding:2px 11px;border-radius:50px;font-size:.7rem;font-weight:700;border:1px solid}
@@ -1267,12 +1267,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 /* 신년운세 */
 .ny-hero{background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
 .ny-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
-.ny-year{font-family:'Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
+.ny-year{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
 .ny-pillar{font-size:.86rem;color:var(--sub);margin-bottom:6px}
 .ny-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
 .ny-headline{font-size:.95rem;font-weight:700;color:var(--text);margin-top:12px}
 .ny-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
-.ny-sec-title{font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
+.ny-sec-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
 .ny-sec-body{font-size:.82rem;line-height:1.85;color:var(--sub)}
 .ny-sec-body p{margin-bottom:8px}
 .ny-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
@@ -2867,7 +2867,7 @@ function renderDailyFortune(saju){
         <div class="daily-pillar">오늘 하루는 <em>${plainTG(f.tg)}</em> 기운이 들어오는 날이에요${f.rel.kind!=='평'?` · 본인 자리와는 <b>${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[f.rel.kind]||f.rel.kind}</b>`:''}</div>
       </div>
       <div class="daily-card" style="text-align:left;padding:16px 18px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 하루를 한 줄로 정리하면</div>
+        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 하루를 한 줄로 정리하면</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.95">
           <p style="margin-bottom:10px">${personaDeepHTML(saju,'line')}에게 오늘은 <b>${plainTG(f.tg)}</b>의 기운이 들어오는 날이에요. 「${(TG_KEYWORD[f.tg]||[]).slice(0,3).join('·')}」의 색채로 하루가 펼쳐져요.</p>
           <p style="margin-bottom:10px">${f.tg==='정관'||f.tg==='편관'?'책임 있는 자리·공식 절차에 흐름이 잘 맞으니, 발표·결재·면접 같은 일이 있다면 오늘 처리하세요.':f.tg==='정재'||f.tg==='편재'?'재물·거래·이동에 흐름이 좋아요. 미뤄둔 거래나 외근이 있다면 오늘이 좋은 날이에요.':f.tg==='식신'||f.tg==='상관'?'표현·창작·사람 만남에 리듬이 잘 맞아요. 미뤄둔 모임이나 작품 마무리가 자연스럽게 풀려요.':f.tg==='정인'||f.tg==='편인'?'학습·자료 정리·내면 다지기에 흐름이 잘 맞아요. 책 한 권 펼치거나 멘토에게 조언을 청해보세요.':'본인 결정과 동료 활동을 하기에 좋은 때예요. 평소 미뤄둔 모임이나 본인만의 시간을 만들어보세요.'}</p>
@@ -2885,7 +2885,7 @@ function renderDailyFortune(saju){
       ${_dailyActionCard(saju, f)}
       ${_dailyDaeunStageCard(saju, f)}
       <div class="daily-card" style="text-align:left;padding:18px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
+        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
       </div>
       <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(24,000원)을 보세요.</div>
@@ -2918,7 +2918,7 @@ function _dailyDaeunStageCard(saju, f){
       else if(r.kind==='충'||sr.kind==='충')_cautionHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
     }
     return `<div class="daily-card" style="text-align:left;padding:18px;background:linear-gradient(135deg,rgba(212,175,73,.06),rgba(108,140,200,.04))">
-      <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
+      <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
       <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
       ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:8px;font-size:.78rem;line-height:1.75">
         ${_luckyHours.length?`<div><b style="color:var(--good)">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
@@ -2949,7 +2949,7 @@ function _dailyHourCard(saju, f){
     body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.74rem;line-height:1.55"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.7rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
   });
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
-    <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 분위기 (12시진)</div>
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 분위기 (12시진)</div>
     ${body}
   </div>`;
 }
@@ -2969,7 +2969,7 @@ function _dailyLuckCard(saju, f){
   // 용신 보강 한 줄
   const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
-    <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
     <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘의 기운을 바탕으로 오늘만의 행운 색·방향·숫자·음식을 정리해드렸어요. 옷이나 액세서리 색, 점심 메뉴 같은 일상 선택에 살짝 반영해보시면 흐름이 더 부드러워져요.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
       <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🎨 행운 색</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckColor}</div></div>
@@ -3008,7 +3008,7 @@ function _dailyActionCard(saju, f){
   if(f.rel.kind==='형')avoid.push('⚠️ 시비·과거 들춤·격한 운동');
   if(avoid.length===0)avoid.push('🤚 평소보다 한 톤 신중한 정도면 충분');
   return `<div class="daily-card" style="text-align:left;padding:16px 18px">
-    <div style="font-family:'Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">오늘은 잘 풀리는 활동과 잠시 미룰 활동을 나눠보면 좋아요</div>
+    <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">오늘은 잘 풀리는 활동과 잠시 미룰 활동을 나눠보면 좋아요</div>
     <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘 일진(<b>${f.tg}</b>)이 본인 사주와 만나는 흐름을 바탕으로, 오늘 하루 잘 풀리는 활동과 잠시 미뤄두는 게 좋은 활동을 정리해드렸어요. 일정을 잡거나 결정을 미루실 때 참고하세요.</p>
     <div style="margin-bottom:10px">
       <div style="font-size:.74rem;color:var(--wood);font-weight:700;margin-bottom:6px">오늘 흐름이 잘 풀리는 활동이에요.</div>
@@ -5466,7 +5466,7 @@ function renderNewyearFortune(saju,y){
     const sg=s.score?dailyGrade(s.score):null;
     seasonHTML+=`<div style="margin-bottom:12px;padding:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)">${s.name}</div>
+        <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)">${s.name}</div>
         ${sg?`<div style="padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;color:${sg.color};background:${sg.bg};border:1px solid ${sg.color}55">${sg.lab} ${s.score}</div>`:''}
       </div>
       <p style="font-size:.82rem;line-height:1.85;color:var(--sub);margin:0">${s.hint}이 흐르는 계절. ${s.body} 월지로 진행되는 ${s.score>=70?'<b style="color:var(--good)">때가 잘 맞는</b>':s.score<=50?'<b style="color:var(--warn)">한 템포 살피는</b>':'평이한'} 시기예요. ${s.score>=70?'이 계절에 미뤄둔 일을 시작하면 결실이 커요.':s.score<=50?'큰 결정은 다른 계절로 미루고 정리·관망에 무게를 두세요.':'자기 페이스 유지에 좋은 평이한 흐름.'}</p>
@@ -9479,11 +9479,11 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin:5px 0;flex-wrap:wrap">
           <div style="display:flex;flex-direction:column;align-items:center;padding:6px 11px;border-radius:8px;background:rgba(0,0,0,.12);min-width:60px">
-            <div style="font-family:'Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${stemKo}</div>
+            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${stemKo}</div>
             <div style="font-size:.66rem;color:var(--sub);margin-top:2px">${isMyDay?'본인':plainTG(stemTG)}</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;padding:6px 11px;border-radius:8px;background:rgba(0,0,0,.12);min-width:60px">
-            <div style="font-family:'Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${brKo}</div>
+            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${brKo}</div>
             <div style="font-size:.66rem;color:var(--sub);margin-top:2px">${isMyDay?'배우자':plainTG(brTG)}</div>
           </div>
           <div style="flex:1;min-width:0">
@@ -12570,7 +12570,7 @@ async function submitReview(){
           <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--accent-bright)">후기 접수 완료</div>
           <div class="coupon-badge">
             <div style="font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.04em">결제창에 입력해서 사용하세요</div>
-            <div style="font-family:'Noto Serif KR',serif;font-size:1.22rem;color:var(--text);font-weight:900;letter-spacing:.08em">${coupon?coupon.code:'REVIEW 코드'}</div>
+            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.22rem;color:var(--text);font-weight:900;letter-spacing:.08em">${coupon?coupon.code:'REVIEW 코드'}</div>
             <div class="coupon-amount">-${amount.toLocaleString('ko-KR')}원</div>
             <div class="coupon-meta">유효기간 ${new Date(expiresAt).toLocaleDateString('ko-KR')}까지<br>다음 결제 시 프로모션 코드 칸에 입력해 주세요.</div>
           </div>
@@ -15470,7 +15470,7 @@ function renderNamePaid(saju, nmExtra){
   // ── ① 종합 점수 카드 (paidWrapBody 형식)
   const ringCls=nameScore>=75?'sring-h':nameScore>=60?'sring-m':'sring-l';
   const numCls=nameScore>=75?'snum-h':nameScore>=60?'snum-m':'snum-l';
-  const hanDisplay=hasHan?`<div style="font-family:'Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}${hanAutoFilled?'<span style="font-size:.7rem;color:var(--muted);margin-left:6px;font-family:inherit;letter-spacing:0">(자동 추천)</span>':''}</div>`:'';
+  const hanDisplay=hasHan?`<div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.2rem;color:var(--sub);margin-top:4px;letter-spacing:.15em">${han.surname||'·'} ${han.given1||'·'} ${han.given2||''}${hanAutoFilled?'<span style="font-size:.7rem;color:var(--muted);margin-left:6px;font-family:inherit;letter-spacing:0">(자동 추천)</span>':''}</div>`:'';
   // ── 종합 총평: 좋은점·보완점·주의점 자동 생성
   const _suriGoodCnt=suri?[suri.won,suri.hyeong,suri.i,suri.jeong].filter(g=>g.good).length:0;
   const _suriGoodNames=suri?['won','hyeong','i','jeong'].filter(k=>suri[k].good).map(k=>({won:'어린 시절(원격)',hyeong:'청년기(형격)',i:'사회 관계(이격)',jeong:'평생 총운(정격)'}[k])):[];
@@ -15509,7 +15509,7 @@ function renderNamePaid(saju, nmExtra){
   if(_cautions.length===0)_cautions.push(`크게 걸리는 부분은 없어요. 다만 모든 이름은 본인이 어떻게 쓰는지에 따라 흐름이 바뀌니, 한자가 품은 의미를 자주 떠올리며 살아주세요.`);
 
   let summaryBody=`<div style="text-align:center;margin:6px 0 14px">
-      <div style="font-family:'Noto Serif KR',serif;font-size:1.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
+      <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.7rem;color:var(--accent);font-weight:700;letter-spacing:.1em">${full}</div>
       ${hanDisplay}
       <div style="font-size:.72rem;color:var(--muted);margin-top:5px">${surname} 성 · ${given} 이름${hasHan?` · 한자 ${strokes.surname}+${strokes.given1}${strokes.given2?'+'+strokes.given2:''}획`:''}</div>
     </div>
@@ -15621,7 +15621,7 @@ function renderNamePaid(saju, nmExtra){
       const meaningLine=meaning?`<div style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-top:4px">↪ 뜻: <b style="color:var(--accent)">${meaning}</b></div>`:'<div style="font-size:.72rem;color:var(--muted);margin-top:4px">↪ 뜻풀이를 확인하기 어려워요</div>';
       zaBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-left:3px solid ${zaOh!=null?OHCOLOR[zaOh]:'var(--border)'};border-radius:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-family:'Noto Serif KR',serif;font-size:1.35rem;color:var(--accent);font-weight:700">${ch} <small style="font-size:.65rem;color:var(--muted);font-weight:400;margin-left:6px">${labels[idx]||''}</small></span>
+          <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;color:var(--accent);font-weight:700">${ch} <small style="font-size:.65rem;color:var(--muted);font-weight:400;margin-left:6px">${labels[idx]||''}</small></span>
           <span style="font-size:.76rem">${zaLabel}</span>
         </div>
         ${meaningLine}
@@ -15642,7 +15642,7 @@ function renderNamePaid(saju, nmExtra){
     const chosColor=p.chos!=null?OHCOLOR[p.chos]:'var(--muted)';
     hanglBody+=`<div style="padding:11px 13px;background:var(--bg-deep);border-left:3px solid ${chosColor};border-radius:8px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.3rem;font-weight:700;color:var(--accent)">${p.ch}</span>
+        <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.3rem;font-weight:700;color:var(--accent)">${p.ch}</span>
         <span style="font-size:.72rem;color:var(--sub)">${p.yinyang==='양'?'☯︎ 양 (밝음·활동)':'☯︎ 음 (고요·내면)'}</span>
       </div>
       <div style="font-size:.78rem;color:var(--sub);line-height:1.75">
@@ -15841,15 +15841,15 @@ function renderNamePaid(saju, nmExtra){
     }
     const hanFullName=surnameHan+(bestCombo?bestCombo.c1.han:'')+(bestCombo&&bestCombo.c2?bestCombo.c2.han:'');
     const hanLines=[];
-    if(surnameHan)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${surnameHan}</b>(${surname.charAt(0)}, ${surnameStroke}획) — ${HAN_MEANING[surnameHan]||'성씨'}</div>`);
-    if(bestCombo&&bestCombo.c1.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c1.han}</b>(${givenChars[0]}, ${bestCombo.c1.stroke}획) — ${bestCombo.c1.meaning||'-'}</div>`);
-    if(bestCombo&&bestCombo.c2&&bestCombo.c2.han)hanLines.push(`<div>· <b style="font-family:'Noto Serif KR',serif;color:var(--accent)">${bestCombo.c2.han}</b>(${givenChars[1]}, ${bestCombo.c2.stroke}획) — ${bestCombo.c2.meaning||'-'}</div>`);
+    if(surnameHan)hanLines.push(`<div>· <b style="font-family:'Do Hyeon','Noto Serif KR',serif;color:var(--accent)">${surnameHan}</b>(${surname.charAt(0)}, ${surnameStroke}획) — ${HAN_MEANING[surnameHan]||'성씨'}</div>`);
+    if(bestCombo&&bestCombo.c1.han)hanLines.push(`<div>· <b style="font-family:'Do Hyeon','Noto Serif KR',serif;color:var(--accent)">${bestCombo.c1.han}</b>(${givenChars[0]}, ${bestCombo.c1.stroke}획) — ${bestCombo.c1.meaning||'-'}</div>`);
+    if(bestCombo&&bestCombo.c2&&bestCombo.c2.han)hanLines.push(`<div>· <b style="font-family:'Do Hyeon','Noto Serif KR',serif;color:var(--accent)">${bestCombo.c2.han}</b>(${givenChars[1]}, ${bestCombo.c2.stroke}획) — ${bestCombo.c2.meaning||'-'}</div>`);
     const goodCnt=bestCombo&&bestCombo.goodCnt;
     const goodBadge=goodCnt===4?'<b style="color:var(--wood)">(4격 모두 길수 ★)</b>':goodCnt===3?'<b style="color:var(--wood)">(4격 중 3개 길수 ✓)</b>':goodCnt===2?'<small style="color:var(--earth)">(4격 중 2개 길수)</small>':goodCnt===1?'<small style="color:var(--earth)">(4격 중 1개 길수)</small>':SURI_81_GOOD.has(bestCombo&&bestCombo.total)?'<b style="color:var(--wood)">(정격 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>';
     const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${goodBadge}</div>`:'';
     recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:1px solid rgba(212,175,55,.2)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
+        <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
       </div>
       ${hanLines.length?`<div style="font-size:.76rem;color:var(--sub);line-height:1.85;margin:8px 0 6px;padding:8px 11px;background:rgba(0,0,0,.15);border-radius:6px">${hanLines.join('')}${totalLine}</div>`:''}
@@ -15915,7 +15915,7 @@ function renderNamePaid(saju, nmExtra){
         const gyeokLine=[`원격 ${c.won} ${c.wonOk?'✓':'✗'}`,`형격 ${c.hyeong} ${c.hyeOk?'✓':'✗'}`,`이격 ${c.iGy} ${c.iOk?'✓':'✗'}`,`정격 ${c.jeong} ${c.jeoOk?'✓':'✗'}`].join(' · ');
         sphBody+=`<div style="padding:12px 14px;background:rgba(212,175,73,.06);border-left:3px solid ${goodColor};border-radius:8px">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:6px">
-            <span style="font-weight:700;color:var(--accent);font-size:.92rem">${i+1}. <span style="font-family:'Noto Serif KR',serif;letter-spacing:.1em">${hanStr}</span> <small style="color:var(--muted);font-weight:400;margin-left:6px">${full} · ${strokeStr}</small></span>
+            <span style="font-weight:700;color:var(--accent);font-size:.92rem">${i+1}. <span style="font-family:'Do Hyeon','Noto Serif KR',serif;letter-spacing:.1em">${hanStr}</span> <small style="color:var(--muted);font-weight:400;margin-left:6px">${full} · ${strokeStr}</small></span>
             <span style="font-size:.74rem;color:${goodColor};font-weight:700">4격 ${c.goodCnt}/4 길수</span>
           </div>
           <div style="font-size:.76rem;color:var(--sub);line-height:1.75;margin-bottom:6px">↪ <b>의미:</b> ${meaningLine}</div>
@@ -16317,7 +16317,7 @@ function renderGunghapMbtiCard(mbti1, mbti2){
   const sameCount=compat.axes.filter(a=>a.same).length;
   let body=`<p style="margin-bottom:12px">두 분의 MBTI <b>${mbti1}</b>와 <b>${mbti2}</b>를 4지표로 비교한 결과예요. 사주 궁합과는 별개로, <b>현재 성격·소통 스타일</b>이 얼마나 잘 맞는지를 봐요.</p>
     <div style="text-align:center;margin-bottom:14px">
-      <div style="font-family:'Noto Serif KR',serif;font-size:2.2rem;color:${gradeColor};font-weight:700">${compat.score}점</div>
+      <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:2.2rem;color:${gradeColor};font-weight:700">${compat.score}점</div>
       <div style="font-size:.86rem;font-weight:700;color:${gradeColor};margin-top:4px">${grade}</div>
       <div style="font-size:.72rem;color:var(--muted);margin-top:3px">4지표 중 ${sameCount}개 일치 · ${4-sameCount}개 보완</div>
     </div>
@@ -17849,7 +17849,7 @@ function searchHanziBySound(sound){
     html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
     candidates.forEach(c=>{
       html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke||0})" style="padding:11px 6px;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
-        <span style="font-family:'Noto Serif KR',serif;font-size:1.5rem;color:var(--accent);font-weight:700">${c.han}</span>
+        <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.5rem;color:var(--accent);font-weight:700">${c.han}</span>
         <span style="font-size:.62rem;color:var(--sub)">${c.stroke||'-'}획</span>
         <span style="font-size:.62rem;color:var(--muted);line-height:1.3;text-align:center;word-break:keep-all">${(c.meaning||'').substring(0,8)}</span>
       </button>`;
@@ -18103,7 +18103,7 @@ function _renderHanziSearchPage(){
     // 모양 유사도 80%+ 초록색, 60%+ 황금색, 그 외 회색
     const simColor=simPct>=80?'var(--good)':simPct>=60?'var(--accent)':'var(--sub)';
     html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" title="${tip}" style="padding:7px 2px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;${c.inDict?'':'opacity:.85'}" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
-      <span style="font-family:'Noto Serif KR',serif;font-size:1.25rem;color:var(--accent);font-weight:700;line-height:1">${c.han}</span>
+      <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.25rem;color:var(--accent);font-weight:700;line-height:1">${c.han}</span>
       <span style="font-size:.54rem;color:var(--sub)">${c.stroke}획 <span style="color:${simColor};font-weight:700">${simPct}%</span></span>
     </button>`;
   });
