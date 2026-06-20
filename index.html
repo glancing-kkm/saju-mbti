@@ -488,9 +488,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .rv-block-msg{padding:18px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--sub);line-height:1.72;text-align:center}
 
 /* ── Input view header ── */
-.hdr-back{background:var(--bg-deep);color:var(--text);padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(12,15,16,.85)}
-.hdr-back .bb{background:var(--card);border:1px solid var(--border);color:var(--accent);width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:.18s}
+.hdr-back{color:var(--text);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:30;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(17,20,21,.8)}
+.hdr-back .bb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--accent-bright);width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:.18s}
 .hdr-back .bb:active{background:var(--accent-soft);border-color:var(--accent)}
+/* 시안 — 상단 바 브랜드 워드마크 (뒤로가기 유지, 가짜 버튼 없음) */
+.hdr-brand{flex:1;text-align:center;font-family:'Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em}
+.hdr-spacer{width:36px;flex-shrink:0}
+.hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
 
@@ -1417,8 +1421,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <!-- ───── INPUT ───── -->
   <div class="view" id="view-input">
     <div class="hdr-back">
-      <button class="bb" onclick="goHome()">‹</button>
-      <div>
+      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹</button>
+      <div class="hdr-brand">천지인 사주</div>
+      <span class="hdr-spacer" aria-hidden="true"></span>
+      <div class="hdr-back-meta">
         <div class="hdr-back-title">기본 정보 입력</div>
         <div class="hdr-back-sub" id="inputSub">정확한 분석을 위해 빠짐없이 입력해주세요</div>
       </div>
@@ -1769,7 +1775,9 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <div class="view" id="view-result" role="region" aria-live="polite" aria-label="사주 분석 분위기와">
     <div class="hdr-back">
       <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹</button>
-      <div>
+      <div class="hdr-brand">천지인 사주</div>
+      <span class="hdr-spacer" aria-hidden="true"></span>
+      <div class="hdr-back-meta">
         <div class="hdr-back-title">분석 분위기와</div>
         <div class="hdr-back-sub" id="resultSub"></div>
       </div>
