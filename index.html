@@ -543,6 +543,12 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .teaser-cta:active{transform:translateY(0)}
 .lock-wrap-after-teaser{padding-top:18px}
 .teaser-payment-title{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
+.paywall-compact{margin:0 14px 28px;padding:16px 16px 18px;background:var(--card);border:1px solid rgba(212,175,55,.28);border-radius:14px;text-align:center}
+.paywall-compact .lock-desc{margin-bottom:12px;font-size:.78rem;line-height:1.7}
+.paywall-compact .lock-more{margin-top:14px}
+.paywall-mini-note{font-size:.72rem;color:var(--muted);line-height:1.65;margin:8px 0 12px}
+.paywall-price{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:2px 0 12px;padding:6px 12px;background:var(--earth-bg);border:1px solid var(--border);border-radius:999px;font-size:.78rem;color:var(--sub)}
+.paywall-price b{color:var(--accent-bright);font-weight:800}
 
 /* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
 .usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
@@ -1767,7 +1773,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </fieldset>
 
       <div class="err" id="errMsg" role="alert" aria-live="polite"></div>
-      <button type="submit" class="analyze-btn" onclick="analyze()">✦ 사주 분석하기 ✦</button>
+      <button type="submit" class="analyze-btn">✦ 사주 분석하기 ✦</button>
     </form>
   </div>
 
@@ -7165,27 +7171,22 @@ function getUsageGuide(category){
 function renderPaidLock(category, saju){
   const m=PAID_META[category]||PAID_META.life;
   const teaser=renderTeaserCard(category,saju,_meta);
-  return `${teaser}<div class="lock-wrap lock-wrap-after-teaser">
-    <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
+  const amountText=(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} · 월당 2,000원 × ${cnt}개월`;}return formatWon(a);})();
+  return `${teaser}<div class="paywall-compact lock-wrap-after-teaser">
+    <div class="lock-icon" onclick="_secretUnlockTap('${category}')" style="font-size:1.25rem;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent">🔒</div>
     <div class="teaser-payment-title">전체 풀이 잠금 해제</div>
-    <div class="lock-desc">${m.desc}</div>
-    ${getDecisionGuide(category)}
-    <div class="pay-prep">
-      <div class="pay-prep-badge">안전 결제</div>
-      <div class="pay-prep-body">카카오페이로 간편하게 결제하실 수 있어요. 결제 전 <a href="/legal/terms.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">이용약관</a>·<a href="/legal/refund.html" target="_blank" style="color:var(--accent-bright);text-decoration:underline">환불 정책</a>을 확인해 주세요.</div>
-      <div class="pay-prep-price">결제 금액 · <b>${(function(){const a=computePayAmount(category,_meta);if(category==='monthly'&&_meta&&_meta.moExtra){const e=_meta.moExtra;const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));return `${formatWon(a)} (월당 2,000원 × ${cnt}개월)`;}return formatWon(a);})()}</b></div>
-    </div>
+    <div class="lock-desc">${preventOrphan(m.desc.replace('<br>',' '))}</div>
+    <div class="paywall-price">결제 금액 <b>${amountText}</b></div>
     <div class="easypay-row">
       <button type="button" class="easypay-btn easypay-kakao" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 결제">
         <img class="kakao-pay-img" src="assets/kakaopay-button-md.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="121px" alt="카카오페이">
         <span class="easypay-price">${formatWon(computePayAmount(category,_meta))}</span>
       </button>
     </div>
-    <div class="easypay-foot">
-      결제 즉시 풀이가 열립니다. 청약 철회는 <a href="/legal/refund.html" target="_blank">환불 정책</a>의 기준에 따릅니다.
-    </div>
+    <div class="paywall-mini-note">결제 즉시 전체 풀이가 열려요. 이용약관·환불 기준은 결제 전 확인할 수 있어요.</div>
     <details class="lock-more">
       <summary>이용방법·제공 풀이 자세히 보기</summary>
+      ${getDecisionGuide(category)}
       ${getUsageGuide(category)}
       <div class="lock-info">
         📋 <b>제공되는 풀이</b><br>
@@ -7213,7 +7214,7 @@ function _teaserCta(category){
     name:'이 이름의 보완 방향 보기'
   }[category]||'전체 풀이 열어보기';
   const priceText=m.price?` · ${m.price}`:'';
-  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.easypay-row')?.scrollIntoView({behavior:'smooth',block:'center'})">${cta}${priceText}</button>`;
+  return `<button type="button" class="teaser-cta" onclick="document.querySelector('.paywall-compact')?.scrollIntoView({behavior:'smooth',block:'center'})">${cta}${priceText}</button>`;
 }
 // 블러 영역 — 본문 카드 placeholder
 function _teaserBlurArea(fakeTitles){
@@ -17392,7 +17393,7 @@ function analyze(){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderDaypickFortune(saju,dpExtra.y,dpExtra.m,dpExtra.d,dpExtra)
-          :renderPaidLock('daypick',saju)+renderTeaserCard('daypick',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('daypick',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p2);
         _p2.dataset.rendered='1';
         targetIdx=2;
@@ -17400,7 +17401,7 @@ function analyze(){
         const _p3=document.getElementById('p3');
         _p3.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderMonthlyFortune(saju,moExtra.sy,moExtra.sm,moExtra.ey,moExtra.em,moExtra)
-          :renderPaidLock('monthly',saju)+renderTeaserCard('monthly',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('monthly',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p3);
         _p3.dataset.rendered='1';
         targetIdx=3;
@@ -17408,7 +17409,7 @@ function analyze(){
         const _p4=document.getElementById('p4');
         _p4.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderNewyearFortune(saju,nyExtra.y)
-          :renderPaidLock('newyear',saju)+renderTeaserCard('newyear',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('newyear',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p4);
         _p4.dataset.rendered='1';
         targetIdx=4;
@@ -17416,7 +17417,7 @@ function analyze(){
         const _p5=document.getElementById('p5');
         _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
-          :renderPaidLock('life',saju)+renderTeaserCard('life',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('life',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;
@@ -17424,7 +17425,7 @@ function analyze(){
         const _p6=document.getElementById('p6');
         _p6.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderGunghapPaid(saju,_meta.gnExtra)
-          :renderPaidLock('gunghap',saju)+renderTeaserCard('gunghap',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('gunghap',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p6);
         _p6.dataset.rendered='1';
         targetIdx=6;
@@ -17432,7 +17433,7 @@ function analyze(){
         const _p7=document.getElementById('p7');
         _p7.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
           ?termTip+renderNamePaid(saju,_meta.nmExtra)
-          :renderPaidLock('name',saju)+renderTeaserCard('name',saju,_meta))+(unlocked?nextActions:''));
+          :renderPaidLock('name',saju))+(unlocked?nextActions:''));
         if(unlocked)enrichTerms(_p7);
         _p7.dataset.rendered='1';
         targetIdx=7;
@@ -17448,13 +17449,6 @@ function analyze(){
 
       gotoCard(targetIdx);
       showView('result');
-      // 프리미엄 카테고리 + 잠금 상태 → 잠금 영역으로 부드럽게 스크롤
-      if(!unlocked&&['daypick','monthly','newyear','gunghap','name','life'].includes(cat)){
-        setTimeout(()=>{
-          const lock=document.querySelector('.panel.on .lock-wrap');
-          if(lock&&lock.scrollIntoView)lock.scrollIntoView({behavior:'smooth',block:'start'});
-        },180);
-      }
     }catch(e){
       showErr(e.message||'분석 중 오류가 발생했어요. 입력값을 확인해주세요.');
     }finally{
