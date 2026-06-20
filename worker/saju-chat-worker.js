@@ -12,11 +12,15 @@ const CORS_HEADERS = {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: CORS_HEADERS });
     }
     if (request.method !== 'POST') {
       return json({ error: 'POST only' }, 405);
+    }
+    if (url.pathname === '/reading') {
+      return handleReading(request, env);
     }
     if (!env.ANTHROPIC_API_KEY) {
       return json({ error: '서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.' }, 500);
@@ -94,11 +98,107 @@ export default {
   },
 };
 
+async function handleReading(request, env) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY) {
+    return json({ error: '개인화 리딩 서비스가 아직 준비되지 않았습니다.' }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'JSON 본문이 필요합니다.' }, 400);
+  }
+
+  const { category, sajuContext, meta } = body || {};
+  const allowed = new Set(['life', 'newyear', 'gunghap', 'life-gunghap']);
+  if (!allowed.has(category)) {
+    return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
+  }
+  if (!sajuContext || typeof sajuContext !== 'object') {
+    return json({ error: '사주 정보가 누락되었습니다.' }, 400);
+  }
+
+  const systemPrompt = buildReadingSystemPrompt(category, meta || {});
+  const userPrompt = buildReadingUserPrompt(category, sajuContext, meta || {});
+
+  try {
+    if (env.OPENAI_API_KEY) {
+      const result = await callOpenAIResponses({
+        apiKey: env.OPENAI_API_KEY,
+        model: env.OPENAI_MODEL || 'gpt-4.1-mini',
+        systemPrompt,
+        userPrompt,
+      });
+      return json({ ok: true, provider: 'openai', text: result.text, usage: result.usage || null });
+    }
+
+    const apiResp = await callAnthropicWithRetry({
+      apiKey: env.ANTHROPIC_API_KEY,
+      body: {
+        model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+        max_tokens: 1800,
+        system: [{ type: 'text', text: systemPrompt }],
+        messages: [{ role: 'user', content: userPrompt }],
+      },
+    });
+    if (!apiResp.ok) {
+      const errText = await apiResp.text();
+      console.error('Reading upstream API error:', apiResp.status, errText);
+      return json({ error: `개인화 리딩 일시 오류 (${apiResp.status})` }, 502);
+    }
+    const data = await apiResp.json();
+    const text = (data.content || [])
+      .filter((b) => b.type === 'text')
+      .map((b) => b.text)
+      .join('\n')
+      .trim();
+    return json({ ok: true, provider: 'anthropic', text: text || '', usage: data.usage || null });
+  } catch (e) {
+    console.error('Reading worker error:', e);
+    return json({ error: '개인화 리딩 생성 중 오류가 발생했습니다.' }, 500);
+  }
+}
+
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
     headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
   });
+}
+
+async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt }) {
+  const resp = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      input: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      max_output_tokens: 1800,
+    }),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text();
+    console.error('OpenAI API error:', resp.status, errText);
+    throw new Error(`OpenAI API error ${resp.status}`);
+  }
+
+  const data = await resp.json();
+  const text =
+    data.output_text ||
+    (data.output || [])
+      .flatMap((item) => item.content || [])
+      .map((part) => part.text || '')
+      .join('\n')
+      .trim();
+  return { text, usage: data.usage || null };
 }
 
 // Anthropic API 호출 + 일시적 오류 자동 재시도
@@ -149,6 +249,62 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
   // 이론상 도달 안 함 — 마지막 응답 또는 예외 반환
   if (lastResp) return lastResp;
   throw lastError || new Error('역술가 서비스 호출 실패 (재시도 한도 초과)');
+}
+
+function buildReadingSystemPrompt(category, meta) {
+  const categoryGuide = {
+    life: '인생총운 첫머리에 들어갈 개인화 리딩입니다. 본인의 성향, 돈과 일의 선택 기준, 관계에서 반복되는 패턴, 현재 흐름을 먼저 짚으세요.',
+    newyear: `${meta.targetYear || '올해'} 신년운세 첫머리에 들어갈 개인화 리딩입니다. 한 해의 변화, 관계·일·돈에서 특히 눈여겨볼 흐름, 조심할 선택 습관을 짚으세요.`,
+    gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
+    'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
+  };
+  return `당신은 한국 사주 풀이 서비스의 유료 콘텐츠를 보강하는 전문 리딩 작가입니다.
+
+목표:
+- 기존 계산형 사주풀이를 바탕으로, 사용자가 "내 얘기 같다"고 느낄 개인화 문단을 작성합니다.
+- ${categoryGuide[category] || ''}
+- 사용자가 아래의 긴 카드들을 더 읽고 싶게 만드는 앞부분 리딩이어야 합니다.
+
+말투와 표현 규칙:
+- 한국어 친근 존댓말로만 씁니다. "~예요 / ~이에요 / ~돼요 / ~해요 / ~세요"를 자연스럽게 쓰세요.
+- 상담자를 "본인"이라고 부르세요. "당신"은 쓰지 마세요.
+- 정관, 편관, 정재, 편재, 정인, 편인, 식신, 상관, 비견, 겁재, 격국, 용신, 희신, 기신, 신살, 공망, 대운, 세운 같은 전문용어를 본문에 그대로 노출하지 마세요.
+- 단독 명사 "결"은 쓰지 마세요. "분위기", "흐름", "방식"으로 바꾸세요. 단, 결론·결정·결혼·결실 같은 복합어는 괜찮습니다.
+- 공포 조장, 사망 시기, 확정 의료·법률·투자 판단은 하지 마세요.
+
+출력 형식:
+- 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.
+- 5~8문단, 문단당 2~4문장으로 작성하세요.
+- 첫 문단은 바로 핵심 결론으로 시작하세요.
+- 마지막 문단은 "아래에서는 ..."으로 이어지는 자연스러운 유료 본문 연결 문장으로 마무리하세요.`;
+}
+
+function buildReadingUserPrompt(category, ctx, meta) {
+  const reading = String(ctx.detailedReading || '').slice(0, 12000);
+  return `카테고리: ${category}
+대상 연도: ${meta.targetYear || '해당 없음'}
+
+상담자 사주 핵심:
+생년월일시: ${ctx.birth || '미상'}
+성별: ${ctx.gender || '미상'}
+태어난 곳: ${ctx.birthplace || '미상'}
+사주팔자: ${ctx.pillars || '미상'}
+본인 중심 기운: ${ctx.dayMaster || '미상'}
+배우자 자리: ${ctx.daySpouse || '미상'}
+사주 유형: ${ctx.gyeokguk || '미상'}
+본인을 도와주는 기운: ${ctx.yongsin || '미상'}
+다섯 기운 분포: ${ctx.ohaeng || '미상'}
+힘의 균형: ${ctx.strength || '미상'}
+기질 시그널: ${ctx.persona || '미상'}
+작은 별자리: ${ctx.sinsal || '없음'}
+비어 있는 자리: ${ctx.gongmang || '미상'}
+현재 10년 흐름: ${ctx.daeun || '미상'}
+올해 흐름: ${ctx.sewoon || '미상'}
+
+화면에 이미 계산되어 표시된 풀이 요약:
+${reading || '아직 상세 풀이 텍스트가 추출되지 않았습니다. 위 핵심 정보만으로 작성하세요.'}
+
+위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.`;
 }
 
 function buildSystemPrompt(ctx) {

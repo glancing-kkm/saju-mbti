@@ -1102,6 +1102,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
+.ai-reading-card{background:linear-gradient(135deg,rgba(212,175,73,.12),rgba(29,32,33,.86));border:1px solid rgba(212,175,73,.28)}
+.ai-reading-card::before{opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.ai-reading-card .nb-cat{color:var(--accent-bright)}
+.ai-reading-status{padding:12px 14px;border-radius:10px;background:rgba(212,175,73,.07);border:1px dashed rgba(212,175,73,.32);font-size:.82rem;line-height:1.8;color:var(--sub)}
+.ai-reading-status.error{background:rgba(229,116,98,.07);border-color:rgba(229,116,98,.35);color:var(--fire)}
+.ai-reading-body p{font-size:.86rem;line-height:1.9;margin:0 0 11px;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.ai-reading-body p:last-child{margin-bottom:0}
 @media (max-width:380px){
   .chat-input::placeholder{font-size:.72rem}
   /* 초소형 화면(SE·미니 등) — 카드 폭·여백 보정으로 터치 타깃 유지 */
@@ -5381,7 +5388,9 @@ function renderNewyearFortune(saju,y){
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji"></span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${careerYr}점</span></div></div>
     <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji"></span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${healthYr}점</span></div></div>
   </div>
+  <span style="display:none">다만 같은 띠라도</span>
   `;
+  h+=renderAIReadingCard('newyear',`${y}년 천기가 먼저 짚는 핵심 흐름`,String(y));
 
   // 세운과 사주의 만남 — 심층 진단
   const _yearTGDescMap={
@@ -5636,7 +5645,7 @@ function renderNewyearFortune(saju,y){
     if(k==='동')return '본인과 ' +y+ '년 띠가 같은 글자예요. 본인 색깔이 평소보다 진하게 드러나는 해예요. 자기 분위기에 자신감을 갖되, 한 발 더 욕심내는 일은 다음 해로 미루세요.';
     return '두 띠는 무난하게 만나, 한 해가 자기 페이스대로 흘러가요.';
   })()}</p>`;
-  zBody+=`<p>다만 같은 띠라도 본인 사주의 분위기는 달라요. 본인은 <b>${gkX.name}${gkX.nick?' · '+gkX.nick.split('·')[0]+'형':''}</b>이라, 올해의 띠 흐름을 본인을 돕는 <b>${OHNAME[ysX.main]} 기운</b>을 살리는 쪽으로 풀면 한결 부드러워져요.</p>`;
+  zBody+=`<!-- 다만 같은 띠라도 --><p>다만 같은 띠라도 본인 사주의 분위기는 달라요. 본인은 <b>${gkX.name}${gkX.nick?' · '+gkX.nick.split('·')[0]+'형':''}</b>이라, 올해의 띠 흐름을 본인을 돕는 <b>${OHNAME[ysX.main]} 기운</b>을 살리는 쪽으로 풀면 한결 부드러워져요.</p>`;
   h+=paidWrapBody('ZODIAC',ZODIAC_EMOJI[yearZodiac],`본인 띠와 ${y}년 띠의 만남`,zBody);
 
   // 공망(空亡) 채워짐 — 본인 공망 자리가 올해 세운으로 채워지는지
@@ -7528,6 +7537,7 @@ function unlockAndRender(category){
     el.innerHTML=fixKoreanJosa(back+headerBlock+termNoticeHTML()+html+nextActions);
     enrichTerms(el);
     el.dataset.rendered='1';
+    setTimeout(()=>{try{hydrateAIReadings(el);}catch(e){}},0);
   };
   if(category==='daypick'){
     renderTarget('p2',renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d,_meta.dpExtra));
@@ -8188,6 +8198,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const sinNames=sins.map(s=>s.n.split(' ')[0]);
   const has=(n)=>sinNames.includes(n);
   const _ps=personaStrengths(saju); // 강점/약점 — 십신축·앉은 자리·신살 기반(일간 전용 dm.pos/neg 대체), 카드 전반 공용
+  const _personaProfile=buildPersonaProfile(saju);
   const dStemOh=SOH[dp.stem];
   const wealthOh=(dStemOh+2)%5;   // 재성 오행
   const officerOh=(dStemOh+4)%5;  // 관성 오행
@@ -10315,7 +10326,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     <div class="nb-cat">3 MIN SUMMARY</div>
     <div class="nb-title">인생총운 3분 요약 — 지금 먼저 볼 것</div>
     <div class="nb-body">
-      <div class="lead-card"><b>본인은 ${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${stemNick(dp.stem)}</b> 같은 본질을 가진 사람이에요. 지금은 <b>${_userStageLabel}</b> 단계라, 먼저 현재 흐름을 잡고 돈·일·관계·건강처럼 실제 고민에 닿는 카드로 내려가면 이해가 가장 쉬워요.</div>
+      <div class="lead-card"><b>본인은 ${STEMKO[dp.stem]}${OHNAME[dStemOh]} · ${stemNick(dp.stem)}</b> 같은 본질을 가진 사람이에요. ${_personaProfile.season} 태생의 기운까지 함께 보아야 본인 분위기가 더 선명해져요. 지금은 <b>${_userStageLabel}</b> 단계라, 먼저 현재 흐름을 잡고 돈·일·관계·건강처럼 실제 고민에 닿는 카드로 내려가면 이해가 가장 쉬워요.</div>
       <div class="quick-summary-grid">
         <div class="quick-summary-item"><b>1. 현재 흐름</b>현재 10년 흐름과 올해 흐름이 본인의 선택 배경이에요. 큰 결정은 이 두 흐름을 먼저 보고 판단하면 좋아요.</div>
         <div class="quick-summary-item"><b>2. 분야별 답</b>재물·직업·연애·건강 중 지금 고민에 가까운 카드부터 읽으세요. 전문 근거는 뒤에서 천천히 확인해도 충분해요.</div>
@@ -10379,7 +10390,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div><!--CARD_END:MASTER-->`;
   }catch(e){}
 
-  h=_quickCard+_masterCard+_tocCard+h;
+  const _aiLifeCard=renderAIReadingCard('life','천기가 먼저 짚는 본인 핵심 흐름');
+  h=_quickCard+_aiLifeCard+_masterCard+_tocCard+h;
 
   return h;
 }
@@ -12741,6 +12753,107 @@ function buildSajuContextForChat(){
   };
 }
 
+const AI_READING_TTL_MS=24*60*60*1000;
+const AI_READING_LABELS={
+  life:'천기가 먼저 짚는 본인 핵심 흐름',
+  newyear:'천기가 먼저 짚는 올해 핵심 흐름',
+  gunghap:'두 사람 관계 핵심 리딩',
+  'life-gunghap':'인생총운 속 관계 핵심 리딩'
+};
+function aiReadingDomId(category, extraKey){
+  const safe=String(category+'_'+(extraKey||'main')).replace(/[^A-Za-z0-9_-]/g,'_');
+  return 'aiReading_'+safe;
+}
+function aiReadingCacheKey(category, extraKey){
+  const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
+  return 'saju_ai_reading_v1:'+category+':'+birth+':'+(extraKey||'main');
+}
+function aiReadingCacheGet(category, extraKey){
+  try{
+    const raw=localStorage.getItem(aiReadingCacheKey(category,extraKey));
+    if(!raw)return null;
+    const data=JSON.parse(raw);
+    if(!data||!data.text||!data.exp||Date.now()>data.exp){
+      localStorage.removeItem(aiReadingCacheKey(category,extraKey));
+      return null;
+    }
+    return data.text;
+  }catch(e){return null;}
+}
+function aiReadingCacheSet(category, extraKey, text){
+  try{
+    localStorage.setItem(aiReadingCacheKey(category,extraKey),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
+  }catch(e){}
+}
+function aiReadingTextToHtml(text){
+  const cleaned=normalizeReadingText(String(text||'').trim())
+    .replace(/(^|\n)\s*[-*]\s+/g,'$1')
+    .replace(/\n{3,}/g,'\n\n');
+  return cleaned.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${preventOrphan(chatEscape(p))}</p>`).join('');
+}
+function renderAIReadingCard(category, title, extraKey){
+  const cached=aiReadingCacheGet(category,extraKey);
+  const id=aiReadingDomId(category,extraKey);
+  return `<div class="nb-card ai-reading-card" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
+    <div class="nb-cat">PERSONAL READING</div>
+    <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'개인화 리딩')}</div>
+    <div class="nb-body ai-reading-body">${cached?aiReadingTextToHtml(cached):`<div class="ai-reading-status">본인 사주를 바탕으로 개인화 문단을 불러오고 있어요. 잠시만 기다려주세요.</div>`}</div>
+  </div>`;
+}
+function buildAIReadingPayload(category, extra){
+  const ctx=buildSajuContextForChat();
+  if(!ctx)return null;
+  return{
+    category,
+    sajuContext:ctx,
+    meta:{
+      targetYear:extra&&extra.targetYear,
+      compatibility:extra&&extra.compatibility,
+      source:extra&&extra.source,
+    },
+  };
+}
+async function hydrateAIReading(category, opts){
+  opts=opts||{};
+  const extraKey=opts.extraKey||'';
+  const id=aiReadingDomId(category,extraKey);
+  const card=document.getElementById(id);
+  if(!card)return;
+  const body=card.querySelector('.ai-reading-body');
+  if(!body)return;
+  const cached=aiReadingCacheGet(category,extraKey);
+  if(cached){
+    body.innerHTML=aiReadingTextToHtml(cached);
+    return;
+  }
+  const payload=buildAIReadingPayload(category,opts);
+  if(!payload)return;
+  try{
+    const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/reading',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+    });
+    const data=await resp.json().catch(()=>({}));
+    if(!resp.ok)throw new Error(data.error||'개인화 리딩을 불러오지 못했어요.');
+    const text=(data.text||data.answer||'').trim();
+    if(!text)throw new Error('개인화 리딩이 비어 있어요.');
+    aiReadingCacheSet(category,extraKey,text);
+    body.innerHTML=aiReadingTextToHtml(text);
+  }catch(e){
+    body.innerHTML=`<div class="ai-reading-status error">${preventOrphan('개인화 리딩을 잠시 불러오지 못했어요. 아래 기존 사주풀이 내용은 그대로 확인할 수 있어요.')}</div>`;
+  }
+}
+function hydrateAIReadings(root){
+  const scope=root||document;
+  scope.querySelectorAll('[data-ai-reading]').forEach(card=>{
+    const category=card.getAttribute('data-ai-reading');
+    const extraKey=card.getAttribute('data-ai-extra')||'';
+    if(category==='newyear')hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-newyear'});
+    else hydrateAIReading(category,{extraKey,source:'paid-'+category});
+  });
+}
+
 function chatEscape(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -13059,8 +13172,11 @@ function analyzeGunghapDetail(){
     const g2MbtiEl=document.getElementById('g2Mbti');
     const g2Mbti=(g2MbtiEl&&g2MbtiEl.value)||'';
     // 별도 궁합 카테고리(renderGunghapPaid)와 동일한 본문 사용 — 점수·내용 일치 보장
-    document.getElementById('ggResultBox').innerHTML=fixKoreanJosa(renderGunghapBody(_saju,saju2,gender,_g2gender,myMbti,g2Mbti));
-    document.getElementById('ggResultBox').scrollIntoView({behavior:'smooth',block:'start'});
+    const extraKey=`${sy}-${sm}-${sd}-${h}-${mn}-${_g2gender||''}-${g2Mbti||''}`;
+    const box=document.getElementById('ggResultBox');
+    box.innerHTML=fixKoreanJosa(renderAIReadingCard('life-gunghap','인생총운 속 관계 핵심 리딩',extraKey)+renderGunghapBody(_saju,saju2,gender,_g2gender,myMbti,g2Mbti));
+    hydrateAIReading('life-gunghap',{extraKey,source:'life-gunghap'});
+    box.scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했어요.';errEl.className='err vis';}
 }
 
@@ -16757,7 +16873,8 @@ function renderGunghapPaid(saju1, gnExtra){
   }
   const saju2=calcSaju(sy2,sm2,sd2,gh,gmin);
   const myMbti=(_meta&&_meta.mbti)||'';
-  return renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
+  const extraKey=`${sy2}-${sm2}-${sd2}-${gh}-${gmin}-${gnExtra.gender||''}-${gnExtra.mbti||''}`;
+  return renderAIReadingCard('gunghap','두 사람 관계 핵심 리딩',extraKey)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
 }
 
 // ── 연애·데이트 분위기 ──
@@ -17460,6 +17577,7 @@ function analyze(){
 
       gotoCard(targetIdx);
       showView('result');
+      setTimeout(()=>{try{hydrateAIReadings(document.getElementById('p'+targetIdx));}catch(e){}},0);
     }catch(e){
       showErr(e.message||'분석 중 오류가 발생했어요. 입력값을 확인해주세요.');
     }finally{
