@@ -301,6 +301,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);padding:18px;margin-bottom:14px}
 /* 풀이 섹션 카드 — 골드 테두리 대신 음영으로 배경과 구분 */
 .card,.simple-card,.menu-card,.home-card,.daily-card,.result-hero,.core-keyword,.mbti-analysis,.next-actions,.lsummary,.nb-card,.quick-summary{box-shadow:var(--card-shadow)}
+/* 남은 골드/컬러 테두리 일괄 제거 — 카드·배지·칩·모달·버튼 (입력 필드·점수 링·차트·상태표시는 기능상 유지) */
+.tog,.fcat,.back-btn,.sns-btn,.share-copy-btn,.reviews-write-btn,.lock-more summary,.lock-pay,.pay-cta-cancel,.pay-agree-row,
+.daily-cat,.fee-lock-features,.ghap-form,.compat-cell,.review-card,.rv-block-msg,.rv-policy,.coupon-badge,
+.share-sheet,.share-preview,.lock-preview,.lock-info,
+.teaser-card,.teaser-score-row,.teaser-insight,.teaser-fake-card,
+.paywall-compact,.paywall-price,.usage-guide,.pay-prep,.pay-sheet,.pay-product,
+.mbti-badge,.mbti-intro,.mbti-axis-row,.result-tldr,.tldr-card,.sinsal-mini-card,
+.menu-card .mc-tag,.na-tag,.mbti-analysis-cat,.tldr-tag,.result-hero-tag,.result-hero-match,.mbti-balance-match,.result-hero-keys span{border:none !important}
+.lock-pay,.pay-cta-cancel{background:rgba(255,255,255,.05)}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
 .ctitle.big{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
 
@@ -4783,7 +4792,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   let totBody='';
   // ① 한 줄 결론
   totBody+=`<div class="lead-card"><b>${sy}.${sm} ~ ${ey}.${em} · 평균 ${avgTotal}점 (${avgGrade.lab})</b>의 흐름이에요. ${totalMonths}개월 중 흐름이 가장 잘 맞는 결정적 시기는 <b>${decisive.yy}.${decisive.mm}</b>월이에요.</div>`;
-  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:10px;line-height:1.85;font-size:.86rem">
+  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:none;border-radius:10px;line-height:1.85;font-size:.86rem">
     <div><b>먼저 전체 흐름부터 보면</b><br>${_periodRange}은 평균 ${avgTotal}점이에요. 새 시작은 <b>${luckyMonths.join(', ')}</b>월에 두고, 가장 큰 결정은 <b>${decisive.yy}.${String(decisive.mm).padStart(2,'0')}</b>월에 맞추면 좋아요.</div>
     <div style="margin-top:9px"><b>이 흐름의 근거는 매달 들어오는 글자예요</b><br>매달 들어오는 위아래 글자를 본인 글자와 대조했어요. 특히 <b>${STEMKO[decisive.mp.stem]}${BRCHKO[decisive.mp.branch]}</b>월의 글자가 본인에게 가장 부드럽게 맞아요.</div>
     <div style="margin-top:9px"><b>그래서 좋은 달과 쉬어갈 달이 갈려요</b><br>도움이 되는 쪽은 <b>${OHNAME[_helpOh]}</b> 계열(${_flowLetters[_helpOh]})이에요${_helpMonths.length?` — ${_helpMonths.join(', ')}월에 잘 살아나요`:''}. 주의할 쪽은 <b>${OHNAME[_warnOh]}</b> 계열(${_flowLetters[_warnOh]})이에요${_warnMonths.length?` — ${_warnMonths.join(', ')}월엔 속도를 낮추세요`:''}.</div>
@@ -4862,7 +4871,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     const bestDays=_bestDayInMonth(saju,yy,mm);
     const bdLabel=bestDays.filter(b=>b.total>=70).map(b=>`${mm}/${b.d}일(${dailyGrade(b.total).lab} ${b.total}점)`);
 
-    let mBody=`<div style="margin-bottom:10px"><b>핵심 키워드</b> — ${keywords.map(k=>`<span style="display:inline-block;padding:2px 9px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.7rem;font-weight:700;margin-right:4px">${k}</span>`).join('')}</div>`;
+    let mBody=`<div style="margin-bottom:10px"><b>핵심 키워드</b> — ${keywords.map(k=>`<span style="display:inline-block;padding:2px 9px;border-radius:50px;background:var(--earth-bg);border:none;color:var(--accent);font-size:.7rem;font-weight:700;margin-right:4px">${k}</span>`).join('')}</div>`;
     mBody+=`<p>① <b>이 달을 이끄는 두 글자</b> · <em>${STEMKO[mp.stem]}${BRCHKO[mp.branch]}</em> ${termName}부터 시작하는 ${monKo}<br>· <b>위 글자</b> ${stemRich(mp.stem)} — ${STEM_META[mp.stem].body}<br>· <b>아래 글자</b> ${branchRich(mp.branch)} — ${BRANCH_META[mp.branch].body}<br>본인 기준으로 이달의 위 글자는 <b>${plainTG(sc.tg)}</b>(${TG_EMOJI[sc.tg]||''}), 아래 글자는 <b>${plainTG(sc.btg)}</b>의 기운이에요. 「${stemNick(saju.dp.stem)}」 같은 본인이 「${stemNick(mp.stem)}」 + 「${branchNick(mp.branch)}」를 만나는 분위기라, 겉으로 드러나는 흐름(${plainTG(sc.tg)})과 속으로 남는 분위기(${plainTG(sc.btg)})이 ${sc.tg===sc.btg?'한 방향으로 일관되게':'다르게 교차하며'} 흘러요.</p>`;
     mBody+=`<p>② <b>이 달이 본인에게 어떻게 다가올까요?</b><br>${sc.tg==='정관'?'이달은 직장에서 책임 있는 자리가 들어오는 달이에요. 면접·승진 보고·결재·공식 발표 같은 격식 있는 일들이 평소보다 깔끔하게 풀려요. 미뤄둔 공식 절차가 있다면 이달에 처리하시고, 사양보다 수락이 흐름을 만들어요.':sc.tg==='편관'?'이달은 도전·압박·경쟁·시험의 흐름이 들어오는 달이에요. 정면 돌파보다 한 박자 쉬었다가 측면으로 풀어가는 게 흐름이고, 강한 사람 앞에서는 한 걸음 양보가 진짜 승리예요. 큰 결정 전에 24시간 룰을 적용해보세요.':sc.tg==='정재'?'이달은 정기적이고 예측 가능한 재물 흐름이 자연스럽게 들어오는 달이에요. 큰 변동보다 차분한 정리·점검·꾸준함이 결실을 줘요. 가계부·예산·예금 정비를 하기에 좋은 때예요.':sc.tg==='편재'?'이달은 바깥으로 나가서 움직일수록 운이 따라오는 달이에요. 영업·외근·새 거래·이동을 동반한 비즈니스에 흐름이 잘 맞으니 발이 부지런할수록 기회가 들어와요. 미뤄둔 거래가 있다면 이달에 추진하세요.':sc.tg==='식신'?'이달은 사람과 함께 무언가 만들고 표현하기 좋은 달이에요. 식사 자리·팀 미팅·창작 활동이 자연스럽게 풀리고, 협업이 단독 작업보다 결실이 커요. 맛집·여행·취미 모임을 이달에 잡아보세요.':sc.tg==='상관'?'이달은 창의력과 아이디어가 빛나는 달이에요. 글·콘텐츠·강연·기획 작업이 잘 풀리지만, 윗사람·권위와의 마찰이 일어날 수 있어요. 표현 톤만 한 단계 부드럽게 가져가시면 흐름이 살아나요.':sc.tg==='정인'?'이달은 학습과 어른의 도움이 자연스럽게 흘러들어오는 달이에요. 자료 정리·시험 준비·자격 학습·인허가 처리에 매우 기운이 좋고, 어른이나 멘토에게 조언을 청하기에도 알맞아요. 작은 감사 인사 한 통이 큰 인연을 열어줘요.':sc.tg==='편인'?'이달은 깊이 파고드는 학습과 자기 점검에 흐름이 좋은 달이에요. 전문 분야 연구·명상·종교·예술 활동에서 통찰이 와요. 큰 결정보다는 안으로 다지는 시간으로 쓰세요.':sc.tg==='비견'?'이달은 본인 색깔이 평소보다 진해지고 동료·친구의 만남이 늘어나는 달이에요. 자기 결정·자기 사업의 결단에 운이 좋고, 같은 흐름의 사람들과 큰 일을 도모하기에 알맞아요.':'이달은 경쟁심과 충동이 평소보다 살짝 올라오는 달이에요. 동업 자금 거래·고가품 구매·도박성 투자는 한 박자 살피시는 게 안전해요. 운동이나 경쟁 활동으로 에너지를 풀면 흐름이 부드러워져요.'}</p>`;
     { // PSN: 같은 십신 달이라도 '본인 사주'에는 다른 의미 — 용신·부족 오행 관점
@@ -5383,7 +5392,7 @@ function renderNewyearFortune(saju,y){
     <div class="daily-grade" style="color:${grade.color};background:${grade.bg};border:1px solid ${grade.color}55">${grade.lab}</div>
     <div class="daily-headline">${TG_EMOJI[tg]||'🌟'} ${plainTG(tg)} 기운의 한 해</div>
     <div class="daily-pillar">올해 들어오는 두 글자 <em>${ypStemKo}${ypBrKo}</em> · 본인(${dm.n.split('(')[0]}) 기준으로 <em>${plainTG(tg)}</em>의 분위기${rel.kind!=='평'?` · 본인 자리와는 <b style="color:${(rel.kind==='합'||rel.kind==='반합'||rel.kind==='반합약'||rel.kind==='동')?'var(--good)':(rel.kind==='파'||rel.kind==='해'||rel.kind==='자형')?'#d4a849':'var(--warn)'}">${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[rel.kind]||rel.kind}</b>`:''}</div>
-    <div style="margin-top:14px">${yearKeywords.map(k=>`<span style="display:inline-block;padding:3px 12px;border-radius:50px;background:var(--earth-bg);border:1px solid var(--accent);color:var(--accent);font-size:.74rem;font-weight:700;margin:2px">${k}</span>`).join('')}</div>
+    <div style="margin-top:14px">${yearKeywords.map(k=>`<span style="display:inline-block;padding:3px 12px;border-radius:50px;background:var(--earth-bg);border:none;color:var(--accent);font-size:.74rem;font-weight:700;margin:2px">${k}</span>`).join('')}</div>
   </div>
 
   <div class="daily-cats">
@@ -5420,7 +5429,7 @@ function renderNewyearFortune(saju,y){
   let totBody='';
   // ① 한 줄 결론
   totBody+=`<div class="lead-card"><b>${y}년 · ${STEMKO[ypStem]}${BRCHKO[ypBranch]}년 (${TG_EMOJI[tg]||'🌟'} ${plainTG(tg)}의 분위기)</b><br>본인에게 <em>${_yearTGDescMap[tg]||'평이한 흐름의 해'}</em>예요. ${_relYearSummary}입니다.</div>`;
-  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:1px solid var(--border);border-radius:10px;line-height:1.85;font-size:.86rem">
+  totBody+=`<div class="flow-box" style="margin:12px 0 14px;padding:13px 14px;background:var(--earth-bg);border:none;border-radius:10px;line-height:1.85;font-size:.86rem">
     <div><b>먼저 올해의 결론부터 보면</b><br>${y}년은 종합 ${total}점이에요. 핵심은 <b>${plainTG(tg)}</b>의 분위기를 현실에서 어떻게 쓰느냐예요. ${_relYearSummary}라서 관계와 결정의 속도 조절이 중요해요.</div>
     <div style="margin-top:9px"><b>이 결론은 올해 들어오는 글자에서 나와요</b><br>올해 들어오는 글자는 <b>${ypStemKo}${ypBrKo}</b>예요. 위쪽 <b>${ypStemKo}</b>${eun(ypStemKo)} 겉으로 드러나는 일, 아래쪽 <b>${ypBrKo}</b>${eun(ypBrKo)} 속에서 반복되는 흐름을 만들어요.</div>
     <div style="margin-top:9px"><b>그다음은 도움과 주의를 나눠 보면 돼요</b><br>도움이 되는 쪽은 <b>${OHNAME[_nyHelpOh]}</b> 계열(${_nyLetters[_nyHelpOh]})이에요${_nyHelpHit?' — 올해 글자 안에 이 힘이 들어와 직접 도움을 줘요':_nyHelpMonths.length?` — ${_nyHelpMonths.join(', ')}에 보강돼요`:''}. 주의할 쪽은 <b>${OHNAME[_nyWarnOh]}</b> 계열(${_nyLetters[_nyWarnOh]})이에요${_nyWarnHit?' — 올해는 이쪽이 강해질 수 있어요':_nyWarnMonths.length?` — ${_nyWarnMonths.join(', ')}엔 무리하지 마세요`:''}.</div>
@@ -5490,7 +5499,7 @@ function renderNewyearFortune(saju,y){
   let seasonHTML='';
   seasons.forEach(s=>{
     const sg=s.score?dailyGrade(s.score):null;
-    seasonHTML+=`<div style="margin-bottom:12px;padding:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px">
+    seasonHTML+=`<div style="margin-bottom:12px;padding:14px;background:var(--bg-deep);border:none;border-radius:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent)">${s.name}</div>
         ${sg?`<div style="padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;color:${sg.color};background:${sg.bg};border:1px solid ${sg.color}55">${sg.lab} ${s.score}</div>`:''}
@@ -8409,7 +8418,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   totBody+=`<p><span class="body-q">💡 본인의 강점과 의식해서 다스릴 부분</span><br>· <b>강점</b>: ${_ps.strengths.join(', ')}<br>· <b>다스릴 부분</b>: ${_ps.cautions.join(', ')}<br>${isStrong?'본인 사업·리더 자리·새로운 도전을 망설이지 마세요. 큰 책임과 큰 결정에도 흔들리지 않는 포용력이 큰 그릇이에요.':'먼저 공부·자격증·전문성으로 본인 그릇을 키운 뒤 큰 무대로 나가세요. 큰 조직에서 자리잡고 천천히 독립하는 패턴이 본인에게 안전해요.'}</p>`;
 
   // ③④ 대운·세운 도움·주의 글자 — 한 박스 안에 두 단락
-  totBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  totBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">10년·올해 흐름에서는 이 기운이 들어올 때 힘이 붙어요.</div>
     <div>
       <em>${_goodOhKo}</em> 기운(천간 <b>${_stemOhCh[ys.main]}</b> · 지지 <b>${_brOhCh[ys.main]}</b>)이 들어오면 본인 흐름이 살아나요.<br>
@@ -8466,7 +8475,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // [전] 본인 강점·주의
   wBody+=`<p>강점은 ${isStrong?(hasWealth?'큰 흐름의 돈을 다뤄도 쉽게 흔들리지 않는 포용력':'본인의 이름값과 전문성이 돈으로 이어지는 힘'):'무리하지 않고 차근차근 본인 그릇에 맞게 쌓아가는 안정성'}이에요. 다만 ${has('겁재')?'경쟁심이 올라올 때 동업·과시 소비·충동 투자로 돈이 새기 쉬워요. 큰 결정은 하루 묵혀두는 습관이 필요해요.':wealth.pp>wealth.pj?'활동 재물이 강해서 한 번에 크게 움직이다가 손실도 크게 맞을 수 있어요. 분산과 절제가 본인 돈을 지켜줘요.':'성실함만으로는 큰 도약이 늦을 수 있어요. 중요한 투자나 확장 앞에서는 외부 조언과 인맥을 함께 쓰는 편이 좋아요.'}</p>`;
   // [분위기] 대운/세운 도움·조심 글자 — 한 박스 안에 도움/주의 두 단락
-  wBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  wBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">재물은 이 기운이 들어올 때 흐름이 열려요.</div>
     <div>
       <em>${OHNAME[wealthOh]}</em> 기운(천간 <b>${_wealthStemCh[wealthOh]}</b> · 지지 <b>${_wealthBrCh[wealthOh]}</b>)이 돈 자리를 직접 키워주고, <em>${OHNAME[outputOh]}</em> 기운(천간 <b>${_wealthStemCh[outputOh]}</b> · 지지 <b>${_wealthBrCh[outputOh]}</b>)은 재물을 만드는 활동을 열어줘요.<br>
@@ -8600,7 +8609,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // [전] 분야 추천
   cBody+=`<p>잘 맞는 분야는 ${careerDetail.gkc.length>0?careerDetail.gkc.slice(0,4).join(', ')+' 같은 전문 영역과 ':''}${careerProfile(saju).careers.slice(0,4).join(', ')} 쪽이에요. 여기에 본인을 도와주는 기운을 살리면 ${['교육·창작·환경·의류·목재','에너지·미디어·광고·요식·금융','부동산·건설·농업·중개·물류','금융·법률·IT·의료·제조','철학·상담·연구·해양·유통'][ys.main]} 분야도 잘 맞아요. 직업을 고를 때는 이름보다 <b>본인이 오래 파고들 수 있는 구조인지</b>를 먼저 보세요.</p>`;
   // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
-  cBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  cBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">직업은 이 기운이 들어올 때 자리가 단단해져요.</div>
     <div>
       <em>${OHNAME[officerOh]}</em> 기운(천간 <b>${_careerStemCh[officerOh]}</b> · 지지 <b>${_careerBrCh[officerOh]}</b>)은 책임과 승진의 자리를 열고, <em>${OHNAME[resourceOh]}</em> 기운(천간 <b>${_careerStemCh[resourceOh]}</b> · 지지 <b>${_careerBrCh[resourceOh]}</b>)은 자격·문서·학위의 기반을 두텁게 해요.<br>
@@ -8716,7 +8725,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // [전] 강점·주의
   lBody+=`<p>연애의 강점은 ${rel.key==='비화'?'닮은 사람과 만났을 때 빠르게 편안해지는 점':rel.key==='인성'?'상대가 본인에게 정서적 후원자가 되어주는 점':rel.key==='식상'?'본인이 상대를 세심하게 돌보고 표현할 수 있는 점':rel.key==='재성'?'상대와 함께 현실적인 생활 기반을 만들 수 있는 점':'상대에게서 추진력과 자극을 받으며 성장하는 점'}이에요. 다만 ${has('도화')?'선택지가 많아질수록 마음이 흔들릴 수 있으니 관계의 기준을 분명히 세워야 해요.':has('백호')?'감정이 급격히 올라올 때 말이 세게 나갈 수 있어요. 갈등은 길게 몰아치기보다 짧고 자주 풀어야 해요.':'본인 입장만 고집하면 좋은 관계도 답답해질 수 있어요. 중요한 대화에서는 한 발 물러나 상대 입장을 먼저 확인해보세요.'}</p>`;
   // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
-  lBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  lBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">연애는 이 흐름이 들어올 때 인연이 부드러워져요.</div>
     <div>
       <em>${OHNAME[_loveSpouseOh]}</em> 기운(천간 <b>${_loveStemCh[_loveSpouseOh]}</b> · 지지 <b>${_loveBrCh[_loveSpouseOh]}</b>)은 ${partnerWord} 자리로 들어오고, 본인이 앉은 자리(<em>${BRCHKO[dp.branch]}</em>)와 자연스럽게 어울리는 <em>${_hapBranch}</em> 글자도 관계를 편하게 만들어줘요.<br>
@@ -8916,7 +8925,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // [전] 강점·주의
   hBody+=`<p>주의할 흐름은 ${maxCnt>=4?'가장 두터운 <b>'+OHNAME[maxOhIdx]+'</b>이 과해질 때 '+overSymptom[maxOhIdx]+' 쪽으로 나타나기 쉬워요.':'가장 비중 높은 '+OHNAME[maxOhIdx]+'이 과해질 때 '+overSymptom[maxOhIdx].split('·')[0]+' 쪽 신호로 나타나기 쉬워요.'} ${minCnt===0?`또 <b>${OHNAME[minOhIdx]}</b> 기운이 약해서 ${lackSymptom[minOhIdx]} 쪽은 의식적으로 보강해야 해요.`:'다만 부족한 기운이 아주 심하게 비어 있지는 않아, 생활 리듬만 잘 잡아도 균형이 돌아오는 편이에요.'} ${has('백호')||has('양인')?'급격한 변화가 생기기 쉬운 별자리도 있으니 무리한 운동·운전·수면 부족은 한 단계 더 조심하세요.':has('역마')?'이동이 잦을수록 컨디션이 흔들릴 수 있으니 이동 전후 휴식 시간을 따로 잡아두세요.':'특별히 강한 위험 신호보다, 무리하지 않는 생활 리듬이 본인을 지켜주는 흐름이에요.'}</p>`;
   // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
-  hBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  hBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">건강은 이 기운이 들어올 때 회복 리듬을 잡기 쉬워요.</div>
     <div>
       <em>${OHNAME[ys.main]}</em> 기운(천간 <b>${_healthStemCh[ys.main]}</b> · 지지 <b>${_healthBrCh[ys.main]}</b>)이 들어오면 본인 약한 부분을 받쳐줘요.${minCnt===0?` 부족한 <em>${OHNAME[minOhIdx]}</em> 기운(천간 <b>${_healthStemCh[minOhIdx]}</b> · 지지 <b>${_healthBrCh[minOhIdx]}</b>)도 비어 있던 자리를 채워줘요.`:''}<br>
@@ -9104,7 +9113,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // [전] 강점·주의
   stBody+=`<p><span class="body-q">💡 본인의 학업 강점과 주의해야 할 부분</span><br>· <b>강점</b>: ${gk.name.includes('인')?'학문·교육 분야에서 큰 결실':gk.name.includes('식')||gk.name.includes('상관')?'토론·발표·창작 형식의 학습에 강함':has('문창')?'정형 학습·자격증·논문에 두각':'흥미 분야에 깊이 파고드는 집중력'}<br>· <b>주의</b>: ${OHNAME[outputOh]} 기운이 너무 강한 시기엔 본인 표현 활동에 끌려 정통 학문 시험에서 산만해지기 쉬워요. 의식적인 집중 시간 확보 필요.</p>`;
   // [분위기] 도움·조심 글자 — 한 박스 안에 두 단락
-  stBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  stBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">학업은 이 기운이 들어올 때 집중이 쉬워져요.</div>
     <div>
       <em>${OHNAME[resourceOh]}</em> 기운(천간 <b>${_studyStemCh[resourceOh]}</b> · 지지 <b>${_studyBrCh[resourceOh]}</b>)은 받아들이는 학습을 돕고, <em>${OHNAME[officerOh]}</em> 기운(천간 <b>${_studyStemCh[officerOh]}</b> · 지지 <b>${_studyBrCh[officerOh]}</b>)은 공식 시험과 자격의 기반을 잡아줘요.<br>
@@ -10199,7 +10208,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   swBody+=`<div class="lead-card">${cy}년은 본인에게 <b>${plainTG(swTG)}</b>의 분위기가 앞에 서고, 아래에서는 <b>${plainTG(swBTG)}</b>의 분위기가 받쳐주는 해예요. ${_swGoodHit?'본인을 도와주는 글자가 함께 들어와 중요한 일을 펼치기 좋아요.':_swBadHit?'본인을 도와주는 기운을 약하게 하는 글자가 보여서 큰 결정은 한 번 더 점검하는 해예요.':'크게 치우치기보다 본인 페이스를 다지는 해예요.'}</div>`;
   swBody+=`<p><span class="body-q">올해 들어오는 글자부터 볼게요.</span><br>${cy}년에 들어오는 글자는 <b>${STEMKO[swStem]}${BRCHKO[swBranch]}</b>예요. 위쪽 <em>${STEMKO[swStem]}</em>${eun(STEMKO[swStem])} 본인에게 <b>${plainTG(swTG)}</b>의 흐름으로 다가오고, 아래쪽 <em>${BRCHKO[swBranch]}</em>의 핵심 기운은 <b>${plainTG(swBTG)}</b>의 흐름으로 이어져요.</p>`;
   swBody+=`<p><span class="body-q">현재 10년 흐름 위에 올해가 겹쳐져요.</span><br>현재 본인의 10년 흐름은 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b>(${plainTG(tenGod(saju.dp.stem,curDaeun.stem))})이에요. ${getDaeunSewoonCombo(saju,curDaeun,swSaewoon,ys)} 시기로, 큰 장의 흐름 위에 올해 한 해의 색깔이 더해져요.</p>`;
-  swBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  swBody+=`<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">올해는 이 기운을 보강하면 힘이 붙어요.</div>
     <div>
       <em>${OHNAME[_swGoodOh]}</em> 기운(천간 <b>${_swStemCh[_swGoodOh]}</b> · 지지 <b>${_swBrCh[_swGoodOh]}</b>)이 올해의 도움 축이에요.<br>
@@ -10351,7 +10360,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     // 가로 스크롤 가능 그리드
     let htBody=`<p>앞에서 본 모든 축을 한 표로 모았어요. 평생 12종 분야의 시기별 상태를 한눈에 볼 수 있어요. 각 칸의 색깔이 본인의 그 시기 그 분야 흐름을 보여줘요. ★ 현재 대운은 강조했어요.</p>
     <div style="margin-top:14px;font-size:.72rem;color:var(--sub);line-height:1.6">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동/갈등<br>작은 화면에서는 표를 좌우로 밀어서 전체 시기를 보세요.</div>
-    <div style="margin-top:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:8px">
+    <div style="margin-top:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:none;border-radius:8px">
       <table style="border-collapse:collapse;min-width:100%;font-family:inherit;font-size:.62rem;width:100%;table-layout:fixed">
         <thead><tr>
           <th style="padding:6px 5px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:2px solid var(--accent);text-align:left;color:var(--accent);font-weight:700;width:58px">분야</th>`;
@@ -11958,7 +11967,7 @@ function _generateTOC(h, scopeLabel){
     if(items.length<3)return '';
     const btn=(it)=>{
       const safeId='card-'+it.id.replace(/[^A-Za-z0-9_-]/g,'_');
-      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${it.title}</button>`;
+      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${it.title}</button>`;
     };
     // CHX: 장 정보가 있으면 장별 소제목으로 그룹화, 없으면 평면 그리드(하위 호환)
     let grid='';
@@ -11976,7 +11985,7 @@ function _generateTOC(h, scopeLabel){
       });
       if(group)grid+=`</div></details>`;
     }else grid=items.map(btn).join('');
-    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:1px solid rgba(212,175,55,.25)">
+    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:none">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
@@ -12038,7 +12047,7 @@ function _areaDeepConclusion(area, saju, ys, gender){
     sewoon:{label:'올해 흐름',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'올해 들어오는 글자가 본인을 도와주는 기운과 같은 흐름이면 큰 결정을 배치하기 좋아요.',badWhy:'올해 글자가 본인을 도와주는 기운을 약하게 하면 큰 결정을 서두르지 말고 정리·내실에 무게를 두세요.',action:'좋은 달에는 굵직한 결정, 주의 달에는 정리·내실'}
   };
   const a=A[area]||{label:'영역',helpOh:ys.main,badOh:(ys.main+2)%5,helpWhy:'본인에게 힘이 붙는 흐름이에요.',badWhy:'속도를 낮추고 정리하면 좋은 흐름이에요.',action:'본인 흐름 따라가기'};
-  return `<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.79rem;line-height:1.9">
+  return `<div style="margin-top:14px;padding:13px 15px;background:var(--bg-deep);border:none;border-radius:9px;font-size:.79rem;line-height:1.9">
     <div style="font-weight:700;color:var(--good);margin-bottom:8px">${a.label}에서는 이 흐름이 들어올 때 힘이 붙어요.</div>
     <div>
       <em>${OHNAME[a.helpOh]}</em> 기운(천간 <b>${stemCh[a.helpOh]}</b> · 지지 <b>${brCh[a.helpOh]}</b>)이 들어오면 흐름이 살아나요.<br>
@@ -15947,7 +15956,7 @@ function renderNamePaid(saju, nmExtra){
     }
     let yyBody=`<div class="lead-card" style="border-left:3px solid ${_balanceCol}"><b>이름의 음양: ${_balance}</b><br><span style="font-size:.82rem;color:var(--sub)">양 ${_yang}자(${_yangPct}%) · 음 ${_yin}자(${_yinPct}%)</span></div>`;
     yyBody+=`<p><span class="body-q">음양은 어떻게 판단하나요?</span><br>한글 모음(중성)을 양(ㅏ·ㅑ·ㅗ·ㅛ·ㅐ·ㅒ 등)과 음(ㅓ·ㅕ·ㅜ·ㅠ·ㅡ·ㅣ 등)으로 분류해, 이름 전체의 음양 비율로 봐요. 양은 밝음·움직임·외향, 음은 고요·내면·사색을 의미해요.</p>`;
-    yyBody+=`<div style="display:flex;align-items:stretch;height:32px;border-radius:8px;overflow:hidden;margin-top:14px;border:1px solid var(--border)">
+    yyBody+=`<div style="display:flex;align-items:stretch;height:32px;border-radius:8px;overflow:hidden;margin-top:14px;border:none">
       <div style="flex:${_yangPct};background:linear-gradient(90deg,#d4a849,#e8c578);display:flex;align-items:center;justify-content:center;color:#1a1c1d;font-weight:800;font-size:.82rem">☀ 양 ${_yangPct}%</div>
       <div style="flex:${_yinPct};background:linear-gradient(90deg,#4a6699,#6c8cc8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem">☾ 음 ${_yinPct}%</div>
     </div>`;
@@ -16110,7 +16119,7 @@ function renderNamePaid(saju, nmExtra){
     const goodCnt=bestCombo&&bestCombo.goodCnt;
     const goodBadge=goodCnt===4?'<b style="color:var(--wood)">(4격 모두 길수 ★)</b>':goodCnt===3?'<b style="color:var(--wood)">(4격 중 3개 길수 ✓)</b>':goodCnt===2?'<small style="color:var(--earth)">(4격 중 2개 길수)</small>':goodCnt===1?'<small style="color:var(--earth)">(4격 중 1개 길수)</small>':SURI_81_GOOD.has(bestCombo&&bestCombo.total)?'<b style="color:var(--wood)">(정격 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>';
     const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${goodBadge}</div>`:'';
-    recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:1px solid rgba(212,175,55,.2)">
+    recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.08),var(--bg-deep));border-radius:10px;border:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
@@ -17023,7 +17032,7 @@ function renderOhaengHarmony(saju1,saju2){
           <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="2"/>
           <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent-bright)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${dash} ${ringCirc.toFixed(1)}"/>
         </svg>
-        <div style="position:absolute;inset:0;margin:auto;width:38%;height:38%;border-radius:50%;background:var(--bg-deep);border:1px solid rgba(212,175,55,.3);display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="position:absolute;inset:0;margin:auto;width:38%;height:38%;border-radius:50%;background:var(--bg-deep);border:none;display:flex;flex-direction:column;align-items:center;justify-content:center">
           <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:var(--accent-bright);line-height:1.1">${relExpr}</span>
           <span style="font-size:.6rem;color:var(--sub);margin-top:3px">${relWord}</span>
         </div>
@@ -18100,12 +18109,12 @@ function openHanziCanvas(targetHanId, targetStrokeId){
       </div>
       <canvas id="hanziDrawCanvas" width="280" height="280" style="display:block;margin:0 auto;border:2px solid var(--accent);border-radius:10px;background:#fff;touch-action:none;cursor:crosshair"></canvas>
       <div style="display:flex;gap:6px;margin-top:8px;justify-content:center">
-        <button onclick="clearHanziCanvas()" style="padding:6px 14px;background:var(--bg-deep);color:var(--sub);border:1px solid var(--border);border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">지우기</button>
+        <button onclick="clearHanziCanvas()" style="padding:6px 14px;background:var(--bg-deep);color:var(--sub);border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">지우기</button>
         <button onclick="searchHanziByStrokeFromCanvas()" style="padding:6px 14px;background:var(--accent);color:#1a1c1d;border:none;border-radius:50px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit">비슷한 한자 찾기</button>
       </div>
       <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)">
         <label style="font-size:.74rem;color:var(--accent);font-weight:700">또는 한글 음 입력 (정밀 검색)</label>
-        <input type="text" id="hanziSoundInput" placeholder="예: 민" maxlength="2" oninput="searchHanziBySound(this.value)" style="width:100%;margin-top:6px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg-deep);color:var(--text);font-size:.95rem;font-family:inherit" autocomplete="off">
+        <input type="text" id="hanziSoundInput" placeholder="예: 민" maxlength="2" oninput="searchHanziBySound(this.value)" style="width:100%;margin-top:6px;padding:9px 11px;border:none;border-radius:8px;background:var(--bg-deep);color:var(--text);font-size:.95rem;font-family:inherit" autocomplete="off">
       </div>
       <div id="hanziSearchResult" style="margin-top:12px;min-height:50px"></div>
       <div style="margin-top:14px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.7rem;color:var(--sub);line-height:1.7">📌 손글씨로 그린 한자를 <b>획수 + 모양 유사도(IoU)</b> 둘 다 비교해 가장 비슷한 한자부터 위에 보여드려요. 첫 검색은 인덱싱 + 모양 비교에 1~2초 걸려요.</div>
@@ -18160,7 +18169,7 @@ function searchHanziBySound(sound){
     let html=`<div style="font-size:.74rem;color:var(--sub);margin-bottom:7px">「${ch}」 후보 한자 ${candidates.length}자 (클릭하면 입력란에 자동 채워짐)</div>`;
     html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
     candidates.forEach(c=>{
-      html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke||0})" style="padding:11px 6px;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
+      html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke||0})" style="padding:11px 6px;background:var(--bg-deep);border:none;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
         <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.5rem;color:var(--accent);font-weight:700">${c.han}</span>
         <span style="font-size:.62rem;color:var(--sub)">${c.stroke||'-'}획</span>
         <span style="font-size:.62rem;color:var(--muted);line-height:1.3;text-align:center;word-break:keep-all">${(c.meaning||'').substring(0,8)}</span>
@@ -18414,7 +18423,7 @@ function _renderHanziSearchPage(){
     const tip=c.meaning?`${c.meaning} · ${c.stroke}획 · 모양 ${simPct}%`:`${c.stroke}획 · 모양 ${simPct}% · U+${code}`;
     // 모양 유사도 80%+ 초록색, 60%+ 황금색, 그 외 회색
     const simColor=simPct>=80?'var(--good)':simPct>=60?'var(--accent)':'var(--sub)';
-    html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" title="${tip}" style="padding:7px 2px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;${c.inDict?'':'opacity:.85'}" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
+    html+=`<button onclick="pickHanziFromCanvas('${c.han}',${c.stroke})" title="${tip}" style="padding:7px 2px;background:var(--bg-deep);border:none;border-radius:6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;${c.inDict?'':'opacity:.85'}" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)'">
       <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.25rem;color:var(--accent);font-weight:700;line-height:1">${c.han}</span>
       <span style="font-size:.54rem;color:var(--sub)">${c.stroke}획 <span style="color:${simColor};font-weight:700">${simPct}%</span></span>
     </button>`;
@@ -18423,9 +18432,9 @@ function _renderHanziSearchPage(){
   // 페이지 네비
   if(totalPages>1){
     html+='<div style="display:flex;gap:6px;justify-content:center;margin-top:8px;align-items:center;flex-wrap:wrap">';
-    html+=`<button onclick="_hanziSearchGoPage(-1)" ${_hanziSearchPage===0?'disabled':''} style="padding:5px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:50px;cursor:pointer;font-size:.7rem;font-family:inherit;${_hanziSearchPage===0?'opacity:.4':''}">◀ 이전</button>`;
+    html+=`<button onclick="_hanziSearchGoPage(-1)" ${_hanziSearchPage===0?'disabled':''} style="padding:5px 12px;background:var(--bg-deep);border:none;border-radius:50px;cursor:pointer;font-size:.7rem;font-family:inherit;${_hanziSearchPage===0?'opacity:.4':''}">◀ 이전</button>`;
     html+=`<span style="font-size:.7rem;color:var(--sub)">${_hanziSearchPage+1} / ${totalPages}</span>`;
-    html+=`<button onclick="_hanziSearchGoPage(1)" ${_hanziSearchPage>=totalPages-1?'disabled':''} style="padding:5px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:50px;cursor:pointer;font-size:.7rem;font-family:inherit;${_hanziSearchPage>=totalPages-1?'opacity:.4':''}">다음 ▶</button>`;
+    html+=`<button onclick="_hanziSearchGoPage(1)" ${_hanziSearchPage>=totalPages-1?'disabled':''} style="padding:5px 12px;background:var(--bg-deep);border:none;border-radius:50px;cursor:pointer;font-size:.7rem;font-family:inherit;${_hanziSearchPage>=totalPages-1?'opacity:.4':''}">다음 ▶</button>`;
     html+='</div>';
   }
   document.getElementById('hanziSearchResult').innerHTML=html;
