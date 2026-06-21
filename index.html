@@ -810,15 +810,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .bal-note{margin-top:5px;font-size:.67rem;color:var(--muted);line-height:1.5}
 .bal-note.ok{color:var(--wood)}
 .bal-note.diff{color:var(--earth)}
-/* 시안 — 하단 내비게이션 바 (Material Symbols) */
-#app{padding-bottom:76px}
-.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;z-index:60;display:flex;justify-content:space-around;align-items:center;gap:4px;padding:9px 8px calc(9px + env(safe-area-inset-bottom,0px));background:rgba(17,20,21,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);border-radius:18px 18px 0 0}
-.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:0;cursor:pointer;color:var(--muted);font-family:inherit;padding:4px 0;transition:color .18s,transform .12s}
-.bn-item .material-symbols-outlined{font-size:25px}
-.bn-label{font-size:.66rem;font-weight:600;letter-spacing:.02em}
-.bn-item:active{transform:scale(.92)}
-.bn-item.active,.bn-item:hover{color:var(--accent-bright)}
-.bn-item.active .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24}
 
 /* 캡처 워터마크 — 이미지 저장 시 우하단 고정 */
 .cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
@@ -1387,19 +1378,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">19,000원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('daypick')" aria-label="지정일 운세 — 1,500원" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">event</span>
-          <div class="mc-title">지정일 운세</div>
-          <div class="mc-desc">중요한 면접·계약·여행 날의 일진을 깊이 있게 풀이</div>
-          <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">1,500원</div>
-        </button>
-        <button class="menu-card locked" onclick="goToInput('monthly')" aria-label="월별 운세 — 월당 2,000원, 최대 12,000원" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">date_range</span>
-          <div class="mc-title">월별 운세</div>
-          <div class="mc-desc">최대 6개월의 운세 흐름을 연속적으로 추적</div>
-          <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">월당 2,000원<span style="font-size:.7rem;color:var(--muted);font-weight:600;display:block;margin-top:2px">최대 12,000원 (6개월)</span></div>
+        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 준비 중" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
+          <div class="mc-title">즉문즉답</div>
+          <div class="mc-desc">사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이</div>
+          <div class="mc-tag t-paid">준비 중</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
@@ -1625,6 +1608,36 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         </div>
       </fieldset>
 
+      <!-- 즉문즉답 추가 입력 -->
+      <fieldset class="cat-extra" id="catExtraQna" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">즉문즉답 — 상담 참고 정보</span></div></legend>
+        <div class="cat-extra-desc">아래 정보는 선택사항이에요. 입력해두면 나중에 즉문즉답 상담에서 본인 상황을 더 정확히 반영할 수 있어요.</div>
+        <div class="ig" style="margin-bottom:9px">
+          <label for="qaJob">직업 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
+          <input type="text" id="qaJob" name="qaJob" placeholder="예: 직장인, 자영업, 학생, 프리랜서" maxlength="40" autocomplete="off">
+        </div>
+        <div class="row3">
+          <div class="ig">
+            <label for="qaMarriage">결혼 여부 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
+            <select id="qaMarriage" name="qaMarriage">
+              <option value="">선택 안 함</option>
+              <option value="single">미혼</option>
+              <option value="married">기혼</option>
+              <option value="divorced">이혼</option>
+              <option value="remarried">재혼</option>
+            </select>
+          </div>
+          <div class="ig">
+            <label for="qaChildren">자녀 유무 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
+            <select id="qaChildren" name="qaChildren">
+              <option value="">선택 안 함</option>
+              <option value="yes">있음</option>
+              <option value="no">없음</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
       <!-- 지정일 운세 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraDaypick" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">지정일 운세 — 보고 싶은 날짜</span></div></legend>
@@ -1829,16 +1842,9 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="panel" id="p5"></div>
     <div class="panel" id="p6"></div>
     <div class="panel" id="p7"></div>
+    <div class="panel" id="p8"></div>
   </div>
 </div>
-
-<!-- ───── 하단 내비게이션 (시안) ───── -->
-<nav class="bottom-nav" aria-label="주요 메뉴">
-  <button type="button" class="bn-item active" onclick="goHome()" aria-label="홈"><span class="material-symbols-outlined">home</span><span class="bn-label">홈</span></button>
-  <button type="button" class="bn-item" onclick="goHome()" aria-label="운세"><span class="material-symbols-outlined">auto_awesome</span><span class="bn-label">운세</span></button>
-  <button type="button" class="bn-item" onclick="goToInput('gunghap')" aria-label="궁합"><span class="material-symbols-outlined">favorite</span><span class="bn-label">궁합</span></button>
-  <button type="button" class="bn-item" onclick="goHome()" aria-label="내 정보"><span class="material-symbols-outlined">person</span><span class="bn-label">내 정보</span></button>
-</nav>
 
 <!-- ───── 공유 모달 ───── -->
 <div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShareModal()">
@@ -2061,7 +2067,7 @@ const MON_BRN = [2,3,4,5,6,7,8,9,10,11,0,1]; // branch for each month idx
 // ══════════════════════════════════════════════
 let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
-let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'name'|'life'
+let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'name'|'life'|'qna'
 let _saju=null, _meta=null;
 // 카테고리별 잠금 해제 — 메모리(Set) + 사주별 24시간 영속화 정책
 //
@@ -2139,8 +2145,8 @@ function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 �
 let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
-const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7};
-const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명'};
+const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7,qna:8};
+const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -2497,7 +2503,7 @@ function goHome(){
   // 다시 자세한 풀이를 보려면 결제·코드 입력을 다시 거쳐야 함
   clearAllUnlocks();
   _paidUnlocked=false;
-  ['p0','p1','p2','p3','p4','p5','p6','p7'].forEach(id=>{
+  ['p0','p1','p2','p3','p4','p5','p6','p7','p8'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){el.innerHTML='';el.dataset.rendered='';}
   });
@@ -2516,7 +2522,8 @@ function goToInput(cat){
       newyear:'사주 정보와 보고 싶은 해를 입력해주세요',
       gunghap:'본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요',
       name:'본인 사주와 본인 이름을 함께 입력해주세요',
-      life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요'
+      life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요',
+      qna:'인생총운과 같은 기본 정보에 상담 참고 정보를 더해 주세요'
     };
     sub.textContent=subMap[cat]||subMap.manse;
   }
@@ -2524,11 +2531,13 @@ function goToInput(cat){
   const ttl=document.querySelector('#view-input .hdr-back-title');
   if(ttl)ttl.textContent=(CAT_LABEL[cat]||'기본 정보')+' · 정보 입력';
   // 카테고리별 추가 입력 섹션 표시
-  ['Daypick','Monthly','Newyear','Gunghap','Name'].forEach(k=>{
+  ['Qna','Daypick','Monthly','Newyear','Gunghap','Name'].forEach(k=>{
     const el=document.getElementById('catExtra'+k);
     if(el)el.style.display='none';
   });
-  if(cat==='daypick'){
+  if(cat==='qna'){
+    const el=document.getElementById('catExtraQna');if(el)el.style.display='';
+  }else if(cat==='daypick'){
     const el=document.getElementById('catExtraDaypick');if(el)el.style.display='';
     // 초기값: 오늘
     const t=new Date();
@@ -4184,7 +4193,8 @@ function resultHeroHTML(saju, mbti, cat){
     newyear:`${poeticHead}의 한 해`,
     gunghap:`${poeticHead}의 인연 궁합`,
     name:`${poeticHead}의 이름 분위기`,
-    life:`${poeticHead}의 평생 분위기`
+    life:`${poeticHead}의 평생 분위기`,
+    qna:`${poeticHead}의 즉문즉답 준비`
   };
   const headline=catHeadlines[cat]||catHeadlines.manse;
 
@@ -4213,6 +4223,29 @@ function termNoticeHTML(){
     <div class="term-notice-body">
       <b>용어가 어렵게 느껴지나요?</b><br>
       본문 안에서 <span class="term-notice-demo">점선 밑줄</span>이 그어진 용어를 <b>탭(클릭)</b>하면 쉬운 설명이 팝업으로 나타나요. 사주를 처음 보시는 분도 막힘없이 읽으실 수 있도록 50여 개의 핵심 용어에 풀이를 달아두었어요.
+    </div>
+  </div>`;
+}
+
+function renderQnaIntro(saju, meta){
+  const extra=(meta&&meta.qaExtra)||{};
+  const marriageMap={single:'미혼',married:'기혼',divorced:'이혼',remarried:'재혼'};
+  const childrenMap={yes:'있음',no:'없음'};
+  const rows=[
+    ['직업',extra.job||'선택 안 함'],
+    ['결혼 여부',marriageMap[extra.marriage]||'선택 안 함'],
+    ['자녀 유무',childrenMap[extra.children]||'선택 안 함'],
+  ];
+  const dm=DM[saju.dp.stem];
+  return `<div class="nb-card">
+    <div class="nb-cat">Q&A</div>
+    <div class="nb-title">즉문즉답 준비 중</div>
+    <div class="nb-body">
+      <div class="lead-card">${preventOrphan(`본인 사주 정보는 정상적으로 입력됐어요. 본인은 ${dm?dm.n.split('(')[0]:'본인 중심 기운'}의 분위기를 가진 분으로, 나중에 즉문즉답이 열리면 이 기본 정보를 바탕으로 질문에 맞춰 바로 풀이할 수 있어요.`)}</div>
+      <p>${preventOrphan('즉문즉답은 질문 입력 방식과 답변 범위를 조금 더 정리한 뒤 연결할 예정이에요. 지금은 인생총운과 같은 사주 기본 정보에 직업·결혼 여부·자녀 유무를 선택사항으로 받는 구조만 먼저 만들어뒀어요.')}</p>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px">
+        ${rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.8rem"><span style="color:var(--muted)">${k}</span><b style="color:var(--text);font-weight:700;text-align:right">${chatEscape(v)}</b></div>`).join('')}
+      </div>
     </div>
   </div>`;
 }
@@ -10391,11 +10424,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // 인생총운 요약본 다운로드 카드 (A4 가로 — 오프스크린 캡처)
   // ═════════════════════════════════════
   h+=renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames,gender);
-
-  // ═════════════════════════════════════
-  // 궁합 (배우자 입력)
-  // ═════════════════════════════════════
-  h+=renderGunghapSection();
 
   // ═════════════════════════════════════
   // 역술가 채팅 (5가지 질문)
@@ -17521,7 +17549,7 @@ function analyze(){
 
   // 카테고리별 추가 입력 검증
   const cat=_category||'manse';
-  let dpExtra=null,moExtra=null,nyExtra=null;
+  let dpExtra=null,moExtra=null,nyExtra=null,qaExtra=null;
   // 옵션 C — 활성화된 ctx-btn에서 태그 추출
   const readCtx=(cap)=>{
     const opts=document.getElementById('ctxOptions'+cap);
@@ -17535,7 +17563,12 @@ function analyze(){
     }
     return {tag,note};
   };
-  if(cat==='daypick'){
+  if(cat==='qna'){
+    const job=(document.getElementById('qaJob')&&document.getElementById('qaJob').value||'').trim().slice(0,40);
+    const marriage=(document.getElementById('qaMarriage')&&document.getElementById('qaMarriage').value)||'';
+    const children=(document.getElementById('qaChildren')&&document.getElementById('qaChildren').value)||'';
+    qaExtra={job,marriage,children};
+  }else if(cat==='daypick'){
     const y=parseInt(document.getElementById('dpY').value)||0;
     const m=parseInt(document.getElementById('dpM').value)||0;
     const d=parseInt(document.getElementById('dpD').value)||0;
@@ -17668,14 +17701,14 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,gnExtra:window._gnExtra||null,nmExtra:window._nmExtra||null,mbti,gender};
+      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
       { const _sid=sajuIdOf(_saju,_meta); if(_sid)_unlockedCats.forEach(c=>_savePaidToken(c,_sid)); }
 
       // 패널 초기화 (선택 카테고리만 렌더)
-      ['p0','p1','p2','p3','p4','p5','p6','p7'].forEach(id=>{
+      ['p0','p1','p2','p3','p4','p5','p6','p7','p8'].forEach(id=>{
         const el=document.getElementById(id);
         if(el){el.innerHTML='';el.dataset.rendered='';}
       });
@@ -17709,6 +17742,12 @@ function analyze(){
         _p1.innerHTML=fixKoreanJosa(_p1.innerHTML.replace('</button>','</button>'+headerFull+termTip)+nextActions);
         enrichTerms(_p1);
         targetIdx=1;
+      }else if(cat==='qna'){
+        const _p8=document.getElementById('p8');
+        _p8.innerHTML=fixKoreanJosa(back+headerFull+termTip+renderQnaIntro(saju,_meta));
+        enrichTerms(_p8);
+        _p8.dataset.rendered='1';
+        targetIdx=8;
       }else if(cat==='daypick'){
         const _p2=document.getElementById('p2');
         _p2.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
