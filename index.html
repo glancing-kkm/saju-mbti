@@ -131,6 +131,8 @@
 
   --radius:14px;
   --radius-lg:18px;
+  /* 카드 음영 — 테두리 대신 톤/그림자로 배경과 구분 (DESIGN.md: 글래스 엣지 + 부드러운 그림자) */
+  --card-shadow:0 6px 22px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06), inset 1px 0 0 rgba(255,255,255,.035);
 }
 html,body{font-family:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* 전역 고아글자 차단 — 한국어 단어 단위 줄바꿈 (사용자 요청: 모든 글자 영역) */
@@ -265,7 +267,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── 일일운세 점수 화면 ── */
 .daily-wrap{padding:14px}
-.daily-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 18px 22px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+.daily-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:24px 18px 22px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
 .daily-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.55}
 .daily-date{font-size:.74rem;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
 .daily-score-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;border:5px solid;box-shadow:0 0 30px rgba(212,175,55,.18)}
@@ -297,6 +299,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── Cards ── */
 .card{background:rgba(29,32,33,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:none;border-radius:var(--radius);padding:18px;margin-bottom:14px}
+/* 풀이 섹션 카드 — 골드 테두리 대신 음영으로 배경과 구분 */
+.card,.simple-card,.menu-card,.home-card,.daily-card,.result-hero,.core-keyword,.mbti-analysis,.next-actions,.lsummary,.nb-card,.quick-summary{box-shadow:var(--card-shadow)}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
 .ctitle.big{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
 
@@ -667,7 +671,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-ind-reason em{color:var(--accent);font-style:normal;font-weight:700}
 .mbti-ind-example{font-size:.95rem;line-height:1.85;color:var(--muted);margin:0 0 6px;padding:10px 12px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-ind-advice{font-size:.95rem;line-height:1.85;color:var(--accent);margin:6px 0 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:1px solid var(--accent);border-radius:14px}
+.mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(212,175,55,.1),var(--earth-bg));border:none;border-radius:14px}
 .mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
 .mbti-analysis-synth p{font-size:.95rem;line-height:1.855;color:var(--sub);margin:0 0 10px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth p:last-child{margin-bottom:0}
@@ -811,13 +815,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
-.nb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.nb-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
 .nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0}
-.nb-card.primary{background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card) 60%);border:2px solid var(--accent-bright);box-shadow:0 4px 16px rgba(212,175,55,.18)}
+.nb-card.primary{background:linear-gradient(135deg,rgba(212,175,55,.1),var(--card) 60%);border:none;box-shadow:0 6px 22px rgba(0,0,0,.38),0 0 22px rgba(212,175,55,.14),inset 0 1px 0 rgba(255,255,255,.06)}
 .nb-card.primary::before{height:3px;opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright) 30%,var(--accent-bright) 70%,transparent)}
 .nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
 .nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
-.nb-cat{display:inline-block;padding:4px 14px;border-radius:50px;background:transparent;color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:1px solid var(--border-strong);text-transform:uppercase}
+.nb-cat{display:inline-block;padding:4px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:none;text-transform:uppercase}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 /* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
 .chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(45,52,71,.18));border-left:3px solid var(--accent-bright);border-radius:11px}
@@ -854,9 +858,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .detail-collapsible.detail-open .detail-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
 .detail-body-wrap{display:none}
 .detail-collapsible.detail-open .detail-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
-.quick-summary{background:linear-gradient(135deg,rgba(108,191,126,.12),rgba(45,52,71,.5));border:1px solid rgba(108,191,126,.38)}
+.quick-summary{background:linear-gradient(135deg,rgba(108,191,126,.12),rgba(45,52,71,.5));border:none}
 .quick-summary-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}
-.quick-summary-item{padding:11px 13px;background:rgba(12,15,16,.42);border:1px solid var(--border);border-radius:9px;line-height:1.7}
+.quick-summary-item{padding:11px 13px;background:rgba(12,15,16,.42);border:none;border-radius:9px;line-height:1.7}
 .quick-summary-item b{display:block;color:var(--accent);margin-bottom:4px}
 .name-compare{margin:12px 0 14px;padding:12px;background:rgba(108,191,126,.08);border:1px solid rgba(108,191,126,.28);border-radius:9px}
 .name-compare-head{color:var(--accent);font-size:.82rem;font-weight:800;line-height:1.6;margin-bottom:9px}
@@ -1101,7 +1105,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
-.ai-reading-card{background:linear-gradient(135deg,rgba(212,175,73,.12),rgba(29,32,33,.86));border:1px solid rgba(212,175,73,.28)}
+.ai-reading-card{background:linear-gradient(135deg,rgba(212,175,73,.12),rgba(29,32,33,.86));border:none}
 .ai-reading-card::before{opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
 .ai-reading-card .nb-cat{color:var(--accent-bright)}
 .ai-reading-status{padding:12px 14px;border-radius:10px;background:rgba(212,175,73,.07);border:1px dashed rgba(212,175,73,.32);font-size:.82rem;line-height:1.8;color:var(--sub)}
@@ -10436,7 +10440,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _curDaeunPlain=_curDaeunTg?plainTG(_curDaeunTg):'';
     const _helpFood=ys.main===0?'녹색·신맛·새싹':ys.main===1?'붉은색·쓴맛·매운':ys.main===2?'노란색·단맛·뿌리':ys.main===3?'흰색·매운맛·해산물':'검은색·짠맛·검은콩';
     const _helpDir=ys.main===0?'동쪽':ys.main===1?'남쪽':ys.main===2?'중앙':ys.main===3?'서쪽':'북쪽';
-    _masterCard=`<!--CARD_START:MASTER--><div class="nb-card" data-cardid="MASTER" id="card-MASTER" style="background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(45,52,71,.5));border:1px solid rgba(212,175,55,.35)">
+    _masterCard=`<!--CARD_START:MASTER--><div class="nb-card" data-cardid="MASTER" id="card-MASTER" style="background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(45,52,71,.5));border:none">
       <div class="nb-cat">MASTER</div>
       <div class="nb-title">본인 사주 한눈에 보기 — 핵심 요약</div>
       <div class="nb-body">
