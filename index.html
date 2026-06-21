@@ -871,7 +871,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ncr-reason{color:var(--sub);font-size:.78rem}
 .ncr-use{grid-column:2/4;color:var(--muted);font-size:.72rem}
 @keyframes tlOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.nb-body{font-size:.95rem;line-height:1.855;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;min-width:0;max-width:100%}
+.nb-body *{box-sizing:border-box;max-width:100%;min-width:0}
 .nb-body p{margin-bottom:11px}
 .nb-body p:last-child{margin-bottom:0}
 .nb-body b{color:var(--text)}
@@ -984,6 +985,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .lead-card em{font-style:normal;color:inherit;font-weight:600}
 .body-q{font-weight:700;color:var(--text);font-size:inherit;letter-spacing:0}
 .body-q::after{content:' ';white-space:pre}
+
+/* ── 인생의 네 자리 카드: 모바일에서 설명문이 좁은 칸에 끼지 않도록 세로형 고정 ── */
+.pillar4-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.pillar4-card{padding:12px 13px;border-radius:9px;border-left:3px solid}
+.pillar4-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pillar4-title{font-weight:800;font-size:.8rem;line-height:1.55}
+.pillar4-sub{font-size:.74rem;color:var(--sub);font-weight:600;line-height:1.55}
+.pillar4-glyphs{display:grid;grid-template-columns:repeat(2,minmax(72px,1fr));gap:8px;margin:7px 0 9px}
+.pillar4-glyph{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:rgba(0,0,0,.12);text-align:center;min-height:76px}
+.pillar4-char{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.42rem;font-weight:800;line-height:1.12}
+.pillar4-tag{font-size:.66rem;color:var(--sub);margin-top:3px;line-height:1.35}
+.pillar4-meaning{font-size:.8rem;line-height:1.78;color:var(--sub);margin:0 0 7px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.pillar4-detail{font-size:.8rem;line-height:1.82;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+@media (max-width:380px){
+  .nb-body [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  .pillar4-card{padding:11px 12px}
+  .pillar4-glyphs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pillar4-char{font-size:1.32rem}
+}
 
 /* ── 인생총운 요약본 다운로드 카드 (화면) ── */
 .summary-card{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:2px solid var(--accent-bright)}
@@ -9620,7 +9640,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
        meaning:'본인이 태어난 시의 두 글자예요. 자녀·말년·노년 결실을 보여주는 자리예요.'}
     ];
     let plBody=`<p><span class="body-q">인생의 네 자리는 무엇을 보여줄까요?</span><br>사주는 태어난 해·달·날·시간을 네 자리로 나누어 봐요. 이 네 자리는 어린 시절, 사회생활, 본인 중심, 미래와 자녀의 흐름을 각각 보여줘요. 어느 자리에 어떤 기운이 놓였는지에 따라 삶의 장면마다 드러나는 모습이 달라져요.</p>`;
-    plBody+=`<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">`;
+    plBody+=`<div class="pillar4-list">`;
     _pillars.forEach(p=>{
       if(!p.pillar)return;
       const stemTG=tenGod(_dStem,p.pillar.stem);
@@ -9628,27 +9648,25 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       const stemKo=STEMKO[p.pillar.stem];
       const brKo=BRCHKO[p.pillar.branch];
       const isMyDay=p.key==='day';
-      plBody+=`<div style="padding:11px 13px;background:${p.bg};border-radius:9px;border-left:3px solid ${p.border}">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
-          <div style="font-weight:700;color:${p.border};font-size:.78rem">${p.emoji} ${p.label}</div>
-          <div style="font-size:.74rem;color:var(--sub);font-weight:600">${p.sub}</div>
+      plBody+=`<div class="pillar4-card" style="background:${p.bg};border-left-color:${p.border}">
+        <div class="pillar4-head">
+          <div class="pillar4-title" style="color:${p.border}">${p.emoji} ${p.label}</div>
+          <div class="pillar4-sub">${p.sub}</div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;margin:5px 0;flex-wrap:wrap">
-          <div style="display:flex;flex-direction:column;align-items:center;padding:6px 11px;border-radius:8px;background:rgba(0,0,0,.12);min-width:60px">
-            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${stemKo}</div>
-            <div style="font-size:.66rem;color:var(--sub);margin-top:2px">${isMyDay?'본인':plainTG(stemTG)}</div>
+        <div class="pillar4-glyphs">
+          <div class="pillar4-glyph">
+            <div class="pillar4-char" style="color:${p.border}">${stemKo}</div>
+            <div class="pillar4-tag">${isMyDay?'본인':plainTG(stemTG)}</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;padding:6px 11px;border-radius:8px;background:rgba(0,0,0,.12);min-width:60px">
-            <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:${p.border}">${brKo}</div>
-            <div style="font-size:.66rem;color:var(--sub);margin-top:2px">${isMyDay?'배우자':plainTG(brTG)}</div>
-          </div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:.78rem;line-height:1.65;color:var(--sub)">${p.meaning}</div>
+          <div class="pillar4-glyph">
+            <div class="pillar4-char" style="color:${p.border}">${brKo}</div>
+            <div class="pillar4-tag">${isMyDay?'배우자':plainTG(brTG)}</div>
           </div>
         </div>
-        <div style="font-size:.79rem;line-height:1.78;margin-top:5px;color:var(--text)">
+        <p class="pillar4-meaning">${p.meaning}</p>
+        <div class="pillar4-detail">
           ${isMyDay
-            ? '이 자리의 위 글자 <b>'+stemKo+'</b> → <em>본인 그 자체</em>의 자리, 아래 글자 <b>'+brKo+'</b> → <em>본인이 앉은 자리·배우자궁</em>의 자리로 인생의 가장 핵심 영역을 이뤄요.'
+            ? '이 자리의 위 글자 <b>'+stemKo+'</b>는 <em>본인 그 자체</em>를 보여줘요. 아래 글자 <b>'+brKo+'</b>는 <em>본인이 앉은 자리와 배우자 자리</em>를 함께 보여줘요. 그래서 인생의 가장 핵심 영역을 이뤄요.'
             : '이 자리의 위 글자 <b>'+stemKo+'</b> → <em>'+plainTG(stemTG)+'</em>의 자리, 아래 글자 <b>'+brKo+'</b> → <em>'+plainTG(brTG)+'</em>의 자리로 이 영역의 색채를 더해요.'}
         </div>
       </div>`;
