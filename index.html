@@ -302,7 +302,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* 풀이 섹션 카드 — 골드 테두리 대신 음영으로 배경과 구분 */
 .card,.simple-card,.menu-card,.home-card,.daily-card,.result-hero,.core-keyword,.mbti-analysis,.next-actions,.lsummary,.nb-card,.quick-summary{box-shadow:var(--card-shadow)}
 /* 남은 골드/컬러 테두리 일괄 제거 — 카드·배지·칩·모달·버튼 (입력 필드·점수 링·차트·상태표시는 기능상 유지) */
-.tog,.fcat,.back-btn,.sns-btn,.share-copy-btn,.reviews-write-btn,.lock-more summary,.lock-pay,.pay-cta-cancel,.pay-agree-row,
+.tog,.fcat,.back-btn,.sns-btn,.share-bar-btn,.share-copy-btn,.reviews-write-btn,.lock-more summary,.lock-pay,.pay-cta-cancel,.pay-agree-row,
 .daily-cat,.fee-lock-features,.ghap-form,.compat-cell,.review-card,.rv-block-msg,.rv-policy,.coupon-badge,
 .share-sheet,.share-preview,.lock-preview,.lock-info,
 .teaser-card,.teaser-score-row,.teaser-insight,.teaser-fake-card,
@@ -833,7 +833,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
 .toc-chapter-head:first-child{margin-top:0}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
-.toc-details{border:1px solid var(--border);border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
+.toc-details{border:none;border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
 .toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
 .toc-details summary::-webkit-details-marker{display:none}
 .toc-details summary::after{content:'▾';float:right;color:var(--accent);transition:transform .15s}
@@ -843,19 +843,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tl-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
 .tl-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
 .tl-collapsible.tl-open .tl-chevron{transform:rotate(180deg)}
-.tl-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:1px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.tl-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:none;border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
 .tl-hint:hover{background:rgba(212,175,55,.16)}
-.tl-current{display:block;width:100%;margin-top:8px;padding:10px 12px;background:rgba(108,191,126,.08);border:1px solid rgba(108,191,126,.45);border-radius:9px;color:var(--wood);font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.tl-current{display:block;width:100%;margin-top:8px;padding:10px 12px;background:rgba(108,191,126,.1);border:none;border-radius:9px;color:var(--wood);font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
 .tl-current:hover{background:rgba(108,191,126,.16)}
-.tl-collapsible.tl-open .tl-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
+.tl-collapsible.tl-open .tl-hint{background:transparent;color:var(--muted)}
 .tl-body-wrap{display:none}
 .tl-collapsible.tl-open .tl-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
 .detail-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
 .detail-collapsible .detail-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
 .detail-collapsible.detail-open .detail-chevron{transform:rotate(180deg)}
-.detail-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:1px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
+.detail-hint{display:block;width:100%;margin-top:11px;padding:10px 12px;background:rgba(212,175,55,.08);border:none;border-radius:9px;color:var(--accent);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;text-align:center;letter-spacing:.01em;transition:background .15s}
 .detail-hint:hover{background:rgba(212,175,55,.16)}
-.detail-collapsible.detail-open .detail-hint{background:transparent;border-style:solid;border-color:var(--border);color:var(--muted)}
+.detail-collapsible.detail-open .detail-hint{background:transparent;color:var(--muted)}
 .detail-body-wrap{display:none}
 .detail-collapsible.detail-open .detail-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
 .quick-summary{background:linear-gradient(135deg,rgba(108,191,126,.12),rgba(45,52,71,.5));border:none}
