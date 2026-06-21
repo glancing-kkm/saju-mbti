@@ -2869,6 +2869,7 @@ function renderDailyFortune(saju){
     '건강':`본인은 ${OHNAME[_pp.lack]} 기운이 옅은 사주라 평소 ${_ORGAN[_pp.lack]} 쪽을 의식하면 좋고, 오늘 컨디션 관리도 거기서 시작하세요.`
   };
   const w=document.documentElement.clientWidth||360;
+  const _stars=sc=>{const n=Math.max(1,Math.min(5,Math.round((sc||0)/20)));return `<span class="daily-cat-stars" style="letter-spacing:1px;font-size:.74rem;color:var(--accent-bright)">${'★'.repeat(n)}<span style="color:rgba(255,255,255,.18)">${'☆'.repeat(5-n)}</span></span>`;};
   let h=`<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>
     <div class="daily-wrap">
       <div class="daily-card">
@@ -2890,10 +2891,10 @@ function renderDailyFortune(saju){
         </div>
       </div>
       <div class="daily-cats">
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✨</span><span class="daily-cat-name">총운</span><span class="daily-cat-score">${f.total}점</span></div><div class="daily-cat-body">${_dailyMsg('총운',f.tg,f.rel)} ${_pMod['총운']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${f.wealth}점</span></div><div class="daily-cat-body">${_dailyMsg('재물',f.tg,f.rel)} ${_pMod['재물']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${f.love}점</span></div><div class="daily-cat-body">${_dailyMsg('연애',f.tg,f.rel)} ${_pMod['연애']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div><div class="daily-cat-body">${_dailyMsg('건강',f.tg,f.rel)} ${_pMod['건강']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✨</span><span class="daily-cat-name">총운</span>${_stars(f.total)}<span class="daily-cat-score">${f.total}점</span></div><div class="daily-cat-body">${_dailyMsg('총운',f.tg,f.rel)} ${_pMod['총운']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span>${_stars(f.wealth)}<span class="daily-cat-score">${f.wealth}점</span></div><div class="daily-cat-body">${_dailyMsg('재물',f.tg,f.rel)} ${_pMod['재물']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span>${_stars(f.love)}<span class="daily-cat-score">${f.love}점</span></div><div class="daily-cat-body">${_dailyMsg('연애',f.tg,f.rel)} ${_pMod['연애']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span>${_stars(f.health)}<span class="daily-cat-score">${f.health}점</span></div><div class="daily-cat-body">${_dailyMsg('건강',f.tg,f.rel)} ${_pMod['건강']}</div></div>
       </div>
       ${_dailyHourCard(saju, f)}
       ${_dailyLuckCard(saju, f)}
@@ -6193,6 +6194,92 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   }
   h+=`</div></div>
     <div style="font-size:.73rem;color:var(--sub);margin-top:8px;line-height:1.6">대운은 10년마다 바뀌는 큰 흐름으로, 월주에서 시작해 순행 또는 역행해요.</div>
+  </div>`;
+  return h;
+}
+
+// 부드러운 곡선 path (Catmull-Rom → 베지어)
+function smoothLinePath(pts){
+  if(!pts.length)return '';
+  if(pts.length===1)return `M${pts[0].x},${pts[0].y}`;
+  let dp=`M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||pts[i+1];
+    const c1x=p1.x+(p2.x-p0.x)/6,c1y=p1.y+(p2.y-p0.y)/6;
+    const c2x=p2.x-(p3.x-p1.x)/6,c2y=p2.y-(p3.y-p1.y)/6;
+    dp+=` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+  }
+  return dp;
+}
+
+// 대운 흐름도 — 10년 주기 길흉 라인 차트 (용신 기반 실제 대운 데이터)
+function renderDaeunFlowChart(saju,sy,sm,sd,sh,smin){
+  let d; try{d=calcDaeun(saju,sy,sm,sd,sh,smin,gender);}catch(e){return '';}
+  if(!d||!d.daeuns||!d.daeuns.length)return '';
+  const oh=ohCount(saju);
+  const ys=getYongsin(oh);
+  const maxOh=oh.indexOf(Math.max(...oh));
+  const fav=new Set([ys.main,ys.support]);
+  const list=d.daeuns.slice(0,7).map(du=>{
+    const se=SOH[du.stem],be=BOH[du.branch];
+    let sc=0;[se,be].forEach(e=>{if(fav.has(e))sc+=1;if(e===maxOh)sc-=1;});
+    return {age:du.age,stem:du.stem,branch:du.branch,sc};
+  });
+  const n=list.length;
+  const xOf=i=>n<=1?50:+(6+(i/(n-1))*88).toFixed(1);
+  const yOf=sc=>+Math.max(12,Math.min(88,50-sc*19)).toFixed(1);
+  const coords=list.map((p,i)=>({x:xOf(i),y:yOf(p.sc),...p}));
+  const cyNow=new Date().getFullYear();
+  const age=cyNow-sy+1;
+  let curIdx=-1;
+  for(let i=0;i<list.length;i++){if(age>=list[i].age&&age<list[i].age+10)curIdx=i;}
+  if(curIdx<0&&age>=list[list.length-1].age)curIdx=list.length-1;
+  const linePath=smoothLinePath(coords);
+  const areaPath=linePath?`${linePath} L${coords[coords.length-1].x},100 L${coords[0].x},100 Z`:'';
+  // 전성기 / 조심 시기
+  let best=coords[0],worst=coords[0];
+  coords.forEach(c=>{if(c.sc>best.sc)best=c;if(c.sc<worst.sc)worst=c;});
+  const dots=coords.map((c,i)=>`<span style="position:absolute;left:${c.x}%;top:${c.y}%;transform:translate(-50%,-50%);width:${i===curIdx?'11px':'7px'};height:${i===curIdx?'11px':'7px'};border-radius:50%;background:${i===curIdx?'var(--accent-bright)':'var(--text)'};${i===curIdx?'box-shadow:0 0 10px rgba(212,175,55,.6)':''}"></span>`).join('');
+  const xlabs=coords.map((c,i)=>`<div style="position:absolute;left:${c.x}%;transform:translateX(-50%);text-align:center;line-height:1.35;${i===curIdx?'color:var(--accent-bright);font-weight:700':'color:var(--muted)'}"><div>${c.age}세</div><div style="font-size:.92em;opacity:.78">${STEMKO[c.stem]}${BRCHKO[c.branch]}</div></div>`).join('');
+  let h=`<div class="card">
+    <div class="ctitle big">대운 흐름도 — 10년 주기 길흉</div>
+    <div style="font-size:.72rem;color:var(--sub);margin:2px 0 12px;line-height:1.6">본인을 돕는 <b style="color:${OHCOLOR[ys.main]}">${OHNAME[ys.main]}</b> 기운이 들어오는 대운은 높게, 과한 <b style="color:${OHCOLOR[maxOh]}">${OHNAME[maxOh]}</b> 기운이 겹치는 대운은 낮게 그렸어요.</div>
+    <div style="display:flex;gap:6px">
+      <div style="display:flex;flex-direction:column;justify-content:space-between;font-size:.6rem;color:var(--muted);text-align:right;height:168px;padding:8px 0 30px;flex-shrink:0">
+        <span>대길</span><span>평탄</span><span>주의</span>
+      </div>
+      <div style="flex:1;position:relative;height:168px">
+        <div style="position:absolute;left:0;right:0;top:8px;bottom:30px">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+            <defs>
+              <linearGradient id="daeunLineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="${OHCOLOR[0]}"/><stop offset="50%" stop-color="var(--accent-bright)"/><stop offset="100%" stop-color="${OHCOLOR[1]}"/>
+              </linearGradient>
+              <linearGradient id="daeunAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent-bright)" stop-opacity="0.16"/><stop offset="100%" stop-color="var(--accent-bright)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="12" x2="100" y2="12" stroke="rgba(255,255,255,.06)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,.06)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <line x1="0" y1="88" x2="100" y2="88" stroke="rgba(255,255,255,.06)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <path d="${areaPath}" fill="url(#daeunAreaGrad)"/>
+            <path d="${linePath}" fill="none" stroke="url(#daeunLineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+          ${dots}
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:28px;font-size:.58rem">${xlabs}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <div style="padding:11px 12px;background:var(--wood-bg);border-radius:9px">
+        <div style="font-size:.7rem;font-weight:700;color:var(--wood);margin-bottom:3px">인생의 전성기</div>
+        <div style="font-size:.78rem;color:var(--sub);line-height:1.6"><b style="color:var(--text)">${best.age}세~${best.age+9}세</b> · ${STEMKO[best.stem]}${BRCHKO[best.branch]} 대운. 본인을 돕는 기운이 들어와 흐름이 가장 잘 살아나는 시기예요.</div>
+      </div>
+      <div style="padding:11px 12px;background:var(--fire-bg);border-radius:9px">
+        <div style="font-size:.7rem;font-weight:700;color:var(--fire);margin-bottom:3px">조심해야 할 시기</div>
+        <div style="font-size:.78rem;color:var(--sub);line-height:1.6"><b style="color:var(--text)">${worst.age}세~${worst.age+9}세</b> · ${STEMKO[worst.stem]}${BRCHKO[worst.branch]} 대운. 무리한 확장보다 지키며 속도를 늦추면 좋은 시기예요.</div>
+      </div>
+    </div>
   </div>`;
   return h;
 }
@@ -10392,7 +10479,8 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }catch(e){}
 
   const _aiLifeCard=renderAIReadingCard('life','천기가 먼저 짚는 본인 핵심 흐름');
-  h=_quickCard+_aiLifeCard+_masterCard+_tocCard+h;
+  let _daeunChartCard=''; try{_daeunChartCard=renderDaeunFlowChart(saju,sy,sm,sd,sh,smin);}catch(e){}
+  h=_quickCard+_aiLifeCard+_daeunChartCard+_masterCard+_tocCard+h;
 
   return h;
 }
@@ -15514,6 +15602,48 @@ const NAME_POOL={
   4:['민서','보윤','보경','민지','보라','문영','별이','부영','범준','반석']  // 水 (ㅁㅂㅍ)
 };
 // 이름 풀이 — 본인 사주 + 이름의 흐름을 종합 분석
+// 한자 획수·오행 구조 — 글자별 획수 막대 + 자원오행 (디자인 그래프)
+function renderNameStrokeChart(surname,given,han,strokes){
+  try{
+    const OHHJ=['木','火','土','金','水'];
+    const OHBG=['var(--wood-bg)','var(--fire-bg)','var(--earth-bg)','var(--metal-bg)','var(--water-bg)'];
+    const chars=[];
+    chars.push({role:'성',hangul:(surname||'').charAt(0),han:han.surname,stroke:strokes.surname||0});
+    if((given||'').length>=1)chars.push({role:'이름',hangul:given.charAt(0),han:han.given1,stroke:strokes.given1||0});
+    if((given||'').length>=2)chars.push({role:'이름',hangul:given.charAt(1),han:han.given2,stroke:strokes.given2||0});
+    const maxStroke=Math.max(12,...chars.map(c=>c.stroke));
+    let rows='';
+    chars.forEach(c=>{
+      const oh=(c.han!=null&&c.han!=='')?getHanZawonOh(c.han):null;
+      const meaning=c.han?getHanMeaning(c.han):'';
+      const col=(oh!=null)?OHCOLOR[oh]:'var(--muted)';
+      const ohLabel=(oh!=null)?`${OHNAME[oh]}(${OHHJ[oh]})`:'—';
+      const ohBg=(oh!=null)?OHBG[oh]:'rgba(255,255,255,.05)';
+      const pct=c.stroke?Math.max(10,Math.min(100,Math.round(c.stroke/maxStroke*100))):0;
+      rows+=`<div style="padding:13px 14px;background:rgba(255,255,255,.03);border-radius:11px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.7rem;font-weight:700;color:${col};width:42px;text-align:center;flex-shrink:0">${c.han||c.hangul||'·'}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.86rem;color:var(--text);font-weight:700">${meaning?meaning+' ':''}${c.hangul||''} <span style="font-size:.66rem;color:var(--muted);font-weight:500">· ${c.role}</span></div>
+            <div style="display:flex;gap:6px;margin-top:5px">
+              <span style="font-size:.66rem;font-weight:700;color:var(--sub);background:rgba(255,255,255,.05);padding:2px 9px;border-radius:50px">${c.stroke||'?'}획</span>
+              <span style="font-size:.66rem;font-weight:700;color:${col};background:${ohBg};padding:2px 9px;border-radius:50px">${ohLabel}</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:5px;background:rgba(255,255,255,.06);border-radius:50px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${col};border-radius:50px"></div></div>
+      </div>`;
+    });
+    const ohs=chars.map(c=>(c.han!=null&&c.han!=='')?getHanZawonOh(c.han):null).filter(o=>o!=null);
+    const flow=ohs.map(o=>OHHJ[o]).join('');
+    return `<div class="card">
+      <div class="ctitle big">한자 획수 및 오행 구조</div>
+      <div style="margin-top:12px">${rows}</div>
+      ${ohs.length>=2?`<div style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-top:2px;padding:11px 13px;background:var(--earth-bg);border-radius:9px">글자별 자원오행(한자가 품은 기운) 흐름은 <b style="color:var(--accent-bright)">${flow}</b>예요. 글자 모양·뜻에 담긴 기운이 어떤 순서로 이어지는지 보여줘요.</div>`:''}
+    </div>`;
+  }catch(e){return '';}
+}
+
 function renderNamePaid(saju, nmExtra){
   if(!nmExtra||!nmExtra.surname||!nmExtra.given){
     return paidWrapBody('NAME','✒️','이름풀이','<p>이름 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</p>');
@@ -15665,6 +15795,7 @@ function renderNamePaid(saju, nmExtra){
 
     ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid var(--good);font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 임시로 넣어 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능해요.</div>':''}`;
   h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
+  h+=renderNameStrokeChart(surname, given, han, strokes);
 
   // ── ② 한자 4격 + 81수리 (한자 있을 때만)
   if(hasHan){
@@ -16853,6 +16984,53 @@ function renderGunghapZodiacDaeunCard(saju1, saju2){
   return paidWrapBody('ZODIAC_DAEUN','✦','별자리 궁합 + 두 분 인생 흐름 비교',body);
 }
 
+// 오행 조화도 — 두 사람 중심 오행의 상생/상극 원형 관계도
+function renderOhaengHarmony(saju1,saju2){
+  try{
+    const OHHJ=['木','火','土','金','水'];
+    const OHBG=['var(--wood-bg)','var(--fire-bg)','var(--earth-bg)','var(--metal-bg)','var(--water-bg)'];
+    const sheng=[1,2,3,4,0],ke=[2,3,4,0,1];
+    const oh1=ohCount(saju1),oh2=ohCount(saju2);
+    const d1=oh1.indexOf(Math.max(...oh1)),d2=oh2.indexOf(Math.max(...oh2));
+    let relExpr,relWord,score,desc;
+    if(d1===d2){relExpr=`${OHHJ[d1]}比和`;relWord='비화 (같은 기운)';score=80;
+      desc=`두 분 다 <b style="color:${OHCOLOR[d1]}">${OHNAME[d1]}(${OHHJ[d1]})</b> 기운이 중심이라, 닮은꼴로 빠르게 통하는 관계예요. 같은 방향을 보지만 한쪽으로 치우치지 않도록 서로 다른 색을 의식적으로 더하면 더 단단해져요.`;
+    }else if(sheng[d2]===d1){relExpr=`${OHHJ[d2]}生${OHHJ[d1]}`;relWord='상생관계';score=92;
+      desc=`상대의 <b style="color:${OHCOLOR[d2]}">${OHNAME[d2]}(${OHHJ[d2]})</b> 기운이 본인의 <b style="color:${OHCOLOR[d1]}">${OHNAME[d1]}(${OHHJ[d1]})</b> 기운을 북돋아주는 상생 구조예요. 상대가 본인에게 힘을 실어주는 흐름이라 함께 있을수록 본인의 기운이 살아나요.`;
+    }else if(sheng[d1]===d2){relExpr=`${OHHJ[d1]}生${OHHJ[d2]}`;relWord='상생관계';score=90;
+      desc=`본인의 <b style="color:${OHCOLOR[d1]}">${OHNAME[d1]}(${OHHJ[d1]})</b> 기운이 상대의 <b style="color:${OHCOLOR[d2]}">${OHNAME[d2]}(${OHHJ[d2]})</b> 기운을 북돋아주는 상생 구조예요. 본인이 상대를 받쳐주는 흐름이라, 베푸는 만큼 관계가 깊어져요.`;
+    }else if(ke[d1]===d2){relExpr=`${OHHJ[d1]}剋${OHHJ[d2]}`;relWord='상극관계';score=68;
+      desc=`본인의 <b style="color:${OHCOLOR[d1]}">${OHNAME[d1]}(${OHHJ[d1]})</b> 기운이 상대의 <b style="color:${OHCOLOR[d2]}">${OHNAME[d2]}(${OHHJ[d2]})</b> 기운을 누르는 상극 구조예요. 끌림이 강한 만큼 부딪힘도 있으니, 서로의 영역을 인정하면 오히려 단단한 균형이 돼요.`;
+    }else{relExpr=`${OHHJ[d2]}剋${OHHJ[d1]}`;relWord='상극관계';score=66;
+      desc=`상대의 <b style="color:${OHCOLOR[d2]}">${OHNAME[d2]}(${OHHJ[d2]})</b> 기운이 본인의 <b style="color:${OHCOLOR[d1]}">${OHNAME[d1]}(${OHHJ[d1]})</b> 기운을 누르는 상극 구조예요. 긴장감이 있는 만큼 서로 자극이 되는 관계라, 한 번씩 속도를 늦추면 균형이 잡혀요.`;
+    }
+    const ringCirc=2*Math.PI*45;
+    const dash=(score/100*ringCirc).toFixed(1);
+    const angles=[-90,-18,54,126,198];
+    const nodeHtml=[0,1,2,3,4].map((e,i)=>{
+      const a=angles[i]*Math.PI/180,L=(50+46*Math.cos(a)).toFixed(1),T=(50+46*Math.sin(a)).toFixed(1);
+      const on=(e===d1||e===d2);
+      return `<div style="position:absolute;left:${L}%;top:${T}%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;background:${on?OHBG[e]:'rgba(255,255,255,.04)'};color:${on?OHCOLOR[e]:'var(--muted)'};${on?'box-shadow:0 0 12px '+OHBG[e]:''}">${OHHJ[e]}</div>`;
+    }).join('');
+    return `<div class="card">
+      <div class="ctitle big">오행 조화도 — 두 기운의 만남</div>
+      <div style="position:relative;width:230px;height:230px;margin:14px auto 4px">
+        <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="2"/>
+          <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent-bright)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${dash} ${ringCirc.toFixed(1)}"/>
+        </svg>
+        <div style="position:absolute;inset:0;margin:auto;width:38%;height:38%;border-radius:50%;background:var(--bg-deep);border:1px solid rgba(212,175,55,.3);display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.35rem;font-weight:700;color:var(--accent-bright);line-height:1.1">${relExpr}</span>
+          <span style="font-size:.6rem;color:var(--sub);margin-top:3px">${relWord}</span>
+        </div>
+        ${nodeHtml}
+      </div>
+      <div style="text-align:center;font-size:.74rem;color:var(--accent-bright);font-weight:700;margin-top:8px">오행 조화 지수 ${score}점</div>
+      <p style="font-size:.85rem;line-height:1.8;color:var(--sub);margin:10px 2px 0;word-break:keep-all">${desc}</p>
+    </div>`;
+  }catch(e){return '';}
+}
+
 function renderGunghapPaid(saju1, gnExtra){
   if(!gnExtra)return paidWrapBody('GUNGHAP','💑','궁합','<p>상대방 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</p>');
   // 상대 사주 계산 (진태양시 보정 포함)
@@ -16875,7 +17053,7 @@ function renderGunghapPaid(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gh,gmin);
   const myMbti=(_meta&&_meta.mbti)||'';
   const extraKey=`${sy2}-${sm2}-${sd2}-${gh}-${gmin}-${gnExtra.gender||''}-${gnExtra.mbti||''}`;
-  return renderAIReadingCard('gunghap','두 사람 관계 핵심 리딩',extraKey)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
+  return renderAIReadingCard('gunghap','두 사람 관계 핵심 리딩',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
 }
 
 // ── 연애·데이트 분위기 ──
