@@ -2058,6 +2058,11 @@ function _renderReviews(){
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',_renderReviews);}
 else{_renderReviews();}
 
+// 페이지 로드/복귀 시 항상 맨 위부터 보이도록 — 브라우저 스크롤 복원 끄기
+if('scrollRestoration' in history){history.scrollRestoration='manual';}
+window.addEventListener('load',function(){window.scrollTo(0,0);});
+window.addEventListener('pageshow',function(e){if(e.persisted)window.scrollTo(0,0);});
+
 // ══════════════════════════════════════════════
 //  CONSTANTS
 // ══════════════════════════════════════════════
