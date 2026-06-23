@@ -310,7 +310,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .mbti-badge,.mbti-intro,.mbti-axis-row,.result-tldr,.tldr-card,.sinsal-mini-card,
 .menu-card .mc-tag,.na-tag,.mbti-analysis-cat,.tldr-tag,.result-hero-tag,.result-hero-match,.mbti-balance-match,.result-hero-keys span,
 .tl-item,.dx-wrap,.dx-col,.ck-chips span,.chat-card,.chat-remaining,.chat-msg-reply,.dp-card,.review-card,.sinsal-mini-card,.compat-cell,.daily-cat,.simple-card,
-.mm,.mm-col,.ny-month{border:none !important}
+.mm,.mm-col,.ny-month,
+.life-timeline,.cap-watermark,.name-compare-row,.simple-emoji,.sin-card,.gg-side,.gg-mc,.mo-row,.mo-cat,.ny-hero,.ny-section,.term-notice,.remember-line{border:none !important}
 .summary-btn.secondary{background:var(--accent-soft);border:none}
 .lock-pay,.pay-cta-cancel{background:rgba(255,255,255,.05)}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
@@ -885,7 +886,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .nb-warn{margin-top:8px;padding:12px 14px;background:var(--warn-bg);border-radius:9px;border-left:3px solid var(--warn)}
 .nb-warn-lab{font-size:.78rem;font-weight:800;color:var(--warn);margin-bottom:6px;letter-spacing:0;line-height:1.55}
 .nb-gw-body{font-size:inherit;line-height:1.75;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.reading-brief{margin:12px 0 14px;padding:14px 15px;background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(12,15,16,.3));border:1px solid rgba(212,175,55,.18);border-left:3px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
+.reading-brief{margin:12px 0 14px;padding:14px 15px;background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(12,15,16,.3));border:none;border-left:3px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
 .reading-brief.compact{padding:12px 13px;font-size:.84rem;line-height:1.7}
 .reading-brief p{margin:0 0 9px}
 .reading-brief p:last-child{margin-bottom:0}
@@ -1019,7 +1020,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .summary-btn:hover{background:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,175,55,.3)}
 .summary-btn:active{transform:translateY(0)}
 .summary-btn:disabled{opacity:.6;cursor:wait}
-.summary-btn.secondary{background:transparent;color:var(--accent-bright);border:1px solid var(--accent-bright)}
+.summary-btn.secondary{background:var(--accent-soft);color:var(--accent-bright);border:none}
 .summary-btn.secondary:hover{background:rgba(212,175,55,.1)}
 
 /* ── A4 가로 요약본 (오프스크린 캡처용) ── */
@@ -1135,6 +1136,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ai-reading-status.error{background:rgba(229,116,98,.07);border-color:rgba(229,116,98,.35);color:var(--fire)}
 .ai-reading-body p{font-size:.86rem;line-height:1.9;margin:0 0 11px;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .ai-reading-body p:last-child{margin-bottom:0}
+.ai-reading-section{padding:12px 13px;margin:0 0 10px;background:rgba(212,175,73,.045);border-radius:10px}
+.ai-reading-section:last-child{margin-bottom:0}
+.ai-reading-section-title{font-size:.78rem;font-weight:800;color:var(--accent);margin-bottom:6px;letter-spacing:0}
+.ai-reading-section p{margin:0;font-size:.85rem;line-height:1.88;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 @media (max-width:380px){
   .chat-input::placeholder{font-size:.72rem}
   /* 초소형 화면(SE·미니 등) — 카드 폭·여백 보정으로 터치 타깃 유지 */
@@ -1217,7 +1222,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 /* 채팅 카드 하단 — 추가 구매 버튼 (한도 남아있어도 미리 충전 가능) */
 .chat-addbuy-btn{display:block;width:100%;margin-top:12px;padding:11px 14px;background:transparent;border:1px dashed var(--accent);color:var(--accent);border-radius:10px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.01em;transition:.15s}
 .chat-addbuy-btn:hover{background:var(--accent-soft);border-style:solid;color:var(--accent-bright)}
-.chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:1px dashed var(--border);border-radius:10px}
+.chat-empty{text-align:center;padding:22px 14px;color:var(--muted);font-size:.78rem;line-height:1.7;background:var(--bg-deep);border:none;border-radius:10px}
 
 /* ── 질문 한도 초과 → 결제 유도 모달 ── */
 .upsell-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -2065,6 +2070,36 @@ else{_renderReviews();}
 if('scrollRestoration' in history){history.scrollRestoration='manual';}
 window.addEventListener('load',function(){window.scrollTo(0,0);});
 window.addEventListener('pageshow',function(e){if(e.persisted)window.scrollTo(0,0);});
+
+// 새 버전 배포 자동 감지 — SPA라 탭을 열어두면 옛 코드가 남으므로, 배포되면 새로고침 배너 안내
+(function(){
+  var baseline=null, notified=false;
+  function getVer(){
+    return fetch(location.pathname+'?_v='+Date.now(),{method:'HEAD',cache:'no-store'})
+      .then(function(r){return r.headers.get('etag')||r.headers.get('last-modified')||'';})
+      .catch(function(){return '';});
+  }
+  function showBanner(){
+    if(notified||document.getElementById('_updBanner'))return; notified=true;
+    var b=document.createElement('div');
+    b.id='_updBanner';
+    b.textContent='✨ 새 버전이 나왔어요 · 탭하면 새로고침';
+    b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:9999;background:linear-gradient(135deg,#f4d36b,#d4af37);color:#1a1c1d;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font-family:inherit;letter-spacing:-.01em;max-width:calc(100vw - 32px);text-align:center';
+    b.setAttribute('role','button');
+    b.onclick=function(){location.reload();};
+    document.body.appendChild(b);
+  }
+  function check(){
+    getVer().then(function(v){
+      if(!v)return;
+      if(baseline===null){baseline=v;return;}
+      if(v!==baseline)showBanner();
+    });
+  }
+  window.addEventListener('load',check);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)check();});
+  setInterval(check,5*60*1000);
+})();
 
 // ══════════════════════════════════════════════
 //  CONSTANTS
@@ -5466,6 +5501,7 @@ function renderNewyearFortune(saju,y){
   <span style="display:none">다만 같은 띠라도</span>
   `;
   h+=renderAIReadingCard('newyear',`${y}년 천기가 먼저 짚는 핵심 흐름`,String(y));
+  h+=renderAIReadingCard('newyear-core',`${y}년 천기가 다시 정리한 핵심 흐름`,String(y));
 
   // 세운과 사주의 만남 — 심층 진단
   const _yearTGDescMap={
@@ -10423,15 +10459,15 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     <div style="margin-top:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:none;border-radius:8px">
       <table style="border-collapse:collapse;min-width:100%;font-family:inherit;font-size:.62rem;width:100%;table-layout:fixed">
         <thead><tr>
-          <th style="padding:6px 5px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:2px solid var(--accent);text-align:left;color:var(--accent);font-weight:700;width:58px">분야</th>`;
+          <th style="padding:6px 5px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:1px solid rgba(255,255,255,.12);text-align:left;color:var(--accent);font-weight:700;width:58px">분야</th>`;
     matrix.forEach((m,i)=>{
       const isCur=i===_curIdxX;
-      htBody+=`<th style="padding:6px 2px;background:${isCur?'rgba(212,175,73,.18)':'var(--bg-deep)'};border-bottom:2px solid ${isCur?'var(--accent)':'var(--border)'};color:${isCur?'var(--accent)':'var(--sub)'};font-weight:${isCur?700:500};white-space:normal;font-size:.56rem;line-height:1.25">${isCur?'★ ':''}${m.du.age}~${m.du.age+9}<br><span style="font-size:.54rem;color:var(--muted);font-weight:400">${STEMKO[m.du.stem]}${BRCHKO[m.du.branch]}</span></th>`;
+      htBody+=`<th style="padding:6px 2px;background:${isCur?'rgba(212,175,73,.18)':'var(--bg-deep)'};border-bottom:1px solid rgba(255,255,255,.12);color:${isCur?'var(--accent)':'var(--sub)'};font-weight:${isCur?700:500};white-space:normal;font-size:.56rem;line-height:1.25">${isCur?'★ ':''}${m.du.age}~${m.du.age+9}<br><span style="font-size:.54rem;color:var(--muted);font-weight:400">${STEMKO[m.du.stem]}${BRCHKO[m.du.branch]}</span></th>`;
     });
     htBody+=`</tr></thead><tbody>`;
     fieldList.forEach(f=>{
       htBody+=`<tr>
-        <td style="padding:6px 4px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);font-size:.58rem;white-space:normal;line-height:1.25">${f.emoji} ${f.ko}</td>`;
+        <td style="padding:6px 4px;background:var(--bg-deep);position:sticky;left:0;z-index:1;border-bottom:1px solid rgba(255,255,255,.08);font-weight:600;color:var(--text);font-size:.58rem;white-space:normal;line-height:1.25">${f.emoji} ${f.ko}</td>`;
       matrix.forEach((m,i)=>{
         const st=m.states[f.key];
         const isCur=i===_curIdxX;
@@ -10547,8 +10583,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   }catch(e){}
 
   const _aiLifeCard=renderAIReadingCard('life','천기가 먼저 짚는 본인 핵심 흐름');
+  const _aiLifeCoreCard=renderAIReadingCard('life-core','천기가 다시 정리한 인생총운 핵심 섹션');
   let _daeunChartCard=''; try{_daeunChartCard=renderDaeunFlowChart(saju,sy,sm,sd,sh,smin);}catch(e){}
-  h=_quickCard+_aiLifeCard+_daeunChartCard+_masterCard+_tocCard+h;
+  h=_quickCard+_aiLifeCard+_aiLifeCoreCard+_daeunChartCard+_masterCard+_tocCard+h;
 
   return h;
 }
@@ -12930,7 +12967,9 @@ function buildSajuContextForChat(){
 const AI_READING_TTL_MS=24*60*60*1000;
 const AI_READING_LABELS={
   life:'천기가 먼저 짚는 본인 핵심 흐름',
+  'life-core':'천기가 다시 정리한 인생총운 핵심 섹션',
   newyear:'천기가 먼저 짚는 올해 핵심 흐름',
+  'newyear-core':'올해 천기가 다시 정리한 핵심 흐름',
   gunghap:'두 사람 관계 핵심 리딩',
   'life-gunghap':'인생총운 속 관계 핵심 리딩'
 };
@@ -12963,7 +13002,15 @@ function aiReadingTextToHtml(text){
   const cleaned=normalizeReadingText(String(text||'').trim())
     .replace(/(^|\n)\s*[-*]\s+/g,'$1')
     .replace(/\n{3,}/g,'\n\n');
-  return cleaned.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${preventOrphan(chatEscape(p))}</p>`).join('');
+  return cleaned.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean).map(p=>{
+    const m=p.match(/^\[([^\]]{1,28})\]\s*([\s\S]*)$/);
+    if(m){
+      const title=chatEscape(normalizeReadingText(m[1].trim()));
+      const body=preventOrphan(chatEscape(normalizeReadingText(m[2].trim())));
+      return `<div class="ai-reading-section"><div class="ai-reading-section-title">${title}</div><p>${body}</p></div>`;
+    }
+    return `<p>${preventOrphan(chatEscape(p))}</p>`;
+  }).join('');
 }
 function renderAIReadingCard(category, title, extraKey){
   const cached=aiReadingCacheGet(category,extraKey);
@@ -13023,7 +13070,7 @@ function hydrateAIReadings(root){
   scope.querySelectorAll('[data-ai-reading]').forEach(card=>{
     const category=card.getAttribute('data-ai-reading');
     const extraKey=card.getAttribute('data-ai-extra')||'';
-    if(category==='newyear')hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-newyear'});
+    if(category==='newyear'||category==='newyear-core')hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-'+category});
     else hydrateAIReading(category,{extraKey,source:'paid-'+category});
   });
 }
@@ -17423,7 +17470,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
 
   // 격국
   const gk=getGyeokguk(saju);
-  h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:2px solid var(--accent)">
+  h+=`<div class="card" style="background:var(--card);border:none">
     <div class="ctitle big">격국 — 사주의 대표 형태</div>
     <div style="text-align:center;margin:10px 0 8px">
       <div style="display:inline-block;padding:9px 24px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-radius:50px;font-size:1.05rem;font-weight:800;letter-spacing:.05em">${gk.name}</div>
