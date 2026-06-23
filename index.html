@@ -13079,13 +13079,28 @@ function aiReadingCacheSet(category, extraKey, text){
     localStorage.setItem(aiReadingCacheKey(category,extraKey),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
   }catch(e){}
 }
+const AI_REPLACED_CARD_LABELS={
+  'life-core':['PERSONA','TOTAL','WEALTH','CAREER','LOVE','HEALTH','SEWOON','GAEWOON'],
+  'newyear-core':['TOTAL','NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','MONTHS','CLASSIC']
+};
 function aiReadingFallbackSelector(category, extraKey){
   return `[data-ai-fallback-for="${String(category).replace(/"/g,'')}"][data-ai-extra="${String(extraKey||'').replace(/"/g,'')}"]`;
 }
 function setAIReadingFallbackVisible(category, extraKey, visible){
   try{
     document.querySelectorAll(aiReadingFallbackSelector(category,extraKey)).forEach(el=>{
-      el.classList.toggle('ai-fallback-hidden',!visible);
+      el.classList.remove('ai-fallback-hidden');
+      const labels=AI_REPLACED_CARD_LABELS[category]||[];
+      labels.forEach(label=>{
+        el.querySelectorAll(`[data-cardid="${label}"]`).forEach(card=>{
+          card.classList.toggle('ai-fallback-hidden',!visible);
+        });
+      });
+      el.querySelectorAll('#card-TOC button').forEach(btn=>{
+        const onclick=btn.getAttribute('onclick')||'';
+        const replaced=labels.some(label=>onclick.includes(`card-${label}`));
+        btn.classList.toggle('ai-fallback-hidden',replaced&&!visible);
+      });
     });
   }catch(e){}
 }
