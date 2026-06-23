@@ -1129,9 +1129,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
-.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:var(--bg);padding:0 0 10px}
+.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:var(--bg);padding:0 12px 12px}
 .qna-room .menu-back{margin:0;padding:12px 14px;background:rgba(17,20,21,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
-.chat-card.qna-chat-room{flex:1;display:flex;flex-direction:column;margin:0 !important;border-radius:0 !important;background:var(--bg);box-shadow:none;padding:0 12px 10px}
+.chat-card.qna-chat-room{flex:1;display:flex;flex-direction:column;margin:6px 0 0 !important;border:1px solid var(--border);border-radius:14px !important;background:var(--bg-deep);box-shadow:0 12px 34px rgba(0,0,0,.18);padding:0 12px 10px;overflow:hidden}
 .chat-card.qna-chat-room::before{display:none}
 .qna-chat-room .chat-head{padding:10px 2px 8px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .qna-chat-room .chat-title{margin:0;font-size:.98rem;color:var(--text)}
@@ -1143,7 +1143,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .qna-chat-room .chat-msg-user .chat-msg-lab{display:none}
 .qna-chat-room .chat-msg-reply,.qna-chat-room .chat-msg-loading{background:var(--card);color:var(--text);border-bottom-left-radius:5px}
 .qna-chat-room .chat-msg-reply .chat-msg-lab,.qna-chat-room .chat-msg-loading .chat-msg-lab{display:none}
-.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg) 22%);padding:10px 0 2px;align-items:flex-end}
+.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg-deep) 22%);padding:10px 0 2px;align-items:flex-end}
 .qna-chat-room .chat-input{border:none;border-radius:20px;background:var(--card);min-height:42px;max-height:112px;padding:11px 14px;font-size:.9rem}
 .qna-chat-room .chat-btn{width:42px;height:42px;border-radius:50%;padding:0;flex:0 0 42px;font-size:0;background:var(--accent);color:#1a1c1d}
 .qna-chat-room .chat-btn::before{content:'➤';font-size:1rem;font-weight:900}
@@ -13292,13 +13292,13 @@ async function chatAsk(){
   if(!_saju){alert('먼저 사주 분석을 진행해주세요.');return;}
   const curCat=_category||'life';
   const curMax=chatMaxOf(curCat);
+  const input=document.getElementById('chatInput');
+  const question=input.value.trim();
+  if(!question)return;
   if(chatRemaining(curCat)<=0){
     showChatLimitUpsell(curCat);
     return;
   }
-  const input=document.getElementById('chatInput');
-  const question=input.value.trim();
-  if(!question)return;
   if(question.length>CHAT_QUESTION_MAX_CHARS){alert(`질문은 ${CHAT_QUESTION_MAX_CHARS}자 이내로 입력해주세요.`);return;}
 
   const btn=document.getElementById('chatBtn');
@@ -13317,10 +13317,14 @@ async function chatAsk(){
       const r=document.getElementById('chatRemaining');
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
       if(chatRemaining(curCat)===0){
-        const inp=document.getElementById('chatInput');
-        if(inp)inp.disabled=true;
-        if(btn){btn.disabled=true;btn.textContent=curCat==='qna'?'잠김':'소진';}
-        setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},500);
+        if(curCat==='qna'){
+          if(btn){btn.disabled=false;btn.textContent='보내기';}
+        }else{
+          const inp=document.getElementById('chatInput');
+          if(inp)inp.disabled=true;
+          if(btn){btn.disabled=true;btn.textContent='소진';}
+          setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},500);
+        }
       }
       return;
     }
@@ -13352,11 +13356,16 @@ async function chatAsk(){
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
       try{ renderShareCtaInChat(); }catch(e){}
       if(chatRemaining(curCat)===0){
-        chatAppend('error',`${curMax}회 질문 한도가 모두 소진되었어요. 다른 풀이에서 추가 질문을 열어보세요.`);
-        document.getElementById('chatInput').disabled=true;
-        btn.disabled=true;btn.textContent='소진';
-        // 한도 마지막 답변 직후 결제 유도 모달도 자동 표출
-        setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},700);
+        if(curCat==='qna'){
+          btn.disabled=false;
+          btn.textContent='보내기';
+        }else{
+          chatAppend('error',`${curMax}회 질문 한도가 모두 소진되었어요. 다른 풀이에서 추가 질문을 열어보세요.`);
+          document.getElementById('chatInput').disabled=true;
+          btn.disabled=true;btn.textContent='소진';
+          // 한도 마지막 답변 직후 결제 유도 모달도 자동 표출
+          setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},700);
+        }
         return;
       }
     }
@@ -13386,6 +13395,8 @@ function renderChatSection(catOpt){
     life:`위 풀이만으로 부족하다면, 본인 사주를 깊이 짚어 본 역술가에게<br><b>${max}가지</b> 질문을 자유롭게 던져보세요.`
   };
   const isQna=cat==='qna';
+  const inputDisabled=isExhausted&&!isQna;
+  const exhaustedLabel=isQna?'보내기':'소진';
   const initialLog=isQna
     ? `<div class="chat-msg chat-msg-reply"><div class="chat-msg-lab">역술가</div><div class="chat-msg-body">${preventOrphan('어떤게 궁금하신가요?')}</div></div>`
     : `<div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>`;
@@ -13399,8 +13410,8 @@ function renderChatSection(catOpt){
       ${initialLog}
     </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 300자 이내로 입력하세요')}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
-      <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':(isQna?'보내기':'🔮 질문하기')}</button>
+      <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 300자 이내로 입력하세요')}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
+      <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'🔮 질문하기')}</button>
     </div>
     <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 보통 800~1,300자 안에서 정리돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
     <div id="chatShareCta"></div>
