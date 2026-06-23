@@ -1140,6 +1140,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ai-reading-section:last-child{margin-bottom:0}
 .ai-reading-section-title{font-size:.78rem;font-weight:800;color:var(--accent);margin-bottom:6px;letter-spacing:0}
 .ai-reading-section p{margin:0;font-size:.85rem;line-height:1.88;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.ai-reading-card.main-reading .nb-cat{display:none}
+.ai-reading-card.main-reading{border:none}
+.ai-reading-card.ai-ready{animation:aiFadeIn .18s ease-out}
+.ai-fallback-hidden{display:none !important}
+@keyframes aiFadeIn{from{opacity:.82;transform:translateY(2px)}to{opacity:1;transform:none}}
 @media (max-width:380px){
   .chat-input::placeholder{font-size:.72rem}
   /* 초소형 화면(SE·미니 등) — 카드 폭·여백 보정으로 터치 타깃 유지 */
@@ -5500,8 +5505,8 @@ function renderNewyearFortune(saju,y){
   </div>
   <span style="display:none">다만 같은 띠라도</span>
   `;
-  h+=renderAIReadingCard('newyear',`${y}년 천기가 먼저 짚는 핵심 흐름`,String(y));
-  h+=renderAIReadingCard('newyear-core',`${y}년 천기가 다시 정리한 핵심 흐름`,String(y));
+  const _nyVisualHead=h;
+  h='';
 
   // 세운과 사주의 만남 — 심층 진단
   const _yearTGDescMap={
@@ -5868,6 +5873,9 @@ function renderNewyearFortune(saju,y){
     {no:5,title:'한 해를 살아가는 마음',desc:'고전이 전하는 마무리',labels:['CLASSIC']}
   ]);
   h=_generateTOC(h,'신년 운세')+h;
+  h=_nyVisualHead+
+    renderAIReadingCard('newyear-core',`${y}년 신년운세 핵심 풀이`,String(y),{main:true,catLabel:null,loadingText:`${y}년 신년운세 풀이를 정리하고 있어요. 잠시만 기다려주세요.`})+
+    `<div data-ai-fallback-for="newyear-core" data-ai-extra="${String(y)}">${h}</div>`;
   return h;
 }
 
@@ -10582,10 +10590,9 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div><!--CARD_END:MASTER-->`;
   }catch(e){}
 
-  const _aiLifeCard=renderAIReadingCard('life','천기가 먼저 짚는 본인 핵심 흐름');
-  const _aiLifeCoreCard=renderAIReadingCard('life-core','천기가 다시 정리한 인생총운 핵심 섹션');
+  const _aiLifeCoreCard=renderAIReadingCard('life-core','인생총운 핵심 풀이','',{main:true,catLabel:null,loadingText:'인생총운 풀이를 정리하고 있어요. 잠시만 기다려주세요.'});
   let _daeunChartCard=''; try{_daeunChartCard=renderDaeunFlowChart(saju,sy,sm,sd,sh,smin);}catch(e){}
-  h=_quickCard+_aiLifeCard+_aiLifeCoreCard+_daeunChartCard+_masterCard+_tocCard+h;
+  h=_quickCard+_aiLifeCoreCard+_daeunChartCard+_masterCard+`<div data-ai-fallback-for="life-core" data-ai-extra="">${_tocCard+h}</div>`;
 
   return h;
 }
@@ -12998,6 +13005,16 @@ function aiReadingCacheSet(category, extraKey, text){
     localStorage.setItem(aiReadingCacheKey(category,extraKey),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
   }catch(e){}
 }
+function aiReadingFallbackSelector(category, extraKey){
+  return `[data-ai-fallback-for="${String(category).replace(/"/g,'')}"][data-ai-extra="${String(extraKey||'').replace(/"/g,'')}"]`;
+}
+function setAIReadingFallbackVisible(category, extraKey, visible){
+  try{
+    document.querySelectorAll(aiReadingFallbackSelector(category,extraKey)).forEach(el=>{
+      el.classList.toggle('ai-fallback-hidden',!visible);
+    });
+  }catch(e){}
+}
 function aiReadingTextToHtml(text){
   const cleaned=normalizeReadingText(String(text||'').trim())
     .replace(/(^|\n)\s*[-*]\s+/g,'$1')
@@ -13012,13 +13029,17 @@ function aiReadingTextToHtml(text){
     return `<p>${preventOrphan(chatEscape(p))}</p>`;
   }).join('');
 }
-function renderAIReadingCard(category, title, extraKey){
+function renderAIReadingCard(category, title, extraKey, opts){
+  opts=opts||{};
   const cached=aiReadingCacheGet(category,extraKey);
   const id=aiReadingDomId(category,extraKey);
-  return `<div class="nb-card ai-reading-card" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
-    <div class="nb-cat">PERSONAL READING</div>
+  const cls='nb-card ai-reading-card'+(opts.main?' main-reading':'')+(cached?' ai-ready':'');
+  const catHtml=opts.catLabel===null?'':`<div class="nb-cat">${chatEscape(opts.catLabel||'PERSONAL READING')}</div>`;
+  const loading=opts.loadingText||'본인 사주를 바탕으로 풀이를 정리하고 있어요. 잠시만 기다려주세요.';
+  return `<div class="${cls}" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
+    ${catHtml}
     <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'개인화 리딩')}</div>
-    <div class="nb-body ai-reading-body">${cached?aiReadingTextToHtml(cached):`<div class="ai-reading-status">본인 사주를 바탕으로 개인화 문단을 불러오고 있어요. 잠시만 기다려주세요.</div>`}</div>
+    <div class="nb-body ai-reading-body">${cached?aiReadingTextToHtml(cached):`<div class="ai-reading-status">${preventOrphan(chatEscape(loading))}</div>`}</div>
   </div>`;
 }
 function buildAIReadingPayload(category, extra){
@@ -13045,6 +13066,9 @@ async function hydrateAIReading(category, opts){
   const cached=aiReadingCacheGet(category,extraKey);
   if(cached){
     body.innerHTML=aiReadingTextToHtml(cached);
+    card.style.display='';
+    card.classList.add('ai-ready');
+    setAIReadingFallbackVisible(category,extraKey,false);
     return;
   }
   const payload=buildAIReadingPayload(category,opts);
@@ -13061,8 +13085,13 @@ async function hydrateAIReading(category, opts){
     if(!text)throw new Error('개인화 리딩이 비어 있어요.');
     aiReadingCacheSet(category,extraKey,text);
     body.innerHTML=aiReadingTextToHtml(text);
+    card.style.display='';
+    card.classList.add('ai-ready');
+    setAIReadingFallbackVisible(category,extraKey,false);
   }catch(e){
-    body.innerHTML=`<div class="ai-reading-status error">${preventOrphan('개인화 리딩을 잠시 불러오지 못했어요. 아래 기존 사주풀이 내용은 그대로 확인할 수 있어요.')}</div>`;
+    setAIReadingFallbackVisible(category,extraKey,true);
+    if(card.classList.contains('main-reading'))card.style.display='none';
+    else body.innerHTML=`<div class="ai-reading-status error">${preventOrphan('풀이를 잠시 새로 정리하지 못했어요. 아래 기존 사주풀이 내용은 그대로 확인할 수 있어요.')}</div>`;
   }
 }
 function hydrateAIReadings(root){
