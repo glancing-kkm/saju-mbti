@@ -1505,11 +1505,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">19,000원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 준비 중" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 첫 질문 무료, 이후 건당 결제" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
           <div class="mc-title">즉문즉답</div>
           <div class="mc-desc">사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이</div>
-          <div class="mc-tag t-paid">준비 중</div>
+          <div class="mc-tag t-free">1회 무료</div>
+          <div class="mc-price">이후 건당 결제</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 5,900원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
@@ -1738,7 +1739,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 즉문즉답 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraQna" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">즉문즉답 — 상담 참고 정보</span></div></legend>
-        <div class="cat-extra-desc">아래 정보는 선택사항이에요. 입력해두면 나중에 즉문즉답 상담에서 본인 상황을 더 정확히 반영할 수 있어요.</div>
+        <div class="cat-extra-desc">첫 질문 1개는 무료예요. 이후에는 질문권을 건당 결제해서 이어서 상담할 수 있어요.</div>
         <div class="ig" style="margin-bottom:9px">
           <label for="qaJob">직업 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
           <input type="text" id="qaJob" name="qaJob" placeholder="예: 직장인, 자영업, 학생, 프리랜서" maxlength="40" autocomplete="off">
@@ -2693,7 +2694,7 @@ function goToInput(cat){
       gunghap:'본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요',
       name:'본인 사주와 본인 이름을 함께 입력해주세요',
       life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요',
-      qna:'인생총운과 같은 기본 정보에 상담 참고 정보를 더해 주세요'
+      qna:'첫 질문은 무료, 이후에는 질문권을 건당 결제해 이어서 상담해요'
     };
     sub.textContent=subMap[cat]||subMap.manse;
   }
@@ -4364,7 +4365,7 @@ function resultHeroHTML(saju, mbti, cat){
     gunghap:`${poeticHead}의 인연 궁합`,
     name:`${poeticHead}의 이름 분위기`,
     life:`${poeticHead}의 평생 분위기`,
-    qna:`${poeticHead}의 즉문즉답 준비`
+    qna:`${poeticHead}의 즉문즉답`
   };
   const headline=catHeadlines[cat]||catHeadlines.manse;
 
@@ -7410,7 +7411,7 @@ const PAID_META={
     ],
     price:'9,900원'
   },
-  qna:{icon:'',title:'즉문즉답',desc:'사주 기반 질문 답변',features:['· 첫 질문 1개 무료','· 이후 질문권 충전 후 사용'],price:'첫 질문 무료'},
+  qna:{icon:'',title:'즉문즉답',desc:'사주 정보를 바탕으로 궁금한 질문을 채팅처럼 바로 물어보는 상담이에요.',features:['· 첫 질문 1개 무료','· 이후 질문권 건당 결제','· 1회 1,000원 / 3회 2,500원 / 5회 4,000원'],price:'1회 무료 · 이후 건당 결제'},
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack1:{icon:'',title:'추가 질문 1회',desc:'현재 풀이에 대한 역술가 질문 1회를 더 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'1,000원'},
   chatpack3:{icon:'',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회 추가. 17% 할인.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,500원'},
