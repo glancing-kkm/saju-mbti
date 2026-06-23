@@ -1964,9 +1964,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="hdr-back-sub" id="resultSub"></div>
       </div>
     </div>
-    <div class="share-bar" role="toolbar" aria-label="분위기와 공유 및 저장">
+    <div class="share-bar" role="toolbar" aria-label="분위기와 공유">
       <button class="share-bar-btn" onclick="goToInput(_category||'manse')" aria-label="입력 다시 하기"><span aria-hidden="true">✏️</span> 다시 입력</button>
-      <button class="share-bar-btn" id="saveImgBtn" onclick="saveAsImage(this)" aria-label="결과를 이미지로 저장"><span aria-hidden="true">📥</span> 이미지 저장</button>
       <button class="share-bar-btn primary" onclick="showShareModal()" aria-label="분위기와 공유하기"><span aria-hidden="true">🔗</span> 공유</button>
     </div>
     <div class="panel" id="p0"></div>
@@ -4266,18 +4265,12 @@ function nextActionsHTML(currentCat){
       <div class="na-tag ${priceClass}">${c.price}</div>
     </button>`;
   });
-  // 공유 / 저장 / 가이드 카드
+  // 공유 / 가이드 카드
   h+=`<button type="button" class="next-action-card highlight" onclick="showShareModal()" aria-label="결과를 친구에게 공유">
       <span class="material-symbols-outlined na-icon" aria-hidden="true">share</span>
       <div class="na-title">친구에게 공유</div>
       <div class="na-desc">「○○일주 × MBTI」 한 줄 요약을 공유하세요</div>
       <div class="na-tag share">SHARE</div>
-    </button>
-    <button type="button" class="next-action-card" onclick="saveAsImage(this)" aria-label="결과를 이미지로 저장">
-      <span class="material-symbols-outlined na-icon" aria-hidden="true">download</span>
-      <div class="na-title">이미지로 저장</div>
-      <div class="na-desc">분위기와 카드를 갤러리에 보관 (워터마크 포함)</div>
-      <div class="na-tag save">SAVE</div>
     </button>
     <a class="next-action-card" href="/blog/" aria-label="사주 가이드 모음 보기">
       <span class="material-symbols-outlined na-icon" aria-hidden="true">menu_book</span>
@@ -7510,7 +7503,6 @@ function getUsageGuide(category){
   const chatCount=chatMaxOf(category);
   const items=[
     `<b>결제 영속화</b> — 결제 후 같은 사주는 <b>24시간 동안 무제한 재조회</b>가 가능해요. 단, 다른 사주를 조회하시려면 다시 결제가 필요해요.`,
-    `<b>이미지 저장</b> — 풀이 결과를 PNG 이미지로 저장하실 수 있어요 (상단 「이미지 저장」 버튼).`
   ];
   if(category==='life'){
     items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있어요.`);
@@ -18459,9 +18451,6 @@ async function shareToInstagram(){
     alert('이미지를 먼저 저장한 후 인스타그램 앱에서 업로드해주세요.');
     return;
   }
-  const btn=document.getElementById('saveImgBtn');
-  const orig=btn.innerHTML;
-  btn.innerHTML='⏳ 저장 중...';btn.disabled=true;
   const target=document.querySelector('.panel.on')||document.getElementById('p0');
   const wm=_injectWatermark(target);
   try{
@@ -18473,7 +18462,6 @@ async function shareToInstagram(){
   }catch(e){alert('이미지 생성 중 오류가 발생했습니다.');}
   finally{
     if(wm&&wm.parentNode)wm.parentNode.removeChild(wm);
-    btn.innerHTML=orig;btn.disabled=false;
   }
 }
 
