@@ -2323,6 +2323,7 @@ const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 const CHAT_QUESTION_MAX_CHARS=300;
+const QNA_FREE_TTL_MS=24*60*60*1000;
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
 const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5,qna:1};
 function chatLsKeyOf(cat){
@@ -2332,6 +2333,32 @@ function chatLsKeyOf(cat){
     return `saju_chat_count_qna_v3:${sid}:${_getOrCreateUserId()}`;
   }
   return `saju_chat_count_${c}_v2`;
+}
+function qnaFreeLsKey(){
+  if(!_saju||!_meta)return '';
+  const sid=sajuIdOf(_saju,_meta)||'no-saju';
+  return `saju_qna_free_used_v1:${sid}:${_getOrCreateUserId()}`;
+}
+function qnaFreeAvailable(){
+  const k=qnaFreeLsKey();
+  if(!k)return true;
+  try{
+    const raw=localStorage.getItem(k);
+    if(!raw)return true;
+    const data=JSON.parse(raw);
+    if(!data||!data.exp||Date.now()>data.exp){
+      localStorage.removeItem(k);
+      return true;
+    }
+    return false;
+  }catch(e){
+    return true;
+  }
+}
+function qnaMarkFreeUsed(){
+  const k=qnaFreeLsKey();
+  if(!k)return;
+  try{localStorage.setItem(k,JSON.stringify({usedAt:Date.now(),exp:Date.now()+QNA_FREE_TTL_MS}));}catch(e){}
 }
 // CI-3: 월별 운세는 결제한 개월수만큼 질문 가능 (3개월=3회, 6개월=6회)
 function chatMaxOf(cat){
@@ -12553,6 +12580,11 @@ function chatGetCount(cat){
   return parseInt(localStorage.getItem(chatLsKeyOf(cat||_category||'life'))||'0',10)||0;
 }
 function chatIncCount(cat){
+  const c=cat||_category||'life';
+  if(c==='qna'&&qnaFreeAvailable()){
+    qnaMarkFreeUsed();
+    return;
+  }
   const k=chatLsKeyOf(cat||_category||'life');
   localStorage.setItem(k, String((parseInt(localStorage.getItem(k)||'0',10)||0)+1));
 }
@@ -12910,6 +12942,10 @@ function payDoneClickReview(){
 }
 function chatRemaining(cat){
   const c=cat||_category||'life';
+  if(c==='qna'){
+    const free=qnaFreeAvailable()?1:0;
+    return Math.max(0, free+getChatBonus(c)-chatGetCount(c));
+  }
   return Math.max(0, chatMaxOf(c)+getChatBonus(c)-chatGetCount(c));
 }
 // 질문 한도 초과 시 — 추가 질문 패키지 결제 유도 모달
@@ -13343,7 +13379,7 @@ async function chatAsk(){
         category:curCat,
         clientId:_getOrCreateUserId(),
         sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
-        freeQuestion:curCat==='qna'&&chatMaxOf(curCat)===1&&getChatBonus(curCat)<=0&&chatGetCount(curCat)<=0,
+        freeQuestion:curCat==='qna'&&qnaFreeAvailable(),
       }),
     });
     const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없어요.'}));

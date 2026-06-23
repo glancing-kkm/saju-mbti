@@ -379,7 +379,7 @@ async function qnaFreeGuardKeys({ request, sajuContext, clientId, sajuId }) {
     request.headers.get('X-Real-IP') ||
     '';
   const base = {
-    v: 2,
+    v: 3,
     sajuId: String(sajuId || ''),
     birth: sajuContext && sajuContext.birth,
     pillars: sajuContext && sajuContext.pillars,
@@ -414,7 +414,7 @@ async function qnaFreeGuardMark(env, keys) {
   if (!env.SAJU_QNA_CACHE || !Array.isArray(keys) || !keys.length) return;
   try {
     const value = JSON.stringify({ usedAt: Date.now() });
-    await Promise.all(keys.map((key) => env.SAJU_QNA_CACHE.put(key, value, { expirationTtl: 30 * 24 * 60 * 60 })));
+    await Promise.all(keys.map((key) => env.SAJU_QNA_CACHE.put(key, value, { expirationTtl: 24 * 60 * 60 })));
   } catch (e) {
     console.warn('QNA free guard put failed:', e && e.message);
   }
