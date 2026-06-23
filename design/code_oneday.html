@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>일일운세 상세 페이지 - 천지인 사주</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Noto+Serif+KR:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#323536",
+                      "secondary-fixed": "#f5e0c2",
+                      "on-tertiary-fixed": "#191c1d",
+                      "on-primary-container": "#554300",
+                      "tertiary-fixed-dim": "#c5c7c8",
+                      "on-primary": "#3c2f00",
+                      "outline-variant": "#4d4635",
+                      "on-tertiary": "#2e3132",
+                      "primary-fixed-dim": "#e9c349",
+                      "surface-dim": "#111415",
+                      "on-primary-fixed-variant": "#574500",
+                      "metal-white": "#E1E3E4",
+                      "surface-tint": "#e9c349",
+                      "secondary": "#d8c4a8",
+                      "on-secondary": "#3b2e1b",
+                      "water-blue": "#334155",
+                      "on-secondary-fixed": "#241a08",
+                      "on-secondary-container": "#c6b297",
+                      "on-secondary-fixed-variant": "#52452f",
+                      "on-error-container": "#ffdad6",
+                      "wood-green": "#4B6344",
+                      "primary-fixed": "#ffe088",
+                      "surface-variant": "#323536",
+                      "primary": "#f2ca50",
+                      "inverse-surface": "#e1e3e4",
+                      "tertiary-container": "#b1b3b4",
+                      "on-tertiary-fixed-variant": "#444748",
+                      "background": "#111415",
+                      "surface-container-low": "#191c1d",
+                      "secondary-fixed-dim": "#d8c4a8",
+                      "on-tertiary-container": "#434546",
+                      "tertiary": "#cdcecf",
+                      "on-error": "#690005",
+                      "inverse-primary": "#735c00",
+                      "error-container": "#93000a",
+                      "on-surface": "#e1e3e4",
+                      "on-surface-variant": "#d0c5af",
+                      "earth-gold": "#D4AF37",
+                      "on-background": "#e1e3e4",
+                      "on-primary-fixed": "#241a00",
+                      "surface-container-high": "#272a2b",
+                      "surface": "#111415",
+                      "secondary-container": "#52452f",
+                      "fire-red": "#924040",
+                      "tertiary-fixed": "#e1e3e4",
+                      "inverse-on-surface": "#2e3132",
+                      "primary-container": "#d4af37",
+                      "surface-bright": "#373a3b",
+                      "error": "#ffb4ab",
+                      "surface-container": "#1d2021",
+                      "outline": "#99907c",
+                      "surface-container-lowest": "#0c0f10"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px",
+                      "container-max-width": "1200px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Hanken Grotesk", "sans-serif"
+                      ],
+                      "headline-md": [
+                              "Noto Serif KR", "serif"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk", "sans-serif"
+                      ],
+                      "title-lg": [
+                              "Hanken Grotesk", "sans-serif"
+                      ],
+                      "label-sm": [
+                              "Hanken Grotesk", "sans-serif"
+                      ],
+                      "body-lg": [
+                              "Hanken Grotesk", "sans-serif"
+                      ],
+                      "headline-lg": [
+                              "Noto Serif KR", "serif"
+                      ],
+                      "display-lg": [
+                              "Noto Serif KR", "serif"
+                      ],
+                      "headline-lg-mobile": [
+                              "Noto Serif KR", "serif"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-highlight {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+        
+        .star-rating .material-symbols-outlined {
+            color: theme('colors.surface-variant');
+        }
+        .star-rating .filled {
+            color: theme('colors.earth-gold');
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pb-24 md:pb-0 bg-surface">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary docked full-width top-0 flat no shadows flex justify-between items-center w-full px-margin-mobile h-14 z-50 sticky">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-earth-gold dark:text-primary text-center flex-1">오늘의 운세</h1>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</header>
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-16 space-y-12">
+<!-- Date Header -->
+<section class="text-center space-y-2">
+<p class="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase">2024년 10월 24일</p>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-earth-gold">갑진(甲辰)년 무술(戊戌)월 신유(辛酉)일</h2>
+</section>
+<!-- Total Score Hero -->
+<section class="relative bg-surface-container rounded-xl p-8 glass-highlight gold-glow flex flex-col items-center justify-center text-center overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background: radial-gradient(circle at center, theme('colors.earth-gold') 0%, transparent 70%);"></div>
+<p class="font-title-lg text-title-lg text-on-surface mb-4 z-10">오늘의 총운</p>
+<div class="flex items-baseline justify-center space-x-2 z-10 mb-6">
+<span class="font-display-lg text-display-lg text-earth-gold">85</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">/ 100</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl z-10">
+                뜻밖의 귀인을 만나 막혔던 일이 풀리는 하루입니다. 겸손한 태도를 유지한다면 더 큰 행운이 따를 것입니다.
+            </p>
+</section>
+<!-- Bento Grid for Categories -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Wealth -->
+<article class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col space-y-4">
+<div class="flex justify-between items-center border-b border-surface-container-highest pb-4">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">금전운</h3>
+</div>
+<div class="star-rating flex">
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    소소한 이익이 생기는 날입니다. 투자보다는 저축에 신경 쓰는 것이 좋습니다.
+                </p>
+</article>
+<!-- Love -->
+<article class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col space-y-4">
+<div class="flex justify-between items-center border-b border-surface-container-highest pb-4">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="favorite">favorite</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">연애운</h3>
+</div>
+<div class="star-rating flex">
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    상대방의 마음을 이해하려는 노력이 필요합니다. 솔직한 대화가 관계를 발전시킵니다.
+                </p>
+</article>
+<!-- Health -->
+<article class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col space-y-4">
+<div class="flex justify-between items-center border-b border-surface-container-highest pb-4">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="health_and_safety">health_and_safety</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">건강운</h3>
+</div>
+<div class="star-rating flex">
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    컨디션이 매우 좋습니다. 새로운 운동을 시작하거나 활동적인 취미를 즐기기에 적합합니다.
+                </p>
+</article>
+<!-- Career -->
+<article class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col space-y-4">
+<div class="flex justify-between items-center border-b border-surface-container-highest pb-4">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="work">work</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">사업/직장운</h3>
+</div>
+<div class="star-rating flex">
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined filled" data-icon="star">star</span>
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    진행 중인 프로젝트에서 작은 난관이 예상되나, 동료의 도움으로 쉽게 해결될 것입니다.
+                </p>
+</article>
+</section>
+<!-- Lucky Elements -->
+<section class="grid grid-cols-2 gap-6 mt-8">
+<!-- Lucky Item -->
+<div class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col items-center justify-center text-center relative overflow-hidden group">
+<div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-earth-gold"></div>
+<span class="material-symbols-outlined text-4xl text-earth-gold mb-3" data-icon="coffee">coffee</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">행운의 아이템</p>
+<h4 class="font-title-lg text-title-lg text-on-surface">따뜻한 차</h4>
+</div>
+<!-- Lucky Color -->
+<div class="bg-surface-container rounded-xl p-6 glass-highlight flex flex-col items-center justify-center text-center relative overflow-hidden group">
+<div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-earth-gold"></div>
+<div class="w-10 h-10 rounded-full mb-3 shadow-inner" style="background-color: theme('colors.wood-green');"></div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">행운의 컬러</p>
+<h4 class="font-title-lg text-title-lg text-on-surface">우드 그린</h4>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Hidden on desktop) -->
+<nav class="bg-surface-container dark:bg-surface-container text-primary dark:text-primary docked full-width bottom-0 rounded-t-xl flat no shadows fixed left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">홈</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-full px-4 py-1 active scale-95 duration-100">
+<span class="material-symbols-outlined mb-1" data-icon="auto_awesome" data-weight="fill">auto_awesome</span>
+<span class="font-label-sm text-label-sm">운세</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-label-sm">궁합</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">내 정보</span>
+</button>
+</nav>
+</body></html>

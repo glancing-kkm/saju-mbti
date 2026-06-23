@@ -156,7 +156,7 @@ async function handleReading(request, env) {
   }
 
   const { category, sajuContext, meta } = body || {};
-  const allowed = new Set(['life', 'newyear', 'gunghap', 'life-gunghap']);
+  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap']);
   if (!allowed.has(category)) {
     return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
   }
@@ -166,16 +166,17 @@ async function handleReading(request, env) {
 
   const systemPrompt = buildReadingSystemPrompt(category, meta || {});
   const userPrompt = buildReadingUserPrompt(category, sajuContext, meta || {});
+  const coreReading = isCoreReadingCategory(category);
 
   try {
     if (env.OPENAI_API_KEY) {
       const result = await callOpenAIResponses({
         apiKey: env.OPENAI_API_KEY,
-        model: env.OPENAI_MODEL || 'gpt-5.4-mini',
+        model: coreReading ? (env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini') : (env.OPENAI_MODEL || 'gpt-5.4-mini'),
         systemPrompt,
         userPrompt,
-        maxOutputTokens: 1800,
-        reasoningEffort: 'low',
+        maxOutputTokens: coreReading ? 2800 : 1800,
+        reasoningEffort: coreReading ? 'medium' : 'low',
         verbosity: 'medium',
       });
       return json({ ok: true, provider: 'openai', text: result.text, usage: result.usage || null });
@@ -185,7 +186,7 @@ async function handleReading(request, env) {
       apiKey: env.ANTHROPIC_API_KEY,
       body: {
         model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-        max_tokens: 1800,
+        max_tokens: coreReading ? 2800 : 1800,
         system: [{ type: 'text', text: systemPrompt }],
         messages: [{ role: 'user', content: userPrompt }],
       },
@@ -206,6 +207,10 @@ async function handleReading(request, env) {
     console.error('Reading worker error:', e);
     return json({ error: '개인화 리딩 생성 중 오류가 발생했습니다.' }, 500);
   }
+}
+
+function isCoreReadingCategory(category) {
+  return category === 'life-core' || category === 'newyear-core';
 }
 
 function json(obj, status = 200) {
@@ -410,16 +415,30 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
 function buildReadingSystemPrompt(category, meta) {
   const categoryGuide = {
     life: '인생총운 첫머리에 들어갈 개인화 리딩입니다. 본인의 성향, 돈과 일의 선택 기준, 관계에서 반복되는 패턴, 현재 흐름을 먼저 짚으세요.',
+    'life-core': '인생총운의 핵심 섹션을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 단순 요약하지 말고, 성향·재물·직업·연애·건강·현재 흐름·올해 흐름·행동 가이드를 본인 맞춤으로 재작성하세요.',
     newyear: `${meta.targetYear || '올해'} 신년운세 첫머리에 들어갈 개인화 리딩입니다. 한 해의 변화, 관계·일·돈에서 특히 눈여겨볼 흐름, 조심할 선택 습관을 짚으세요.`,
+    'newyear-core': `${meta.targetYear || '올해'} 신년운세의 핵심 섹션을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·관계·건강·월별 흐름·주의 시기·행동 가이드를 본인 맞춤으로 재작성하세요.`,
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
   };
+  const outputGuide = isCoreReadingCategory(category)
+    ? `출력 형식:
+- 아래 섹션 제목을 대괄호로 감싸서 정확히 사용하세요.
+- ${category === 'life-core' ? '[성향·그릇], [재물], [직업·사업], [연애·결혼], [건강], [현재 10년 흐름], [올해 흐름], [행동 가이드]' : '[올해 총론], [재물], [직업·사업], [연애·관계], [건강], [12개월 흐름], [주의 시기], [행동 가이드]'}
+- 각 섹션은 2~4문장으로 작성하세요.
+- 전체는 공백 포함 1,800~2,600자 정도로 작성하세요.
+- 마크다운 제목, 번호, 불릿은 쓰지 마세요.`
+    : `출력 형식:
+- 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.
+- 5~8문단, 문단당 2~4문장으로 작성하세요.
+- 첫 문단은 바로 핵심 결론으로 시작하세요.
+- 마지막 문단은 "아래에서는 ..."으로 이어지는 자연스러운 유료 본문 연결 문장으로 마무리하세요.`;
   return `당신은 한국 사주 풀이 서비스의 유료 콘텐츠를 보강하는 전문 리딩 작가입니다.
 
 목표:
 - 기존 계산형 사주풀이를 바탕으로, 사용자가 "내 얘기 같다"고 느낄 개인화 문단을 작성합니다.
 - ${categoryGuide[category] || ''}
-- 사용자가 아래의 긴 카드들을 더 읽고 싶게 만드는 앞부분 리딩이어야 합니다.
+- 사용자가 아래의 긴 카드들을 더 읽고 싶게 만들되, 내용은 실제 사주 구조와 화면 풀이 요약에 근거해야 합니다.
 
 말투와 표현 규칙:
 - 한국어 친근 존댓말로만 씁니다. "~예요 / ~이에요 / ~돼요 / ~해요 / ~세요"를 자연스럽게 쓰세요.
@@ -427,16 +446,16 @@ function buildReadingSystemPrompt(category, meta) {
 - 정관, 편관, 정재, 편재, 정인, 편인, 식신, 상관, 비견, 겁재, 격국, 용신, 희신, 기신, 신살, 공망, 대운, 세운 같은 전문용어를 본문에 그대로 노출하지 마세요.
 - 단독 명사 "결"은 쓰지 마세요. "분위기", "흐름", "방식"으로 바꾸세요. 단, 결론·결정·결혼·결실 같은 복합어는 괜찮습니다.
 - 공포 조장, 사망 시기, 확정 의료·법률·투자 판단은 하지 마세요.
+- 두루뭉술한 위로나 일반론으로 채우지 말고, 입력된 생년월일시·사주팔자·현재 흐름·올해 흐름에서 보이는 선택 패턴을 구체적으로 말하세요.
 
-출력 형식:
-- 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.
-- 5~8문단, 문단당 2~4문장으로 작성하세요.
-- 첫 문단은 바로 핵심 결론으로 시작하세요.
-- 마지막 문단은 "아래에서는 ..."으로 이어지는 자연스러운 유료 본문 연결 문장으로 마무리하세요.`;
+${outputGuide}`;
 }
 
 function buildReadingUserPrompt(category, ctx, meta) {
-  const reading = String(ctx.detailedReading || '').slice(0, 12000);
+  const reading = String(ctx.detailedReading || '').slice(0, isCoreReadingCategory(category) ? 18000 : 12000);
+  const task = isCoreReadingCategory(category)
+    ? '위 정보와 모순되지 않게, 기존 계산형 풀이를 더 전문적이고 개인화된 핵심 섹션 리딩으로 재작성하세요. 이미 화면에 있는 문장을 그대로 반복하지 말고, 같은 근거를 사용해 더 깊고 특색 있게 풀어주세요.'
+    : '위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.';
   return `카테고리: ${category}
 대상 연도: ${meta.targetYear || '해당 없음'}
 
@@ -460,7 +479,7 @@ function buildReadingUserPrompt(category, ctx, meta) {
 화면에 이미 계산되어 표시된 풀이 요약:
 ${reading || '아직 상세 풀이 텍스트가 추출되지 않았습니다. 위 핵심 정보만으로 작성하세요.'}
 
-위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.`;
+${task}`;
 }
 
 function buildSystemPrompt(ctx, category = 'life') {
