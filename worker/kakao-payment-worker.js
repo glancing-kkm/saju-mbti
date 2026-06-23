@@ -50,7 +50,7 @@ const REVIEW_TTL_SEC = 90 * 24 * 60 * 60; // KV 후기 90일 보관
 const SHARE_COUPON_AMOUNT = 1000;             // 공유 보상 할인액
 const PROMO_TTL_SEC = 30 * 24 * 60 * 60;      // 코드 유효 30일
 const PROMO_KV_TTL_SEC = 35 * 24 * 60 * 60;   // KV 보관(used 추적 여유)
-const SHARE_IP_DAILY_LIMIT = 5;               // 같은 IP 24h 공유코드 발급 한도
+const SHARE_IP_DAILY_LIMIT = 8;               // 같은 IP 24h 공유코드 발급 한도
 const PROMO_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 혼동문자 제외
 
 // 결제액과 쿠폰액이 합쳐서 원가가 되는지 검증 (서버에서 쿠폰 금액 강제)

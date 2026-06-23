@@ -447,6 +447,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .ic-fb{background:#1877F2}
 .ic-x{background:#000}
 .ic-line{background:#00B900}
+.ic-native{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid)}
+.ic-url{background:var(--bg-deep);border:1px solid var(--border);color:var(--accent-bright)}
 .share-copy-btn{width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.83rem;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit}
 .share-copy-btn:active{opacity:.8}
 
@@ -1986,8 +1988,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="sheet-title">공유하기</div>
     <div class="share-preview" id="sharePreview"></div>
     <div class="sns-grid">
+      <button class="sns-btn" onclick="shareNative()">
+        <div class="sns-icon ic-native" style="font-size:1rem;font-weight:900">↗</div>기본 공유
+      </button>
       <button class="sns-btn" onclick="shareToKakao()">
         <div class="sns-icon ic-kakao" style="font-weight:900">톡</div>카카오톡
+      </button>
+      <button class="sns-btn" onclick="copyShareUrl()">
+        <div class="sns-icon ic-url" style="font-size:.78rem;font-weight:900">URL</div>URL 복사
       </button>
       <button class="sns-btn" onclick="shareToBand()">
         <div class="sns-icon ic-band" style="font-size:1.3rem;font-weight:900">B</div>밴드
@@ -7508,7 +7516,7 @@ function getUsageGuide(category){
     items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있어요.`);
   }
   items.push(`<b>역술가 질문</b> — 풀이에 대한 궁금한 점을 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. 한도 초과 시 1,000원부터의 추가 패키지(1·3·5·10회)로 즉시 충전돼요. <b>24시간 내 재진입 시에도 추가 구매가 가능</b>해요.`);
-  items.push(`<b>공유 보너스</b> — 카카오톡·밴드·인스타그램 각각 공유 시 <b>1,000원 할인코드</b>가 발급돼요(채널별 1회).`);
+  items.push(`<b>공유 보너스</b> — 카카오톡·URL 복사·밴드·인스타그램 등으로 공유 시 <b>채널별 1,000원 할인코드</b>가 발급돼요. 할인코드는 1,000원보다 큰 다음 결제에 사용할 수 있어요.`);
   return `<div class="usage-guide">
     <div class="usage-head">이용방법 안내</div>
     <ol class="usage-list">${items.map(t=>`<li>${t}</li>`).join('')}</ol>
@@ -8245,7 +8253,7 @@ function closePayDone(){
   _payDoneCtx=null;
 }
 function payDoneClickShare(){
-  // 기존 shareToKakao 흐름 재사용 — 공유 성공 시 claimShareBonus 가 자동으로 채팅 +2
+  // 기존 shareToKakao 흐름 재사용 — 공유 성공 시 claimShareBonus 가 1,000원 할인코드를 발급
   try{
     const before=(typeof _category!=='undefined'?_category:null)||'life';
     // shareToKakao 가 closeShareModal 부터 호출하므로 그쪽 모달이 없는 상황에서도 안전
@@ -12592,7 +12600,7 @@ function chatIncCount(cat){
 //  사주ID 기반 보상 시스템 — 채팅 보너스 · 공유 보너스 · 후기 쿠폰
 //  공통: sajuIdOf(_saju, _meta) 키로 사용자 식별 (로그인 없음)
 //  - 채팅 보너스 — 추가 질문 패키지 결제로 충전, 카테고리별 누적
-//  - 공유 보너스 — 카톡/밴드/인스타 공유 시 +2회 (채널당 1회)
+//  - 공유 보너스 — 채널별 1회, 다음 결제 1,000원 할인코드
 //  - 후기 쿠폰   — 후기 작성 시 다음 결제 2,000원 할인 (사주별 1회, 30일 TTL)
 // ═════════════════════════════════════════════════════════════
 // ── 채팅 보너스 (질문 추가 패키지 결제로 충전) ──
@@ -12629,7 +12637,7 @@ function _loadShareBonusMap(){
 function _saveShareBonusMap(m){
   try{localStorage.setItem(_SHARE_BONUS_LS_KEY,JSON.stringify(m||{}));}catch(e){}
 }
-// 공유 액션 실행 시 호출 — channel: 'kakao'|'band'|'instagram' 등.
+// 공유 액션 실행 시 호출 — channel: 'kakao'|'url'|'band'|'instagram' 등.
 // 같은 사주·채널 조합이 처음이면 할인코드를 발급하고 알림. 중복이면 조용히 무시.
 async function claimShareBonus(channel){
   if(!_saju||!_category)return;
@@ -12653,10 +12661,29 @@ async function claimShareBonus(channel){
 }
 // 현재 사주 기준 아직 보상 안 받은 공유 채널 목록 반환
 const _SHARE_CHANNELS=[
+  {key:'native',   label:'기본 공유', emoji:'↗', bg:'linear-gradient(135deg,var(--accent),var(--accent-bright))', color:'var(--bg-mid)', fn:'shareNative'},
   {key:'kakao',    label:'카카오톡', emoji:'💬', bg:'#FFEB00', color:'#3C1E1E'},
+  {key:'url',      label:'URL 복사', emoji:'🔗', bg:'var(--bg-deep)', color:'var(--accent-bright)'},
   {key:'band',     label:'네이버 밴드', emoji:'🟢', bg:'#21C531', color:'#fff'},
-  {key:'instagram',label:'인스타그램', emoji:'📷', bg:'linear-gradient(135deg,#fdf497,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB)', color:'#fff'}
+  {key:'instagram',label:'인스타그램', emoji:'📷', bg:'linear-gradient(135deg,#fdf497,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB)', color:'#fff'},
+  {key:'facebook', label:'페이스북', emoji:'f', bg:'#1877F2', color:'#fff'},
+  {key:'x',        label:'X', emoji:'𝕏', bg:'#000', color:'#fff'},
+  {key:'line',     label:'라인', emoji:'LINE', bg:'#00B900', color:'#fff'}
 ];
+function shareByChannel(channel){
+  const map={
+    native:shareNative,
+    kakao:shareToKakao,
+    url:copyShareUrl,
+    band:shareToBand,
+    instagram:shareToInstagram,
+    facebook:shareToFacebook,
+    x:shareToX,
+    line:shareToLine
+  };
+  const fn=map[channel];
+  if(typeof fn==='function')fn();
+}
 function _getUnusedShareChannels(){
   if(!_saju)return _SHARE_CHANNELS.slice();
   const sid=sajuIdOf(_saju,_meta);
@@ -12977,11 +13004,10 @@ function showChatLimitUpsell(currentCat){
   const shareBlock=unusedShare.length>0 ? `
     <div style="margin:14px 0;padding:14px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.5));border:1px dashed #FFEB00;border-radius:11px">
       <div style="font-size:.84rem;font-weight:800;color:#FFEB00;margin-bottom:6px">공유하면 1,000원 할인코드</div>
-      <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.</div>
+      <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요. 1,000원보다 큰 다음 결제에 사용할 수 있어요.</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${unusedShare.map(c=>{
-          const fn=c.key==='kakao'?'shareToKakao()':c.key==='band'?'shareToBand()':'shareToInstagram()';
-          return `<button type="button" onclick="document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove();${fn}" style="flex:1;min-width:0;padding:9px 10px;border:0;border-radius:8px;font-family:inherit;font-size:.76rem;font-weight:800;cursor:pointer;background:${c.bg};color:${c.color}">${c.emoji} ${c.label}</button>`;
+          return `<button type="button" onclick="document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove();shareByChannel('${c.key}')" style="flex:1;min-width:0;padding:9px 10px;border:0;border-radius:8px;font-family:inherit;font-size:.76rem;font-weight:800;cursor:pointer;background:${c.bg};color:${c.color}">${c.emoji} ${c.label}</button>`;
         }).join('')}
       </div>
     </div>` : '';
@@ -13479,11 +13505,8 @@ function renderShareCtaInChat(){
   const headTitle=`공유하면 1,000원 할인코드 받기`;
   const desc=`친구에게 천지인 사주를 알려주세요. 채널별로 한 번씩 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.`;
   const btns=unused.map(c=>{
-    const fn= c.key==='kakao'?'shareToKakao()'
-            : c.key==='band'?'shareToBand()'
-            : 'shareToInstagram()';
     const style=`background:${c.bg};color:${c.color}`;
-    return `<button type="button" class="chat-share-cta-btn" style="${style}" onclick="${fn}">${c.emoji} ${c.label}</button>`;
+    return `<button type="button" class="chat-share-cta-btn" style="${style}" onclick="shareByChannel('${c.key}')">${c.emoji} ${c.label}</button>`;
   }).join('');
   el.innerHTML=`<div class="chat-share-cta">
     <div class="chat-share-cta-head">
@@ -18400,6 +18423,29 @@ function shareToKakao(){
   claimShareBonus('kakao');
 }
 
+async function shareNative(){
+  closeShareModal();
+  const text=generateShareText();
+  const url=shareURL();
+  if(navigator.share){
+    try{
+      await navigator.share({title:'천지인 사주',text:text.replace(url,'').trim(),url});
+      claimShareBonus('native');
+      return;
+    }catch(e){
+      if(e&&e.name==='AbortError')return;
+    }
+  }
+  copyToClipboard(url,'URL이 복사됐어요!');
+  claimShareBonus('native');
+}
+
+function copyShareUrl(){
+  closeShareModal();
+  copyToClipboard(shareURL(),'URL이 복사됐어요!');
+  claimShareBonus('url');
+}
+
 function shareToBand(){
   closeShareModal();
   const text=generateShareText();
@@ -18434,18 +18480,21 @@ async function shareToInstagram(){
 function shareToFacebook(){
   closeShareModal();
   window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareURL()),'_blank','width=600,height=400,noopener');
+  claimShareBonus('facebook');
 }
 
 function shareToX(){
   closeShareModal();
   const text=generateShareText().slice(0,220);
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank','width=600,height=400,noopener');
+  claimShareBonus('x');
 }
 
 function shareToLine(){
   closeShareModal();
   const text=generateShareText();
   window.open('https://line.me/R/msg/text/?'+encodeURIComponent(text),'_blank','noopener');
+  claimShareBonus('line');
 }
 
 function copyShareText(){
