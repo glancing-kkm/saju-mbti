@@ -175,7 +175,7 @@ async function handleReading(request, env) {
         model: coreReading ? (env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini') : (env.OPENAI_MODEL || 'gpt-5.4-mini'),
         systemPrompt,
         userPrompt,
-        maxOutputTokens: coreReading ? 2800 : 1800,
+        maxOutputTokens: coreReading ? 3800 : 1800,
         reasoningEffort: coreReading ? 'medium' : 'low',
         verbosity: 'medium',
       });
@@ -186,7 +186,7 @@ async function handleReading(request, env) {
       apiKey: env.ANTHROPIC_API_KEY,
       body: {
         model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-        max_tokens: coreReading ? 2800 : 1800,
+        max_tokens: coreReading ? 3800 : 1800,
         system: [{ type: 'text', text: systemPrompt }],
         messages: [{ role: 'user', content: userPrompt }],
       },
@@ -415,18 +415,18 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
 function buildReadingSystemPrompt(category, meta) {
   const categoryGuide = {
     life: '인생총운 첫머리에 들어갈 개인화 리딩입니다. 본인의 성향, 돈과 일의 선택 기준, 관계에서 반복되는 패턴, 현재 흐름을 먼저 짚으세요.',
-    'life-core': '인생총운의 핵심 섹션을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 단순 요약하지 말고, 성향·재물·직업·연애·건강·현재 흐름·올해 흐름·행동 가이드를 본인 맞춤으로 재작성하세요.',
+    'life-core': '인생총운의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 단순 요약하지 말고, 핵심 바탕·성향·재물·직업·연애·건강·인간관계·직업 적성·현재 10년 흐름·올해 흐름·평생 타임라인 요약·개운법을 본인 맞춤으로 재작성하세요. 사주판, 표, 점수, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.',
     newyear: `${meta.targetYear || '올해'} 신년운세 첫머리에 들어갈 개인화 리딩입니다. 한 해의 변화, 관계·일·돈에서 특히 눈여겨볼 흐름, 조심할 선택 습관을 짚으세요.`,
-    'newyear-core': `${meta.targetYear || '올해'} 신년운세의 핵심 섹션을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·관계·건강·월별 흐름·주의 시기·행동 가이드를 본인 맞춤으로 재작성하세요.`,
+    'newyear-core': `${meta.targetYear || '올해'} 신년운세의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·연애·인간관계·건강·12개월 흐름·기회 시기·주의 시기·올해 행동 가이드를 본인 맞춤으로 재작성하세요. 점수 링, 월별 점수표, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.`,
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
   };
   const outputGuide = isCoreReadingCategory(category)
     ? `출력 형식:
 - 아래 섹션 제목을 대괄호로 감싸서 정확히 사용하세요.
-- ${category === 'life-core' ? '[성향·그릇], [재물], [직업·사업], [연애·결혼], [건강], [현재 10년 흐름], [올해 흐름], [행동 가이드]' : '[올해 총론], [재물], [직업·사업], [연애·관계], [건강], [12개월 흐름], [주의 시기], [행동 가이드]'}
+- ${category === 'life-core' ? '[핵심 바탕], [성향·그릇], [재물], [직업·사업], [연애·결혼], [건강], [인간관계], [직업 적성], [현재 10년 흐름], [올해 흐름], [평생 타임라인 요약], [개운법]' : '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'}
 - 각 섹션은 2~4문장으로 작성하세요.
-- 전체는 공백 포함 1,800~2,600자 정도로 작성하세요.
+- 전체는 공백 포함 ${category === 'life-core' ? '3,000~4,200자' : '2,600~3,600자'} 정도로 작성하세요.
 - 마크다운 제목, 번호, 불릿은 쓰지 마세요.`
     : `출력 형식:
 - 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.

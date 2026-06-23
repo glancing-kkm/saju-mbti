@@ -13060,7 +13060,7 @@ function aiReadingDomId(category, extraKey){
 }
 function aiReadingCacheKey(category, extraKey){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
-  return 'saju_ai_reading_v1:'+category+':'+birth+':'+(extraKey||'main');
+  return 'saju_ai_reading_v2:'+category+':'+birth+':'+(extraKey||'main');
 }
 function aiReadingCacheGet(category, extraKey){
   try{
@@ -13080,8 +13080,8 @@ function aiReadingCacheSet(category, extraKey, text){
   }catch(e){}
 }
 const AI_REPLACED_CARD_LABELS={
-  'life-core':['PERSONA','TOTAL','WEALTH','CAREER','LOVE','HEALTH','SEWOON','GAEWOON'],
-  'newyear-core':['TOTAL','NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','MONTHS','CLASSIC']
+  'life-core':['PERSONA','TOTAL','WEALTH','CAREER','LOVE','HEALTH','HUMAN','JOB','DAEUN10','SEWOON','TIMELINE','GAEWOON'],
+  'newyear-core':['TOTAL','NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','MONTHS','QUARTERS','CLASSIC']
 };
 function aiReadingFallbackSelector(category, extraKey){
   return `[data-ai-fallback-for="${String(category).replace(/"/g,'')}"][data-ai-extra="${String(extraKey||'').replace(/"/g,'')}"]`;
