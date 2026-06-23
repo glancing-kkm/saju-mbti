@@ -35,7 +35,7 @@ export default {
       return json({ error: 'JSON 본문이 필요합니다.' }, 400);
     }
 
-    const { question, sajuContext, category } = body;
+    const { question, sajuContext, category, clientId, sajuId, freeQuestion } = body;
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
     }
@@ -47,9 +47,16 @@ export default {
     }
 
     const chatCategory = typeof category === 'string' ? category : 'life';
+    const freeGuardKeys = chatCategory === 'qna' && freeQuestion
+      ? await qnaFreeGuardKeys({ request, sajuContext, clientId, sajuId })
+      : [];
+    if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
+      return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
+    }
     const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory });
     const cached = await qnaCacheGet(env, cacheKey);
     if (cached) {
+      if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
       return json({ answer: cached.answer, provider: cached.provider || 'cache', cached: true });
     }
 
@@ -66,6 +73,7 @@ export default {
           userPrompt,
         });
         await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'hermes' });
+        if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
         return json({ answer: result.text || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
       }
 
@@ -80,6 +88,7 @@ export default {
           verbosity: route.verbosity,
         });
         await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'openai', model: route.model });
+        if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
         return json({
           answer: result.text || '답변을 생성하지 못했습니다.',
           provider: 'openai',
@@ -131,6 +140,7 @@ export default {
 
       const answer = text || '답변을 생성하지 못했습니다.';
       await qnaCacheSet(env, cacheKey, { answer, provider: 'anthropic' });
+      if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
       return json({
         answer,
         provider: 'anthropic',
@@ -359,6 +369,54 @@ async function qnaCacheSet(env, key, value) {
     await env.SAJU_QNA_CACHE.put(key, JSON.stringify({ ...value, cachedAt: Date.now() }), { expirationTtl: 24 * 60 * 60 });
   } catch (e) {
     console.warn('QNA cache put failed:', e && e.message);
+  }
+}
+
+async function qnaFreeGuardKeys({ request, sajuContext, clientId, sajuId }) {
+  const ip =
+    request.headers.get('CF-Connecting-IP') ||
+    request.headers.get('X-Forwarded-For') ||
+    request.headers.get('X-Real-IP') ||
+    '';
+  const base = {
+    v: 2,
+    sajuId: String(sajuId || ''),
+    birth: sajuContext && sajuContext.birth,
+    pillars: sajuContext && sajuContext.pillars,
+  };
+  const candidates = [];
+  if (clientId) candidates.push(['client', { ...base, clientId: String(clientId) }]);
+  if (ip) candidates.push(['ip', { ...base, ip }]);
+  candidates.push(['saju-client-ip', { ...base, clientId: String(clientId || ''), ip }]);
+  const keys = [];
+  for (const [kind, value] of candidates) {
+    const src = JSON.stringify({ kind, value });
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(src));
+    keys.push('qna-free:' + kind + ':' + [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join(''));
+  }
+  return keys;
+}
+
+async function qnaFreeGuardUsed(env, keys) {
+  if (!env.SAJU_QNA_CACHE || !Array.isArray(keys) || !keys.length) return false;
+  try {
+    for (const key of keys) {
+      if (await env.SAJU_QNA_CACHE.get(key)) return true;
+    }
+    return false;
+  } catch (e) {
+    console.warn('QNA free guard get failed:', e && e.message);
+    return false;
+  }
+}
+
+async function qnaFreeGuardMark(env, keys) {
+  if (!env.SAJU_QNA_CACHE || !Array.isArray(keys) || !keys.length) return;
+  try {
+    const value = JSON.stringify({ usedAt: Date.now() });
+    await Promise.all(keys.map((key) => env.SAJU_QNA_CACHE.put(key, value, { expirationTtl: 30 * 24 * 60 * 60 })));
+  } catch (e) {
+    console.warn('QNA free guard put failed:', e && e.message);
   }
 }
 

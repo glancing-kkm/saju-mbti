@@ -2,6 +2,10 @@ name = "saju-chat"
 main = "saju-chat-worker.js"
 compatibility_date = "2025-04-01"
 
+[[kv_namespaces]]
+binding = "SAJU_QNA_CACHE"
+id = "2a538df7389e48ca994926ffcf8335ff"
+
 # 환경변수는 wrangler 명령어로 설정합니다 (DEPLOY.md 참고)
 # wrangler secret put OPENAI_API_KEY
 # wrangler secret put ANTHROPIC_API_KEY
