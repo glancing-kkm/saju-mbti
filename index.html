@@ -173,6 +173,11 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 *:focus-visible{outline:2px solid var(--accent-bright,#f5d77c);outline-offset:2px;border-radius:6px}
 button:focus-visible,.menu-card:focus-visible,.tog:focus-visible,.share-bar-btn:focus-visible,.bb:focus-visible,.lock-btn:focus-visible,.chat-btn:focus-visible{outline:2px solid var(--accent-bright,#f5d77c);outline-offset:3px}
 input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent-bright,#f5d77c);outline-offset:1px}
+@media (max-width:768px){
+  input,select,textarea{
+    font-size:16px !important;
+  }
+}
 /* 스크린리더 전용 텍스트 (sr-only) */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
