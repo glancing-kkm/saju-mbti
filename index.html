@@ -1327,6 +1327,56 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
 /* ── 분위기와 카드 통일 표준 — 모든 분위기와 카드의 테두리·라운드·여백·그라데이션 라인 일관성 ── */
 .nb-card,
+.card,
+.simple-card,
+.quick-summary,
+.chat-card,
+.summary-card,
+.summary-intro,
+.reading-brief,
+.lead-card,
+.flow-box,
+.action-guide,
+.dp-card,
+.ny-section,
+.ny-hero,
+.daily-card,
+.daily-cat,
+.daily-cats,
+.mbti-intro,
+.mbti-axis-row,
+.mbti-balance,
+.term-notice,
+.mbti-badge,
+.mbti-analysis,
+.result-tldr,
+.result-hero,
+.next-actions,
+.core-keyword,
+.life-timeline,
+.sinsal-mini-card,
+.mo-row,
+.mo-cat,
+.ny-month,
+.review-card,
+.rv-policy,
+.rv-block-msg{
+  box-sizing: border-box !important;
+  width: auto !important;
+  max-width: none !important;
+  margin-left: 12px !important;
+  margin-right: 12px !important;
+  border-radius: 14px !important;
+  border: none !important;
+  position: relative;
+  overflow: hidden;
+}
+.nb-card,
+.card,
+.simple-card,
+.quick-summary,
+.chat-card,
+.summary-card,
 .dp-card,
 .ny-section,
 .ny-hero,
@@ -1337,35 +1387,52 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .result-tldr,
 .result-hero,
 .next-actions,
-.life-timeline{
-  margin: 12px !important;
-  border-radius: 14px !important;
-  border: 1px solid var(--accent) !important;
-  position: relative;
-  overflow: hidden;
+.core-keyword,
+.life-timeline,
+.mo-row,
+.review-card{
+  margin-top: 12px !important;
+  margin-bottom: 14px !important;
+}
+.daily-cats{
+  margin-top:0 !important;
+  margin-bottom:12px !important;
+}
+.daily-cats .daily-cat,
+.mo-cats .mo-cat,
+.sinsal-mini-grid .sinsal-mini-card{
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+.nb-body :where(.reading-brief,.lead-card,.flow-box,.action-guide,.summary-intro),
+.daily-cat-body :where(.reading-brief,.lead-card,.flow-box,.action-guide),
+.mbti-analysis :where(.mbti-intro,.mbti-axis-row,.mbti-balance){
+  width:100% !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  max-width:none !important;
+  border:none !important;
 }
 .nb-card::before,
+.card::before,
+.simple-card::before,
+.quick-summary::before,
+.chat-card::before,
 .dp-card::before,
 .ny-section::before,
 .ny-hero::before,
 .daily-card::before,
+.daily-cat::before,
 .term-notice::before,
 .mbti-badge::before,
 .mbti-analysis::before,
 .result-tldr::before,
 .result-hero::before,
 .next-actions::before,
+.core-keyword::before,
 .life-timeline::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;
-  height:1px;
-  background: linear-gradient(90deg, transparent, var(--accent-bright), transparent);
-  opacity:.6;
-  pointer-events:none;
+  opacity:0 !important;
 }
-/* daily-cats는 카드가 아닌 그리드 — 좌우 마진만 일치 */
-.daily-cats{margin: 0 12px 12px}
 /* action-guide·ag-block은 카드 내부 — 통일 표준 미적용 */
 </style>
 </head>
