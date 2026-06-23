@@ -2182,6 +2182,7 @@ const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운�
 const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
+const CHAT_QUESTION_MAX_CHARS=300;
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
 const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5,qna:5};
 function chatLsKeyOf(cat){return `saju_chat_count_${cat||'life'}_v2`;}
@@ -13118,7 +13119,7 @@ async function chatAsk(){
   const input=document.getElementById('chatInput');
   const question=input.value.trim();
   if(!question)return;
-  if(question.length>500){alert('질문은 500자 이내로 입력해주세요.');return;}
+  if(question.length>CHAT_QUESTION_MAX_CHARS){alert(`질문은 ${CHAT_QUESTION_MAX_CHARS}자 이내로 입력해주세요.`);return;}
 
   const btn=document.getElementById('chatBtn');
   btn.disabled=true;btn.textContent='⏳';
@@ -13195,10 +13196,10 @@ function renderChatSection(catOpt){
       <div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='qna'?'지금 이직해도 될까요? / 결혼운은 언제 강해요? / 돈 흐름에서 뭘 조심해야 해요?':cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>
     </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었어요':'궁금한 점을 입력하세요'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었어요':'궁금한 점을 300자 이내로 입력하세요'}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${isExhausted?'disabled':''}>${isExhausted?'소진':'🔮 질문하기'}</button>
     </div>
-    <div class="chat-tip">Enter로 전송 · Shift+Enter로 줄바꿈 · 위 풀이 내용을 바탕으로 답변돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
+    <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 보통 800~1,300자 안에서 정리돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
     <div id="chatShareCta"></div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;

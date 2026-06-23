@@ -9,6 +9,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
+const QNA_QUESTION_MAX_CHARS = 300;
 
 export default {
   async fetch(request, env) {
@@ -38,8 +39,8 @@ export default {
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
     }
-    if (question.length > 500) {
-      return json({ error: '질문은 500자 이내로 입력해주세요.' }, 400);
+    if (question.length > QNA_QUESTION_MAX_CHARS) {
+      return json({ error: `질문은 ${QNA_QUESTION_MAX_CHARS}자 이내로 입력해주세요.` }, 400);
     }
     if (!sajuContext || typeof sajuContext !== 'object') {
       return json({ error: '사주 정보가 누락되었습니다.' }, 400);
@@ -52,9 +53,9 @@ export default {
       return json({ answer: cached.answer, provider: cached.provider || 'cache', cached: true });
     }
 
-    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory);
-    const userPrompt = buildQnaUserPrompt(question, sajuContext, chatCategory);
     const route = chooseQnaModel(question, sajuContext, env);
+    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory);
+    const userPrompt = buildQnaUserPrompt(question, sajuContext, chatCategory, route);
 
     try {
       if (hermesEnabled) {
@@ -264,23 +265,26 @@ function chooseQnaModel(question, ctx, env = {}) {
         model: env.OPENAI_QNA_PREMIUM_MODEL || 'gpt-5.5',
         reasoningEffort: 'medium',
         verbosity: 'medium',
-        maxOutputTokens: 1900,
+        maxOutputTokens: 1600,
+        answerLength: '1,000~1,300자',
       }
     : {
         name: 'standard',
         model: env.OPENAI_QNA_MODEL || 'gpt-5.4-mini',
         reasoningEffort: 'low',
         verbosity: 'medium',
-        maxOutputTokens: 1500,
+        maxOutputTokens: 1200,
+        answerLength: '800~1,000자',
       };
 }
 
-function buildQnaUserPrompt(question, ctx, category) {
+function buildQnaUserPrompt(question, ctx, category, route = {}) {
   return `카테고리: ${category || 'life'}
 사용자 질문:
 ${question}
 
-위 질문에 답하세요. 답변은 본인의 사주 원국, 현재 10년 흐름, 올해 흐름, 화면 풀이 요약과 모순되지 않아야 합니다.`;
+위 질문에 답하세요. 답변은 본인의 사주 원국, 현재 10년 흐름, 올해 흐름, 화면 풀이 요약과 모순되지 않아야 합니다.
+답변 길이는 공백 포함 ${route.answerLength || '800~1,000자'}를 목표로 하세요. 꼭 필요한 경우에만 10% 안에서 넘길 수 있고, 불필요한 반복 설명은 줄이세요.`;
 }
 
 async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
@@ -529,7 +533,7 @@ ${reading}
 - 근거는 본인 중심 기운, 배우자 자리, 다섯 기운의 치우침, 현재 10년 흐름, 올해 흐름을 바탕으로 설명하세요. 전문용어는 내부 판단에만 쓰고, 화면 문장은 쉬운 말로 바꾸세요.
 - 시기·달·연도·방향·직업군·관계 결정 같은 구체 질문에는 구체적인 답(예: "5월", "7월에 결정", "공직·교육직", "동쪽")으로 답하세요. "~할 수도 있어요"식 회피 금지.
 - 따뜻한 친근 존댓말로 답하세요. "~예요 / ~이에요 / ~돼요 / ~해요 / ~세요"를 자연스럽게 쓰고, 격식체는 강조 문장에만 제한적으로 쓰세요.
-- 답변 분량은 4~7문단. 첫 문단에 결론, 중간 문단들에 사주 근거를 쉬운 말로 설명, 마지막 문단에 구체적 행동 처방을 주세요.
+- 답변 분량은 4~6문단. 첫 문단에 결론, 중간 문단들에 사주 근거를 쉬운 말로 설명, 마지막 문단에 구체적 행동 처방을 주세요. 사용자가 지정받은 글자수 범위 안에서 답하세요.
 - 마크다운 문법(##, **, - 등)은 사용하지 말고 자연스러운 문단으로 작성하세요. 줄바꿈은 자유롭게 사용해도 좋습니다.
 - 사주가 어려운 흐름으로 나와도 겁주지 마세요. "이런 흐름이라 ○○월에 ○○하는 것이 좋아요"처럼 행동 처방은 반드시 함께 주세요.
 - 의료 진단, 법률 판단, 구체적 투자 종목 추천만은 사주로 단언하지 않고 "전문의/변호사/투자 전문가 상담이 필요합니다"라고 명시하세요. (그 외 결혼·이직·이사·시기 같은 인생 결정은 사주로 명확히 답해도 됩니다.)
