@@ -2183,7 +2183,7 @@ const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
-const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5};
+const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5,qna:5};
 function chatLsKeyOf(cat){return `saju_chat_count_${cat||'life'}_v2`;}
 // CI-3: 월별 운세는 결제한 개월수만큼 질문 가능 (3개월=3회, 6개월=6회)
 function chatMaxOf(cat){
@@ -4267,15 +4267,15 @@ function renderQnaIntro(saju, meta){
   const dm=DM[saju.dp.stem];
   return `<div class="nb-card">
     <div class="nb-cat">Q&A</div>
-    <div class="nb-title">즉문즉답 준비 중</div>
+    <div class="nb-title">사주 기반 즉문즉답</div>
     <div class="nb-body">
-      <div class="lead-card">${preventOrphan(`본인 사주 정보는 정상적으로 입력됐어요. 본인은 ${dm?dm.n.split('(')[0]:'본인 중심 기운'}의 분위기를 가진 분으로, 나중에 즉문즉답이 열리면 이 기본 정보를 바탕으로 질문에 맞춰 바로 풀이할 수 있어요.`)}</div>
-      <p>${preventOrphan('즉문즉답은 질문 입력 방식과 답변 범위를 조금 더 정리한 뒤 연결할 예정이에요. 지금은 인생총운과 같은 사주 기본 정보에 직업·결혼 여부·자녀 유무를 선택사항으로 받는 구조만 먼저 만들어뒀어요.')}</p>
+      <div class="lead-card">${preventOrphan(`본인 사주 정보는 정상적으로 입력됐어요. 본인은 ${dm?dm.n.split('(')[0]:'본인 중심 기운'}의 분위기를 가진 분이에요. 질문을 남기면 인생총운의 핵심 풀이를 바탕으로 답변을 정리해드려요.`)}</div>
+      <p>${preventOrphan('즉문즉답에서는 인생총운 본문을 화면에 노출하지 않고, 사주 원국·다섯 기운·현재 흐름·올해 흐름을 내부 상담 자료로만 활용해요. 궁금한 주제를 구체적으로 적을수록 답변이 더 선명해져요.')}</p>
       <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px">
         ${rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;font-size:.8rem"><span style="color:var(--muted)">${k}</span><b style="color:var(--text);font-weight:700;text-align:right">${chatEscape(v)}</b></div>`).join('')}
       </div>
     </div>
-  </div>`;
+  </div>${renderChatSection('qna')}`;
 }
 
 // 한자 명리 인용 (상황별)
@@ -12838,17 +12838,13 @@ function chatResetCount(cat){
 }
 
 // 자세한 사주 패널에 표시된 텍스트를 추출해 컨텍스트로 사용 (현재 카테고리 패널)
-const CAT_PANEL_ID={manse:'p0',daily:'p1',daypick:'p2',monthly:'p3',newyear:'p4',life:'p5'};
-function extractDetailedReadingText(){
-  const id=CAT_PANEL_ID[_category]||'p5';
-  const p=document.getElementById(id);
-  if(!p)return '';
-  const clone=p.cloneNode(true);
-  // 채팅 카드와 궁합 입력폼은 컨텍스트에서 제외
-  ['.chat-card','.gg-input','#ggResultBox','.lock-wrap','.mm-sin-row','.mm','.dx-wrap','.gg-wrap','.tl-pillars'].forEach(sel=>{
+const CAT_PANEL_ID={manse:'p0',daily:'p1',daypick:'p2',monthly:'p3',newyear:'p4',life:'p5',gunghap:'p6',name:'p7',qna:'p8'};
+function cleanReadingTextFromElement(root){
+  if(!root)return '';
+  const clone=root.cloneNode(true);
+  ['.chat-card','.gg-input','#ggResultBox','.lock-wrap','.mm-sin-row','.mm','.dx-wrap','.gg-wrap','.tl-pillars','.ai-reading-card'].forEach(sel=>{
     clone.querySelectorAll(sel).forEach(el=>el.remove());
   });
-  // 블록 요소 뒤에 줄바꿈 추가 (가독성)
   ['p','div','h1','h2','h3','h4','h5','li'].forEach(tag=>{
     clone.querySelectorAll(tag).forEach(el=>el.insertAdjacentText('afterend','\n'));
   });
@@ -12857,9 +12853,24 @@ function extractDetailedReadingText(){
     .replace(/\n[ \t]+/g,'\n')
     .replace(/\n{3,}/g,'\n\n')
     .trim();
-  // 너무 길면 잘라서 보냄 (과한 토큰 방지)
   if(text.length>15000)text=text.slice(0,15000)+'\n…(이하 생략)';
   return text;
+}
+function buildHiddenLifeReadingTextForQna(){
+  if(!_saju||!_meta)return '';
+  try{
+    const wrap=document.createElement('div');
+    wrap.innerHTML=renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);
+    return cleanReadingTextFromElement(wrap);
+  }catch(e){
+    return '';
+  }
+}
+function extractDetailedReadingText(){
+  if(_category==='qna')return buildHiddenLifeReadingTextForQna();
+  const id=CAT_PANEL_ID[_category]||'p5';
+  const p=document.getElementById(id);
+  return cleanReadingTextFromElement(p);
 }
 
 function buildSajuContextForChat(){
@@ -12884,6 +12895,7 @@ function buildSajuContextForChat(){
   const sinNames=[...new Set(sins.map(s=>s.n.split(' ')[0]))];
   const cityName=document.querySelector('#iCity option[value="'+_meta.cityKey+'"]');
   const t=_meta.hour<0?'시간 미상':`${String(_meta.hour).padStart(2,'0')}시 ${String(_meta.min).padStart(2,'0')}분`;
+  const qaExtra=(_meta&&_meta.qaExtra)||null;
   return{
     birth:`${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일 ${t}`,
     gender:gender==='male'?'남성':'여성',
@@ -12905,6 +12917,11 @@ function buildSajuContextForChat(){
     daeun:`${curD.age}세부터 ${STEMKO[curD.stem]}${BRCHKO[curD.branch]} 대운`,
     year:cy,
     sewoon:`${STEMKO[swStem]}${BRCHKO[swBranch]}년`,
+    qaExtra:qaExtra?{
+      job:qaExtra.job||'',
+      marriage:qaExtra.marriage||'',
+      children:qaExtra.children||'',
+    }:null,
     detailedReading:extractDetailedReadingText(),
   };
 }
@@ -13051,6 +13068,41 @@ function chatAppendError(text,retryQuestion){
   return div;
 }
 
+const QNA_ANSWER_TTL_MS=24*60*60*1000;
+function qnaAnswerCacheKey(cat, question, ctx){
+  const sid=(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'no-saju';
+  const basis=[
+    'qna_answer_v1',
+    cat||'life',
+    sid||'no-sid',
+    (ctx&&ctx.daeun)||'',
+    (ctx&&ctx.sewoon)||'',
+    JSON.stringify((ctx&&ctx.qaExtra)||{}),
+    String(question||'').trim().replace(/\s+/g,' ')
+  ].join('|');
+  let h=0;
+  for(let i=0;i<basis.length;i++)h=((h<<5)-h+basis.charCodeAt(i))|0;
+  return 'saju_qna_answer_'+Math.abs(h);
+}
+function qnaAnswerCacheGet(cat, question, ctx){
+  try{
+    const raw=localStorage.getItem(qnaAnswerCacheKey(cat,question,ctx));
+    if(!raw)return null;
+    const data=JSON.parse(raw);
+    if(!data||!data.answer||!data.exp||Date.now()>data.exp){
+      localStorage.removeItem(qnaAnswerCacheKey(cat,question,ctx));
+      return null;
+    }
+    return data.answer;
+  }catch(e){return null;}
+}
+function qnaAnswerCacheSet(cat, question, ctx, answer){
+  if(!answer)return;
+  try{
+    localStorage.setItem(qnaAnswerCacheKey(cat,question,ctx),JSON.stringify({answer,exp:Date.now()+QNA_ANSWER_TTL_MS}));
+  }catch(e){}
+}
+
 async function chatAsk(){
   if(!WORKER_URL){
     alert('채팅이 아직 설정되지 않았습니다.\n\n관리자가 worker/DEPLOY.md 의 절차를 따라 Cloudflare Worker를 배포한 뒤,\nindex.html 의 WORKER_URL 상수에 URL을 등록해야 합니다.');
@@ -13076,17 +13128,25 @@ async function chatAsk(){
 
   try{
     const ctx=buildSajuContextForChat();
+    const cachedAnswer=qnaAnswerCacheGet(curCat,question,ctx);
+    if(cachedAnswer){
+      if(loadingEl)loadingEl.remove();
+      chatAppend('reply',cachedAnswer);
+      return;
+    }
     const res=await fetch(WORKER_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({question,sajuContext:ctx}),
+      body:JSON.stringify({question,sajuContext:ctx,category:curCat}),
     });
     const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없어요.'}));
     if(loadingEl)loadingEl.remove();
     if(!res.ok||data.error){
       chatAppendError(data.error||`오류 (${res.status})`,question);
     }else{
-      chatAppend('reply',data.answer||'답변을 받지 못했어요.');
+      const answer=data.answer||'답변을 받지 못했어요.';
+      qnaAnswerCacheSet(curCat,question,ctx,answer);
+      chatAppend('reply',answer);
       chatIncCount(curCat);
       const r=document.getElementById('chatRemaining');
       if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
@@ -13119,6 +13179,7 @@ function renderChatSection(catOpt){
   const remaining=chatRemaining(cat);
   const isExhausted=remaining<=0;
   const subText={
+    qna:`인생총운 핵심 자료를 바탕으로 궁금한 점을 바로 물어보세요.<br>즉문즉답은 <b>${max}회</b> 질문이 가능해요.`,
     daypick:`이 날의 흐름 중 더 깊이 알고 싶은 점이 있나요?<br>지정일 운세는 <b>${max}회</b> 질문이 가능해요.`,
     monthly:`이 기간의 흐름 중 궁금한 달이나 시기가 있다면<br>역술가에게 <b>${max}회</b> 질문하실 수 있어요.`,
     newyear:`한 해의 흐름 중 더 깊이 알고 싶은 분야·시기가 있다면<br>역술가에게 <b>${max}회</b> 질문하실 수 있어요.`,
@@ -13131,7 +13192,7 @@ function renderChatSection(catOpt){
       <div class="chat-remaining" id="chatRemaining">${remaining}회 남음</div>
     </div>
     <div class="chat-log" id="chatLog">
-      <div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>
+      <div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='qna'?'지금 이직해도 될까요? / 결혼운은 언제 강해요? / 돈 흐름에서 뭘 조심해야 해요?':cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>
     </div>
     <div class="chat-input-row">
       <textarea class="chat-input" id="chatInput" placeholder="${isExhausted?max+'회 한도가 소진되었어요':'궁금한 점을 입력하세요'}" maxlength="500" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${isExhausted?'disabled':''}></textarea>

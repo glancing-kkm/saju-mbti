@@ -5,3 +5,10 @@ compatibility_date = "2025-04-01"
 # 환경변수는 wrangler 명령어로 설정합니다 (DEPLOY.md 참고)
 # wrangler secret put OPENAI_API_KEY
 # wrangler secret put ANTHROPIC_API_KEY
+# 선택: 즉문즉답 기본 모델과 프리미엄 모델
+# wrangler secret put OPENAI_QNA_MODEL            # 예: gpt-5.4-mini
+# wrangler secret put OPENAI_QNA_PREMIUM_MODEL    # 예: gpt-5.5
+# 선택: Hermes를 OpenAI 대신 호출할 때
+# wrangler secret put HERMES_API_URL
+# wrangler secret put HERMES_API_KEY
+# wrangler secret put AI_PROVIDER                 # hermes
