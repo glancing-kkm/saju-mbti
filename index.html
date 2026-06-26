@@ -1498,19 +1498,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 24,000원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 9,900원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">timeline</span>
           <div class="mc-title">인생총운</div>
           <div class="mc-desc">10년 흐름으로 보는 평생의 중요한 시기</div>
           <div class="mc-tag t-signature">시그니처</div>
-          <div class="mc-price">24,000원</div>
+          <div class="mc-price">9,900원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 19,000원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('newyear')" aria-label="신년운세 — 8,900원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">calendar_month</span>
           <div class="mc-title">신년운세</div>
           <div class="mc-desc">사주와 올해·10년 흐름을 함께 보는 한 해 분석</div>
           <div class="mc-tag t-paid">프리미엄</div>
-          <div class="mc-price">19,000원</div>
+          <div class="mc-price">8,900원</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 첫 질문 무료, 이후 건당 결제" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
@@ -3136,7 +3136,7 @@ function renderDailyFortune(saju){
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
       </div>
-      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(24,000원)을 보세요.</div>
+      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(9,900원)을 보세요.</div>
     </div>`;
   return h;
 }
@@ -7409,7 +7409,7 @@ const PAID_META={
       '· 양력 별자리 보강 풀이',
       '· 분기별 행동 지침 + 연간 키워드 3개'
     ],
-    price:'19,000원'
+    price:'8,900원'
   },
   life:{
     icon:'',title:'인생총운',
@@ -7422,7 +7422,7 @@ const PAID_META={
       '· 10년 흐름별 시기별 풀이',
       '· 카테고리당 본문 4~6문단의 깊이'
     ],
-    price:'24,000원'
+    price:'9,900원'
   },
   gunghap:{
     icon:'',title:'궁합',
@@ -7473,7 +7473,7 @@ function getDecisionGuide(category){
   return `<div class="lock-info" style="margin-top:-8px;margin-bottom:16px"><b>이 풀이로 결정할 수 있는 것</b><br>${preventOrphan(t)}</div>`;
 }
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
-const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:19000,gunghap:5900,name:9900,life:24000,
+const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:8900,gunghap:5900,name:9900,life:9900,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack1:1000,chatpack3:2500,chatpack5:4000,chatpack10:7000};
 // 월별 최대 개월

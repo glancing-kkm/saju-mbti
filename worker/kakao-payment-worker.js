@@ -26,10 +26,10 @@
 const CATEGORY_PRICE = {
   daypick: 1500,
   monthly: 2000, // 월당 — 2000 × 1~6개월
-  newyear: 19000,
+  newyear: 8900,
   gunghap: 5900,
   name: 9900,
-  life: 24000,
+  life: 9900,
   chatpack1: 1000,
   chatpack3: 2500,
   chatpack5: 4000,
