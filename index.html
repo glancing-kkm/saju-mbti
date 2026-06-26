@@ -6445,6 +6445,32 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   return h;
 }
 
+// 세운 — 1년 단위 간지 흐름 (현재 연도 중심 스트립, 올해 강조)
+function renderSewoonCard(saju){
+  const dStem=saju.dp.stem;
+  const cyNow=new Date().getFullYear();
+  const ganji=(Y)=>{const idx=(Y-4+3600)%60;return {stem:idx%10,branch:idx%12};};
+  const cg=ganji(cyNow), curTg=tenGod(dStem,cg.stem);
+  let h=`<div class="card">
+    <div class="ctitle big">세운 — 1년 단위 흐름 (올해 강조)</div>
+    <div style="font-size:.72rem;color:var(--sub);margin:2px 0 10px;line-height:1.6">매년 입춘(2월 4일경)을 기점으로 새 간지가 들어오는 1년 흐름이에요. 대운(10년 큰 흐름) 안에서 해마다의 색을 봐요.</div>
+    <div class="daeun-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <div class="daeun-strip" style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
+  for(let i=-1;i<=8;i++){
+    const Y=cyNow+i, g=ganji(Y), se=SOH[g.stem], be=BOH[g.branch], isCur=(i===0);
+    h+=`<div style="text-align:center;min-width:50px">
+      <div style="font-size:.6rem;color:${isCur?'var(--accent-bright)':'var(--sub)'};margin-bottom:3px;font-weight:${isCur?800:600}">${isCur?'★':''}${Y}</div>
+      <div class="pstem ${ecls(se)}" style="padding:6px 2px;font-size:.88rem;${isCur?'box-shadow:0 0 0 2px var(--accent-bright)':''}">${STEMKO[g.stem]}</div>
+      <div class="pbranch ${ecls(be)}" style="padding:6px 2px;font-size:.88rem;margin-top:2px">${BRCHKO[g.branch]}</div>
+      <div style="font-size:.56rem;color:var(--muted);margin-top:3px;white-space:nowrap">${tenGod(dStem,g.stem)}</div>
+    </div>`;
+  }
+  h+=`</div></div>
+    <div style="font-size:.73rem;color:var(--sub);margin-top:8px;line-height:1.6">올해는 <b>${cyNow}년 ${STEMKO[cg.stem]}${BRCHKO[cg.branch]}</b>이고, 천간 십신은 <b>${curTg}</b>예요. 더 자세한 올해 풀이는 「신년운세」에서 볼 수 있어요.</div>
+  </div>`;
+  return h;
+}
+
 // 부드러운 곡선 path (Catmull-Rom → 베지어)
 function smoothLinePath(pts){
   if(!pts.length)return '';
@@ -14024,6 +14050,7 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
 
   // 대운
   h+=renderDaeunCard(saju,sy,sm,sd,sh,smin);
+  h+=renderSewoonCard(saju);
 
   return h;
 }
@@ -18101,7 +18128,9 @@ function analyze(){
       // 용어 안내 — 모든 카테고리 분위기와 상단(헤더 직후)에 일괄 노출. 잠금 화면에서는 미노출.
       const termTip=termNoticeHTML();
       if(cat==='manse'){
-        document.getElementById('p0').innerHTML=fixKoreanJosa(back+headerFull+termTip+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions);
+        // 만세력은 핵심 키워드·히어로·용어 안내 없이 진태양시 보정(만세력 본문)부터 바로 노출
+        document.getElementById('p0').innerHTML=fixKoreanJosa(back+renderManseryeokFull(saju,sy,sm,sd,hour,min,lunarInfo)+nextActions);
+        enrichTerms(document.getElementById('p0'));
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
