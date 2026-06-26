@@ -3758,8 +3758,8 @@ function mbtiBadgeHTML(saju, mbti){
   </div>`);
 }
 
-// ── MBTI 4지표 상세 분석 — 「타고난 기질(사주) × 학습된 성격(MBTI)」 내러티브 ──
-// 각 지표별로 ① 사주의 본래 분위기, ② 현재 MBTI로 비치는 모습, ③ 변화의 배경(환경·경험+사주 요소)을 풀어줌
+// ── MBTI 핵심 분석 — 사주가 메인, MBTI는 현재 성향을 보정하는 보조 해석 ──
+// 4지표를 모두 길게 펼치지 않고, 가장 자연스러운 축과 가장 피로가 쌓이는 축만 보여줌
 function mbtiAnalysisHTML(saju, mbti){
   if(!mbti||mbti.length!==4)return '';
   const so=SOH[saju.dp.stem], bo=BOH[saju.dp.branch];
@@ -3909,14 +3909,13 @@ function mbtiAnalysisHTML(saju, mbti){
     synthDetail+=`<p><b class="mbti-synth-head">↹ 차이 영역 — ${misalignedList.join('·')}</b><br>이 영역은 타고난 분위기와 살아오며 굳어진 패턴이 다른 방향으로 흐르는 분위기예요. 본인이 가끔 「왜 나는 이런 상황에서 자꾸 무리하게 되지?」 또는 「겉으로는 잘하고 있는데 속은 왜 이렇게 지치지?」라고 느낀다면, 그 피로의 정체가 바로 이 어긋남에서 와요. 사회·관계·일에서 보여주는 모습과 본래 기질이 다르기 때문에 같은 일을 해도 에너지를 두 배로 쓰게 되는 영역인 셈이에요.<br><br>해결의 방향은 「둘 중 하나를 버리는 것」이 아니라 「두 흐름이 언제 켜지고 꺼져야 하는지 의식적으로 구분하는 것」입니다. 사회·일의 공적 자리에서는 몸에 밴 방식을 그대로 사용하시고, 가까운 관계·회복의 시간·혼자만의 자리에서는 타고난 기질을 풀어주는 식으로 분리하시면 이질감이 점점 옅어져요. 본인이 두 흐름을 다 다룰 수 있는 사람이라는 점이 약점이 아니라 자산임을 잊지 마세요.</p>`;
   }
 
-  let h=`<section class="mbti-analysis" aria-label="사주 × MBTI 4지표 통합 분석">
+  let h=`<section class="mbti-analysis" aria-label="사주 × MBTI 핵심 통합 분석">
     <div class="mbti-analysis-head">
-      <div class="mbti-analysis-cat">SAJU(타고난 기질) × MBTI(학습된 성격)</div>
-      <h2>${dStemKo}${dBrKo} 본인 자리 × ${mbti}(${MBTI_LABEL[mbti]||''}) — 4지표 통합 풀이</h2>
+      <div class="mbti-analysis-cat">SAJU × MBTI</div>
+      <h2>${dStemKo}${dBrKo} 본인 자리 × ${mbti}(${MBTI_LABEL[mbti]||''}) — 핵심 통합 풀이</h2>
       <div class="mbti-intro">
-        <p><b>사주</b>는 태어날 때 받은 여러 글자에 새겨진 <b>본래의 분위기</b>예요. 환경이 바뀌어도 변하지 않는 「타고난 기질」이며, 본인이 자연스럽게 끌리는 방향·회복하는 방식·관계 맺는 흐름이 모두 여기에 담겨 있어요.</p>
-        <p><b>MBTI</b>는 살아오는 과정에서 환경·경험·관계를 통해 굳어진 <b>학습된 성격</b>이에요. 가정 분위기·학교·직업·중요한 관계 같은 요인들이 본인이 「실제로 사용하는」 사고·감정·행동의 패턴을 만들어 왔어요.</p>
-        <p>두 흐름이 <b>같은 방향</b>으로 흐르는 영역은 본인이 「이게 나답다」고 느끼며 가장 적은 에너지로 가장 좋은 결과를 내는 부분이에요. 반대로 <b>다른 방향</b>으로 흐르는 영역은 「본래의 나」와 「세상이 보는 나」 사이에 미세한 이질감·피로가 따라오는 부분이며, 이 글에서는 그 이질감이 어떤 환경·경험에서 생겼는지, 사주의 어떤 글자가 영향을 미쳤는지를 함께 풀어드려요.</p>
+        <p><b>사주</b>는 본인이 타고난 바탕이고, <b>MBTI</b>는 살아오며 익숙해진 현재 성향에 가까워요. 그래서 MBTI는 사주를 대신하는 풀이가 아니라, 본인이 실제로 어떤 방식으로 기질을 쓰는지 보여주는 보조 렌즈예요.</p>
+        <p>아래에서는 네 지표를 전부 길게 펼치기보다, 본인에게 가장 자연스러운 축과 피로가 쌓이기 쉬운 축만 짚어드려요.</p>
       </div>
     </div>`;
 
@@ -3941,24 +3940,34 @@ function mbtiAnalysisHTML(saju, mbti){
   });
   h+=`</div>`;
 
-  indicators.forEach((ind,idx)=>{
+  const focus=[];
+  const alignedPick=indicators.find(i=>i.aligned);
+  const diffPick=indicators.find(i=>!i.aligned);
+  if(alignedPick)focus.push({type:'strong',data:alignedPick});
+  if(diffPick&&(!alignedPick||diffPick.key!==alignedPick.key))focus.push({type:'diff',data:diffPick});
+  if(focus.length<2){
+    indicators.forEach(i=>{
+      if(focus.length<2&&!focus.some(f=>f.data.key===i.key))focus.push({type:i.aligned?'strong':'diff',data:i});
+    });
+  }
+  focus.forEach((item,idx)=>{
+    const ind=item.data;
     const badge=ind.aligned
       ? `<span class="mbti-match-badge mbti-match-aligned">✓ 일치</span>`
       : `<span class="mbti-match-badge mbti-match-misaligned">↹ 차이</span>`;
     h+=`<article class="mbti-indicator-block">
-      <header><h3>${idx+1}. ${ind.label}</h3>${badge}</header>
+      <header><h3>${idx+1}. ${ind.aligned?'가장 자연스러운 축':'피로가 쌓이기 쉬운 축'} — ${ind.label}</h3>${badge}</header>
       <div class="mbti-axis">
-        <div class="mbti-axis-row row-innate"><div class="mbti-axis-tag">타고난 기질 (사주의 분위기)</div><div class="mbti-axis-body">${ind.innate}</div></div>
-        <div class="mbti-axis-row row-learned"><div class="mbti-axis-tag">학습된 성격 (지금의 MBTI)</div><div class="mbti-axis-body">${ind.learned}</div></div>
-        <div class="mbti-axis-row row-evolution"><div class="mbti-axis-tag">변화의 흐름 (환경·경험과 사주의 영향)</div><div class="mbti-axis-body">${ind.evolution}</div></div>
+        <div class="mbti-axis-row row-innate"><div class="mbti-axis-tag">사주의 바탕</div><div class="mbti-axis-body">${ind.innate}</div></div>
+        <div class="mbti-axis-row row-evolution"><div class="mbti-axis-tag">${ind.aligned?'활용 포인트':'조절 포인트'}</div><div class="mbti-axis-body">${ind.evolution}</div></div>
       </div>
     </article>`;
   });
 
   h+=`<div class="mbti-analysis-synth">
-      <h3>종합 — 타고난 분위기와 지금의 분위기 사이의 거리</h3>
+      <h3>종합 — MBTI는 본인 사주의 사용 방식이에요</h3>
       <p>${synthHead}</p>
-      ${synthDetail}
+      <p>${misalignedList.length>0?'차이가 나는 축은 약점이라기보다, 살아오며 익힌 방식이 타고난 바탕과 다르게 작동하는 자리예요. 중요한 일에서는 익숙한 방식을 쓰되, 회복 시간에는 본래 리듬으로 돌아오는 습관이 필요해요.':'사주와 MBTI가 대체로 같은 방향이라, 본인다움을 따라갈수록 에너지가 덜 새고 결과도 안정적으로 쌓이는 편이에요.'}</p>
     </div>
   </section>`;
   return preventOrphan(h);
