@@ -1122,6 +1122,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .term-pop-body{color:var(--sub);font-size:.8rem;line-height:1.78}
 .term-pop-close{position:absolute;top:7px;right:9px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:.85rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
 .term-pop-close:hover{color:var(--accent);border-color:var(--accent)}
+.pstem,.pbranch,.mm-cell,.dx-col-s,.dx-col-b,.ms,.sinsal-mini-card,.irow{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pstem:active,.pbranch:active,.mm-cell:active,.dx-col-s:active,.dx-col-b:active,.ms:active,.sinsal-mini-card:active{transform:scale(.98)}
 
 /* ── 채팅 (자세한 사주 하단) ── */
 .chat-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
@@ -2509,6 +2511,31 @@ const TERM_DICT={
   '60갑자':'천간 10개와 지지 12개의 조합 60개. 사주의 각 기둥은 60갑자 중 하나입니다.',
   '갑자':'60갑자의 첫 번째. 갑목 + 자수가 만난 일주의 분위기.'
 };
+[
+  ['갑','갑목 — 큰 나무·기둥의 기운이에요. 바르게 서려는 힘과 시작을 밀고 가는 추진력이 강해요.'],
+  ['을','을목 — 풀잎·덩굴의 기운이에요. 부드럽지만 끈질기고, 상황에 맞춰 자라나는 힘이 있어요.'],
+  ['병','병화 — 태양의 기운이에요. 밝고 솔직하며 주변에 활기와 방향감을 만들어줘요.'],
+  ['정','정화 — 촛불·화롯불의 기운이에요. 섬세한 온기와 정성으로 사람을 오래 붙드는 힘이 있어요.'],
+  ['무','무토 — 큰 산·언덕의 기운이에요. 쉽게 흔들리지 않고 사람과 일을 품어내는 힘이 있어요.'],
+  ['기','기토 — 논밭·정원의 기운이에요. 조용히 돌보고 키워내며 주변을 안정시키는 힘이 있어요.'],
+  ['경','경금 — 바위·강철의 기운이에요. 기준이 분명하고 어려운 상황에서도 길을 내는 힘이 있어요.'],
+  ['신','신금 또는 신지의 기운이에요. 천간에서는 보석·예리한 칼처럼 정밀하고, 지지에서는 가을의 시작처럼 영리하고 활동적인 분위기가 있어요.'],
+  ['임','임수 — 큰 바다·강의 기운이에요. 생각의 폭이 넓고 변화 속에서도 자기 흐름을 잃지 않는 힘이 있어요.'],
+  ['계','계수 — 이슬비·옹달샘의 기운이에요. 섬세한 통찰력과 깨끗한 감수성이 살아나요.'],
+  ['자','자수(쥐) — 한밤중의 깊은 물이에요. 지혜롭고 영민하며 잠재력을 품은 자리예요.'],
+  ['축','축토(소) — 겨울 끝 얼어붙은 땅이에요. 우직하고 인내심이 강하며 묵묵히 쌓아가는 자리예요.'],
+  ['인','인목(호랑이) — 봄의 시작이에요. 도전적이고 진취적이며 새 시작에 강한 자리예요.'],
+  ['묘','묘목(토끼) — 완연한 봄의 푸른 잎이에요. 섬세하고 예술적이며 부드러운 매력이 있어요.'],
+  ['진','진토(용) — 봄비 머금은 옥토예요. 큰 그릇과 변화의 잠재력을 함께 품은 자리예요.'],
+  ['사','사화(뱀) — 한낮을 향한 불기운이에요. 명석하고 직관적이며 야망을 품은 자리예요.'],
+  ['오','오화(말) — 한낮의 태양이에요. 활달하고 열정적이며 사교성이 크게 드러나는 자리예요.'],
+  ['미','미토(양) — 여름 끝 마른 흙이에요. 따뜻하고 헌신적이며 예술적 감수성이 배어 있어요.'],
+  ['유','유금(닭) — 정련된 금속이에요. 정확하고 단정하며 완성도를 중시하는 자리예요.'],
+  ['술','술토(개) — 늦가을 마른 흙이에요. 충직하고 책임감이 있으며 신의를 중시하는 자리예요.'],
+  ['해','해수(돼지) — 겨울 시작의 큰 물이에요. 순수하고 인정이 많으며 깊이 생각하는 자리예요.']
+].forEach(function(pair){
+  if(!TERM_DICT[pair[0]])TERM_DICT[pair[0]]=pair[1];
+});
 // 한글에서 \b 단어 경계가 안 먹히므로 lookbehind/lookahead로 한글·영문·숫자 boundary 처리
 // "안전해요"의 "해", "그러해요"의 "합" 같은 어절 내 부분 매칭 방지
 const TERM_RE=new RegExp(
@@ -2562,10 +2589,16 @@ function showTermPopup(el){
   const term=el.getAttribute('data-term');
   const desc=TERM_DICT[term];
   if(!desc)return;
+  showInfoPopup(el,term,desc);
+}
+
+function showInfoPopup(el,title,desc){
+  hideTermPopup();
+  if(!el||!title||!desc)return;
   const pop=document.createElement('div');
   pop.className='term-pop';
   pop.innerHTML=fixKoreanJosa(`<button class="term-pop-close" type="button" aria-label="닫기">×</button>
-    <div class="term-pop-name">${term}</div>
+    <div class="term-pop-name">${title}</div>
     <div class="term-pop-body">${desc}</div>`);
   document.body.appendChild(pop);
   const popW=Math.min(280,window.innerWidth-24);
@@ -2587,6 +2620,45 @@ function showTermPopup(el){
   _termPopup=pop;_termAnchor=el;
 }
 
+function _firstKoreanToken(el){
+  if(!el)return '';
+  const direct=[...el.childNodes].find(n=>n.nodeType===3&&String(n.nodeValue||'').trim());
+  const raw=(direct?direct.nodeValue:el.textContent)||'';
+  const compact=String(raw).replace(/\s+/g,'').trim();
+  const m=compact.match(/[가-힣]+/);
+  return m?m[0].slice(0,4):'';
+}
+function _sajuClickInfo(el){
+  if(!el)return null;
+  const sinsalEl=el.closest('.sinsal-mini-card');
+  if(sinsalEl){
+    const nameEl=sinsalEl.querySelector('.sinsal-mini-name');
+    const name=(nameEl?nameEl.textContent:sinsalEl.textContent||'').replace(/\([^)]*\)/g,'').trim().split(/\s+/)[0];
+    const key=Object.keys(TERM_DICT).find(k=>name.includes(k)||k.includes(name));
+    if(key)return {title:key,body:TERM_DICT[key],anchor:sinsalEl};
+  }
+  const badge=el.closest('.ms');
+  if(badge){
+    const name=(badge.textContent||'').trim();
+    const key=Object.keys(TERM_DICT).find(k=>name.includes(k)||k.includes(name));
+    if(key)return {title:key,body:TERM_DICT[key],anchor:badge};
+  }
+  const cell=el.closest('.pstem,.pbranch,.mm-cell,.dx-col-s,.dx-col-b');
+  if(cell){
+    const token=_firstKoreanToken(cell);
+    if(token&&TERM_DICT[token])return {title:token,body:TERM_DICT[token],anchor:cell};
+    const tg=[...Object.keys(TERM_DICT)].find(k=>(cell.textContent||'').includes(k));
+    if(tg)return {title:tg,body:TERM_DICT[tg],anchor:cell};
+  }
+  const row=el.closest('.irow');
+  if(row){
+    const text=row.textContent||'';
+    const key=['월주','일간','일주','입춘','절기','오행','용신','대운','세운','공망','진태양시','육십갑자'].find(k=>text.includes(k)&&TERM_DICT[k]);
+    if(key)return {title:key,body:TERM_DICT[key],anchor:row};
+  }
+  return null;
+}
+
 function hideTermPopup(){
   if(_termPopup){_termPopup.remove();_termPopup=null;}
   if(_termAnchor){_termAnchor.classList.remove('term-active');_termAnchor=null;}
@@ -2603,6 +2675,13 @@ document.addEventListener('click',e=>{
     return;
   }
   if(_termPopup&&!e.target.closest('.term-pop'))hideTermPopup();
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('button,a,input,select,textarea,label,.term,.term-pop,.daeun-col,.ctx-btn,.sns-btn,.share-bar-btn,.pay-sheet,.upsell-modal'))return;
+  const info=_sajuClickInfo(e.target);
+  if(!info)return;
+  e.stopPropagation();
+  showInfoPopup(info.anchor,info.title,info.body);
 });
 window.addEventListener('scroll',()=>{if(_termPopup)hideTermPopup();},true);
 window.addEventListener('resize',hideTermPopup);
@@ -13418,6 +13497,38 @@ function chatAppendError(text,retryQuestion){
   return div;
 }
 
+function normalizeChatErrorMessage(text,status){
+  const raw=String(text||'');
+  if(/OpenAI|Anthropic|upstream|API|502|500|503|504|429/i.test(raw)){
+    return 'AI 답변 연결이 잠시 불안정해요. 질문권은 차감하지 않았고, 아래에 기본 사주 흐름으로 먼저 정리해드렸어요.';
+  }
+  if(status===402||/무료 질문|질문권|충전/.test(raw))return raw;
+  if(/network|fetch|Failed/i.test(raw))return '네트워크 연결이 불안정해요. 질문권은 차감하지 않았어요.';
+  return raw||'답변을 불러오지 못했어요. 질문권은 차감하지 않았어요.';
+}
+
+function localChatFallbackAnswer(question,ctx){
+  if(!ctx)return '';
+  const q=String(question||'');
+  const topic=/결혼|연애|배우자|남자|여자|이별|재회/.test(q)?'관계'
+    :/돈|재물|투자|사업|부동산|수입/.test(q)?'재물'
+    :/직장|일|이직|취업|진로|사업|승진/.test(q)?'일'
+    :/건강|몸|수술|병|컨디션/.test(q)?'건강'
+    :/언제|시기|올해|내년|대운|세운/.test(q)?'시기'
+    :'종합';
+  const persona=ctx.persona?`본인 사주는 ${ctx.persona} 흐름이 먼저 보여요.`:'본인 사주는 중심 기운과 현재 흐름을 함께 봐야 해요.';
+  const nowFlow=`현재 큰 흐름은 ${ctx.daeun||'10년 흐름 미상'}, 올해는 ${ctx.sewoon||'올해 흐름 미상'}이에요.`;
+  const base={
+    관계:'관계 질문은 본인의 배우자 자리와 올해 흐름이 서로 편하게 맞는지부터 봐야 해요. 성급하게 결론을 내리기보다, 상대가 본인의 속도와 생활 리듬을 존중하는지 확인하는 게 핵심이에요.',
+    재물:'재물 질문은 한 번에 크게 벌기보다 본인에게 맞는 돈의 흐름을 안정적으로 반복할 수 있는지가 중요해요. 큰 투자나 동업은 조건을 문서로 남기고, 감정이 올라온 날에는 결정을 하루 미뤄보세요.',
+    일:'일과 진로는 본인의 강점이 실제 역할로 연결되는지가 핵심이에요. 지금은 무리하게 방향을 넓히기보다, 본인이 반복해서 잘할 수 있는 한 가지 역량을 명확히 잡는 쪽이 좋아요.',
+    건강:'건강은 사주상 경향을 참고하되 확정 진단으로 보시면 안 돼요. 최근 피로가 누적됐다면 수면, 소화, 순환 리듬을 먼저 회복하고 증상이 있으면 전문의 확인을 받으세요.',
+    시기:'시기 질문은 10년 흐름과 올해 흐름이 같은 방향으로 밀어줄 때 가장 힘이 커져요. 급한 결정보다 준비를 먼저 해두고, 흐름이 열리는 달에 실행하는 방식이 좋아요.',
+    종합:'질문은 본인의 타고난 분위기와 현재 흐름이 만나는 지점을 봐야 해요. 지금은 한 번에 답을 정하기보다, 관계·일·돈 중 가장 부담이 큰 한 가지를 먼저 정리하는 쪽이 좋아요.'
+  }[topic];
+  return `${persona}\n\n${nowFlow}\n\n${base}\n\nAI 상담 연결이 정상화되면 같은 질문으로 다시 시도해 더 자세한 답변을 받을 수 있어요. 이 임시 답변은 질문권에서 차감하지 않았어요.`;
+}
+
 const QNA_ANSWER_TTL_MS=24*60*60*1000;
 function qnaAnswerCacheKey(cat, question, ctx){
   const sid=(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'no-saju';
@@ -13475,9 +13586,10 @@ async function chatAsk(){
   input.value='';input.style.height='42px';
   chatAppend('user',question);
   const loadingEl=chatAppend('loading','사주를 짚어가며 답변을 정리하고 있어요...');
+  let ctx=null;
 
   try{
-    const ctx=buildSajuContextForChat();
+    ctx=buildSajuContextForChat();
     const cachedAnswer=qnaAnswerCacheGet(curCat,question,ctx);
     if(cachedAnswer){
       if(loadingEl)loadingEl.remove();
@@ -13513,12 +13625,17 @@ async function chatAsk(){
     const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없어요.'}));
     if(loadingEl)loadingEl.remove();
     if(!res.ok||data.error){
-      chatAppendError(data.error||`오류 (${res.status})`,question);
       if(curCat==='qna'&&(data.code==='QNA_FREE_USED'||res.status===402)){
+        chatAppendError(data.error||`오류 (${res.status})`,question);
         qnaMarkFreeUsed();
         const r=document.getElementById('chatRemaining');
         if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
         setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},500);
+      }else{
+        const msg=normalizeChatErrorMessage(data.error||`오류 (${res.status})`,res.status);
+        chatAppendError(msg,question);
+        const fallback=localChatFallbackAnswer(question,ctx);
+        if(fallback)chatAppend('reply',fallback);
       }
     }else{
       const answer=data.answer||'답변을 받지 못했어요.';
@@ -13544,7 +13661,9 @@ async function chatAsk(){
     }
   }catch(e){
     if(loadingEl)loadingEl.remove();
-    chatAppendError('네트워크 오류가 발생했어요: '+(e.message||'unknown'),question);
+    chatAppendError(normalizeChatErrorMessage(e&&e.message||'네트워크 오류',0),question);
+    const fallback=localChatFallbackAnswer(question,ctx);
+    if(fallback)chatAppend('reply',fallback);
   }finally{
     if(chatRemaining(curCat)>0){btn.disabled=false;btn.textContent=curCat==='qna'?'보내기':'질문하기';}
   }
