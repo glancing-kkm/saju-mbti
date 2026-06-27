@@ -43,13 +43,17 @@ PRIORITY_RULES: list[tuple[str, float, str]] = [
     ("/blog/zodiac/",       0.6, "monthly"),      # 띠
     ("/blog/glossary/",     0.5, "monthly"),      # 용어
     ("/blog/",              0.9, "weekly"),       # blog/ (인덱스 fallback)
+    ("/about.html",         0.4, "yearly"),       # 서비스 소개
     ("/legal/",             0.3, "yearly"),       # 약관·환불 정책
 ]
 
 # 정적 추가 URL (HTML 파일 스캔으로 안 잡히는 페이지)
 EXTRA_URLS = [
+    "/about.html",
     "/legal/terms.html",
+    "/legal/privacy.html",
     "/legal/refund.html",
+    "/legal/editorial-policy.html",
 ]
 
 # 메타 태그 추출 정규식

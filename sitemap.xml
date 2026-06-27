@@ -992,6 +992,15 @@
     </image:image>
   </url>
   <url>
+    <loc>https://saju-mbti-9h1.pages.dev/about.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+    <image:image>
+      <image:loc>https://saju-mbti-9h1.pages.dev/assets/og-image.png</image:loc>
+    </image:image>
+  </url>
+  <url>
     <loc>https://saju-mbti-9h1.pages.dev/legal/terms.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>yearly</changefreq>
@@ -1001,7 +1010,25 @@
     </image:image>
   </url>
   <url>
+    <loc>https://saju-mbti-9h1.pages.dev/legal/privacy.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <image:image>
+      <image:loc>https://saju-mbti-9h1.pages.dev/assets/og-image.png</image:loc>
+    </image:image>
+  </url>
+  <url>
     <loc>https://saju-mbti-9h1.pages.dev/legal/refund.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <image:image>
+      <image:loc>https://saju-mbti-9h1.pages.dev/assets/og-image.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://saju-mbti-9h1.pages.dev/legal/editorial-policy.html</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
