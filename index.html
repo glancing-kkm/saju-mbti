@@ -6476,6 +6476,19 @@ function sewoonStripHTML(saju, daeunAge){
   return h;
 }
 
+// 신살 태그 클릭 시 — 그 신살의 한 줄 의미 표시 + 선택 강조
+function showSinsalMeaning(key){
+  const box=document.getElementById('sinsalMeaningBox');
+  const map=window._sinsalMeanings||{};
+  if(!box)return;
+  const d=map[key];
+  box.innerHTML=`<b style="color:var(--accent-bright)">${key}</b> — ${d||'이 신살에 대한 요약 설명이에요.'}`;
+  document.querySelectorAll('.sinsal-tag').forEach(function(el){
+    const on=el.getAttribute('data-sin')===key;
+    el.style.boxShadow=on?'0 0 0 2px var(--accent-bright)':'none';
+  });
+}
+
 // 대운 클릭 시 — 해당 대운의 세운 스트립으로 교체 + 대운 강조 이동
 function selectDaeunSewoon(age){
   if(!_saju)return;
@@ -7293,20 +7306,25 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
     </div>`;
   }
   h+=renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo);
-  // 신살 요약
+  // 신살 요약 — 태그를 탭하면 의미 표시
   const sins=findSinsal(saju);
   if(sins.length>0){
-    h+=`<div class="card"><div class="ctitle big">신살 요약</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">`;
     const seen=new Set();
+    const sinMap={};
+    let tagsHtml='';
     sins.forEach(s=>{
       const key=s.n.split(' ')[0];
       if(seen.has(key))return;seen.add(key);
+      sinMap[key]=s.d||'';
       const cls=s.tag==='g'?'tag-g':s.tag==='r'?'tag-r':'tag-y';
-      h+=`<span class="tag ${cls}">${key}</span>`;
+      tagsHtml+=`<span class="tag sinsal-tag ${cls}" data-sin="${key}" onclick="showSinsalMeaning('${key}')" style="cursor:pointer">${key}</span>`;
     });
-    h+=`</div>
-      <div style="font-size:.72rem;color:var(--sub);margin-top:8px;line-height:1.6">자세한 풀이는 「자세한 사주」 탭에서 확인하실 수 있어요.</div>
+    window._sinsalMeanings=sinMap;
+    h+=`<div class="card"><div class="ctitle big">신살 요약</div>
+      <div style="font-size:.72rem;color:var(--accent-bright);margin:2px 0 8px;font-weight:600">👆 신살을 탭하면 무슨 의미인지 나와요</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${tagsHtml}</div>
+      <div id="sinsalMeaningBox" style="margin-top:11px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;font-size:.8rem;color:var(--sub);line-height:1.75;min-height:1.3em">신살 하나를 탭해 보세요.</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:8px;line-height:1.6">더 자세한 신살 풀이는 「인생총운」에서 볼 수 있어요.</div>
     </div>`;
   }
   // 공망
