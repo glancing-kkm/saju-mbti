@@ -266,7 +266,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .menu-card .mc-tag.t-signature{color:#f5d77c;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(245,215,124,.12));border-color:rgba(245,215,124,.55)}
 .menu-card .mc-price{display:inline-block;margin-top:4px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:800;color:var(--accent-bright);letter-spacing:-.01em}
 .menu-card .mc-lock{position:absolute;top:8px;right:10px;font-size:.78rem;color:var(--accent);opacity:.85}
-.menu-back{display:flex;align-items:center;gap:6px;padding:10px 14px 8px;font-size:.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;letter-spacing:.02em}
+/* 콘텐츠 내 '처음으로' 링크 숨김 — 고정 상단 바의 '‹ 뒤로' 버튼이 대신함 */
+.menu-back{display:none;align-items:center;gap:6px;padding:10px 14px 8px;font-size:.78rem;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:700;letter-spacing:.02em}
 .menu-back:hover{color:var(--accent-bright)}
 .menu-back .mb-arrow{font-size:1.1rem;line-height:1}
 
@@ -515,12 +516,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .rv-block-msg{padding:18px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--sub);line-height:1.72;text-align:center}
 
 /* ── Input view header ── */
-.hdr-back{color:var(--text);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:30;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(17,20,21,.8)}
-.hdr-back .bb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--accent-bright);width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:.18s}
-.hdr-back .bb:active{background:var(--accent-soft);border-color:var(--accent)}
-/* 시안 — 상단 바 브랜드 워드마크 (뒤로가기 유지, 가짜 버튼 없음) */
-.hdr-brand{flex:1;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em}
+.hdr-back{color:var(--text);height:60px;box-sizing:border-box;padding:0 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:45;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(17,20,21,.94)}
+.hdr-back .bb{background:linear-gradient(135deg,#f4d36b,#d4af37);border:none;color:#1a1c1d;padding:9px 16px 9px 13px;border-radius:50px;font-size:.86rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;font-family:inherit;transition:transform .12s,box-shadow .18s;letter-spacing:-.01em;box-shadow:0 3px 12px rgba(212,175,55,.35);line-height:1}
+.hdr-back .bb:active{transform:scale(.94)}
+.hdr-back .bb:hover{box-shadow:0 4px 16px rgba(212,175,55,.5)}
+/* 상단 바 브랜드 워드마크 — 버튼 폭과 무관하게 항상 중앙 고정 */
+.hdr-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em;pointer-events:none}
 .hdr-spacer{width:36px;flex-shrink:0}
+/* 고정 상단 바 높이만큼 결과·입력 화면 콘텐츠 아래로 */
+#view-result,#view-input{padding-top:60px}
 .hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
@@ -1579,7 +1583,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <!-- ───── INPUT ───── -->
   <div class="view" id="view-input">
     <div class="hdr-back">
-      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹</button>
+      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹ 뒤로</button>
       <div class="hdr-brand">천지인 사주</div>
       <span class="hdr-spacer" aria-hidden="true"></span>
       <div class="hdr-back-meta">
@@ -1962,7 +1966,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <!-- ───── RESULT ───── -->
   <div class="view" id="view-result" role="region" aria-live="polite" aria-label="사주 분석 분위기와">
     <div class="hdr-back">
-      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹</button>
+      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹ 뒤로</button>
       <div class="hdr-brand">천지인 사주</div>
       <span class="hdr-spacer" aria-hidden="true"></span>
       <div class="hdr-back-meta">
