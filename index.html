@@ -18444,6 +18444,42 @@ async function saveAsImage(btn){
   }
 }
 
+function _shareTitle(){
+  return '천지인 사주';
+}
+function _shareTextOnly(){
+  const url=shareURL();
+  return generateShareText().replace(url,'').trim();
+}
+function _isMobileUA(){
+  return /android|iphone|ipad|ipod/i.test(navigator.userAgent||'');
+}
+function _openShareWindow(url,channel,copyText,msg){
+  const win=window.open(url,'_blank','width=600,height=520,noopener,noreferrer');
+  if(win){
+    claimShareBonus(channel);
+    return true;
+  }
+  copyToClipboard(copyText||shareURL(),msg||'팝업이 차단되어 공유 내용을 복사했어요.');
+  claimShareBonus(channel);
+  return false;
+}
+async function _nativeShareFallback(channel,copyText,msg){
+  const url=shareURL();
+  if(navigator.share){
+    try{
+      await navigator.share({title:_shareTitle(),text:_shareTextOnly(),url});
+      claimShareBonus(channel);
+      return true;
+    }catch(e){
+      if(e&&e.name==='AbortError')return false;
+    }
+  }
+  copyToClipboard(copyText||generateShareText(),msg||'공유 내용을 복사했어요. 원하는 앱에 붙여넣어 주세요.');
+  claimShareBonus(channel);
+  return false;
+}
+
 function shareToKakao(){
   closeShareModal();
   const text=generateShareText();
@@ -18472,22 +18508,31 @@ function shareToKakao(){
     claimShareBonus('kakao');
     return;
   }
-  // 모바일 딥링크 fallback
-  if(/android|iphone|ipad|ipod/i.test(navigator.userAgent)){
+  // 카카오 앱 키가 없을 때: 모바일은 앱 딥링크를 먼저 시도하고, 실패하면 복사로 이어진다.
+  if(_isMobileUA()){
+    let hidden=false;
+    const onVis=()=>{hidden=document.hidden;};
+    document.addEventListener('visibilitychange',onVis,{once:true});
     window.location.href='kakaotalk://msg/text?message='+encodeURIComponent(text);
-  }else{
-    copyToClipboard(text,'카카오톡 앱에서 붙여넣기 하세요!\n\n텍스트가 클립보드에 복사됐어요.');
+    setTimeout(()=>{
+      document.removeEventListener('visibilitychange',onVis);
+      if(!hidden&&!document.hidden){
+        _nativeShareFallback('kakao',text,'카카오톡이 열리지 않아 공유 내용을 복사했어요. 카카오톡에서 붙여넣어 주세요.');
+      }else{
+        claimShareBonus('kakao');
+      }
+    },900);
+    return;
   }
-  claimShareBonus('kakao');
+  _nativeShareFallback('kakao',text,'카카오톡 앱에서 붙여넣기 할 수 있도록 공유 내용을 복사했어요.');
 }
 
 async function shareNative(){
   closeShareModal();
-  const text=generateShareText();
   const url=shareURL();
   if(navigator.share){
     try{
-      await navigator.share({title:'천지인 사주',text:text.replace(url,'').trim(),url});
+      await navigator.share({title:_shareTitle(),text:_shareTextOnly(),url});
       claimShareBonus('native');
       return;
     }catch(e){
@@ -18507,14 +18552,14 @@ function copyShareUrl(){
 function shareToBand(){
   closeShareModal();
   const text=generateShareText();
-  window.open('https://band.us/plugin/share?body='+encodeURIComponent(text)+'&route='+encodeURIComponent(shareURL()),'_blank','width=500,height=500,noopener');
-  claimShareBonus('band');
+  const url='https://band.us/plugin/share?body='+encodeURIComponent(text)+'&route='+encodeURIComponent(shareURL());
+  _openShareWindow(url,'band',text,'밴드 공유창이 열리지 않아 공유 내용을 복사했어요.');
 }
 
 async function shareToInstagram(){
   closeShareModal();
   if(!window.html2canvas){
-    alert('이미지를 먼저 저장한 후 인스타그램 앱에서 업로드해주세요.');
+    _nativeShareFallback('instagram',generateShareText(),'인스타그램은 웹에서 직접 게시가 제한되어 공유 내용을 복사했어요.');
     return;
   }
   const target=document.querySelector('.panel.on')||document.getElementById('p0');
@@ -18533,26 +18578,28 @@ async function shareToInstagram(){
 
 function shareToFacebook(){
   closeShareModal();
-  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareURL()),'_blank','width=600,height=400,noopener');
-  claimShareBonus('facebook');
+  const url='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareURL());
+  _openShareWindow(url,'facebook',shareURL(),'페이스북 공유창이 열리지 않아 URL을 복사했어요.');
 }
 
 function shareToX(){
   closeShareModal();
-  const text=generateShareText().slice(0,220);
-  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank','width=600,height=400,noopener');
-  claimShareBonus('x');
+  const text=_shareTextOnly().slice(0,220);
+  const url='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(shareURL());
+  _openShareWindow(url,'x',generateShareText(),'X 공유창이 열리지 않아 공유 내용을 복사했어요.');
 }
 
 function shareToLine(){
   closeShareModal();
   const text=generateShareText();
-  window.open('https://line.me/R/msg/text/?'+encodeURIComponent(text),'_blank','noopener');
-  claimShareBonus('line');
+  const url='https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(shareURL())+'&text='+encodeURIComponent(_shareTextOnly());
+  _openShareWindow(url,'line',text,'라인 공유창이 열리지 않아 공유 내용을 복사했어요.');
 }
 
 function copyShareText(){
+  closeShareModal();
   copyToClipboard(generateShareText(),'📋 텍스트가 복사됐어요!');
+  claimShareBonus('url');
 }
 
 function copyToClipboard(text,msg){
