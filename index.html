@@ -2346,9 +2346,7 @@ function chatLsKeyOf(cat){
   return `saju_chat_count_${c}_v2`;
 }
 function qnaFreeLsKey(){
-  if(!_saju||!_meta)return '';
-  const sid=sajuIdOf(_saju,_meta)||'no-saju';
-  return `saju_qna_free_used_v1:${sid}:${_getOrCreateUserId()}`;
+  return `saju_qna_free_used_global_v1:${_getOrCreateUserId()}`;
 }
 function qnaFreeAvailable(){
   const k=qnaFreeLsKey();
@@ -2370,6 +2368,22 @@ function qnaMarkFreeUsed(){
   const k=qnaFreeLsKey();
   if(!k)return;
   try{localStorage.setItem(k,JSON.stringify({usedAt:Date.now(),exp:Date.now()+QNA_FREE_TTL_MS}));}catch(e){}
+}
+function qnaDeviceFingerprint(){
+  try{
+    const tz=(Intl.DateTimeFormat&&Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+    const scr=window.screen?[screen.width,screen.height,screen.colorDepth].join('x'):'';
+    return [
+      navigator.userAgent||'',
+      navigator.language||'',
+      (navigator.languages||[]).join(','),
+      navigator.platform||'',
+      tz,
+      scr,
+    ].join('|').slice(0,900);
+  }catch(e){
+    return '';
+  }
 }
 // CI-3: 월별 운세는 결제한 개월수만큼 질문 가능 (3개월=3회, 6개월=6회)
 function chatMaxOf(cat){
@@ -13477,6 +13491,7 @@ async function chatAsk(){
         sajuContext:ctx,
         category:curCat,
         clientId:_getOrCreateUserId(),
+        deviceFingerprint:qnaDeviceFingerprint(),
         sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
         freeQuestion:curCat==='qna'&&qnaFreeAvailable(),
       }),
@@ -13486,6 +13501,9 @@ async function chatAsk(){
     if(!res.ok||data.error){
       chatAppendError(data.error||`오류 (${res.status})`,question);
       if(curCat==='qna'&&(data.code==='QNA_FREE_USED'||res.status===402)){
+        qnaMarkFreeUsed();
+        const r=document.getElementById('chatRemaining');
+        if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
         setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},500);
       }
     }else{

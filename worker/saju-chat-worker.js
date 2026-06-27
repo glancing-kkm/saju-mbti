@@ -35,7 +35,7 @@ export default {
       return json({ error: 'JSON 본문이 필요합니다.' }, 400);
     }
 
-    const { question, sajuContext, category, clientId, sajuId, freeQuestion } = body;
+    const { question, sajuContext, category, clientId, deviceFingerprint, sajuId, freeQuestion } = body;
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
     }
@@ -48,7 +48,7 @@ export default {
 
     const chatCategory = typeof category === 'string' ? category : 'life';
     const freeGuardKeys = chatCategory === 'qna' && freeQuestion
-      ? await qnaFreeGuardKeys({ request, sajuContext, clientId, sajuId })
+      ? await qnaFreeGuardKeys({ request, sajuContext, clientId, deviceFingerprint, sajuId })
       : [];
     if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
       return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
@@ -372,22 +372,31 @@ async function qnaCacheSet(env, key, value) {
   }
 }
 
-async function qnaFreeGuardKeys({ request, sajuContext, clientId, sajuId }) {
+async function qnaFreeGuardKeys({ request, sajuContext, clientId, deviceFingerprint, sajuId }) {
   const ip =
     request.headers.get('CF-Connecting-IP') ||
     request.headers.get('X-Forwarded-For') ||
     request.headers.get('X-Real-IP') ||
     '';
-  const base = {
+  const ua = request.headers.get('User-Agent') || '';
+  const lang = request.headers.get('Accept-Language') || '';
+  const device = String(deviceFingerprint || '').slice(0, 900);
+  const legacySajuBase = {
     v: 3,
     sajuId: String(sajuId || ''),
     birth: sajuContext && sajuContext.birth,
     pillars: sajuContext && sajuContext.pillars,
   };
   const candidates = [];
-  if (clientId) candidates.push(['client', { ...base, clientId: String(clientId) }]);
-  if (ip) candidates.push(['ip', { ...base, ip }]);
-  candidates.push(['saju-client-ip', { ...base, clientId: String(clientId || ''), ip }]);
+  if (clientId) candidates.push(['client-global-v1', { clientId: String(clientId) }]);
+  if (ip) candidates.push(['ip-global-v1', { ip }]);
+  if (device || ua || lang) candidates.push(['device-global-v1', { device, ua, lang }]);
+  if (clientId || ip || device) candidates.push(['person-global-v1', { clientId: String(clientId || ''), ip, device, ua, lang }]);
+
+  // 기존 배포에서 이미 기록된 "사주별 무료 사용" 키도 함께 확인해 현재 사주 재무료를 막는다.
+  if (clientId) candidates.push(['client', { ...legacySajuBase, clientId: String(clientId) }]);
+  if (ip) candidates.push(['ip', { ...legacySajuBase, ip }]);
+  candidates.push(['saju-client-ip', { ...legacySajuBase, clientId: String(clientId || ''), ip }]);
   const keys = [];
   for (const [kind, value] of candidates) {
     const src = JSON.stringify({ kind, value });
