@@ -4253,16 +4253,15 @@ function sinsalMiniHTML(activeSins, contextDesc){
 
 // ── 후속 행동 CTA — 분위기와 페이지 끝, 다음 카테고리·공유 유도 ──
 function nextActionsHTML(currentCat){
-  // 현재 카테고리 외 추천 카드 3-4개 + 공유/저장
+  // 홈 화면에 실제 노출 중인 카테고리만 추천
   const allCats=[
     {key:'manse',icon:'grid_view',title:'만세력',desc:'태어난 사주 구조 정확 계산',price:'무료'},
     {key:'daily',icon:'today',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
-    {key:'daypick',icon:'event',title:'지정일 운세',desc:'중요한 날의 일진 풀이',price:'프리미엄'},
-    {key:'monthly',icon:'date_range',title:'월별 운세',desc:'최대 6개월 흐름',price:'프리미엄'},
+    {key:'life',icon:'timeline',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'},
     {key:'newyear',icon:'calendar_month',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
+    {key:'qna',icon:'question_answer',title:'즉문즉답',desc:'첫 질문 무료 상담형 풀이',price:'무료'},
     {key:'gunghap',icon:'favorite',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
-    {key:'name',icon:'badge',title:'이름풀이·작명',desc:'이름의 다섯 기운 + 추천 이름 5개',price:'프리미엄'},
-    {key:'life',icon:'timeline',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'}
+    {key:'name',icon:'badge',title:'이름풀이·작명',desc:'이름의 다섯 기운 + 추천 이름 5개',price:'프리미엄'}
   ];
   const others=allCats.filter(c=>c.key!==currentCat).slice(0,3);
 
