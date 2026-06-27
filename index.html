@@ -1122,8 +1122,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .term-pop-body{color:var(--sub);font-size:.8rem;line-height:1.78}
 .term-pop-close{position:absolute;top:7px;right:9px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:.85rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
 .term-pop-close:hover{color:var(--accent);border-color:var(--accent)}
+.term-pop-cta{margin-top:11px;padding-top:10px;border-top:1px dashed var(--border);display:flex;flex-direction:column;gap:7px}
+.term-pop-cta-text{font-size:.73rem;color:var(--sub);line-height:1.55}
+.term-pop-cta-btn{width:100%;border:0;border-radius:8px;padding:9px 10px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer}
 .pstem,.pbranch,.mm-cell,.dx-col-s,.dx-col-b,.ms,.sinsal-mini-card,.irow{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pstem:active,.pbranch:active,.mm-cell:active,.dx-col-s:active,.dx-col-b:active,.ms:active,.sinsal-mini-card:active{transform:scale(.98)}
+.teaser-assurance{margin-top:8px;padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.035);color:#dcdce4;font-size:.72rem;line-height:1.6;text-align:center}
+.teaser-assurance b{color:#f4d36b}
+.chat-inline-upsell{margin:10px 0 2px;padding:12px;background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(45,52,71,.5));border:1px dashed rgba(212,175,55,.42);border-radius:12px}
+.chat-inline-upsell-title{font-size:.82rem;font-weight:900;color:var(--accent-bright);margin-bottom:4px}
+.chat-inline-upsell-desc{font-size:.74rem;color:var(--sub);line-height:1.6;margin-bottom:9px}
+.chat-inline-upsell-row{display:flex;gap:6px}
+.chat-inline-upsell-btn{flex:1;border:0;border-radius:8px;padding:9px 7px;background:var(--accent);color:var(--bg-mid);font-family:inherit;font-size:.74rem;font-weight:900;cursor:pointer}
+.chat-inline-upsell-btn.secondary{background:var(--bg-deep);color:var(--accent-bright);border:1px solid var(--border)}
 
 /* ── 채팅 (자세한 사주 하단) ── */
 .chat-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
@@ -2597,9 +2608,10 @@ function showInfoPopup(el,title,desc){
   if(!el||!title||!desc)return;
   const pop=document.createElement('div');
   pop.className='term-pop';
+  const cta=infoPopupCtaHTML(title);
   pop.innerHTML=fixKoreanJosa(`<button class="term-pop-close" type="button" aria-label="닫기">×</button>
     <div class="term-pop-name">${title}</div>
-    <div class="term-pop-body">${desc}</div>`);
+    <div class="term-pop-body">${desc}</div>${cta}`);
   document.body.appendChild(pop);
   const popW=Math.min(280,window.innerWidth-24);
   pop.style.width=popW+'px';
@@ -2618,6 +2630,17 @@ function showInfoPopup(el,title,desc){
   requestAnimationFrame(()=>pop.classList.add('vis'));
   el.classList.add('term-active');
   _termPopup=pop;_termAnchor=el;
+}
+
+function infoPopupCtaHTML(title){
+  if(!_saju||isUnlockedFor('life'))return '';
+  const key=String(title||'');
+  const trigger=/귀인|살|공망|대운|세운|월주|일간|일주|오행|용신|재성|관성|정재|편재|정관|편관|식신|상관|갑|을|병|정|무|기|경|신|임|계|자|축|인|묘|진|사|오|미|유|술|해/.test(key);
+  if(!trigger)return '';
+  return `<div class="term-pop-cta">
+    <div class="term-pop-cta-text">이 기운이 본인 인생에서 <b>언제 강해지고, 돈·일·관계에 어떻게 이어지는지</b>는 인생총운에서 이어서 볼 수 있어요.</div>
+    <button type="button" class="term-pop-cta-btn" onclick="hideTermPopup();openPaymentConsent('life','KAKAOPAY')">인생총운에서 이어보기</button>
+  </div>`;
 }
 
 function _firstKoreanToken(el){
@@ -7738,10 +7761,16 @@ function _teaserCta(category){
     name:'이 이름의 보완 방향 보기'
   }[category]||'전체 풀이 열어보기';
   const priceText=m.price?` · ${m.price}`:'';
+  const assurance={
+    life:'재물·연애·직업·10년 흐름까지 열람 · 24시간 재조회 가능',
+    newyear:'월별 흐름·좋은 달·주의 달까지 열람 · 결제 즉시 확인',
+    gunghap:'연애·결혼·동거·가족 흐름까지 열람 · 두 사람 비교 풀이',
+    qna:'결제 즉시 질문권 충전 · 필요한 만큼만 건별 사용'
+  }[category]||'결제 즉시 전체 풀이가 열리고, 같은 사주는 24시간 다시 볼 수 있어요';
   return `<button type="button" class="easypay-btn easypay-kakao teaser-pay-btn" onclick="openPaymentConsent('${category}','KAKAOPAY')" aria-label="카카오페이로 ${cta}">
     <img class="kakao-pay-img" src="assets/kakaopay-button-md.png" srcset="assets/kakaopay-button-sm.png 97w, assets/kakaopay-button-md.png 121w, assets/kakaopay-button-lg.png 241w" sizes="121px" alt="카카오페이">
     <span class="teaser-pay-text">${cta}${priceText}</span>
-  </button>`;
+  </button><div class="teaser-assurance"><b>카카오페이 안전 결제</b> · ${assurance}</div>`;
 }
 // 블러 영역 — 본문 카드 placeholder
 function _teaserBlurArea(fakeTitles,category){
@@ -13474,6 +13503,22 @@ function chatAppend(role,text){
   return div;
 }
 
+function appendQnaInlineUpsell(){
+  const log=document.getElementById('chatLog');
+  if(!log||document.getElementById('qnaInlineUpsell'))return;
+  const wrap=document.createElement('div');
+  wrap.id='qnaInlineUpsell';
+  wrap.className='chat-inline-upsell';
+  wrap.innerHTML=`<div class="chat-inline-upsell-title">조금 더 구체적으로 이어서 물어볼 수 있어요</div>
+    <div class="chat-inline-upsell-desc">시기·상대방·이직·재물처럼 한 단계 더 좁혀 물어보면 답변이 더 선명해져요.</div>
+    <div class="chat-inline-upsell-row">
+      <button type="button" class="chat-inline-upsell-btn" onclick="openPaymentConsent('chatpack1','KAKAOPAY')">1회 1,000원</button>
+      <button type="button" class="chat-inline-upsell-btn secondary" onclick="openPaymentConsent('chatpack3','KAKAOPAY')">3회 2,500원</button>
+    </div>`;
+  log.appendChild(wrap);
+  log.scrollTop=log.scrollHeight;
+}
+
 // 실패한 질문에 「다시 시도」 버튼을 붙여 재전송 — 질문을 다시 타이핑할 필요 없게
 function chatAppendError(text,retryQuestion){
   const div=chatAppend('error',text);
@@ -13600,6 +13645,7 @@ async function chatAsk(){
       if(chatRemaining(curCat)===0){
         if(curCat==='qna'){
           if(btn){btn.disabled=false;btn.textContent='보내기';}
+          appendQnaInlineUpsell();
         }else{
           const inp=document.getElementById('chatInput');
           if(inp)inp.disabled=true;
@@ -13649,6 +13695,7 @@ async function chatAsk(){
         if(curCat==='qna'){
           btn.disabled=false;
           btn.textContent='보내기';
+          appendQnaInlineUpsell();
         }else{
           chatAppend('error',`${curMax}회 질문 한도가 모두 소진되었어요. 다른 풀이에서 추가 질문을 열어보세요.`);
           document.getElementById('chatInput').disabled=true;
