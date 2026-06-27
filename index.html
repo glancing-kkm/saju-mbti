@@ -333,6 +333,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:1.5rem;padding:10px 2px;border-color:transparent}
 .pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
 .pillars>.pcol .sm{font-size:.66rem;font-weight:600;opacity:.95;letter-spacing:.01em}
+.pillars>.pcol.unknown .pstem,.pillars>.pcol.unknown .pbranch{font-size:1.04rem;color:var(--muted);background:rgba(255,255,255,.035);border:1px dashed var(--border);line-height:1.2;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pillars>.pcol.unknown .sm{font-size:.6rem;color:var(--sub);margin-top:3px}
 .pillars-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
 .pillars-note{font-size:.66rem;color:var(--muted);font-style:italic;letter-spacing:.02em;flex-shrink:0}
 .ew{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.2)}
@@ -6314,13 +6316,15 @@ function dayPillar(sy,sm,sd){
 
 // Hour pillar
 function hourPillar(dStem,hour){
-  if(hour<0)return null;
+  if(hour==null||Number.isNaN(hour)||hour<0)return null;
   const br=hour===23?0:Math.floor((hour+1)/2);
   return{stem:(dStem%5*2+br)%10,branch:br};
 }
 
 // Full saju
 function calcSaju(sy,sm,sd,sh,smin){
+  if(sh==null||Number.isNaN(sh))sh=-1;
+  if(smin==null||Number.isNaN(smin))smin=0;
   const yp=yearPillar(sy,sm,sd,sh,smin);
   const mi=monthIdx(sy,sm,sd,sh,smin);
   const mp=monthPillar(yp.stem,mi);
@@ -6425,7 +6429,13 @@ function ecls(oh){return OHCLS[oh];}
 // 지지 지장간 본기(主氣) → 천간 인덱스. 지지 십신은 본기 기준으로 계산
 const BRANCH_MAIN_STEM=[9,5,0,1,4,2,3,5,6,7,4,8]; // 子癸 丑己 寅甲 卯乙 辰戊 巳丙 午丁 未己 申庚 酉辛 戌戊 亥壬
 function pillarHTML(label,stem,branch,dayStem,isDay){
-  if(stem===undefined)return`<div class="pcol"><div class="plabel">${label}</div><div class="pstem eu" style="font-size:.72rem">시간<br>미상</div><div class="pbranch eu" style="font-size:.72rem">입력<br>필요</div></div>`;
+  if(stem==null||branch==null||Number.isNaN(stem)||Number.isNaN(branch)){
+    return`<div class="pcol unknown">
+      <div class="plabel">${label}</div>
+      <div class="pstem eu">미상<span class="sm">천간</span></div>
+      <div class="pbranch eu">미상<span class="sm">지지</span></div>
+    </div>`;
+  }
   const stemTG=isDay?'일간':tenGod(dayStem,stem);
   const branchTG=tenGod(dayStem,BRANCH_MAIN_STEM[branch]);
   return`<div class="pcol${isDay?' day':''}">
@@ -18001,6 +18011,8 @@ function analyze(){
   // 만세력·일일운세는 MBTI 비교 풀이를 제공하지 않음 (입력값과 무관하게 강제 비움)
   const cat0=_category||'manse';
   const mbti=(cat0==='manse'||cat0==='daily'||cat0==='name'||cat0==='qna')?'':((document.getElementById('iMbti')||{}).value||'');
+  if(isNaN(hour))hour=-1;
+  if(isNaN(min))min=0;
 
   if(!year||year<1900||year>2050)return showErr('연도는 1900~2050 사이로 입력해주세요.','iY');
   if(!month||month<1||month>12)return showErr('월은 1~12로 입력해주세요.','iM');
