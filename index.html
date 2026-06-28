@@ -540,6 +540,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
+.lang-switch{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:12px;z-index:80;display:flex;align-items:center;gap:2px;padding:3px;background:rgba(17,20,21,.9);border:1px solid var(--border);border-radius:999px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.lang-btn{border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.62rem;font-weight:900;border-radius:999px;padding:5px 7px;cursor:pointer;letter-spacing:.02em;line-height:1}
+.lang-btn.on{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid)}
+.lang-note{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:48px;z-index:81;max-width:230px;padding:8px 10px;border-radius:9px;background:var(--card);border:1px solid var(--border);color:var(--sub);font-size:.68rem;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.22);display:none}
+.lang-note.on{display:block}
 
 /* ── Lock (코드 잠금) ── */
 .lock-wrap{padding:50px 22px 60px;text-align:center;position:relative}
@@ -1538,6 +1543,13 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </head>
 <body>
 <div id="app">
+  <div class="lang-switch" id="langSwitch" role="group" aria-label="언어 선택">
+    <button type="button" class="lang-btn" data-lang="ko" onclick="setReadingLanguage('ko')">KO</button>
+    <button type="button" class="lang-btn" data-lang="en" onclick="setReadingLanguage('en')">EN</button>
+    <button type="button" class="lang-btn" data-lang="zh" onclick="setReadingLanguage('zh')">中文</button>
+    <button type="button" class="lang-btn" data-lang="ja" onclick="setReadingLanguage('ja')">日本語</button>
+  </div>
+  <div class="lang-note" id="langNote" aria-live="polite"></div>
 
   <!-- ───── HOME (카테고리 메뉴) ───── -->
   <div class="view on" id="view-home">
@@ -2400,6 +2412,112 @@ const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
 const CHAT_QUESTION_MAX_CHARS=300;
 const QNA_FREE_TTL_MS=24*60*60*1000;
+const LANG_LS_KEY='saju_reading_language_v1';
+const LANG_META={
+  ko:{label:'한국어',worker:'ko',note:'한국어 원문으로 풀이해요.'},
+  en:{label:'English',worker:'en',note:'Result explanations and AI readings are shown in English.'},
+  zh:{label:'中文',worker:'zh',note:'命理解读会尽量以中文显示。'},
+  ja:{label:'日本語',worker:'ja',note:'鑑定文をできるだけ日本語で表示します。'}
+};
+let _readingLang=(function(){try{return localStorage.getItem(LANG_LS_KEY)||'ko';}catch(e){return 'ko';}})();
+const _translatedTextNodes=new Set();
+if(!LANG_META[_readingLang])_readingLang='ko';
+function currentLanguage(){return LANG_META[_readingLang]?_readingLang:'ko';}
+function currentLanguagePayload(){const k=currentLanguage();return {code:k,label:LANG_META[k].label,worker:LANG_META[k].worker};}
+function langText(map){return (map&&map[currentLanguage()])||map.ko||'';}
+function updateLanguageUI(){
+  document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.toggle('on',btn.dataset.lang===currentLanguage()));
+}
+function showLanguageNote(msg){
+  const el=document.getElementById('langNote');
+  if(!el)return;
+  el.textContent=msg;
+  el.classList.add('on');
+  clearTimeout(showLanguageNote._t);
+  showLanguageNote._t=setTimeout(()=>el.classList.remove('on'),2600);
+}
+function setReadingLanguage(lang){
+  if(!LANG_META[lang])return;
+  _readingLang=lang;
+  try{localStorage.setItem(LANG_LS_KEY,lang);}catch(e){}
+  updateLanguageUI();
+  showLanguageNote(LANG_META[lang].note);
+  if(document.getElementById('view-result')&&document.getElementById('view-result').classList.contains('on')){
+    applyLanguageToVisibleResult();
+  }
+}
+function textHash(s){
+  let h=0; s=String(s||'');
+  for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;
+  return Math.abs(h).toString(36);
+}
+function translationCacheKey(lang,text){return 'saju_translate_v1:'+lang+':'+textHash(text);}
+function translationCacheGet(lang,text){try{return localStorage.getItem(translationCacheKey(lang,text));}catch(e){return null;}}
+function translationCacheSet(lang,text,out){try{localStorage.setItem(translationCacheKey(lang,text),out);}catch(e){}}
+function collectTranslatableTextNodes(root){
+  const skip='.lang-switch,.lang-note,script,style,textarea,input,select,button,.pstem,.pbranch,.mm-cell,.dx-col,.gg-mc,.nb-cat,.lock-input,.chat-input,.material-symbols-outlined';
+  const nodes=[];
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    acceptNode(node){
+      const text=node.nodeValue||'';
+      if(!/[가-힣]/.test(text)||text.trim().length<2)return NodeFilter.FILTER_REJECT;
+      const parent=node.parentElement;
+      if(!parent||parent.closest(skip))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  while(walker.nextNode())nodes.push(walker.currentNode);
+  return nodes;
+}
+function restoreOriginalLanguage(root){
+  _translatedTextNodes.forEach(n=>{
+    if(n&&n.parentNode&&root.contains(n)&&n.__koText)n.nodeValue=n.__koText;
+  });
+  root.querySelectorAll('[data-ko-text]').forEach(el=>{el.textContent=el.getAttribute('data-ko-text')||el.textContent;});
+}
+async function translateTextBatch(texts, lang){
+  if(!texts.length||lang==='ko')return texts;
+  const out=new Array(texts.length);
+  const missing=[];
+  texts.forEach((t,i)=>{
+    const c=translationCacheGet(lang,t);
+    if(c)out[i]=c; else missing.push({i,t});
+  });
+  if(missing.length){
+    const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/translate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({targetLanguage:lang,texts:missing.map(x=>x.t)})
+    });
+    const data=await resp.json().catch(()=>({}));
+    if(!resp.ok||!Array.isArray(data.texts))throw new Error(data.error||'번역을 불러오지 못했어요.');
+    missing.forEach((m,idx)=>{
+      const translated=String(data.texts[idx]||m.t);
+      out[m.i]=translated;
+      translationCacheSet(lang,m.t,translated);
+    });
+  }
+  return out.map((v,i)=>v||texts[i]);
+}
+async function applyLanguageToVisibleResult(root){
+  const lang=currentLanguage();
+  const scope=root||document.getElementById('view-result');
+  if(!scope)return;
+  updateLanguageUI();
+  if(lang==='ko'){restoreOriginalLanguage(scope);return;}
+  const nodes=collectTranslatableTextNodes(scope).slice(0,220);
+  if(!nodes.length)return;
+  nodes.forEach(n=>{if(!n.__koText)n.__koText=n.nodeValue;});
+  const texts=nodes.map(n=>n.__koText||n.nodeValue);
+  try{
+    const translated=await translateTextBatch(texts,lang);
+    translated.forEach((t,i)=>{nodes[i].nodeValue=t;_translatedTextNodes.add(nodes[i]);});
+  }catch(e){
+    showLanguageNote('번역을 잠시 불러오지 못했어요. AI 리딩은 선택 언어로 요청됩니다.');
+  }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateLanguageUI);
+else updateLanguageUI();
 // 카테고리별 채팅 횟수 — 결제 단위에 맞춤 (지정일 1, 월별 3, 신년 3, 인생총운 5)
 const CHAT_MAX_BY_CAT={daypick:1,monthly:3,newyear:3,gunghap:2,name:2,life:5,qna:1};
 function chatLsKeyOf(cat){
@@ -8288,6 +8406,7 @@ function unlockAndRender(category){
     el.innerHTML=fixKoreanJosa(back+headerBlock+termNoticeHTML()+html+nextActions);
     enrichTerms(el);
     el.dataset.rendered='1';
+    setTimeout(()=>{try{applyLanguageToVisibleResult(el);}catch(e){}},0);
     setTimeout(()=>{try{hydrateAIReadings(el);}catch(e){}},0);
   };
   if(category==='daypick'){
@@ -13561,7 +13680,7 @@ function aiReadingDomId(category, extraKey){
 }
 function aiReadingCacheKey(category, extraKey){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
-  return 'saju_ai_reading_v2:'+category+':'+birth+':'+(extraKey||'main');
+  return 'saju_ai_reading_v3:'+currentLanguage()+':'+category+':'+birth+':'+(extraKey||'main');
 }
 function aiReadingCacheGet(category, extraKey){
   try{
@@ -13642,6 +13761,7 @@ function buildAIReadingPayload(category, extra){
       targetYear:extra&&extra.targetYear,
       compatibility:extra&&extra.compatibility,
       source:extra&&extra.source,
+      language:currentLanguagePayload(),
     },
   };
 }
@@ -13659,6 +13779,7 @@ async function hydrateAIReading(category, opts){
     card.style.display='';
     card.classList.add('ai-ready');
     setAIReadingFallbackVisible(category,extraKey,false);
+    if(currentLanguage()!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
     return;
   }
   const payload=buildAIReadingPayload(category,opts);
@@ -13678,6 +13799,7 @@ async function hydrateAIReading(category, opts){
     card.style.display='';
     card.classList.add('ai-ready');
     setAIReadingFallbackVisible(category,extraKey,false);
+    if(currentLanguage()!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
     setAIReadingFallbackVisible(category,extraKey,true);
     if(card.classList.contains('main-reading'))card.style.display='none';
@@ -13703,7 +13825,10 @@ function chatAppend(role,text){
   const empty=log.querySelector('.chat-empty');
   if(empty)empty.remove();
   const cls=role==='user'?'chat-msg-user':role==='reply'?'chat-msg-reply':role==='loading'?'chat-msg-loading':'chat-msg-error';
-  const lab=role==='user'?'질문':role==='reply'?'🔮 역술가':role==='loading'?'생각하는 중':'⚠️ 오류';
+  const lab=role==='user'?langText({ko:'질문',en:'Question',zh:'问题',ja:'質問'})
+    :role==='reply'?langText({ko:'🔮 역술가',en:'🔮 Advisor',zh:'🔮 命理师',ja:'🔮 鑑定士'})
+    :role==='loading'?langText({ko:'생각하는 중',en:'Thinking',zh:'正在思考',ja:'考えています'})
+    :langText({ko:'⚠️ 오류',en:'⚠️ Error',zh:'⚠️ 错误',ja:'⚠️ エラー'});
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
   div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
@@ -13787,7 +13912,8 @@ const QNA_ANSWER_TTL_MS=24*60*60*1000;
 function qnaAnswerCacheKey(cat, question, ctx){
   const sid=(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'no-saju';
   const basis=[
-    'qna_answer_v1',
+    'qna_answer_v2',
+    currentLanguage(),
     cat||'life',
     sid||'no-sid',
     (ctx&&ctx.daeun)||'',
@@ -13871,6 +13997,7 @@ async function chatAsk(){
         question,
         sajuContext:ctx,
         category:curCat,
+        language:currentLanguagePayload(),
         clientId:_getOrCreateUserId(),
         deviceFingerprint:qnaDeviceFingerprint(),
         sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
@@ -13946,7 +14073,7 @@ function renderChatSection(catOpt){
   const inputDisabled=isExhausted&&!isQna;
   const exhaustedLabel=isQna?'보내기':'소진';
   const initialLog=isQna
-    ? `<div class="chat-msg chat-msg-reply"><div class="chat-msg-lab">역술가</div><div class="chat-msg-body">${preventOrphan('어떤게 궁금하신가요?')}</div></div>`
+    ? `<div class="chat-msg chat-msg-reply"><div class="chat-msg-lab">${langText({ko:'역술가',en:'Advisor',zh:'命理师',ja:'鑑定士'})}</div><div class="chat-msg-body">${preventOrphan(langText({ko:'어떤게 궁금하신가요?',en:'What would you like to ask?',zh:'您想问什么？',ja:'何が気になりますか？'}))}</div></div>`
     : `<div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>`;
   return `<div class="chat-card${isQna?' qna-chat-room':''}">
     <div class="chat-head">
@@ -18665,6 +18792,7 @@ function analyze(){
 
       gotoCard(targetIdx);
       showView('result');
+      setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('p'+targetIdx));}catch(e){}},0);
       setTimeout(()=>{try{hydrateAIReadings(document.getElementById('p'+targetIdx));}catch(e){}},0);
     }catch(e){
       showErr(e.message||'분석 중 오류가 발생했어요. 입력값을 확인해주세요.');

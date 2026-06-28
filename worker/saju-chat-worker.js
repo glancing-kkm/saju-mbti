@@ -10,6 +10,28 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 const QNA_QUESTION_MAX_CHARS = 300;
+const LANGUAGE_META = {
+  ko: {
+    code: 'ko',
+    label: 'Korean',
+    instruction: 'Write the final answer in Korean only. Use warm, friendly Korean honorific style.',
+  },
+  en: {
+    code: 'en',
+    label: 'English',
+    instruction: 'Write the final answer in natural English only. Keep Korean saju terms only when they are part of the birth chart labels, and explain them plainly.',
+  },
+  zh: {
+    code: 'zh',
+    label: 'Chinese',
+    instruction: 'Write the final answer in natural Simplified Chinese only. Keep Korean saju terms only when they are part of the birth chart labels, and explain them plainly.',
+  },
+  ja: {
+    code: 'ja',
+    label: 'Japanese',
+    instruction: 'Write the final answer in natural Japanese only. Keep Korean saju terms only when they are part of the birth chart labels, and explain them plainly.',
+  },
+};
 
 export default {
   async fetch(request, env) {
@@ -23,6 +45,9 @@ export default {
     if (url.pathname === '/reading') {
       return handleReading(request, env);
     }
+    if (url.pathname === '/translate') {
+      return handleTranslate(request, env);
+    }
     const hermesEnabled = env.HERMES_API_URL && (env.AI_PROVIDER || '').toLowerCase() === 'hermes';
     if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !hermesEnabled) {
       return json({ error: '서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.' }, 500);
@@ -35,7 +60,7 @@ export default {
       return json({ error: 'JSON 본문이 필요합니다.' }, 400);
     }
 
-    const { question, sajuContext, category, clientId, deviceFingerprint, sajuId, freeQuestion } = body;
+    const { question, sajuContext, category, clientId, deviceFingerprint, sajuId, freeQuestion, language } = body;
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
     }
@@ -47,13 +72,14 @@ export default {
     }
 
     const chatCategory = typeof category === 'string' ? category : 'life';
+    const lang = normalizeLanguage(language);
     const freeGuardKeys = chatCategory === 'qna' && freeQuestion
       ? await qnaFreeGuardKeys({ request, sajuContext, clientId, deviceFingerprint, sajuId })
       : [];
     if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
       return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
     }
-    const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory });
+    const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory, language: lang.code });
     const cached = await qnaCacheGet(env, cacheKey);
     if (cached) {
       if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
@@ -61,8 +87,8 @@ export default {
     }
 
     const route = chooseQnaModel(question, sajuContext, env);
-    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory);
-    const userPrompt = buildQnaUserPrompt(question, sajuContext, chatCategory, route);
+    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory, lang);
+    const userPrompt = buildQnaUserPrompt(question, sajuContext, chatCategory, route, lang);
 
     try {
       if (hermesEnabled) {
@@ -165,7 +191,7 @@ async function handleReading(request, env) {
     return json({ error: 'JSON 본문이 필요합니다.' }, 400);
   }
 
-  const { category, sajuContext, meta } = body || {};
+  const { category, sajuContext, meta, language } = body || {};
   const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap']);
   if (!allowed.has(category)) {
     return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
@@ -174,8 +200,10 @@ async function handleReading(request, env) {
     return json({ error: '사주 정보가 누락되었습니다.' }, 400);
   }
 
-  const systemPrompt = buildReadingSystemPrompt(category, meta || {});
-  const userPrompt = buildReadingUserPrompt(category, sajuContext, meta || {});
+  const lang = normalizeLanguage((meta && meta.language) || language);
+  const promptMeta = { ...(meta || {}), language: lang };
+  const systemPrompt = buildReadingSystemPrompt(category, promptMeta);
+  const userPrompt = buildReadingUserPrompt(category, sajuContext, promptMeta);
   const coreReading = isCoreReadingCategory(category);
 
   try {
@@ -219,8 +247,100 @@ async function handleReading(request, env) {
   }
 }
 
+async function handleTranslate(request, env) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY) {
+    return json({ error: '번역 서비스가 아직 준비되지 않았습니다.' }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'JSON 본문이 필요합니다.' }, 400);
+  }
+
+  const lang = normalizeLanguage(body && (body.targetLanguage || body.language));
+  if (lang.code === 'ko') return json({ ok: true, texts: Array.isArray(body.texts) ? body.texts : [] });
+
+  const texts = (Array.isArray(body.texts) ? body.texts : [])
+    .slice(0, 220)
+    .map((t) => String(t || '').replace(/\s+/g, ' ').trim().slice(0, 900));
+  if (!texts.length) return json({ ok: true, texts: [] });
+
+  const systemPrompt = `You are a translation engine for a saju fortune web app.
+Translate Korean UI and reading text into ${lang.label}.
+Rules:
+- Return strict JSON only: an array of strings with the same length and order as the input.
+- Preserve numbers, dates, prices, emojis, HTML entity-like text, and standalone birth-chart labels.
+- Do not add explanations, markdown, bullets, or extra keys.
+- Keep the tone warm and advisory.`;
+  const userPrompt = JSON.stringify({ targetLanguage: lang.label, texts });
+
+  try {
+    let raw = '';
+    if (env.OPENAI_API_KEY) {
+      const result = await callOpenAIResponses({
+        apiKey: env.OPENAI_API_KEY,
+        model: env.OPENAI_TRANSLATE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
+        systemPrompt,
+        userPrompt,
+        maxOutputTokens: 7000,
+        reasoningEffort: 'low',
+        verbosity: 'low',
+      });
+      raw = result.text || '';
+    } else {
+      const apiResp = await callAnthropicWithRetry({
+        apiKey: env.ANTHROPIC_API_KEY,
+        body: {
+          model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          max_tokens: 7000,
+          system: [{ type: 'text', text: systemPrompt }],
+          messages: [{ role: 'user', content: userPrompt }],
+        },
+      });
+      if (!apiResp.ok) return json({ error: `번역 서비스 일시 오류 (${apiResp.status})` }, 502);
+      const data = await apiResp.json();
+      raw = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+    }
+    const translated = parseJsonArrayText(raw);
+    if (!Array.isArray(translated)) throw new Error('translation parse failed');
+    return json({ ok: true, texts: texts.map((t, i) => String(translated[i] || t)) });
+  } catch (e) {
+    console.error('Translate worker error:', e);
+    return json({ error: '번역 생성 중 오류가 발생했습니다.' }, 500);
+  }
+}
+
 function isCoreReadingCategory(category) {
   return category === 'life-core' || category === 'newyear-core';
+}
+
+function normalizeLanguage(input) {
+  const raw = typeof input === 'string' ? input : input && (input.code || input.worker || input.lang);
+  const code = String(raw || 'ko').toLowerCase().replace(/^cn$/, 'zh').replace(/^jp$/, 'ja');
+  return LANGUAGE_META[code] || LANGUAGE_META.ko;
+}
+
+function languageInstruction(input) {
+  return normalizeLanguage(input).instruction;
+}
+
+function parseJsonArrayText(raw) {
+  const text = String(raw || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed;
+    if (parsed && Array.isArray(parsed.texts)) return parsed.texts;
+  } catch {}
+  const start = text.indexOf('[');
+  const end = text.lastIndexOf(']');
+  if (start >= 0 && end > start) {
+    try {
+      return JSON.parse(text.slice(start, end + 1));
+    } catch {}
+  }
+  return null;
 }
 
 function json(obj, status = 200) {
@@ -293,8 +413,10 @@ function chooseQnaModel(question, ctx, env = {}) {
       };
 }
 
-function buildQnaUserPrompt(question, ctx, category, route = {}) {
+function buildQnaUserPrompt(question, ctx, category, route = {}, language = 'ko') {
   return `카테고리: ${category || 'life'}
+출력 언어: ${languageInstruction(language)}
+
 사용자 질문:
 ${question}
 
@@ -336,9 +458,10 @@ async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
   return { text, usage: data.usage || null };
 }
 
-async function qnaCacheKey({ question, sajuContext, category }) {
+async function qnaCacheKey({ question, sajuContext, category, language }) {
   const src = JSON.stringify({
-    v: 2,
+    v: 3,
+    language: normalizeLanguage(language).code,
     category,
     question: String(question || '').trim().replace(/\s+/g, ' '),
     birth: sajuContext && sajuContext.birth,
@@ -480,6 +603,13 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
 }
 
 function buildReadingSystemPrompt(category, meta) {
+  const lang = normalizeLanguage(meta && meta.language);
+  const toneRule = lang.code === 'ko'
+    ? `- 한국어 친근 존댓말로만 씁니다. "~예요 / ~이에요 / ~돼요 / ~해요 / ~세요"를 자연스럽게 쓰세요.
+- 상담자를 "본인"이라고 부르세요. "당신"은 쓰지 마세요.`
+    : `- ${languageInstruction(lang)}
+- Use a warm, friendly advisory tone that feels like a skilled fortune reader speaking naturally.
+- Do not call the user "당신". Use a natural second-person expression in the target language.`;
   const categoryGuide = {
     life: '인생총운 첫머리에 들어갈 개인화 리딩입니다. 본인의 성향, 돈과 일의 선택 기준, 관계에서 반복되는 패턴, 현재 흐름을 먼저 짚으세요.',
     'life-core': '인생총운의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 단순 요약하지 말고, 핵심 바탕·성향·재물·직업·연애·건강·인간관계·직업 적성·현재 10년 흐름·올해 흐름·평생 타임라인 요약·개운법을 본인 맞춤으로 재작성하세요. 사주판, 표, 점수, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.',
@@ -488,10 +618,17 @@ function buildReadingSystemPrompt(category, meta) {
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
   };
+  const coreSections = category === 'life-core'
+    ? (lang.code === 'ko'
+      ? '[핵심 바탕], [성향·그릇], [재물], [직업·사업], [연애·결혼], [건강], [인간관계], [직업 적성], [현재 10년 흐름], [올해 흐름], [평생 타임라인 요약], [개운법]'
+      : 'Use natural translated equivalents of: Core foundation, Character and capacity, Wealth, Career and business, Love and marriage, Health, Relationships, Career aptitude, Current 10-year flow, This year flow, Lifetime timeline summary, Practical remedy. Put each translated section title in square brackets.')
+    : (lang.code === 'ko'
+      ? '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'
+      : 'Use natural translated equivalents of: Overall year, Wealth, Career and business, Love and relationships, Social relationships, Health, 12-month flow, Opportunity timing, Caution timing, Action guide for the year. Put each translated section title in square brackets.');
   const outputGuide = isCoreReadingCategory(category)
     ? `출력 형식:
-- 아래 섹션 제목을 대괄호로 감싸서 정확히 사용하세요.
-- ${category === 'life-core' ? '[핵심 바탕], [성향·그릇], [재물], [직업·사업], [연애·결혼], [건강], [인간관계], [직업 적성], [현재 10년 흐름], [올해 흐름], [평생 타임라인 요약], [개운법]' : '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'}
+- 섹션 제목은 대괄호로 감싸서 사용하세요.
+- ${coreSections}
 - 각 섹션은 2~4문장으로 작성하세요.
 - 전체는 공백 포함 ${category === 'life-core' ? '3,000~4,200자' : '2,600~3,600자'} 정도로 작성하세요.
 - 마크다운 제목, 번호, 불릿은 쓰지 마세요.`
@@ -499,7 +636,7 @@ function buildReadingSystemPrompt(category, meta) {
 - 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.
 - 5~8문단, 문단당 2~4문장으로 작성하세요.
 - 첫 문단은 바로 핵심 결론으로 시작하세요.
-- 마지막 문단은 "아래에서는 ..."으로 이어지는 자연스러운 유료 본문 연결 문장으로 마무리하세요.`;
+- 마지막 문단은 ${lang.code === 'ko' ? '"아래에서는 ..."으로 이어지는 자연스러운 유료 본문 연결 문장' : 'a natural transition sentence in the selected language that invites the user to continue reading the detailed paid content'}으로 마무리하세요.`;
   return `당신은 한국 사주 풀이 서비스의 유료 콘텐츠를 보강하는 전문 리딩 작가입니다.
 
 목표:
@@ -508,8 +645,8 @@ function buildReadingSystemPrompt(category, meta) {
 - 사용자가 아래의 긴 카드들을 더 읽고 싶게 만들되, 내용은 실제 사주 구조와 화면 풀이 요약에 근거해야 합니다.
 
 말투와 표현 규칙:
-- 한국어 친근 존댓말로만 씁니다. "~예요 / ~이에요 / ~돼요 / ~해요 / ~세요"를 자연스럽게 쓰세요.
-- 상담자를 "본인"이라고 부르세요. "당신"은 쓰지 마세요.
+- 출력 언어: ${languageInstruction(lang)}
+${toneRule}
 - 정관, 편관, 정재, 편재, 정인, 편인, 식신, 상관, 비견, 겁재, 격국, 용신, 희신, 기신, 신살, 공망, 대운, 세운 같은 전문용어를 본문에 그대로 노출하지 마세요.
 - 단독 명사 "결"은 쓰지 마세요. "분위기", "흐름", "방식"으로 바꾸세요. 단, 결론·결정·결혼·결실 같은 복합어는 괜찮습니다.
 - 공포 조장, 사망 시기, 확정 의료·법률·투자 판단은 하지 마세요.
@@ -519,11 +656,13 @@ ${outputGuide}`;
 }
 
 function buildReadingUserPrompt(category, ctx, meta) {
+  const lang = normalizeLanguage(meta && meta.language);
   const reading = String(ctx.detailedReading || '').slice(0, isCoreReadingCategory(category) ? 18000 : 12000);
   const task = isCoreReadingCategory(category)
     ? '위 정보와 모순되지 않게, 기존 계산형 풀이를 더 전문적이고 개인화된 핵심 섹션 리딩으로 재작성하세요. 이미 화면에 있는 문장을 그대로 반복하지 말고, 같은 근거를 사용해 더 깊고 특색 있게 풀어주세요.'
     : '위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.';
   return `카테고리: ${category}
+출력 언어: ${languageInstruction(lang)}
 대상 연도: ${meta.targetYear || '해당 없음'}
 
 상담자 사주 핵심:
@@ -549,9 +688,16 @@ ${reading || '아직 상세 풀이 텍스트가 추출되지 않았습니다. �
 ${task}`;
 }
 
-function buildSystemPrompt(ctx, category = 'life') {
+function buildSystemPrompt(ctx, category = 'life', language = 'ko') {
+  const lang = normalizeLanguage(language);
   const reading = (ctx.detailedReading || '').trim();
   return `당신은 한국 전통 사주명리학을 평생 연구해온 최고 수준의 역술가입니다. 전문적인 사주 구조를 깊이 읽되, 사용자가 보는 답변에서는 어려운 한자 용어를 그대로 늘어놓지 않고 일상어로 풀어 설명합니다. 두루뭉술한 위로가 아니라 사주가 말하는 흐름과 선택 방향을 분명하게 전달하는 것이 당신의 일입니다.
+
+출력 언어:
+- ${languageInstruction(lang)}
+- If the requested output language is not Korean, translate the full final answer into that language and do not mix Korean sentences into the response.
+- Keep birth-chart labels or Korean names only when they are necessary evidence, then explain them plainly in the selected language.
+- Any Korean examples or tone rules below are source-style guidance only. The final visible answer must follow the selected output language above.
 
 상담받는 분의 사주 핵심 정보는 다음과 같습니다:
 
