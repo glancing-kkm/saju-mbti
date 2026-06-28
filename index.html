@@ -290,6 +290,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .daily-cat-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;color:var(--text)}
 .daily-cat-score{margin-left:auto;font-size:.76rem;font-weight:800;color:var(--accent-bright);white-space:nowrap}
 .daily-cat-body{font-size:.95rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.conversion-hook{background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(45,52,71,.42));border:1px solid rgba(212,175,55,.18);border-radius:var(--radius-lg);padding:18px;margin:14px 0;position:relative;overflow:hidden}
+.conversion-hook::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.65}
+.conversion-hook-kicker{font-size:.68rem;color:var(--accent);font-weight:800;letter-spacing:.08em;margin-bottom:7px;text-transform:uppercase}
+.conversion-hook-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.04rem;line-height:1.55;color:var(--text);font-weight:800;margin-bottom:10px;word-break:keep-all}
+.conversion-hook-body{font-size:.92rem;line-height:1.9;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.conversion-hook-body p{margin:0 0 10px}
+.conversion-hook-points{display:grid;grid-template-columns:1fr;gap:8px;margin:13px 0}
+.conversion-hook-point{background:rgba(0,0,0,.14);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;font-size:.8rem;line-height:1.7;color:var(--sub)}
+.conversion-hook-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.conversion-hook-btn{flex:1;min-width:180px;border:0;border-radius:10px;padding:12px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer}
+.conversion-hook-btn.secondary{background:var(--card);color:var(--accent-bright);border:1px solid rgba(212,175,55,.28)}
+.conversion-hook-foot{margin-top:9px;font-size:.68rem;color:var(--muted);line-height:1.6;text-align:center}
 
 /* ── 유료 잠금 (지정일/월별/신년) ── */
 .fee-lock{padding:30px 22px 50px;text-align:center}
@@ -982,6 +994,29 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .daeun-col{text-align:center;min-width:50px;cursor:pointer;border-radius:9px;padding:4px 3px;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
 .daeun-col:hover{background:rgba(255,255,255,.04)}
 .daeun-col.on{background:rgba(212,175,55,.1);box-shadow:0 0 0 1.5px rgba(212,175,55,.45)}
+.manse-tools{display:flex;justify-content:flex-end;margin:0 0 10px}
+.manse-dir-btn{border:1px solid rgba(212,175,55,.32);background:var(--card);color:var(--accent-bright);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:.75rem;font-weight:800;cursor:pointer}
+.manse-strip-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.manse-strip{display:flex;gap:6px;padding:2px 1px 8px;min-width:max-content;flex-wrap:nowrap}
+.manse-cell{text-align:center;min-width:56px;border-radius:9px;padding:5px 4px;cursor:pointer;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.manse-cell:hover{background:rgba(255,255,255,.04)}
+.manse-cell.on{background:rgba(212,175,55,.1);box-shadow:0 0 0 1.5px rgba(212,175,55,.45)}
+.manse-cell-meta{font-size:.6rem;color:var(--sub);margin-bottom:3px;font-weight:700;line-height:1.35;white-space:nowrap}
+.manse-cell-sub{font-size:.56rem;color:var(--muted);margin-top:3px;white-space:nowrap}
+.manse-month-box{margin-top:10px}
+.manse-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:flex-end;justify-content:center;z-index:9999;padding:18px}
+.manse-modal.on{display:flex}
+.manse-modal-panel{width:100%;max-width:520px;max-height:86vh;overflow:auto;background:var(--bg-mid);border:1px solid var(--border-strong);border-radius:18px 18px 12px 12px;padding:16px;box-shadow:0 -18px 50px rgba(0,0,0,.38)}
+.manse-modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.manse-modal-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;font-weight:800;color:var(--text)}
+.manse-modal-close{border:1px solid var(--border);background:var(--card);color:var(--sub);border-radius:9px;width:34px;height:34px;font-size:1.1rem;cursor:pointer}
+.day-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.day-cal-dow{text-align:center;font-size:.66rem;color:var(--muted);font-weight:800;padding-bottom:2px}
+.day-cal-cell{min-height:58px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center}
+.day-cal-cell.empty{opacity:.25}
+.day-cal-date{font-size:.7rem;color:var(--sub);font-weight:800}
+.day-cal-pillar{font-size:.8rem;color:var(--accent-bright);font-weight:900;margin-top:2px}
+.day-cal-score{font-size:.64rem;color:var(--muted);margin-top:2px}
 
 /* ── 궁합 (배우자 비교) ── */
 .gg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
@@ -3265,7 +3300,8 @@ function renderDailyFortune(saju){
         <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
       </div>
-      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요. 더 자세한 풀이를 원하시면 지정일 운세(1,500원)·인생총운(9,900원)을 보세요.</div>
+      ${renderDailyConversionHook(saju,f)}
+      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요.</div>
     </div>`;
   return h;
 }
@@ -4419,6 +4455,81 @@ function nextActionsHTML(currentCat){
     <p class="next-actions-foot">※ 본인 사주는 한 번만 입력하면 다른 카테고리로 자유롭게 전환돼요.</p>
   </section>`;
   return h;
+}
+
+function _paidHookProfile(saju){
+  const pp=buildPersonaProfile(saju);
+  const oh=ohCount(saju);
+  const ys=getYongsin(oh);
+  const dm=DM[saju.dp.stem]||{pos:[],core:''};
+  const axis=pp.axisSorted&&pp.axisSorted[0]?pp.axisSorted[0][0]:'self';
+  const axisLabel={
+    self:'자기 기준과 독립성',
+    out:'표현·기획·결과물',
+    wealth:'돈·현실 감각·거래',
+    gwan:'직업·책임·공식 자리',
+    in:'학습·문서·도움'
+  }[axis]||'본인 기준';
+  const weak=OHNAME[ys.main]||'균형';
+  const stem=stemNick(saju.dp.stem)||STEMKO[saju.dp.stem];
+  const seat=({'비견':'친구 같은 편안함','겁재':'밀고 당기는 긴장감','식신':'함께 누리는 따뜻함','상관':'표현이 살아나는 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강한 끌림과 긴장','정관':'반듯한 신뢰','편인':'깊은 대화','정인':'보살핌과 온기'})[pp.seatTg]||'본인만의 관계 분위기';
+  const age=_meta&&_meta.sy?new Date().getFullYear()-_meta.sy+1:null;
+  const ageLine=age?`지금 ${age}세의 본인은 큰 흐름 안에서 선택 기준이 조금씩 바뀌는 구간에 있어요.`:'지금 본인은 큰 흐름 안에서 선택 기준이 조금씩 바뀌는 구간을 지나고 있어요.';
+  return {pp,oh,ys,dm,axis,axisLabel,weak,stem,seat,age,ageLine};
+}
+
+function renderManseConversionHook(saju){
+  const p=_paidHookProfile(saju);
+  const rels=findBranchRelations(saju).filter(r=>r&&Array.isArray(r.places)&&r.places.length).slice(0,2);
+  const relLine=rels.length
+    ? `특히 본인 사주 안에는 <b>${rels.map(r=>r.type).join('·')}</b>의 분위기가 보여서, 관계나 일의 흐름이 한 번씩 갑자기 가까워지거나 방향을 바꾸는 식으로 나타날 수 있어요.`
+    : `본인 사주는 큰 충돌보다 본인 안의 기준을 천천히 다듬어 가는 쪽에 가까워요. 그래서 한 번 방향을 정하면 오래 밀고 가는 힘이 있어요.`;
+  return `<section class="conversion-hook" aria-label="인생총운 추천">
+    <div class="conversion-hook-kicker">NEXT READING</div>
+    <div class="conversion-hook-title">사주판은 나왔어요. 이제 중요한 건 이 흐름이 언제 돈·일·관계로 열리는지예요.</div>
+    <div class="conversion-hook-body">
+      <p>본인은 <b>${p.stem}</b> 같은 분위기를 가진 사람이에요. 겉으로는 차분해 보여도, 마음속에는 “이건 오래 갈 수 있는가”를 보는 기준이 꽤 분명해요.</p>
+      <p>${p.ageLine} 본인에게 강하게 잡힌 축은 <b>${p.axisLabel}</b>이고, 보완하면 운이 편해지는 쪽은 <b>${p.weak}</b>의 분위기예요.</p>
+      <p>${relLine}</p>
+    </div>
+    <div class="conversion-hook-points">
+      <div class="conversion-hook-point"><b>재물 흐름</b> — 돈이 붙는 방식이 안정형인지, 활동형인지 이어서 볼 수 있어요.</div>
+      <div class="conversion-hook-point"><b>관계 흐름</b> — 본인이 반복해서 끌리는 인연과 피곤해지는 관계 패턴을 확인해요.</div>
+      <div class="conversion-hook-point"><b>직업 전환점</b> — 지금 버텨야 하는 시기인지, 방향을 바꿔야 하는 시기인지 10년 흐름으로 봐요.</div>
+    </div>
+    <div class="conversion-hook-actions">
+      <button type="button" class="conversion-hook-btn" onclick="openPaymentConsent('life','KAKAOPAY')">내 인생 흐름 전체 열어보기</button>
+      <button type="button" class="conversion-hook-btn secondary" onclick="goToInput('qna')">지금 궁금한 것 1회 무료로 묻기</button>
+    </div>
+    <div class="conversion-hook-foot">인생총운 9,900원 · 같은 사주는 24시간 재조회 가능</div>
+  </section>`;
+}
+
+function renderDailyConversionHook(saju,f){
+  const p=_paidHookProfile(saju);
+  const y=new Date().getFullYear();
+  const relText=f.rel&&f.rel.kind&&f.rel.kind!=='평'
+    ? `오늘은 본인 자리와 하루의 기운이 <b>${({합:'자연스럽게 어울리는',반합:'같은 방향으로 묶이는',반합약:'잔잔히 협력하는',동:'같은 글자로 겹치는',충:'정면으로 부딪히는',원진:'이유 없이 거슬리는',형:'서로 깎이는',자형:'내면 갈등이 올라오는',파:'마무리에서 어긋나는',해:'은근히 방해받는'})[f.rel.kind]||f.rel.kind}</b> 흐름이에요.`
+    : `오늘은 큰 부딪힘보다 본인 페이스를 지키는 쪽이 더 중요한 날이에요.`;
+  return `<section class="conversion-hook" aria-label="신년운세 추천">
+    <div class="conversion-hook-kicker">TODAY TO YEAR</div>
+    <div class="conversion-hook-title">오늘의 운세를 봤다면, 올해 어느 달에 이 흐름이 크게 열리는지도 같이 봐야 해요.</div>
+    <div class="conversion-hook-body">
+      <p>${relText} 하루 운세는 “오늘의 날씨”에 가까워요. 그런데 본인에게 진짜 중요한 건 이 날씨가 올해 전체 흐름에서 어디쯤에 놓여 있는지예요.</p>
+      <p>본인은 <b>${p.axisLabel}</b> 쪽이 강하게 움직이는 사주라, 좋은 달에는 기회가 한 번에 몰리고 약한 달에는 같은 일도 피로하게 느껴질 수 있어요.</p>
+      <p>특히 올해는 돈·관계·일 중 하나를 계속 끌고 갈지, 정리할지 기준이 분명해지는 흐름으로 보기 좋아요.</p>
+    </div>
+    <div class="conversion-hook-points">
+      <div class="conversion-hook-point"><b>좋은 달</b> — 계약·이직·고백·확장처럼 굵직한 행동을 올려둘 달을 확인해요.</div>
+      <div class="conversion-hook-point"><b>주의 달</b> — 말실수, 지출, 관계 피로가 커지는 달은 미리 속도를 낮춰요.</div>
+      <div class="conversion-hook-point"><b>결정적 시기</b> — 올해 본인에게 가장 강하게 방향이 바뀌는 달을 짚어드려요.</div>
+    </div>
+    <div class="conversion-hook-actions">
+      <button type="button" class="conversion-hook-btn" onclick="goToInput('newyear')">${y}년 신년운세로 이어보기</button>
+      <button type="button" class="conversion-hook-btn secondary" onclick="openPaymentConsent('life','KAKAOPAY')">평생 흐름도 같이 보기</button>
+    </div>
+    <div class="conversion-hook-foot">신년운세 8,900원 · 12개월 흐름과 좋은 달/주의 달 포함</div>
+  </section>`;
 }
 
 // ── MBTI(후천) × 사주(선천) 통합 풀이 단락 ──
@@ -6557,6 +6668,24 @@ function pillarHTML(label,stem,branch,dayStem,isDay){
 const JIEQI_NAMES=['입춘','경칩','청명','입하','망종','소서','입추','백로','한로','입동','대설','소한'];
 const JIEQI_CH=['입춘','경칩','청명','입하','망종','소서','입추','백로','한로','입동','대설','소한'];
 
+let _manseReadRtl=(function(){try{return localStorage.getItem('manse_read_dir')==='rtl';}catch(e){return false;}})();
+function manseOrdered(list){return _manseReadRtl?[...list].reverse():list;}
+function manseDirLabel(){return _manseReadRtl?'오른쪽 → 왼쪽':'왼쪽 → 오른쪽';}
+function renderManseDirectionTool(){
+  return `<div class="manse-tools"><button type="button" class="manse-dir-btn" onclick="toggleManseDirection()">읽는 방향: ${manseDirLabel()} · 전환</button></div>`;
+}
+function toggleManseDirection(){
+  _manseReadRtl=!_manseReadRtl;
+  try{localStorage.setItem('manse_read_dir',_manseReadRtl?'rtl':'ltr');}catch(e){}
+  if(!_saju||!_meta)return;
+  const el=document.getElementById('p0');
+  if(!el)return;
+  const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
+  const nextActions=typeof nextActionsHTML==='function'?nextActionsHTML('manse'):'';
+  el.innerHTML=fixKoreanJosa(back+renderManseryeokFull(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.lunarInfo)+nextActions);
+  enrichTerms(el);
+}
+
 // Render 대운 card
 function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   const d=calcDaeun(saju,sy,sm,sd,sh,smin,gender);
@@ -6566,13 +6695,13 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   let curDaeunAge=d.daeuns.length?d.daeuns[0].age:1;
   for(const du of d.daeuns){if(curAge>=du.age)curDaeunAge=du.age;}
   let h=`<div class="card">
-    <div class="ctitle big">대운 — 10년 운세 주기</div>
+    <div class="ctitle big">4. 대운 — 10년 운세 주기</div>
     <div class="irow"><span class="ikey">10년 흐름 방향</span><span class="ival">${dir}</span></div>
     <div class="irow"><span class="ikey">10년 흐름 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
     <div style="font-size:.72rem;color:var(--accent-bright);margin:10px 0 2px;font-weight:600">👆 대운을 탭하면 아래에 그 10년의 세운이 나와요</div>
-    <div class="daeun-scroll" style="margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch">
-    <div class="daeun-strip" style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
-  for(const du of d.daeuns){
+    <div class="manse-strip-scroll" style="margin-top:8px">
+    <div class="manse-strip">`;
+  for(const du of manseOrdered(d.daeuns)){
     const se=SOH[du.stem],be=BOH[du.branch],isCur=du.age===curDaeunAge;
     h+=`<div class="daeun-col${isCur?' on':''}" data-age="${du.age}" onclick="selectDaeunSewoon(${du.age})">
       <div style="font-size:.62rem;color:var(--sub);margin-bottom:3px;font-weight:600">${du.age}세~</div>
@@ -6594,15 +6723,17 @@ function sewoonStripHTML(saju, daeunAge){
   const ganji=(Y)=>{const idx=(Y-4+3600)%60;return {stem:idx%10,branch:idx%12};};
   const yearStart=sy+daeunAge-1; // 한국식 나이 → 양력 연도 (나이 A = 연도-출생+1)
   let h=`<div style="font-size:.74rem;color:var(--sub);margin:0 0 9px;line-height:1.6"><b style="color:var(--accent-bright)">${daeunAge}세 ~ ${daeunAge+9}세 대운</b>의 10년 세운이에요.</div>
-    <div class="daeun-scroll" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
-    <div class="daeun-strip" style="display:flex;gap:5px;padding-bottom:6px;min-width:max-content">`;
-  for(let i=0;i<10;i++){
-    const Y=yearStart+i, g=ganji(Y), se=SOH[g.stem], be=BOH[g.branch], isCur=(Y===cyNow);
-    h+=`<div style="text-align:center;min-width:52px">
-      <div style="font-size:.6rem;color:${isCur?'var(--accent-bright)':'var(--sub)'};margin-bottom:3px;font-weight:${isCur?800:600};line-height:1.3">${isCur?'★':''}${Y}<br><span style="font-size:.92em;color:var(--muted);font-weight:500">${daeunAge+i}세</span></div>
+    <div class="manse-strip-scroll">
+    <div class="manse-strip">`;
+  const years=[];
+  for(let i=0;i<10;i++)years.push({Y:yearStart+i,age:daeunAge+i});
+  for(const item of manseOrdered(years)){
+    const Y=item.Y, g=ganji(Y), se=SOH[g.stem], be=BOH[g.branch], isCur=(Y===cyNow);
+    h+=`<div class="manse-cell${isCur?' on':''}" data-year="${Y}" onclick="selectSewoonYear(${Y})">
+      <div class="manse-cell-meta">${isCur?'★':''}${Y}<br><span style="font-size:.92em;color:var(--muted);font-weight:500">${item.age}세</span></div>
       <div class="pstem ${ecls(se)}" style="padding:6px 2px;font-size:.88rem;${isCur?'box-shadow:0 0 0 2px var(--accent-bright)':''}">${STEMKO[g.stem]}</div>
       <div class="pbranch ${ecls(be)}" style="padding:6px 2px;font-size:.88rem;margin-top:2px">${BRCHKO[g.branch]}</div>
-      <div style="font-size:.56rem;color:var(--muted);margin-top:3px;white-space:nowrap">${tenGod(dStem,g.stem)}</div>
+      <div class="manse-cell-sub">${tenGod(dStem,g.stem)}</div>
     </div>`;
   }
   h+=`</div></div>`;
@@ -6627,9 +6758,22 @@ function selectDaeunSewoon(age){
   if(!_saju)return;
   const box=document.getElementById('sewoonStripBox');
   if(box)box.innerHTML=sewoonStripHTML(_saju, age);
+  const sy=(_meta&&_meta.sy)||new Date().getFullYear();
+  const defaultYear=sy+age-1;
+  const monthBox=document.getElementById('monthwoonCardBox');
+  if(monthBox)monthBox.innerHTML=renderMonthwoonInner(_saju, defaultYear);
   document.querySelectorAll('.daeun-col').forEach(function(el){
     el.classList.toggle('on', parseInt(el.getAttribute('data-age'),10)===age);
   });
+}
+
+function selectSewoonYear(year){
+  if(!_saju)return;
+  document.querySelectorAll('.manse-cell[data-year]').forEach(function(el){
+    el.classList.toggle('on', parseInt(el.getAttribute('data-year'),10)===year);
+  });
+  const box=document.getElementById('monthwoonCardBox');
+  if(box)box.innerHTML=renderMonthwoonInner(_saju, year);
 }
 
 // 세운 카드 — 기본은 현재 대운, 위 대운을 탭하면 그 대운의 10년 세운으로 갱신
@@ -6639,10 +6783,85 @@ function renderSewoonCard(saju, sy, sm, sd, sh, smin){
   let curDaeunAge=1;
   try{const d=calcDaeun(saju,sy,sm,sd,sh,smin,gender); if(d&&d.daeuns&&d.daeuns.length){curDaeunAge=d.daeuns[0].age; for(const du of d.daeuns){if(curAge>=du.age)curDaeunAge=du.age;}}}catch(e){}
   return `<div class="card">
-    <div class="ctitle big">세운 — 1년 단위 흐름</div>
-    <div style="font-size:.72rem;color:var(--sub);margin:2px 0 10px;line-height:1.6">위 <b style="color:var(--accent-bright)">대운을 탭</b>하면 그 10년의 세운(연 단위 간지)이 여기 나와요. 매년 입춘(2월 4일경)에 새 간지가 들어오고, 별표(★)는 올해예요.</div>
+    <div class="ctitle big">5. 세운 — 1년 단위 흐름</div>
+    <div style="font-size:.72rem;color:var(--sub);margin:2px 0 10px;line-height:1.6">위 <b style="color:var(--accent-bright)">대운을 탭</b>하면 그 10년의 세운이 한 줄로 나와요. 세운을 탭하면 아래 월운이 해당 연도로 바뀌어요.</div>
     <div id="sewoonStripBox">${sewoonStripHTML(saju, curDaeunAge)}</div>
   </div>`;
+}
+
+function renderMonthwoonInner(saju, year){
+  const dStem=saju.dp.stem;
+  const now=new Date();
+  const months=[];
+  for(let m=1;m<=12;m++){
+    const yp=yearPillar(year,m,15,12,0);
+    const mi=monthIdx(year,m,15,12,0);
+    const mp=monthPillar(yp.stem,mi);
+    months.push({m,stem:mp.stem,branch:mp.branch,tg:tenGod(dStem,mp.stem),cur:year===now.getFullYear()&&m===now.getMonth()+1});
+  }
+  let h=`<div style="font-size:.74rem;color:var(--sub);margin:0 0 9px;line-height:1.6"><b style="color:var(--accent-bright)">${year}년 월운</b>이에요. 월운을 탭하면 그 달의 일운 달력이 팝업으로 열려요.</div>
+    <div class="manse-strip-scroll"><div class="manse-strip">`;
+  for(const mo of manseOrdered(months)){
+    h+=`<div class="manse-cell${mo.cur?' on':''}" onclick="openManseDailyPopup(${year},${mo.m})">
+      <div class="manse-cell-meta">${mo.cur?'★':''}${mo.m}월</div>
+      <div class="pstem ${ecls(SOH[mo.stem])}" style="padding:6px 2px;font-size:.88rem">${STEMKO[mo.stem]}</div>
+      <div class="pbranch ${ecls(BOH[mo.branch])}" style="padding:6px 2px;font-size:.88rem;margin-top:2px">${BRCHKO[mo.branch]}</div>
+      <div class="manse-cell-sub">${mo.tg}</div>
+    </div>`;
+  }
+  h+=`</div></div>`;
+  return h;
+}
+
+function renderMonthwoonCard(saju, year){
+  return `<div class="card">
+    <div class="ctitle big">6. 월운 — 월 단위 흐름</div>
+    <div id="monthwoonCardBox" class="manse-month-box">${renderMonthwoonInner(saju, year)}</div>
+  </div>
+  <div id="manseDailyModal" class="manse-modal" onclick="if(event.target===this)closeManseDailyPopup()"></div>`;
+}
+
+function openManseDailyPopup(year, month){
+  if(!_saju)return;
+  let modal=document.getElementById('manseDailyModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='manseDailyModal';
+    modal.className='manse-modal';
+    modal.onclick=function(e){if(e.target===modal)closeManseDailyPopup();};
+    document.body.appendChild(modal);
+  }
+  const first=new Date(year,month-1,1);
+  const days=new Date(year,month,0).getDate();
+  const start=first.getDay();
+  const dows=['일','월','화','수','목','금','토'];
+  let grid=dows.map(d=>`<div class="day-cal-dow">${d}</div>`).join('');
+  for(let i=0;i<start;i++)grid+=`<div class="day-cal-cell empty"></div>`;
+  for(let day=1;day<=days;day++){
+    const f=calcDailyFortune(_saju,new Date(year,month-1,day));
+    const idx=(Math.floor(gToJD(year,month,day,12)+0.5)+49+600*60)%60;
+    const st=idx%10, br=idx%12;
+    const grade=dailyGrade(f.total);
+    grid+=`<div class="day-cal-cell">
+      <div class="day-cal-date">${day}일</div>
+      <div class="day-cal-pillar">${STEMKO[st]}${BRCHKO[br]}</div>
+      <div class="day-cal-score" style="color:${grade.color}">${f.total}점 · ${plainTG(f.tg)}</div>
+    </div>`;
+  }
+  modal.innerHTML=`<div class="manse-modal-panel">
+    <div class="manse-modal-head">
+      <div class="manse-modal-title">${year}년 ${month}월 일운 달력</div>
+      <button type="button" class="manse-modal-close" onclick="closeManseDailyPopup()" aria-label="닫기">×</button>
+    </div>
+    <div style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:10px">각 날짜의 일진과 본인 기준 하루 흐름 점수예요. 자세한 하루 풀이는 오늘의 운세나 지정일 운세에서 이어서 볼 수 있어요.</div>
+    <div class="day-cal-grid">${grid}</div>
+  </div>`;
+  modal.classList.add('on');
+}
+
+function closeManseDailyPopup(){
+  const modal=document.getElementById('manseDailyModal');
+  if(modal)modal.classList.remove('on');
 }
 
 // 부드러운 곡선 path (Catmull-Rom → 베지어)
@@ -7453,7 +7672,7 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
       tagsHtml+=`<span class="tag sinsal-tag ${cls}" data-sin="${key}" onclick="showSinsalMeaning('${key}')" style="cursor:pointer">${key}</span>`;
     });
     window._sinsalMeanings=sinMap;
-    h+=`<div class="card"><div class="ctitle big">신살 요약</div>
+    h+=`<div class="card"><div class="ctitle big">8. 신살 요약</div>
       <div style="font-size:.72rem;color:var(--accent-bright);margin:2px 0 8px;font-weight:600">👆 신살을 탭하면 무슨 의미인지 나와요</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">${tagsHtml}</div>
       <div id="sinsalMeaningBox" style="margin-top:11px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;font-size:.8rem;color:var(--sub);line-height:1.75;min-height:1.3em">신살 하나를 탭해 보세요.</div>
@@ -7465,23 +7684,7 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
   h+=`<div class="card"><div class="ctitle">공망</div>
     <div class="abody" style="margin-top:6px">일주(${STEMKO[saju.dp.stem]}${BRCHKO[saju.dp.branch]}) 기준 공망: <b>${BRCHKO[gm[0]]} · ${BRCHKO[gm[1]]}</b></div>
   </div>`;
-  // 12개월 흐름
-  const now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
-  const months=calc12MonthFortune(saju,cy);
-  h+=`<div class="card">
-    <div class="ctitle big">${cy}년 12개월 흐름</div>
-    <div style="font-size:.7rem;color:var(--sub);margin-bottom:8px">절기 기준 월주 (이번 달 강조)</div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px">`;
-  for(let dm=1;dm<=12;dm++){
-    const mi=(dm+10)%12,m=months[mi],isCur=dm===cm;
-    const sc=m.score,color=sc>=3.5?'var(--wood)':sc>=2.5?'var(--earth)':'var(--fire)';
-    h+=`<div style="text-align:center;padding:7px 2px;background:${isCur?'var(--accent)':'#FAFAF5'};color:${isCur?'#fff':'var(--text)'};border-radius:6px;border:1px solid ${isCur?'var(--accent)':'var(--border)'}">
-      <div style="font-size:.6rem;${isCur?'opacity:.85':'color:var(--sub)'};font-weight:600">${dm}월</div>
-      <div style="font-size:.74rem;font-weight:700;margin:2px 0;color:${isCur?'#fff':color}">${STEMS[m.stem]}${BRCH[m.branch]}</div>
-      <div style="font-size:.58rem;${isCur?'opacity:.85':'color:var(--sub)'}">${m.tg}</div>
-    </div>`;
-  }
-  h+=`</div></div>`;
+  h+=renderManseConversionHook(saju);
   return h;
 }
 
@@ -7517,12 +7720,7 @@ function renderSajuFree(saju){
   h+=simpleCard('','건강운',hScore,getSimpleHealth(oh));
   h+=simpleCard('','직업·직장운',cScore,getSimpleCareer(gk));
   h+=simpleCard('','인간관계',rScore,getSimpleHuman(sins));
-  // CTA
-  h+=`<div class="card" style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));text-align:center;padding:18px;margin-top:14px">
-    <div style="font-size:.92rem;font-weight:800;margin-bottom:6px">더 깊이 알고 싶다면</div>
-    <div style="font-size:.78rem;color:var(--sub);line-height:1.65;margin-bottom:14px">위아래 글자를 쉽게 풀고, 10년 흐름×올해 흐름으로 시기별로 살아나는 부분과 한 번 더 살필 부분까지 분석한 자세한 풀이를 확인해보세요.</div>
-    <button class="lock-btn" style="margin-top:0;padding:11px 22px;width:auto;display:inline-block" onclick="tab(2)">자세한 사주 풀이 보기 🔒</button>
-  </div>`;
+  h+=renderManseConversionHook(saju);
   return h;
 }
 
@@ -14224,24 +14422,11 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   const oh=ohCount(saju);
   const tot=oh.reduce((a,b)=>a+b,0);
   let h='';
+  h+=renderManseDirectionTool();
 
   // Lunar / solar summary
   const lDate=lunarInfo;
   const timeStr=sh>=0?`${String(sh).padStart(2,'0')}시 ${String(smin||0).padStart(2,'0')}분`:'시간 미상';
-  h+=`<div class="lsummary">
-    <div class="ldate">양력 ${sy}년 ${sm}월 ${sd}일 ${timeStr}</div>
-    <div class="lsub">음력 ${lDate.ly}년 ${lDate.leap?'<b>윤</b>':''}${lDate.lm}월 ${lDate.ld}일 (${lDate.days}일달)</div>
-  </div>`;
-
-  // Four pillars
-  const _dStem=saju.dp.stem;
-  h+=`<div class="card"><div class="pillars-head"><div class="ctitle" style="margin-bottom:0">사주 원국 (만세력)</div>${sh>=0?'<span class="pillars-note">진태양시 보정 적용</span>':''}</div>
-    <div class="pillars">
-      ${pillarHTML('년주',saju.yp.stem,saju.yp.branch,_dStem,false)}
-      ${pillarHTML('월주',saju.mp.stem,saju.mp.branch,_dStem,false)}
-      ${pillarHTML('일주',saju.dp.stem,saju.dp.branch,_dStem,true)}
-      ${saju.hp?pillarHTML('시주',saju.hp.stem,saju.hp.branch,_dStem,false):pillarHTML('시주',undefined,undefined)}
-    </div></div>`;
 
   // Basic info
   const yIdx=(saju.yp.year-4+3600)%60;
@@ -14251,7 +14436,11 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   const ipHour=Math.floor(ipG.hour), ipMin=Math.round((ipG.hour-ipHour)*60);
   const ipStr=`${ipG.year}년 ${ipG.month}월 ${ipG.day}일 ${String(ipHour).padStart(2,'0')}:${String(ipMin).padStart(2,'0')}`;
   const dayJDN=((Math.floor(gToJD(sy,sm,sd,12)+0.5)+49+600*60)%60)+1;
-  h+=`<div class="card"><div class="ctitle">기본 정보</div>
+  h+=`<div class="lsummary">
+    <div class="ldate">양력 ${sy}년 ${sm}월 ${sd}일 ${timeStr}</div>
+    <div class="lsub">음력 ${lDate.ly}년 ${lDate.leap?'<b>윤</b>':''}${lDate.lm}월 ${lDate.ld}일 (${lDate.days}일달)</div>
+  </div>`;
+  h+=`<div class="card"><div class="ctitle">1. 기본 정보</div>
     <div class="irow"><span class="ikey">사주 기준년</span><span class="ival">${saju.yp.year}년 ${sixtyName}년 (${STEMKO[yIdx%10]}${BRCHKO[yIdx%12]})</span></div>
     <div class="irow"><span class="ikey">입춘 시각 (KST)</span><span class="ival" style="font-size:.78rem">${ipStr}</span></div>
     ${saju.yp.beforeIp?`<div class="irow"><span class="ikey" style="color:var(--fire)">⚡ 입춘 전 출생</span><span class="ival" style="color:var(--fire)">${saju.yp.year}년 기준 적용</span></div>`:''}
@@ -14261,8 +14450,21 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
     <div class="irow"><span class="ikey">육십갑자 일주</span><span class="ival">${dayJDN}번째 · ${STEMS[(dayJDN-1)%10]}${BRCH[(dayJDN-1)%12]}일</span></div>
   </div>`;
 
+  // Four pillars
+  const _dStem=saju.dp.stem;
+  const pillars=[
+    {label:'년주',stem:saju.yp.stem,branch:saju.yp.branch,day:false},
+    {label:'월주',stem:saju.mp.stem,branch:saju.mp.branch,day:false},
+    {label:'일주',stem:saju.dp.stem,branch:saju.dp.branch,day:true},
+    {label:'시주',stem:saju.hp&&saju.hp.stem,branch:saju.hp&&saju.hp.branch,day:false}
+  ];
+  h+=`<div class="card"><div class="pillars-head"><div class="ctitle" style="margin-bottom:0">2. 사주 원국 (만세력)</div>${sh>=0?'<span class="pillars-note">진태양시 보정 적용</span>':''}</div>
+    <div class="pillars">
+      ${manseOrdered(pillars).map(p=>pillarHTML(p.label,p.stem,p.branch,_dStem,p.day)).join('')}
+    </div></div>`;
+
   // 오행 distribution
-  h+=`<div class="card"><div class="ctitle">다섯 기운 균형</div><div class="bars">`;
+  h+=`<div class="card"><div class="ctitle">3. 다섯 기운 균형</div><div class="bars">`;
   for(let i=0;i<5;i++){
     const pct=tot>0?Math.round(oh[i]/tot*100):0;
     h+=`<div class="bar-row">
@@ -14273,17 +14475,14 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   }
   h+=`</div></div>`;
 
-  // 절기 and month info
-  h+=`<div class="card"><div class="ctitle">절기 · 월령 정보</div>
-    <div class="irow"><span class="ikey">월령</span><span class="ival">${BRCHKO[saju.mp.branch]}월 · ${OHNAME[BOH[saju.mp.branch]]}</span></div>
-    <div class="irow"><span class="ikey">절기 시작</span><span class="ival">${JIEQI_NAMES[saju.mi]} 이후</span></div>
-    <div class="irow"><span class="ikey">월주 천간 십신</span><span class="ival">${tenGod(saju.dp.stem,saju.mp.stem)}</span></div>
-    <div class="irow"><span class="ikey">년주 천간 십신</span><span class="ival">${tenGod(saju.dp.stem,saju.yp.stem)}</span></div>
-  </div>`;
+  // 대운 / 세운 / 월운
+  h+=renderDaeunCard(saju,sy,sm,sd,sh,smin);
+  h+=renderSewoonCard(saju,sy,sm,sd,sh,smin);
+  h+=renderMonthwoonCard(saju,new Date().getFullYear());
 
   // 용신
   const ys=getYongsin(oh);
-  h+=`<div class="card"><div class="ctitle">용신 — 도움이 되는 기운</div>
+  h+=`<div class="card"><div class="ctitle">7. 용신 — 도움이 되는 기운</div>
     <div class="irow">
       <span class="ikey">주 도움 기운</span>
       <span class="ival" style="color:${OHCOLOR[ys.main]}">${OHNAME[ys.main]} ★</span>
@@ -14295,9 +14494,13 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
     <div style="font-size:.76rem;color:var(--sub);margin-top:8px;line-height:1.6">${ys.desc}<br>용신에 해당하는 색상·방향·음식·직업을 가까이하면 도움이 돼요.</div>
   </div>`;
 
-  // 대운
-  h+=renderDaeunCard(saju,sy,sm,sd,sh,smin);
-  h+=renderSewoonCard(saju,sy,sm,sd,sh,smin);
+  // 절기 and month info
+  h+=`<div class="card"><div class="ctitle">절기 · 월령 정보</div>
+    <div class="irow"><span class="ikey">월령</span><span class="ival">${BRCHKO[saju.mp.branch]}월 · ${OHNAME[BOH[saju.mp.branch]]}</span></div>
+    <div class="irow"><span class="ikey">절기 시작</span><span class="ival">${JIEQI_NAMES[saju.mi]} 이후</span></div>
+    <div class="irow"><span class="ikey">월주 천간 십신</span><span class="ival">${tenGod(saju.dp.stem,saju.mp.stem)}</span></div>
+    <div class="irow"><span class="ikey">년주 천간 십신</span><span class="ival">${tenGod(saju.dp.stem,saju.yp.stem)}</span></div>
+  </div>`;
 
   return h;
 }
