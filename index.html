@@ -2434,6 +2434,101 @@ if(!LANG_META[_readingLang])_readingLang='ko';
 function currentLanguage(){return LANG_META[_readingLang]?_readingLang:'ko';}
 function currentLanguagePayload(){const k=currentLanguage();return {code:k,label:LANG_META[k].label,worker:LANG_META[k].worker};}
 function langText(map){return (map&&map[currentLanguage()])||map.ko||'';}
+const STATIC_I18N={
+  '천지인 사주':{en:'Cheonjiin Saju',zh:'天地人四柱',ja:'天地人 四柱'},
+  '사주팔자와 MBTI를 함께 풀어내는 새로운 해석':{en:'A new reading that blends Saju and MBTI',zh:'融合四柱八字与 MBTI 的全新解读',ja:'四柱推命とMBTIを組み合わせた新しい鑑定'},
+  '만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다':{en:'Know your nature through the calendar, understand yourself now through MBTI',zh:'以万年历看天性，以 MBTI 理解当下的自己',ja:'万年暦で本質を知り、MBTIで今の自分を理解する'},
+  '천 · 지 · 인':{en:'Heaven · Earth · Human',zh:'天 · 地 · 人',ja:'天 · 地 · 人'},
+  '사주 보기':{en:'View Saju',zh:'查看四柱',ja:'四柱を見る'},
+  '원하는 풀이를 선택하세요':{en:'Choose the reading you want',zh:'请选择想看的解读',ja:'見たい鑑定を選んでください'},
+  '만세력':{en:'Saju Calendar',zh:'万年历',ja:'万年暦'},
+  '진태양시 보정으로 사주 원국을 정확하게 계산':{en:'Accurate birth chart calculation with true solar time correction',zh:'通过真太阳时校正，准确计算四柱原局',ja:'真太陽時補正で命式を正確に計算'},
+  '무료':{en:'Free',zh:'免费',ja:'無料'},
+  '일일운세':{en:'Daily Fortune',zh:'每日运势',ja:'今日の運勢'},
+  '오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게':{en:'See how today’s energy interacts with your Saju',zh:'每天查看今日气运如何与你的四柱相合',ja:'今日の流れが自分の四柱とどう噛み合うかを毎日確認'},
+  '인생총운':{en:'Lifetime Reading',zh:'人生总运',ja:'人生総運'},
+  '10년 흐름으로 보는 평생의 중요한 시기':{en:'Key life periods through 10-year cycles',zh:'以十年大势看人生关键时期',ja:'10年ごとの流れで見る人生の重要時期'},
+  '시그니처':{en:'Signature',zh:'招牌',ja:'シグネチャー'},
+  '신년운세':{en:'New Year Fortune',zh:'新年运势',ja:'新年運勢'},
+  '사주와 올해·10년 흐름을 함께 보는 한 해 분석':{en:'A yearly reading combining your Saju, this year, and 10-year flow',zh:'结合四柱、当年与十年大势的一年分析',ja:'四柱・今年・10年運を合わせて見る一年の鑑定'},
+  '프리미엄':{en:'Premium',zh:'高级',ja:'プレミアム'},
+  '즉문즉답':{en:'Ask & Answer',zh:'即时问答',ja:'即問即答'},
+  '사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이':{en:'Enter your Saju first, then ask what you want to know',zh:'先输入四柱信息，再直接提出想问的问题',ja:'四柱情報を入力して、気になることをすぐ相談'},
+  '1회 무료':{en:'1 free question',zh:'1次免费',ja:'1回無料'},
+  '이후 건당 결제':{en:'Pay per question after that',zh:'之后按次付费',ja:'以後は1件ごとに決済'},
+  '궁합':{en:'Compatibility',zh:'合盘',ja:'相性'},
+  '본인과 상대의 사주를 나란히 비교해 8영역 풀이':{en:'Compare both charts across 8 relationship areas',zh:'并排比较双方四柱，解读8个关系领域',ja:'自分と相手の四柱を並べて8領域で鑑定'},
+  '이름풀이·작명':{en:'Name Reading',zh:'姓名解析·起名',ja:'名前鑑定・命名'},
+  '이름의 다섯 기운 분석 + 사주에 어울리는 추천 이름 5개':{en:'Analyze the five energies in your name and suggest 5 fitting names',zh:'分析姓名五行，并推荐5个适合四柱的名字',ja:'名前の五行分析と四柱に合う名前5案'},
+  '이용자 후기':{en:'User Reviews',zh:'用户评价',ja:'利用者レビュー'},
+  '베타 이용자 후기':{en:'Beta user reviews',zh:'Beta 用户评价',ja:'ベータ利用者レビュー'},
+  '후기 작성':{en:'Write Review',zh:'写评价',ja:'レビューを書く'},
+  '후기 작성하고 2,000원 보상코드 받기':{en:'Write a review and get a 2,000 KRW reward code',zh:'写评价领取2,000韩元奖励码',ja:'レビューを書いて2,000ウォン分の特典コードを受け取る'},
+  '사주 가이드 · 블로그 보기':{en:'Saju Guide · Blog',zh:'四柱指南 · 博客',ja:'四柱ガイド · ブログ'},
+  '서비스 소개':{en:'About',zh:'服务介绍',ja:'サービス紹介'},
+  '콘텐츠 작성 기준':{en:'Editorial Policy',zh:'内容编写标准',ja:'コンテンツ作成基準'},
+  '이용약관':{en:'Terms',zh:'使用条款',ja:'利用規約'},
+  '개인정보처리방침':{en:'Privacy Policy',zh:'隐私政策',ja:'プライバシーポリシー'},
+  '결제·환불 정책':{en:'Payment & Refund Policy',zh:'支付与退款政策',ja:'決済・返金ポリシー'},
+  '기본 정보 입력':{en:'Basic Information',zh:'基本信息输入',ja:'基本情報入力'},
+  '정확한 분석을 위해 빠짐없이 입력해주세요':{en:'Please fill in all fields for an accurate reading',zh:'请完整填写信息以便准确分析',ja:'正確な鑑定のため漏れなく入力してください'},
+  '성별':{en:'Gender',zh:'性别',ja:'性別'},
+  '성별 선택':{en:'Select gender',zh:'选择性别',ja:'性別を選択'},
+  '남성':{en:'Male',zh:'男性',ja:'男性'},
+  '여성':{en:'Female',zh:'女性',ja:'女性'},
+  '양력 / 음력':{en:'Solar / Lunar Calendar',zh:'阳历 / 阴历',ja:'陽暦 / 陰暦'},
+  '달력 종류':{en:'Calendar type',zh:'日历类型',ja:'暦の種類'},
+  '양력':{en:'Solar',zh:'阳历',ja:'陽暦'},
+  '음력':{en:'Lunar',zh:'阴历',ja:'陰暦'},
+  '달 종류':{en:'Month type',zh:'月份类型',ja:'月の種類'},
+  '평달·윤달':{en:'Regular / Leap month',zh:'平月 / 闰月',ja:'平月・閏月'},
+  '평달':{en:'Regular month',zh:'平月',ja:'平月'},
+  '윤달':{en:'Leap month',zh:'闰月',ja:'閏月'},
+  '생년월일':{en:'Date of Birth',zh:'出生年月日',ja:'生年月日'},
+  '연도 (예: 1990)':{en:'Year (e.g. 1990)',zh:'年份（例：1990）',ja:'年（例：1990）'},
+  '월 (1~12)':{en:'Month (1-12)',zh:'月（1~12）',ja:'月（1〜12）'},
+  '일 (1~31)':{en:'Day (1-31)',zh:'日（1~31）',ja:'日（1〜31）'},
+  '월':{en:'Month',zh:'月',ja:'月'},
+  '일':{en:'Day',zh:'日',ja:'日'},
+  '태어난 시각':{en:'Birth Time',zh:'出生时间',ja:'出生時刻'},
+  '시':{en:'Hour',zh:'时',ja:'時'},
+  '분':{en:'Minute',zh:'分',ja:'分'},
+  '모름':{en:'Unknown',zh:'不详',ja:'不明'},
+  '처음으로 돌아가기':{en:'Back to home',zh:'返回首页',ja:'最初に戻る'},
+  '‹ 뒤로':{en:'‹ Back',zh:'‹ 返回',ja:'‹ 戻る'},
+  '정보 입력':{en:'Information Input',zh:'信息输入',ja:'情報入力'},
+  '만세력을 계산하기 위해 정보를 입력해주세요':{en:'Enter your information to calculate the Saju calendar',zh:'请输入信息以计算万年历',ja:'万年暦を計算するため情報を入力してください'},
+  '오늘의 일진과 비교를 위해 정보를 입력해주세요':{en:'Enter your information to compare with today’s energy',zh:'请输入信息以与今日气运比较',ja:'今日の流れと比較するため情報を入力してください'},
+  '사주 정보와 보고 싶은 날짜를 입력해주세요':{en:'Enter your Saju and the date you want to check',zh:'请输入四柱信息和想查看的日期',ja:'四柱情報と見たい日付を入力してください'},
+  '사주 정보와 기간을 입력해주세요':{en:'Enter your Saju and the period you want to check',zh:'请输入四柱信息和期间',ja:'四柱情報と期間を入力してください'},
+  '사주 정보와 보고 싶은 해를 입력해주세요':{en:'Enter your Saju and the year you want to check',zh:'请输入四柱信息和想查看的年份',ja:'四柱情報と見たい年を入力してください'},
+  '본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요':{en:'Enter both your Saju and your partner’s Saju',zh:'请同时输入本人和对方的四柱',ja:'自分と相手の四柱を入力してください'},
+  '본인 사주와 본인 이름을 함께 입력해주세요':{en:'Enter your Saju and your name',zh:'请输入本人四柱和姓名',ja:'自分の四柱と名前を入力してください'},
+  '인생 흐름의 큰 그림을 위해 정보를 입력해주세요':{en:'Enter your information for the big picture of your life flow',zh:'请输入信息以查看人生大势',ja:'人生の大きな流れを見るため情報を入力してください'},
+  '첫 질문은 무료, 이후에는 질문권을 건당 결제해 이어서 상담해요':{en:'The first question is free. After that, continue with paid question credits.',zh:'首个问题免费，之后可按次购买提问券继续咨询',ja:'最初の質問は無料。その後は質問券を購入して相談できます'},
+  '만세력 · 정보 입력':{en:'Saju Calendar · Information Input',zh:'万年历 · 信息输入',ja:'万年暦 · 情報入力'},
+  '일일운세 · 정보 입력':{en:'Daily Fortune · Information Input',zh:'每日运势 · 信息输入',ja:'今日の運勢 · 情報入力'},
+  '인생총운 · 정보 입력':{en:'Lifetime Reading · Information Input',zh:'人生总运 · 信息输入',ja:'人生総運 · 情報入力'},
+  '신년운세 · 정보 입력':{en:'New Year Fortune · Information Input',zh:'新年运势 · 信息输入',ja:'新年運勢 · 情報入力'},
+  '즉문즉답 · 정보 입력':{en:'Ask & Answer · Information Input',zh:'即时问答 · 信息输入',ja:'即問即答 · 情報入力'},
+  '궁합 · 정보 입력':{en:'Compatibility · Information Input',zh:'合盘 · 信息输入',ja:'相性 · 情報入力'},
+  '이름풀이·작명 · 정보 입력':{en:'Name Reading · Information Input',zh:'姓名解析·起名 · 信息输入',ja:'名前鑑定・命名 · 情報入力'},
+  '사주 분석하기':{en:'Analyze Saju',zh:'开始四柱分析',ja:'四柱を分析する'},
+  '✦ 사주 분석하기 ✦':{en:'✦ Analyze Saju ✦',zh:'✦ 开始四柱分析 ✦',ja:'✦ 四柱を分析する ✦'},
+  '처음으로':{en:'Home',zh:'首页',ja:'最初へ'},
+  '질문':{en:'Question',zh:'问题',ja:'質問'},
+  '생각하는 중':{en:'Thinking',zh:'正在思考',ja:'考えています'},
+  '오류':{en:'Error',zh:'错误',ja:'エラー'}
+};
+function normalizeStaticKey(text){
+  return String(text||'').replace(/\s+/g,' ').trim();
+}
+function staticTranslate(text, lang){
+  if(lang==='ko')return null;
+  const key=normalizeStaticKey(text);
+  const hit=STATIC_I18N[key];
+  return hit&&hit[lang]?hit[lang]:null;
+}
 function toggleLanguageMenu(event){
   if(event)event.stopPropagation();
   const wrap=document.getElementById('langSwitch');
@@ -2523,6 +2618,18 @@ function restoreOriginalLanguage(root){
     Object.entries(el.__koAttrs).forEach(([attr,val])=>el.setAttribute(attr,val));
   });
 }
+function isResultLanguageScope(scope){
+  return !!(scope&&(scope.id==='view-result'||scope.closest&&scope.closest('#view-result')));
+}
+function isApiEligibleTranslationItem(item, scope){
+  if(!isResultLanguageScope(scope))return false;
+  const text=normalizeStaticKey(item.text);
+  if(text.length<28)return false;
+  const el=item.type==='node'?item.target.parentElement:item.target;
+  if(!el)return false;
+  if(el.closest('.lang-switch,.lang-note,button,.tog,.bb,.menu-back,.share-bar,.share-bar-btn,.chat-head,.chat-input-row,.chat-tip,.chat-addbuy-btn,.reviews-sec,.home-foot,.form-body legend,.form-body label,.mc-tag,.mc-price,.nb-cat,.material-symbols-outlined'))return false;
+  return /[가-힣]/.test(text);
+}
 async function translateTextBatch(texts, lang){
   if(!texts.length||lang==='ko')return texts;
   const out=new Array(texts.length);
@@ -2566,9 +2673,20 @@ async function applyLanguageToVisibleResult(root){
     ...nodes.map(n=>({type:'node',target:n,text:n.__koText||n.nodeValue})),
     ...attrs.map(a=>({type:'attr',target:a.el,attr:a.attr,text:a.el.__koAttrs[a.attr]||a.text}))
   ];
+  const apiItems=[];
+  items.forEach(item=>{
+    const translated=staticTranslate(item.text,lang);
+    if(translated){
+      if(item.type==='node'){item.target.nodeValue=translated;_translatedTextNodes.add(item.target);}
+      else item.target.setAttribute(item.attr,translated);
+    }else if(isApiEligibleTranslationItem(item,scope)){
+      apiItems.push(item);
+    }
+  });
+  if(!apiItems.length)return;
   try{
-    for(let i=0;i<items.length;i+=180){
-      const chunk=items.slice(i,i+180);
+    for(let i=0;i<apiItems.length;i+=120){
+      const chunk=apiItems.slice(i,i+120);
       const translated=await translateTextBatch(chunk.map(x=>x.text),lang);
       translated.forEach((t,j)=>{
         const item=chunk[j];
