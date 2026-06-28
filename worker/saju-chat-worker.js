@@ -104,24 +104,29 @@ export default {
       }
 
       if (env.OPENAI_API_KEY) {
-        const result = await callOpenAIResponses({
-          apiKey: env.OPENAI_API_KEY,
-          model: route.model,
-          systemPrompt,
-          userPrompt,
-          maxOutputTokens: route.maxOutputTokens,
-          reasoningEffort: route.reasoningEffort,
-          verbosity: route.verbosity,
-        });
-        await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'openai', model: route.model });
-        if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-        return json({
-          answer: result.text || '답변을 생성하지 못했습니다.',
-          provider: 'openai',
-          model: route.model,
-          route: route.name,
-          usage: result.usage || null,
-        });
+        try {
+          const result = await callOpenAIResponses({
+            apiKey: env.OPENAI_API_KEY,
+            model: route.model,
+            systemPrompt,
+            userPrompt,
+            maxOutputTokens: route.maxOutputTokens,
+            reasoningEffort: route.reasoningEffort,
+            verbosity: route.verbosity,
+          });
+          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'openai', model: route.model });
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          return json({
+            answer: result.text || '답변을 생성하지 못했습니다.',
+            provider: 'openai',
+            model: route.model,
+            route: route.name,
+            usage: result.usage || null,
+          });
+        } catch (e) {
+          console.warn('OpenAI QNA failed, falling back to Anthropic if available:', e && e.message);
+          if (!env.ANTHROPIC_API_KEY) throw e;
+        }
       }
 
       const apiResp = await callAnthropicWithRetry({
@@ -208,16 +213,21 @@ async function handleReading(request, env) {
 
   try {
     if (env.OPENAI_API_KEY) {
-      const result = await callOpenAIResponses({
-        apiKey: env.OPENAI_API_KEY,
-        model: coreReading ? (env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini') : (env.OPENAI_MODEL || 'gpt-5.4-mini'),
-        systemPrompt,
-        userPrompt,
-        maxOutputTokens: coreReading ? 3800 : 1800,
-        reasoningEffort: coreReading ? 'medium' : 'low',
-        verbosity: 'medium',
-      });
-      return json({ ok: true, provider: 'openai', text: result.text, usage: result.usage || null });
+      try {
+        const result = await callOpenAIResponses({
+          apiKey: env.OPENAI_API_KEY,
+          model: coreReading ? (env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini') : (env.OPENAI_MODEL || 'gpt-5.4-mini'),
+          systemPrompt,
+          userPrompt,
+          maxOutputTokens: coreReading ? 3800 : 1800,
+          reasoningEffort: coreReading ? 'medium' : 'low',
+          verbosity: 'medium',
+        });
+        return json({ ok: true, provider: 'openai', text: result.text, usage: result.usage || null });
+      } catch (e) {
+        console.warn('OpenAI reading failed, falling back to Anthropic if available:', e && e.message);
+        if (!env.ANTHROPIC_API_KEY) throw e;
+      }
     }
 
     const apiResp = await callAnthropicWithRetry({
@@ -248,7 +258,7 @@ async function handleReading(request, env) {
 }
 
 async function handleTranslate(request, env) {
-  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !env.AI) {
     return json({ error: '번역 서비스가 아직 준비되지 않았습니다.' }, 500);
   }
 
@@ -279,17 +289,23 @@ Rules:
   try {
     let raw = '';
     if (env.OPENAI_API_KEY) {
-      const result = await callOpenAIResponses({
-        apiKey: env.OPENAI_API_KEY,
-        model: env.OPENAI_TRANSLATE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
-        systemPrompt,
-        userPrompt,
-        maxOutputTokens: 7000,
-        reasoningEffort: 'low',
-        verbosity: 'low',
-      });
-      raw = result.text || '';
-    } else {
+      try {
+        const result = await callOpenAIResponses({
+          apiKey: env.OPENAI_API_KEY,
+          model: env.OPENAI_TRANSLATE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
+          systemPrompt,
+          userPrompt,
+          maxOutputTokens: 7000,
+          reasoningEffort: 'low',
+          verbosity: 'low',
+        });
+        raw = result.text || '';
+      } catch (e) {
+        console.warn('OpenAI translate failed, falling back to Anthropic if available:', e && e.message);
+        if (!env.ANTHROPIC_API_KEY) throw e;
+      }
+    }
+    if (!raw && env.ANTHROPIC_API_KEY) {
       const apiResp = await callAnthropicWithRetry({
         apiKey: env.ANTHROPIC_API_KEY,
         body: {
@@ -299,10 +315,25 @@ Rules:
           messages: [{ role: 'user', content: userPrompt }],
         },
       });
-      if (!apiResp.ok) return json({ error: `번역 서비스 일시 오류 (${apiResp.status})` }, 502);
-      const data = await apiResp.json();
-      raw = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        raw = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+      } else {
+        const errText = await apiResp.text();
+        console.warn('Anthropic translate failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
+      }
     }
+    if (!raw && env.AI) {
+      const result = await env.AI.run(env.WORKERS_AI_TRANSLATE_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8', {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        max_tokens: 5000,
+      });
+      raw = extractWorkersAIText(result);
+    }
+    if (!raw) return json({ error: '번역 서비스 일시 오류' }, 502);
     const translated = parseJsonArrayText(raw);
     if (!Array.isArray(translated)) throw new Error('translation parse failed');
     return json({ ok: true, texts: texts.map((t, i) => String(translated[i] || t)) });
@@ -341,6 +372,28 @@ function parseJsonArrayText(raw) {
     } catch {}
   }
   return null;
+}
+
+function extractWorkersAIText(result) {
+  if (!result) return '';
+  if (typeof result === 'string') return result.trim();
+  if (typeof result.response === 'string') return result.response.trim();
+  if (typeof result.result === 'string') return result.result.trim();
+  if (typeof result.text === 'string') return result.text.trim();
+  if (Array.isArray(result.choices)) {
+    return result.choices
+      .map((c) => (c && c.message && c.message.content) || c.text || '')
+      .join('\n')
+      .trim();
+  }
+  if (Array.isArray(result.output)) {
+    return result.output
+      .flatMap((item) => item.content || [])
+      .map((part) => part.text || '')
+      .join('\n')
+      .trim();
+  }
+  return '';
 }
 
 function json(obj, status = 200) {
