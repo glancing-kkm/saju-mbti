@@ -994,8 +994,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .daeun-col{text-align:center;min-width:50px;cursor:pointer;border-radius:9px;padding:4px 3px;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
 .daeun-col:hover{background:rgba(255,255,255,.04)}
 .daeun-col.on{background:rgba(212,175,55,.1);box-shadow:0 0 0 1.5px rgba(212,175,55,.45)}
-.manse-tools{display:flex;justify-content:flex-end;margin:0 0 10px}
-.manse-dir-btn{border:1px solid rgba(212,175,55,.32);background:var(--card);color:var(--accent-bright);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:.75rem;font-weight:800;cursor:pointer}
+.manse-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.manse-section-head .ctitle{margin-bottom:0}
+.manse-head-side{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.manse-dir-btn{border:1px solid rgba(212,175,55,.32);background:var(--card);color:var(--accent-bright);border-radius:999px;padding:4px 8px;font-family:inherit;font-size:.62rem;font-weight:900;cursor:pointer;white-space:nowrap;letter-spacing:.01em}
+.manse-dir-btn:active{transform:translateY(1px)}
 .manse-view.manse-rtl .pillars{direction:rtl}
 .manse-view.manse-rtl .pillars>.pcol{direction:ltr}
 .manse-view.manse-rtl .manse-strip{direction:rtl}
@@ -6676,9 +6679,8 @@ const JIEQI_CH=['입춘','경칩','청명','입하','망종','소서','입추','
 let _manseReadRtl=(function(){try{return localStorage.getItem('manse_read_dir')==='rtl';}catch(e){return false;}})();
 function manseOrdered(list){return list;}
 function manseDirLabel(){return _manseReadRtl?'오른쪽 → 왼쪽':'왼쪽 → 오른쪽';}
-function renderManseDirectionTool(){
-  const next=_manseReadRtl?'왼쪽 → 오른쪽으로 보기':'오른쪽 → 왼쪽으로 보기';
-  return `<div class="manse-tools"><button type="button" class="manse-dir-btn" onclick="toggleManseDirection()">현재 ${manseDirLabel()} · ${next}</button></div>`;
+function manseDirButton(){
+  return `<button type="button" class="manse-dir-btn" onclick="toggleManseDirection()" title="현재 ${manseDirLabel()}">왼↔오 읽기</button>`;
 }
 function toggleManseDirection(){
   _manseReadRtl=!_manseReadRtl;
@@ -6701,7 +6703,7 @@ function renderDaeunCard(saju,sy,sm,sd,sh,smin){
   let curDaeunAge=d.daeuns.length?d.daeuns[0].age:1;
   for(const du of d.daeuns){if(curAge>=du.age)curDaeunAge=du.age;}
   let h=`<div class="card">
-    <div class="ctitle big">4. 대운 — 10년 운세 주기</div>
+    <div class="manse-section-head"><div class="ctitle big">4. 대운 — 10년 운세 주기</div><div class="manse-head-side">${manseDirButton()}</div></div>
     <div class="irow"><span class="ikey">10년 흐름 방향</span><span class="ival">${dir}</span></div>
     <div class="irow"><span class="ikey">10년 흐름 시작 나이</span><span class="ival">${d.startYears}세 ${d.startMonths>0?d.startMonths+'개월':''} 부터</span></div>
     <div style="font-size:.72rem;color:var(--accent-bright);margin:10px 0 2px;font-weight:600">👆 대운을 탭하면 아래에 그 10년의 세운이 나와요</div>
@@ -6789,7 +6791,7 @@ function renderSewoonCard(saju, sy, sm, sd, sh, smin){
   let curDaeunAge=1;
   try{const d=calcDaeun(saju,sy,sm,sd,sh,smin,gender); if(d&&d.daeuns&&d.daeuns.length){curDaeunAge=d.daeuns[0].age; for(const du of d.daeuns){if(curAge>=du.age)curDaeunAge=du.age;}}}catch(e){}
   return `<div class="card">
-    <div class="ctitle big">5. 세운 — 1년 단위 흐름</div>
+    <div class="manse-section-head"><div class="ctitle big">5. 세운 — 1년 단위 흐름</div><div class="manse-head-side">${manseDirButton()}</div></div>
     <div style="font-size:.72rem;color:var(--sub);margin:2px 0 10px;line-height:1.6">위 <b style="color:var(--accent-bright)">대운을 탭</b>하면 그 10년의 세운이 한 줄로 나와요. 세운을 탭하면 아래 월운이 해당 연도로 바뀌어요.</div>
     <div id="sewoonStripBox">${sewoonStripHTML(saju, curDaeunAge)}</div>
   </div>`;
@@ -6821,7 +6823,7 @@ function renderMonthwoonInner(saju, year){
 
 function renderMonthwoonCard(saju, year){
   return `<div class="card">
-    <div class="ctitle big">6. 월운 — 월 단위 흐름</div>
+    <div class="manse-section-head"><div class="ctitle big">6. 월운 — 월 단위 흐름</div><div class="manse-head-side">${manseDirButton()}</div></div>
     <div id="monthwoonCardBox" class="manse-month-box">${renderMonthwoonInner(saju, year)}</div>
   </div>
   <div id="manseDailyModal" class="manse-modal" onclick="if(event.target===this)closeManseDailyPopup()"></div>`;
@@ -14428,7 +14430,6 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   const oh=ohCount(saju);
   const tot=oh.reduce((a,b)=>a+b,0);
   let h='';
-  h+=renderManseDirectionTool();
   h+=`<div class="manse-view ${_manseReadRtl?'manse-rtl':'manse-ltr'}">`;
 
   // Lunar / solar summary
@@ -14465,7 +14466,7 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
     {label:'일주',stem:saju.dp.stem,branch:saju.dp.branch,day:true},
     {label:'시주',stem:saju.hp&&saju.hp.stem,branch:saju.hp&&saju.hp.branch,day:false}
   ];
-  h+=`<div class="card"><div class="pillars-head"><div class="ctitle" style="margin-bottom:0">2. 사주 원국 (만세력)</div>${sh>=0?'<span class="pillars-note">진태양시 보정 적용</span>':''}</div>
+  h+=`<div class="card"><div class="pillars-head"><div class="ctitle" style="margin-bottom:0">2. 사주 원국 (만세력)</div><div class="manse-head-side">${sh>=0?'<span class="pillars-note">진태양시 보정 적용</span>':''}${manseDirButton()}</div></div>
     <div class="pillars">
       ${manseOrdered(pillars).map(p=>pillarHTML(p.label,p.stem,p.branch,_dStem,p.day)).join('')}
     </div></div>`;
