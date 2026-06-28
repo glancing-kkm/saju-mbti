@@ -996,6 +996,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .daeun-col.on{background:rgba(212,175,55,.1);box-shadow:0 0 0 1.5px rgba(212,175,55,.45)}
 .manse-tools{display:flex;justify-content:flex-end;margin:0 0 10px}
 .manse-dir-btn{border:1px solid rgba(212,175,55,.32);background:var(--card);color:var(--accent-bright);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:.75rem;font-weight:800;cursor:pointer}
+.manse-view.manse-rtl .pillars{direction:rtl}
+.manse-view.manse-rtl .pillars>.pcol{direction:ltr}
+.manse-view.manse-rtl .manse-strip{direction:rtl}
+.manse-view.manse-rtl .manse-cell,
+.manse-view.manse-rtl .daeun-col{direction:ltr}
 .manse-strip-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .manse-strip{display:flex;gap:6px;padding:2px 1px 8px;min-width:max-content;flex-wrap:nowrap}
 .manse-cell{text-align:center;min-width:56px;border-radius:9px;padding:5px 4px;cursor:pointer;transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
@@ -6669,10 +6674,11 @@ const JIEQI_NAMES=['입춘','경칩','청명','입하','망종','소서','입추
 const JIEQI_CH=['입춘','경칩','청명','입하','망종','소서','입추','백로','한로','입동','대설','소한'];
 
 let _manseReadRtl=(function(){try{return localStorage.getItem('manse_read_dir')==='rtl';}catch(e){return false;}})();
-function manseOrdered(list){return _manseReadRtl?[...list].reverse():list;}
+function manseOrdered(list){return list;}
 function manseDirLabel(){return _manseReadRtl?'오른쪽 → 왼쪽':'왼쪽 → 오른쪽';}
 function renderManseDirectionTool(){
-  return `<div class="manse-tools"><button type="button" class="manse-dir-btn" onclick="toggleManseDirection()">읽는 방향: ${manseDirLabel()} · 전환</button></div>`;
+  const next=_manseReadRtl?'왼쪽 → 오른쪽으로 보기':'오른쪽 → 왼쪽으로 보기';
+  return `<div class="manse-tools"><button type="button" class="manse-dir-btn" onclick="toggleManseDirection()">현재 ${manseDirLabel()} · ${next}</button></div>`;
 }
 function toggleManseDirection(){
   _manseReadRtl=!_manseReadRtl;
@@ -14423,6 +14429,7 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
   const tot=oh.reduce((a,b)=>a+b,0);
   let h='';
   h+=renderManseDirectionTool();
+  h+=`<div class="manse-view ${_manseReadRtl?'manse-rtl':'manse-ltr'}">`;
 
   // Lunar / solar summary
   const lDate=lunarInfo;
@@ -14502,6 +14509,7 @@ function renderManseryeok(saju,sy,sm,sd,sh,smin,lunarInfo){
     <div class="irow"><span class="ikey">년주 천간 십신</span><span class="ival">${tenGod(saju.dp.stem,saju.yp.stem)}</span></div>
   </div>`;
 
+  h+=`</div>`;
   return h;
 }
 
