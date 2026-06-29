@@ -2518,7 +2518,7 @@ const STATIC_I18N={
   '처음으로':{en:'Home',zh:'首页',ja:'最初へ'},
   '질문':{en:'Question',zh:'问题',ja:'質問'},
   '생각하는 중':{en:'Thinking',zh:'正在思考',ja:'考えています'},
-  '오류':{en:'Error',zh:'错误',ja:'エラー'}
+  '안내':{en:'Notice',zh:'提示',ja:'案内'}
 };
 function normalizeStaticKey(text){
   return String(text||'').replace(/\s+/g,' ').trim();
@@ -2712,7 +2712,7 @@ async function applyLanguageToVisibleResult(root){
       });
     }
   }catch(e){
-    showLanguageNote('번역을 잠시 불러오지 못했어요. AI 리딩은 선택 언어로 요청됩니다.');
+    // 선택 언어 적용이 어려운 일부 본문은 원문을 유지한다. 사용자에게 내부 처리 상태를 노출하지 않는다.
   }
 }
 function getActiveLanguageScope(){
@@ -8734,7 +8734,7 @@ async function applyPromoCode(){
     return true;
   }catch(e){
     _updatePayPriceByCoupon(null);
-    if(msg){msg.className='pay-promo-msg err';msg.textContent='네트워크 오류로 코드를 확인하지 못했어요.';}
+    if(msg){msg.className='pay-promo-msg err';msg.textContent='코드를 확인하지 못했어요. 잠시 후 다시 입력해 주세요.';}
     return false;
   }
 }
@@ -8799,7 +8799,7 @@ async function startKakaoPayment(){
   const amount=baseAmount-couponAmount;
   if(KAKAO_PAYMENT_BASE.includes('example.workers.dev')){
     statusEl.className='pay-status err';
-    statusEl.textContent='결제 서버가 아직 배포되지 않았습니다. 운영자 설정 후 이용해주세요.';
+    statusEl.textContent='결제 준비 상태를 확인하고 있어요. 잠시 후 다시 시도해 주세요.';
     return;
   }
   const orderId=_genOrderId(cat);
@@ -8833,7 +8833,7 @@ async function startKakaoPayment(){
     });
     const data=await res.json().catch(()=>({}));
     if(!res.ok||!data.ok){
-      throw new Error((data&&data.message)||('준비 실패 '+res.status));
+      throw new Error('payment-ready-unavailable');
     }
     // 승인 단계에서 필요한 정보 보존 — redirect 후 같은 브라우저 세션에서 읽음
     sessionStorage.setItem(KAKAO_PAY_SS_KEY,JSON.stringify({
@@ -8856,7 +8856,7 @@ async function startKakaoPayment(){
     location.href=redirectUrl;
   }catch(e){
     statusEl.className='pay-status err';
-    statusEl.textContent='결제 창을 띄우지 못했어요: '+(e&&e.message||'알 수 없는 오류');
+    statusEl.textContent='결제 화면으로 이동하지 못했어요. 잠시 후 다시 시도해 주세요.';
   }
 }
 // 토스 호환 alias — 기존 onclick 호환 (장기적으론 제거 가능)
@@ -8873,7 +8873,7 @@ async function _handlePaymentReturn(){
     return;
   }
   if(kpay==='fail'){
-    alert('❌ 결제가 실패했습니다. 카드사·잔액 등을 확인해 주세요.');
+    alert('결제를 완료하지 못했어요. 카드사 승인 상태나 잔액을 확인해 주세요.');
     history.replaceState({},'',location.pathname);
     return;
   }
@@ -8908,11 +8908,11 @@ async function _handlePaymentReturn(){
     });
     if(!res.ok){
       const errd=await res.json().catch(()=>({}));
-      throw new Error((errd&&errd.message)||'승인 실패 ('+res.status+')');
+      throw new Error('payment-approval-unavailable');
     }
     const data=await res.json();
     if(!(data&&data.ok)){
-      throw new Error((data&&data.message)||'승인 실패');
+      throw new Error('payment-approval-unavailable');
     }
     if((!_saju||!_meta)&&pending.saju&&pending.meta){
       _saju=pending.saju;
@@ -8949,7 +8949,7 @@ async function _handlePaymentReturn(){
     openPayDoneModal({orderId, cat, isChatpack:false, rendered});
     if(!rendered){ try{ goToInput(cat); }catch(e){} }
   }catch(e){
-    alert('❌ 결제 승인 중 오류: '+(e&&e.message||'알 수 없는 오류')+'\n영수증 확인 후 고객문의로 연락해 주세요.');
+    alert('결제 확인 중 문제가 있었어요. 결제가 완료되었는데 화면이 열리지 않으면 고객문의로 연락해 주세요.');
     history.replaceState({},'',location.pathname);
   }
 }
@@ -9015,7 +9015,7 @@ function payDoneClickShare(){
       if(r)r.textContent=`${chatRemaining(before)}회 남음`;
     }catch(e){}
   }catch(e){
-    alert('카카오톡 공유 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.');
+    alert('카카오톡 공유를 완료하지 못했어요. 잠시 후 다시 시도해 주세요.');
   }
 }
 function payDoneGoResult(){
@@ -14033,7 +14033,7 @@ function chatAppend(role,text){
   const lab=role==='user'?langText({ko:'질문',en:'Question',zh:'问题',ja:'質問'})
     :role==='reply'?langText({ko:'🔮 역술가',en:'🔮 Advisor',zh:'🔮 命理师',ja:'🔮 鑑定士'})
     :role==='loading'?langText({ko:'생각하는 중',en:'Thinking',zh:'正在思考',ja:'考えています'})
-    :langText({ko:'⚠️ 오류',en:'⚠️ Error',zh:'⚠️ 错误',ja:'⚠️ エラー'});
+    :langText({ko:'안내',en:'Notice',zh:'提示',ja:'案内'});
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
   div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
@@ -14067,7 +14067,7 @@ function chatAppendError(text,retryQuestion){
       const btn=document.createElement('button');
       btn.type='button';
       btn.className='chat-retry-btn';
-      btn.textContent='↻ 다시 시도';
+      btn.textContent='다시 확인';
       btn.onclick=function(){
         const input=document.getElementById('chatInput');
         if(input)input.value=retryQuestion;
