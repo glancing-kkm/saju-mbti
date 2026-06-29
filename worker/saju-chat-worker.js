@@ -197,7 +197,7 @@ export default {
 };
 
 async function handleReading(request, env) {
-  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !env.AI) {
     return json({ error: '개인화 리딩 서비스가 아직 준비되지 않았습니다.' }, 500);
   }
 
@@ -242,30 +242,42 @@ async function handleReading(request, env) {
       }
     }
 
-    const apiResp = await callAnthropicWithRetry({
-      apiKey: env.ANTHROPIC_API_KEY,
-      body: {
-        model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-        max_tokens: coreReading ? 3800 : 1800,
-        system: [{ type: 'text', text: systemPrompt }],
-        messages: [{ role: 'user', content: userPrompt }],
-      },
-    });
-    if (!apiResp.ok) {
+    if (env.ANTHROPIC_API_KEY) {
+      const apiResp = await callAnthropicWithRetry({
+        apiKey: env.ANTHROPIC_API_KEY,
+        body: {
+          model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          max_tokens: coreReading ? 3800 : 1800,
+          system: [{ type: 'text', text: systemPrompt }],
+          messages: [{ role: 'user', content: userPrompt }],
+        },
+      });
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        const text = (data.content || [])
+          .filter((b) => b.type === 'text')
+          .map((b) => b.text)
+          .join('\n')
+          .trim();
+        return json({ ok: true, provider: 'anthropic', text: text || '', usage: data.usage || null });
+      }
       const errText = await apiResp.text();
-      console.error('Reading upstream API error:', apiResp.status, errText);
-      return json({ error: `개인화 리딩 일시 오류 (${apiResp.status})` }, 502);
+      console.warn('Reading Anthropic failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
     }
-    const data = await apiResp.json();
-    const text = (data.content || [])
-      .filter((b) => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n')
-      .trim();
-    return json({ ok: true, provider: 'anthropic', text: text || '', usage: data.usage || null });
+    if (env.AI) {
+      const result = await callWorkersAIChat({
+        ai: env.AI,
+        model: env.WORKERS_AI_READING_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8',
+        systemPrompt,
+        userPrompt,
+        maxTokens: coreReading ? 3800 : 1800,
+      });
+      if (result.text) return json({ ok: true, provider: 'workers-ai', model: result.model, text: result.text, usage: result.usage || null });
+    }
+    return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   } catch (e) {
     console.error('Reading worker error:', e);
-    return json({ error: '개인화 리딩 생성 중 오류가 발생했습니다.' }, 500);
+    return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   }
 }
 

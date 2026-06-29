@@ -2654,6 +2654,23 @@ async function translateTextBatch(texts, lang){
   }
   return out.map((v,i)=>v||texts[i]);
 }
+async function fetchJsonWithRetry(url, options, attempts){
+  let last={resp:null,data:null,error:null};
+  const tries=Math.max(1,attempts||3);
+  for(let i=0;i<tries;i++){
+    try{
+      const resp=await fetch(url,options);
+      const data=await resp.json().catch(()=>({}));
+      if(resp.ok&&!data.error)return {resp,data};
+      last={resp,data,error:null};
+      if(resp.status>=400&&resp.status<500&&resp.status!==403&&resp.status!==408&&resp.status!==429)break;
+    }catch(e){
+      last={resp:null,data:null,error:e};
+    }
+    if(i<tries-1)await sleep(700+i*900);
+  }
+  return last;
+}
 async function applyLanguageToVisibleResult(root){
   const lang=currentLanguage();
   const scope=root||document.getElementById('view-result');
@@ -13974,13 +13991,12 @@ async function hydrateAIReading(category, opts){
   const payload=buildAIReadingPayload(category,opts);
   if(!payload)return;
   try{
-    const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/reading',{
+    const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/reading',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload),
-    });
-    const data=await resp.json().catch(()=>({}));
-    if(!resp.ok)throw new Error(data.error||'개인화 리딩을 불러오지 못했어요.');
+    },3);
+    if(!resp||!resp.ok)throw new Error((data&&data.error)||'개인화 리딩을 불러오지 못했어요.');
     const text=(data.text||data.answer||'').trim();
     if(!text)throw new Error('개인화 리딩이 비어 있어요.');
     aiReadingCacheSet(category,extraKey,text);
@@ -13991,8 +14007,8 @@ async function hydrateAIReading(category, opts){
     if(currentLanguage()!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
     setAIReadingFallbackVisible(category,extraKey,true);
-    if(card.classList.contains('main-reading'))card.style.display='none';
-    else body.innerHTML=`<div class="ai-reading-status error">${preventOrphan('풀이를 잠시 새로 정리하지 못했어요. 아래 기존 사주풀이 내용은 그대로 확인할 수 있어요.')}</div>`;
+    card.style.display='none';
+    body.innerHTML='';
   }
 }
 function hydrateAIReadings(root){
