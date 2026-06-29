@@ -14075,6 +14075,29 @@ function normalizeChatErrorMessage(text,status){
   return raw||'답변을 불러오지 못했어요. 질문권은 차감하지 않았어요.';
 }
 
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+async function qnaFetchWithRetry(payload, attempts){
+  let last={res:null,data:null,error:null};
+  const tries=Math.max(1,attempts||2);
+  for(let i=0;i<tries;i++){
+    try{
+      const res=await fetch(WORKER_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),
+      });
+      const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없어요.'}));
+      if(res.ok&&!data.error)return {res,data};
+      last={res,data,error:null};
+      if(res.status===402||res.status===400)break;
+    }catch(e){
+      last={res:null,data:null,error:e};
+    }
+    if(i<tries-1)await sleep(900+i*900);
+  }
+  return last;
+}
+
 function localChatFallbackAnswer(question,ctx){
   if(!ctx)return '';
   const q=String(question||'');
@@ -14094,7 +14117,7 @@ function localChatFallbackAnswer(question,ctx){
     시기:'시기 질문은 10년 흐름과 올해 흐름이 같은 방향으로 밀어줄 때 가장 힘이 커져요. 급한 결정보다 준비를 먼저 해두고, 흐름이 열리는 달에 실행하는 방식이 좋아요.',
     종합:'질문은 본인의 타고난 분위기와 현재 흐름이 만나는 지점을 봐야 해요. 지금은 한 번에 답을 정하기보다, 관계·일·돈 중 가장 부담이 큰 한 가지를 먼저 정리하는 쪽이 좋아요.'
   }[topic];
-  return `${persona}\n\n${nowFlow}\n\n${base}\n\nAI 상담 연결이 정상화되면 같은 질문으로 다시 시도해 더 자세한 답변을 받을 수 있어요. 이 임시 답변은 질문권에서 차감하지 않았어요.`;
+  return `${persona}\n\n${nowFlow}\n\n${base}\n\n지금 질문은 위 흐름을 기준으로 보면, 한 번에 결론을 밀어붙이기보다 본인이 가장 통제할 수 있는 선택부터 정리하는 쪽이 좋아요. 관계라면 말투와 거리감, 일이라면 역할과 조건, 돈이라면 반복 가능한 수입 구조부터 먼저 잡아보세요.`;
 }
 
 const QNA_ANSWER_TTL_MS=24*60*60*1000;
@@ -14179,37 +14202,33 @@ async function chatAsk(){
       }
       return;
     }
-    const res=await fetch(WORKER_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        question,
-        sajuContext:ctx,
-        category:curCat,
-        language:currentLanguagePayload(),
-        clientId:_getOrCreateUserId(),
-        deviceFingerprint:qnaDeviceFingerprint(),
-        sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
-        freeQuestion:curCat==='qna'&&qnaFreeAvailable(),
-      }),
-    });
-    const data=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없어요.'}));
+    const payload={
+      question,
+      sajuContext:ctx,
+      category:curCat,
+      language:currentLanguagePayload(),
+      clientId:_getOrCreateUserId(),
+      deviceFingerprint:qnaDeviceFingerprint(),
+      sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
+      freeQuestion:curCat==='qna'&&qnaFreeAvailable(),
+    };
+    const {res,data,error}=await qnaFetchWithRetry(payload,2);
     if(loadingEl)loadingEl.remove();
-    if(!res.ok||data.error){
-      if(curCat==='qna'&&(data.code==='QNA_FREE_USED'||res.status===402)){
-        chatAppendError(data.error||`오류 (${res.status})`,question);
+    const safeData=data||{};
+    const status=res?res.status:0;
+    if(!res||!res.ok||safeData.error){
+      if(curCat==='qna'&&(safeData.code==='QNA_FREE_USED'||status===402)){
+        chatAppendError(safeData.error||`오류 (${status})`,question);
         qnaMarkFreeUsed();
         const r=document.getElementById('chatRemaining');
         if(r)r.textContent=`${chatRemaining(curCat)}회 남음`;
         setTimeout(()=>{try{showChatLimitUpsell(curCat);}catch(e){}},500);
       }else{
-        const msg=normalizeChatErrorMessage(data.error||`오류 (${res.status})`,res.status);
-        chatAppendError(msg,question);
         const fallback=localChatFallbackAnswer(question,ctx);
         if(fallback)chatAppend('reply',fallback);
       }
     }else{
-      const answer=data.answer||'답변을 받지 못했어요.';
+      const answer=safeData.answer||'답변을 받지 못했어요.';
       qnaAnswerCacheSet(curCat,question,ctx,answer);
       chatAppend('reply',answer);
       chatIncCount(curCat);
@@ -14233,7 +14252,6 @@ async function chatAsk(){
     }
   }catch(e){
     if(loadingEl)loadingEl.remove();
-    chatAppendError(normalizeChatErrorMessage(e&&e.message||'네트워크 오류',0),question);
     const fallback=localChatFallbackAnswer(question,ctx);
     if(fallback)chatAppend('reply',fallback);
   }finally{

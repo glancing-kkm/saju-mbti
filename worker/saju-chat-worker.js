@@ -49,7 +49,7 @@ export default {
       return handleTranslate(request, env);
     }
     const hermesEnabled = env.HERMES_API_URL && (env.AI_PROVIDER || '').toLowerCase() === 'hermes';
-    if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !hermesEnabled) {
+    if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !hermesEnabled && !env.AI) {
       return json({ error: '서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.' }, 500);
     }
 
@@ -92,15 +92,19 @@ export default {
 
     try {
       if (hermesEnabled) {
-        const result = await callHermesAgent({
-          baseUrl: env.HERMES_API_URL,
-          apiKey: env.HERMES_API_KEY || '',
-          systemPrompt,
-          userPrompt,
-        });
-        await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'hermes' });
-        if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-        return json({ answer: result.text || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
+        try {
+          const result = await callHermesAgent({
+            baseUrl: env.HERMES_API_URL,
+            apiKey: env.HERMES_API_KEY || '',
+            systemPrompt,
+            userPrompt,
+          });
+          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'hermes' });
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          return json({ answer: result.text || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
+        } catch (e) {
+          console.warn('Hermes QNA failed, trying other providers:', e && e.message);
+        }
       }
 
       if (env.OPENAI_API_KEY) {
@@ -129,57 +133,65 @@ export default {
         }
       }
 
-      const apiResp = await callAnthropicWithRetry({
-        apiKey: env.ANTHROPIC_API_KEY,
-        body: {
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1500,
-          system: [
-            {
-              type: 'text',
-              text: systemPrompt,
-              // 같은 사주에 대해 5번 질문할 때 시스템 프롬프트(약 1.5K tokens) 캐시
-              cache_control: { type: 'ephemeral' },
-            },
-          ],
-          messages: [{ role: 'user', content: userPrompt }],
-        },
-      });
-
-      if (!apiResp.ok) {
-        const errText = await apiResp.text();
-        console.error('Upstream API error:', apiResp.status, errText);
-        let detail = errText;
-        try {
-          const j = JSON.parse(errText);
-          detail = j.error?.message || j.message || errText;
-        } catch {}
-        return json(
-          {
-            error: `역술가 서비스 일시 오류 (${apiResp.status}): ${String(detail).slice(0, 240)}`,
+      if (env.ANTHROPIC_API_KEY) {
+        const apiResp = await callAnthropicWithRetry({
+          apiKey: env.ANTHROPIC_API_KEY,
+          body: {
+            model: 'claude-sonnet-4-6',
+            max_tokens: 1500,
+            system: [
+              {
+                type: 'text',
+                text: systemPrompt,
+                // 같은 사주에 대해 5번 질문할 때 시스템 프롬프트(약 1.5K tokens) 캐시
+                cache_control: { type: 'ephemeral' },
+              },
+            ],
+            messages: [{ role: 'user', content: userPrompt }],
           },
-          502
-        );
+        });
+
+        if (!apiResp.ok) {
+          const errText = await apiResp.text();
+          console.warn('Anthropic QNA failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
+        } else {
+          const data = await apiResp.json();
+          const text = (data.content || [])
+            .filter((b) => b.type === 'text')
+            .map((b) => b.text)
+            .join('\n')
+            .trim();
+
+          const answer = text || '답변을 생성하지 못했습니다.';
+          await qnaCacheSet(env, cacheKey, { answer, provider: 'anthropic' });
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          return json({
+            answer,
+            provider: 'anthropic',
+            usage: data.usage || null,
+          });
+        }
       }
 
-      const data = await apiResp.json();
-      const text = (data.content || [])
-        .filter((b) => b.type === 'text')
-        .map((b) => b.text)
-        .join('\n')
-        .trim();
+      if (env.AI) {
+        const result = await callWorkersAIChat({
+          ai: env.AI,
+          model: env.WORKERS_AI_QNA_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8',
+          systemPrompt,
+          userPrompt,
+          maxTokens: route.maxOutputTokens || 1400,
+        });
+        if (result.text) {
+          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'workers-ai', model: result.model });
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          return json({ answer: result.text, provider: 'workers-ai', model: result.model, usage: result.usage || null });
+        }
+      }
 
-      const answer = text || '답변을 생성하지 못했습니다.';
-      await qnaCacheSet(env, cacheKey, { answer, provider: 'anthropic' });
-      if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-      return json({
-        answer,
-        provider: 'anthropic',
-        usage: data.usage || null,
-      });
+      return json({ error: '답변을 잠시 생성하지 못했습니다.', code: 'AI_TEMPORARY_UNAVAILABLE' }, 503);
     } catch (e) {
       console.error('Worker error:', e);
-      return json({ error: '오류가 발생했습니다: ' + (e.message || 'unknown') }, 500);
+      return json({ error: '답변을 잠시 생성하지 못했습니다.', code: 'AI_TEMPORARY_UNAVAILABLE' }, 503);
     }
   },
 };
@@ -394,6 +406,23 @@ function extractWorkersAIText(result) {
       .trim();
   }
   return '';
+}
+
+async function callWorkersAIChat({ ai, model, systemPrompt, userPrompt, maxTokens = 1400 }) {
+  if (!ai) return { text: '', model };
+  try {
+    const result = await ai.run(model, {
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      max_tokens: maxTokens,
+    });
+    return { text: extractWorkersAIText(result), model, usage: result && result.usage ? result.usage : null };
+  } catch (e) {
+    console.warn('Workers AI QNA failed:', e && e.message);
+    return { text: '', model };
+  }
 }
 
 function json(obj, status = 200) {
