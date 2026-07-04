@@ -1590,12 +1590,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 첫 질문 무료, 이후 건당 결제" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 질문권 3회 1,500원부터" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
           <div class="mc-title">즉문즉답</div>
           <div class="mc-desc">사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이</div>
-          <div class="mc-tag t-free">1회 무료</div>
-          <div class="mc-price">이후 건당 결제</div>
+          <div class="mc-tag t-paid">질문권</div>
+          <div class="mc-price">3회 1,500원부터</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 1,000원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
@@ -1827,7 +1827,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <!-- 즉문즉답 추가 입력 -->
       <fieldset class="cat-extra" id="catExtraQna" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">즉문즉답 — 상담 참고 정보</span></div></legend>
-        <div class="cat-extra-desc">첫 질문 1개는 무료예요. 이후에는 질문권을 건당 결제해서 이어서 상담할 수 있어요.</div>
+        <div class="cat-extra-desc">질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요. 3회 1,500원부터 필요한 만큼 결제해요.</div>
         <div class="ig" style="margin-bottom:9px">
           <label for="qaJob">직업 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
           <input type="text" id="qaJob" name="qaJob" placeholder="예: 직장인, 자영업, 학생, 프리랜서" maxlength="40" autocomplete="off">
@@ -2446,8 +2446,9 @@ const STATIC_I18N={
   '프리미엄':{en:'Premium',zh:'高级',ja:'プレミアム'},
   '즉문즉답':{en:'Ask & Answer',zh:'即时问答',ja:'即問即答'},
   '사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이':{en:'Enter your Saju first, then ask what you want to know',zh:'先输入四柱信息，再直接提出想问的问题',ja:'四柱情報を入力して、気になることをすぐ相談'},
-  '1회 무료':{en:'1 free question',zh:'1次免费',ja:'1回無料'},
-  '이후 건당 결제':{en:'Pay per question after that',zh:'之后按次付费',ja:'以後は1件ごとに決済'},
+  '질문권':{en:'Q credits',zh:'提问券',ja:'質問券'},
+  '3회 1,500원부터':{en:'From ₩1,500 for 3',zh:'3次1,500韩元起',ja:'3回1,500ウォンから'},
+  '즉문즉답 — 질문권 3회 1,500원부터':{en:'Instant Q&A — from ₩1,500 for 3',zh:'即问即答 — 3次1,500韩元起',ja:'即問即答 — 3回1,500ウォンから'},
   '궁합':{en:'Compatibility',zh:'合盘',ja:'相性'},
   '본인과 상대의 사주를 나란히 비교해 8영역 풀이':{en:'Compare both charts across 8 relationship areas',zh:'并排比较双方四柱，解读8个关系领域',ja:'自分と相手の四柱を並べて8領域で鑑定'},
   '이름풀이·작명':{en:'Name Reading',zh:'姓名解析·起名',ja:'名前鑑定・命名'},
@@ -2497,7 +2498,7 @@ const STATIC_I18N={
   '본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요':{en:'Enter both your Saju and your partner’s Saju',zh:'请同时输入本人和对方的四柱',ja:'自分と相手の四柱を入力してください'},
   '본인 사주와 본인 이름을 함께 입력해주세요':{en:'Enter your Saju and your name',zh:'请输入本人四柱和姓名',ja:'自分の四柱と名前を入力してください'},
   '인생 흐름의 큰 그림을 위해 정보를 입력해주세요':{en:'Enter your information for the big picture of your life flow',zh:'请输入信息以查看人生大势',ja:'人生の大きな流れを見るため情報を入力してください'},
-  '첫 질문은 무료, 이후에는 질문권을 건당 결제해 이어서 상담해요':{en:'The first question is free. After that, continue with paid question credits.',zh:'首个问题免费，之后可按次购买提问券继续咨询',ja:'最初の質問は無料。その後は質問券を購入して相談できます'},
+  '질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요':{en:'Top up question credits to ask anything in chat right away.',zh:'充值提问券后即可像聊天一样随时提问',ja:'質問券をチャージすれば、気になることをチャットですぐに質問できます'},
   '만세력 · 정보 입력':{en:'Saju Calendar · Information Input',zh:'万年历 · 信息输入',ja:'万年暦 · 情報入力'},
   '일일운세 · 정보 입력':{en:'Daily Fortune · Information Input',zh:'每日运势 · 信息输入',ja:'今日の運勢 · 情報入力'},
   '인생총운 · 정보 입력':{en:'Lifetime Reading · Information Input',zh:'人生总运 · 信息输入',ja:'人生総運 · 情報入力'},
@@ -2715,8 +2716,8 @@ function applyLanguageToPage(root){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{updateLanguageUI();applyLanguageToPage();document.addEventListener('click',closeLanguageMenu);});
 else{updateLanguageUI();applyLanguageToPage();document.addEventListener('click',closeLanguageMenu);}
-// 카테고리별 역술가 질문 횟수 — 인생총운·신년운세만 1회, 즉문즉답 1회(첫 질문 무료). 나머지는 미제공(0)
-const CHAT_MAX_BY_CAT={daypick:0,monthly:0,newyear:1,gunghap:0,name:0,life:1,qna:1};
+// 카테고리별 역술가 질문 횟수 — 인생총운·신년운세만 1회. 즉문즉답은 무료 질문 없이 질문권 결제만. 나머지는 미제공(0)
+const CHAT_MAX_BY_CAT={daypick:0,monthly:0,newyear:1,gunghap:0,name:0,life:1,qna:0};
 function chatLsKeyOf(cat){
   const c=cat||'life';
   if(c==='qna'&&_saju&&_meta){
@@ -2729,20 +2730,8 @@ function qnaFreeLsKey(){
   return `saju_qna_free_used_global_v1:${_getOrCreateUserId()}`;
 }
 function qnaFreeAvailable(){
-  const k=qnaFreeLsKey();
-  if(!k)return true;
-  try{
-    const raw=localStorage.getItem(k);
-    if(!raw)return true;
-    const data=JSON.parse(raw);
-    if(!data||!data.exp||Date.now()>data.exp){
-      localStorage.removeItem(k);
-      return true;
-    }
-    return false;
-  }catch(e){
-    return true;
-  }
+  // 정책 변경: 즉문즉답 무료 첫 질문 폐지 — 항상 질문권 결제 필요
+  return false;
 }
 function qnaMarkFreeUsed(){
   const k=qnaFreeLsKey();
@@ -3214,7 +3203,7 @@ function goToInput(cat){
       gunghap:'본인 사주와 상대(배우자·연인) 사주를 함께 입력해주세요',
       name:'본인 사주와 본인 이름을 함께 입력해주세요',
       life:'인생 흐름의 큰 그림을 위해 정보를 입력해주세요',
-      qna:'첫 질문은 무료, 이후에는 질문권을 건당 결제해 이어서 상담해요'
+      qna:'질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요'
     };
     sub.textContent=subMap[cat]||subMap.manse;
   }
@@ -4737,7 +4726,7 @@ function nextActionsHTML(currentCat){
     {key:'daily',icon:'today',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
     {key:'life',icon:'timeline',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'},
     {key:'newyear',icon:'calendar_month',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
-    {key:'qna',icon:'question_answer',title:'즉문즉답',desc:'첫 질문 무료 상담형 풀이',price:'무료'},
+    {key:'qna',icon:'question_answer',title:'즉문즉답',desc:'질문권 충전 상담형 풀이',price:'질문권'},
     {key:'gunghap',icon:'favorite',title:'궁합',desc:'두 사람 사주 비교',price:'프리미엄'},
     {key:'name',icon:'badge',title:'이름풀이·작명',desc:'이름의 다섯 기운 + 추천 이름 5개',price:'프리미엄'}
   ];
@@ -4816,7 +4805,7 @@ function renderManseConversionHook(saju){
     </div>
     <div class="conversion-hook-actions">
       <button type="button" class="conversion-hook-btn" onclick="openPaymentConsent('life','KAKAOPAY')">내 인생 흐름 전체 열어보기</button>
-      <button type="button" class="conversion-hook-btn secondary" onclick="goToInput('qna')">지금 궁금한 것 1회 무료로 묻기</button>
+      <button type="button" class="conversion-hook-btn secondary" onclick="goToInput('qna')">지금 궁금한 것 바로 물어보기</button>
     </div>
     <div class="conversion-hook-foot">인생총운 1,500원 · 같은 사주는 24시간 재조회 가능</div>
   </section>`;
@@ -8167,7 +8156,7 @@ const PAID_META={
     ],
     price:'1,500원'
   },
-  qna:{icon:'',title:'즉문즉답',desc:'사주 정보를 바탕으로 궁금한 질문을 채팅처럼 바로 물어보는 상담이에요.',features:['· 첫 질문 1개 무료','· 이후 질문권 건당 결제','· 3회 1,500원 / 5회 2,000원 / 7회 3,000원'],price:'1회 무료 · 이후 건당 결제'},
+  qna:{icon:'',title:'즉문즉답',desc:'사주 정보를 바탕으로 궁금한 질문을 채팅처럼 바로 물어보는 상담이에요.',features:['· 사주 기반 채팅형 즉시 상담','· 질문권을 충전해 필요한 만큼 상담','· 3회 1,500원 / 5회 2,000원 / 7회 3,000원'],price:'질문권 3회 1,500원부터'},
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack3:{icon:'',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'1,500원'},
   chatpack5:{icon:'',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,000원'},
@@ -13785,8 +13774,8 @@ function showChatLimitUpsell(currentCat){
   overlay.innerHTML=`<div class="upsell-modal">
     <button type="button" class="upsell-close" onclick="document.getElementById('chatLimitUpsell')&&(document.getElementById('chatLimitUpsell').classList.remove('on'),setTimeout(()=>document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove(),220))" aria-label="닫기">×</button>
     <div class="upsell-head">
-      <div class="upsell-title">추가 질문 한도 도달</div>
-      <div class="upsell-sub">${currentCat==='qna'?'무료 질문 1개를 사용했어요.<br>계속 질문하려면 필요한 만큼 질문권을 충전해 주세요.':`<b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하거나 공유 보상코드를 받아 다음 결제에 사용해 보세요.`}</div>
+      <div class="upsell-title">${currentCat==='qna'?'질문권 충전':'추가 질문 한도 도달'}</div>
+      <div class="upsell-sub">${currentCat==='qna'?'질문권을 충전하면 궁금한 점을 채팅으로 바로 물어볼 수 있어요.<br>필요한 만큼 질문권을 선택해 주세요.':`<b>${curMeta.title||'풀이'}</b>의 ${chatMaxOf(currentCat)}회 질문을 모두 사용하셨어요.<br>아래 패키지를 결제하거나 공유 보상코드를 받아 다음 결제에 사용해 보세요.`}</div>
     </div>
     ${shareBlock}
     ${cardsHtml}
@@ -14314,7 +14303,7 @@ function renderChatSection(catOpt){
   const remaining=chatRemaining(cat);
   const isExhausted=remaining<=0;
   const subText={
-    qna:`인생총운 핵심 자료를 바탕으로 궁금한 점을 바로 물어보세요.<br>즉문즉답은 <b>${max}회</b> 질문이 가능해요.`,
+    qna:`인생총운 핵심 자료를 바탕으로 궁금한 점을 바로 물어보세요.<br>질문권을 충전하면 <b>3회 1,500원</b>부터 필요한 만큼 상담할 수 있어요.`,
     daypick:`이 날의 흐름 중 더 깊이 알고 싶은 점이 있나요?<br>지정일 운세는 <b>${max}회</b> 질문이 가능해요.`,
     monthly:`이 기간의 흐름 중 궁금한 달이나 시기가 있다면<br>역술가에게 <b>${max}회</b> 질문하실 수 있어요.`,
     newyear:`한 해의 흐름 중 더 깊이 알고 싶은 분야·시기가 있다면<br>역술가에게 <b>${max}회</b> 질문하실 수 있어요.`,
@@ -14339,7 +14328,7 @@ function renderChatSection(catOpt){
       <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 300자 이내로 입력하세요')}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'🔮 질문하기')}</button>
     </div>
-    <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 1,300자 이내에서 완결돼요.<br>이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.</div>
+    <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 1,300자 이내에서 완결돼요.<br>${isQna?'질문권을 충전해 필요한 만큼 상담할 수 있어요.':`이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.`}</div>
     <div id="chatShareCta"></div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;
