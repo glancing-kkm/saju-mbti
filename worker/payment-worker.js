@@ -24,14 +24,13 @@
 const CATEGORY_PRICE = {
   daypick: 1500,
   monthly: 2000, // 월당 — 2000/4000/6000/8000/10000/12000 중 하나여야 함
-  newyear: 19000,
-  gunghap: 5900,
-  name: 9900,
-  life: 24000,
-  chatpack1: 1000,
-  chatpack3: 2500,
-  chatpack5: 4000,
-  chatpack10: 7000,
+  newyear: 1500,
+  gunghap: 1000,
+  name: 1500,
+  life: 1500,
+  chatpack3: 1500,
+  chatpack5: 2000,
+  chatpack7: 3000,
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;

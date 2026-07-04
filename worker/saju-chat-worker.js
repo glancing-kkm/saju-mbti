@@ -10,6 +10,9 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 const QNA_QUESTION_MAX_CHARS = 300;
+const QNA_ANSWER_MAX_CHARS = 1300;
+const QNA_STANDARD_ANSWER_LENGTH = '800~1,000자';
+const QNA_PREMIUM_ANSWER_LENGTH = '1,000~1,200자';
 const LANGUAGE_META = {
   ko: {
     code: 'ko',
@@ -83,7 +86,7 @@ export default {
     const cached = await qnaCacheGet(env, cacheKey);
     if (cached) {
       if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-      return json({ answer: cached.answer, provider: cached.provider || 'cache', cached: true });
+      return json({ answer: normalizeQnaAnswer(cached.answer), provider: cached.provider || 'cache', cached: true });
     }
 
     const route = chooseQnaModel(question, sajuContext, env);
@@ -99,9 +102,10 @@ export default {
             systemPrompt,
             userPrompt,
           });
-          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'hermes' });
+          const answer = normalizeQnaAnswer(result.text);
+          await qnaCacheSet(env, cacheKey, { answer, provider: 'hermes' });
           if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-          return json({ answer: result.text || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
+          return json({ answer: answer || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
         } catch (e) {
           console.warn('Hermes QNA failed, trying other providers:', e && e.message);
         }
@@ -118,10 +122,11 @@ export default {
             reasoningEffort: route.reasoningEffort,
             verbosity: route.verbosity,
           });
-          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'openai', model: route.model });
+          const answer = normalizeQnaAnswer(result.text);
+          await qnaCacheSet(env, cacheKey, { answer, provider: 'openai', model: route.model });
           if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
           return json({
-            answer: result.text || '답변을 생성하지 못했습니다.',
+            answer: answer || '답변을 생성하지 못했습니다.',
             provider: 'openai',
             model: route.model,
             route: route.name,
@@ -138,7 +143,7 @@ export default {
           apiKey: env.ANTHROPIC_API_KEY,
           body: {
             model: 'claude-sonnet-4-6',
-            max_tokens: 1500,
+            max_tokens: route.maxOutputTokens || 1800,
             system: [
               {
                 type: 'text',
@@ -162,7 +167,7 @@ export default {
             .join('\n')
             .trim();
 
-          const answer = text || '답변을 생성하지 못했습니다.';
+          const answer = normalizeQnaAnswer(text) || '답변을 생성하지 못했습니다.';
           await qnaCacheSet(env, cacheKey, { answer, provider: 'anthropic' });
           if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
           return json({
@@ -182,9 +187,10 @@ export default {
           maxTokens: route.maxOutputTokens || 1400,
         });
         if (result.text) {
-          await qnaCacheSet(env, cacheKey, { answer: result.text, provider: 'workers-ai', model: result.model });
+          const answer = normalizeQnaAnswer(result.text);
+          await qnaCacheSet(env, cacheKey, { answer, provider: 'workers-ai', model: result.model });
           if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
-          return json({ answer: result.text, provider: 'workers-ai', model: result.model, usage: result.usage || null });
+          return json({ answer, provider: 'workers-ai', model: result.model, usage: result.usage || null });
         }
       }
 
@@ -420,6 +426,29 @@ function extractWorkersAIText(result) {
   return '';
 }
 
+function normalizeQnaAnswer(text, maxChars = QNA_ANSWER_MAX_CHARS) {
+  const normalized = String(text || '').replace(/\r\n/g, '\n').trim();
+  if (!normalized || normalized.length <= maxChars) return normalized;
+
+  const hardCut = normalized.slice(0, maxChars).trim();
+  const sentenceEnders = ['.', '!', '?', '。', '！', '？', '요.', '다.', '죠.', '세요.'];
+  let best = -1;
+  for (const marker of sentenceEnders) {
+    const idx = hardCut.lastIndexOf(marker);
+    if (idx > best) best = idx + marker.length;
+  }
+  const minUseful = Math.floor(maxChars * 0.72);
+  if (best >= minUseful) return hardCut.slice(0, best).trim();
+
+  const lastBreak = Math.max(
+    hardCut.lastIndexOf('\n\n'),
+    hardCut.lastIndexOf('\n'),
+    hardCut.lastIndexOf(' ')
+  );
+  if (lastBreak >= minUseful) return hardCut.slice(0, lastBreak).trim();
+  return hardCut;
+}
+
 async function callWorkersAIChat({ ai, model, systemPrompt, userPrompt, maxTokens = 1400 }) {
   if (!ai) return { text: '', model };
   try {
@@ -494,16 +523,16 @@ function chooseQnaModel(question, ctx, env = {}) {
         model: env.OPENAI_QNA_PREMIUM_MODEL || 'gpt-5.5',
         reasoningEffort: 'medium',
         verbosity: 'medium',
-        maxOutputTokens: 1600,
-        answerLength: '1,000~1,300자',
+        maxOutputTokens: 2200,
+        answerLength: QNA_PREMIUM_ANSWER_LENGTH,
       }
     : {
         name: 'standard',
         model: env.OPENAI_QNA_MODEL || 'gpt-5.4-mini',
         reasoningEffort: 'low',
         verbosity: 'medium',
-        maxOutputTokens: 1200,
-        answerLength: '800~1,000자',
+        maxOutputTokens: 1800,
+        answerLength: QNA_STANDARD_ANSWER_LENGTH,
       };
 }
 
@@ -515,7 +544,8 @@ function buildQnaUserPrompt(question, ctx, category, route = {}, language = 'ko'
 ${question}
 
 위 질문에 답하세요. 답변은 본인의 사주 원국, 현재 10년 흐름, 올해 흐름, 화면 풀이 요약과 모순되지 않아야 합니다.
-답변 길이는 공백 포함 ${route.answerLength || '800~1,000자'}를 목표로 하세요. 꼭 필요한 경우에만 10% 안에서 넘길 수 있고, 불필요한 반복 설명은 줄이세요.`;
+답변 길이는 공백 포함 ${route.answerLength || QNA_STANDARD_ANSWER_LENGTH}를 목표로 하되, 반드시 ${QNA_ANSWER_MAX_CHARS}자 이내에서 완결하세요.
+마지막 문장은 중간에 끊기지 않게 자연스럽게 마무리하세요. 내용이 많으면 세부 설명을 줄이고 결론·이유·행동 조언만 남기세요.`;
 }
 
 async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
@@ -531,7 +561,7 @@ async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      max_output_tokens: 1600,
+      max_output_tokens: 2200,
     }),
   });
   if (!resp.ok) {
@@ -554,7 +584,7 @@ async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
 
 async function qnaCacheKey({ question, sajuContext, category, language }) {
   const src = JSON.stringify({
-    v: 3,
+    v: 4,
     language: normalizeLanguage(language).code,
     category,
     question: String(question || '').trim().replace(/\s+/g, ' '),
