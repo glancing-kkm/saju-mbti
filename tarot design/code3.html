@@ -1,0 +1,115 @@
+<!DOCTYPE html><html class="dark" lang="ko" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script></head><body class="celestial-bg min-h-screen flex flex-col">
+
+<!-- Header (Shared Component-->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-5 h-16 bg-surface/80 backdrop-blur-md z-50 border-b border-celestial-gold/10">
+    <button class="text-celestial-gold transition-transform active:scale-90">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+    <h1 class="text-headline-lg-mobile font-garamond text-celestial-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">Aether Tarot</h1>
+    <div class="w-10 h-10 rounded-full border border-celestial-gold/30 overflow-hidden">
+        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWMIW3eZuCvHX0iK2r3jL1uGo4nJ1-l_195RqEuKkAuAfxBFXu99yVUCb9xfyVB90OpJA3FvWC-N-6ru0G9E-MY5d0sWSewAMN_1Kt-DveeCBLgamjqqxCGiBMnp0sJFUKhU_Ma9vHyJsGOI9hR1ldTLqYUAwCr3X-2lVoFp0sIQlaMl7FPD3x38D8gbF_j-VvSmdY2IBY-QrJU6hR4FYz9uUpzSORCiEhdmhvsxiiRIfcO8v67vyuaQ" alt="Oracle Avatar">
+    </div>
+</header>
+
+<main class="flex-1 pt-20 flex flex-col overflow-hidden">
+    <!-- Top Section: 5-Card Cross-->
+    <section class="flex-1 flex flex-col items-center justify-center px-4">
+        <div class="spread-container">
+            <div class="card-slot slot-1 active" data-slot="1">
+                <span class="text-celestial-gold/30 font-garamond text-xl">1</span>
+            </div>
+            <div class="card-slot slot-2" data-slot="2">
+                <span class="text-celestial-gold/30 font-garamond text-xl">2</span>
+            </div>
+            <div class="card-slot slot-3" data-slot="3">
+                <span class="text-celestial-gold/30 font-garamond text-xl">3</span>
+            </div>
+            <div class="card-slot slot-4" data-slot="4">
+                <span class="text-celestial-gold/30 font-garamond text-xl">4</span>
+            </div>
+            <div class="card-slot slot-5" data-slot="5">
+                <span class="text-celestial-gold/30 font-garamond text-xl">5</span>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center px-6">
+            <h2 class="text-celestial-gold font-garamond text-2xl mb-2">운명의 선택</h2>
+            <p class="text-on-surface-variant text-sm font-light">카드를 드래그하여 운명의 카드를 선택하세요.</p>
+        </div>
+    </section>
+
+    <!-- Bottom Section: Card Fan -->
+    <section class="h-[350px] flex flex-col justify-end pb-12">
+        <div class="carousel-outer flex" id="fan-scroll">
+            <div class="fan-track flex justify-center items-end px-4 h-[280px] w-full" id="card-track"><div class="fan-card" style="transform: rotate(-21deg) translateY(16.8px);"></div><div class="fan-card" style="transform: rotate(-18deg) translateY(14.4px);"></div><div class="fan-card" style="transform: rotate(-15deg) translateY(12px);"></div><div class="fan-card" style="transform: rotate(-12deg) translateY(9.6px);"></div><div class="fan-card" style="transform: rotate(-9deg) translateY(7.2px);"></div><div class="fan-card" style="transform: rotate(-6deg) translateY(4.8px);"></div><div class="fan-card" style="transform: rotate(-3deg) translateY(2.4px);"></div><div class="fan-card focused drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]" style="transform: translateY(-50px) scale(1.8);"></div><div class="fan-card" style="transform: rotate(3deg) translateY(2.4px);"></div><div class="fan-card" style="transform: rotate(6deg) translateY(4.8px);"></div><div class="fan-card" style="transform: rotate(9deg) translateY(7.2px);"></div><div class="fan-card" style="transform: rotate(12deg) translateY(9.6px);"></div><div class="fan-card" style="transform: rotate(15deg) translateY(12px);"></div><div class="fan-card" style="transform: rotate(18deg) translateY(14.4px);"></div><div class="fan-card" style="transform: rotate(21deg) translateY(16.8px);"></div></div>
+        </div>
+
+        <!-- Completion Button -->
+        <div class="flex justify-center mt-6 h-12">
+            <button id="btn-complete" class="hidden px-12 py-3 btn-gold rounded-full font-bold text-sm transition-all transform hover:scale-105 active:scale-95 animate-pulse">
+                선택 완료
+            </button>
+        </div>
+    </section>
+</main>
+
+<script>
+    const cardTrack = document.getElementById('card-track');
+    const scrollContainer = document.getElementById('fan-scroll');
+    const totalCards = 78;
+    let selectedCount = 0;
+
+    // Create 78 cards in an arched fan
+    for (let i = 0; i < totalCards; i++) {
+        const card = document.createElement('div');
+        card.className = 'fan-card';
+        
+        // Arch calculation
+        const offset = i - (totalCards / 2);
+        const rotation = offset * 1.5; // Fan spread angle
+        const yPos = Math.abs(offset) * 1.2; // Arc height
+        
+        card.style.transform = `rotate(${rotation}deg) translateY(${yPos}px)`;
+        
+        card.addEventListener('click', () => handleCardSelection(card));
+        cardTrack.appendChild(card);
+    }
+
+    // Scroll listener for focus effect
+    scrollContainer.addEventListener('scroll', () => {
+        const cards = document.querySelectorAll('.fan-card');
+        const centerX = window.innerWidth / 2;
+        
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2;
+            const distance = Math.abs(centerX - cardCenter);
+            
+            if (distance < 25) {
+                card.classList.add('focused');
+            } else {
+                card.classList.remove('focused');
+            }
+        });
+    });
+
+    // Initial center scroll
+    setTimeout(() => {
+        scrollContainer.scrollLeft = (scrollContainer.scrollWidth - window.innerWidth) / 2;
+    }, 100);
+
+    function handleCardSelection(card) {
+        if (selectedCount >= 5 || card.classList.contains('used')) return;
+
+        selectedCount++;
+        card.classList.add('used');
+        card.style.opacity = '0.3';
+        card.style.pointerEvents = 'none';
+
+        const slots = document.querySelectorAll('.card-slot');
+        const currentSlot = Array.from(slots).find(s => !s.classList.contains('filled'));
+        
+        if (currentSlot) {
+            currentSlot.classList.add('filled');
+            currentSlot.innerHTML = `<div class="w-full h-full card-back-pattern rounded shadow-lg"></div>`;
+            currentSlot.classList.remove('</script></body></html>

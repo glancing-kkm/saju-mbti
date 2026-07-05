@@ -1,0 +1,221 @@
+<!DOCTYPE html><html class="dark" lang="ko" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "primary-fixed": "#ffe088",
+                "surface-container-highest": "#323536",
+                "error": "#ffb4ab",
+                "secondary": "#dbb9fa",
+                "surface-container-high": "#272a2b",
+                "on-surface": "#e1e3e4",
+                "outline-variant": "#4d4635",
+                "on-tertiary-fixed-variant": "#444748",
+                "on-primary": "#3c2f00",
+                "celestial-gold": "#D4AF37",
+                "tertiary-fixed": "#e1e3e4",
+                "on-error-container": "#ffdad6",
+                "inverse-primary": "#735c00",
+                "on-error": "#690005",
+                "on-primary-container": "#554300",
+                "surface-container": "#1d2021",
+                "secondary-container": "#563a72",
+                "midnight-purple": "#2E1A47",
+                "inverse-on-surface": "#2e3132",
+                "on-primary-fixed": "#241a00",
+                "surface-container-lowest": "#0c0f10",
+                "primary-fixed-dim": "#e9c349",
+                "surface-variant": "#323536",
+                "primary-container": "#d4af37",
+                "on-tertiary": "#2e3132",
+                "tertiary-fixed-dim": "#c5c7c8",
+                "surface": "#111415",
+                "on-secondary-fixed": "#280c43",
+                "on-secondary": "#3e235a",
+                "on-tertiary-fixed": "#191c1d",
+                "on-secondary-fixed-variant": "#563a72",
+                "surface-container-low": "#191c1d",
+                "on-background": "#e1e3e4",
+                "surface-dim": "#111415",
+                "on-surface-variant": "#d0c5af",
+                "starlight-white": "#E1E3E4",
+                "on-tertiary-container": "#434546",
+                "on-secondary-container": "#c9a8e8",
+                "error-container": "#93000a",
+                "secondary-fixed-dim": "#dbb9fa",
+                "surface-bright": "#373a3b",
+                "surface-tint": "#e9c349",
+                "nebula-blue": "#1A237E",
+                "tertiary-container": "#b1b3b4",
+                "tertiary": "#cdcecf",
+                "inverse-surface": "#e1e3e4",
+                "secondary-fixed": "#f0dbff",
+                "primary": "#f2ca50",
+                "on-primary-fixed-variant": "#574500",
+                "background": "#111415",
+                "parchment": "#D8C4A8",
+                "outline": "#99907c",
+                "container-padding-mobile": "20px"
+            },
+            "fontFamily": {
+                "headline-lg": ["EB Garamond"],
+                "label-md": ["Hanken Grotesk"],
+                "body-md": ["Hanken Grotesk"],
+                "display-lg": ["EB Garamond"],
+                "body-lg": ["Hanken Grotesk"],
+                "title-md": ["EB Garamond"],
+                "headline-lg-mobile": ["EB Garamond"],
+                "label-sm": ["Hanken Grotesk"]
+            }
+          }
+        }
+      }
+    }catch(_e){}</script></head><body class="min-h-screen flex flex-col font-body-md bg-surface text-on-surface">
+<!-- Atmospheric Background Layers -->
+<div class="ethereal-glow top-0 left-1/4"></div>
+<div class="ethereal-glow bottom-0 right-1/4"></div>
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-[20px] h-16 bg-surface/80 backdrop-blur-md z-50 border-b border-celestial-gold/10">
+<button class="text-celestial-gold transition-transform active:scale-90">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-[28px] leading-[36px] font-medium font-headline-lg-mobile text-celestial-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+            신비로운 타로 오라클
+        </h1>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-celestial-gold/30">
+<img class="w-full h-full object-cover" data-alt="A portrait of a mystical oracle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh5aOKAdr_QhSjWmYhazXw-TRuy-lPGdG5EpI2eZjWpmFun1_6VjcsgxcLNca_E6YOFAwET1Msc7KposNOd1I3n7i2g3W9PFZNw4ibNfPdPzJv82BtqC9EzwJ-38ie-4m32o7WbmkegUnA0Tp_nhx5QI9_k8KwYT110sgrZqR3FMk5q8-bThWcdZCM6uZZyOfVPVKJ0yO5qVEsUPjhINbABSJ9IQ7zDaJ5KCONr6cqEjPnmtAMgZA7Mw">
+</div>
+</header>
+<main class="flex-grow pt-24 px-[20px] max-w-lg mx-auto w-full flex flex-col gap-8">
+<!-- Hero Animation / Visual Area -->
+<div class="relative w-full aspect-video rounded-xl overflow-hidden glass-panel border border-celestial-gold/20 shadow-2xl">
+<!-- Tarot Table Background -->
+<img alt="Tarot Table Background" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida/AP1WRLsZkXmwV7xaPmbElcq-yLLqtH6ErflMpCdnQpXhRAxAmdWNR3OFTX7lWDtcBLosy85KoQf2gwnA7fFzsr2wiNPMFMCN_4k1tHDRTyuhDoNvUcoYBa5dWr6YcBn02z69RrUTGB-89VZv1VW5ugVXZjI__RAn-l82hm61O_I10M-2MaZSqGuIMKQUuhNPq5f_FHp00XpYUeNo8WTakcQGKB31X0ewqg1f3sPHxtToa-MH5tcLbb62-zTcMyg">
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+<!-- Dynamic Spread Preview -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="spread-preview">
+<!-- 3 Card Layout (Hidden by default) -->
+<div class="hidden flex gap-4 animate-in fade-in zoom-in duration-500" id="layout-3">
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+<div class="card-slot shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-110"></div>
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+</div>
+<!-- 5 Card Layout (Default) -->
+<div class="flex flex-col items-center gap-2 animate-in fade-in zoom-in duration-500" id="layout-5">
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+<div class="flex gap-4">
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+<div class="card-slot shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-110"></div>
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+</div>
+<div class="card-slot shadow-[0_0_15px_rgba(212,175,55,0.2)]"></div>
+</div>
+<!-- 10 Card Celtic Cross Layout (Hidden by default) -->
+<div class="hidden grid grid-cols-5 gap-2 scale-75 animate-in fade-in zoom-in duration-500" id="layout-10">
+<!-- Cross part -->
+<div class="col-start-2 row-start-1 card-slot"></div>
+<div class="col-start-1 row-start-2 card-slot"></div>
+<div class="col-start-2 row-start-2 card-slot scale-125 z-10 !bg-celestial-gold/20 !border-celestial-gold/60"></div>
+<div class="col-start-3 row-start-2 card-slot"></div>
+<div class="col-start-2 row-start-3 card-slot"></div>
+<!-- Staff part -->
+<div class="col-start-5 row-start-1 card-slot"></div>
+<div class="col-start-5 row-start-2 card-slot"></div>
+<div class="col-start-5 row-start-3 card-slot"></div>
+<div class="col-start-5 row-start-4 card-slot"></div>
+<div class="col-start-2 row-start-4 card-slot opacity-50"></div>
+</div>
+</div>
+</div>
+<!-- Package Selection Section -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-[22px] leading-[28px] font-medium font-headline-lg text-celestial-gold">스프레드 선택</h2>
+<span class="text-[12px] leading-[16px] font-medium font-label-sm text-parchment/60">운명의 카드를 고르세요</span>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Option 1 -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:border-celestial-gold/40 transition-all duration-300 group active:scale-[0.98]" data-spread-id="3" onclick="selectSpread('3')">
+<div class="w-12 h-16 rounded-md bg-midnight-purple flex items-center justify-center border border-celestial-gold/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-celestial-gold">auto_awesome</span>
+</div>
+<div class="flex-grow">
+<h3 class="text-[14px] leading-[20px] font-semibold font-label-md text-starlight-white">3장 간단 요약</h3>
+<p class="text-[12px] leading-[16px] font-medium font-label-sm text-parchment/60">현재의 흐름과 조언</p>
+</div>
+<div class="text-right">
+<span class="text-[14px] leading-[20px] font-semibold font-label-md text-celestial-gold">1,500원</span>
+</div>
+</div>
+<!-- Option 2 (Recommended/Default) -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 cursor-pointer glowing-border relative bg-midnight-purple/10 overflow-hidden group active:scale-[0.98]" data-spread-id="5" onclick="selectSpread('5')">
+<div class="absolute top-0 right-0 bg-celestial-gold text-on-primary text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">추천</div>
+<div class="w-12 h-16 rounded-md bg-secondary-container/40 flex items-center justify-center border border-celestial-gold group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-celestial-gold" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="flex-grow">
+<h3 class="text-[14px] leading-[20px] font-semibold font-label-md text-starlight-white">5장 심층 분석</h3>
+<p class="text-[12px] leading-[16px] font-medium font-label-sm text-parchment/60">과거·현재·미래와 깊은 통찰</p>
+</div>
+<div class="text-right">
+<span class="text-[14px] leading-[20px] font-semibold font-label-md text-celestial-gold">2,000원</span>
+</div>
+</div>
+<!-- Option 3 -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:border-celestial-gold/40 transition-all duration-300 group active:scale-[0.98]" data-spread-id="10" onclick="selectSpread('10')">
+<div class="w-12 h-16 rounded-md bg-midnight-purple flex items-center justify-center border border-celestial-gold/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-celestial-gold">auto_stories</span>
+</div>
+<div class="flex-grow">
+<h3 class="text-[14px] leading-[20px] font-semibold font-label-md text-starlight-white">10장 켈틱 크로스</h3>
+<p class="text-[12px] leading-[16px] font-medium font-label-sm text-parchment/60">전반적인 운명과 숨겨진 진실</p>
+</div>
+<div class="text-right">
+<span class="text-[14px] leading-[20px] font-semibold font-label-md text-celestial-gold">3,000원</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action & Nav -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+<!-- Floating Primary Button -->
+<div class="px-[20px] pb-6 pointer-events-none">
+<button class="w-full bg-celestial-gold text-on-primary py-4 rounded-full font-semibold text-[14px] shadow-[0_10px_30px_rgba(212,175,55,0.3)] active:scale-95 transition-all duration-200 pointer-events-auto flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:animate-pulse">visibility</span>
+                상담 시작하기
+            </button>
+</div>
+<!-- Navigation Bar -->
+
+</div>
+<script>
+        function selectSpread(id) {
+            // Update UI list items
+            document.querySelectorAll('[data-spread-id]').forEach(card => {
+                const spreadId = card.getAttribute('data-spread-id');
+                if (spreadId === id) {
+                    card.classList.add('glowing-border', 'bg-midnight-purple/10');
+                    const badge = card.querySelector('.absolute');
+                    if(badge) badge.style.display = 'block';
+                    const iconBox = card.querySelector('.w-12');
+                    if(iconBox) iconBox.classList.replace('border-celestial-gold/20', 'border-celestial-gold');
+                    if(iconBox) iconBox.classList.replace('bg-midnight-purple', 'bg-secondary-container/40');
+                } else {
+                    card.classList.remove('glowing-border', 'bg-midnight-purple/10');
+                    const badge = card.querySelector('.absolute');
+                    if(badge) badge.style.display = 'none';
+                    const iconBox = card.querySelector('.w-12');
+                    if(iconBox) iconBox.classList.replace('border-celestial-gold', 'border-celestial-gold/20');
+                    if(iconBox) iconBox.classList.replace('bg-secondary-container/40', 'bg-midnight-purple');
+                }
+            });
+
+            // Update Spread Preview Layout
+            document.getElementById('layout-3').classList.add('hidden');
+            document.getElementById('layout-5').classList.add('hidden');
+            document.getElementById('layout-10').classList.add('hidden');
+            
+            const selectedLayout = document.getElementById('layout-' + id);
+            selectedLayout.classList.remove('hidden');</script></body></html>
