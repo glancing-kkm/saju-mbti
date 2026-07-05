@@ -290,11 +290,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-today-hero .tarot-kicker{margin-bottom:5px}
 .tarot-today-hero .tarot-title{font-size:1.32rem;margin-bottom:5px}
 .tarot-today-hero .tarot-desc{font-size:.82rem;line-height:1.62}
-.tarot-today-grid{gap:6px;margin:10px -9px 12px}
-.tarot-today-grid .tarot-card-btn{aspect-ratio:896/1200;border-radius:10px}
+.tarot-today-grid{gap:6px;margin:10px -9px 12px;align-items:stretch}
+.tarot-today-grid .tarot-card-btn{aspect-ratio:896/1200;border-radius:10px;width:100%;min-width:0;display:block}
 .tarot-today-grid.single{grid-template-columns:minmax(162px,210px);margin-left:0;margin-right:0}
-.tarot-card-btn{aspect-ratio:2/3;border:0;border-radius:12px;background:transparent;padding:0;perspective:900px;cursor:pointer;font-family:inherit}
-.tarot-card-inner{position:relative;width:100%;height:100%;transition:transform .62s;transform-style:preserve-3d}
+.tarot-card-btn{aspect-ratio:2/3;border:0;border-radius:12px;background:transparent;padding:0;perspective:900px;cursor:pointer;font-family:inherit;display:block;width:100%;min-width:0}
+.tarot-card-inner{position:relative;display:block;width:100%;height:100%;transition:transform .62s;transform-style:preserve-3d}
 .tarot-card-btn.flipped .tarot-card-inner{transform:rotateY(180deg)}
 .tarot-card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.26);overflow:hidden}
 .tarot-card-back{background:#101214 url("타로카드/thumbnail.png") center/cover no-repeat;color:var(--accent-bright)}
