@@ -48,6 +48,9 @@ export default {
     if (url.pathname === '/reading') {
       return handleReading(request, env);
     }
+    if (url.pathname === '/tarot-reading') {
+      return handleTarotReading(request, env);
+    }
     if (url.pathname === '/translate') {
       return handleTranslate(request, env);
     }
@@ -285,6 +288,199 @@ async function handleReading(request, env) {
     console.error('Reading worker error:', e);
     return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   }
+}
+
+async function handleTarotReading(request, env) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !env.AI) {
+    return json({ error: '타로 리딩 서비스가 아직 준비되지 않았습니다.' }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'JSON 본문이 필요합니다.' }, 400);
+  }
+
+  const input = body && body.input && typeof body.input === 'object' ? body.input : body;
+  if (!input || typeof input.question !== 'string' || !input.question.trim()) {
+    return json({ error: '타로 질문이 비어있습니다.' }, 400);
+  }
+  if (!Array.isArray(input.cards) || !input.cards.length || input.cards.length > 10) {
+    return json({ error: '선택된 카드 정보가 올바르지 않습니다.' }, 400);
+  }
+
+  const lang = normalizeLanguage(body && (body.language || body.targetLanguage));
+  const cardCount = input.cards.length;
+  const maxOutputTokens = cardCount >= 10 ? 5200 : cardCount >= 5 ? 3400 : 2400;
+  const systemPrompt = buildTarotReadingSystemPrompt(lang);
+  const userPrompt = buildTarotReadingUserPrompt(input, lang);
+
+  try {
+    if (env.OPENAI_API_KEY) {
+      try {
+        const result = await callOpenAIResponses({
+          apiKey: env.OPENAI_API_KEY,
+          model: env.OPENAI_TAROT_MODEL || env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
+          systemPrompt,
+          userPrompt,
+          maxOutputTokens,
+          reasoningEffort: cardCount >= 10 ? 'medium' : 'low',
+          verbosity: 'medium',
+        });
+        return json({ ok: true, provider: 'openai', resultMarkdown: result.text || '', text: result.text || '', usage: result.usage || null });
+      } catch (e) {
+        console.warn('OpenAI tarot reading failed, falling back to Anthropic if available:', e && e.message);
+        if (!env.ANTHROPIC_API_KEY) throw e;
+      }
+    }
+
+    if (env.ANTHROPIC_API_KEY) {
+      const apiResp = await callAnthropicWithRetry({
+        apiKey: env.ANTHROPIC_API_KEY,
+        body: {
+          model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          max_tokens: maxOutputTokens,
+          system: [{ type: 'text', text: systemPrompt }],
+          messages: [{ role: 'user', content: userPrompt }],
+        },
+      });
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        const text = (data.content || [])
+          .filter((b) => b.type === 'text')
+          .map((b) => b.text)
+          .join('\n')
+          .trim();
+        return json({ ok: true, provider: 'anthropic', resultMarkdown: text, text, usage: data.usage || null });
+      }
+      const errText = await apiResp.text();
+      console.warn('Tarot Anthropic failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
+    }
+
+    if (env.AI) {
+      const result = await callWorkersAIChat({
+        ai: env.AI,
+        model: env.WORKERS_AI_TAROT_MODEL || env.WORKERS_AI_READING_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8',
+        systemPrompt,
+        userPrompt,
+        maxTokens: maxOutputTokens,
+      });
+      if (result.text) {
+        return json({ ok: true, provider: 'workers-ai', model: result.model, resultMarkdown: result.text, text: result.text, usage: result.usage || null });
+      }
+    }
+
+    return json({ error: '타로 리딩을 잠시 생성하지 못했습니다.', code: 'AI_TAROT_TEMPORARY_UNAVAILABLE' }, 503);
+  } catch (e) {
+    console.error('Tarot reading worker error:', e);
+    return json({ error: '타로 리딩을 잠시 생성하지 못했습니다.', code: 'AI_TAROT_TEMPORARY_UNAVAILABLE' }, 503);
+  }
+}
+
+function buildTarotReadingSystemPrompt(language = 'ko') {
+  return `너는 15년 경력의 전문 타로 리더다.
+
+너의 역할은 사용자가 입력한 질문과 선택한 카드, 스프레드 위치를 바탕으로 현실적이고 따뜻한 타로 리딩을 제공하는 것이다.
+출력 언어 규칙: ${languageInstruction(language)}
+
+반드시 지켜야 할 원칙:
+1. 카드 의미를 단순 나열하지 말고 질문과 연결해서 해석한다.
+2. 각 카드는 반드시 해당 위치의 의미와 함께 해석한다.
+3. 여러 장의 카드는 하나의 흐름과 이야기로 연결한다.
+4. 너무 단정적으로 말하지 않는다.
+5. 불안감이나 공포를 과도하게 조장하지 않는다.
+6. "무조건", "반드시", "100%" 같은 표현을 피한다.
+7. 죽음, 탑, 악마, 달 같은 카드도 상징적으로 해석한다.
+8. 건강 문제는 의학적 진단처럼 말하지 않는다.
+9. 금전/투자 문제는 투자 지시처럼 말하지 않는다.
+10. 연애/재회 문제는 희망고문하지 않고 현실적인 가능성과 조언을 함께 준다.
+11. 문체는 따뜻하지만 가볍지 않게 작성한다.
+12. 유료 리딩처럼 충분히 구체적이고 깊이 있게 작성한다.
+
+응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
+}
+
+function buildTarotReadingUserPrompt(input, language = 'ko') {
+  const cards = input.cards.map((card) => ({
+    positionIndex: card.positionIndex,
+    positionLabel: card.positionLabel,
+    positionMeaning: card.positionMeaning,
+    cardNameKo: card.cardNameKo,
+    cardNameEn: card.cardNameEn,
+    orientation: card.orientation,
+    keywords: Array.isArray(card.keywords) ? card.keywords : [],
+    baseMeaning: card.baseMeaning,
+    categoryMeaning: card.categoryMeaning,
+    advice: card.advice,
+    warning: card.warning,
+  }));
+  const count = cards.length;
+  const lengthGuide = count >= 10
+    ? '2,500~4,000자. 복잡한 흐름, 내면, 외부 환경, 최종 결과까지 깊이 있게 다룬다.'
+    : count >= 5
+      ? '1,800~2,500자. 현재 상황, 장애물, 숨겨진 흐름, 조언, 결과가 충분히 드러나야 한다.'
+      : '1,200~1,800자. 간결하지만 핵심이 명확해야 한다.';
+
+  return `사용자의 질문:
+${input.question}
+
+질문 카테고리:
+${input.questionCategory || 'general'}
+
+선택한 스프레드:
+${input.spreadName || `${count}장 리딩`}
+
+스프레드 설명:
+${input.spreadDescription || ''}
+
+선택된 카드:
+${JSON.stringify(cards, null, 2)}
+
+출력 언어:
+${languageInstruction(language)}
+
+아래 구조로 Markdown 타로 리딩을 작성해줘.
+
+# 1. 질문 요약
+사용자의 질문이 어떤 고민인지 2~3문장으로 정리해줘.
+
+# 2. 전체 흐름 요약
+선택된 카드들이 전체적으로 어떤 흐름을 보여주는지 먼저 설명해줘.
+
+# 3. 카드별 해석
+각 카드를 아래 형식으로 해석해줘.
+
+## {{positionLabel}} - {{cardNameKo}}
+- 위치 의미:
+- 카드 핵심:
+- 질문과 연결한 해석:
+
+# 4. 카드 조합 해석
+카드들이 서로 연결될 때 어떤 이야기를 만드는지 설명해줘. 단순히 카드 의미를 나열하지 말고, 흐름으로 연결해줘.
+
+# 5. 질문에 대한 최종 답변
+사용자의 질문에 직접 답해줘. 단, 너무 단정하지 말고 가능성과 조건을 함께 말해줘.
+
+# 6. 현실적인 조언
+사용자가 지금 실제로 할 수 있는 행동을 3가지 정도 제안해줘.
+
+# 7. 주의할 점
+지금 조심해야 할 태도, 오해, 성급한 행동을 설명해줘.
+
+# 8. 다음 행동 가이드
+오늘부터 바로 적용할 수 있는 구체적인 다음 행동을 알려줘.
+
+작성 조건:
+- 전체 분량은 ${lengthGuide}
+- 사용자의 질문에 직접 연결해서 쓸 것
+- 카드 이름을 자연스럽게 언급할 것
+- 너무 미신적이거나 공포스럽게 쓰지 말 것
+- 상담을 받는 느낌으로 쓸 것
+- 연애/재회는 상대 마음을 확정하지 말고 가능성과 대화 흐름 중심으로 볼 것
+- 직장/이직은 준비 상태와 리스크를 함께 볼 것
+- 재물/투자는 투자 지시가 아니라 수입, 지출, 계약, 욕심, 안정성 중심으로 볼 것
+- 선택 질문은 감정적 선택과 현실적 선택 기준을 구분할 것`;
 }
 
 async function handleTranslate(request, env) {

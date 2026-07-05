@@ -3955,8 +3955,24 @@ function selectDeckCard(cardId){
   _tarotFlow.selectedCards=[...selected,{positionIndex:pos.index,cardId,orientation}];
   saveTarotFlow();renderTarot();
 }
-function resetTarotDraw(){if(confirm('선택한 카드를 모두 지우고 다시 뽑을까요?')){_tarotFlow.selectedCards=[];_tarotFlow.resultMarkdown='';saveTarotFlow();renderTarot();}}
-function finishTarotDraw(){_tarotFlow.resultMarkdown=generateTemplateReading(buildAIReadingInput(_tarotFlow));saveTarotFlow();saveTarotReadingFromFlow(_tarotFlow);tarotNavigate('result');}
+function resetTarotDraw(){if(confirm('선택한 카드를 모두 지우고 다시 뽑을까요?')){_tarotFlow.selectedCards=[];_tarotFlow.resultMarkdown='';_tarotFlow.resultLoading=false;saveTarotFlow();renderTarot();}}
+async function finishTarotDraw(){
+  const input=buildAIReadingInput(_tarotFlow);
+  _tarotFlow.resultMarkdown='';
+  _tarotFlow.resultLoading=true;
+  saveTarotFlow();
+  tarotNavigate('result');
+  try{
+    _tarotFlow.resultMarkdown=await generateAIReading(input);
+  }catch(e){
+    console.warn('Tarot AI reading failed, using template:',e&&e.message);
+    _tarotFlow.resultMarkdown=generateTemplateReading(input);
+  }
+  _tarotFlow.resultLoading=false;
+  saveTarotFlow();
+  saveTarotReadingFromFlow(_tarotFlow);
+  renderTarot();
+}
 function buildAIReadingInput(flow){
   return {question:flow.question,questionCategory:flow.questionCategory,spreadName:flow.spreadName,spreadDescription:flow.spreadDescription,cards:flow.positions.map(pos=>{
     const sel=flow.selectedCards.find(s=>s.positionIndex===pos.index),card=TAROT_CARDS.find(c=>c.id===sel.cardId);
@@ -3979,7 +3995,27 @@ function generateTemplateReading(input){
   md+=`# 8. 다음 행동 가이드\n\n오늘은 큰 결정보다 작은 확인이 좋아요. 메시지를 보내야 한다면 짧게, 결정을 해야 한다면 조건표를 먼저 만들어보세요.`;
   return md;
 }
+async function generateAIReading(input){
+  const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({input,language:currentLanguagePayload()})
+  });
+  if(!resp.ok)throw new Error(`tarot-reading ${resp.status}`);
+  const data=await resp.json();
+  const text=String(data.resultMarkdown||data.text||'').trim();
+  if(!text)throw new Error('empty tarot-reading');
+  return text;
+}
 function renderTarotResult(root){
+  if(_tarotFlow&&_tarotFlow.resultLoading){
+    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'AI 리딩 생성 중');
+    root.innerHTML=tarotHtml(`<section class="tarot-panel">
+      <div class="tarot-section-title">타로 풀이를 정리하고 있어요</div>
+      <div class="tarot-small">선택한 카드와 질문을 바탕으로 유료 리딩 형태의 해석을 생성 중이에요. 잠시만 기다려주세요.</div>
+    </section>`);
+    return;
+  }
   if(!_tarotFlow||!_tarotFlow.resultMarkdown)return tarotNavigate('draw');
   tarotSetHeader('타로 결과',_tarotFlow.spreadName);
   const input=buildAIReadingInput(_tarotFlow);
