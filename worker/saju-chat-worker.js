@@ -312,7 +312,7 @@ async function handleTarotReading(request, env) {
 
   const lang = normalizeLanguage(body && (body.language || body.targetLanguage));
   const cardCount = input.cards.length;
-  const maxOutputTokens = cardCount >= 10 ? 5200 : cardCount >= 5 ? 3400 : 2400;
+  const maxOutputTokens = cardCount >= 10 ? 7600 : cardCount >= 5 ? 4800 : 3200;
   const systemPrompt = buildTarotReadingSystemPrompt(lang);
   const userPrompt = buildTarotReadingUserPrompt(input, lang);
 
@@ -490,6 +490,9 @@ ${languageInstruction(language)}
 - 전체 분량은 ${lengthGuide}
 - 상품별 깊이 기준:
 ${depthGuide}
+- 위 분량 범위를 넘길 것 같으면 각 섹션을 조금 압축하되, 절대 중간에 끊지 말고 "# 8. 다음 행동 가이드"까지 완결한다.
+- 마지막 문장은 조언이 자연스럽게 마무리되는 완성 문장으로 끝낸다.
+- 토큰 한도가 부족하다고 느껴지면 카드별 해석을 조금 줄이고, 카드 조합 해석과 최종 답변을 우선한다.
 - 사용자의 질문에 직접 연결해서 쓸 것
 - 카드 이름을 자연스럽게 언급할 것
 - 너무 미신적이거나 공포스럽게 쓰지 말 것
