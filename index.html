@@ -288,11 +288,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-card-btn{aspect-ratio:2/3;border:0;border-radius:12px;background:transparent;padding:0;perspective:900px;cursor:pointer;font-family:inherit}
 .tarot-card-inner{position:relative;width:100%;height:100%;transition:transform .62s;transform-style:preserve-3d}
 .tarot-card-btn.flipped .tarot-card-inner{transform:rotateY(180deg)}
-.tarot-card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.26)}
-.tarot-card-back{background:radial-gradient(circle at 50% 35%,rgba(245,215,124,.24),transparent 34%),linear-gradient(160deg,#1c2030,#101214);color:var(--accent-bright)}
-.tarot-card-back::before{content:'✦';font-size:1.35rem}
-.tarot-card-front{transform:rotateY(180deg);background:linear-gradient(160deg,rgba(216,196,168,.2),rgba(29,32,33,.95));color:var(--text)}
-.tarot-card-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;line-height:1.35;color:var(--accent-bright)}
+.tarot-card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.26);overflow:hidden}
+.tarot-card-back{background:#101214 url("타로카드/thumbnail.png") center/cover no-repeat;color:var(--accent-bright)}
+.tarot-card-back::before{content:''}
+.tarot-card-front{transform:rotateY(180deg);background:#101214;color:var(--text);padding:0}
+.tarot-card-img{width:100%;height:100%;object-fit:cover;display:block}
+.tarot-card-label{position:absolute;left:6px;right:6px;bottom:6px;padding:5px 6px;border-radius:8px;background:linear-gradient(180deg,rgba(12,12,16,.2),rgba(12,12,16,.78));box-shadow:0 4px 14px rgba(0,0,0,.28)}
+.tarot-card-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;line-height:1.35;color:#ffe6a8;text-shadow:0 1px 2px rgba(0,0,0,.7)}
 .tarot-card-num{font-size:.62rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .tarot-card-front .tarot-card-sym{font-size:1.5rem;line-height:1}
 /* 오늘의 타로 — 선택 시 뒤집기 + 중앙 확대 → 축소 애니메이션 */
@@ -332,7 +334,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-progress{font-size:.78rem;color:var(--accent-bright);font-weight:800;margin-top:6px}
 .tarot-selected-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:12px 0}
 .tarot-mini-card{min-width:74px;text-align:center;font-size:.65rem;color:var(--sub)}
-.tarot-mini-face{height:108px;border-radius:10px;background:linear-gradient(160deg,rgba(216,196,168,.18),rgba(29,32,33,.95));display:flex;align-items:center;justify-content:center;padding:7px;color:var(--accent-bright);font-family:'Do Hyeon','Noto Serif KR',serif;margin-bottom:5px}
+.tarot-mini-face{height:108px;border-radius:10px;background:linear-gradient(160deg,rgba(216,196,168,.18),rgba(29,32,33,.95));display:flex;align-items:center;justify-content:center;color:var(--accent-bright);font-family:'Do Hyeon','Noto Serif KR',serif;margin-bottom:5px;overflow:hidden}
+.tarot-mini-face img{width:100%;height:100%;object-fit:cover;display:block}
 .tarot-markdown{font-size:.9rem;line-height:1.85;color:var(--sub)}
 .tarot-markdown h1{font-size:1.08rem;color:var(--accent-bright);margin:18px 0 8px}
 .tarot-markdown h2{font-size:.98rem;color:var(--text);margin:15px 0 6px}
@@ -400,7 +403,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .td-spread .td-slot.next{border-style:dashed;border-color:var(--accent-bright);box-shadow:0 0 16px rgba(212,175,55,.3);background:rgba(212,175,55,.06)}
 .td-slot-n{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;color:rgba(212,175,55,.4)}
 .td-slot.filled{border-style:solid;border-color:rgba(212,175,55,.5)}
-.td-slot .td-mini{width:100%;height:100%;border-radius:7px;background:radial-gradient(circle at 50% 32%,rgba(245,215,124,.22),transparent 40%),linear-gradient(160deg,#241a3a,#101014);display:flex;align-items:center;justify-content:center;color:var(--accent-bright);font-size:1.1rem}
+.td-slot .td-mini{width:100%;height:100%;border-radius:7px;background:radial-gradient(circle at 50% 32%,rgba(245,215,124,.22),transparent 40%),linear-gradient(160deg,#241a3a,#101014);display:flex;align-items:center;justify-content:center;color:var(--accent-bright);font-size:1.1rem;overflow:hidden}
+.td-slot .td-mini img{width:100%;height:100%;object-fit:cover;display:block}
 .td-slot-lab{position:absolute;left:50%;transform:translateX(-50%);bottom:-16px;font-size:.56rem;color:rgba(216,196,168,.6);white-space:nowrap}
 .td-caption{text-align:center;margin:18px 0 10px}
 .td-caption h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.25rem;color:var(--accent-bright);margin-bottom:4px}
@@ -408,7 +412,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .td-fan-wrap{position:relative;margin:0 -14px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .td-fan{display:flex;align-items:flex-end;overflow-x:auto;scroll-snap-type:x proximity;gap:0;padding:76px 42vw 8px;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none}
 .td-fan::-webkit-scrollbar{display:none}
-.td-fan-card{flex:0 0 auto;width:58px;height:92px;margin:0 -12px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:radial-gradient(circle at 50% 30%,rgba(245,215,124,.18),transparent 42%),linear-gradient(160deg,#241a3a,#0e0d14);scroll-snap-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;transform-origin:bottom center}
+.td-fan-card{flex:0 0 auto;width:58px;height:92px;margin:0 -12px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:#101214 url("타로카드/thumbnail.png") center/cover no-repeat;scroll-snap-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;transform-origin:bottom center}
 .td-fan-card.focused{transform:scale(1.75);box-shadow:0 0 0 1px rgba(245,215,124,.7),0 18px 40px rgba(0,0,0,.5),0 0 26px rgba(212,175,55,.5);z-index:5}
 .td-fan-card.used{opacity:.18;pointer-events:none}
 .td-draw-hint{text-align:center;font-size:.72rem;color:rgba(216,196,168,.5);margin-top:6px}
@@ -3619,6 +3623,7 @@ function buildTarotCards(){
       cards.push(tarotCard(`${suit}-${key}`,nameKo,nameEn,[theme,kw,element],meaning,'minor'));
     });
   });
+  cards.forEach((card,i)=>{card.imageUrl=`타로카드/scene_${String(i+1).padStart(3,'0')}.png`;});
   return cards;
 }
 function tarotCard(id,nameKo,nameEn,keywords,meaning,arcana){
@@ -3708,6 +3713,10 @@ function tarotGlyph(card){
   if(card.arcana==='major')return '✶';
   return {wands:'♣',cups:'♥',swords:'♠',pentacles:'♦'}[card.id.split('-')[0]]||'✦';
 }
+function tarotCardImageHTML(card,cls='tarot-card-img'){
+  if(!card||!card.imageUrl)return `<span class="tarot-card-sym">${tarotGlyph(card)}</span>`;
+  return `<img class="${cls}" src="${tarotEsc(card.imageUrl)}" alt="${tarotEsc(card.nameKo)} 카드 이미지" loading="lazy" decoding="async">`;
+}
 function renderTodayTarot(root){
   tarotSetHeader('오늘의 타로','9장 중 한 장을 골라보세요');
   const key=dailyCacheKey();
@@ -3724,7 +3733,7 @@ function renderTodayTarot(root){
     <section class="tarot-hero"><div class="tarot-kicker">Today's Card</div><div class="tarot-title">오늘의 타로</div><div class="tarot-desc">${selected?'오늘 당신이 뽑은 카드의 메시지예요. 카드는 하루에 한 장만 열려요.':'오늘 나에게 필요한 메시지를 마음속으로 떠올리며, 9장의 카드 중 한 장을 선택해보세요.'}</div></section>
     <div class="tarot-grid9${selected?' picked':''}">
       ${cards.map((c,i)=>`<button class="tarot-card-btn ${selected===c.id?'flipped':''}" onclick="selectTodayTarot('${c.id}',this)" ${selected?'disabled':''} aria-label="${i+1}번째 타로 카드 선택">
-        <span class="tarot-card-inner"><span class="tarot-card-face tarot-card-back"><span class="tarot-card-num">${i+1}</span></span><span class="tarot-card-face tarot-card-front"><span class="tarot-card-sym">${tarotGlyph(c)}</span><span class="tarot-card-name">${tarotEsc(c.nameKo)}</span><span class="tarot-card-num">${tarotEsc(c.nameEn)}</span></span></span>
+        <span class="tarot-card-inner"><span class="tarot-card-face tarot-card-back"><span class="tarot-card-num">${i+1}</span></span><span class="tarot-card-face tarot-card-front">${tarotCardImageHTML(c)}<span class="tarot-card-label"><span class="tarot-card-name">${tarotEsc(c.nameKo)}</span><span class="tarot-card-num">${tarotEsc(c.nameEn)}</span></span></span></span>
       </button>`).join('')}
     </div>
     <div id="todayTarotResult">${selected?todayTarotResultHTML(TAROT_CARDS.find(c=>c.id===selected)):''}</div>
@@ -3755,6 +3764,7 @@ function todayTarotResultHTML(card){
   if(!card)return '';
   const f=card.todayFortune;
   return tarotHtml(`<section class="tarot-panel tarot-result-card tarot-reveal">
+    <div class="tarot-mini-face" style="height:210px;max-width:156px;margin:0 auto 4px">${tarotCardImageHTML(card)}</div>
     <div class="tarot-section-title">${tarotEsc(card.nameKo)} — ${tarotEsc(card.nameEn)}</div>
     <div class="tarot-card-text">${tarotEsc(card.uprightMeaning)}</div>
     <div class="tarot-fortune-list">
@@ -3884,7 +3894,7 @@ function tarotSpreadBoardHTML(positions,selected){
     const card=sel&&TAROT_CARDS.find(x=>x.id===sel.cardId);
     const style=`left:${c*L.cw}px;top:${r*L.ch}px;width:${L.sw}px;height:${L.sh}px;${rot?`transform:rotate(${rot}deg);`:''}`;
     const cls=`td-slot ${card?'filled':''} ${!card&&i===nextIdx?'next':''}`;
-    const inner=card?`<span class="td-mini">${tarotGlyph(card)}</span>`:`<span class="td-slot-n">${i+1}</span>`;
+    const inner=card?`<span class="td-mini">${tarotCardImageHTML(card,'')}</span>`:`<span class="td-slot-n">${i+1}</span>`;
     const lab=(showLab&&!rot)?`<span class="td-slot-lab">${tarotEsc(pos.label)}</span>`:'';
     return `<div class="${cls}" style="${style}">${inner}${lab}</div>`;
   }).join('');
@@ -3962,7 +3972,7 @@ function renderTarotResult(root){
   root.innerHTML=tarotHtml(`<section class="tarot-panel">
     <div class="tarot-section-title">${tarotEsc(_tarotFlow.question)}</div>
     <div class="tarot-small">${tarotEsc(_tarotFlow.spreadName)} · ${(_tarotFlow.price||0).toLocaleString()}원</div>
-    <div class="tarot-selected-strip">${input.cards.map(c=>`<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotEsc(c.cardNameKo)}</div>${tarotEsc(c.positionLabel)}</div>`).join('')}</div>
+    <div class="tarot-selected-strip">${input.cards.map(c=>{const card=TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);return `<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotCardImageHTML(card,'')}</div>${tarotEsc(c.positionLabel)}<br>${tarotEsc(c.cardNameKo)}</div>`;}).join('')}</div>
   </section>
   <section class="tarot-panel"><div class="tarot-markdown">${markdownToTarotHTML(_tarotFlow.resultMarkdown)}</div></section>
   <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">새 질문 보기</button><button class="tarot-btn secondary" onclick="tarotNavigate('history')">히스토리 보기</button></div>`);
