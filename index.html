@@ -678,8 +678,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 /* 상단 바 브랜드 워드마크 — 버튼 폭과 무관하게 항상 중앙 고정 */
 .hdr-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em;pointer-events:none}
 .hdr-spacer{width:36px;flex-shrink:0}
-/* 고정 상단 바 높이만큼 결과·입력 화면 콘텐츠 아래로 */
-#view-result,#view-input{padding-top:60px}
+/* 고정 상단 바 높이만큼 결과·입력·타로 화면 콘텐츠 아래로 */
+#view-result,#view-input,#view-tarot{padding-top:60px}
 .hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
@@ -3649,7 +3649,7 @@ let _tarotFlow=loadTarotFlow();
 let _tarotDeckCenter=0;
 let _tarotDragStartX=null;
 function tarotEsc(v){return String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
-function tarotHtml(v){return typeof preventOrphan==='function'?preventOrphan(v):v;}
+function tarotHtml(v){return v==null?'':String(v);}
 function tarotSetHeader(title,sub){const t=document.getElementById('tarotHdrTitle'),s=document.getElementById('tarotHdrSub');if(t)t.textContent=title;if(s)s.textContent=sub||'';}
 function goToTarot(route='home'){_tarotRoute=route;showView('tarot');renderTarot();}
 function tarotBack(){
@@ -3714,7 +3714,12 @@ function renderTodayTarot(root){
   let cache=null;try{cache=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
   const cards=(cache&&cache.cardIds?cache.cardIds.map(id=>TAROT_CARDS.find(c=>c.id===id)).filter(Boolean):getDailyCards(getTodaySeed(),TAROT_CARDS,9));
   if(!cache){cache={date:new Date().toISOString().slice(0,10),userId:getTarotUserId(),cardIds:cards.map(c=>c.id),createdAt:new Date().toISOString()};localStorage.setItem(key,JSON.stringify(cache));}
-  const selected=cache.selectedCardId;
+  let selected=cache.selectedCardId;
+  if(selected&&!cards.some(c=>c.id===selected)){
+    selected='';
+    delete cache.selectedCardId;
+    try{localStorage.setItem(key,JSON.stringify(cache));}catch(e){}
+  }
   root.innerHTML=tarotHtml(`
     <section class="tarot-hero"><div class="tarot-kicker">Today's Card</div><div class="tarot-title">오늘의 타로</div><div class="tarot-desc">${selected?'오늘 당신이 뽑은 카드의 메시지예요. 카드는 하루에 한 장만 열려요.':'오늘 나에게 필요한 메시지를 마음속으로 떠올리며, 9장의 카드 중 한 장을 선택해보세요.'}</div></section>
     <div class="tarot-grid9${selected?' picked':''}">
@@ -3722,7 +3727,8 @@ function renderTodayTarot(root){
         <span class="tarot-card-inner"><span class="tarot-card-face tarot-card-back"><span class="tarot-card-num">${i+1}</span></span><span class="tarot-card-face tarot-card-front"><span class="tarot-card-sym">${tarotGlyph(c)}</span><span class="tarot-card-name">${tarotEsc(c.nameKo)}</span><span class="tarot-card-num">${tarotEsc(c.nameEn)}</span></span></span>
       </button>`).join('')}
     </div>
-    <div id="todayTarotResult">${selected?todayTarotResultHTML(TAROT_CARDS.find(c=>c.id===selected)):''}</div>`);
+    <div id="todayTarotResult">${selected?todayTarotResultHTML(TAROT_CARDS.find(c=>c.id===selected)):''}</div>
+    ${selected?'<div class="tarot-actions"><button class="tarot-btn secondary" onclick="resetTodayTarotSelection()">오늘 카드 다시 선택</button></div>':''}`);
 }
 function selectTodayTarot(cardId,btn){
   const key=dailyCacheKey();let cache={};try{cache=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
@@ -3738,6 +3744,12 @@ function selectTodayTarot(cardId,btn){
   let done=false;const finish=()=>{if(done)return;done=true;commit();};
   btn.addEventListener('animationend',finish,{once:true});
   setTimeout(finish,1950); // 애니메이션 이벤트 누락 대비 폴백
+}
+function resetTodayTarotSelection(){
+  const key=dailyCacheKey();let cache={};try{cache=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  delete cache.selectedCardId;
+  try{localStorage.setItem(key,JSON.stringify(cache));}catch(e){}
+  renderTarot();
 }
 function todayTarotResultHTML(card){
   if(!card)return '';
