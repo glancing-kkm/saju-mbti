@@ -321,7 +321,7 @@ async function handleTarotReading(request, env) {
       try {
         const result = await callOpenAIResponses({
           apiKey: env.OPENAI_API_KEY,
-          model: env.OPENAI_TAROT_MODEL || env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
+          model: env.OPENAI_TAROT_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
           systemPrompt,
           userPrompt,
           maxOutputTokens,
@@ -421,6 +421,21 @@ function buildTarotReadingUserPrompt(input, language = 'ko') {
     : count >= 5
       ? '1,800~2,500자. 현재 상황, 장애물, 숨겨진 흐름, 조언, 결과가 충분히 드러나야 한다.'
       : '1,200~1,800자. 간결하지만 핵심이 명확해야 한다.';
+  const depthGuide = count >= 10
+    ? `10장 켈틱크로스는 프리미엄 리딩이다.
+- 각 카드 해석은 짧게 끝내지 말고, 위치 의미와 질문을 함께 엮어 설명한다.
+- "카드 조합 해석"은 과거, 현재, 내면, 외부 환경, 기대와 두려움, 최종 흐름이 어떻게 이어지는지 길게 풀어준다.
+- "질문에 대한 최종 답변"은 가장 깊은 섹션으로 작성하고, 가능성, 조건, 시기감, 사용자가 바꿀 수 있는 부분을 함께 다룬다.
+- "현실적인 조언"과 "다음 행동 가이드"는 일반론이 아니라 질문 상황에 맞춘 구체 행동으로 작성한다.`
+    : count >= 5
+      ? `5장 리딩은 표준 유료 리딩이다.
+- 현재 상황, 장애물, 숨겨진 흐름, 조언, 가까운 결과가 서로 어떻게 연결되는지 분명히 보여준다.
+- 3장 리딩보다 카드 조합 해석과 최종 답변을 더 자세히 작성한다.
+- 조언은 최소 3가지로, 감정 조절, 대화/실행 방식, 확인해야 할 현실 조건을 나누어 제안한다.`
+      : `3장 리딩은 빠른 핵심 리딩이다.
+- 질문의 핵심 답을 먼저 잡고, 과거/현재/미래 또는 상황/조언/결과 흐름을 간결하게 연결한다.
+- 카드별 설명은 길게 늘리지 말고 최종 답변과 바로 이어지게 작성한다.
+- 조언은 짧지만 바로 실행할 수 있게 쓴다.`;
 
   return `사용자의 질문:
 ${input.question}
@@ -473,6 +488,8 @@ ${languageInstruction(language)}
 
 작성 조건:
 - 전체 분량은 ${lengthGuide}
+- 상품별 깊이 기준:
+${depthGuide}
 - 사용자의 질문에 직접 연결해서 쓸 것
 - 카드 이름을 자연스럽게 언급할 것
 - 너무 미신적이거나 공포스럽게 쓰지 말 것
