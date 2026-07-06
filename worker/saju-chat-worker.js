@@ -51,6 +51,9 @@ export default {
     if (url.pathname === '/tarot-reading') {
       return handleTarotReading(request, env);
     }
+    if (url.pathname === '/astrology-reading') {
+      return handleAstrologyReading(request, env);
+    }
     if (url.pathname === '/translate') {
       return handleTranslate(request, env);
     }
@@ -505,6 +508,158 @@ ${depthGuide}
 - 직장/이직은 준비 상태와 리스크를 함께 볼 것
 - 재물/투자는 투자 지시가 아니라 수입, 지출, 계약, 욕심, 안정성 중심으로 볼 것
 - 선택 질문은 감정적 선택과 현실적 선택 기준을 구분할 것`;
+}
+
+async function handleAstrologyReading(request, env) {
+  if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !env.AI) {
+    return json({ error: '점성술 리딩 서비스가 아직 준비되지 않았습니다.' }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'JSON 본문이 필요합니다.' }, 400);
+  }
+
+  const { chart, transit, productType, language } = body || {};
+  if (!chart || typeof chart !== 'object' || !Array.isArray(chart.planets) || !chart.birthInfo) {
+    return json({ error: '계산된 출생차트 데이터가 필요합니다.' }, 400);
+  }
+  const lang = normalizeLanguage(language);
+  const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
+  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, language: lang });
+  const premium = productType === 'full-report' || productType === 'yearly';
+  const maxOutputTokens = productType === 'full-report' ? 7200 : premium ? 5200 : 3800;
+
+  try {
+    if (env.OPENAI_API_KEY) {
+      try {
+        const result = await callOpenAIResponses({
+          apiKey: env.OPENAI_API_KEY,
+          model: env.OPENAI_ASTROLOGY_MODEL || 'gpt-5.4-mini',
+          systemPrompt,
+          userPrompt,
+          maxOutputTokens,
+          reasoningEffort: premium ? 'medium' : 'low',
+          verbosity: 'medium',
+        });
+        return json({ ok: true, provider: 'openai', resultMarkdown: result.text || '', text: result.text || '', usage: result.usage || null });
+      } catch (e) {
+        console.warn('OpenAI astrology reading failed, falling back to Anthropic if available:', e && e.message);
+        if (!env.ANTHROPIC_API_KEY) throw e;
+      }
+    }
+
+    if (env.ANTHROPIC_API_KEY) {
+      const apiResp = await callAnthropicWithRetry({
+        apiKey: env.ANTHROPIC_API_KEY,
+        body: {
+          model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          max_tokens: maxOutputTokens,
+          system: [{ type: 'text', text: systemPrompt }],
+          messages: [{ role: 'user', content: userPrompt }],
+        },
+      });
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+        return json({ ok: true, provider: 'anthropic', resultMarkdown: text, text, usage: data.usage || null });
+      }
+      const errText = await apiResp.text();
+      console.warn('Astrology Anthropic failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
+    }
+
+    if (env.AI) {
+      const result = await callWorkersAIChat({
+        ai: env.AI,
+        model: env.WORKERS_AI_ASTROLOGY_MODEL || env.WORKERS_AI_READING_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8',
+        systemPrompt,
+        userPrompt,
+        maxTokens: maxOutputTokens,
+      });
+      if (result.text) {
+        return json({ ok: true, provider: 'workers-ai', model: result.model, resultMarkdown: result.text, text: result.text, usage: result.usage || null });
+      }
+    }
+
+    return json({ error: '점성술 리딩을 잠시 생성하지 못했습니다.', code: 'AI_ASTROLOGY_TEMPORARY_UNAVAILABLE' }, 503);
+  } catch (e) {
+    console.error('Astrology reading worker error:', e);
+    return json({ error: '점성술 리딩을 잠시 생성하지 못했습니다.', code: 'AI_ASTROLOGY_TEMPORARY_UNAVAILABLE' }, 503);
+  }
+}
+
+function buildAstrologyReadingSystemPrompt(language = 'ko') {
+  return `너는 20년 경력의 전문 점성술사다.
+
+너는 사용자의 출생차트와 현재 Transit 데이터를 바탕으로 점성술 리딩을 제공한다.
+출력 언어 규칙: ${languageInstruction(language)}
+
+중요 원칙:
+1. 행성 위치, 별자리, 하우스, 애스펙트는 이미 계산된 데이터만 사용한다.
+2. 없는 데이터를 추측하지 않는다.
+3. 출생시간이 없는 경우 ASC와 하우스 해석을 하지 않는다.
+4. 점성술 표현을 사용하되 일반 사용자가 이해하기 쉽게 설명한다.
+5. 너무 단정적으로 말하지 않는다.
+6. 건강, 투자, 법률 문제는 조심스럽게 표현한다.
+7. 불안감을 과도하게 조장하지 않는다.
+8. 유료 리딩처럼 충분히 구체적으로 작성한다.
+9. 계산 오류를 보정하거나 새로운 행성 위치를 만들어내지 않는다.
+
+응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
+}
+
+function buildAstrologyReadingUserPrompt({ chart, transit, productType, language }) {
+  const productMap = {
+    'birth-basic': '출생차트 기본 분석',
+    'love-marriage': '연애/결혼운',
+    'career-money': '직업/재물운',
+    yearly: '올해 운세',
+    'full-report': '종합 점성술 리포트',
+  };
+  const lengthGuide = productType === 'full-report'
+    ? '3,500~5,500자'
+    : productType === 'yearly'
+      ? '2,800~4,200자'
+      : '2,000~3,200자';
+  const hasBirthTime = !(chart.birthInfo && chart.birthInfo.birthTimeUnknown);
+
+  return `상품 유형:
+${productMap[productType] || productType || '점성술 리딩'}
+
+출력 언어:
+${languageInstruction(language)}
+
+계산된 출생차트 데이터:
+${JSON.stringify(chart, null, 2)}
+
+계산된 현재 Transit 데이터:
+${JSON.stringify(transit || {}, null, 2)}
+
+아래 구조로 점성술 리딩을 작성해줘.
+
+# 1. 출생차트 핵심 요약
+# 2. 성격과 기질
+# 3. 감정 패턴
+# 4. 연애/결혼운
+# 5. 직업/재물운
+# 6. 인간관계
+# 7. 현재 운의 흐름
+# 8. 앞으로 주의할 점
+# 9. 현실적인 조언
+# 10. 종합 결론
+
+작성 조건:
+- 전체 분량은 ${lengthGuide}
+- AI가 행성 위치, 별자리, 하우스, 상승궁, 애스펙트를 새로 계산하거나 추측하지 말 것
+- 제공된 chart.planets, chart.aspects, transit.planets 데이터만 근거로 사용할 것
+- 출생시간 사용 가능 여부: ${hasBirthTime ? '출생시간 있음. 제공된 ASC/MC/하우스 데이터만 사용 가능.' : '출생시간 없음. ASC, MC, 하우스 해석 금지.'}
+- 출생시간이 없으면 달 위치 오차 가능성을 부드럽게 안내할 것
+- 건강, 투자, 법률은 확정적으로 말하지 말 것
+- 너무 공포스럽거나 단정적인 표현을 피할 것
+- 사용자가 실제로 적용할 수 있는 행동 조언을 포함할 것
+- 마지막 문장은 자연스럽게 완결할 것`;
 }
 
 async function handleTranslate(request, env) {

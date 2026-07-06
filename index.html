@@ -82,6 +82,7 @@
 <!-- html2canvas: 이미지 저장 (분석 후 사용자 상호작용 시점에만 필요 → defer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" defer></script>
+<script src="assets/vendor/astronomy.browser.min.js"></script>
 <!-- 카카오페이는 직접 API(서버사이드 redirect) 방식 — 별도 SDK 불필요 -->
 <!-- Kakao SDK (앱 키 등록 필요: https://developers.kakao.com) -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
@@ -359,6 +360,39 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-markdown ul,.tarot-markdown ol{padding-left:20px}
 .tarot-history-list{display:grid;gap:10px}
 .tarot-empty{text-align:center;color:var(--muted);font-size:.86rem;line-height:1.8;padding:30px 12px}
+.astro-shell{padding:14px 14px 36px}
+.astro-hero{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(74,144,226,.16),rgba(45,52,71,.62));border-radius:var(--radius-lg);padding:22px 18px;margin-bottom:14px;box-shadow:var(--card-shadow)}
+.astro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(245,215,124,.14),transparent 48%);pointer-events:none}
+.astro-kicker{position:relative;font-size:.68rem;color:var(--accent-bright);font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.astro-title{position:relative;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;line-height:1.35;color:var(--text);margin-bottom:8px}
+.astro-desc{position:relative;font-size:.88rem;line-height:1.8;color:var(--sub)}
+.astro-menu,.astro-products,.astro-grid{display:grid;gap:12px}
+.astro-card,.astro-panel,.astro-product,.astro-history-item{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--card-shadow)}
+.astro-card,.astro-product{border:0;color:var(--text);font-family:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:flex-start;transition:.2s}
+.astro-card:hover,.astro-product.selected{transform:translateY(-2px);box-shadow:0 10px 28px rgba(74,144,226,.16),var(--card-shadow)}
+.astro-icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(74,144,226,.18);color:#b7d5ff;font-size:24px}
+.astro-section-title,.astro-product-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.04rem;color:var(--text);font-weight:800}
+.astro-small,.astro-text{font-size:.82rem;line-height:1.75;color:var(--sub)}
+.astro-form{display:grid;gap:10px}
+.astro-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.astro-field{display:grid;gap:6px}
+.astro-field label{font-size:.72rem;color:var(--accent-bright);font-weight:800}
+.astro-input,.astro-select{width:100%;border:0;border-radius:12px;background:rgba(255,255,255,.07);color:var(--text);font-family:inherit;font-size:.92rem;padding:12px 11px}
+.astro-check{display:flex;gap:8px;align-items:center;font-size:.82rem;color:var(--sub);line-height:1.5}
+.astro-btn{border:0;border-radius:50px;padding:12px 15px;background:linear-gradient(135deg,#4a90e2,var(--accent-bright));color:var(--bg-mid);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(74,144,226,.16)}
+.astro-btn.secondary{background:rgba(255,255,255,.06);color:var(--accent-bright);box-shadow:none}
+.astro-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.astro-actions .astro-btn{flex:1;min-width:150px}
+.astro-chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px;margin-top:12px}
+.astro-chip-card{background:rgba(255,255,255,.045);border-radius:12px;padding:11px;font-size:.78rem;line-height:1.55;color:var(--sub)}
+.astro-chip-card b{display:block;color:var(--accent-bright);font-size:.82rem;margin-bottom:3px}
+.astro-badge{display:inline-flex;border-radius:50px;padding:3px 9px;background:rgba(74,144,226,.18);color:#b7d5ff;font-size:.62rem;font-weight:900;letter-spacing:.08em;margin-bottom:7px}
+.astro-price{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;color:var(--accent-bright);font-weight:900;margin:4px 0 8px}
+.astro-markdown{font-size:.9rem;line-height:1.85;color:var(--sub)}
+.astro-markdown h1{font-size:1.08rem;color:var(--accent-bright);margin:18px 0 8px}
+.astro-markdown h2{font-size:.98rem;color:var(--text);margin:15px 0 6px}
+.astro-markdown p{margin:0 0 10px}
+.astro-warn{border:1px solid rgba(245,215,124,.28);background:rgba(245,215,124,.08);border-radius:12px;padding:11px 12px;color:var(--sub);font-size:.8rem;line-height:1.7}
 
 /* ══ 타로점 — 질문 입력 (code2/screen2) ══ */
 .tq-head{text-align:center;margin:14px 0 22px}
@@ -699,7 +733,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .hdr-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent-bright);letter-spacing:.1em;pointer-events:none}
 .hdr-spacer{width:36px;flex-shrink:0}
 /* 고정 상단 바 높이만큼 결과·입력·타로 화면 콘텐츠 아래로 */
-#view-result,#view-input,#view-tarot{padding-top:60px}
+#view-result,#view-input,#view-tarot,#view-astrology{padding-top:60px}
 .hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
@@ -1760,6 +1794,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-signature">신규</div>
           <div class="mc-price">1,500원부터</div>
         </button>
+        <button class="menu-card" onclick="goToAstrology('today')" aria-label="오늘의 점성술 — 무료" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">planet</span>
+          <div class="mc-title">오늘의 점성술</div>
+          <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 리딩 — 5,900원부터" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">orbit</span>
+          <div class="mc-title">점성술 리딩</div>
+          <div class="mc-desc">출생차트와 트랜짓을 계산해 보는 서양 점성술 리포트</div>
+          <div class="mc-tag t-signature">신규</div>
+          <div class="mc-price">5,900원부터</div>
+        </button>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 1,500원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">timeline</span>
           <div class="mc-title">인생총운</div>
@@ -2256,6 +2303,20 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
     </div>
     <div class="tarot-shell" id="tarotApp"></div>
+  </div>
+
+  <!-- ───── ASTROLOGY ───── -->
+  <div class="view" id="view-astrology" role="region" aria-live="polite" aria-label="점성술 리딩">
+    <div class="hdr-back">
+      <button class="bb" onclick="astrologyBack()" aria-label="이전 화면으로 돌아가기">‹ 뒤로</button>
+      <div class="hdr-brand">천지인 점성술</div>
+      <span class="hdr-spacer" aria-hidden="true"></span>
+      <div class="hdr-back-meta">
+        <div class="hdr-back-title" id="astroHdrTitle">점성술</div>
+        <div class="hdr-back-sub" id="astroHdrSub">출생차트와 오늘의 별 흐름</div>
+      </div>
+    </div>
+    <div class="astro-shell" id="astroApp"></div>
   </div>
 </div>
 
@@ -3369,7 +3430,7 @@ function ensureGnTimeSelects(){
 
 // ── View Router ──
 function showView(name){
-  ['home','input','result','tarot'].forEach(v=>{
+  ['home','input','result','tarot','astrology'].forEach(v=>{
     const el=document.getElementById('view-'+v);
     if(el)el.className='view'+(v===name?' on':'');
   });
@@ -3623,6 +3684,11 @@ const TAROT_MAJOR=[
   ['major-20-judgement','심판','Judgement',['소식','회복','결정'],'다시 판단하고 응답을 받는 카드예요. 묵은 문제가 수면 위로 올라와요.'],
   ['major-21-world','세계','The World',['완성','확장','마무리'],'한 단계가 완성되는 카드예요. 노력의 결과가 형태를 갖추기 쉬워요.']
 ];
+// 타로 데이터 생성용 조사 헬퍼 — 전역 조사 헬퍼(ip/eul…)는 이 시점 이후 정의되므로 로컬로 둔다.
+// 한글로 끝나는 값(키워드·위치 의미)에만 사용. 숫자/영문으로 끝날 수 있는 카드 이름은 뒤에 '카드'를 붙여 처리.
+function _tJong(s){s=String(s||'').trim();if(!s)return false;const c=s.charCodeAt(s.length-1);return c>=0xAC00&&c<=0xD7A3&&((c-0xAC00)%28)!==0;}
+const _tIp=s=>_tJong(s)?'이':'가';
+const _tEul=s=>_tJong(s)?'을':'를';
 function buildTarotCards(){
   const cards=TAROT_MAJOR.map(([id,nameKo,nameEn,keywords,meaning])=>tarotCard(id,nameKo,nameEn,keywords,meaning,'major'));
   const suits=[
@@ -3635,7 +3701,7 @@ function buildTarotCards(){
   suits.forEach(([suit,ko,en,element,theme])=>{
     ranks.forEach(([key,rko,ren,kw])=>{
       const nameKo=`${ko}${rko}`, nameEn=`${ren} of ${en}`;
-      const meaning=`${nameKo} 카드는 ${theme}의 영역에서 ${kw}이 중요한 흐름을 보여줘요. 상황을 현실적으로 살피면 다음 단계가 보여요.`;
+      const meaning=`${theme}의 영역에서 ${kw}${_tIp(kw)} 중요한 흐름을 보여줘요. 상황을 현실적으로 살피면 다음 단계가 보여요.`;
       cards.push(tarotCard(`${suit}-${key}`,nameKo,nameEn,[theme,kw,element],meaning,'minor'));
     });
   });
@@ -3647,10 +3713,10 @@ function tarotCard(id,nameKo,nameEn,keywords,meaning,arcana){
   return {
     id,nameKo,nameEn,arcana,keywords,
     uprightMeaning:meaning,
-    reversedMeaning:meaning.replace('보여줘요','눌려 있음을 보여줘요')+' 속도를 늦추고 핵심을 다시 확인하세요.',
-    loveMeaning:`관계에서는 ${keywords[0]}이 두 사람의 온도에 영향을 줘요. 상대 반응을 보며 천천히 움직이세요.`,
-    moneyMeaning:`재물에서는 ${keywords[0]}을 현실적으로 점검해야 해요. 큰 결정보다 조건 확인이 먼저예요.`,
-    careerMeaning:`일에서는 ${keywords[0]}을 실제 성과로 연결할 방법을 찾아야 해요. 준비와 실행의 균형이 중요해요.`,
+    reversedMeaning:`${meaning} 다만 지금은 그 기운이 약해지거나 반대로 나타나기 쉬워요. 속도를 늦추고 핵심을 다시 확인하세요.`,
+    loveMeaning:`관계에서는 ${keywords[0]}${_tIp(keywords[0])} 두 사람의 온도에 영향을 줘요. 상대 반응을 보며 천천히 움직이세요.`,
+    moneyMeaning:`재물에서는 ${keywords[0]}${_tEul(keywords[0])} 현실적으로 점검해야 해요. 큰 결정보다 조건 확인이 먼저예요.`,
+    careerMeaning:`일에서는 ${keywords[0]}${_tEul(keywords[0])} 실제 성과로 연결할 방법을 찾아야 해요. 준비와 실행의 균형이 중요해요.`,
     relationshipMeaning:`관계에서는 말보다 태도에서 흐름이 드러나요. 오해를 줄이는 대화가 필요해요.`,
     healthMeaning:'건강은 진단보다 생활 리듬 점검의 관점으로 보세요. 무리한 일정은 줄이는 편이 좋아요.',
     advice:'오늘 할 수 있는 작은 행동 하나를 정하고 차분히 실행해보세요.',
@@ -3994,14 +4060,14 @@ function buildAIReadingInput(flow){
 function generateTemplateReading(input){
   const count=input.cards.length;
   const summary=count>=10?'복잡한 고민의 여러 층이 드러나는 흐름입니다.':count>=5?'현재 상황과 장애물, 조언이 균형 있게 드러나는 흐름입니다.':'핵심만 빠르게 보여주는 흐름입니다.';
-  let md=`# 1. 질문 요약\n\n${input.question} 이 질문은 단순한 예측보다 지금 어떤 태도로 움직이면 좋은지 확인하는 고민이에요. 카드들은 질문자의 마음, 현실 조건, 가까운 가능성을 함께 보여줘요.\n\n`;
+  let md=`# 1. 질문 요약\n\n「${input.question}」 이 질문은 단순한 예측보다 지금 어떤 태도로 움직이면 좋은지 확인하는 고민이에요. 카드들은 질문자의 마음, 현실 조건, 가까운 가능성을 함께 보여줘요.\n\n`;
   md+=`# 2. 전체 흐름 요약\n\n전체적으로 ${summary} 좋은 카드와 조심할 카드가 함께 있으니, 결론을 급하게 내리기보다 조건을 확인하며 움직이는 편이 좋아요.\n\n`;
   md+=`# 3. 카드별 해석\n\n`;
-  input.cards.forEach(c=>{md+=`## ${c.positionLabel} - ${c.cardNameKo}\n\n- 핵심키워드: ${c.keywords.slice(0,3).join(', ')}\n\n${c.positionLabel} 자리는 ${c.positionMeaning}을 보여주는 위치예요. 여기에 나온 ${c.cardNameKo}는 ${c.baseMeaning} ${c.categoryMeaning} 그래서 이 카드는 질문에 대해 지금 가장 먼저 살펴야 할 부분을 조용히 짚어주고 있어요.\n\n`;});
-  md+=`# 4. 카드 조합 해석\n\n${input.cards[0].cardNameKo}에서 시작한 흐름은 ${input.cards[input.cards.length-1].cardNameKo}로 이어지며, 처음의 고민이 마지막에는 더 현실적인 선택 기준으로 정리되는 모습이에요. 중간 카드들은 서두르기보다 감정과 조건을 함께 맞추라고 말해요.\n\n`;
+  input.cards.forEach(c=>{md+=`## ${c.positionLabel} - ${c.cardNameKo}\n\n- 핵심키워드: ${c.keywords.slice(0,3).join(', ')}\n\n${c.positionLabel} 자리는 ${c.positionMeaning}${_tEul(c.positionMeaning)} 보여주는 위치예요. 여기에 나온 ${c.cardNameKo} 카드는 ${c.baseMeaning} ${c.categoryMeaning} 그래서 이 카드는 질문에 대해 지금 가장 먼저 살펴야 할 부분을 조용히 짚어주고 있어요.\n\n`;});
+  md+=`# 4. 카드 조합 해석\n\n${input.cards[0].cardNameKo} 카드에서 시작한 흐름은 ${input.cards[input.cards.length-1].cardNameKo} 카드로 이어지며, 처음의 고민이 마지막에는 더 현실적인 선택 기준으로 정리되는 모습이에요. 중간 카드들은 서두르기보다 감정과 조건을 함께 맞추라고 말해요.\n\n`;
   md+=`# 5. 질문에 대한 최종 답변\n\n답은 가능성이 열려 있지만, 조건을 확인하며 천천히 움직일 때 더 좋아지는 흐름에 가깝습니다. 지금 당장 확정하려 하기보다 상대 반응, 현실 조건, 본인의 마음을 함께 보세요.\n\n`;
   md+=`# 6. 현실적인 조언\n\n먼저 오늘 안에 이 질문에서 가장 중요한 기준 한 가지를 적어보세요. 그다음 감정적으로 바로 행동하기보다 하루 정도 시간을 두고 다시 확인하는 편이 좋아요. 상대나 상황이 있는 문제라면 길게 설명하기보다 짧고 부담 없는 대화부터 시작해보세요.\n\n`;
-  md+=`# 7. 주의할 점\n\n${input.cards.map(c=>c.warning).slice(0,2).join(' ')} 불안해서 답을 재촉하면 흐름이 더 흐려질 수 있어요.\n\n`;
+  md+=`# 7. 주의할 점\n\n${[...new Set(input.cards.map(c=>c.warning))].slice(0,2).join(' ')} 불안해서 답을 재촉하면 흐름이 더 흐려질 수 있어요.\n\n`;
   md+=`# 8. 다음 행동 가이드\n\n오늘은 큰 결정보다 작은 확인이 좋아요. 메시지를 보내야 한다면 짧게, 결정을 해야 한다면 조건표를 먼저 만들어보세요.`;
   return md;
 }
@@ -20474,5 +20540,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
+<script src="assets/astrology.js"></script>
 </body>
 </html>
