@@ -31,6 +31,9 @@ const CATEGORY_PRICE = {
   chatpack3: 1500,
   chatpack5: 2000,
   chatpack7: 3000,
+  tarot3: 1500,
+  tarot5: 2000,
+  tarot10: 3000,
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;

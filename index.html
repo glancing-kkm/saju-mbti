@@ -2599,7 +2599,7 @@ let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
 const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7,qna:8};
-const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답'};
+const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -3886,10 +3886,19 @@ function renderTarotPayment(root){
       <div class="tarot-small" style="position:relative;padding:12px;background:rgba(255,255,255,.04);border-radius:10px;line-height:1.65"><b style="color:var(--accent-bright)">질문</b><br>${tarotEsc(_tarotFlow.question)}</div>
       <div class="tarot-price" style="text-align:right;margin:14px 0 0">${price}원</div>
     </div>
-    <button class="ts-cta" onclick="mockTarotPayment()"><span class="material-symbols-outlined">lock</span> ${price}원 결제하고 카드 뽑기</button>
+    <button class="ts-cta" onclick="startTarotPayment()"><span class="material-symbols-outlined">lock</span> ${price}원 결제하고 카드 뽑기</button>
     <div class="tarot-actions" style="margin-top:10px"><button class="tarot-btn secondary" style="flex:1" onclick="tarotNavigate('recommend')">스프레드 다시 선택</button></div>`);
 }
-function mockTarotPayment(){_tarotFlow.paymentStatus='paid';saveTarotFlow();tarotNavigate('draw');}
+function startTarotPayment(){
+  if(!_tarotFlow||!_tarotFlow.selectedSpreadId)return;
+  saveTarotFlow(); // 결제 리다이렉트 왕복 동안 플로우 보존
+  const cat=_tarotFlow.selectedSpreadId;
+  if(typeof openPaymentConsent==='function' && typeof PAID_META!=='undefined' && PAID_META[cat]){
+    openPaymentConsent(cat,'KAKAOPAY');
+  }else{
+    alert('결제 준비 중이에요. 잠시 후 다시 시도해 주세요.');
+  }
+}
 // 스프레드별 슬롯 배치 (col,row[,회전]) — 화면 상단 카드 배열
 function tarotDrawLayout(id){
   if(id==='tarot3')return {sw:56,sh:84,cw:66,ch:94,cells:[[0,0],[1,0],[2,0]]};
@@ -8827,7 +8836,11 @@ const PAID_META={
   // 추가 질문 패키지 — 결제 시 잠금 해제가 아닌 현재 사주·카테고리의 채팅 횟수 추가
   chatpack3:{icon:'',title:'추가 질문 3회 패키지',desc:'현재 풀이에 대한 역술가 질문 3회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'1,500원'},
   chatpack5:{icon:'',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,000원'},
-  chatpack7:{icon:'',title:'추가 질문 7회 패키지',desc:'현재 풀이에 대한 역술가 질문 7회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'3,000원'}
+  chatpack7:{icon:'',title:'추가 질문 7회 패키지',desc:'현재 풀이에 대한 역술가 질문 7회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'3,000원'},
+  // 타로점 — 질문형 타로 스프레드 (결제 후 카드 뽑기 화면으로 이동)
+  tarot3:{icon:'',title:'타로점 3장 리딩',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,500원'},
+  tarot5:{icon:'',title:'타로점 5장 리딩',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'2,000원'},
+  tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'3,000원'}
 };
 function getDecisionGuide(category){
   const m={
@@ -8844,7 +8857,9 @@ function getDecisionGuide(category){
 // 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
 const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1500,life:1500,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
-  chatpack3:1500,chatpack5:2000,chatpack7:3000};
+  chatpack3:1500,chatpack5:2000,chatpack7:3000,
+  // 타로점 — 질문형 타로 스프레드
+  tarot3:1500,tarot5:2000,tarot10:3000};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
 // 보상 프로모션 코드 — 공유/후기 작성 시 다음 결제 할인
@@ -9610,6 +9625,18 @@ async function _handlePaymentReturn(){
       try{ consumeCoupon(pending.couponCode, pending.partnerOrderId); }catch(e){}
     }
     const orderId=pending.partnerOrderId;
+    // 타로점 결제 완료 → 카드 뽑기 화면으로 복귀 (사주 잠금 해제 흐름과 분리)
+    if(targetCat && /^tarot(3|5|10)$/.test(targetCat)){
+      try{
+        if(typeof loadTarotFlow==='function')_tarotFlow=loadTarotFlow();
+        if(_tarotFlow){_tarotFlow.paymentStatus='paid';if(typeof saveTarotFlow==='function')saveTarotFlow();}
+      }catch(e){}
+      try{if(typeof closePaymentConsent==='function')closePaymentConsent();}catch(e){}
+      _tarotRoute='draw';
+      showView('tarot');
+      if(typeof renderTarot==='function')renderTarot();
+      return;
+    }
     // 채팅 추가 패키지 — 잠금 해제 아닌 현재 사주·카테고리 채팅 보너스 충전
     if(pack){
       _category=targetCat;
