@@ -393,6 +393,34 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-markdown h2{font-size:.98rem;color:var(--text);margin:15px 0 6px}
 .astro-markdown p{margin:0 0 10px}
 .astro-warn{border:1px solid rgba(245,215,124,.28);background:rgba(245,215,124,.08);border-radius:12px;padding:11px 12px;color:var(--sub);font-size:.8rem;line-height:1.7}
+.astro-overview{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.astro-overview .wide{grid-column:1/-1}
+.astro-feature-list{display:grid;gap:7px;margin-top:10px}
+.astro-feature-list div{font-size:.82rem;line-height:1.65;color:var(--sub);background:rgba(255,255,255,.045);border-radius:10px;padding:9px 10px}
+.astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:rgba(255,255,255,.035);padding:8px}
+.astro-wheel-toggle{display:none}
+.astro-wheel{width:100%;max-width:420px;display:block;margin:0 auto}
+.astro-wheel text{font-family:'Hanken Grotesk','Noto Sans KR',sans-serif}
+.astro-table-wrap{overflow-x:auto;margin-top:10px;border-radius:12px;background:rgba(255,255,255,.035)}
+.astro-table{width:100%;border-collapse:collapse;min-width:620px;font-size:.78rem;color:var(--sub)}
+.astro-table th,.astro-table td{padding:10px 9px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;white-space:nowrap}
+.astro-table th{color:var(--accent-bright);font-weight:900;background:rgba(255,255,255,.035)}
+.astro-bars{display:grid;gap:9px;margin-top:10px}
+.astro-bar-row{display:grid;grid-template-columns:72px 1fr 30px;gap:8px;align-items:center;font-size:.8rem;color:var(--sub)}
+.astro-bar{height:9px;border-radius:50px;background:rgba(255,255,255,.08);overflow:hidden}
+.astro-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4a90e2,var(--accent-bright))}
+.astro-two-col{display:grid;grid-template-columns:1fr;gap:10px}
+.astro-details{background:var(--card);border-radius:var(--radius);box-shadow:var(--card-shadow);overflow:hidden}
+.astro-details summary{cursor:pointer;padding:15px 16px;font-family:'Do Hyeon','Noto Serif KR',serif;color:var(--text);font-size:1rem}
+.astro-details[open] summary{border-bottom:1px solid rgba(255,255,255,.07)}
+@media (max-width:420px){
+  .astro-overview{grid-template-columns:1fr}
+  .astro-wheel-toggle{display:block;margin-top:10px}
+  .astro-wheel-collapsed .astro-wheel-wrap{display:none}
+}
+@media (min-width:720px){
+  .astro-two-col{grid-template-columns:1fr 1fr}
+}
 
 /* ══ 타로점 — 질문 입력 (code2/screen2) ══ */
 .tq-head{text-align:center;margin:14px 0 22px}
@@ -1798,6 +1826,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">planet</span>
           <div class="mc-title">오늘의 점성술</div>
           <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
+          <div class="mc-tag t-free">무료</div>
+        </button>
+        <button class="menu-card" onclick="goToAstrology('natal')" aria-label="출생차트 — 무료" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">donut_large</span>
+          <div class="mc-title">출생차트</div>
+          <div class="mc-desc">태어난 순간의 행성 배치를 계산해 나의 별자리 차트를 확인<br>사주의 만세력처럼, 점성술의 기본이 되는 무료 계산표</div>
           <div class="mc-tag t-free">무료</div>
         </button>
         <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 리딩 — 5,900원부터" role="listitem">
