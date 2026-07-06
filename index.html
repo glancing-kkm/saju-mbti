@@ -297,7 +297,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-card-inner{position:relative;display:block;width:100%;height:100%;transition:transform .62s;transform-style:preserve-3d}
 .tarot-card-btn.flipped .tarot-card-inner{transform:rotateY(180deg)}
 .tarot-card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.26);overflow:hidden}
-.tarot-card-back{background:#101214 url("타로카드/thumbnail.png") center/cover no-repeat;color:var(--accent-bright)}
+.tarot-card-back{background:#101214 url("assets/tarot/back.jpg") center/cover no-repeat;color:var(--accent-bright)}
 .tarot-card-back::before{content:''}
 .tarot-card-front{transform:rotateY(180deg);background:#101214;color:var(--text);padding:0}
 .tarot-card-img{width:100%;height:100%;object-fit:cover;display:block}
@@ -305,6 +305,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-card-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;line-height:1.35;color:#ffe6a8;text-shadow:0 1px 2px rgba(0,0,0,.7)}
 .tarot-card-num{font-size:.62rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .tarot-card-front .tarot-card-sym{font-size:1.5rem;line-height:1}
+.tarot-face-img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
 /* 오늘의 타로 — 선택 시 뒤집기 + 중앙 확대 → 축소 애니메이션 */
 .tarot-grid9.picking .tarot-card-btn:not(.zooming){opacity:.24;filter:blur(1.5px);pointer-events:none;transition:opacity .45s,filter .45s}
 .tarot-grid9.picked .tarot-card-btn:not(.flipped){opacity:.4;pointer-events:none}
@@ -427,7 +428,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .td-fan-wrap{position:relative;margin:0 -14px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .td-fan{display:flex;align-items:flex-end;overflow-x:auto;scroll-snap-type:x proximity;gap:0;padding:76px 42vw 8px;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none}
 .td-fan::-webkit-scrollbar{display:none}
-.td-fan-card{flex:0 0 auto;width:58px;height:92px;margin:0 -12px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:#101214 url("타로카드/thumbnail.png") center/cover no-repeat;scroll-snap-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;transform-origin:bottom center}
+.td-fan-card{flex:0 0 auto;width:58px;height:92px;margin:0 -12px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:#101214 url("assets/tarot/back.jpg") center/cover no-repeat;scroll-snap-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;transform-origin:bottom center}
 .td-fan-card.focused{transform:scale(1.75);box-shadow:0 0 0 1px rgba(245,215,124,.7),0 18px 40px rgba(0,0,0,.5),0 0 26px rgba(212,175,55,.5);z-index:5}
 .td-fan-card.used{opacity:.18;pointer-events:none}
 .td-draw-hint{text-align:center;font-size:.72rem;color:rgba(216,196,168,.5);margin-top:6px}
@@ -3638,7 +3639,8 @@ function buildTarotCards(){
       cards.push(tarotCard(`${suit}-${key}`,nameKo,nameEn,[theme,kw,element],meaning,'minor'));
     });
   });
-  cards.forEach((card,i)=>{card.imageUrl=`타로카드/scene_${String(i+1).padStart(3,'0')}.png`;});
+  // 실제 카드 이미지 — scene 순서 = 카드 순서 (메이저22 → 완드·컵·소드·펜타클), 웹용 최적화본
+  cards.forEach((card,i)=>{card.imageUrl=`assets/tarot/card-${String(i+1).padStart(2,'0')}.jpg`;});
   return cards;
 }
 function tarotCard(id,nameKo,nameEn,keywords,meaning,arcana){
@@ -3725,13 +3727,13 @@ function getTodaySeed(){const d=new Date().toISOString().slice(0,10);return `${d
 function getDailyCards(seed,allCards,count){return seededShuffle(allCards,seed).slice(0,count);}
 function dailyCacheKey(){return `${TAROT_DAILY_KEY_PREFIX}:${getTarotUserId()}:${new Date().toISOString().slice(0,10)}`;}
 function tarotGlyph(card){
-  if(!card)return '✦';
+  if(!card||!card.id)return '✦';
   if(card.arcana==='major')return '✶';
   return {wands:'♣',cups:'♥',swords:'♠',pentacles:'♦'}[card.id.split('-')[0]]||'✦';
 }
-function tarotCardImageHTML(card,cls='tarot-card-img'){
+function tarotCardImageHTML(card,cls='tarot-face-img'){
   if(!card||!card.imageUrl)return `<span class="tarot-card-sym">${tarotGlyph(card)}</span>`;
-  return `<img class="${cls}" src="${tarotEsc(card.imageUrl)}" alt="${tarotEsc(card.nameKo)} 카드 이미지" loading="lazy" decoding="async">`;
+  return `<img class="${cls||'tarot-face-img'}" src="${tarotEsc(card.imageUrl)}" alt="${tarotEsc(card.nameKo)} 카드 이미지" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tarot-card-sym',textContent:'✦'}))">`;
 }
 function renderTodayTarot(root){
   tarotSetHeader('오늘의 타로','9장 중 한 장을 골라보세요');

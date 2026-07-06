@@ -1,1 +1,5 @@
 worker/.wrangler/
+.DS_Store
+**/.DS_Store
+# 타로 카드 원본 이미지(99MB) — 웹용 최적화본은 assets/tarot/ 에 커밋
+타로카드/
