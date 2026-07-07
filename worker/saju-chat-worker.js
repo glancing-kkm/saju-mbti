@@ -529,8 +529,8 @@ async function handleAstrologyReading(request, env) {
   const lang = normalizeLanguage(language);
   const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
   const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, language: lang });
-  const premium = productType === 'full-report' || productType === 'yearly';
-  const maxOutputTokens = productType === 'full-report' ? 7200 : premium ? 5200 : 3800;
+  const premium = productType === 'full-report';
+  const maxOutputTokens = productType === 'full-report' ? 5200 : 2800;
 
   try {
     if (env.OPENAI_API_KEY) {
@@ -612,18 +612,26 @@ function buildAstrologyReadingSystemPrompt(language = 'ko') {
 
 function buildAstrologyReadingUserPrompt({ chart, transit, productType, language }) {
   const productMap = {
-    'birth-basic': '출생차트 기본 분석',
+    'birth-basic': '출생차트 성향 분석',
     'love-marriage': '연애/결혼운',
     'career-money': '직업/재물운',
     yearly: '올해 운세',
     'full-report': '종합 점성술 리포트',
   };
   const lengthGuide = productType === 'full-report'
-    ? '3,500~5,500자'
-    : productType === 'yearly'
-      ? '2,800~4,200자'
-      : '2,000~3,200자';
+    ? '3,000~4,000자 이내'
+    : '1,500~2,000자 이내';
   const hasBirthTime = !(chart.birthInfo && chart.birthInfo.birthTimeUnknown);
+  const focusGuide = {
+    'birth-basic': '성격, 기질, 감정 패턴, 관계를 맺는 기본 방식처럼 본인의 기본 구조에 집중한다. 연애/결혼운과 직업/재물운은 깊은 예측이 아니라 성향이 해당 영역에 드러나는 방식만 짧게 언급한다.',
+    'love-marriage': '연애, 결혼, 호감 표현, 애착 패턴, 대화 방식, 관계에서 조심할 점에 집중한다. 직업/재물 내용은 관계 해석에 필요한 경우만 짧게 언급한다.',
+    'career-money': '직업 방향, 일하는 방식, 돈을 다루는 태도, 현실적인 성장 전략에 집중한다. 연애/결혼 내용은 제외하거나 매우 짧게만 언급한다.',
+    yearly: '올해의 트랜짓 흐름, 기회와 부담, 움직이기 좋은 방향, 주의할 시기에 집중한다.',
+    'full-report': '출생차트와 현재 운을 종합하되, 각 영역을 균형 있게 다룬다.',
+  };
+  const sectionGuide = productType === 'birth-basic'
+    ? '# 1. 출생차트 핵심 요약\n# 2. 성격과 기질\n# 3. 감정 패턴\n# 4. 관계를 맺는 기본 방식\n# 5. 일과 돈을 대하는 기본 태도\n# 6. 인간관계\n# 7. 현재 운의 흐름\n# 8. 앞으로 주의할 점\n# 9. 현실적인 조언\n# 10. 종합 결론'
+    : '# 1. 출생차트 핵심 요약\n# 2. 성격과 기질\n# 3. 감정 패턴\n# 4. 연애/결혼운\n# 5. 직업/재물운\n# 6. 인간관계\n# 7. 현재 운의 흐름\n# 8. 앞으로 주의할 점\n# 9. 현실적인 조언\n# 10. 종합 결론';
 
   return `상품 유형:
 ${productMap[productType] || productType || '점성술 리딩'}
@@ -637,21 +645,16 @@ ${JSON.stringify(chart, null, 2)}
 계산된 현재 Transit 데이터:
 ${JSON.stringify(transit || {}, null, 2)}
 
+상품별 초점:
+${focusGuide[productType] || focusGuide['birth-basic']}
+
 아래 구조로 점성술 리딩을 작성해줘.
 
-# 1. 출생차트 핵심 요약
-# 2. 성격과 기질
-# 3. 감정 패턴
-# 4. 연애/결혼운
-# 5. 직업/재물운
-# 6. 인간관계
-# 7. 현재 운의 흐름
-# 8. 앞으로 주의할 점
-# 9. 현실적인 조언
-# 10. 종합 결론
+${sectionGuide}
 
 작성 조건:
 - 전체 분량은 ${lengthGuide}
+- 지정된 분량을 넘지 말고, 마지막 문장이 중간에 잘리지 않도록 마무리할 것
 - AI가 행성 위치, 별자리, 하우스, 상승궁, 애스펙트를 새로 계산하거나 추측하지 말 것
 - 제공된 chart.planets, chart.aspects, transit.planets 데이터만 근거로 사용할 것
 - 출생시간 사용 가능 여부: ${hasBirthTime ? '출생시간 있음. 제공된 ASC/MC/하우스 데이터만 사용 가능.' : '출생시간 없음. ASC, MC, 하우스 해석 금지.'}

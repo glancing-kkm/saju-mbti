@@ -1933,12 +1933,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
-        <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 — 5,900원부터" role="listitem">
+        <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 — 1,500원부터" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">orbit</span>
           <div class="mc-title">점성술</div>
           <div class="mc-desc">출생차트와 트랜짓을 계산해 보는 서양 점성술 리포트</div>
           <div class="mc-tag t-signature">신규</div>
-          <div class="mc-price">5,900원부터</div>
+          <div class="mc-price">1,500원부터</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 1,000원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
@@ -1955,6 +1955,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-price">1,500원</div>
         </button>
       </div>
+      <section id="sajuPaidHistoryHome" style="margin-top:18px"></section>
     </div>
 
     <!-- ───── 이용자 후기 (정적 placeholder — 운영자가 실제 베타 테스터 후기로 교체) ───── -->
@@ -2629,6 +2630,8 @@ function _renderReviews(){
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',_renderReviews);}
 else{_renderReviews();}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>{try{renderSajuPaidHistoryHome();}catch(e){}});}
+else{try{renderSajuPaidHistoryHome();}catch(e){}}
 
 // 페이지 로드/복귀 시 항상 맨 위부터 보이도록 — 브라우저 스크롤 복원 끄기
 if('scrollRestoration' in history){history.scrollRestoration='manual';}
@@ -2773,7 +2776,43 @@ let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
 const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7,qna:8};
-const CAT_LABEL={manse:'만세력',daily:'오늘의 운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장'};
+const CAT_LABEL={manse:'만세력',daily:'오늘의 운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장',
+  'astro-birth-basic':'출생차트 성향 분석','astro-love-marriage':'연애/결혼운','astro-career-money':'직업/재물운','astro-yearly':'올해 운세','astro-full-report':'종합 점성술 리포트'};
+const SAJU_PAID_HISTORY_KEY='saju_paid_history_v1';
+function loadSajuPaidHistory(){
+  let list=[];
+  try{list=JSON.parse(localStorage.getItem(SAJU_PAID_HISTORY_KEY)||'[]');}catch(e){list=[];}
+  if(!Array.isArray(list))list=[];
+  const now=Date.now();
+  const valid=list.filter(r=>r&&r.category&&r.saju&&r.meta&&Number(r.expiresAt)>now);
+  if(valid.length!==list.length){try{localStorage.setItem(SAJU_PAID_HISTORY_KEY,JSON.stringify(valid));}catch(e){}}
+  return valid;
+}
+function saveSajuPaidHistory(category,orderId){
+  if(!['life','newyear'].includes(category)||!_saju||!_meta)return;
+  const now=Date.now();
+  const sid=sajuIdOf(_saju,_meta);
+  const reading={id:`saju_${category}_${now}`,category,label:CAT_LABEL[category]||category,saju:_saju,meta:_meta,sajuId:sid,orderId:orderId||'',createdAt:new Date(now).toISOString(),paidAt:now,expiresAt:now+_PAID_TOKEN_TTL_MS};
+  const list=loadSajuPaidHistory().filter(r=>!(r.category===category&&r.sajuId===sid));
+  list.unshift(reading);
+  try{localStorage.setItem(SAJU_PAID_HISTORY_KEY,JSON.stringify(list.slice(0,20)));}catch(e){}
+}
+function renderSajuPaidHistoryHome(){
+  const root=document.getElementById('sajuPaidHistoryHome');
+  if(!root)return;
+  const list=loadSajuPaidHistory();
+  if(!list.length){root.innerHTML='';return;}
+  root.innerHTML=`<div class="menu-head" style="margin-top:2px"><div class="menu-head-title">최근 유료 운세</div><div class="menu-head-sub">결제 후 24시간 동안 다시 볼 수 있어요</div></div><div class="menu-grid" role="list">${list.map(r=>`<button class="menu-card locked" onclick="openSajuPaidHistory('${r.id}')" role="listitem"><span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">${r.category==='newyear'?'calendar_month':'timeline'}</span><div class="mc-title">${CAT_LABEL[r.category]||r.label}</div><div class="mc-desc">${new Date(r.createdAt).toLocaleString('ko-KR')} 결제<br>만료 ${new Date(r.expiresAt).toLocaleString('ko-KR')}</div><div class="mc-tag t-paid">24시간</div><div class="mc-price">다시 보기</div></button>`).join('')}</div>`;
+}
+function openSajuPaidHistory(id){
+  const r=loadSajuPaidHistory().find(x=>x.id===id);
+  if(!r){alert('24시간이 지나 만료된 운세예요.');renderSajuPaidHistoryHome();return;}
+  _saju=r.saju;_meta=r.meta;_category=r.category;_lastFlow='saju';
+  _unlockedCats.add(r.category);
+  try{restorePaidUnlocksForCurrentSaju();}catch(e){}
+  const rendered=renderPaymentReturnTarget(r.category);
+  if(!rendered){alert('저장된 정보를 불러오지 못했어요. 다시 입력해 주세요.');goToInput(r.category);}
+}
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -3559,6 +3598,7 @@ function goHome(){
     if(el){el.innerHTML='';el.dataset.rendered='';}
   });
   showView('home');
+  try{renderSajuPaidHistoryHome();}catch(e){}
 }
 function goToInput(cat){
   _category=cat||'manse';
@@ -3763,6 +3803,7 @@ function goBack(){goHome();}
 const TAROT_FLOW_KEY='tarot_flow_v1';
 const TAROT_HISTORY_KEY='tarot_history_v1';
 const TAROT_DAILY_KEY_PREFIX='tarot_daily_v1';
+const TAROT_HISTORY_TTL_MS=24*60*60*1000;
 const TAROT_PRODUCTS=[
   {id:'tarot3',name:'3장 간단 요약',price:1500,shortDesc:'현재의 흐름과 조언',description:'현재 상황과 가까운 흐름을 빠르게 확인합니다.',count:3},
   {id:'tarot5',name:'5장 심층 분석',price:2000,shortDesc:'과거·현재·미래와 깊은 통찰',description:'현재, 장애물, 숨겨진 흐름, 조언, 결과를 함께 봅니다.',count:5},
@@ -4220,23 +4261,25 @@ function markdownToTarotHTML(md){
   html='<p>'+html+'</p>';return html.replace(/<p><h/g,'<h').replace(/<\/h1><\/p>/g,'</h1>').replace(/<\/h2><\/p>/g,'</h2>').replace(/<p><\/p>/g,'');
 }
 function renderTarotHistory(root){
-  tarotSetHeader('타로 히스토리','저장된 리딩 다시 보기');
+  tarotSetHeader('타로 히스토리','24시간 보관');
   const list=loadTarotHistory();
-  root.innerHTML=tarotHtml(`<section class="tarot-hero"><div class="tarot-kicker">History</div><div class="tarot-title">타로 히스토리</div><div class="tarot-desc">유료 리딩 결과를 다시 볼 수 있어요.</div></section>
+  root.innerHTML=tarotHtml(`<section class="tarot-hero"><div class="tarot-kicker">History</div><div class="tarot-title">타로 히스토리</div><div class="tarot-desc">결제 시점부터 24시간 동안 유료 리딩 결과를 다시 볼 수 있어요.</div></section>
   <div class="tarot-history-list">${list.length?list.map(r=>`<section class="tarot-history-item">
     <div class="tarot-section-title">${tarotEsc(r.question)}</div>
     <div class="tarot-small">${tarotEsc(r.spreadName)} · ${new Date(r.createdAt).toLocaleString('ko-KR')}</div>
+    <div class="tarot-small">만료: ${new Date(r.expiresAt||Date.parse(r.createdAt)+TAROT_HISTORY_TTL_MS).toLocaleString('ko-KR')}</div>
     <div class="tarot-small">${r.selectedCards.map(c=>`${tarotEsc(c.positionLabel)}:${tarotEsc(c.cardNameKo)}`).join(' · ')}</div>
     <div class="tarot-actions"><button class="tarot-btn" onclick="openTarotHistory('${r.id}')">다시 보기</button></div>
-  </section>`).join(''):'<div class="tarot-empty">아직 저장된 타로 리딩이 없어요.</div>'}</div>`);
+  </section>`).join(''):'<div class="tarot-empty">24시간 안에 저장된 타로 리딩이 없어요.</div>'}</div>`);
 }
-function openTarotHistory(id){const r=loadTarotHistory().find(x=>x.id===id);if(!r)return;_tarotFlow={...r,selectedSpreadId:r.spreadId,paymentStatus:'paid',positions:getSpreadPositions(r.spreadId,'general'),selectedCards:r.selectedCards.map((c,i)=>({positionIndex:i,cardId:c.cardId,orientation:c.orientation})),resultMarkdown:r.resultMarkdown};saveTarotFlow();tarotNavigate('result');}
-function loadTarotFlow(){try{return JSON.parse(sessionStorage.getItem(TAROT_FLOW_KEY)||localStorage.getItem(TAROT_FLOW_KEY)||'null')||{};}catch(e){return {};}}
+function openTarotHistory(id){const r=loadTarotHistory().find(x=>x.id===id);if(!r){alert('24시간이 지나 만료된 리딩이에요.');renderTarot();return;}_tarotFlow={...r,selectedSpreadId:r.spreadId,paymentStatus:'paid',positions:getSpreadPositions(r.spreadId,'general'),selectedCards:r.selectedCards.map((c,i)=>({positionIndex:i,cardId:c.cardId,orientation:c.orientation})),resultMarkdown:r.resultMarkdown};saveTarotFlow();tarotNavigate('result');}
+function loadTarotFlow(){try{const flow=JSON.parse(sessionStorage.getItem(TAROT_FLOW_KEY)||localStorage.getItem(TAROT_FLOW_KEY)||'null')||{};if(flow&&flow.paymentStatus==='paid'&&Number(flow.expiresAt)&&Number(flow.expiresAt)<=Date.now()){flow.paymentStatus='none';flow.resultMarkdown='';flow.resultLoading=false;try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));}catch(e){}}return flow;}catch(e){return {};}}
 function saveTarotFlow(){try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));}catch(e){}}
-function loadTarotHistory(){try{return JSON.parse(localStorage.getItem(TAROT_HISTORY_KEY)||'[]');}catch(e){return [];}}
+function loadTarotHistory(){let list=[];try{list=JSON.parse(localStorage.getItem(TAROT_HISTORY_KEY)||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];const now=Date.now();const valid=list.filter(r=>{const exp=Number(r.expiresAt)||((r.paidAt?Number(r.paidAt):Date.parse(r.createdAt||0))+TAROT_HISTORY_TTL_MS);return exp>now;});if(valid.length!==list.length){try{localStorage.setItem(TAROT_HISTORY_KEY,JSON.stringify(valid));}catch(e){}}return valid;}
 function saveTarotReadingFromFlow(flow){
   const input=buildAIReadingInput(flow);
-  const reading={id:'tarot_'+Date.now(),userId:getTarotUserId(),question:flow.question,spreadId:flow.selectedSpreadId,spreadName:flow.spreadName,price:flow.price,selectedCards:input.cards.map(c=>({cardId:flow.selectedCards.find(s=>s.positionIndex===c.positionIndex).cardId,cardNameKo:c.cardNameKo,positionLabel:c.positionLabel,orientation:c.orientation})),resultMarkdown:flow.resultMarkdown,createdAt:new Date().toISOString()};
+  const paidAt=Number(flow.paidAt)||Date.now();
+  const reading={id:'tarot_'+Date.now(),userId:getTarotUserId(),question:flow.question,spreadId:flow.selectedSpreadId,spreadName:flow.spreadName,price:flow.price,selectedCards:input.cards.map(c=>({cardId:flow.selectedCards.find(s=>s.positionIndex===c.positionIndex).cardId,cardNameKo:c.cardNameKo,positionLabel:c.positionLabel,orientation:c.orientation})),resultMarkdown:flow.resultMarkdown,paidAt,expiresAt:Number(flow.expiresAt)||paidAt+TAROT_HISTORY_TTL_MS,createdAt:new Date().toISOString()};
   const list=loadTarotHistory().filter(x=>x.question!==reading.question||x.spreadName!==reading.spreadName);
   localStorage.setItem(TAROT_HISTORY_KEY,JSON.stringify([reading,...list].slice(0,30)));
 }
@@ -9019,7 +9062,13 @@ const PAID_META={
   // 타로점 — 질문형 타로 스프레드 (결제 후 카드 뽑기 화면으로 이동)
   tarot3:{icon:'',title:'타로점 3장 리딩',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,500원'},
   tarot5:{icon:'',title:'타로점 5장 리딩',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'2,000원'},
-  tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'3,000원'}
+  tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'3,000원'},
+  // 점성술 — 출생차트 계산 후 AI 리딩
+  'astro-birth-basic':{icon:'',title:'출생차트 성향 분석',desc:'출생차트의 태양·달·상승궁·개인행성을 중심으로 본인의 기본 성향을 풀이해요.',features:['· 계산된 출생차트 기반','· 성격·기질·감정 패턴 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
+  'astro-love-marriage':{icon:'',title:'연애/결혼운',desc:'금성·화성·달·7하우스 흐름을 바탕으로 관계 패턴과 조언을 풀이해요.',features:['· 계산된 출생차트 기반','· 연애·결혼 관계 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
+  'astro-career-money':{icon:'',title:'직업/재물운',desc:'태양·수성·목성·토성·2/10하우스를 바탕으로 현실 흐름을 풀이해요.',features:['· 계산된 출생차트 기반','· 직업·재물 선택 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
+  'astro-yearly':{icon:'',title:'올해 운세',desc:'현재 트랜짓과 출생차트의 주요 각도를 바탕으로 올해 흐름을 풀이해요.',features:['· 출생차트 + 현재 트랜짓','· 올해 흐름 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
+  'astro-full-report':{icon:'',title:'종합 점성술 리포트',desc:'출생차트와 현재 운을 종합해 더 긴 리포트로 풀이해요.',features:['· 출생차트 + 트랜짓 종합','· 4,000자 이내 상세 리포트','· 결제 후 24시간 재조회 가능'],price:'2,500원'}
 };
 function getDecisionGuide(category){
   const m={
@@ -9038,7 +9087,9 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack3:1500,chatpack5:2000,chatpack7:3000,
   // 타로점 — 질문형 타로 스프레드
-  tarot3:1500,tarot5:2000,tarot10:3000};
+  tarot3:1500,tarot5:2000,tarot10:3000,
+  // 점성술 — 유료 리딩
+  'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
 // 보상 프로모션 코드 — 공유/후기 작성 시 다음 결제 할인
@@ -9808,12 +9859,23 @@ async function _handlePaymentReturn(){
     if(targetCat && /^tarot(3|5|10)$/.test(targetCat)){
       try{
         if(typeof loadTarotFlow==='function')_tarotFlow=loadTarotFlow();
-        if(_tarotFlow){_tarotFlow.paymentStatus='paid';if(typeof saveTarotFlow==='function')saveTarotFlow();}
+        if(_tarotFlow){const now=Date.now();_tarotFlow.paymentStatus='paid';_tarotFlow.paidAt=now;_tarotFlow.expiresAt=now+24*60*60*1000;if(typeof saveTarotFlow==='function')saveTarotFlow();}
       }catch(e){}
       try{if(typeof closePaymentConsent==='function')closePaymentConsent();}catch(e){}
       _tarotRoute='draw';
       showView('tarot');
       if(typeof renderTarot==='function')renderTarot();
+      return;
+    }
+    // 점성술 결제 완료 → 리딩 생성 화면으로 복귀
+    if(targetCat && /^astro-/.test(targetCat)){
+      try{if(typeof closePaymentConsent==='function')closePaymentConsent();}catch(e){}
+      if(typeof resumePaidAstrologyAfterPayment==='function'){
+        resumePaidAstrologyAfterPayment(targetCat);
+      }else{
+        try{localStorage.setItem('astrology_paid_return_pending_v1',JSON.stringify({category:targetCat,paidAt:Date.now()}));}catch(e){}
+        showView('astrology');
+      }
       return;
     }
     // 채팅 추가 패키지 — 잠금 해제 아닌 현재 사주·카테고리 채팅 보너스 충전
@@ -9835,6 +9897,7 @@ async function _handlePaymentReturn(){
     }
     // 일반 카테고리 — 잠금 해제 + 풀이 노출
     setUnlockedFor(targetCat);
+    try{saveSajuPaidHistory(targetCat,orderId);}catch(e){}
     const rendered=renderPaymentReturnTarget(targetCat);
     openPayDoneModal({orderId, cat:targetCat, isChatpack:false, rendered});
     if(!rendered){ try{ goToInput(targetCat); }catch(e){} }
