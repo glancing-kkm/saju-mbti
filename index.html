@@ -1803,10 +1803,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">진태양시 보정으로 사주 원국을 정확하게 계산</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card" onclick="goToInput('daily')" aria-label="일일운세 — 오늘의 일진 풀이 (무료)" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">today</span>
-          <div class="mc-title">일일운세</div>
-          <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
+        <button class="menu-card" onclick="goToAstrology('natal')" aria-label="출생차트 — 무료" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">donut_large</span>
+          <div class="mc-title">출생차트</div>
+          <div class="mc-desc">태어난 순간의 행성 배치를 계산해 나의 별자리 차트를 확인<br>사주의 만세력처럼, 점성술의 기본이 되는 무료 계산표</div>
           <div class="mc-tag t-free">무료</div>
         </button>
         <button class="menu-card" onclick="goToTarot('today')" aria-label="오늘의 타로 — 무료" role="listitem">
@@ -1815,12 +1815,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">9장의 카드 중 한 장을 골라 오늘의 메시지를 확인</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card locked" onclick="goToTarot('question')" aria-label="타로점 — 질문형 리딩 1,500원부터" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">auto_awesome</span>
-          <div class="mc-title">타로점</div>
-          <div class="mc-desc">궁금한 질문을 입력하고 직접 카드를 뽑는 정통 리딩</div>
-          <div class="mc-tag t-signature">신규</div>
-          <div class="mc-price">1,500원부터</div>
+        <button class="menu-card" onclick="goToInput('daily')" aria-label="오늘의 운세 — 오늘의 일진 풀이 (무료)" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">today</span>
+          <div class="mc-title">오늘의 운세</div>
+          <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
+          <div class="mc-tag t-free">무료</div>
         </button>
         <button class="menu-card" onclick="goToAstrology('today')" aria-label="오늘의 점성술 — 무료" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">planet</span>
@@ -1828,18 +1827,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
           <div class="mc-tag t-free">무료</div>
         </button>
-        <button class="menu-card" onclick="goToAstrology('natal')" aria-label="출생차트 — 무료" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">donut_large</span>
-          <div class="mc-title">출생차트</div>
-          <div class="mc-desc">태어난 순간의 행성 배치를 계산해 나의 별자리 차트를 확인<br>사주의 만세력처럼, 점성술의 기본이 되는 무료 계산표</div>
-          <div class="mc-tag t-free">무료</div>
+        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 질문권 3회 1,500원부터" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
+          <div class="mc-title">즉문즉답</div>
+          <div class="mc-desc">사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이</div>
+          <div class="mc-tag t-paid">질문권</div>
+          <div class="mc-price">3회 1,500원부터</div>
         </button>
-        <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 리딩 — 5,900원부터" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">orbit</span>
-          <div class="mc-title">점성술 리딩</div>
-          <div class="mc-desc">출생차트와 트랜짓을 계산해 보는 서양 점성술 리포트</div>
+        <button class="menu-card locked" onclick="goToTarot('question')" aria-label="타로점 — 질문형 리딩 1,500원부터" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">auto_awesome</span>
+          <div class="mc-title">타로점</div>
+          <div class="mc-desc">궁금한 질문을 입력하고 직접 카드를 뽑는 정통 리딩</div>
           <div class="mc-tag t-signature">신규</div>
-          <div class="mc-price">5,900원부터</div>
+          <div class="mc-price">1,500원부터</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 1,500원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">timeline</span>
@@ -1855,12 +1855,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 질문권 3회 1,500원부터" role="listitem">
-          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
-          <div class="mc-title">즉문즉답</div>
-          <div class="mc-desc">사주 정보를 먼저 입력하고, 궁금한 질문을 바로 묻는 상담형 풀이</div>
-          <div class="mc-tag t-paid">질문권</div>
-          <div class="mc-price">3회 1,500원부터</div>
+        <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 — 5,900원부터" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">orbit</span>
+          <div class="mc-title">점성술</div>
+          <div class="mc-desc">출생차트와 트랜짓을 계산해 보는 서양 점성술 리포트</div>
+          <div class="mc-tag t-signature">신규</div>
+          <div class="mc-price">5,900원부터</div>
         </button>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 1,000원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
@@ -1869,10 +1869,17 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,000원</div>
         </button>
-        <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이·작명 — 1,500원" role="listitem">
+        <button class="menu-card locked" onclick="goToInput('name')" aria-label="이름풀이 — 1,500원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">badge</span>
-          <div class="mc-title">이름풀이·작명</div>
-          <div class="mc-desc">이름의 다섯 기운 분석 + 사주에 어울리는 추천 이름 5개</div>
+          <div class="mc-title">이름풀이</div>
+          <div class="mc-desc">이름의 다섯 기운과 한자 획수 흐름을 분석</div>
+          <div class="mc-tag t-paid">프리미엄</div>
+          <div class="mc-price">1,500원</div>
+        </button>
+        <button class="menu-card locked" onclick="goToInput('name')" aria-label="작명 — 1,500원" role="listitem">
+          <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">edit_note</span>
+          <div class="mc-title">작명</div>
+          <div class="mc-desc">사주에 어울리는 추천 이름 5개를 함께 확인</div>
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
@@ -2340,7 +2347,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 
   <!-- ───── ASTROLOGY ───── -->
-  <div class="view" id="view-astrology" role="region" aria-live="polite" aria-label="점성술 리딩">
+  <div class="view" id="view-astrology" role="region" aria-live="polite" aria-label="점성술">
     <div class="hdr-back">
       <button class="bb" onclick="astrologyBack()" aria-label="이전 화면으로 돌아가기">‹ 뒤로</button>
       <div class="hdr-brand">천지인 점성술</div>
@@ -2695,7 +2702,7 @@ let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
 const CAT_IDX={manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7,qna:8};
-const CAT_LABEL={manse:'만세력',daily:'일일운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장'};
+const CAT_LABEL={manse:'만세력',daily:'오늘의 운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장'};
 
 // ══════════════════════════════════════════════
 //  채팅 설정 — Cloudflare Worker URL을 여기에 등록
@@ -2729,7 +2736,7 @@ const STATIC_I18N={
   '만세력':{en:'Saju Calendar',zh:'万年历',ja:'万年暦'},
   '진태양시 보정으로 사주 원국을 정확하게 계산':{en:'Accurate birth chart calculation with true solar time correction',zh:'通过真太阳时校正，准确计算四柱原局',ja:'真太陽時補正で命式を正確に計算'},
   '무료':{en:'Free',zh:'免费',ja:'無料'},
-  '일일운세':{en:'Daily Fortune',zh:'每日运势',ja:'今日の運勢'},
+  '오늘의 운세':{en:'Today’s Fortune',zh:'今日运势',ja:'今日の運勢'},
   '오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게':{en:'See how today’s energy interacts with your Saju',zh:'每天查看今日气运如何与你的四柱相合',ja:'今日の流れが自分の四柱とどう噛み合うかを毎日確認'},
   '인생총운':{en:'Lifetime Reading',zh:'人生总运',ja:'人生総運'},
   '10년 흐름으로 보는 평생의 중요한 시기':{en:'Key life periods through 10-year cycles',zh:'以十年大势看人生关键时期',ja:'10年ごとの流れで見る人生の重要時期'},
@@ -2793,7 +2800,7 @@ const STATIC_I18N={
   '인생 흐름의 큰 그림을 위해 정보를 입력해주세요':{en:'Enter your information for the big picture of your life flow',zh:'请输入信息以查看人生大势',ja:'人生の大きな流れを見るため情報を入力してください'},
   '질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요':{en:'Top up question credits to ask anything in chat right away.',zh:'充值提问券后即可像聊天一样随时提问',ja:'質問券をチャージすれば、気になることをチャットですぐに質問できます'},
   '만세력 · 정보 입력':{en:'Saju Calendar · Information Input',zh:'万年历 · 信息输入',ja:'万年暦 · 情報入力'},
-  '일일운세 · 정보 입력':{en:'Daily Fortune · Information Input',zh:'每日运势 · 信息输入',ja:'今日の運勢 · 情報入力'},
+  '오늘의 운세 · 정보 입력':{en:'Today’s Fortune · Information Input',zh:'今日运势 · 信息输入',ja:'今日の運勢 · 情報入力'},
   '인생총운 · 정보 입력':{en:'Lifetime Reading · Information Input',zh:'人生总运 · 信息输入',ja:'人生総運 · 情報入力'},
   '신년운세 · 정보 입력':{en:'New Year Fortune · Information Input',zh:'新年运势 · 信息输入',ja:'新年運勢 · 情報入力'},
   '즉문즉답 · 정보 입력':{en:'Ask & Answer · Information Input',zh:'即时问答 · 信息输入',ja:'即問即答 · 情報入力'},
@@ -5500,7 +5507,7 @@ function nextActionsHTML(currentCat){
   // 홈 화면에 실제 노출 중인 카테고리만 추천
   const allCats=[
     {key:'manse',icon:'grid_view',title:'만세력',desc:'태어난 사주 구조 정확 계산',price:'무료'},
-    {key:'daily',icon:'today',title:'오늘의 일일운세',desc:'오늘의 일진과 비교',price:'무료'},
+    {key:'daily',icon:'today',title:'오늘의 운세',desc:'오늘의 일진과 비교',price:'무료'},
     {key:'life',icon:'timeline',title:'인생총운',desc:'10년 흐름 평생 풀이',price:'시그니처'},
     {key:'newyear',icon:'calendar_month',title:'신년운세',desc:'한 해 입체 분석',price:'프리미엄'},
     {key:'qna',icon:'question_answer',title:'즉문즉답',desc:'질문권 충전 상담형 풀이',price:'질문권'},
