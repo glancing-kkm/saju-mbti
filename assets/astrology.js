@@ -110,6 +110,7 @@ function renderNatalChartPage(root){if(_astroFlow&&_astroFlow.chart)return rende
 function renderNatalChartInput(root){renderAstrologyInput(root,false,true);}
 function submitNatalChart(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);_astroFlow={..._astroFlow,birthInfo,chart,transit:calculateTransit(new Date()),natalReady:true,createdAt:new Date().toISOString()};saveAstrologyFlow();astroNavigate('natal');}catch(e){alert(e.message||'출생차트 계산 중 오류가 발생했어요.');}}
 function renderNatalChartResult(root){
+  _wheelSelected=null; // 재렌더 시 휠 선택 상태 초기화
   const chart=_astroFlow&&_astroFlow.chart;
   const err=validateNatalChartForDisplay(chart);
   astroSetHeader('출생차트','무료 네이탈 차트');
@@ -118,6 +119,7 @@ function renderNatalChartResult(root){
   const sun=findPlanet(chart,'sun'), moon=findPlanet(chart,'moon'), venus=findPlanet(chart,'venus'), mars=findPlanet(chart,'mars');
   root.innerHTML=`<section class="astro-hero"><div class="astro-kicker">Natal Chart</div><div class="astro-title">내 출생차트</div><div class="astro-desc">${formatBirthDateTime(b)}<br>${astroEsc(b.country)} ${astroEsc(b.city)}<br>${unknown?'출생시간을 모르는 상태로 계산되었습니다.':'출생시간 기준 계산 완료'}</div></section>
   ${unknown?'<div class="astro-warn">출생시간을 모르는 상태라 ASC, MC, 12하우스 해석은 제외됩니다. 달 위치는 날짜에 따라 일부 오차가 있을 수 있습니다.</div>':''}
+  <section class="astro-panel" id="natalWheelPanel"><div class="astro-section-title">원형 네이탈 차트</div><div class="astro-wheel-wrap">${renderNatalChartWheel(chart)}</div><div class="astro-text" style="margin-top:10px">${unknown?'출생시간이 없어 행성 위치만 실제 도수로 배치했어요.':'왼쪽 ASC를 기준으로 반시계 방향이 별자리 진행 방향이에요. 행성은 계산된 실제 도수 위에 놓여 있어요.'}</div></section>
   <section class="astro-panel"><div class="astro-section-title">한눈에 보는 내 차트</div><div class="astro-overview">
     ${overviewCard('☀ 태양',formatSignName(sun.sign))}
     ${overviewCard('🌙 달',formatSignName(moon.sign))}
@@ -129,12 +131,11 @@ function renderNatalChartResult(root){
     ${overviewCard('강한 성향',modalityLabel(getDominantModality(chart.modalityBalance)))}
     ${unknown?'':overviewCard('강한 하우스',strongHouses.length?strongHouses.map(h=>`${h.house}H`).join(', '):'-')}
   </div><div class="astro-feature-list">${features.map(x=>`<div>✔ ${astroEsc(x)}</div>`).join('')}</div></section>
-  <section class="astro-panel astro-wheel-collapsed" id="natalWheelPanel"><div class="astro-section-title">원형 네이탈 차트</div><div class="astro-text">계산된 행성 위치와 주요 애스펙트를 실제 황도 위치에 배치했어요.</div><button class="astro-btn secondary astro-wheel-toggle" onclick="document.getElementById('natalWheelPanel').classList.toggle('astro-wheel-collapsed')">차트 접기/펼치기</button><div class="astro-wheel-wrap">${renderNatalChartWheel(chart)}</div></section>
   <section class="astro-panel"><div class="astro-section-title">행성 위치표</div>${planetPositionTable(chart)}</section>
   ${unknown?'<section class="astro-panel"><div class="astro-warn">출생시간이 없어 ASC/MC와 하우스 표는 표시하지 않아요.</div></section>':`<div class="astro-two-col">${ascMcCards(chart)}</div><details class="astro-details" open><summary>12하우스 표</summary>${houseTable(chart)}</details>`}
   <details class="astro-details"><summary>주요 애스펙트 전체 보기</summary>${aspectTable(chart)}</details>
-  <div class="astro-two-col"><section class="astro-panel"><div class="astro-section-title">원소 균형</div>${balanceBars(chart.elementBalance,elementLabel)}<div class="astro-text">${elementSummary(chart.elementBalance)}</div></section><section class="astro-panel"><div class="astro-section-title">모달리티 균형</div>${balanceBars(chart.modalityBalance,modalityLabel)}<div class="astro-text">${modalitySummary(chart.modalityBalance)}</div></section></div>
-  <div class="astro-two-col"><section class="astro-panel"><div class="astro-section-title">강한 행성 TOP 3</div><div class="astro-feature-list">${strongPlanets.map((p,i)=>`<div>${i+1}. ${formatPlanetName(p.planet)} <span style="color:var(--muted)">보조 지표 ${p.score}</span></div>`).join('')}</div></section>${unknown?'':`<section class="astro-panel"><div class="astro-section-title">강한 하우스</div><div class="astro-feature-list">${strongHouses.length?strongHouses.map(h=>`<div>${h.house}하우스: ${astroEsc(getHouseMeaning(h.house))}</div>`).join(''):'<div>특정 하우스 쏠림이 강하지 않아요.</div>'}</div></section>`}</div>
+  <div class="astro-two-col"><section class="astro-panel"><div class="astro-section-title">원소 균형 <span class="astro-tap-badge">터치</span></div>${balanceBars(chart.elementBalance,elementLabel,'element')}<div class="astro-text">${elementSummary(chart.elementBalance)}</div></section><section class="astro-panel"><div class="astro-section-title">모달리티 균형</div>${balanceBars(chart.modalityBalance,modalityLabel)}<div class="astro-text">${modalitySummary(chart.modalityBalance)}</div></section></div>
+  <div class="astro-two-col"><section class="astro-panel"><div class="astro-section-title">강한 행성 TOP 3 <span class="astro-tap-badge">터치</span></div><div class="astro-feature-list">${strongPlanets.map((p,i)=>`<button type="button" class="astro-strong-btn" data-wheel-planet="${p.planet}" onclick="wheelSelectPlanet('${p.planet}',event,true)">${i+1}. ${formatPlanetName(p.planet)}<span>보조 지표 ${p.score}</span></button>`).join('')}</div></section>${unknown?'':`<section class="astro-panel"><div class="astro-section-title">강한 하우스</div><div class="astro-feature-list">${strongHouses.length?strongHouses.map(h=>`<div>${h.house}하우스: ${astroEsc(getHouseMeaning(h.house))}</div>`).join(''):'<div>특정 하우스 쏠림이 강하지 않아요.</div>'}</div></section>`}</div>
   ${astrologyReadingCTA()}`;
 }
 function overviewCard(k,v){return `<div class="astro-chip-card"><b>${astroEsc(k)}</b>${astroEsc(v)}</div>`;}
@@ -158,10 +159,167 @@ function weakKey(obj){return Object.entries(obj).sort((a,b)=>a[1]-b[1])[0]?.[0]|
 function elementLabel(k){return ({fire:'🔥 Fire 불',earth:'🌍 Earth 흙',air:'🌬 Air 바람',water:'💧 Water 물'})[k]||'-';}
 function modalityLabel(k){return ({cardinal:'Cardinal 시작형',fixed:'Fixed 고정형',mutable:'Mutable 변화형'})[k]||'-';}
 function generateChartFeatureSummary(chart){const list=[];const de=getDominantElement(chart.elementBalance),we=getWeakElement(chart.elementBalance),dm=getDominantModality(chart.modalityBalance),sp=getStrongPlanets(chart)[0],sh=getStrongHouses(chart)[0];if(de)list.push(`${elementLabel(de)} 원소가 강해 그 원소의 방식이 성격과 선택에 자주 드러나요.`);if(we)list.push(`${elementLabel(we)} 원소가 부족해 이 영역은 의식적으로 보완하면 좋아요.`);if(dm)list.push(`${modalityLabel(dm)} 성향이 강하게 나타나는 편이에요.`);if(sp)list.push(`${formatPlanetName(sp.planet)}이 강조되어 ${getPlanetShortMeaning(sp.planet)}이 중요한 사람으로 보여요.`);if(sh)list.push(`${sh.house}하우스가 강조되어 ${getHouseMeaning(sh.house)} 영역이 삶에서 두드러질 수 있어요.`);if(chart.ascendant)list.push(`ASC가 ${formatSignName(chart.ascendant.sign)}라 첫인상에는 그 별자리의 분위기가 묻어나요.`);return list.slice(0,5);}
-function renderNatalChartWheel(chart){const cx=210,cy=210,r=180,inner=112,planetR=138,aspectR=100;const signs=ZODIAC_SIGNS.map((s,i)=>lineAt(i*30,r,inner,cx,cy)+`<text x="${pointAt(i*30+15,194,cx,cy).x}" y="${pointAt(i*30+15,194,cx,cy).y}" text-anchor="middle" dominant-baseline="middle" fill="#d8c4a8" font-size="10">${s.nameKo.slice(0,2)}</text>`).join('');const houseLines=(chart.houses||[]).map(h=>lineAt(signIndex(h.sign)*30,r,92,cx,cy,'rgba(245,215,124,.34)')).join('');const aspects=(chart.aspects||[]).slice(0,10).map(a=>{const pa=findPlanet(chart,a.planetA),pb=findPlanet(chart,a.planetB);if(!pa||!pb)return '';const p1=pointAt(planetLon(pa),aspectR,cx,cy),p2=pointAt(planetLon(pb),aspectR,cx,cy);const col=a.meaningType==='harmonious'?'#6fbf7e':a.meaningType==='tense'?'#e08282':'#d4af37';return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${col}" stroke-width="1" opacity=".55"/>`;}).join('');const planets=(chart.planets||[]).map(p=>{const pt=pointAt(planetLon(p),planetR,cx,cy);return `<g><circle cx="${pt.x}" cy="${pt.y}" r="12" fill="rgba(12,15,16,.92)" stroke="#d4af37" stroke-width="1"/><text x="${pt.x}" y="${pt.y+1}" text-anchor="middle" dominant-baseline="middle" fill="#ffe6a8" font-size="14">${planetGlyph(p.planet)}</text></g>`;}).join('');const asc=chart.ascendant?markerAt(signLon(chart.ascendant),'ASC',cx,cy,r+7):'';const mc=chart.midheaven?markerAt(signLon(chart.midheaven),'MC',cx,cy,r+7):'';return `<svg class="astro-wheel" viewBox="0 0 420 420" role="img" aria-label="네이탈 차트 휠"><circle cx="${cx}" cy="${cy}" r="${r}" fill="rgba(12,15,16,.65)" stroke="#d4af37" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="${inner}" fill="none" stroke="rgba(255,255,255,.12)"/><circle cx="${cx}" cy="${cy}" r="${aspectR}" fill="none" stroke="rgba(255,255,255,.08)"/>${signs}${houseLines}${aspects}${planets}${asc}${mc}</svg>`;}
-function lineAt(lon,r1,r2,cx,cy,color='rgba(255,255,255,.18)'){const a=pointAt(lon,r1,cx,cy),b=pointAt(lon,r2,cx,cy);return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${color}" stroke-width="1"/>`;}
-function pointAt(lon,r,cx,cy){const rad=(lon-90)*Math.PI/180;return {x:+(cx+Math.cos(rad)*r).toFixed(2),y:+(cy+Math.sin(rad)*r).toFixed(2)};}
-function markerAt(lon,label,cx,cy,r){const p=pointAt(lon,r,cx,cy);return `<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="middle" fill="#f5d77c" font-size="12" font-weight="800">${label}</text>`;}
+// ══ 원형 네이탈 차트 휠 — SVG 컴포넌트 (계산 엔진 데이터 표시 전용, 계산 로직 수정 없음) ══
+// 규칙: ASC를 왼쪽(9시)에 고정하고 황도가 반시계로 진행하는 정통 배치.
+//       출생시간 미상이면 ASC/MC/하우스 없이 양자리 0°를 왼쪽에 두고 행성만 표시.
+const WHEEL_SIGN_GLYPHS=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const WHEEL_ELEMENT_COLORS={fire:'#e57462',earth:'#d4a849',air:'#b8c2dc',water:'#6f88d8'};
+const WHEEL_ASPECT_COLORS={harmonious:'#6fbf7e',tense:'#e07a7a',neutral:'#d4af37'};
+function _wheelGeo(chart){
+  const unknown=!!(chart.birthInfo&&chart.birthInfo.birthTimeUnknown);
+  const base=(!unknown&&chart.ascendant)?signLon(chart.ascendant):0;
+  const cx=220,cy=220;
+  const project=(lon,r)=>{const a=(180+(lon-base))*Math.PI/180;return {x:+(cx+Math.cos(a)*r).toFixed(2),y:+(cy-Math.sin(a)*r).toFixed(2)};};
+  const ray=(lon,r1,r2,color,w=1)=>{const p=project(lon,r1),q=project(lon,r2);return `<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="${color}" stroke-width="${w}"/>`;};
+  return {cx,cy,unknown,base,project,ray,rOuter:190,rZodiac:160,rHouse:118,rPlanet:137,rHub:114};
+}
+// 글리프 겹침 방지 — 인접 행성 간 최소 각도(minGap)를 확보하도록 표시 각도만 살짝 벌린다 (실제 도수 틱은 그대로)
+function _wheelSpread(lons,minGap){
+  const a=lons.slice(),n=a.length;
+  for(let it=0;it<30;it++){
+    let moved=false;
+    for(let i=0;i<n;i++){
+      const j=(i+1)%n;let gap=a[j]-a[i];if(j===0)gap+=360;
+      if(gap<minGap-0.01){const push=(minGap-gap)/2;a[i]-=push;a[j]+=push;moved=true;}
+    }
+    if(!moved)break;
+  }
+  return a.map(normalizeDeg);
+}
+function ZodiacRing(g){
+  let out='';
+  for(let i=0;i<12;i++){
+    out+=g.ray(i*30,g.rZodiac,g.rOuter,'rgba(212,175,55,.30)',1);
+    const pt=g.project(i*30+15,175);
+    out+=`<text class="wheel-sign" x="${pt.x}" y="${pt.y}" text-anchor="middle" dominant-baseline="central" font-size="15" fill="${WHEEL_ELEMENT_COLORS[ZODIAC_SIGNS[i].element]}">${WHEEL_SIGN_GLYPHS[i]}︎</text>`;
+  }
+  for(let d=0;d<360;d+=5){
+    if(d%30===0)continue;
+    out+=g.ray(d,g.rZodiac,g.rZodiac-(d%10===0?8:4),d%10===0?'rgba(255,255,255,.20)':'rgba(255,255,255,.11)',1);
+  }
+  return out;
+}
+function HouseRing(g,chart){
+  if(g.unknown||!Array.isArray(chart.houses)||chart.houses.length!==12)return '';
+  const cusp=h=>signIndex(h.sign)*30+Number(h.degree||0);
+  let out=chart.houses.map(h=>g.ray(cusp(h),g.rHouse,g.rZodiac,'rgba(245,215,124,.26)',1)).join('');
+  chart.houses.forEach((h,i)=>{
+    const a=cusp(h),b=cusp(chart.houses[(i+1)%12]);
+    const mid=a+normalizeDeg(b-a)/2,pt=g.project(mid,127);
+    out+=`<text class="wheel-house-num" x="${pt.x}" y="${pt.y}" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="rgba(216,196,168,.5)">${h.house}</text>`;
+  });
+  return out;
+}
+function PlanetMarkers(g,chart){
+  const items=(chart.planets||[]).map(p=>({p,lon:planetLon(p)})).sort((x,y)=>x.lon-y.lon);
+  const disp=_wheelSpread(items.map(x=>x.lon),9.5);
+  return items.map((it,i)=>{
+    const notch=g.ray(it.lon,g.rZodiac,g.rZodiac-9,'#f2ca50',1.4); // 실제 도수 표시 틱
+    const from=g.project(it.lon,g.rZodiac-9),to=g.project(disp[i],g.rPlanet+12);
+    const link=`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="rgba(212,175,55,.32)" stroke-width=".8"/>`;
+    const c=g.project(disp[i],g.rPlanet);
+    const elem=signById(it.p.sign).element;
+    return `<g class="wheel-planet" data-planet="${it.p.planet}" data-element="${elem}" data-x="${c.x}" data-y="${c.y}" aria-label="${planetNameKo(it.p.planet)} ${signNameKo(it.p.sign)} ${it.p.degree.toFixed(1)}도" onclick="wheelSelectPlanet('${it.p.planet}',event)">${notch}${link}<circle cx="${c.x}" cy="${c.y}" r="21" fill="transparent"/><circle class="wheel-halo" cx="${c.x}" cy="${c.y}" r="16" fill="none" stroke="#f2ca50" stroke-width="2.4"/><circle cx="${c.x}" cy="${c.y}" r="12" fill="rgba(12,15,16,.94)" stroke="#d4af37" stroke-width="1"/><text x="${c.x}" y="${+c.y+0.5}" text-anchor="middle" dominant-baseline="central" font-size="14" fill="#ffe6a8">${planetGlyph(it.p.planet)}︎</text>${it.p.retrograde?`<text x="${+c.x+9}" y="${c.y-8}" text-anchor="middle" font-size="7" font-weight="800" fill="#e08282">R</text>`:''}</g>`;
+  }).join('');
+}
+function AspectLines(g,chart){
+  // 컨정션은 선이 점처럼 뭉개져 제외하고, 오브가 타이트한 순으로 최대 10개만 표시
+  const list=(chart.aspects||[]).filter(a=>a.aspectType!=='conjunction').slice(0,10);
+  return list.map(a=>{
+    const pa=findPlanet(chart,a.planetA),pb=findPlanet(chart,a.planetB);
+    if(!pa||!pb)return '';
+    const p1=g.project(planetLon(pa),g.rHub-2),p2=g.project(planetLon(pb),g.rHub-2);
+    return `<line class="wheel-aspect" data-a="${a.planetA}" data-b="${a.planetB}" x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${WHEEL_ASPECT_COLORS[a.meaningType]||'#d4af37'}" stroke-width="1"/>`;
+  }).join('');
+}
+function AscMcMarkers(g,chart){
+  if(g.unknown||!chart.ascendant||!chart.midheaven)return '';
+  const pill=(lon,label)=>{
+    const pt=g.project(lon,205),x=Math.min(414,Math.max(26,+pt.x));
+    return `<g class="wheel-axis-label"><rect x="${(x-17).toFixed(2)}" y="${(pt.y-9).toFixed(2)}" width="34" height="18" rx="9" fill="rgba(12,15,16,.92)" stroke="rgba(212,175,55,.55)" stroke-width="1"/><text x="${x.toFixed(2)}" y="${(+pt.y+0.5).toFixed(2)}" text-anchor="middle" dominant-baseline="central" font-size="10.5" font-weight="800" fill="#f5d77c">${label}</text></g>`;
+  };
+  const asc=signLon(chart.ascendant),mc=signLon(chart.midheaven);
+  return g.ray(asc,g.rHub,g.rOuter,'#f2ca50',1.6)+g.ray(asc+180,g.rHub,g.rOuter,'rgba(245,215,124,.38)',1)
+    +g.ray(mc,g.rHub,g.rOuter,'#f2ca50',1.3)+g.ray(mc+180,g.rHub,g.rOuter,'rgba(245,215,124,.30)',1)
+    +pill(asc,'ASC')+pill(mc,'MC');
+}
+function NatalChartWheel(chart){
+  const g=_wheelGeo(chart);
+  const frame=`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rOuter}" fill="rgba(212,175,55,.05)" stroke="rgba(212,175,55,.55)" stroke-width="1.2"/>`
+    +`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rZodiac}" fill="rgba(12,15,16,.72)" stroke="rgba(212,175,55,.30)" stroke-width="1"/>`
+    +`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rHub}" fill="rgba(12,15,16,.35)" stroke="rgba(255,255,255,.10)" stroke-width="1"/>`;
+  const center=`<circle cx="${g.cx}" cy="${g.cy}" r="2.4" fill="#d4af37"/>`;
+  return `<svg class="astro-wheel" viewBox="0 0 440 440" role="img" aria-label="원형 네이탈 차트" onclick="wheelClearSelection()">${frame}${ZodiacRing(g)}${HouseRing(g,chart)}${AspectLines(g,chart)}${AscMcMarkers(g,chart)}${PlanetMarkers(g,chart)}${center}</svg>`;
+}
+function renderNatalChartWheel(chart){
+  const g=_wheelGeo(chart);
+  return `<div class="astro-wheel-figure">${NatalChartWheel(chart)}<div class="astro-wheel-legend"><span><i style="background:#6fbf7e"></i>조화 각도</span><span><i style="background:#e07a7a"></i>긴장 각도</span><span><i style="background:#f2ca50"></i>행성 실제 도수${g.unknown?'':' · ASC/MC 축'}</span><span><b>R</b> 역행</span></div><div class="wheel-touch-hint">행성을 터치하면 연결된 각도와 상세 정보가 강조돼요</div></div>`;
+}
+
+// ══ 휠 프리미엄 인터랙션 — 행성/원소/TOP3 선택 강조 (표시 전용, 계산 로직과 무관) ══
+let _wheelSelected=null; // {type:'planet'|'element', id:string} | null
+function wheelSelectPlanet(id,ev,fromCard){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  _wheelSelected=(_wheelSelected&&_wheelSelected.type==='planet'&&_wheelSelected.id===id)?null:{type:'planet',id};
+  applyWheelSelection();
+  if(fromCard&&_wheelSelected)wheelScrollIntoView();
+}
+function wheelSelectElement(el,ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  _wheelSelected=(_wheelSelected&&_wheelSelected.type==='element'&&_wheelSelected.id===el)?null:{type:'element',id:el};
+  applyWheelSelection();
+  if(_wheelSelected)wheelScrollIntoView();
+}
+function wheelClearSelection(){
+  if(!_wheelSelected)return;
+  _wheelSelected=null;
+  applyWheelSelection();
+}
+function wheelScrollIntoView(){
+  const p=document.getElementById('natalWheelPanel');
+  if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function applyWheelSelection(){
+  const panel=document.getElementById('natalWheelPanel');
+  const chart=_astroFlow&&_astroFlow.chart;
+  if(!panel||!chart)return;
+  const svg=panel.querySelector('.astro-wheel');
+  if(!svg)return;
+  const sel=_wheelSelected;
+  svg.classList.toggle('has-sel',!!sel);
+  // 선택 대상 행성 집합 — 행성 선택은 1개, 원소 선택은 그 원소 별자리의 행성 전부
+  const idSet=new Set(!sel?[]:sel.type==='planet'?[sel.id]:(chart.planets||[]).filter(p=>signById(p.sign).element===sel.id).map(p=>p.planet));
+  svg.querySelectorAll('.wheel-planet').forEach(g=>g.classList.toggle('sel',idSet.has(g.getAttribute('data-planet'))));
+  svg.querySelectorAll('.wheel-aspect').forEach(l=>{
+    const a=idSet.has(l.getAttribute('data-a')),b=idSet.has(l.getAttribute('data-b'));
+    const bright=!!sel&&(sel.type==='planet'?(a||b):(a&&b));
+    l.classList.toggle('sel',bright);
+    l.classList.toggle('mid',!!sel&&sel.type==='element'&&!bright&&(a||b));
+  });
+  // 원소 균형·강한 행성 카드 활성 상태 동기화
+  document.querySelectorAll('[data-wheel-el]').forEach(b=>b.classList.toggle('active',!!sel&&sel.type==='element'&&b.getAttribute('data-wheel-el')===sel.id));
+  document.querySelectorAll('[data-wheel-planet]').forEach(b=>b.classList.toggle('active',!!sel&&sel.type==='planet'&&b.getAttribute('data-wheel-planet')===sel.id));
+  renderWheelTip(sel,chart,panel);
+}
+function renderWheelTip(sel,chart,panel){
+  const fig=panel.querySelector('.astro-wheel-figure');
+  if(!fig)return;
+  let tip=fig.querySelector('.wheel-tip');
+  if(!sel||sel.type!=='planet'){if(tip)tip.classList.remove('on');return;}
+  const p=findPlanet(chart,sel.id);
+  const g=fig.querySelector(`.wheel-planet[data-planet="${sel.id}"]`);
+  if(!p||!g)return;
+  if(!tip){tip=document.createElement('div');tip.className='wheel-tip';fig.appendChild(tip);}
+  tip.innerHTML=`<div class="wheel-tip-head"><span class="wheel-tip-glyph">${planetGlyph(p.planet)}︎</span><b>${astroEsc(planetNameKo(p.planet))}</b>${p.retrograde?'<i class="wheel-tip-r">R 역행</i>':''}</div>
+    <div class="wheel-tip-row">${astroEsc(signNameKo(p.sign))} ${Number(p.degree||0).toFixed(1)}°${p.house?` · ${p.house}하우스`:''}</div>
+    <div class="wheel-tip-mean">${astroEsc(getPlanetShortMeaning(p.planet))}</div>`;
+  const x=Number(g.getAttribute('data-x')),y=Number(g.getAttribute('data-y'));
+  tip.style.left=Math.min(82,Math.max(18,x/440*100))+'%';
+  tip.style.top=(y/440*100)+'%';
+  tip.classList.toggle('below',y<132);
+  tip.classList.remove('on');
+  requestAnimationFrame(()=>tip.classList.add('on'));
+}
 function planetGlyph(p){return ({sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇'})[p]||'•';}
 function signIndex(sign){return ZODIAC_SIGNS.findIndex(s=>s.id===sign);}
 function planetLon(p){return signIndex(p.sign)*30+Number(p.degree||0);}
@@ -170,7 +328,7 @@ function planetPositionTable(chart){return `<div class="astro-table-wrap"><table
 function ascMcCards(chart){return `<section class="astro-panel"><div class="astro-section-title">ASC 상승궁</div><div class="astro-text"><b style="color:var(--accent-bright)">${formatSignName(chart.ascendant.sign)}</b><br>첫인상, 외적 이미지, 세상에 드러나는 방식에 ${formatSignName(chart.ascendant.sign)}의 분위기가 더해져요.</div></section><section class="astro-panel"><div class="astro-section-title">MC</div><div class="astro-text"><b style="color:var(--accent-bright)">${formatSignName(chart.midheaven.sign)}</b><br>직업적 방향, 사회적 목표, 커리어 이미지에 ${formatSignName(chart.midheaven.sign)}의 색이 나타나요.</div></section>`;}
 function houseTable(chart){return `<div class="astro-table-wrap"><table class="astro-table"><thead><tr><th>하우스</th><th>별자리</th><th>도수</th><th>영역</th></tr></thead><tbody>${(chart.houses||[]).map(h=>`<tr><td>${h.house}H</td><td>${formatSignName(h.sign)}</td><td>${formatDegree(h.degree)}</td><td>${getHouseMeaning(h.house)}</td></tr>`).join('')}</tbody></table></div>`;}
 function aspectTable(chart){const a=chart.aspects||[];return a.length?`<div class="astro-table-wrap"><table class="astro-table"><thead><tr><th>행성 A</th><th>각도</th><th>행성 B</th><th>오브</th><th>성격</th><th>간단 의미</th></tr></thead><tbody>${a.map(x=>`<tr><td>${formatPlanetName(x.planetA)}</td><td>${formatAspectSymbol(x.aspectType)}</td><td>${formatPlanetName(x.planetB)}</td><td>${formatDegree(x.orb)}</td><td>${x.meaningType==='harmonious'?'조화':x.meaningType==='tense'?'긴장':'중립'}</td><td>${getAspectShortMeaning(x)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="astro-text" style="padding:14px">표시할 주요 애스펙트가 많지 않아요.</div>';}
-function balanceBars(balance,labeler){const max=Math.max(1,...Object.values(balance||{}));return `<div class="astro-bars">${Object.entries(balance||{}).map(([k,v])=>`<div class="astro-bar-row"><span>${labeler(k).split(' ').slice(-1)[0]}</span><div class="astro-bar"><span style="width:${Math.max(8,v/max*100)}%"></span></div><b>${v}</b></div>`).join('')}</div>`;}
+function balanceBars(balance,labeler,interactive){const max=Math.max(1,...Object.values(balance||{}));return `<div class="astro-bars">${Object.entries(balance||{}).map(([k,v])=>{const inner=`<span>${labeler(k).split(' ').slice(-1)[0]}</span><div class="astro-bar"><span style="width:${Math.max(8,v/max*100)}%"></span></div><b>${v}</b>`;return interactive==='element'?`<button type="button" class="astro-bar-row tappable" data-wheel-el="${k}" onclick="wheelSelectElement('${k}',event)">${inner}</button>`:`<div class="astro-bar-row">${inner}</div>`;}).join('')}</div>`;}
 function elementSummary(b){const d=getDominantElement(b),w=getWeakElement(b);return `${elementLabel(d)} 원소가 강하게 나타나요. ${elementLabel(w)} 원소는 의식적으로 보완하면 차트 균형을 잡는 데 도움이 돼요.`;}
 function modalitySummary(b){const d=getDominantModality(b);return `${modalityLabel(d)} 성향이 강해 삶의 움직임에서 이 패턴이 자주 드러나는 편이에요.`;}
 function astrologyReadingCTA(){return `<section class="astro-panel"><div class="astro-section-title">더 자세히 풀이받기</div><div class="astro-text">이 계산표를 바탕으로 AI 상세 리딩을 받을 수 있어요. 계산된 차트 데이터를 그대로 사용하므로 다시 입력하지 않아도 됩니다.</div><div class="astro-actions"><button class="astro-btn" onclick="selectAstrologyProduct('birth-basic')">내 출생차트 자세히 풀이받기</button><button class="astro-btn secondary" onclick="selectAstrologyProduct('love-marriage')">연애/결혼운 보기</button><button class="astro-btn secondary" onclick="selectAstrologyProduct('career-money')">직업/재물운 보기</button><button class="astro-btn secondary" onclick="selectAstrologyProduct('yearly')">올해 운세 보기</button><button class="astro-btn secondary" onclick="selectAstrologyProduct('full-report')">종합 리포트 보기</button><button class="astro-btn secondary" onclick="astroNavigate('natalInput')">출생정보 수정</button></div></section>`;}
@@ -186,7 +344,7 @@ function calculateAstrologyChart(birthInfo){if(!window.Astronomy)throw new Error
 function calculatePlanetPositions(date){const map={sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto'};return Object.entries(map).map(([id,body])=>{const lon=planetLongitude(body,date),next=planetLongitude(body,new Date(date.getTime()+86400000));const s=signFromLongitude(lon);return {planet:id,sign:s.id,degree:lon%30,longitude:lon,retrograde:normalizeDelta(next-lon)<0};});}
 function planetLongitude(body,date){const A=window.Astronomy;const v=A.GeoVector(A.Body[body],date,true);const e=A.RotateVector(A.Rotation_EQJ_ECL(date),v);return normalizeDeg(Math.atan2(e.y,e.x)*180/Math.PI);}
 function calculateTransit(currentDate){const d=new Date(currentDate);return {date:d.toISOString(),planets:calculatePlanetPositions(d),aspects:[]};}
-function calculateAscendant(date,lat,lon){const eps=23.439291*Math.PI/180,theta=normalizeDeg(gmst(date)+lon)*Math.PI/180,phi=lat*Math.PI/180;let asc=Math.atan2(-Math.cos(theta),Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))*180/Math.PI;asc=normalizeDeg(asc);const s=signFromLongitude(asc);return {sign:s.id,degree:asc%30};}
+function calculateAscendant(date,lat,lon){const eps=23.439291*Math.PI/180,theta=normalizeDeg(gmst(date)+lon)*Math.PI/180,phi=lat*Math.PI/180;let asc=Math.atan2(Math.cos(theta),-(Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI;asc=normalizeDeg(asc);const s=signFromLongitude(asc);return {sign:s.id,degree:asc%30};}
 function calculateMidheaven(date,lat,lon){const eps=23.439291*Math.PI/180,theta=normalizeDeg(gmst(date)+lon)*Math.PI/180;let mc=Math.atan2(Math.sin(theta),Math.cos(theta)*Math.cos(eps))*180/Math.PI;mc=normalizeDeg(mc);const s=signFromLongitude(mc);return {sign:s.id,degree:mc%30};}
 function calculateHouses(asc){const start=ZODIAC_SIGNS.findIndex(s=>s.id===asc.sign);return Array.from({length:12},(_,i)=>{const s=ZODIAC_SIGNS[(start+i)%12];return {house:i+1,sign:s.id,degree:0,system:'whole-sign'};});}
 function houseForLongitude(lon,houses){const sign=signFromLongitude(lon).id;const h=houses.find(x=>x.sign===sign);return h?h.house:undefined;}

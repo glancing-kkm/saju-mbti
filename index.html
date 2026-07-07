@@ -397,10 +397,47 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-overview .wide{grid-column:1/-1}
 .astro-feature-list{display:grid;gap:7px;margin-top:10px}
 .astro-feature-list div{font-size:.82rem;line-height:1.65;color:var(--sub);background:rgba(255,255,255,.045);border-radius:10px;padding:9px 10px}
-.astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:rgba(255,255,255,.035);padding:8px}
-.astro-wheel-toggle{display:none}
-.astro-wheel{width:100%;max-width:420px;display:block;margin:0 auto}
+.astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:radial-gradient(circle at 50% 42%,rgba(46,26,71,.35),transparent 72%),rgba(255,255,255,.03);padding:6px}
+.astro-wheel{width:100%;max-width:440px;display:block;margin:0 auto}
 .astro-wheel text{font-family:'Hanken Grotesk','Noto Sans KR',sans-serif}
+.astro-wheel-legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:8px;font-size:.7rem;color:var(--sub)}
+.astro-wheel-legend span{display:inline-flex;align-items:center;gap:5px}
+.astro-wheel-legend i{width:14px;height:2px;border-radius:2px;display:inline-block}
+.astro-wheel-legend b{color:#e08282;font-size:.72rem}
+/* ── 휠 인터랙션 — 선택 강조·툴팁·카드 연동 ── */
+.astro-wheel-figure{position:relative}
+.astro-wheel{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.astro-wheel .wheel-planet{cursor:pointer;transition:opacity .45s ease,filter .45s ease}
+.astro-wheel .wheel-aspect{opacity:.55;transition:opacity .4s ease,stroke-width .4s ease}
+.astro-wheel .wheel-sign,.astro-wheel .wheel-house-num,.astro-wheel .wheel-axis-label{transition:opacity .45s ease}
+.astro-wheel.has-sel .wheel-planet{opacity:.25}
+.astro-wheel.has-sel .wheel-planet.sel{opacity:1;filter:drop-shadow(0 0 7px rgba(242,202,80,.85))}
+.astro-wheel.has-sel .wheel-aspect{opacity:.07}
+.astro-wheel.has-sel .wheel-aspect.mid{opacity:.32}
+.astro-wheel.has-sel .wheel-aspect.sel{opacity:.95;stroke-width:1.7}
+.astro-wheel.has-sel .wheel-sign{opacity:.4}
+.astro-wheel.has-sel .wheel-house-num{opacity:.35}
+.wheel-halo{opacity:0;transition:opacity .5s ease}
+.wheel-planet.sel .wheel-halo{opacity:.9;animation:wheelHaloPulse 2.4s ease-in-out infinite}
+@keyframes wheelHaloPulse{0%,100%{opacity:.9}50%{opacity:.42}}
+.wheel-touch-hint{text-align:center;font-size:.68rem;color:var(--muted);margin-top:6px}
+.wheel-tip{position:absolute;z-index:6;min-width:150px;max-width:196px;background:rgba(12,15,16,.96);border:1px solid rgba(212,175,55,.5);border-radius:11px;padding:10px 12px;pointer-events:none;opacity:0;transform:translate(-50%,calc(-100% - 15px)) scale(.95);transition:opacity .35s ease,transform .35s ease;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 18px rgba(212,175,55,.14)}
+.wheel-tip.on{opacity:1;transform:translate(-50%,calc(-100% - 15px)) scale(1)}
+.wheel-tip.below{transform:translate(-50%,20px) scale(.95)}
+.wheel-tip.below.on{transform:translate(-50%,20px) scale(1)}
+.wheel-tip-head{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#ffe6a8;margin-bottom:4px}
+.wheel-tip-glyph{font-size:1rem}
+.wheel-tip-r{font-style:normal;font-size:.6rem;color:#e08282;border:1px solid rgba(224,130,130,.5);border-radius:50px;padding:1px 6px;margin-left:auto;white-space:nowrap}
+.wheel-tip-row{font-size:.74rem;color:var(--accent-bright);font-weight:800;margin-bottom:4px}
+.wheel-tip-mean{font-size:.72rem;line-height:1.55;color:var(--sub)}
+.astro-tap-badge{display:inline-block;vertical-align:2px;font-size:.56rem;font-weight:900;letter-spacing:.06em;color:var(--accent-bright);background:rgba(212,175,55,.14);border-radius:50px;padding:2px 7px;margin-left:5px}
+button.astro-bar-row.tappable{background:transparent;border:0;font-family:inherit;color:var(--sub);width:100%;cursor:pointer;padding:5px 7px;margin:-3px 0;border-radius:9px;transition:background .3s ease,box-shadow .3s ease;-webkit-tap-highlight-color:transparent}
+button.astro-bar-row.tappable:active{background:rgba(255,255,255,.05)}
+button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:0 0 0 1px rgba(212,175,55,.45)}
+.astro-strong-btn{display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(255,255,255,.045);border:0;border-radius:10px;padding:10px 11px;font-family:inherit;font-size:.82rem;line-height:1.5;color:var(--sub);cursor:pointer;text-align:left;transition:background .3s ease,box-shadow .3s ease,color .3s ease;-webkit-tap-highlight-color:transparent}
+.astro-strong-btn span{color:var(--muted);font-size:.72rem}
+.astro-strong-btn.active{background:rgba(212,175,55,.14);box-shadow:0 0 0 1px rgba(212,175,55,.5);color:var(--accent-bright)}
+@media (prefers-reduced-motion:reduce){.astro-wheel .wheel-planet,.astro-wheel .wheel-aspect,.wheel-halo,.wheel-tip{transition:none}.wheel-planet.sel .wheel-halo{animation:none}}
 .astro-table-wrap{overflow-x:auto;margin-top:10px;border-radius:12px;background:rgba(255,255,255,.035)}
 .astro-table{width:100%;border-collapse:collapse;min-width:620px;font-size:.78rem;color:var(--sub)}
 .astro-table th,.astro-table td{padding:10px 9px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;white-space:nowrap}
