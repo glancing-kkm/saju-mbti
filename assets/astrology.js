@@ -51,10 +51,10 @@ let _astroFlow=loadAstrologyFlow();
 function astroEsc(v){return typeof tarotEsc==='function'?tarotEsc(v):String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
 function astroSetHeader(title,sub){const t=document.getElementById('astroHdrTitle'),s=document.getElementById('astroHdrSub');if(t)t.textContent=title;if(s)s.textContent=sub||'';}
 function goToAstrology(route='home'){_astroRoute=route;showView('astrology');renderAstrology();}
-function astrologyBack(){if(['home','today','input','natal','result','history'].includes(_astroRoute))return goHome();const b={natalInput:'natal',summary:'input',products:'summary',payment:'products'};_astroRoute=b[_astroRoute]||'home';renderAstrology();}
+function astrologyBack(){if(['home','today','input','natal','natalInput','result','history'].includes(_astroRoute))return goHome();const b={natalResult:'natal',summary:'input',products:'summary',payment:'products'};_astroRoute=b[_astroRoute]||'home';renderAstrology();}
 function astroNavigate(route){_astroRoute=route;renderAstrology();}
 function astroRoot(){return document.getElementById('astroApp');}
-function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,natal:renderNatalChartPage,natalInput:renderNatalChartInput,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);}
+function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,natal:renderNatalChartPage,natalInput:renderNatalChartInput,natalResult:renderNatalChartResult,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);}
 
 function renderAstrologyHome(root){
   astroSetHeader('점성술','출생차트와 오늘의 행성 흐름');
@@ -79,7 +79,7 @@ function renderAstrologyInput(root,todayOnly=false,natalOnly=false){
     <div class="astro-field"><label>출생 도시</label><input class="astro-input" id="astroCitySearch" value="${astroEsc(saved.city||'서울')}" placeholder="서울, 부산, New York..." oninput="renderAstroCityOptions()"></div>
     <div class="astro-field"><label>도시 검색 결과</label><select class="astro-select" id="astroCitySelect"></select></div>
     <div class="astro-warn">도시 목록에 없는 경우 가까운 대도시를 선택해주세요. 출생시간을 모르면 상승궁과 하우스 해석은 제외하고, 달 위치는 날짜에 따라 오차 가능성을 표시합니다.</div>
-    <div class="astro-actions"><button class="astro-btn" onclick="${todayOnly?'submitTodayAstrology()':natalOnly?'submitNatalChart()':'submitAstrologyBirth()'}">${todayOnly?'오늘의 점성술 보기':natalOnly?'내 출생차트 보기':'출생차트 계산하기'}</button><button class="astro-btn secondary" onclick="astroNavigate('${natalOnly?'natal':'home'}')">취소</button></div>
+    <div class="astro-actions"><button class="astro-btn" onclick="${todayOnly?'submitTodayAstrology()':natalOnly?'submitNatalChart()':'submitAstrologyBirth()'}">${todayOnly?'오늘의 점성술 보기':natalOnly?'내 출생차트 보기':'출생차트 계산하기'}</button><button class="astro-btn secondary" onclick="astroNavigate('home')">취소</button></div>
   </div></section>`;
   renderAstroCityOptions();toggleAstroTimeFields();
 }
@@ -106,9 +106,9 @@ async function finishAstrologyReading(){_astroFlow.resultLoading=true;_astroFlow
 function renderAstrologyResult(root){if(!_astroFlow)return astroNavigate('input');astroSetHeader('점성술 결과',_astroFlow.productName||'AI 리딩');if(_astroFlow.resultLoading){root.innerHTML=`<section class="astro-panel"><div class="astro-section-title">점성술 리포트를 작성하고 있어요</div><div class="astro-text">계산된 출생차트와 트랜짓 데이터를 바탕으로 해석을 생성 중이에요.</div></section>`;return;}if(!_astroFlow.resultMarkdown)return astroNavigate('products');root.innerHTML=`<section class="astro-panel"><div class="astro-section-title">${astroEsc(_astroFlow.productName)}</div><div class="astro-small">${astroEsc(_astroFlow.birthInfo.city)} · ${new Date(_astroFlow.createdAt||Date.now()).toLocaleString('ko-KR')}</div></section><section class="astro-panel"><div class="astro-markdown">${markdownToAstroHTML(_astroFlow.resultMarkdown)}</div></section><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('products')">다른 리딩 보기</button><button class="astro-btn secondary" onclick="astroNavigate('history')">히스토리 보기</button></div>`;}
 function renderAstrologyHistory(root){astroSetHeader('점성술 히스토리','저장된 리포트');const list=loadAstrologyHistory();root.innerHTML=`<section class="astro-hero"><div class="astro-kicker">History</div><div class="astro-title">점성술 히스토리</div><div class="astro-desc">유료 리딩 결과를 다시 볼 수 있어요.</div></section><div class="astro-grid">${list.length?list.map(r=>`<section class="astro-history-item"><div class="astro-section-title">${astroEsc(r.productName||r.productType)}</div><div class="astro-small">${astroEsc(r.birthInfo.city)} · ${new Date(r.createdAt).toLocaleString('ko-KR')}</div><div class="astro-actions"><button class="astro-btn" onclick="openAstrologyHistory('${r.id}')">다시 보기</button></div></section>`).join(''):'<div class="tarot-empty">아직 저장된 점성술 결과가 없어요.</div>'}</div>`;}
 function openAstrologyHistory(id){const r=loadAstrologyHistory().find(x=>x.id===id);if(!r)return;_astroFlow={...r,paymentStatus:'paid'};saveAstrologyFlow();astroNavigate('result');}
-function renderNatalChartPage(root){if(_astroFlow&&_astroFlow.chart)return renderNatalChartResult(root);return renderNatalChartInput(root);}
+function renderNatalChartPage(root){return renderNatalChartInput(root);}
 function renderNatalChartInput(root){renderAstrologyInput(root,false,true);}
-function submitNatalChart(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);_astroFlow={..._astroFlow,birthInfo,chart,transit:calculateTransit(new Date()),natalReady:true,createdAt:new Date().toISOString()};saveAstrologyFlow();astroNavigate('natal');}catch(e){alert(e.message||'출생차트 계산 중 오류가 발생했어요.');}}
+function submitNatalChart(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);_astroFlow={..._astroFlow,birthInfo,chart,transit:calculateTransit(new Date()),natalReady:true,createdAt:new Date().toISOString()};saveAstrologyFlow();astroNavigate('natalResult');}catch(e){alert(e.message||'출생차트 계산 중 오류가 발생했어요.');}}
 function renderNatalChartResult(root){
   _wheelSelected=null; // 재렌더 시 휠 선택 상태 초기화
   const chart=_astroFlow&&_astroFlow.chart;
@@ -511,11 +511,25 @@ function signFromLongitude(lon){return ZODIAC_SIGNS[Math.floor(normalizeDeg(lon)
 function signById(id){return ZODIAC_SIGNS.find(s=>s.id===id)||ZODIAC_SIGNS[0];}
 function signNameKo(id){return signById(id).nameKo;}
 function planetNameKo(id){return (PLANET_MEANINGS.find(p=>p.id===id)||{}).nameKo||id;}
+function koHasBatchim(word){const ch=String(word||'').trim().slice(-1);const code=ch.charCodeAt(0);return code>=0xac00&&code<=0xd7a3?(code-0xac00)%28!==0:false;}
+function koWa(word){return koHasBatchim(word)?'과':'와';}
 function normalizeDeg(x){return ((x%360)+360)%360;}
 function normalizeDelta(x){let d=normalizeDeg(x);return d>180?d-360:d;}
 function gmst(date){const jd=date.getTime()/86400000+2440587.5;const d=jd-2451545.0;return normalizeDeg(280.46061837+360.98564736629*d);}
 function isPersonal(p){return ['sun','moon','mercury','venus','mars'].includes(p);}
-function generateTodayAstrology(chart,transit){const sun=chart.planets.find(p=>p.planet==='sun'),moonT=transit.planets.find(p=>p.planet==='moon'),venusT=transit.planets.find(p=>p.planet==='venus'),marsT=transit.planets.find(p=>p.planet==='mars');const ss=signById(sun.sign),ms=signById(moonT.sign),vs=signById(venusT.sign),mas=signById(marsT.sign);return `# 오늘의 전체운\n\n오늘은 ${ms.nameKo} 달의 영향으로 ${ms.keywords[0]}와 ${ms.keywords[1]}의 분위기가 감정 흐름에 스며드는 날이에요. 본인의 출생 태양은 ${ss.nameKo}라서 기본적으로 ${ss.personality} 오늘은 이 성향을 너무 밀어붙이기보다, 마음이 반응하는 속도를 먼저 살피는 편이 좋아요.\n\n# 오늘의 연애운\n\n금성이 ${vs.nameKo}에 있어 관계에서는 ${vs.loveStyle} 상대 반응을 지나치게 해석하기보다 편안한 대화를 시도해보세요.\n\n# 오늘의 재물운\n\n재물에서는 ${ss.moneyStyle} 오늘은 필요한 지출인지 한 번 더 확인하면 흐름이 안정돼요.\n\n# 오늘의 직장운\n\n화성이 ${mas.nameKo}에 있어 일에서는 ${mas.careerStyle} 새로운 일을 크게 벌이기보다 진행 중인 일을 정리하는 데 유리해요.\n\n# 오늘의 컨디션\n\n달의 흐름이 예민하게 느껴질 수 있으니 일정 사이에 짧은 휴식 시간을 넣어주세요.\n\n# 오늘의 조언\n\n감정보다 현실적인 기준을 먼저 세워보세요. 바로 반응하기보다 한 번 정리하고 말하면 오늘의 흐름을 훨씬 부드럽게 쓸 수 있어요.\n\n# 주의할 점\n\n${ms.caution}`;}
+function generateTodayAstrology(chart,transit){
+  const sun=chart.planets.find(p=>p.planet==='sun');
+  const moonT=transit.planets.find(p=>p.planet==='moon');
+  const venusT=transit.planets.find(p=>p.planet==='venus');
+  const marsT=transit.planets.find(p=>p.planet==='mars');
+  const ss=signById(sun.sign),ms=signById(moonT.sign),vs=signById(venusT.sign),mas=signById(marsT.sign);
+  return [
+    `오늘은 달이 ${ms.nameKo}에 머물러 있어서 마음이 ${ms.keywords[0]}${koWa(ms.keywords[0])} ${ms.keywords[1]} 쪽으로 조금 더 쉽게 움직일 수 있어요. 본인의 출생 태양은 ${ss.nameKo}라서 평소에는 ${ss.personality} 그래서 오늘은 원래의 성향대로 바로 밀고 나가기보다, 지금 마음이 어디에 반응하는지 먼저 살펴보는 편이 좋아요.`,
+    `관계에서는 금성이 ${vs.nameKo}에 있어서 ${vs.loveStyle} 상대의 말이나 표정을 너무 깊게 해석하기보다는, 편안하게 말을 건네는 쪽이 더 자연스럽습니다. 돈이나 약속과 관련된 일은 급하게 결정하지 말고, 정말 필요한 지출인지 한 번 더 확인해보세요. 작은 확인만으로도 불필요한 흔들림을 줄일 수 있어요.`,
+    `일이나 해야 할 일에서는 화성이 ${mas.nameKo}에 있어 ${mas.careerStyle} 오늘은 새로운 일을 크게 벌이기보다 이미 진행 중인 일을 정리하는 데 더 잘 맞습니다. 컨디션도 한 번에 몰아쓰기보다는 중간중간 쉬어가야 오래 유지돼요.`,
+    `정리해서 말하면, 오늘은 감정보다 현실적인 기준을 먼저 세우면 훨씬 부드럽게 지나갈 수 있는 날이에요. 바로 반응하기 전에 한 번만 숨을 고르고, 말이나 결정을 조금 단정하게 다듬어보세요. 특히 ${ms.caution}`
+  ].join('\n\n');
+}
 function generateTemplateAstrologySummary(chart){const sun=chart.planets.find(p=>p.planet==='sun'),moon=chart.planets.find(p=>p.planet==='moon'),venus=chart.planets.find(p=>p.planet==='venus');return `본인의 태양은 ${signNameKo(sun.sign)}, 달은 ${signNameKo(moon.sign)}, 금성은 ${signNameKo(venus.sign)}에 있어요. 삶의 방향은 ${signById(sun.sign).personality} 감정은 ${signById(moon.sign).personality} 관계에서는 ${signById(venus.sign).loveStyle} ${chart.ascendant?`상승궁은 ${signNameKo(chart.ascendant.sign)}라 첫인상과 외적 태도에 그 별자리의 분위기가 더해져요.`:'출생시간이 없어 상승궁과 하우스는 제외했어요.'}`;}
 function generateTemplateAstrologyReading(chart){return `# 출생차트 핵심 요약\n\n${generateTemplateAstrologySummary(chart)}\n\n# 현재 운의 흐름\n\n현재 트랜짓은 본인의 기본 성향에 새로운 자극을 더하고 있어요. 중요한 결정은 감정만으로 밀어붙이기보다 실제 조건을 함께 확인하는 편이 좋아요.\n\n# 현실적인 조언\n\n오늘부터는 본인이 반복해서 끌리는 선택과 피하고 싶은 선택을 나누어 적어보세요. 차트는 가능성을 보여주는 지도에 가깝기 때문에, 실제 방향은 작은 행동을 통해 더 선명해져요.\n\n# 종합 결론\n\n이 리딩은 계산된 차트를 바탕으로 한 기본 템플릿이에요. AI 리딩이 잠시 실패했지만, 출생시간과 도시 정보를 다시 확인하면 더 안정적인 결과를 받을 수 있어요.`;}
 async function generateAIAstrologyReading(chart,transit,productType){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,productType,language:currentLanguagePayload()})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
