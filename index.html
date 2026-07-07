@@ -438,6 +438,28 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .astro-strong-btn span{color:var(--muted);font-size:.72rem}
 .astro-strong-btn.active{background:rgba(212,175,55,.14);box-shadow:0 0 0 1px rgba(212,175,55,.5);color:var(--accent-bright)}
 @media (prefers-reduced-motion:reduce){.astro-wheel .wheel-planet,.astro-wheel .wheel-aspect,.wheel-halo,.wheel-tip{transition:none}.wheel-planet.sel .wheel-halo{animation:none}}
+/* ── Time Journey — 트랜짓 슬라이더 ── */
+.wheel-transit-layer{transition:opacity .45s ease}
+.astro-wheel.has-sel .wheel-transit-layer{opacity:.15}
+.tj-date-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+.tj-date-row b{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.04rem;color:var(--accent-bright);font-weight:900}
+.tj-date-input{border:0;border-radius:9px;background:rgba(255,255,255,.07);color:var(--sub);font-family:inherit;font-size:.74rem;padding:7px 9px;color-scheme:dark}
+.tj-slider{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0 0 4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.tj-slider::-webkit-slider-runnable-track{height:5px;border-radius:50px;background:linear-gradient(90deg,var(--accent-bright),#7b9bff 55%,#8f7bff)}
+.tj-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#0c0f10;border:2.5px solid var(--accent-bright);box-shadow:0 0 12px rgba(212,175,55,.55);margin-top:-8.5px}
+.tj-slider::-moz-range-track{height:5px;border-radius:50px;background:linear-gradient(90deg,var(--accent-bright),#7b9bff 55%,#8f7bff)}
+.tj-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#0c0f10;border:2.5px solid var(--accent-bright);box-shadow:0 0 12px rgba(212,175,55,.55)}
+.tj-chips{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 12px}
+.tj-chip{flex:1;min-width:62px;border:1px solid rgba(212,175,55,.25);background:rgba(255,255,255,.04);color:var(--sub);font-family:inherit;font-size:.74rem;font-weight:800;border-radius:50px;padding:9px 6px;cursor:pointer;transition:background .25s ease,color .25s ease,border-color .25s ease;-webkit-tap-highlight-color:transparent}
+.tj-chip.active{background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(123,155,255,.18));color:var(--accent-bright);border-color:var(--accent-bright)}
+.tj-asp-list{display:grid;gap:7px;margin-top:10px}
+.tj-asp{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.045);border-radius:10px;padding:9px 11px;font-size:.78rem;color:var(--sub)}
+.tj-asp i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.tj-asp.harmonious i{background:#6fbf7e}
+.tj-asp.tense i{background:#e07a7a}
+.tj-asp.neutral i{background:#d4af37}
+.tj-asp b{margin-left:auto;color:var(--muted);font-weight:700;font-size:.72rem}
+.astro-chip-card.tr b{color:#9db8ff}
 .astro-table-wrap{overflow-x:auto;margin-top:10px;border-radius:12px;background:rgba(255,255,255,.035)}
 .astro-table{width:100%;border-collapse:collapse;min-width:620px;font-size:.78rem;color:var(--sub)}
 .astro-table th,.astro-table td{padding:10px 9px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;white-space:nowrap}

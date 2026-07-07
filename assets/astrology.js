@@ -116,10 +116,12 @@ function renderNatalChartResult(root){
   astroSetHeader('출생차트','무료 네이탈 차트');
   if(err){root.innerHTML=`<section class="astro-panel"><div class="astro-section-title">차트를 표시할 수 없어요</div><div class="astro-text">${astroEsc(err)}</div><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('natalInput')">출생정보 다시 입력</button></div></section>`;return;}
   const b=chart.birthInfo, unknown=!!b.birthTimeUnknown, features=generateChartFeatureSummary(chart), strongPlanets=getStrongPlanets(chart), strongHouses=getStrongHouses(chart);
+  const tj0=tjCompute(chart,tjInitBase()); // Time Journey 초기값 = 오늘
   const sun=findPlanet(chart,'sun'), moon=findPlanet(chart,'moon'), venus=findPlanet(chart,'venus'), mars=findPlanet(chart,'mars');
   root.innerHTML=`<section class="astro-hero"><div class="astro-kicker">Natal Chart</div><div class="astro-title">내 출생차트</div><div class="astro-desc">${formatBirthDateTime(b)}<br>${astroEsc(b.country)} ${astroEsc(b.city)}<br>${unknown?'출생시간을 모르는 상태로 계산되었습니다.':'출생시간 기준 계산 완료'}</div></section>
   ${unknown?'<div class="astro-warn">출생시간을 모르는 상태라 ASC, MC, 12하우스 해석은 제외됩니다. 달 위치는 날짜에 따라 일부 오차가 있을 수 있습니다.</div>':''}
-  <section class="astro-panel" id="natalWheelPanel"><div class="astro-section-title">원형 네이탈 차트</div><div class="astro-wheel-wrap">${renderNatalChartWheel(chart)}</div><div class="astro-text" style="margin-top:10px">${unknown?'출생시간이 없어 행성 위치만 실제 도수로 배치했어요.':'왼쪽 ASC를 기준으로 반시계 방향이 별자리 진행 방향이에요. 행성은 계산된 실제 도수 위에 놓여 있어요.'}</div></section>
+  <section class="astro-panel" id="natalWheelPanel"><div class="astro-section-title">원형 네이탈 차트</div><div class="astro-wheel-wrap">${renderNatalChartWheel(chart,tj0)}</div><div class="astro-text" style="margin-top:10px">${unknown?'출생시간이 없어 행성 위치만 실제 도수로 배치했어요.':'왼쪽 ASC를 기준으로 반시계 방향이 별자리 진행 방향이에요. 행성은 계산된 실제 도수 위에 놓여 있어요.'} 안쪽 파란 행성은 선택한 날짜의 트랜짓이에요.</div></section>
+  ${renderTimeJourneyPanel(chart,tj0)}
   <section class="astro-panel"><div class="astro-section-title">한눈에 보는 내 차트</div><div class="astro-overview">
     ${overviewCard('☀ 태양',formatSignName(sun.sign))}
     ${overviewCard('🌙 달',formatSignName(moon.sign))}
@@ -243,17 +245,18 @@ function AscMcMarkers(g,chart){
     +g.ray(mc,g.rHub,g.rOuter,'#f2ca50',1.3)+g.ray(mc+180,g.rHub,g.rOuter,'rgba(245,215,124,.30)',1)
     +pill(asc,'ASC')+pill(mc,'MC');
 }
-function NatalChartWheel(chart){
+function NatalChartWheel(chart,tj){
   const g=_wheelGeo(chart);
   const frame=`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rOuter}" fill="rgba(212,175,55,.05)" stroke="rgba(212,175,55,.55)" stroke-width="1.2"/>`
     +`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rZodiac}" fill="rgba(12,15,16,.72)" stroke="rgba(212,175,55,.30)" stroke-width="1"/>`
     +`<circle cx="${g.cx}" cy="${g.cy}" r="${g.rHub}" fill="rgba(12,15,16,.35)" stroke="rgba(255,255,255,.10)" stroke-width="1"/>`;
   const center=`<circle cx="${g.cx}" cy="${g.cy}" r="2.4" fill="#d4af37"/>`;
-  return `<svg class="astro-wheel" viewBox="0 0 440 440" role="img" aria-label="원형 네이탈 차트" onclick="wheelClearSelection()">${frame}${ZodiacRing(g)}${HouseRing(g,chart)}${AspectLines(g,chart)}${AscMcMarkers(g,chart)}${PlanetMarkers(g,chart)}${center}</svg>`;
+  const transitLayer=`<g class="wheel-transit-layer" id="wheelTransitLayer">${tj?TransitLayer(g,chart,tj):''}</g>`;
+  return `<svg class="astro-wheel" viewBox="0 0 440 440" role="img" aria-label="원형 네이탈 차트" onclick="wheelClearSelection()">${frame}${ZodiacRing(g)}${HouseRing(g,chart)}${AspectLines(g,chart)}${AscMcMarkers(g,chart)}${PlanetMarkers(g,chart)}${transitLayer}${center}</svg>`;
 }
-function renderNatalChartWheel(chart){
+function renderNatalChartWheel(chart,tj){
   const g=_wheelGeo(chart);
-  return `<div class="astro-wheel-figure">${NatalChartWheel(chart)}<div class="astro-wheel-legend"><span><i style="background:#6fbf7e"></i>조화 각도</span><span><i style="background:#e07a7a"></i>긴장 각도</span><span><i style="background:#f2ca50"></i>행성 실제 도수${g.unknown?'':' · ASC/MC 축'}</span><span><b>R</b> 역행</span></div><div class="wheel-touch-hint">행성을 터치하면 연결된 각도와 상세 정보가 강조돼요</div></div>`;
+  return `<div class="astro-wheel-figure">${NatalChartWheel(chart,tj)}<div class="astro-wheel-legend"><span><i style="background:#6fbf7e"></i>조화 각도</span><span><i style="background:#e07a7a"></i>긴장 각도</span><span><i style="background:#f2ca50"></i>행성 실제 도수${g.unknown?'':' · ASC/MC 축'}</span>${tj?'<span><i style="background:#7b9bff"></i>Transit 행성</span>':''}<span><b>R</b> 역행</span></div><div class="wheel-touch-hint">행성을 터치하면 연결된 각도와 상세 정보가 강조돼요</div></div>`;
 }
 
 // ══ 휠 프리미엄 인터랙션 — 행성/원소/TOP3 선택 강조 (표시 전용, 계산 로직과 무관) ══
@@ -319,6 +322,158 @@ function renderWheelTip(sel,chart,panel){
   tip.classList.toggle('below',y<132);
   tip.classList.remove('on');
   requestAnimationFrame(()=>tip.classList.add('on'));
+}
+
+// ══ Time Journey — 트랜짓 슬라이더 (API 없음, 기존 계산 엔진만 사용) ══
+// 출생(네이탈) 행성은 골드, 트랜짓 행성은 블루/퍼플로 휠 안쪽 링에 겹쳐 표시.
+const TJ_MAX_DAYS=730; // 오늘 ~ +2년
+const TJ_COLOR='#7b9bff';
+let _tjBase=null,_tjOffset=0,_tjTimer=null,_tjApplyCount=0;
+function tjInitBase(){const d=new Date();d.setHours(12,0,0,0);return d;}
+function tjDate(){return new Date((_tjBase||tjInitBase()).getTime()+_tjOffset*86400000);}
+function tjFmtLabel(d,offset){const s=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;return offset===0?`${s} · 오늘`:s;}
+function tjFmtInput(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function tjCompute(chart,date){const transit=calculateTransit(date);return {date,transit,aspects:calculateTransitAspects(chart,transit)};}
+// 트랜짓 ↔ 네이탈 애스펙트 — 타이트한 오브(3°/2.5°)만, 중요도 가중치로 상위 8개
+function calculateTransitAspects(chart,transit){
+  const defs=[['conjunction',0,'neutral'],['opposition',180,'tense'],['square',90,'tense'],['trine',120,'harmonious'],['sextile',60,'harmonious']];
+  const out=[];
+  (transit.planets||[]).forEach(tp=>{
+    const tl=normalizeDeg(tp.longitude);
+    (chart.planets||[]).forEach(np=>{
+      const dist=Math.abs(normalizeDelta(tl-planetLon(np)));
+      for(const [type,deg,meaning] of defs){
+        const orb=Math.abs(dist-deg);
+        const limit=(np.planet==='sun'||np.planet==='moon'||tp.planet==='sun'||tp.planet==='moon')?3:2.5;
+        if(orb<=limit){
+          const w=(3-orb)*2+((np.planet==='sun'||np.planet==='moon')?4:isPersonal(np.planet)?2:0)+(['jupiter','saturn','uranus','neptune','pluto'].includes(tp.planet)?1.5:0);
+          out.push({transit:tp.planet,natal:np.planet,aspectType:type,meaningType:meaning,orb:+orb.toFixed(2),weight:+w.toFixed(2)});
+          break;
+        }
+      }
+    });
+  });
+  return out.sort((a,b)=>b.weight-a.weight).slice(0,8);
+}
+// 휠 오버레이 — 트랜짓 행성(내부 링 r97) + 트랜짓-네이탈 점선 애스펙트(상위 5)
+function TransitLayer(g,chart,tj){
+  const t=tj&&tj.transit;if(!t||!Array.isArray(t.planets))return '';
+  let out='';
+  (tj.aspects||[]).slice(0,5).forEach(a=>{
+    const tp=t.planets.find(x=>x.planet===a.transit),np=findPlanet(chart,a.natal);
+    if(!tp||!np)return;
+    const col=WHEEL_ASPECT_COLORS[a.meaningType]||'#d4af37';
+    const p1=g.project(normalizeDeg(tp.longitude),105),p2=g.project(planetLon(np),112);
+    out+=`<line class="wheel-taspect" x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${col}" stroke-width="1.1" stroke-dasharray="4 3" opacity=".8"/><circle cx="${p2.x}" cy="${p2.y}" r="2.6" fill="${col}" opacity=".9"/>`;
+  });
+  const items=t.planets.map(p=>({p,lon:normalizeDeg(p.longitude)})).sort((a,b)=>a.lon-b.lon);
+  const disp=_wheelSpread(items.map(x=>x.lon),11);
+  items.forEach((it,i)=>{
+    out+=g.ray(it.lon,g.rHub,g.rHub-7,TJ_COLOR,1.2);
+    const c=g.project(disp[i],97);
+    out+=`<g class="wheel-tplanet"><circle cx="${c.x}" cy="${c.y}" r="9.5" fill="rgba(10,12,22,.94)" stroke="${TJ_COLOR}" stroke-width="1"/><text x="${c.x}" y="${+c.y+0.5}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#cfe0ff">${planetGlyph(it.p.planet)}︎</text>${it.p.retrograde?`<text x="${+c.x+7.5}" y="${c.y-6.5}" text-anchor="middle" font-size="6" font-weight="800" fill="#b7a5ff">R</text>`:''}</g>`;
+  });
+  return out;
+}
+// 요약 3개 — ① 태양/달 애스펙트 ② 하우스 통과/접근 ③ 다음 애스펙트 또는 목성 위치
+function generateTransitSummaries(chart,tj){
+  const A=tj.aspects||[],out=[];
+  const ga=s=>typeof ip==='function'?ip(s):'이';
+  const wa=s=>typeof gwa==='function'?gwa(s):'과';
+  const typeKo=t=>({conjunction:'합',trine:'조화각',sextile:'조화각',square:'긴장각',opposition:'긴장각'})[t]||'각도';
+  const tail=a=>a.meaningType==='harmonious'?' 기회가 부드럽게 열리는 흐름이에요.':a.meaningType==='tense'?(a.natal==='moon'?' 감정적 부담이 커질 수 있어요.':' 속도를 조절하면 마찰을 줄일 수 있어요.'):' 그 주제가 삶의 전면으로 올라와요.';
+  const sentence=a=>`Transit ${planetNameKo(a.transit)}${ga(planetNameKo(a.transit))} ${planetNameKo(a.natal)}${wa(planetNameKo(a.natal))} ${typeKo(a.aspectType)}을 이룹니다.${tail(a)}`;
+  const lumin=A.find(a=>a.natal==='sun'||a.natal==='moon');
+  if(lumin)out.push(sentence(lumin));
+  if(Array.isArray(chart.houses)&&chart.houses.length===12){
+    const cusps=chart.houses.map(x=>({h:x.house,lon:signIndex(x.sign)*30+Number(x.degree||0)}));
+    for(const id of ['venus','jupiter','saturn','mars','sun']){
+      const tp=tj.transit.planets.find(p=>p.planet===id);if(!tp)continue;
+      const lon=normalizeDeg(tp.longitude),h=houseForLongitude(lon,chart.houses);if(!h)continue;
+      let nxt=null,min=999;cusps.forEach(c=>{const d=normalizeDeg(c.lon-lon);if(d>0.01&&d<min){min=d;nxt=c;}});
+      out.push(nxt&&min<=3?`Transit ${planetNameKo(id)}${ga(planetNameKo(id))} ${nxt.h}하우스에 접근 중입니다.`:`Transit ${planetNameKo(id)}${ga(planetNameKo(id))} ${h}하우스를 지나는 중입니다.`);
+      break;
+    }
+  }else{
+    const moonT=tj.transit.planets.find(p=>p.planet==='moon');
+    if(moonT)out.push(`Transit 달이 ${signNameKo(moonT.sign)}에 들어 감정의 흐름이 ${signById(moonT.sign).keywords[0]} 쪽으로 기울어요.`);
+  }
+  const second=A.find(a=>a!==lumin);
+  if(second&&out.length<3)out.push(sentence(second));
+  if(out.length<3){const j=tj.transit.planets.find(p=>p.planet==='jupiter');if(j)out.push(`Transit 목성이 ${signNameKo(j.sign)}를 지나며 확장의 기회를 비춥니다.`);}
+  return out.slice(0,3);
+}
+function tjSummaryHTML(chart,tj){
+  const list=generateTransitSummaries(chart,tj);
+  return list.length?list.map(x=>`<div>${astroEsc(x)}</div>`).join(''):'<div>이 날짜에는 타이트한 트랜짓 각도가 없어요. 흐름이 잔잔한 시기예요.</div>';
+}
+function tjPositionsHTML(chart,tj){
+  const hasHouses=Array.isArray(chart.houses)&&chart.houses.length===12;
+  return (tj.transit.planets||[]).map(p=>{
+    const h=hasHouses?houseForLongitude(normalizeDeg(p.longitude),chart.houses):null;
+    return `<div class="astro-chip-card tr"><b>${planetGlyph(p.planet)}︎ ${astroEsc(planetNameKo(p.planet))}</b>${astroEsc(signNameKo(p.sign))} ${Number(p.degree||0).toFixed(1)}°${h?` · ${h}H`:''}${p.retrograde?' · R':''}</div>`;
+  }).join('');
+}
+function tjAspectsHTML(tj){
+  const glyph={conjunction:'☌',sextile:'✶',square:'□',trine:'△',opposition:'☍'};
+  const list=(tj.aspects||[]).slice(0,5);
+  return list.length?list.map(a=>`<div class="tj-asp ${a.meaningType}"><i></i><span>T ${astroEsc(planetNameKo(a.transit))} ${glyph[a.aspectType]||''} ${astroEsc(planetNameKo(a.natal))}</span><b>${a.orb.toFixed(1)}°</b></div>`).join(''):'<div class="tj-asp neutral"><i></i><span>3° 이내로 좁혀진 각도가 없어요</span></div>';
+}
+function renderTimeJourneyPanel(chart,tj){
+  _tjBase=tjInitBase();_tjOffset=0;
+  const d=_tjBase,maxD=new Date(d.getTime()+TJ_MAX_DAYS*86400000);
+  return `<section class="astro-panel" id="timeJourneyPanel">
+    <div class="astro-section-title">Time Journey <span class="astro-tap-badge">TRANSIT</span></div>
+    <div class="astro-text" style="margin-top:2px">슬라이더를 움직이면 그 날짜의 행성 위치(트랜짓)가 차트 위에 파란색으로 겹쳐져요.</div>
+    <div class="tj-date-row"><b id="tjDateLabel">${tjFmtLabel(d,0)}</b><input type="date" class="tj-date-input" id="tjDateInput" value="${tjFmtInput(d)}" min="${tjFmtInput(d)}" max="${tjFmtInput(maxD)}" onchange="tjOnDateInput(this.value)" aria-label="트랜짓 날짜 직접 선택"></div>
+    <input type="range" class="tj-slider" id="tjSlider" min="0" max="${TJ_MAX_DAYS}" step="1" value="0" oninput="tjOnSlide(this.value)" aria-label="트랜짓 날짜 슬라이더">
+    <div class="tj-chips">
+      <button type="button" class="tj-chip active" data-tj="0" onclick="tjJump(0)">오늘</button>
+      <button type="button" class="tj-chip" data-tj="30" onclick="tjJump(30)">+1개월</button>
+      <button type="button" class="tj-chip" data-tj="182" onclick="tjJump(182)">+6개월</button>
+      <button type="button" class="tj-chip" data-tj="365" onclick="tjJump(365)">+1년</button>
+    </div>
+    <div class="astro-feature-list" id="tjSummary">${tjSummaryHTML(chart,tj)}</div>
+    <div class="astro-section-title" style="font-size:.9rem;margin-top:16px">Transit 행성 위치</div>
+    <div class="astro-chart-grid" id="tjPositions">${tjPositionsHTML(chart,tj)}</div>
+    <div class="astro-section-title" style="font-size:.9rem;margin-top:16px">중요 Transit 각도</div>
+    <div class="tj-asp-list" id="tjAspects">${tjAspectsHTML(tj)}</div>
+  </section>`;
+}
+// 슬라이더 조작 — 라벨은 즉시, 계산·렌더는 140ms 디바운스 (프레임 드랍 방지)
+function tjOnSlide(v){
+  _tjOffset=Math.max(0,Math.min(TJ_MAX_DAYS,Number(v)||0));
+  const d=tjDate();
+  const lab=document.getElementById('tjDateLabel');if(lab)lab.textContent=tjFmtLabel(d,_tjOffset);
+  const di=document.getElementById('tjDateInput');if(di)di.value=tjFmtInput(d);
+  tjSyncChips();
+  clearTimeout(_tjTimer);_tjTimer=setTimeout(tjApply,140);
+}
+function tjJump(days){
+  _tjOffset=Math.max(0,Math.min(TJ_MAX_DAYS,Number(days)||0));
+  const s=document.getElementById('tjSlider');if(s)s.value=String(_tjOffset);
+  const d=tjDate();
+  const lab=document.getElementById('tjDateLabel');if(lab)lab.textContent=tjFmtLabel(d,_tjOffset);
+  const di=document.getElementById('tjDateInput');if(di)di.value=tjFmtInput(d);
+  tjSyncChips();
+  clearTimeout(_tjTimer);tjApply();
+}
+function tjOnDateInput(val){
+  const p=String(val||'').split('-').map(Number);
+  if(p.length===3&&p[0]){const d=new Date(p[0],p[1]-1,p[2],12,0,0,0);_tjOffset=Math.max(0,Math.min(TJ_MAX_DAYS,Math.round((d-_tjBase)/86400000)));}
+  tjJump(_tjOffset);
+}
+function tjSyncChips(){document.querySelectorAll('.tj-chip').forEach(b=>b.classList.toggle('active',Number(b.getAttribute('data-tj'))===_tjOffset));}
+function tjApply(){
+  const chart=_astroFlow&&_astroFlow.chart;
+  if(!chart||!_tjBase)return;
+  _tjApplyCount++;
+  const tj=tjCompute(chart,tjDate());
+  const layer=document.getElementById('wheelTransitLayer');
+  if(layer)layer.innerHTML=TransitLayer(_wheelGeo(chart),chart,tj);
+  const s=document.getElementById('tjSummary');if(s)s.innerHTML=tjSummaryHTML(chart,tj);
+  const pos=document.getElementById('tjPositions');if(pos)pos.innerHTML=tjPositionsHTML(chart,tj);
+  const asp=document.getElementById('tjAspects');if(asp)asp.innerHTML=tjAspectsHTML(tj);
 }
 function planetGlyph(p){return ({sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇'})[p]||'•';}
 function signIndex(sign){return ZODIAC_SIGNS.findIndex(s=>s.id===sign);}
