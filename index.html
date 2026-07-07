@@ -398,12 +398,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-feature-list{display:grid;gap:7px;margin-top:10px}
 .astro-feature-list div{font-size:.82rem;line-height:1.65;color:var(--sub);background:rgba(255,255,255,.045);border-radius:10px;padding:9px 10px}
 .astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:radial-gradient(circle at 50% 42%,rgba(46,26,71,.35),transparent 72%),rgba(255,255,255,.03);padding:6px}
+.astro-wheel-wrap.compact{max-height:360px}
+.astro-wheel-wrap.compact .astro-wheel{max-width:330px}
+.astro-wheel-wrap.compact .wheel-touch-hint{display:none}
 .astro-wheel{width:100%;max-width:440px;display:block;margin:0 auto}
 .astro-wheel text{font-family:'Hanken Grotesk','Noto Sans KR',sans-serif}
 .astro-wheel-legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:8px;font-size:.7rem;color:var(--sub)}
 .astro-wheel-legend span{display:inline-flex;align-items:center;gap:5px}
 .astro-wheel-legend i{width:14px;height:2px;border-radius:2px;display:inline-block}
 .astro-wheel-legend b{color:#e08282;font-size:.72rem}
+.astro-today-chips{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.astro-today-chips span{border-radius:50px;background:rgba(123,155,255,.13);color:#cfe0ff;border:1px solid rgba(123,155,255,.28);padding:5px 9px;font-size:.72rem;font-weight:800}
 /* ── 휠 인터랙션 — 선택 강조·툴팁·카드 연동 ── */
 .astro-wheel-figure{position:relative}
 .astro-wheel{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
