@@ -2974,6 +2974,8 @@ function setReadingLanguage(lang){
   closeLanguageMenu();
   showLanguageNote(LANG_META[lang].note);
   applyLanguageToPage();
+  // 이미 열린 유료 AI 풀이 카드는 선택 언어로 다시 생성 (캐시 키가 언어별이라 언어마다 1회만 호출)
+  try{if(typeof hydrateAIReadings==='function')setTimeout(()=>hydrateAIReadings(document),0);}catch(e){}
 }
 function textHash(s){
   let h=0; s=String(s||'');
@@ -2984,7 +2986,7 @@ function translationCacheKey(lang,text){return 'saju_translate_v1:'+lang+':'+tex
 function translationCacheGet(lang,text){try{return localStorage.getItem(translationCacheKey(lang,text));}catch(e){return null;}}
 function translationCacheSet(lang,text,out){try{localStorage.setItem(translationCacheKey(lang,text),out);}catch(e){}}
 function collectTranslatableTextNodes(root){
-  const skip='.lang-switch,.lang-note,script,style,textarea,input,select,.pstem,.pbranch,.mm-cell,.dx-col,.gg-mc,.nb-cat,.lock-input,.chat-input,.material-symbols-outlined';
+  const skip='.lang-switch,.lang-note,script,style,textarea,input,select,.pstem,.pbranch,.mm-cell,.dx-col,.gg-mc,.nb-cat,.lock-input,.chat-input,.material-symbols-outlined,#sharePreview';
   const nodes=[];
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
     acceptNode(node){
@@ -3021,17 +3023,15 @@ function restoreOriginalLanguage(root){
     Object.entries(el.__koAttrs).forEach(([attr,val])=>el.setAttribute(attr,val));
   });
 }
-function isResultLanguageScope(scope){
-  return !!(scope&&(scope.id==='view-result'||scope.closest&&scope.closest('#view-result')));
-}
+// 정적 사전(STATIC_I18N)에 없는 모든 한국어 문구는 API 번역 대상 — 화면·길이 제한 없음 (100% 번역 목표)
+// 결과 캐시(localStorage)로 같은 문구 재번역을 막아 짧은 라벨·버튼도 부담 없이 처리한다.
 function isApiEligibleTranslationItem(item, scope){
-  if(!isResultLanguageScope(scope))return false;
   const text=normalizeStaticKey(item.text);
-  if(text.length<28)return false;
+  if(!/[가-힣]/.test(text))return false;
   const el=item.type==='node'?item.target.parentElement:item.target;
   if(!el)return false;
-  if(el.closest('.lang-switch,.lang-note,button,.tog,.bb,.menu-back,.share-bar,.share-bar-btn,.chat-head,.chat-input-row,.chat-tip,.chat-addbuy-btn,.reviews-sec,.home-foot,.form-body legend,.form-body label,.mc-tag,.mc-price,.nb-cat,.material-symbols-outlined'))return false;
-  return /[가-힣]/.test(text);
+  if(el.closest('.lang-switch,.lang-note,.material-symbols-outlined'))return false;
+  return true;
 }
 async function translateTextBatch(texts, lang){
   if(!texts.length||lang==='ko')return texts;
@@ -3080,8 +3080,8 @@ async function applyLanguageToVisibleResult(root){
   if(!scope)return;
   updateLanguageUI();
   if(lang==='ko'){restoreOriginalLanguage(scope);return;}
-  const nodes=collectTranslatableTextNodes(scope).slice(0,1200);
-  const attrs=collectTranslatableAttrs(scope).slice(0,300);
+  const nodes=collectTranslatableTextNodes(scope).slice(0,2600);
+  const attrs=collectTranslatableAttrs(scope).slice(0,500);
   if(!nodes.length&&!attrs.length)return;
   nodes.forEach(n=>{if(!n.__koText)n.__koText=n.nodeValue;});
   attrs.forEach(item=>{
@@ -3104,18 +3104,30 @@ async function applyLanguageToVisibleResult(root){
     }
   });
   if(!apiItems.length)return;
-  try{
-    for(let i=0;i<apiItems.length;i+=120){
-      const chunk=apiItems.slice(i,i+120);
+  // 문자 예산 기반 청킹 — 긴 풀이도 출력 토큰 한도 안에서 안전하게 (최대 60개·합계 3200자)
+  const chunks=[];let cur=[],curLen=0;
+  apiItems.forEach(it=>{
+    const L=it.text.length;
+    if(cur.length&&(cur.length>=60||curLen+L>3200)){chunks.push(cur);cur=[];curLen=0;}
+    cur.push(it);curLen+=L;
+  });
+  if(cur.length)chunks.push(cur);
+  const applyOne=(item,t)=>{
+    if(item.type==='node'){item.target.nodeValue=t;_translatedTextNodes.add(item.target);}
+    else item.target.setAttribute(item.attr,t);
+  };
+  const runChunk=async(chunk)=>{
+    try{
       const translated=await translateTextBatch(chunk.map(x=>x.text),lang);
-      translated.forEach((t,j)=>{
-        const item=chunk[j];
-        if(item.type==='node'){item.target.nodeValue=t;_translatedTextNodes.add(item.target);}
-        else item.target.setAttribute(item.attr,t);
-      });
+      if(currentLanguage()!==lang)return; // 번역 도중 언어가 바뀌면 이 결과는 버림 (캐시에는 저장됨)
+      translated.forEach((t,j)=>applyOne(chunk[j],t));
+    }catch(e){
+      // 청크 단위 부분 실패 허용 — 실패분은 원문 유지, 다음 적용 때 캐시·재시도로 보완
     }
-  }catch(e){
-    // 선택 언어 적용이 어려운 일부 본문은 원문을 유지한다. 사용자에게 내부 처리 상태를 노출하지 않는다.
+  };
+  for(let i=0;i<chunks.length;i+=3){
+    await Promise.all(chunks.slice(i,i+3).map(runChunk));
+    if(currentLanguage()!==lang)return;
   }
 }
 function getActiveLanguageScope(){
@@ -3383,6 +3395,8 @@ function showInfoPopup(el,title,desc){
   requestAnimationFrame(()=>pop.classList.add('vis'));
   el.classList.add('term-active');
   _termPopup=pop;_termAnchor=el;
+  // 용어 설명 팝업도 body 직속 — 선택 언어 번역 직접 적용
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(pop);}catch(e){}},0);}
 }
 
 function infoPopupCtaHTML(title){
@@ -3908,6 +3922,8 @@ function renderTarot(){
   const map={home:renderTarotHome,today:renderTodayTarot,question:renderTarotQuestion,recommend:renderTarotRecommend,payment:renderTarotPayment,draw:renderTarotDraw,result:renderTarotResult,history:renderTarotHistory};
   (map[_tarotRoute]||renderTarotHome)(root);
   window.scrollTo(0,0);
+  // 타로 화면도 선택 언어로 — 렌더 직후 현재 뷰에 번역 적용
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('view-tarot'));}catch(e){}},0);}
 }
 function renderTarotHome(root){
   tarotSetHeader('타로','오늘의 메시지와 질문형 리딩');
@@ -9661,6 +9677,8 @@ function openPaymentConsent(category,method){
   document.getElementById('payStatus').textContent='';
   document.getElementById('payOverlay').className='pay-overlay vis';
   document.body.style.overflow='hidden';
+  // 결제 동의창은 body 직속 오버레이라 뷰 스코프 밖 — 선택 언어 번역을 직접 적용
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('payOverlay'));}catch(e){}},0);}
 }
 function closePaymentConsent(){
   document.getElementById('payOverlay').className='pay-overlay';
@@ -9942,6 +9960,8 @@ function openPayDoneModal(opts){
   if(reviewThanks)reviewThanks.style.display=reviewDone?'':'none';
   document.getElementById('payDoneOverlay').className='pay-overlay vis';
   document.body.style.overflow='hidden';
+  // 결제 완료 모달도 뷰 스코프 밖 — 선택 언어 번역 직접 적용
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('payDoneOverlay'));}catch(e){}},0);}
 }
 function closePayDone(){
   document.getElementById('payDoneOverlay').className='pay-overlay';
@@ -14725,6 +14745,8 @@ function showChatLimitUpsell(currentCat){
     }
   };
   requestAnimationFrame(()=>overlay.classList.add('on'));
+  // 질문권 충전 모달도 body 직속 — 선택 언어 번역 직접 적용
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(overlay);}catch(e){}},0);}
 }
 function chatResetCount(cat){
   const c=cat||_category||'life';
@@ -14837,25 +14859,25 @@ function aiReadingDomId(category, extraKey){
   const safe=String(category+'_'+(extraKey||'main')).replace(/[^A-Za-z0-9_-]/g,'_');
   return 'aiReading_'+safe;
 }
-function aiReadingCacheKey(category, extraKey){
+function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
-  return 'saju_ai_reading_v3:'+currentLanguage()+':'+category+':'+birth+':'+(extraKey||'main');
+  return 'saju_ai_reading_v3:'+(lang||currentLanguage())+':'+category+':'+birth+':'+(extraKey||'main');
 }
-function aiReadingCacheGet(category, extraKey){
+function aiReadingCacheGet(category, extraKey, lang){
   try{
-    const raw=localStorage.getItem(aiReadingCacheKey(category,extraKey));
+    const raw=localStorage.getItem(aiReadingCacheKey(category,extraKey,lang));
     if(!raw)return null;
     const data=JSON.parse(raw);
     if(!data||!data.text||!data.exp||Date.now()>data.exp){
-      localStorage.removeItem(aiReadingCacheKey(category,extraKey));
+      localStorage.removeItem(aiReadingCacheKey(category,extraKey,lang));
       return null;
     }
     return data.text;
   }catch(e){return null;}
 }
-function aiReadingCacheSet(category, extraKey, text){
+function aiReadingCacheSet(category, extraKey, text, lang){
   try{
-    localStorage.setItem(aiReadingCacheKey(category,extraKey),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
+    localStorage.setItem(aiReadingCacheKey(category,extraKey,lang),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
   }catch(e){}
 }
 const AI_REPLACED_CARD_LABELS={
@@ -14932,13 +14954,14 @@ async function hydrateAIReading(category, opts){
   if(!card)return;
   const body=card.querySelector('.ai-reading-body');
   if(!body)return;
-  const cached=aiReadingCacheGet(category,extraKey);
+  const reqLang=currentLanguage(); // 요청 시점 언어 고정 — 도중에 언어가 바뀌면 이 응답은 화면에 쓰지 않음
+  const cached=aiReadingCacheGet(category,extraKey,reqLang);
   if(cached){
     body.innerHTML=aiReadingTextToHtml(cached);
     card.style.display='';
     card.classList.add('ai-ready');
     setAIReadingFallbackVisible(category,extraKey,false);
-    if(currentLanguage()!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
+    if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
     return;
   }
   const payload=buildAIReadingPayload(category,opts);
@@ -14952,13 +14975,15 @@ async function hydrateAIReading(category, opts){
     if(!resp||!resp.ok)throw new Error((data&&data.error)||'개인화 리딩을 불러오지 못했어요.');
     const text=(data.text||data.answer||'').trim();
     if(!text)throw new Error('개인화 리딩이 비어 있어요.');
-    aiReadingCacheSet(category,extraKey,text);
+    aiReadingCacheSet(category,extraKey,text,reqLang); // 요청 언어 키에 저장 (도착 시점 언어 오염 방지)
+    if(currentLanguage()!==reqLang)return; // 언어가 바뀌었으면 새 언어용 hydrate가 따로 처리
     body.innerHTML=aiReadingTextToHtml(text);
     card.style.display='';
     card.classList.add('ai-ready');
     setAIReadingFallbackVisible(category,extraKey,false);
-    if(currentLanguage()!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
+    if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
+    if(currentLanguage()!==reqLang)return;
     setAIReadingFallbackVisible(category,extraKey,true);
     card.style.display='none';
     body.innerHTML='';
@@ -14992,6 +15017,8 @@ function chatAppend(role,text){
   div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
   log.appendChild(div);
   log.scrollTop=log.scrollHeight;
+  // 역술가 답변·안내가 한국어(로컬 폴백 등)로 온 경우 선택 언어로 번역 (사용자 입력은 원문 유지)
+  if(role!=='user'&&role!=='loading'&&typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(div);}catch(e){}},0);}
   return div;
 }
 
@@ -20091,6 +20118,8 @@ function generateShareText(){
 function showShareModal(){
   document.getElementById('sharePreview').textContent=generateShareText();
   document.getElementById('shareOverlay').className='share-overlay vis';
+  // 공유 모달도 body 직속 — 선택 언어 번역 직접 적용 (공유 본문 미리보기는 원문 유지)
+  if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('shareOverlay'));}catch(e){}},0);}
 }
 function closeShareModal(){
   document.getElementById('shareOverlay').className='share-overlay';

@@ -55,7 +55,15 @@ function goToAstrology(route='home'){_astroRoute=route;showView('astrology');ren
 function astrologyBack(){if(['home','today','input','natal','natalInput','result','history'].includes(_astroRoute))return goHome();const b={natalResult:'natal',summary:'input',products:'input',payment:'products'};_astroRoute=b[_astroRoute]||'home';renderAstrology();}
 function astroNavigate(route){_astroRoute=route;renderAstrology();}
 function astroRoot(){return document.getElementById('astroApp');}
-function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,natal:renderNatalChartPage,natalInput:renderNatalChartInput,natalResult:renderNatalChartResult,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);}
+function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,natal:renderNatalChartPage,natalInput:renderNatalChartInput,natalResult:renderNatalChartResult,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);astroApplyLanguage(document.getElementById('view-astrology'));}
+// 점성술 화면도 선택 언어로 — 렌더/부분 갱신 직후 번역 적용 (ko면 no-op)
+function astroApplyLanguage(scope){
+  try{
+    if(scope&&typeof currentLanguage==='function'&&currentLanguage()!=='ko'&&typeof applyLanguageToVisibleResult==='function'){
+      setTimeout(()=>{try{applyLanguageToVisibleResult(scope);}catch(e){}},0);
+    }
+  }catch(e){}
+}
 
 function renderAstrologyHome(root){
   astroSetHeader('점성술','출생차트와 오늘의 행성 흐름');
@@ -342,6 +350,7 @@ function renderWheelTip(sel,chart,panel){
   tip.classList.toggle('below',y<132);
   tip.classList.remove('on');
   requestAnimationFrame(()=>tip.classList.add('on'));
+  astroApplyLanguage(tip);
 }
 
 // ══ Time Journey — 트랜짓 슬라이더 (API 없음, 기존 계산 엔진만 사용) ══
@@ -494,6 +503,7 @@ function tjApply(){
   const s=document.getElementById('tjSummary');if(s)s.innerHTML=tjSummaryHTML(chart,tj);
   const pos=document.getElementById('tjPositions');if(pos)pos.innerHTML=tjPositionsHTML(chart,tj);
   const asp=document.getElementById('tjAspects');if(asp)asp.innerHTML=tjAspectsHTML(tj);
+  astroApplyLanguage(document.getElementById('timeJourneyPanel'));
 }
 function planetGlyph(p){return ({sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇'})[p]||'•';}
 function signIndex(sign){return ZODIAC_SIGNS.findIndex(s=>s.id===sign);}
