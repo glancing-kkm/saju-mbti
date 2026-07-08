@@ -547,18 +547,83 @@ function normalizeDeg(x){return ((x%360)+360)%360;}
 function normalizeDelta(x){let d=normalizeDeg(x);return d>180?d-360:d;}
 function gmst(date){const jd=date.getTime()/86400000+2440587.5;const d=jd-2451545.0;return normalizeDeg(280.46061837+360.98564736629*d);}
 function isPersonal(p){return ['sun','moon','mercury','venus','mars'].includes(p);}
+// 오늘의 점성술 — 트랜짓(모두 동일)만 쓰지 않고 본인 출생차트(달·금성·화성·하우스·원소 균형·트랜짓 각도)와 교차해 사람마다 다른 풀이를 만든다
+const ASTRO_ELEM_KO={fire:'불',earth:'흙',air:'바람',water:'물'};
+const ASTRO_NATAL_THEME={sun:'자신감과 삶의 중심',moon:'감정과 컨디션',mercury:'말과 판단',venus:'관계와 호감',mars:'추진력과 의욕',jupiter:'기회와 확장',saturn:'책임과 부담',uranus:'변화 욕구',neptune:'감성과 직관',pluto:'깊은 변화'};
+// 원소 궁합 — 같음 / 서로 밀어줌(불↔바람, 흙↔물) / 온도가 다름(불↔물, 바람↔흙) / 그 외
+function astroElemRel(a,b){
+  if(a===b)return 'same';
+  if(({fire:'air',air:'fire',earth:'water',water:'earth'})[a]===b)return 'friend';
+  if(({fire:'water',water:'fire',air:'earth',earth:'air'})[a]===b)return 'clash';
+  return 'mixed';
+}
 function generateTodayAstrology(chart,transit){
-  const sun=chart.planets.find(p=>p.planet==='sun');
-  const moonT=transit.planets.find(p=>p.planet==='moon');
-  const venusT=transit.planets.find(p=>p.planet==='venus');
-  const marsT=transit.planets.find(p=>p.planet==='mars');
-  const ss=signById(sun.sign),ms=signById(moonT.sign),vs=signById(venusT.sign),mas=signById(marsT.sign);
-  return [
-    `오늘은 달이 ${ms.nameKo}에 머물러 있어서 마음이 ${ms.keywords[0]}${koWa(ms.keywords[0])} ${ms.keywords[1]} 쪽으로 조금 더 쉽게 움직일 수 있어요. 본인의 출생 태양은 ${ss.nameKo}라서 평소에는 ${ss.personality} 그래서 오늘은 원래의 성향대로 바로 밀고 나가기보다, 지금 마음이 어디에 반응하는지 먼저 살펴보는 편이 좋아요.`,
-    `관계에서는 금성이 ${vs.nameKo}에 있어서 ${vs.loveStyle} 상대의 말이나 표정을 너무 깊게 해석하기보다는, 편안하게 말을 건네는 쪽이 더 자연스럽습니다. 돈이나 약속과 관련된 일은 급하게 결정하지 말고, 정말 필요한 지출인지 한 번 더 확인해보세요. 작은 확인만으로도 불필요한 흔들림을 줄일 수 있어요.`,
-    `일이나 해야 할 일에서는 화성이 ${mas.nameKo}에 있어 ${mas.careerStyle} 오늘은 새로운 일을 크게 벌이기보다 이미 진행 중인 일을 정리하는 데 더 잘 맞습니다. 컨디션도 한 번에 몰아쓰기보다는 중간중간 쉬어가야 오래 유지돼요.`,
-    `정리해서 말하면, 오늘은 감정보다 현실적인 기준을 먼저 세우면 훨씬 부드럽게 지나갈 수 있는 날이에요. 바로 반응하기 전에 한 번만 숨을 고르고, 말이나 결정을 조금 단정하게 다듬어보세요. 특히 ${ms.caution}`
-  ].join('\n\n');
+  const natal=id=>chart.planets.find(p=>p.planet===id);
+  const tp=id=>transit.planets.find(p=>p.planet===id);
+  const iga=w=>koHasBatchim(w)?'이':'가';
+  const eul=w=>koHasBatchim(w)?'을':'를';
+  const sun=natal('sun'),moonN=natal('moon'),venusN=natal('venus'),marsN=natal('mars');
+  const moonT=tp('moon'),venusT=tp('venus'),marsT=tp('mars');
+  const ss=signById(sun.sign),msN=signById(moonN.sign),msT=signById(moonT.sign);
+  const vsN=signById(venusN.sign),vsT=signById(venusT.sign),masN=signById(marsN.sign),masT=signById(marsT.sign);
+  const paras=[];
+
+  // ① 기본 기류 — 오늘의 달 × 본인의 달·태양
+  const moonRelText={
+    same:`본인의 달도 같은 ${ASTRO_ELEM_KO[msT.element]} 기운의 ${msN.nameKo}에 있어서, 오늘의 감정 흐름이 평소 마음의 방식과 잘 맞물려요. 감이 오는 대로 움직여도 크게 어긋나지 않는 날이에요.`,
+    friend:`본인의 달은 ${msN.nameKo}에 있는데, 두 기운이 서로를 밀어주는 사이라 마음이 평소보다 가볍게 움직여요.`,
+    clash:`본인의 달은 ${msN.nameKo}에 있는데, 오늘의 기류와 온도가 달라서 감정이 평소와 다르게 출렁일 수 있어요. 기분이 낯설게 느껴져도 이상한 게 아니에요.`,
+    mixed:`본인의 달은 ${msN.nameKo}에 있어서 오늘의 기류와는 분위기가 조금 달라요. 마음이 두 방향으로 나뉘면 몸이 편한 쪽을 골라주세요.`
+  }[astroElemRel(msT.element,msN.element)];
+  paras.push(`오늘은 달이 ${msT.nameKo}를 지나가요. 하루의 감정 기류가 ${msT.keywords[0]}${koWa(msT.keywords[0])} ${msT.keywords[1]} 쪽으로 기울어요. ${moonRelText} 본인의 태양은 ${ss.nameKo}라서 평소에는 ${ss.personality} 오늘은 그 성향대로 바로 밀고 나가기 전에 마음의 반응을 먼저 봐주세요.`);
+
+  // ② 오늘 본인 차트에 닿는 각도 — 출생 시각·날짜에 따라 사람마다 완전히 달라지는 부분
+  const aspects=calculateTransitAspects(chart,transit);
+  if(aspects.length){
+    const a=aspects[0];
+    const t=planetNameKo(a.transit),n=planetNameKo(a.natal),theme=ASTRO_NATAL_THEME[a.natal]||'오늘의 흐름';
+    let s;
+    if(a.meaningType==='harmonious')s=`오늘 하늘의 ${t}${iga(t)} 본인 차트의 ${n}${koWa(n)} 부드러운 각도를 만들어요. ${theme} 쪽에서 일이 평소보다 수월하게 풀리기 쉬우니, 미뤄둔 일이 있다면 오늘 꺼내보세요.`;
+    else if(a.meaningType==='tense')s=`오늘 하늘의 ${t}${iga(t)} 본인 차트의 ${n}${eul(n)} 건드리는 긴장 각도예요. ${theme} 쪽에서 조급함이나 부딪힘이 생기기 쉬우니, 오늘은 반응 속도를 반 박자 늦추는 게 유리해요.`;
+    else s=`오늘 하늘의 ${t}${iga(t)} 본인 차트의 ${n} 바로 위를 지나가요. ${theme}${iga(theme)} 오늘 하루의 주제로 떠올라요. 이 영역에서 생기는 일은 흘려보내지 말고 챙겨보세요.`;
+    const b=aspects.find(x=>x!==a&&x.natal!==a.natal&&x.meaningType!==a.meaningType);
+    if(b){const t2=planetNameKo(b.transit),n2=planetNameKo(b.natal);s+=` 함께 하늘의 ${t2}${iga(t2)} 본인의 ${n2}${koWa(n2)} ${b.meaningType==='harmonious'?'부드러운':b.meaningType==='tense'?'긴장':'겹치는'} 각도를 만들고 있어서, ${ASTRO_NATAL_THEME[b.natal]} 쪽 신호도 같이 봐주세요.`;}
+    paras.push(s);
+  }else{
+    paras.push('오늘은 본인 차트를 세게 건드리는 각도가 없어요. 흐름이 잔잔한 날이라 새 일을 벌이기보다 하던 일을 고르게 정리하기 좋아요.');
+  }
+
+  // ③ 관계·돈 — 본인의 금성 × 오늘의 금성
+  const vRelText={
+    same:'오늘의 관계 기류가 본인 방식과 같은 방향이라, 마음을 표현하면 평소보다 잘 전달돼요.',
+    friend:'오늘의 관계 기류가 본인 방식을 밀어줘서, 조금 먼저 다가가도 어색하지 않은 날이에요.',
+    clash:'오늘의 관계 기류는 본인 방식과 온도가 달라요. 상대의 말이 평소와 다르게 들릴 수 있으니 해석을 서두르지 마세요.',
+    mixed:'오늘의 관계 기류는 본인 방식과 조금 다른 방향이에요. 무리해서 맞추기보다 듣는 쪽에 서면 편해요.'
+  }[astroElemRel(vsT.element,vsN.element)];
+  paras.push(`관계에서는 본인의 금성이 ${vsN.nameKo}에 있어서 ${vsN.loveStyle} ${vRelText} 돈에서는 ${ss.moneyStyle} 오늘은 새 지출을 늘리기보다 나가는 돈을 정리하는 쪽이 어울려요.`);
+
+  // ④ 일·컨디션 — 본인의 화성 × 오늘의 화성, 하우스가 있으면 오늘 달이 지나는 삶의 영역까지
+  const mRelText={
+    same:'오늘의 추진 기류도 같은 방향이라 속도를 내기 좋아요. 다만 브레이크 없이 달리지 않게 중간 점검 하나만 넣어주세요.',
+    friend:'오늘의 기류가 본인의 방식을 받쳐줘서 밀린 일을 처리하기 좋은 날이에요.',
+    clash:'오늘의 기류는 본인의 속도와 달라서 일이 뜻대로 안 굴러가는 느낌이 들 수 있어요. 오늘은 벌이기보다 정리하는 쪽이 맞아요.',
+    mixed:'오늘의 기류는 본인의 방식과 조금 달라요. 평소 방식이 안 먹히면 순서만 바꿔보세요.'
+  }[astroElemRel(masT.element,masN.element)];
+  let housePart='';
+  if(Array.isArray(chart.houses)&&chart.houses.length===12&&moonT.longitude!=null){
+    const h=houseForLongitude(normalizeDeg(moonT.longitude),chart.houses);
+    if(h)housePart=` 오늘 달은 본인의 ${h}하우스를 지나요. ${getHouseMeaning(h)} 영역으로 마음이 쏠리기 쉬우니 그쪽부터 챙기면 하루가 정돈돼요.`;
+  }
+  paras.push(`일에서는 본인의 화성이 ${masN.nameKo}에 있어서 ${masN.careerStyle} ${mRelText}${housePart}`);
+
+  // ⑤ 마무리 — 본인 차트의 원소 균형 + 본인의 달 별자리 기준 주의점
+  const de=getDominantElement(chart.elementBalance),we=getWeakElement(chart.elementBalance);
+  const elemPart=msT.element===we
+    ?`오늘 달의 ${ASTRO_ELEM_KO[we]} 기운은 본인 차트에 가장 부족한 기운이에요. 평소 어색했던 방식을 가볍게 시험해보기 좋은 날이라는 뜻이기도 해요.`
+    :`본인 차트에는 ${ASTRO_ELEM_KO[de]} 기운이 강한 편이라 오늘도 익숙한 방식이 먼저 나올 거예요. 거기에 오늘의 기류를 조금만 섞어보세요.`;
+  paras.push(`정리하면, ${elemPart} 마지막으로 하나만 조심하세요. ${msN.caution}`);
+
+  return paras.join('\n\n');
 }
 function generateTemplateAstrologySummary(chart){const sun=chart.planets.find(p=>p.planet==='sun'),moon=chart.planets.find(p=>p.planet==='moon'),venus=chart.planets.find(p=>p.planet==='venus');return `본인의 태양은 ${signNameKo(sun.sign)}, 달은 ${signNameKo(moon.sign)}, 금성은 ${signNameKo(venus.sign)}에 있어요. 삶의 방향은 ${signById(sun.sign).personality} 감정은 ${signById(moon.sign).personality} 관계에서는 ${signById(venus.sign).loveStyle} ${chart.ascendant?`상승궁은 ${signNameKo(chart.ascendant.sign)}라 첫인상과 외적 태도에 그 별자리의 분위기가 더해져요.`:'출생시간이 없어 상승궁과 하우스는 제외했어요.'}`;}
 function generateTemplateAstrologyReading(chart){return `# 출생차트 핵심 요약\n\n${generateTemplateAstrologySummary(chart)}\n\n# 현재 운의 흐름\n\n현재 트랜짓은 본인의 기본 성향에 새로운 자극을 더하고 있어요. 중요한 결정은 감정만으로 밀어붙이기보다 실제 조건을 함께 확인하는 편이 좋아요.\n\n# 현실적인 조언\n\n오늘부터는 본인이 반복해서 끌리는 선택과 피하고 싶은 선택을 나누어 적어보세요. 차트는 가능성을 보여주는 지도에 가깝기 때문에, 실제 방향은 작은 행동을 통해 더 선명해져요.\n\n# 종합 결론\n\n이 리딩은 계산된 차트를 바탕으로 한 기본 템플릿이에요. AI 리딩이 잠시 실패했지만, 출생시간과 도시 정보를 다시 확인하면 더 안정적인 결과를 받을 수 있어요.`;}
