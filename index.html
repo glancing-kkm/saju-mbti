@@ -144,19 +144,33 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;vertical-align:middle}
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
-/* 본문 읽기 품질 — 고아글자 예방 + 풀이 본문 양쪽 정렬 */
-:where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section){
-  line-break:strict;
-  word-break:keep-all;
-  overflow-wrap:break-word;
-  text-wrap:pretty;
-}
-:where(.nb-body,.daily-cat-body,.abody,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.conversion-hook-body,.dp-body,.ny-sec-body,.ai-reading-body,.ai-reading-section) p,
-:where(.nb-gw-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.lead-card,.summary-intro,.chat-msg-body,.teaser-leadline,.teaser-insight,.mo-row-body,.month-advice-body,.tl-body){
-  text-align:justify;
-  text-align-last:left;
-  text-justify:inter-character;
-}
+  /* 본문 읽기 품질 — 고아글자 예방 + 풀이 본문 가운데 정렬 */
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section){
+    line-break:strict;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+    text-wrap:pretty;
+    text-align:center;
+    text-align-last:center;
+  }
+  :where(.nb-body,.daily-cat-body,.abody,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.conversion-hook-body,.dp-body,.ny-sec-body,.ai-reading-body,.ai-reading-section) p,
+  :where(.nb-gw-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.lead-card,.summary-intro,.chat-msg-body,.teaser-leadline,.teaser-insight,.mo-row-body,.month-advice-body,.tl-body){
+  text-align:center;
+  text-align-last:center;
+  }
+  :where(.tarot-reading-flow,.tarot-fortune-item,.tarot-markdown,.astro-markdown,.astro-text,.daily-card,.ck-body,.ag-block,.ag-block ul,.quick-summary-item,.name-compare-head,.ncr-reason,.ncr-use,.remember-line,.dp-tip,.ny-headline,.ai-reading-status){
+    text-align:center !important;
+    text-align-last:center !important;
+  }
+  :where(.nb-body,.daily-cat-body,.abody,.reading-brief,.lead-card,.summary-intro,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div){
+    text-align:center;
+    text-align-last:center;
+  }
+  :where(.nb-body,.daily-cat-body,.abody,.reading-brief,.lead-card,.summary-intro,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :where(ul,ol){
+    padding-left:0;
+    list-style-position:inside;
+    text-align:center;
+  }
 
 /* ── Header ── */
 .hdr{background:linear-gradient(140deg,var(--bg-deep),var(--bg-mid) 50%,var(--bg-deep));color:var(--text);padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--border)}
