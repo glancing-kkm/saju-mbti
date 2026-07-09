@@ -4382,8 +4382,12 @@ function renderTarotResult(root){
   <section class="tarot-panel"><div class="tarot-markdown">${markdownToTarotHTML(_tarotFlow.resultMarkdown)}</div></section>
   <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">새 질문 보기</button><button class="tarot-btn secondary" onclick="tarotNavigate('history')">히스토리 보기</button></div>`);
 }
+// AI 풀이 속 인라인 마크다운 강조(**굵게**, __굵게__)를 실제 볼드로 변환 — 반드시 이스케이프된 텍스트에만 사용
+function mdInlineToHtml(escaped){
+  return String(escaped??'').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/__([^_\n]+)__/g,'<b>$1</b>');
+}
 function markdownToTarotHTML(md){
-  let html=tarotEsc(md).replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^- (.*)$/gm,'<p>• $1</p>').replace(/^\d+\. (.*)$/gm,'<p>$&</p>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
+  let html=mdInlineToHtml(tarotEsc(md)).replace(/^### (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^- (.*)$/gm,'<p>• $1</p>').replace(/^\d+\. (.*)$/gm,'<p>$&</p>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
   html='<p>'+html+'</p>';return html.replace(/<p><h/g,'<h').replace(/<\/h1><\/p>/g,'</h1>').replace(/<\/h2><\/p>/g,'</h2>').replace(/<p><\/p>/g,'');
 }
 function renderTarotHistory(root){
@@ -15068,11 +15072,11 @@ function aiReadingTextToHtml(text){
   return cleaned.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean).map(p=>{
     const m=p.match(/^\[([^\]]{1,28})\]\s*([\s\S]*)$/);
     if(m){
-      const title=chatEscape(normalizeReadingText(m[1].trim()));
-      const body=preventOrphan(chatEscape(normalizeReadingText(m[2].trim())));
+      const title=mdInlineToHtml(chatEscape(normalizeReadingText(m[1].trim())));
+      const body=mdInlineToHtml(preventOrphan(chatEscape(normalizeReadingText(m[2].trim()))));
       return `<div class="ai-reading-section"><div class="ai-reading-section-title">${title}</div><p>${body}</p></div>`;
     }
-    return `<p>${preventOrphan(chatEscape(p))}</p>`;
+    return `<p>${mdInlineToHtml(preventOrphan(chatEscape(p)))}</p>`;
   }).join('');
 }
 function renderAIReadingCard(category, title, extraKey, opts){
@@ -15170,7 +15174,7 @@ function chatAppend(role,text){
     :langText({ko:'안내',en:'Notice',zh:'提示',ja:'案内'});
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
-  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${preventOrphan(chatEscape(text))}</div>`;
+  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${mdInlineToHtml(preventOrphan(chatEscape(text)))}</div>`;
   log.appendChild(div);
   log.scrollTop=log.scrollHeight;
   // 역술가 답변·안내가 한국어(로컬 폴백 등)로 온 경우 선택 언어로 번역 (사용자 입력은 원문 유지)
