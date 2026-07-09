@@ -5,9 +5,11 @@
 // ──────────────────────────────────────────────────────────────────
 
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*', // 프로덕션에서는 본인 도메인으로 좁히는 걸 추천 (예: 'https://yourdomain.github.io')
+  'Access-Control-Allow-Origin': 'https://saju-mbti-9h1.pages.dev',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Max-Age': '86400',
+  Vary: 'Origin',
 };
 const QNA_QUESTION_MAX_CHARS = 300;
 const QNA_ANSWER_MAX_CHARS = 1300;
@@ -382,10 +384,12 @@ async function handleTarotReading(request, env) {
 }
 
 function buildTarotReadingSystemPrompt(language = 'ko') {
+  const lang = normalizeLanguage(language);
   return `너는 15년 경력의 전문 타로 리더다.
 
 너의 역할은 사용자가 입력한 질문과 선택한 카드, 스프레드 위치를 바탕으로 현실적이고 따뜻한 타로 리딩을 제공하는 것이다.
-출력 언어 규칙: ${languageInstruction(language)}
+출력 언어 규칙: ${languageInstruction(lang)}
+${lang.code === 'ko' ? '' : `The final visible answer must be entirely in ${lang.label}. Translate every section title, heading, label, and sentence into ${lang.label}. Do not leave Korean headings such as "질문 요약", "전체 흐름 요약", "카드별 해석", "현실적인 조언", or "주의할 점" in the response. Korean card names may appear only when paired with the English card name or when needed as source evidence.`}
 
 반드시 지켜야 할 원칙:
 1. 카드 의미를 단순 나열하지 말고 질문과 연결해서 해석한다.
@@ -405,6 +409,7 @@ function buildTarotReadingSystemPrompt(language = 'ko') {
 }
 
 function buildTarotReadingUserPrompt(input, language = 'ko') {
+  const lang = normalizeLanguage(language);
   const cards = input.cards.map((card) => ({
     positionIndex: card.positionIndex,
     positionLabel: card.positionLabel,
@@ -456,7 +461,8 @@ ${input.spreadDescription || ''}
 ${JSON.stringify(cards, null, 2)}
 
 출력 언어:
-${languageInstruction(language)}
+${languageInstruction(lang)}
+${lang.code === 'ko' ? '' : `All headings below are structural source labels only. In the final answer, translate them naturally into ${lang.label} and do not output Korean section titles.`}
 
 아래 구조로 Markdown 타로 리딩을 작성해줘.
 
@@ -591,10 +597,12 @@ async function handleAstrologyReading(request, env) {
 }
 
 function buildAstrologyReadingSystemPrompt(language = 'ko') {
+  const lang = normalizeLanguage(language);
   return `너는 20년 경력의 전문 점성술사다.
 
 너는 사용자의 출생차트와 현재 Transit 데이터를 바탕으로 점성술 리딩을 제공한다.
-출력 언어 규칙: ${languageInstruction(language)}
+출력 언어 규칙: ${languageInstruction(lang)}
+${lang.code === 'ko' ? '' : `The final visible answer must be entirely in ${lang.label}. Translate every section title, heading, label, and sentence into ${lang.label}. Do not leave Korean headings such as "출생차트 핵심 요약", "성격과 기질", "현재 운의 흐름", or "종합 결론" in the response. Keep planet/sign labels only as technical evidence when needed, and explain them in ${lang.label}.`}
 
 중요 원칙:
 1. 행성 위치, 별자리, 하우스, 애스펙트는 이미 계산된 데이터만 사용한다.
@@ -611,6 +619,7 @@ function buildAstrologyReadingSystemPrompt(language = 'ko') {
 }
 
 function buildAstrologyReadingUserPrompt({ chart, transit, productType, language }) {
+  const lang = normalizeLanguage(language);
   const productMap = {
     'birth-basic': '출생차트 성향 분석',
     'love-marriage': '연애/결혼운',
@@ -637,7 +646,8 @@ function buildAstrologyReadingUserPrompt({ chart, transit, productType, language
 ${productMap[productType] || productType || '점성술 리딩'}
 
 출력 언어:
-${languageInstruction(language)}
+${languageInstruction(lang)}
+${lang.code === 'ko' ? '' : `All headings below are structural source labels only. In the final answer, translate them naturally into ${lang.label} and do not output Korean section titles.`}
 
 계산된 출생차트 데이터:
 ${JSON.stringify(chart, null, 2)}
@@ -682,7 +692,7 @@ async function handleTranslate(request, env) {
 
   const texts = (Array.isArray(body.texts) ? body.texts : [])
     .slice(0, 220)
-    .map((t) => String(t || '').replace(/\s+/g, ' ').trim().slice(0, 900));
+    .map((t) => String(t || '').replace(/\s+/g, ' ').trim().slice(0, 4000));
   if (!texts.length) return json({ ok: true, texts: [] });
 
   const systemPrompt = `You are a translation engine for a saju fortune web app.
@@ -703,7 +713,7 @@ Rules:
           model: env.OPENAI_TRANSLATE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini',
           systemPrompt,
           userPrompt,
-          maxOutputTokens: 7000,
+          maxOutputTokens: 12000,
           reasoningEffort: 'low',
           verbosity: 'low',
         });
@@ -718,7 +728,7 @@ Rules:
         apiKey: env.ANTHROPIC_API_KEY,
         body: {
           model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-          max_tokens: 7000,
+          max_tokens: 12000,
           system: [{ type: 'text', text: systemPrompt }],
           messages: [{ role: 'user', content: userPrompt }],
         },
@@ -737,7 +747,7 @@ Rules:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
-        max_tokens: 5000,
+        max_tokens: 9000,
       });
       raw = extractWorkersAIText(result);
     }

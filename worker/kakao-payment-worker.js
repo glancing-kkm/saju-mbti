@@ -36,6 +36,11 @@ const CATEGORY_PRICE = {
   tarot3: 1500,
   tarot5: 2000,
   tarot10: 3000,
+  'astro-birth-basic': 1500,
+  'astro-love-marriage': 1500,
+  'astro-career-money': 1500,
+  'astro-yearly': 1500,
+  'astro-full-report': 2500,
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;
@@ -275,7 +280,7 @@ const SAJU_ID_RE = /^[a-zA-Z]+_[가-힣XxA-Za-z]{8,16}$/;
 
 function sanitizeText(s) {
   if (typeof s !== 'string') return '';
-  return s.replace(/<[^>]*>/g, '').replace(/[ -]/g, '').trim();
+  return s.replace(/<[^>]*>/g, '').replace(/[\x00-\x1f\x7f]/g, '').trim();
 }
 
 function maskNickname(n) {
