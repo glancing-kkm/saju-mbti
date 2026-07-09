@@ -3930,10 +3930,17 @@ function buildTarotCards(){
     ['pentacles','펜타클','Pentacles','흙','현실과 안정']
   ];
   const ranks=[['01','에이스','Ace','새로운 시작'],['02','2','Two','균형과 선택'],['03','3','Three','확장과 협력'],['04','4','Four','기반과 안정'],['05','5','Five','갈등과 조정'],['06','6','Six','회복과 교류'],['07','7','Seven','점검과 인내'],['08','8','Eight','속도와 숙련'],['09','9','Nine','성취와 정리'],['10','10','Ten','완성과 부담'],['11-page','페이지','Page','배움과 소식'],['12-knight','기사','Knight','이동과 추진'],['13-queen','여왕','Queen','성숙한 돌봄'],['14-king','왕','King','통제와 완성']];
+  // 마이너 의미 마무리 문장 — 슈트(원소) 성격에 맞는 3종을 숫자 순서대로 돌려가며 배정해 같은 문장 반복을 줄인다
+  const suitMeaningTails={
+    wands:['생각이 길어지면 열기가 식으니, 작게라도 실제 행동으로 옮겨보는 게 좋아요.','속도를 내기 전에 방향부터 잡으면 이 기운을 제대로 쓸 수 있어요.','머리로 오래 재기보다 몸으로 부딪치며 배우는 흐름이에요.'],
+    cups:['지금 느끼는 감정을 솔직하게 인정하는 것이 풀이의 출발점이에요.','상대의 마음을 궁금해하기 전에 내 마음의 온도를 먼저 확인해보세요.','감정을 억누르기보다 편하게 표현할 길을 찾는 게 좋아요.'],
+    swords:['감정을 한 걸음 떨어뜨리고 사실만 놓고 보면 답이 선명해져요.','말을 한 번 다듬는 것만으로도 불필요한 갈등을 줄일 수 있어요.','판단을 서두르지 말고 빠진 정보가 없는지 먼저 살펴보세요.'],
+    pentacles:['조건을 하나씩 눈으로 확인하는 것이 이 카드를 읽는 첫걸음이에요.','서두르지 않고 차근차근 쌓아가는 쪽이 결국 더 멀리 가요.','기분보다 숫자를 먼저 보면 흔들리지 않아요.']
+  };
   suits.forEach(([suit,ko,en,element,theme])=>{
-    ranks.forEach(([key,rko,ren,kw])=>{
+    ranks.forEach(([key,rko,ren,kw],ri)=>{
       const nameKo=`${ko}${rko}`, nameEn=`${ren} of ${en}`;
-      const meaning=`${theme}의 영역에서 ${kw}${_tIp(kw)} 중요한 흐름을 보여줘요. 상황을 현실적으로 살피면 다음 단계가 보여요.`;
+      const meaning=`${theme}의 영역에서 ${kw}${_tIp(kw)} 중요한 흐름을 보여줘요. ${suitMeaningTails[suit][ri%3]}`;
       const today=`${TAROT_SUIT_TODAY[suit]} ${TAROT_RANK_TODAY[kw]}`;
       cards.push(tarotCard(`${suit}-${key}`,nameKo,nameEn,[theme,kw,element],meaning,'minor',today));
     });
