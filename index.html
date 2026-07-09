@@ -900,6 +900,12 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .teaser-pay-text{font-weight:900;font-size:.86rem;white-space:normal;line-height:1.25;word-break:keep-all;overflow-wrap:break-word;text-align:left}
 .lock-wrap-after-teaser{padding-top:18px}
 .teaser-payment-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
+.paid-secret-lock{width:42px;height:42px;border:0;border-radius:50%;display:inline-grid;place-items:center;background:rgba(212,175,55,.14);color:var(--accent-bright);font-size:22px;line-height:1;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(245,215,124,.26),0 8px 24px rgba(0,0,0,.22);-webkit-tap-highlight-color:transparent;transition:.18s}
+.paid-secret-lock:hover{transform:translateY(-1px);background:rgba(212,175,55,.2)}
+.paid-secret-lock:active{transform:scale(.96)}
+.pay-secret-lock{position:absolute;right:14px;top:14px;width:36px;height:36px;font-size:20px;background:rgba(255,235,0,.16);color:#ffe66c}
+.tarot-secret-lock{margin:0 auto 12px;background:rgba(212,175,55,.14);color:#ffe6a8}
+.astro-secret-lock{margin:0 auto 12px;background:rgba(74,144,226,.2);color:#cfe0ff;box-shadow:inset 0 0 0 1px rgba(183,213,255,.28),0 8px 24px rgba(0,0,0,.22)}
 .paywall-compact{margin:0 14px 28px;padding:16px 16px 18px;background:var(--card);border:1px solid rgba(212,175,55,.28);border-radius:14px;text-align:center}
 .paywall-compact .lock-desc{margin-bottom:12px;font-size:.78rem;line-height:1.7}
 .paywall-compact .lock-more{margin-top:14px}
@@ -954,7 +960,7 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .pay-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
 .pay-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0;letter-spacing:-.01em}
 .pay-close{background:none;border:0;color:var(--sub);font-size:1.3rem;cursor:pointer;line-height:1;padding:2px 6px;font-family:inherit}
-.pay-product{padding:14px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px}
+.pay-product{position:relative;padding:14px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px}
 .pay-product-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px}
 .pay-product-desc{font-size:.78rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
 .pay-product-price{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);font-size:.82rem;color:var(--sub)}
@@ -2480,6 +2486,9 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
 
     <div class="pay-product" id="payProduct">
+      <button type="button" class="paid-secret-lock pay-secret-lock" onclick="_secretUnlockTap(_payCategory)" aria-label="관리자 잠금 해제 코드 입력" title="관리자 잠금 해제">
+        <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+      </button>
       <div class="pay-product-name" id="payProductName">상품명</div>
       <div class="pay-product-desc" id="payProductDesc">상품 설명</div>
       <!-- 원가 (쿠폰 적용 시 노출) -->
@@ -4202,8 +4211,12 @@ function renderTarotPayment(root){
   tarotSetHeader('결제','결제 후 바로 카드를 뽑아요');
   const p=TAROT_PRODUCTS.find(x=>x.id===_tarotFlow.selectedSpreadId);
   const price=(_tarotFlow.price||0).toLocaleString();
+  const cat=_tarotFlow.selectedSpreadId;
   root.innerHTML=tarotHtml(`
     <div class="tq-panel" style="margin-bottom:16px">
+      <button type="button" class="paid-secret-lock tarot-secret-lock" onclick="_secretUnlockTap('${cat}')" aria-label="관리자 잠금 해제 코드 입력" title="관리자 잠금 해제">
+        <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+      </button>
       <div class="ts-card-title" style="font-size:1.12rem;margin-bottom:8px">${tarotEsc(_tarotFlow.spreadName)}</div>
       <div class="ts-card-desc" style="margin-bottom:14px">${tarotEsc(p?p.shortDesc:'')} · 카드 ${_tarotFlow.positions.length}장</div>
       <div class="tarot-small" style="position:relative;padding:12px;background:rgba(255,255,255,.04);border-radius:10px;line-height:1.65"><b style="color:var(--accent-bright)">질문</b><br>${tarotEsc(_tarotFlow.question)}</div>
@@ -9645,14 +9658,60 @@ function _secretUnlockTap(category){
     alert('코드가 올바르지 않습니다.');
     return;
   }
-  const rendered=unlockAndRender(category);
+  _adminUnlockPaidCategory(category);
+}
+function _adminUnlockPaidCategory(category){
+  const cat=String(category||'life');
+  if(/^tarot(3|5|10)$/.test(cat)){
+    try{
+      if(typeof closePaymentConsent==='function')closePaymentConsent();
+      if(typeof loadTarotFlow==='function')_tarotFlow=loadTarotFlow();
+      if(!_tarotFlow||!_tarotFlow.selectedSpreadId){
+        alert('타로 질문과 스프레드를 먼저 선택해 주세요.');
+        if(typeof goToTarot==='function')goToTarot('question');
+        return;
+      }
+      const now=Date.now();
+      _tarotFlow.paymentStatus='paid';
+      _tarotFlow.paidAt=now;
+      _tarotFlow.expiresAt=now+24*60*60*1000;
+      if(typeof saveTarotFlow==='function')saveTarotFlow();
+      _tarotRoute='draw';
+      showView('tarot');
+      if(typeof renderTarot==='function')renderTarot();
+    }catch(e){alert('타로 잠금 해제 중 문제가 있었어요.');}
+    return;
+  }
+  if(/^astro-/.test(cat)){
+    try{
+      if(typeof closePaymentConsent==='function')closePaymentConsent();
+      if(typeof resumePaidAstrologyAfterPayment==='function'){
+        resumePaidAstrologyAfterPayment(cat);
+      }else{
+        showView('astrology');
+      }
+    }catch(e){alert('점성술 잠금 해제 중 문제가 있었어요.');}
+    return;
+  }
+  const pack=CHAT_PACKS.find(p=>p.cat===cat);
+  if(pack){
+    const target=_category||'qna';
+    try{
+      addChatBonus(target,pack.count);
+      if(typeof closePaymentConsent==='function')closePaymentConsent();
+      alert(`관리자 코드로 추가 질문 ${pack.count}회가 적립됐어요.`);
+      renderPaymentReturnTarget(target);
+    }catch(e){alert('질문권 적립 중 문제가 있었어요.');}
+    return;
+  }
+  const rendered=unlockAndRender(cat);
   if(rendered)return;
   // 사주 또는 카테고리별 추가 데이터가 부족해서 즉시 렌더 불가
   // → 잠금만 풀어두고 사용자를 입력 폼으로 안내 (입력 완료 후 분위기와 페이지에서 잠금 해제 상태로 풀이 노출)
-  setUnlockedFor(category);
-  if(_category===category)_paidUnlocked=true;
+  setUnlockedFor(cat);
+  if(_category===cat)_paidUnlocked=true;
   alert('잠금이 해제되었습니다. 사주 정보를 입력하시면 풀이가 바로 열립니다.');
-  if(typeof goToInput==='function')goToInput(category);
+  if(typeof goToInput==='function')goToInput(cat);
 }
 
 // ══════════════════════════════════════════════
