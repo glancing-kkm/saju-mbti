@@ -46,7 +46,7 @@
 
     <!-- tagline -->
     <text x="0" y="282" font-size="22" fill="#b8b8c8" letter-spacing="-0.5">만세력 진태양시 자동 보정 · 28+ 카드 깊이</text>
-    <text x="0" y="316" font-size="22" fill="#b8b8c8" letter-spacing="-0.5">AI 역술가 실시간 질의응답</text>
+    <text x="0" y="316" font-size="22" fill="#b8b8c8" letter-spacing="-0.5">천기 역술 상담 · 실시간 질의응답</text>
 
     <!-- 카테고리 칩 -->
     <g transform="translate(0, 360)" font-size="18" font-weight="600">

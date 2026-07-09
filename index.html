@@ -192,6 +192,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── Form ── */
 .form-body{padding:14px 14px 30px;display:flex;flex-direction:column;gap:14px}
+.input-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:14px 14px 0}
+.input-steps span{display:flex;align-items:center;justify-content:center;min-height:34px;padding:7px 6px;border-radius:999px;background:rgba(255,255,255,.045);color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:-.01em}
+.input-steps span.on{background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(245,215,124,.12));color:var(--accent-bright);box-shadow:0 0 0 1px rgba(245,215,124,.28)}
 .form-body fieldset{border:0;padding:0;margin:0;min-width:0}
 .form-body legend{padding:0;font-size:.72rem;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:7px;text-transform:uppercase;display:block;width:100%}
 .form-body legend small{font-weight:400;text-transform:none;font-size:.7rem;letter-spacing:.02em;color:var(--muted)}
@@ -259,6 +262,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .menu-head-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);letter-spacing:.04em;margin-bottom:4px}
 .menu-head-sub{font-size:.72rem;color:var(--sub);line-height:1.6}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.menu-section-head{grid-column:1/-1;margin:8px 2px 0;padding:10px 2px 2px;text-align:left}
+.menu-section-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;color:var(--accent-bright);letter-spacing:-.01em}
+.menu-section-sub{margin-top:3px;font-size:.7rem;line-height:1.55;color:var(--muted);letter-spacing:-.01em}
 .menu-card{position:relative;padding:18px 12px 16px;background:var(--card);border:none;border-radius:var(--radius);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:.22s ease;font-family:inherit;min-height:108px;color:var(--text);overflow:hidden}
 .menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:.22s}
 .menu-card:hover{border-color:rgba(212,175,55,.55);transform:translateY(-2px);box-shadow:0 8px 22px rgba(212,175,55,.12)}
@@ -911,6 +917,12 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .teaser-fake-line.short{width:65%}
 .teaser-fake-line.mid{width:88%}
 .teaser-pay-btn{margin-top:6px;box-shadow:0 4px 18px rgba(0,0,0,.28);min-height:60px}
+@supports (position:sticky){
+  .lock-wrap-after-teaser .teaser-pay-btn{position:sticky;bottom:12px;z-index:45}
+}
+.pay-preview-mini{margin:13px 0 0;padding:12px 13px;border-radius:12px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(255,255,255,.035));border:1px solid rgba(212,175,55,.18);color:var(--sub);font-size:.78rem;line-height:1.72;text-align:center}
+.pay-preview-mini b{display:block;margin-bottom:5px;color:var(--accent-bright);font-size:.82rem}
+.pay-preview-mini span{display:inline-block;margin:2px 3px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.055);color:var(--sub)}
 .teaser-pay-text{font-weight:900;font-size:.86rem;white-space:normal;line-height:1.25;word-break:keep-all;overflow-wrap:break-word;text-align:left}
 .lock-wrap-after-teaser{padding-top:18px}
 .teaser-payment-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
@@ -1196,6 +1208,8 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 /* CHX: TOC 장별 그룹 소제목 */
 .toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
 .toc-chapter-head:first-child{margin-top:0}
+#card-TOC{position:sticky;top:58px;z-index:32}
+#card-TOC .nb-body{max-height:42vh;overflow:auto;padding-right:2px}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
 .toc-details{border:none;border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
 .toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
@@ -1896,7 +1910,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="menu-head-title">사주 보기</div>
         <div class="menu-head-sub">원하는 풀이를 선택하세요</div>
       </div>
+      <section id="sajuPaidHistoryHome" style="margin-bottom:14px"></section>
       <div class="menu-grid" role="list">
+        <div class="menu-section-head" role="presentation">
+          <div class="menu-section-title">무료로 먼저 확인하기</div>
+          <div class="menu-section-sub">생년월일을 넣기 전에도 부담 없이 흐름을 볼 수 있어요.</div>
+        </div>
         <button class="menu-card" onclick="goToInput('manse')" aria-label="만세력 — 정확한 사주 원국 (무료)" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">grid_view</span>
           <div class="mc-title">만세력</div>
@@ -1927,6 +1946,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
           <div class="mc-tag t-free">무료</div>
         </button>
+        <div class="menu-section-head" role="presentation">
+          <div class="menu-section-title">질문형 상담</div>
+          <div class="menu-section-sub">지금 궁금한 주제가 분명할 때 바로 확인하기 좋아요.</div>
+        </div>
         <button class="menu-card locked" onclick="goToInput('qna')" aria-label="즉문즉답 — 질문권 3회 1,500원부터" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">question_answer</span>
           <div class="mc-title">즉문즉답</div>
@@ -1934,13 +1957,17 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">질문권</div>
           <div class="mc-price">3회 1,500원부터</div>
         </button>
-        <button class="menu-card locked" onclick="goToTarot('question')" aria-label="타로점 — 질문형 리딩 1,500원부터" role="listitem">
+        <button class="menu-card locked" onclick="goToTarot('question')" aria-label="타로점 — 질문형 풀이 1,500원부터" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">auto_awesome</span>
           <div class="mc-title">타로점</div>
-          <div class="mc-desc">궁금한 질문을 입력하고 직접 카드를 뽑는 정통 리딩</div>
+          <div class="mc-desc">궁금한 질문을 입력하고 직접 카드를 뽑는 정통 풀이</div>
           <div class="mc-tag t-signature">신규</div>
           <div class="mc-price">1,500원부터</div>
         </button>
+        <div class="menu-section-head" role="presentation">
+          <div class="menu-section-title">깊게 보는 사주 풀이</div>
+          <div class="menu-section-sub">인생 흐름, 올해 운, 관계와 이름까지 필요한 만큼 선택해요.</div>
+        </div>
         <button class="menu-card locked" onclick="goToInput('life')" aria-label="인생총운 — 1,500원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">timeline</span>
           <div class="mc-title">인생총운</div>
@@ -1955,6 +1982,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-paid">프리미엄</div>
           <div class="mc-price">1,500원</div>
         </button>
+        <div class="menu-section-head" role="presentation">
+          <div class="menu-section-title">별자리 리포트</div>
+          <div class="menu-section-sub">출생차트와 현재 행성 흐름을 서양 점성술로 확인해요.</div>
+        </div>
         <button class="menu-card locked" onclick="goToAstrology('input')" aria-label="점성술 — 1,500원부터" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">orbit</span>
           <div class="mc-title">점성술</div>
@@ -1962,6 +1993,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-tag t-signature">신규</div>
           <div class="mc-price">1,500원부터</div>
         </button>
+        <div class="menu-section-head" role="presentation">
+          <div class="menu-section-title">관계와 이름</div>
+          <div class="menu-section-sub">궁합, 이름의 기운처럼 생활에 바로 닿는 주제를 따로 볼 수 있어요.</div>
+        </div>
         <button class="menu-card locked" onclick="goToInput('gunghap')" aria-label="궁합 — 1,000원" role="listitem">
           <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">favorite</span>
           <div class="mc-title">궁합</div>
@@ -1977,15 +2012,14 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-price">1,500원</div>
         </button>
       </div>
-      <section id="sajuPaidHistoryHome" style="margin-top:18px"></section>
     </div>
 
     <!-- ───── 이용자 후기 ───── -->
     <section class="reviews-sec" aria-labelledby="reviewsTitle">
       <div class="reviews-head">
-        <h2 class="reviews-title" id="reviewsTitle">이용자 후기</h2>
+        <h2 class="reviews-title" id="reviewsTitle">믿고 볼 수 있는 기준</h2>
         <div style="display:flex;align-items:center;gap:10px">
-          <span class="reviews-sub">베타 이용자 후기</span>
+          <span class="reviews-sub">계산·보관·환불 안내</span>
           <button type="button" class="reviews-write-btn" onclick="openReviewWrite()" title="후기 작성하고 2,000원 보상코드 받기">후기 작성</button>
         </div>
       </div>
@@ -2027,6 +2061,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="hdr-back-title">기본 정보 입력</div>
         <div class="hdr-back-sub" id="inputSub">정확한 분석을 위해 빠짐없이 입력해주세요</div>
       </div>
+    </div>
+    <div class="input-steps" aria-label="풀이 진행 단계">
+      <span class="on">1 기본정보</span>
+      <span>2 선택정보</span>
+      <span>3 풀이확인</span>
     </div>
     <form class="form-body" id="formWrap" onsubmit="event.preventDefault();analyze();" novalidate>
       <fieldset>
@@ -2427,7 +2466,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 
   <!-- ───── TAROT ───── -->
-  <div class="view" id="view-tarot" role="region" aria-live="polite" aria-label="타로 리딩">
+  <div class="view" id="view-tarot" role="region" aria-live="polite" aria-label="타로 풀이">
     <div class="hdr-back">
       <button class="bb" onclick="tarotBack()" aria-label="이전 화면으로 돌아가기">‹ 뒤로</button>
       <div class="hdr-brand">천지인 타로</div>
@@ -2635,7 +2674,11 @@ function _renderReviews(){
   const grid=document.getElementById('reviewsGrid');
   if(!grid)return;
   if(!REVIEWS.length){
-    grid.innerHTML='<article class="review-card"><div class="review-stars" aria-label="후기 없음">☆☆☆☆☆</div><span class="review-cat">후기 준비 중</span><p class="review-text">첫 이용자 후기를 기다리고 있어요. 결제 이용 후 후기를 남기면 할인 보상코드를 받을 수 있어요.</p><div class="review-meta"><span>천지인 사주</span><span>운영 중</span></div></article>';
+    grid.innerHTML=[
+      '<article class="review-card"><div class="review-stars" aria-label="계산 기준">天機</div><span class="review-cat">천문 계산 기반</span><p class="review-text">절기, 신월, 진태양시 보정을 반영해 사주 원국을 먼저 정확히 세운 뒤 풀이해요.</p><div class="review-meta"><span>만세력</span><span>무료 확인</span></div></article>',
+      '<article class="review-card"><div class="review-stars" aria-label="재조회 안내">24H</div><span class="review-cat">24시간 재조회</span><p class="review-text">결제한 풀이와 상담 내역은 같은 정보 기준으로 24시간 동안 다시 확인할 수 있어요.</p><div class="review-meta"><span>유료 풀이</span><span>히스토리</span></div></article>',
+      '<article class="review-card"><div class="review-stars" aria-label="정책 안내">安心</div><span class="review-cat">정책 공개</span><p class="review-text">개인정보처리방침, 결제·환불 기준, 콘텐츠 작성 기준을 하단에서 바로 확인할 수 있어요.</p><div class="review-meta"><span>운영 기준</span><span>공개</span></div></article>'
+    ].join('');
     return;
   }
   grid.innerHTML=REVIEWS.map(r=>{
@@ -2845,7 +2888,7 @@ const QNA_FREE_TTL_MS=24*60*60*1000;
 const LANG_LS_KEY='saju_reading_language_v1';
 const LANG_META={
   ko:{label:'한국어',worker:'ko',flag:'🇰🇷',short:'KO',note:'한국어 원문으로 풀이해요.'},
-  en:{label:'English',worker:'en',flag:'🇺🇸',short:'EN',note:'Menus, categories, explanations and AI readings are shown in English.'},
+  en:{label:'English',worker:'en',flag:'🇺🇸',short:'EN',note:'Menus, categories, explanations and detailed readings are shown in English.'},
   zh:{label:'中文',worker:'zh',flag:'🇨🇳',short:'中文',note:'菜单、分类和命理解读会尽量以中文显示。'},
   ja:{label:'日本語',worker:'ja',flag:'🇯🇵',short:'日本語',note:'メニュー、カテゴリ、鑑定文をできるだけ日本語で表示します。'}
 };
@@ -2863,6 +2906,16 @@ const STATIC_I18N={
   '천 · 지 · 인':{en:'Heaven · Earth · Human',zh:'天 · 地 · 人',ja:'天 · 地 · 人'},
   '사주 보기':{en:'View Saju',zh:'查看四柱',ja:'四柱を見る'},
   '원하는 풀이를 선택하세요':{en:'Choose the reading you want',zh:'请选择想看的解读',ja:'見たい鑑定を選んでください'},
+  '무료로 먼저 확인하기':{en:'Start with free checks',zh:'先免费查看',ja:'まず無料で確認'},
+  '생년월일을 넣기 전에도 부담 없이 흐름을 볼 수 있어요.':{en:'You can check the flow lightly before entering birth details.',zh:'输入出生信息前，也可以轻松查看整体走势。',ja:'生年月日を入れる前でも気軽に流れを確認できます。'},
+  '질문형 상담':{en:'Question-based consultation',zh:'提问式咨询',ja:'質問型相談'},
+  '지금 궁금한 주제가 분명할 때 바로 확인하기 좋아요.':{en:'Best when you already know what you want to ask.',zh:'适合已经有明确问题时立即查看。',ja:'今知りたいテーマがはっきりしている時に向いています。'},
+  '깊게 보는 사주 풀이':{en:'In-depth Saju readings',zh:'深度四柱解读',ja:'深く見る四柱鑑定'},
+  '인생 흐름, 올해 운, 관계와 이름까지 필요한 만큼 선택해요.':{en:'Choose only what you need, from life flow and yearly fortune to relationships and names.',zh:'人生走势、年度运势、关系和姓名，可按需选择。',ja:'人生の流れ、今年の運、関係や名前まで必要な分だけ選べます。'},
+  '별자리 리포트':{en:'Astrology reports',zh:'星座报告',ja:'星読みレポート'},
+  '출생차트와 현재 행성 흐름을 서양 점성술로 확인해요.':{en:'Read your birth chart and current planetary flow through Western astrology.',zh:'用西洋占星查看出生星盘与当前行星走势。',ja:'出生チャートと現在の星の流れを西洋占星で確認します。'},
+  '관계와 이름':{en:'Relationships and names',zh:'关系与姓名',ja:'関係と名前'},
+  '궁합, 이름의 기운처럼 생활에 바로 닿는 주제를 따로 볼 수 있어요.':{en:'Check practical topics such as compatibility and the energy of a name separately.',zh:'可以单独查看合盘、姓名气韵等贴近日常生活的主题。',ja:'相性や名前の気のように、生活に直接関わるテーマを個別に見られます。'},
   '만세력':{en:'Saju Calendar',zh:'万年历',ja:'万年暦'},
   '진태양시 보정으로 사주 원국을 정확하게 계산':{en:'Accurate birth chart calculation with true solar time correction',zh:'通过真太阳时校正，准确计算四柱原局',ja:'真太陽時補正で命式を正確に計算'},
   '무료':{en:'Free',zh:'免费',ja:'無料'},
@@ -2885,6 +2938,16 @@ const STATIC_I18N={
   '이름의 다섯 기운 분석 + 사주에 어울리는 추천 이름 5개':{en:'Analyze the five energies in your name and suggest 5 fitting names',zh:'分析姓名五行，并推荐5个适合四柱的名字',ja:'名前の五行分析と四柱に合う名前5案'},
   '이용자 후기':{en:'User Reviews',zh:'用户评价',ja:'利用者レビュー'},
   '베타 이용자 후기':{en:'Beta user reviews',zh:'Beta 用户评价',ja:'ベータ利用者レビュー'},
+  '믿고 볼 수 있는 기준':{en:'Standards you can trust',zh:'值得信赖的标准',ja:'安心して見られる基準'},
+  '계산·보관·환불 안내':{en:'Calculation, storage, and refund guide',zh:'计算、保存与退款说明',ja:'計算・保存・返金案内'},
+  '천문 계산 기반':{en:'Astronomical calculation based',zh:'基于天文计算',ja:'天文計算ベース'},
+  '절기, 신월, 진태양시 보정을 반영해 사주 원국을 먼저 정확히 세운 뒤 풀이해요.':{en:'We first calculate the chart with seasonal terms, new moons, and true solar time correction.',zh:'先结合节气、朔月与真太阳时校正，准确排出四柱原局后再解读。',ja:'節気・新月・真太陽時補正を反映し、まず命式を正確に立ててから鑑定します。'},
+  '24시간 재조회':{en:'24-hour revisit',zh:'24小时内可再次查看',ja:'24時間再閲覧'},
+  '결제한 풀이와 상담 내역은 같은 정보 기준으로 24시간 동안 다시 확인할 수 있어요.':{en:'Paid readings and consultation history can be revisited for 24 hours with the same birth data.',zh:'已支付的解读和咨询记录，可在相同信息条件下24小时内再次查看。',ja:'決済した鑑定と相談履歴は、同じ情報条件で24時間再確認できます。'},
+  '정책 공개':{en:'Policies disclosed',zh:'政策公开',ja:'ポリシー公開'},
+  '개인정보처리방침, 결제·환불 기준, 콘텐츠 작성 기준을 하단에서 바로 확인할 수 있어요.':{en:'Privacy, payment and refund, and editorial policies are available at the bottom.',zh:'隐私政策、支付退款标准、内容编写标准可在底部直接查看。',ja:'プライバシー、決済・返金、コンテンツ作成基準は下部ですぐ確認できます。'},
+  '운영 기준':{en:'Operating standards',zh:'运营标准',ja:'運営基準'},
+  '공개':{en:'Public',zh:'公开',ja:'公開'},
   '후기 작성':{en:'Write Review',zh:'写评价',ja:'レビューを書く'},
   '후기 작성하고 2,000원 보상코드 받기':{en:'Write a review and get a 2,000 KRW reward code',zh:'写评价领取2,000韩元奖励码',ja:'レビューを書いて2,000ウォン分の特典コードを受け取る'},
   '사주 가이드 · 블로그 보기':{en:'Saju Guide · Blog',zh:'四柱指南 · 博客',ja:'四柱ガイド · ブログ'},
@@ -2994,7 +3057,7 @@ function setReadingLanguage(lang){
   closeLanguageMenu();
   showLanguageNote(LANG_META[lang].note);
   applyLanguageToPage();
-  // 이미 열린 유료 AI 풀이 카드는 선택 언어로 다시 생성 (캐시 키가 언어별이라 언어마다 1회만 호출)
+  // 이미 열린 유료 맞춤 풀이 카드는 선택 언어로 다시 생성 (캐시 키가 언어별이라 언어마다 1회만 호출)
   try{if(typeof hydrateAIReadings==='function')setTimeout(()=>hydrateAIReadings(document),0);}catch(e){}
 }
 function textHash(s){
@@ -4007,12 +4070,12 @@ function renderTarot(){
   if(typeof scheduleLanguageApply==='function')scheduleLanguageApply(document.getElementById('view-tarot'));
 }
 function renderTarotHome(root){
-  tarotSetHeader('타로','오늘의 메시지와 질문형 리딩');
+  tarotSetHeader('타로','오늘의 메시지와 질문형 풀이');
   root.innerHTML=tarotHtml(`
     <section class="tarot-hero">
       <div class="tarot-kicker">Celestial Tarot</div>
       <div class="tarot-title">지금 필요한 카드를 직접 뽑아보세요</div>
-      <div class="tarot-desc">오늘의 타로는 무료로 가볍게 확인하고, 질문형 타로는 질문에 맞는 리딩 방식으로 깊게 볼 수 있어요.</div>
+      <div class="tarot-desc">오늘의 타로는 무료로 가볍게 확인하고, 질문형 타로는 질문에 맞는 풀이 방식으로 깊게 볼 수 있어요.</div>
     </section>
     <div class="tarot-menu">
       <button class="tarot-menu-card" onclick="tarotNavigate('today')">
@@ -4024,13 +4087,13 @@ function renderTarotHome(root){
       <button class="tarot-menu-card" onclick="tarotNavigate('question')">
         <span class="material-symbols-outlined tarot-menu-icon">psychology</span>
         <div class="tarot-menu-title">질문형 타로</div>
-        <div class="tarot-menu-desc">지금 가장 궁금한 질문을 떠올리고 직접 카드를 뽑아보세요.<br>질문에 맞는 리딩 방식을 추천해드립니다.</div>
+        <div class="tarot-menu-desc">지금 가장 궁금한 질문을 떠올리고 직접 카드를 뽑아보세요.<br>질문에 맞는 풀이 방식을 추천해드립니다.</div>
         <span class="tarot-cta">질문형 타로 시작하기</span>
       </button>
       <button class="tarot-menu-card" onclick="tarotNavigate('history')">
         <span class="material-symbols-outlined tarot-menu-icon">history</span>
         <div class="tarot-menu-title">타로 히스토리</div>
-        <div class="tarot-menu-desc">이전에 저장된 질문형 리딩을 다시 확인할 수 있어요.</div>
+        <div class="tarot-menu-desc">이전에 저장된 질문형 풀이를 다시 확인할 수 있어요.</div>
         <span class="tarot-cta">히스토리 보기</span>
       </button>
     </div>`);
@@ -4185,7 +4248,7 @@ function analyzeTarotQuestion(question){
   if(question.length>60&&recommended==='tarot3')recommended='tarot5'; else if(question.length>60&&recommended==='tarot5')recommended='tarot10';
   return {categories:[cat],recommended,reason:tarotRecommendReason(recommended),matchedKeywords:score.map(x=>x[0])};
 }
-function tarotRecommendReason(id){return id==='tarot3'?'현재 상황과 가까운 흐름을 빠르게 확인하기 좋은 질문입니다. 3장 리딩을 추천드립니다.':id==='tarot10'?'단순한 답보다 전체 구조와 장기적인 흐름까지 함께 보는 것이 좋은 질문입니다. 10장 켈틱크로스 리딩을 추천드립니다.':'현재 상황뿐 아니라 장애물, 숨겨진 흐름, 조언까지 함께 보는 것이 좋은 질문입니다. 5장 리딩을 추천드립니다.';}
+function tarotRecommendReason(id){return id==='tarot3'?'현재 상황과 가까운 흐름을 빠르게 확인하기 좋은 질문입니다. 3장 풀이를 추천드립니다.':id==='tarot10'?'단순한 답보다 전체 구조와 장기적인 흐름까지 함께 보는 것이 좋은 질문입니다. 10장 켈틱크로스 풀이를 추천드립니다.':'현재 상황뿐 아니라 장애물, 숨겨진 흐름, 조언까지 함께 보는 것이 좋은 질문입니다. 5장 풀이를 추천드립니다.';}
 let _tarotPickSpread=null;
 function renderTarotRecommend(root){
   if(!_tarotFlow||!_tarotFlow.question)return tarotNavigate('question');
@@ -4241,6 +4304,7 @@ function renderTarotPayment(root){
       <div class="ts-card-title" style="font-size:1.12rem;margin-bottom:8px">${tarotEsc(_tarotFlow.spreadName)}</div>
       <div class="ts-card-desc" style="margin-bottom:14px">${tarotEsc(p?p.shortDesc:'')} · 카드 ${_tarotFlow.positions.length}장</div>
       <div class="tarot-small" style="position:relative;padding:12px;background:rgba(255,255,255,.04);border-radius:10px;line-height:1.65"><b style="color:var(--accent-bright)">질문</b><br>${tarotEsc(_tarotFlow.question)}</div>
+      <div class="pay-preview-mini"><b>결제 후 바로 제공돼요</b><span>직접 카드 선택</span><span>카드별 풀이</span><span>조합 해석</span><span>현실 조언</span><span>24시간 재조회</span></div>
       <div class="tarot-price" style="text-align:right;margin:14px 0 0">${price}원</div>
     </div>
     <button class="ts-cta" onclick="startTarotPayment()"><span class="material-symbols-outlined">lock</span> ${price}원 결제하고 카드 뽑기</button>
@@ -4331,7 +4395,7 @@ async function finishTarotDraw(){
   try{
     _tarotFlow.resultMarkdown=await generateAIReading(input);
   }catch(e){
-    console.warn('Tarot AI reading failed, using template:',e&&e.message);
+    console.warn('Tarot paid reading failed, using template:',e&&e.message);
     _tarotFlow.resultMarkdown=generateTemplateReading(input);
     if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){
       _tarotFlow.resultMarkdown=await translateSingleText(_tarotFlow.resultMarkdown,currentLanguage());
@@ -4378,10 +4442,10 @@ async function generateAIReading(input){
 }
 function renderTarotResult(root){
   if(_tarotFlow&&_tarotFlow.resultLoading){
-    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'AI 리딩 생성 중');
+    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'풀이 정리 중');
     root.innerHTML=tarotHtml(`<section class="tarot-panel">
       <div class="tarot-section-title">타로 풀이를 정리하고 있어요</div>
-      <div class="tarot-small">선택한 카드와 질문을 바탕으로 유료 리딩 형태의 해석을 생성 중이에요. 잠시만 기다려주세요.</div>
+      <div class="tarot-small">선택한 카드와 질문을 바탕으로 깊은 풀이를 정리하고 있어요. 잠시만 기다려주세요.</div>
     </section>`);
     return;
   }
@@ -4396,7 +4460,7 @@ function renderTarotResult(root){
   <section class="tarot-panel"><div class="tarot-markdown">${markdownToTarotHTML(_tarotFlow.resultMarkdown)}</div></section>
   <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">새 질문 보기</button><button class="tarot-btn secondary" onclick="tarotNavigate('history')">히스토리 보기</button></div>`);
 }
-// AI 풀이 속 인라인 마크다운 강조(**굵게**, __굵게__)를 실제 볼드로 변환 — 반드시 이스케이프된 텍스트에만 사용
+// 풀이 속 인라인 마크다운 강조(**굵게**, __굵게__)를 실제 볼드로 변환 — 반드시 이스케이프된 텍스트에만 사용
 function mdInlineToHtml(escaped){
   return String(escaped??'').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/__([^_\n]+)__/g,'<b>$1</b>');
 }
@@ -4407,16 +4471,16 @@ function markdownToTarotHTML(md){
 function renderTarotHistory(root){
   tarotSetHeader('타로 히스토리','24시간 보관');
   const list=loadTarotHistory();
-  root.innerHTML=tarotHtml(`<section class="tarot-hero"><div class="tarot-kicker">History</div><div class="tarot-title">타로 히스토리</div><div class="tarot-desc">결제 시점부터 24시간 동안 유료 리딩 결과를 다시 볼 수 있어요.</div></section>
+  root.innerHTML=tarotHtml(`<section class="tarot-hero"><div class="tarot-kicker">History</div><div class="tarot-title">타로 히스토리</div><div class="tarot-desc">결제 시점부터 24시간 동안 유료 풀이 결과를 다시 볼 수 있어요.</div></section>
   <div class="tarot-history-list">${list.length?list.map(r=>`<section class="tarot-history-item">
     <div class="tarot-section-title">${tarotEsc(r.question)}</div>
     <div class="tarot-small">${tarotEsc(r.spreadName)} · ${new Date(r.createdAt).toLocaleString('ko-KR')}</div>
     <div class="tarot-small">만료: ${new Date(r.expiresAt||Date.parse(r.createdAt)+TAROT_HISTORY_TTL_MS).toLocaleString('ko-KR')}</div>
     <div class="tarot-small">${r.selectedCards.map(c=>`${tarotEsc(c.positionLabel)}:${tarotEsc(c.cardNameKo)}`).join(' · ')}</div>
     <div class="tarot-actions"><button class="tarot-btn" onclick="openTarotHistory('${r.id}')">다시 보기</button></div>
-  </section>`).join(''):'<div class="tarot-empty">24시간 안에 저장된 타로 리딩이 없어요.</div>'}</div>`);
+  </section>`).join(''):'<div class="tarot-empty">24시간 안에 저장된 타로 풀이가 없어요.</div>'}</div>`);
 }
-function openTarotHistory(id){const r=loadTarotHistory().find(x=>x.id===id);if(!r){alert('24시간이 지나 만료된 리딩이에요.');renderTarot();return;}_tarotFlow={...r,selectedSpreadId:r.spreadId,paymentStatus:'paid',positions:getSpreadPositions(r.spreadId,'general'),selectedCards:r.selectedCards.map((c,i)=>({positionIndex:i,cardId:c.cardId,orientation:c.orientation})),resultMarkdown:r.resultMarkdown};saveTarotFlow();tarotNavigate('result');}
+function openTarotHistory(id){const r=loadTarotHistory().find(x=>x.id===id);if(!r){alert('24시간이 지나 만료된 풀이예요.');renderTarot();return;}_tarotFlow={...r,selectedSpreadId:r.spreadId,paymentStatus:'paid',positions:getSpreadPositions(r.spreadId,'general'),selectedCards:r.selectedCards.map((c,i)=>({positionIndex:i,cardId:c.cardId,orientation:c.orientation})),resultMarkdown:r.resultMarkdown};saveTarotFlow();tarotNavigate('result');}
 function loadTarotFlow(){try{const flow=JSON.parse(sessionStorage.getItem(TAROT_FLOW_KEY)||localStorage.getItem(TAROT_FLOW_KEY)||'null')||{};if(flow&&flow.paymentStatus==='paid'&&Number(flow.expiresAt)&&Number(flow.expiresAt)<=Date.now()){flow.paymentStatus='none';flow.resultMarkdown='';flow.resultLoading=false;try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));}catch(e){}}return flow;}catch(e){return {};}}
 function saveTarotFlow(){try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));}catch(e){}}
 function loadTarotHistory(){let list=[];try{list=JSON.parse(localStorage.getItem(TAROT_HISTORY_KEY)||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];const now=Date.now();const valid=list.filter(r=>{const exp=Number(r.expiresAt)||((r.paidAt?Number(r.paidAt):Date.parse(r.createdAt||0))+TAROT_HISTORY_TTL_MS);return exp>now;});if(valid.length!==list.length){try{localStorage.setItem(TAROT_HISTORY_KEY,JSON.stringify(valid));}catch(e){}}return valid;}
@@ -9204,10 +9268,10 @@ const PAID_META={
   chatpack5:{icon:'',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,000원'},
   chatpack7:{icon:'',title:'추가 질문 7회 패키지',desc:'현재 풀이에 대한 역술가 질문 7회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'3,000원'},
   // 타로점 — 질문형 타로 스프레드 (결제 후 카드 뽑기 화면으로 이동)
-  tarot3:{icon:'',title:'타로점 3장 리딩',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,500원'},
-  tarot5:{icon:'',title:'타로점 5장 리딩',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'2,000원'},
+  tarot3:{icon:'',title:'타로점 3장 풀이',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,500원'},
+  tarot5:{icon:'',title:'타로점 5장 풀이',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'2,000원'},
   tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'3,000원'},
-  // 점성술 — 출생차트 계산 후 AI 리딩
+  // 점성술 — 출생차트 계산 후 상세 풀이
   'astro-birth-basic':{icon:'',title:'출생차트 성향 분석',desc:'출생차트의 태양·달·상승궁·개인행성을 중심으로 본인의 기본 성향을 풀이해요.',features:['· 계산된 출생차트 기반','· 성격·기질·감정 패턴 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
   'astro-love-marriage':{icon:'',title:'연애/결혼운',desc:'금성·화성·달·7하우스 흐름을 바탕으로 관계 패턴과 조언을 풀이해요.',features:['· 계산된 출생차트 기반','· 연애·결혼 관계 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
   'astro-career-money':{icon:'',title:'직업/재물운',desc:'태양·수성·목성·토성·2/10하우스를 바탕으로 현실 흐름을 풀이해요.',features:['· 계산된 출생차트 기반','· 직업·재물 선택 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
@@ -9232,7 +9296,7 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1
   chatpack3:1500,chatpack5:2000,chatpack7:3000,
   // 타로점 — 질문형 타로 스프레드
   tarot3:1500,tarot5:2000,tarot10:3000,
-  // 점성술 — 유료 리딩
+  // 점성술 — 유료 풀이
   'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
 // 월별 최대 개월
 const MONTHLY_MAX=6;
@@ -13925,10 +13989,13 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
   bodyHtml=_calmReadingHtml(_softenBodySubheads(normalizeReadingText(bodyHtml||'')));
   // TL-DD: 타임라인 카드는 기본 접힘(드롭다운) — 제목·힌트 클릭으로 펼침
-  const isTl=catLabel!=='TOC'&&String(title).includes('타임라인');
+  const isTl=!isPrimary&&_shouldFoldTimelineCard(catLabel,title);
   const foldCats=new Set(['life','daypick','monthly','newyear','name','gunghap']);
   const noFoldLabels=new Set(['TOC','MASTER','EPILOGUE','QUICK','RECOMMEND']);
-  const isDetail=foldCats.has(_paidFoldMode)&&!isTl&&!noFoldLabels.has(catLabel);
+  const scopedFoldLabels=_detailFoldLabelsForMode(_paidFoldMode);
+  const isScopedFold=!!scopedFoldLabels&&scopedFoldLabels.has(catLabel);
+  const isLegacyFold=!scopedFoldLabels&&foldCats.has(_paidFoldMode)&&!noFoldLabels.has(catLabel);
+  const isDetail=!isPrimary&&!isTl&&(isScopedFold||isLegacyFold);
   const briefHtml='';
   const memoryHtml=briefHtml?`<div class="remember-line">${preventOrphan(_memoryLineForCard(title,(_readingSentences(bodyHtml).find(s=>/하세요|좋아요|필요|활용|챙기|줄이|미루|잡으|정리|확인|주의/.test(s))||'')))}</div>`:'';
   const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
@@ -13970,6 +14037,22 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   if(isTl)h+=`</div>`; // .tl-body-wrap 닫기
   h+=`</div><!--CARD_END:${catLabel}-->`;
   return h;
+}
+
+function _shouldFoldTimelineCard(catLabel,title){
+  if(catLabel==='TOC')return false;
+  if(_paidFoldMode==='life'&&catLabel==='TIMELINE')return false;
+  return String(title||'').includes('타임라인');
+}
+function _detailFoldLabelsForMode(mode){
+  if(mode==='life')return new Set([
+    'SINGANG','PILLAR4','BRANCH12','GYEOKGUK','GONGMANG_TL',
+    'YOOKCHIN','SINSAL','STAR12','STAGE12','LIFE_HEATMAP'
+  ]);
+  if(mode==='newyear')return new Set([
+    'MONTHDETAIL','QUARTERS','SINSAL','ZODIAC','GONGMANG','SAMJAE','STAR12'
+  ]);
+  return null;
 }
 
 // TL-DD: 타임라인 카드 접기/펼치기
@@ -15026,8 +15109,8 @@ const AI_READING_LABELS={
   'life-core':'천기가 다시 정리한 인생총운 핵심 섹션',
   newyear:'천기가 먼저 짚는 올해 핵심 흐름',
   'newyear-core':'올해 천기가 다시 정리한 핵심 흐름',
-  gunghap:'두 사람 관계 핵심 리딩',
-  'life-gunghap':'인생총운 속 관계 핵심 리딩'
+  gunghap:'두 사람 관계 핵심 풀이',
+  'life-gunghap':'인생총운 속 관계 핵심 풀이'
 };
 function aiReadingDomId(category, extraKey){
   const safe=String(category+'_'+(extraKey||'main')).replace(/[^A-Za-z0-9_-]/g,'_');
@@ -15098,11 +15181,11 @@ function renderAIReadingCard(category, title, extraKey, opts){
   const cached=aiReadingCacheGet(category,extraKey);
   const id=aiReadingDomId(category,extraKey);
   const cls='nb-card ai-reading-card'+(opts.main?' main-reading':'')+(cached?' ai-ready':'');
-  const catHtml=opts.catLabel===null?'':`<div class="nb-cat">${chatEscape(opts.catLabel||'PERSONAL READING')}</div>`;
+  const catHtml=opts.catLabel===null?'':`<div class="nb-cat">${chatEscape(opts.catLabel||'천기 풀이')}</div>`;
   const loading=opts.loadingText||'본인 사주를 바탕으로 풀이를 정리하고 있어요. 잠시만 기다려주세요.';
   return `<div class="${cls}" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
     ${catHtml}
-    <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'개인화 리딩')}</div>
+    <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'맞춤 풀이')}</div>
     <div class="nb-body ai-reading-body">${cached?aiReadingTextToHtml(cached):`<div class="ai-reading-status">${preventOrphan(chatEscape(loading))}</div>`}</div>
   </div>`;
 }
@@ -15146,9 +15229,9 @@ async function hydrateAIReading(category, opts){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload),
     },3);
-    if(!resp||!resp.ok)throw new Error((data&&data.error)||'개인화 리딩을 불러오지 못했어요.');
+    if(!resp||!resp.ok)throw new Error((data&&data.error)||'맞춤 풀이를 불러오지 못했어요.');
     const text=(data.text||data.answer||'').trim();
-    if(!text)throw new Error('개인화 리딩이 비어 있어요.');
+    if(!text)throw new Error('맞춤 풀이가 비어 있어요.');
     aiReadingCacheSet(category,extraKey,text,reqLang); // 요청 언어 키에 저장 (도착 시점 언어 오염 방지)
     if(currentLanguage()!==reqLang)return; // 언어가 바뀌었으면 새 언어용 hydrate가 따로 처리
     body.innerHTML=aiReadingTextToHtml(text);
@@ -15238,7 +15321,7 @@ function chatAppendError(text,retryQuestion){
 function normalizeChatErrorMessage(text,status){
   const raw=String(text||'');
   if(/OpenAI|Anthropic|upstream|API|502|500|503|504|429/i.test(raw)){
-    return 'AI 답변 연결이 잠시 불안정해요. 질문권은 차감하지 않았고, 아래에 기본 사주 흐름으로 먼저 정리해드렸어요.';
+    return '답변 연결이 잠시 불안정해요. 질문권은 차감하지 않았고, 아래에 기본 사주 흐름으로 먼저 정리해드렸어요.';
   }
   if(status===402||/무료 질문|질문권|충전/.test(raw))return raw;
   if(/network|fetch|Failed/i.test(raw))return '네트워크 연결이 불안정해요. 질문권은 차감하지 않았어요.';
@@ -15655,7 +15738,7 @@ function analyzeGunghapDetail(){
     // 별도 궁합 카테고리(renderGunghapPaid)와 동일한 본문 사용 — 점수·내용 일치 보장
     const extraKey=`${sy}-${sm}-${sd}-${h}-${mn}-${_g2gender||''}-${g2Mbti||''}`;
     const box=document.getElementById('ggResultBox');
-    box.innerHTML=fixKoreanJosa(renderAIReadingCard('life-gunghap','인생총운 속 관계 핵심 리딩',extraKey)+renderGunghapBody(_saju,saju2,gender,_g2gender,myMbti,g2Mbti));
+    box.innerHTML=fixKoreanJosa(renderAIReadingCard('life-gunghap','인생총운 속 관계 핵심 풀이',extraKey)+renderGunghapBody(_saju,saju2,gender,_g2gender,myMbti,g2Mbti));
     hydrateAIReading('life-gunghap',{extraKey,source:'life-gunghap'});
     box.scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){errEl.textContent=e.message||'오류가 발생했어요.';errEl.className='err vis';}
@@ -19452,7 +19535,7 @@ function renderGunghapPaid(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gh,gmin);
   const myMbti=(_meta&&_meta.mbti)||'';
   const extraKey=`${sy2}-${sm2}-${sd2}-${gh}-${gmin}-${gnExtra.gender||''}-${gnExtra.mbti||''}`;
-  return renderAIReadingCard('gunghap','두 사람 관계 핵심 리딩',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
+  return renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
 }
 
 // ── 연애·데이트 분위기 ──
