@@ -785,9 +785,13 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .sheet-title{font-size:.78rem;font-weight:700;color:var(--accent);text-align:center;margin-bottom:12px;letter-spacing:.08em;text-transform:uppercase}
 .share-preview{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.73rem;line-height:1.7;color:var(--sub);max-height:72px;overflow:hidden;white-space:pre-wrap}
 .sns-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.sns-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:13px 4px;border:1px solid var(--border);border-radius:12px;background:var(--card);cursor:pointer;font-size:.71rem;font-weight:600;color:var(--text);transition:.15s;font-family:inherit}
+.sns-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:74px;padding:13px 4px;border:1px solid var(--border);border-radius:12px;background:var(--card);cursor:pointer;font-size:.71rem;font-weight:600;color:var(--text);transition:.15s;font-family:inherit}
 .sns-btn:active{transform:scale(.93)}
 .sns-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff}
+.sns-icon svg,.share-logo svg{width:24px;height:24px;display:block}
+.sns-btn-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.share-logo{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;vertical-align:middle}
+.chat-share-cta-btn .share-logo,.chat-inline-upsell-btn .share-logo{margin-right:0}
 .ic-kakao{background:#FEE500;color:#3C1E1E}
 .ic-band{background:#00C73C}
 .ic-insta{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285aeb 90%)}
@@ -2499,29 +2503,29 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="sheet-title">공유하기</div>
     <div class="share-preview" id="sharePreview"></div>
     <div class="sns-grid">
-      <button class="sns-btn" onclick="shareNative()">
-        <div class="sns-icon ic-native" style="font-size:1rem;font-weight:900">↗</div>기본 공유
+      <button class="sns-btn" onclick="shareNative()" aria-label="기본 공유" title="기본 공유">
+        <div class="sns-icon ic-native" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 12.5 16.5 4M11 4h5.5v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 7H7.2A3.2 3.2 0 0 0 4 10.2v6.6A3.2 3.2 0 0 0 7.2 20h6.6a3.2 3.2 0 0 0 3.2-3.2V14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div><span class="sns-btn-label">기본 공유</span>
       </button>
-      <button class="sns-btn" onclick="shareToKakao()">
-        <div class="sns-icon ic-kakao" style="font-weight:900">톡</div>카카오톡
+      <button class="sns-btn" onclick="shareToKakao()" aria-label="카카오톡" title="카카오톡">
+        <div class="sns-icon ic-kakao" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg></div><span class="sns-btn-label">카카오톡</span>
       </button>
-      <button class="sns-btn" onclick="copyShareUrl()">
-        <div class="sns-icon ic-url" style="font-size:.78rem;font-weight:900">URL</div>URL 복사
+      <button class="sns-btn" onclick="copyShareUrl()" aria-label="URL 복사" title="URL 복사">
+        <div class="sns-icon ic-url" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9.4 14.6 14.6 9.4M10.7 7.1l1.1-1.1a4 4 0 0 1 5.7 5.7l-1.1 1.1M13.3 16.9l-1.1 1.1a4 4 0 1 1-5.7-5.7l1.1-1.1" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="sns-btn-label">URL 복사</span>
       </button>
-      <button class="sns-btn" onclick="shareToBand()">
-        <div class="sns-icon ic-band" style="font-size:1.3rem;font-weight:900">B</div>밴드
+      <button class="sns-btn" onclick="shareToBand()" aria-label="네이버 밴드" title="네이버 밴드">
+        <div class="sns-icon ic-band" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4h5.8c3.1 0 5 1.58 5 4.04 0 1.5-.71 2.57-1.95 3.17 1.58.55 2.55 1.82 2.55 3.74 0 3.03-2.21 5.05-5.7 5.05H7V4Zm5.33 6.4c1.23 0 1.9-.55 1.9-1.52s-.67-1.48-1.9-1.48H10.6v3h1.73Zm.28 6.2c1.42 0 2.16-.66 2.16-1.8 0-1.13-.74-1.79-2.16-1.79H10.6v3.59h2.01Z"/></svg></div><span class="sns-btn-label">네이버 밴드</span>
       </button>
-      <button class="sns-btn" onclick="shareToInstagram()">
-        <div class="sns-icon ic-insta" style="font-size:.92rem;font-weight:900">IG</div>인스타그램
+      <button class="sns-btn" onclick="shareToInstagram()" aria-label="인스타그램" title="인스타그램">
+        <div class="sns-icon ic-insta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="7.5" r="1.1" fill="currentColor"/></svg></div><span class="sns-btn-label">인스타그램</span>
       </button>
-      <button class="sns-btn" onclick="shareToFacebook()">
-        <div class="sns-icon ic-fb" style="font-size:1.3rem;font-weight:900">f</div>페이스북
+      <button class="sns-btn" onclick="shareToFacebook()" aria-label="페이스북" title="페이스북">
+        <div class="sns-icon ic-fb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.1 8.2V6.9c0-.63.43-.78.74-.78h1.89V3.1L14.13 3c-2.89 0-3.55 2.16-3.55 3.54V8.2H8.3v3.37h2.28V21h3.52v-9.43h2.62l.35-3.37H14.1Z"/></svg></div><span class="sns-btn-label">페이스북</span>
       </button>
-      <button class="sns-btn" onclick="shareToX()">
-        <div class="sns-icon ic-x" style="font-size:.95rem;font-weight:900">𝕏</div>X (트위터)
+      <button class="sns-btn" onclick="shareToX()" aria-label="X" title="X">
+        <div class="sns-icon ic-x" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.9 4h3.05l-6.66 7.61L21.12 20h-6.14l-4.8-5.79L4.68 20H1.62l7.12-8.14L1.22 4h6.3l4.34 5.22L16.9 4Zm-1.07 14.52h1.69L6.58 5.4H4.77l11.06 13.12Z"/></svg></div><span class="sns-btn-label">X</span>
       </button>
-      <button class="sns-btn" onclick="shareToLine()">
-        <div class="sns-icon ic-line" style="font-size:.72rem;font-weight:800;letter-spacing:-.5px">LINE</div>라인
+      <button class="sns-btn" onclick="shareToLine()" aria-label="라인" title="라인">
+        <div class="sns-icon ic-line" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.03 4 3 7.38 3 11.55c0 3.74 3.25 6.86 7.51 7.45.29.06.68.19.78.43.09.22.06.57.03.79l-.13.76c-.04.22-.2.86.78.47.99-.39 5.31-3.13 7.25-5.36C20.55 14.63 21 13.14 21 11.55 21 7.38 16.97 4 12 4Z"/></svg></div><span class="sns-btn-label">라인</span>
       </button>
     </div>
     <button class="share-copy-btn" onclick="copyShareText()">텍스트 복사하기</button>
@@ -2627,8 +2631,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(45,52,71,.6));border:1px dashed #FFEB00;border-radius:12px">
       <div style="font-size:.82rem;font-weight:800;color:#FFEB00;letter-spacing:.02em;margin-bottom:6px">카카오톡으로 공유하고 1,000원 할인코드 받기</div>
       <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주를 알려주시면, 다음 결제에 쓸 수 있는 <b style="color:#FFEB00">SHARE 보상코드</b>가 발급돼요.</div>
-      <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
-        <span class="kakao-logo">talk</span>카카오톡으로 공유하기
+      <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" aria-label="카카오톡으로 공유하기" title="카카오톡으로 공유하기" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
+        <span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg></span>
       </button>
     </div>
 
@@ -10185,7 +10189,7 @@ function openPayDoneModal(opts){
   const shareBtn=document.getElementById('payDoneShareBtn');
   if(shareBtn){
     shareBtn.disabled=false;
-    shareBtn.innerHTML='<span class="kakao-logo">talk</span>카카오톡으로 공유하기';
+    shareBtn.innerHTML=shareLogoHtml('kakao');
   }
   // 이미 후기를 작성한 사주면 후기 카드 대신 감사 한 줄 (중복 유도 방지)
   const reviewCard=document.getElementById('payDoneReviewCard');
@@ -14634,15 +14638,28 @@ async function claimShareBonus(channel){
   }catch(e){}
 }
 // 현재 사주 기준 아직 보상 안 받은 공유 채널 목록 반환
+function shareLogoHtml(key){
+  const svg={
+    native:'<svg viewBox="0 0 24 24" fill="none"><path d="M8 12.5 16.5 4M11 4h5.5v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 7H7.2A3.2 3.2 0 0 0 4 10.2v6.6A3.2 3.2 0 0 0 7.2 20h6.6a3.2 3.2 0 0 0 3.2-3.2V14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    kakao:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg>',
+    url:'<svg viewBox="0 0 24 24" fill="none"><path d="M9.4 14.6 14.6 9.4M10.7 7.1l1.1-1.1a4 4 0 0 1 5.7 5.7l-1.1 1.1M13.3 16.9l-1.1 1.1a4 4 0 1 1-5.7-5.7l1.1-1.1" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    band:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4h5.8c3.1 0 5 1.58 5 4.04 0 1.5-.71 2.57-1.95 3.17 1.58.55 2.55 1.82 2.55 3.74 0 3.03-2.21 5.05-5.7 5.05H7V4Zm5.33 6.4c1.23 0 1.9-.55 1.9-1.52s-.67-1.48-1.9-1.48H10.6v3h1.73Zm.28 6.2c1.42 0 2.16-.66 2.16-1.8 0-1.13-.74-1.79-2.16-1.79H10.6v3.59h2.01Z"/></svg>',
+    instagram:'<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="7.5" r="1.1" fill="currentColor"/></svg>',
+    facebook:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.1 8.2V6.9c0-.63.43-.78.74-.78h1.89V3.1L14.13 3c-2.89 0-3.55 2.16-3.55 3.54V8.2H8.3v3.37h2.28V21h3.52v-9.43h2.62l.35-3.37H14.1Z"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.9 4h3.05l-6.66 7.61L21.12 20h-6.14l-4.8-5.79L4.68 20H1.62l7.12-8.14L1.22 4h6.3l4.34 5.22L16.9 4Zm-1.07 14.52h1.69L6.58 5.4H4.77l11.06 13.12Z"/></svg>',
+    line:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.03 4 3 7.38 3 11.55c0 3.74 3.25 6.86 7.51 7.45.29.06.68.19.78.43.09.22.06.57.03.79l-.13.76c-.04.22-.2.86.78.47.99-.39 5.31-3.13 7.25-5.36C20.55 14.63 21 13.14 21 11.55 21 7.38 16.97 4 12 4Z"/></svg>'
+  }[key]||'';
+  return `<span class="share-logo" aria-hidden="true">${svg}</span>`;
+}
 const _SHARE_CHANNELS=[
-  {key:'native',   label:'기본 공유', emoji:'↗', bg:'linear-gradient(135deg,var(--accent),var(--accent-bright))', color:'var(--bg-mid)', fn:'shareNative'},
-  {key:'kakao',    label:'카카오톡', emoji:'💬', bg:'#FFEB00', color:'#3C1E1E'},
-  {key:'url',      label:'URL 복사', emoji:'🔗', bg:'var(--bg-deep)', color:'var(--accent-bright)'},
-  {key:'band',     label:'네이버 밴드', emoji:'🟢', bg:'#21C531', color:'#fff'},
-  {key:'instagram',label:'인스타그램', emoji:'📷', bg:'linear-gradient(135deg,#fdf497,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB)', color:'#fff'},
-  {key:'facebook', label:'페이스북', emoji:'f', bg:'#1877F2', color:'#fff'},
-  {key:'x',        label:'X', emoji:'𝕏', bg:'#000', color:'#fff'},
-  {key:'line',     label:'라인', emoji:'LINE', bg:'#00B900', color:'#fff'}
+  {key:'native',   label:'기본 공유', bg:'linear-gradient(135deg,var(--accent),var(--accent-bright))', color:'var(--bg-mid)', fn:'shareNative'},
+  {key:'kakao',    label:'카카오톡', bg:'#FFEB00', color:'#3C1E1E'},
+  {key:'url',      label:'URL 복사', bg:'var(--bg-deep)', color:'var(--accent-bright)'},
+  {key:'band',     label:'네이버 밴드', bg:'#21C531', color:'#fff'},
+  {key:'instagram',label:'인스타그램', bg:'linear-gradient(135deg,#fdf497,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB)', color:'#fff'},
+  {key:'facebook', label:'페이스북', bg:'#1877F2', color:'#fff'},
+  {key:'x',        label:'X', bg:'#000', color:'#fff'},
+  {key:'line',     label:'라인', bg:'#00B900', color:'#fff'}
 ];
 function shareByChannel(channel){
   const map={
@@ -14981,7 +14998,7 @@ function showChatLimitUpsell(currentCat){
       <div style="font-size:.74rem;color:var(--sub);line-height:1.65;margin-bottom:10px">친구에게 천지인 사주를 알려주시면 채널당 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요. 1,000원보다 큰 다음 결제에 사용할 수 있어요.</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">
         ${unusedShare.map(c=>{
-          return `<button type="button" onclick="document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove();shareByChannel('${c.key}')" style="flex:1;min-width:0;padding:9px 10px;border:0;border-radius:8px;font-family:inherit;font-size:.76rem;font-weight:800;cursor:pointer;background:${c.bg};color:${c.color}">${c.emoji} ${c.label}</button>`;
+          return `<button type="button" aria-label="${c.label}" title="${c.label}" onclick="document.getElementById('chatLimitUpsell')&&document.getElementById('chatLimitUpsell').remove();shareByChannel('${c.key}')" style="flex:1;min-width:42px;padding:9px 10px;border:0;border-radius:8px;font-family:inherit;font-size:.76rem;font-weight:800;cursor:pointer;background:${c.bg};color:${c.color};display:inline-flex;align-items:center;justify-content:center">${shareLogoHtml(c.key)}</button>`;
         }).join('')}
       </div>
     </div>` : '';
@@ -15574,7 +15591,7 @@ function renderShareCtaInChat(){
   const desc=`친구에게 천지인 사주를 알려주세요. 채널별로 한 번씩 <b style="color:#FFEB00">1,000원 보상코드</b>가 발급돼요.`;
   const btns=unused.map(c=>{
     const style=`background:${c.bg};color:${c.color}`;
-    return `<button type="button" class="chat-share-cta-btn" style="${style}" onclick="shareByChannel('${c.key}')">${c.emoji} ${c.label}</button>`;
+    return `<button type="button" class="chat-share-cta-btn" aria-label="${c.label}" title="${c.label}" style="${style}" onclick="shareByChannel('${c.key}')">${shareLogoHtml(c.key)}</button>`;
   }).join('');
   el.innerHTML=`<div class="chat-share-cta">
     <div class="chat-share-cta-head">
