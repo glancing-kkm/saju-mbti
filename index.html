@@ -1564,30 +1564,30 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
 .qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.08),transparent 36%),linear-gradient(180deg,#202327,#111315);padding:0 10px 16px}
 .qna-room .menu-back{align-self:flex-start;margin:0 0 8px;padding:11px 14px;background:rgba(17,20,21,.76);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;top:0;z-index:5;border-radius:0 0 16px 16px}
-.chat-card.qna-chat-room{flex:0 0 auto;display:flex;flex-direction:column;width:min(100%,390px) !important;height:clamp(560px,calc(100vh - 150px),720px);margin:0 auto !important;border:7px solid #050608 !important;border-radius:38px !important;background:#f4f4f7;box-shadow:0 26px 70px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.12);padding:28px 0 0;overflow:hidden;color:#111318}
+.chat-card.qna-chat-room{flex:0 0 auto;display:flex;flex-direction:column;width:min(100%,390px) !important;height:clamp(560px,calc(100vh - 150px),720px);margin:0 auto !important;border:7px solid #050608 !important;border-radius:38px !important;background:#111719;box-shadow:0 26px 70px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.12);padding:28px 0 0;overflow:hidden;color:#e9ece8}
 .chat-card.qna-chat-room::before{content:'';display:block;position:absolute;top:8px;left:50%;right:auto;width:118px;height:24px;transform:translateX(-50%);border-radius:999px;background:#050608;z-index:4;box-shadow:0 1px 0 rgba(255,255,255,.08)}
 .chat-card.qna-chat-room::after{content:'';position:absolute;left:50%;bottom:7px;width:132px;height:5px;transform:translateX(-50%);border-radius:999px;background:#111318;opacity:.82;z-index:4}
-.qna-chat-room .chat-head{position:relative;padding:26px 15px 12px 58px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(248,248,250,.92);border-bottom:1px solid rgba(0,0,0,.08);box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
+.qna-chat-room .chat-head{position:relative;padding:26px 15px 12px 58px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(18,24,26,.96);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
 .qna-chat-room .chat-head::before{content:'';position:absolute;left:15px;bottom:12px;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8c4a8,#f5d77c);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .qna-chat-room .chat-head::after{content:'천';position:absolute;left:15px;bottom:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:#1b1d1f}
-.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:#111318;font-family:'Hanken Grotesk','Noto Sans KR',sans-serif;font-weight:900;letter-spacing:-.02em}
+.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:#f2f4f0;font-family:'Hanken Grotesk','Noto Sans KR',sans-serif;font-weight:900;letter-spacing:-.02em}
 .qna-chat-room .chat-sub{display:none}
-.qna-chat-room .chat-remaining{margin:0;border:none;background:#e9e9ee;color:#5e6168;font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap;padding:5px 10px}
-.qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:linear-gradient(180deg,#f7f7fa 0%,#f1f1f5 100%);scrollbar-width:thin}
+.qna-chat-room .chat-remaining{margin:0;border:none;background:rgba(255,255,255,.08);color:#c8cec8;font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap;padding:5px 10px}
+.qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:linear-gradient(180deg,#151b1d 0%,#0f1416 100%);scrollbar-width:thin}
 .qna-chat-room .chat-msg{position:relative;max-width:78%;border:none;border-radius:19px;padding:9px 13px;font-size:.91rem;line-height:1.54;letter-spacing:-.01em;box-shadow:none}
-.qna-chat-room .chat-msg-user{background:#007aff;color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
-.qna-chat-room .chat-msg-user::after{content:'';position:absolute;right:-5px;bottom:0;width:12px;height:12px;background:#007aff;border-bottom-left-radius:10px}
+.qna-chat-room .chat-msg-user{background:#2f8f68;color:#f5fff9;border-bottom-right-radius:5px;align-self:flex-end}
+.qna-chat-room .chat-msg-user::after{content:'';position:absolute;right:-5px;bottom:0;width:12px;height:12px;background:#2f8f68;border-bottom-left-radius:10px}
 .qna-chat-room .chat-msg-user .chat-msg-lab{display:none}
-.qna-chat-room .chat-msg-reply,.qna-chat-room .chat-msg-loading{background:#e5e5ea;color:#111318;border-bottom-left-radius:5px;align-self:flex-start}
-.qna-chat-room .chat-msg-reply::after,.qna-chat-room .chat-msg-loading::after{content:'';position:absolute;left:-5px;bottom:0;width:12px;height:12px;background:#e5e5ea;border-bottom-right-radius:10px}
+.qna-chat-room .chat-msg-reply,.qna-chat-room .chat-msg-loading{background:#e5e7e2;color:#111613;border-bottom-left-radius:5px;align-self:flex-start}
+.qna-chat-room .chat-msg-reply::after,.qna-chat-room .chat-msg-loading::after{content:'';position:absolute;left:-5px;bottom:0;width:12px;height:12px;background:#e5e7e2;border-bottom-right-radius:10px}
 .qna-chat-room .chat-msg-error{background:#ffe8e6;color:#c92a22;align-self:center;max-width:88%;border-radius:14px}
 .qna-chat-room .chat-msg-reply .chat-msg-lab,.qna-chat-room .chat-msg-loading .chat-msg-lab{display:none}
 .qna-chat-room .chat-msg-body{white-space:pre-wrap;color:inherit}
-.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:rgba(248,248,250,.94);border-top:1px solid rgba(0,0,0,.08);padding:10px 12px 18px;align-items:flex-end;gap:8px}
-.qna-chat-room .chat-input{border:1px solid #d6d6dc;border-radius:21px;background:#fff;color:#111318;min-height:42px;max-height:112px;padding:10px 14px;font-size:.94rem;box-shadow:0 1px 2px rgba(0,0,0,.04) inset}
-.qna-chat-room .chat-input:focus{border-color:#b9bdc7;box-shadow:0 0 0 3px rgba(0,122,255,.12)}
-.qna-chat-room .chat-input::placeholder{color:#8e8e93}
-.qna-chat-room .chat-btn{width:36px;height:36px;border-radius:50%;padding:0;flex:0 0 36px;font-size:0;background:#007aff;color:#fff;box-shadow:none}
+.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:rgba(18,24,26,.96);border-top:1px solid rgba(255,255,255,.08);padding:10px 12px 18px;align-items:flex-end;gap:8px}
+.qna-chat-room .chat-input{border:1px solid rgba(255,255,255,.12);border-radius:21px;background:#20282a;color:#eef3ef;min-height:42px;max-height:112px;padding:10px 14px;font-size:.94rem;box-shadow:0 1px 2px rgba(0,0,0,.28) inset}
+.qna-chat-room .chat-input:focus{border-color:#66b98f;box-shadow:0 0 0 3px rgba(47,143,104,.18)}
+.qna-chat-room .chat-input::placeholder{color:#8d9891}
+.qna-chat-room .chat-btn{width:36px;height:36px;border-radius:50%;padding:0;flex:0 0 36px;font-size:0;background:#2f8f68;color:#fff;box-shadow:none}
 .qna-chat-room .chat-btn::before{content:'↑';font-size:1.25rem;font-weight:900;line-height:1}
 .qna-chat-room .chat-btn:disabled{background:#c7c7cc;color:#fff;opacity:1}
 .qna-chat-room .chat-btn:disabled::before{content:'+';font-size:1.15rem}
@@ -20324,9 +20324,6 @@ function _autoAdvanceByValue(id,val){
     iD:{done:raw.length>=2||n>3,next:['iHourInput','iCity','iMbti']},
     iHourInput:{done:raw.length>=2||n>2,next:['iMin']},
     iMin:{done:raw.length>=2||n>5,next:['iCity']},
-    iCity:{done:raw.length>=2,next:['iMbti']},
-    iMbti:{done:raw.length>=4,next:['qaJob','qaMarriage','dpY','moStartY','nyY','gnY','nmSurname']},
-    qaMarriage:{done:raw.length>=2,next:['qaChildren']},
     dpY:{done:raw.length>=4,next:['dpM']},
     dpM:{done:raw.length>=2||n>1,next:['dpD']},
     dpD:{done:raw.length>=2||n>3,next:['ctxCustomDaypick']},
@@ -20340,10 +20337,6 @@ function _autoAdvanceByValue(id,val){
     gnD:{done:raw.length>=2||n>3,next:['gnH','gnCity','gnMbti']},
     gnH:{done:raw.length>=2||n>2,next:['gnMin']},
     gnMin:{done:raw.length>=2||n>5,next:['gnCity']},
-    gnCity:{done:raw.length>=2,next:['gnMbti']},
-    gnMbti:{done:raw.length>=4,next:['iMbti']},
-    nmSurname:{done:raw.length>=1,next:['nmGiven']},
-    nmGiven:{done:raw.length>=2,next:['nmSurnameSel','nmSurnameHan']},
     nmSurnameStroke:{done:raw.length>=1,next:['nmGiven1Sel','nmGiven1Han']},
     nmGiven1Stroke:{done:raw.length>=1,next:['nmGiven2Sel','nmGiven2Han']},
     nmGiven2Stroke:{done:raw.length>=1,next:['iMbti']}
@@ -20355,7 +20348,18 @@ function setupInputAutoAdvance(){
   const form=document.getElementById('formWrap');
   if(!form||form.dataset.autoAdvanceReady==='1')return;
   form.dataset.autoAdvanceReady='1';
-  const ids=['iY','iM','iD','iHourInput','iMin','iCity','iMbti','qaMarriage','qaChildren','dpY','dpM','dpD','moStartY','moStartM','moEndY','moEndM','nyY','gnY','gnM','gnD','gnH','gnMin','gnCity','gnMbti','nmSurname','nmGiven','nmSurnameStroke','nmGiven1Stroke','nmGiven2Stroke'];
+  if(!document.body.dataset.textReplaceReady){
+    document.body.dataset.textReplaceReady='1';
+    const replaceIds=new Set(['iCity','iMbti','gnCity','gnMbti','g2City','g2Mbti']);
+    const selectExisting=function(e){
+      const el=e.target;
+      if(!el||!replaceIds.has(el.id)||el.disabled||el.readOnly)return;
+      setTimeout(()=>{try{if(el.value)el.select();}catch(err){}},0);
+    };
+    document.addEventListener('focusin',selectExisting);
+    document.addEventListener('click',selectExisting);
+  }
+  const ids=['iY','iM','iD','iHourInput','iMin','dpY','dpM','dpD','moStartY','moStartM','moEndY','moEndM','nyY','gnY','gnM','gnD','gnH','gnMin','nmSurnameStroke','nmGiven1Stroke','nmGiven2Stroke'];
   ids.forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
@@ -20369,17 +20373,9 @@ function setupInputAutoAdvance(){
     el.addEventListener('compositionend',function(){_autoAdvanceByValue(id,el.value);});
   });
   [
-    ['iHourInput',['iMin']],
-    ['iMin',['iCity']],
-    ['iCity',['iMbti']],
-    ['qaMarriage',['qaChildren']],
-    ['gnH',['gnMin']],
-    ['gnMin',['gnCity']],
-    ['gnCity',['gnMbti']],
     ['nmSurnameSel',['nmGiven1Sel','nmSurnameHan']],
     ['nmGiven1Sel',['nmGiven2Sel','nmGiven1Han']],
-    ['nmGiven2Sel',['nmGiven2Han']],
-    ['gnMbti',['nmSurname']]
+    ['nmGiven2Sel',['nmGiven2Han']]
   ].forEach(([id,next])=>{
     const el=document.getElementById(id);
     if(el)el.addEventListener('change',function(){_focusNextVisible(next);});
