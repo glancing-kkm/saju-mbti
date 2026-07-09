@@ -1918,6 +1918,43 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="menu-head-sub">원하는 풀이를 선택하세요</div>
       </div>
       <section id="sajuPaidHistoryHome" style="margin-bottom:14px"></section>
+      <details class="free-menu-fold">
+        <summary>
+          <span>무료로 먼저 확인하기<span class="free-menu-summary-sub">만세력·오늘의 운세·타로·출생차트를 무료로 볼 수 있어요.</span></span>
+        </summary>
+        <div class="menu-grid free-menu-grid" role="list">
+          <button class="menu-card" onclick="goToInput('manse')" aria-label="만세력 — 정확한 사주 원국 (무료)" role="listitem">
+            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">grid_view</span>
+            <div class="mc-title">만세력</div>
+            <div class="mc-desc">진태양시 보정으로 사주 원국을 정확하게 계산</div>
+            <div class="mc-tag t-free">무료</div>
+          </button>
+          <button class="menu-card" onclick="goToInput('daily')" aria-label="오늘의 운세 — 오늘의 일진 풀이 (무료)" role="listitem">
+            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">today</span>
+            <div class="mc-title">오늘의 운세</div>
+            <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
+            <div class="mc-tag t-free">무료</div>
+          </button>
+          <button class="menu-card" onclick="goToTarot('today')" aria-label="오늘의 타로 — 무료" role="listitem">
+            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">wb_twilight</span>
+            <div class="mc-title">오늘의 타로</div>
+            <div class="mc-desc">9장의 카드 중 한 장을 골라 오늘의 메시지를 확인</div>
+            <div class="mc-tag t-free">무료</div>
+          </button>
+          <button class="menu-card" onclick="goToAstrology('natal')" aria-label="출생차트 — 무료" role="listitem">
+            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">donut_large</span>
+            <div class="mc-title">출생차트</div>
+            <div class="mc-desc">태어난 순간의 행성 배치를 계산해 나의 별자리 차트를 확인</div>
+            <div class="mc-tag t-free">무료</div>
+          </button>
+          <button class="menu-card" onclick="goToAstrology('today')" aria-label="오늘의 점성술 — 무료" role="listitem">
+            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">planet</span>
+            <div class="mc-title">오늘의 점성술</div>
+            <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
+            <div class="mc-tag t-free">무료</div>
+          </button>
+        </div>
+      </details>
       <div class="menu-grid" role="list">
         <div class="menu-section-head" role="presentation">
           <div class="menu-section-title">유료 핵심 풀이</div>
@@ -1973,43 +2010,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <div class="mc-price">1,500원</div>
         </button>
       </div>
-      <details class="free-menu-fold">
-        <summary>
-          <span>무료로 먼저 확인하기<span class="free-menu-summary-sub">만세력·오늘의 운세·타로·출생차트를 무료로 볼 수 있어요.</span></span>
-        </summary>
-        <div class="menu-grid free-menu-grid" role="list">
-          <button class="menu-card" onclick="goToInput('manse')" aria-label="만세력 — 정확한 사주 원국 (무료)" role="listitem">
-            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">grid_view</span>
-            <div class="mc-title">만세력</div>
-            <div class="mc-desc">진태양시 보정으로 사주 원국을 정확하게 계산</div>
-            <div class="mc-tag t-free">무료</div>
-          </button>
-          <button class="menu-card" onclick="goToInput('daily')" aria-label="오늘의 운세 — 오늘의 일진 풀이 (무료)" role="listitem">
-            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">today</span>
-            <div class="mc-title">오늘의 운세</div>
-            <div class="mc-desc">오늘의 일진이 내 사주와 어떻게 맞물리는지 매일 새롭게</div>
-            <div class="mc-tag t-free">무료</div>
-          </button>
-          <button class="menu-card" onclick="goToTarot('today')" aria-label="오늘의 타로 — 무료" role="listitem">
-            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">wb_twilight</span>
-            <div class="mc-title">오늘의 타로</div>
-            <div class="mc-desc">9장의 카드 중 한 장을 골라 오늘의 메시지를 확인</div>
-            <div class="mc-tag t-free">무료</div>
-          </button>
-          <button class="menu-card" onclick="goToAstrology('natal')" aria-label="출생차트 — 무료" role="listitem">
-            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">donut_large</span>
-            <div class="mc-title">출생차트</div>
-            <div class="mc-desc">태어난 순간의 행성 배치를 계산해 나의 별자리 차트를 확인</div>
-            <div class="mc-tag t-free">무료</div>
-          </button>
-          <button class="menu-card" onclick="goToAstrology('today')" aria-label="오늘의 점성술 — 무료" role="listitem">
-            <span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">planet</span>
-            <div class="mc-title">오늘의 점성술</div>
-            <div class="mc-desc">출생차트와 오늘의 행성 흐름을 가볍게 확인</div>
-            <div class="mc-tag t-free">무료</div>
-          </button>
-        </div>
-      </details>
     </div>
 
     <!-- ───── 이용자 후기 ───── -->
