@@ -1562,25 +1562,35 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
-.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:var(--bg);padding:0 12px 12px}
-.qna-room .menu-back{margin:0;padding:12px 14px;background:rgba(17,20,21,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
-.chat-card.qna-chat-room{flex:1;display:flex;flex-direction:column;margin:6px 0 0 !important;border:1px solid var(--border);border-radius:14px !important;background:var(--bg-deep);box-shadow:0 12px 34px rgba(0,0,0,.18);padding:0 12px 10px;overflow:hidden}
-.chat-card.qna-chat-room::before{display:none}
-.qna-chat-room .chat-head{padding:10px 2px 8px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:var(--text)}
+.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.08),transparent 36%),linear-gradient(180deg,#202327,#111315);padding:0 10px 16px}
+.qna-room .menu-back{align-self:flex-start;margin:0 0 8px;padding:11px 14px;background:rgba(17,20,21,.76);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;top:0;z-index:5;border-radius:0 0 16px 16px}
+.chat-card.qna-chat-room{flex:0 0 auto;display:flex;flex-direction:column;width:min(100%,390px) !important;height:clamp(560px,calc(100vh - 150px),720px);margin:0 auto !important;border:7px solid #050608 !important;border-radius:38px !important;background:#f4f4f7;box-shadow:0 26px 70px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.12);padding:28px 0 0;overflow:hidden;color:#111318}
+.chat-card.qna-chat-room::before{content:'';display:block;position:absolute;top:8px;left:50%;right:auto;width:118px;height:24px;transform:translateX(-50%);border-radius:999px;background:#050608;z-index:4;box-shadow:0 1px 0 rgba(255,255,255,.08)}
+.chat-card.qna-chat-room::after{content:'';position:absolute;left:50%;bottom:7px;width:132px;height:5px;transform:translateX(-50%);border-radius:999px;background:#111318;opacity:.82;z-index:4}
+.qna-chat-room .chat-head{position:relative;padding:26px 15px 12px 58px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(248,248,250,.92);border-bottom:1px solid rgba(0,0,0,.08);box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
+.qna-chat-room .chat-head::before{content:'';position:absolute;left:15px;bottom:12px;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8c4a8,#f5d77c);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.qna-chat-room .chat-head::after{content:'천';position:absolute;left:15px;bottom:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:#1b1d1f}
+.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:#111318;font-family:'Hanken Grotesk','Noto Sans KR',sans-serif;font-weight:900;letter-spacing:-.02em}
 .qna-chat-room .chat-sub{display:none}
-.qna-chat-room .chat-remaining{margin:0;border:none;background:var(--accent-soft);font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap}
-.qna-chat-room .chat-log{flex:1;min-height:54vh;max-height:none;margin:8px 0 10px;padding:10px 2px 18px;gap:10px}
-.qna-chat-room .chat-msg{max-width:84%;border:none;border-radius:18px;padding:10px 13px;font-size:.86rem;line-height:1.72}
-.qna-chat-room .chat-msg-user{background:var(--accent);color:#1a1c1d;border-bottom-right-radius:5px}
+.qna-chat-room .chat-remaining{margin:0;border:none;background:#e9e9ee;color:#5e6168;font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap;padding:5px 10px}
+.qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:linear-gradient(180deg,#f7f7fa 0%,#f1f1f5 100%);scrollbar-width:thin}
+.qna-chat-room .chat-msg{position:relative;max-width:78%;border:none;border-radius:19px;padding:9px 13px;font-size:.91rem;line-height:1.54;letter-spacing:-.01em;box-shadow:none}
+.qna-chat-room .chat-msg-user{background:#007aff;color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
+.qna-chat-room .chat-msg-user::after{content:'';position:absolute;right:-5px;bottom:0;width:12px;height:12px;background:#007aff;border-bottom-left-radius:10px}
 .qna-chat-room .chat-msg-user .chat-msg-lab{display:none}
-.qna-chat-room .chat-msg-reply,.qna-chat-room .chat-msg-loading{background:var(--card);color:var(--text);border-bottom-left-radius:5px}
+.qna-chat-room .chat-msg-reply,.qna-chat-room .chat-msg-loading{background:#e5e5ea;color:#111318;border-bottom-left-radius:5px;align-self:flex-start}
+.qna-chat-room .chat-msg-reply::after,.qna-chat-room .chat-msg-loading::after{content:'';position:absolute;left:-5px;bottom:0;width:12px;height:12px;background:#e5e5ea;border-bottom-right-radius:10px}
+.qna-chat-room .chat-msg-error{background:#ffe8e6;color:#c92a22;align-self:center;max-width:88%;border-radius:14px}
 .qna-chat-room .chat-msg-reply .chat-msg-lab,.qna-chat-room .chat-msg-loading .chat-msg-lab{display:none}
-.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg-deep) 22%);padding:10px 0 2px;align-items:flex-end}
-.qna-chat-room .chat-input{border:none;border-radius:20px;background:var(--card);min-height:42px;max-height:112px;padding:11px 14px;font-size:.9rem}
-.qna-chat-room .chat-btn{width:42px;height:42px;border-radius:50%;padding:0;flex:0 0 42px;font-size:0;background:var(--accent);color:#1a1c1d}
-.qna-chat-room .chat-btn::before{content:'➤';font-size:1rem;font-weight:900}
-.qna-chat-room .chat-btn:disabled::before{content:'잠김';font-size:.62rem}
+.qna-chat-room .chat-msg-body{white-space:pre-wrap;color:inherit}
+.qna-chat-room .chat-input-row{position:sticky;bottom:0;background:rgba(248,248,250,.94);border-top:1px solid rgba(0,0,0,.08);padding:10px 12px 18px;align-items:flex-end;gap:8px}
+.qna-chat-room .chat-input{border:1px solid #d6d6dc;border-radius:21px;background:#fff;color:#111318;min-height:42px;max-height:112px;padding:10px 14px;font-size:.94rem;box-shadow:0 1px 2px rgba(0,0,0,.04) inset}
+.qna-chat-room .chat-input:focus{border-color:#b9bdc7;box-shadow:0 0 0 3px rgba(0,122,255,.12)}
+.qna-chat-room .chat-input::placeholder{color:#8e8e93}
+.qna-chat-room .chat-btn{width:36px;height:36px;border-radius:50%;padding:0;flex:0 0 36px;font-size:0;background:#007aff;color:#fff;box-shadow:none}
+.qna-chat-room .chat-btn::before{content:'↑';font-size:1.25rem;font-weight:900;line-height:1}
+.qna-chat-room .chat-btn:disabled{background:#c7c7cc;color:#fff;opacity:1}
+.qna-chat-room .chat-btn:disabled::before{content:'+';font-size:1.15rem}
 .qna-chat-room .chat-tip,.qna-chat-room .chat-addbuy-btn{display:none}
 .ai-reading-card{background:var(--card);border:none}
 .ai-reading-card::before{opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
@@ -2119,32 +2129,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3" id="timeInputs">
           <div class="ig">
             <label for="iHourInput">시</label>
-            <select id="iHourInput" name="birthHourInput" onchange="syncHourInput(this.value)">
-              <option value="" selected>모름</option>
-              <option value="0">00시</option><option value="1">01시</option>
-              <option value="2">02시</option><option value="3">03시</option>
-              <option value="4">04시</option><option value="5">05시</option>
-              <option value="6">06시</option><option value="7">07시</option>
-              <option value="8">08시</option><option value="9">09시</option>
-              <option value="10">10시</option><option value="11">11시</option>
-              <option value="12">12시</option><option value="13">13시</option>
-              <option value="14">14시</option><option value="15">15시</option>
-              <option value="16">16시</option><option value="17">17시</option>
-              <option value="18">18시</option><option value="19">19시</option>
-              <option value="20">20시</option><option value="21">21시</option>
-              <option value="22">22시</option><option value="23">23시</option>
-            </select>
+            <input type="number" id="iHourInput" name="birthHourInput" placeholder="모름 / 0~23" min="0" max="23" inputmode="numeric" autocomplete="off" oninput="syncHourInput(this.value)" onchange="syncHourInput(this.value)">
           </div>
           <div class="ig">
             <label for="iMin">분 (5분 단위)</label>
-            <select id="iMin" name="birthMinute">
-              <option value="0">00분</option><option value="5">05분</option>
-              <option value="10">10분</option><option value="15">15분</option>
-              <option value="20">20분</option><option value="25">25분</option>
-              <option value="30">30분</option><option value="35">35분</option>
-              <option value="40">40분</option><option value="45">45분</option>
-              <option value="50">50분</option><option value="55">55분</option>
-            </select>
+            <input type="number" id="iMin" name="birthMinute" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
           </div>
         </div>
         <label class="time-unknown-row" style="margin-top:12px">
@@ -2156,43 +2145,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <fieldset>
         <legend><label for="iCity" style="all:unset;cursor:pointer">태어난 곳</label> <small>(시간 보정용)</small></legend>
         <div class="ig">
-          <select id="iCity" name="birthCity">
-            <optgroup label="── 대한민국 ──">
-              <option value="seoul">서울특별시</option>
-              <option value="busan">부산광역시</option>
-              <option value="daegu">대구광역시</option>
-              <option value="incheon">인천광역시</option>
-              <option value="gwangju">광주광역시</option>
-              <option value="daejeon">대전광역시</option>
-              <option value="ulsan">울산광역시</option>
-              <option value="sejong">세종특별자치시</option>
-              <option value="suwon">수원·경기도</option>
-              <option value="chuncheon">춘천·강원도</option>
-              <option value="cheongju">청주·충청북도</option>
-              <option value="jeonju">전주·전라북도</option>
-              <option value="mokpo">목포·전라남도</option>
-              <option value="pohang">포항·경상북도</option>
-              <option value="changwon">창원·경상남도</option>
-              <option value="jeju">제주특별자치도</option>
-              <option value="kr-other">기타 국내 (시간 미보정)</option>
-            </optgroup>
-            <optgroup label="── 해외 ──">
-              <option value="tokyo">도쿄 (일본)</option>
-              <option value="beijing">베이징 (중국)</option>
-              <option value="shanghai">상하이 (중국)</option>
-              <option value="hongkong">홍콩</option>
-              <option value="taipei">타이베이 (대만)</option>
-              <option value="bangkok">방콕 (태국)</option>
-              <option value="singapore">싱가포르</option>
-              <option value="newyork">뉴욕 (미국)</option>
-              <option value="losangeles">로스앤젤레스 (미국)</option>
-              <option value="vancouver">밴쿠버 (캐나다)</option>
-              <option value="london">런던 (영국)</option>
-              <option value="paris">파리 (프랑스)</option>
-              <option value="sydney">시드니 (호주)</option>
-              <option value="other">기타 해외 (시간 미보정)</option>
-            </optgroup>
-          </select>
+          <input type="text" id="iCity" name="birthCity" value="서울특별시" placeholder="예: 서울, 대전, Tokyo" list="cityOptions" autocomplete="off">
         </div>
       </fieldset>
 
@@ -2200,33 +2153,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <fieldset id="mbtiFieldset">
         <legend><label for="iMbti" style="all:unset;cursor:pointer">MBTI</label> <small id="mbtiLegendNote">(선택 — 사주와 비교 풀이가 추가돼요)</small></legend>
         <div class="ig">
-          <select id="iMbti" name="mbti" aria-describedby="mbti-help">
-            <option value="">모름 / 건너뛰기</option>
-            <optgroup label="── 분석가 (NT) ──">
-              <option value="INTJ">INTJ — 전략가</option>
-              <option value="INTP">INTP — 논리술사</option>
-              <option value="ENTJ">ENTJ — 통솔자</option>
-              <option value="ENTP">ENTP — 변론가</option>
-            </optgroup>
-            <optgroup label="── 외교관 (NF) ──">
-              <option value="INFJ">INFJ — 옹호자</option>
-              <option value="INFP">INFP — 중재자</option>
-              <option value="ENFJ">ENFJ — 선도자</option>
-              <option value="ENFP">ENFP — 활동가</option>
-            </optgroup>
-            <optgroup label="── 관리자 (SJ) ──">
-              <option value="ISTJ">ISTJ — 청렴결백</option>
-              <option value="ISFJ">ISFJ — 수호자</option>
-              <option value="ESTJ">ESTJ — 경영자</option>
-              <option value="ESFJ">ESFJ — 집정관</option>
-            </optgroup>
-            <optgroup label="── 탐험가 (SP) ──">
-              <option value="ISTP">ISTP — 장인</option>
-              <option value="ISFP">ISFP — 모험가</option>
-              <option value="ESTP">ESTP — 사업가</option>
-              <option value="ESFP">ESFP — 연예인</option>
-            </optgroup>
-          </select>
+          <input type="text" id="iMbti" name="mbti" placeholder="예: INTJ / 모름" list="mbtiOptions" maxlength="4" autocomplete="off" aria-describedby="mbti-help" oninput="this.value=this.value.toUpperCase()">
           <small id="mbti-help" style="display:block;margin-top:6px;font-size:.7rem;color:var(--muted);line-height:1.65">선택하시면 일주와 MBTI의 흐름을 비교한 한 줄 풀이가 결과에 함께 노출돼요.</small>
         </div>
       </fieldset>
@@ -2242,21 +2169,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3">
           <div class="ig">
             <label for="qaMarriage">결혼 여부 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
-            <select id="qaMarriage" name="qaMarriage">
-              <option value="">선택 안 함</option>
-              <option value="single">미혼</option>
-              <option value="married">기혼</option>
-              <option value="divorced">이혼</option>
-              <option value="remarried">재혼</option>
-            </select>
+            <input type="text" id="qaMarriage" name="qaMarriage" placeholder="예: 미혼, 기혼" list="marriageOptions" autocomplete="off">
           </div>
           <div class="ig">
             <label for="qaChildren">자녀 유무 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
-            <select id="qaChildren" name="qaChildren">
-              <option value="">선택 안 함</option>
-              <option value="yes">있음</option>
-              <option value="no">없음</option>
-            </select>
+            <input type="text" id="qaChildren" name="qaChildren" placeholder="예: 있음, 없음" list="childrenOptions" autocomplete="off">
           </div>
         </div>
       </fieldset>
@@ -2417,24 +2334,44 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="row3">
           <div class="ig">
             <label for="gnH">시</label>
-            <select id="gnH">
-              <option value="-1">시간 미상</option>
-            </select>
+            <input type="number" id="gnH" placeholder="모름 / 0~23" min="0" max="23" inputmode="numeric" autocomplete="off">
           </div>
           <div class="ig">
             <label for="gnMin">분</label>
-            <select id="gnMin"></select>
+            <input type="number" id="gnMin" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
           </div>
         </div>
         <div class="ig" style="margin-top:9px">
           <label for="gnCity">태어난 곳 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(시간 보정용)</span></label>
-          <select id="gnCity"></select>
+          <input type="text" id="gnCity" placeholder="예: 서울, 부산, Tokyo" list="cityOptions" autocomplete="off">
         </div>
         <div class="ig" style="margin-top:9px">
           <label for="gnMbti">상대방 MBTI <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항)</span></label>
-          <select id="gnMbti"></select>
+          <input type="text" id="gnMbti" placeholder="예: ENFP / 모름" list="mbtiOptions" maxlength="4" autocomplete="off" oninput="this.value=this.value.toUpperCase()">
         </div>
       </fieldset>
+
+      <datalist id="cityOptions">
+        <option value="서울특별시"><option value="부산광역시"><option value="대구광역시"><option value="인천광역시">
+        <option value="광주광역시"><option value="대전광역시"><option value="울산광역시"><option value="세종특별자치시">
+        <option value="수원·경기도"><option value="춘천·강원도"><option value="청주·충청북도"><option value="전주·전라북도">
+        <option value="목포·전라남도"><option value="포항·경상북도"><option value="창원·경상남도"><option value="제주특별자치도">
+        <option value="기타 국내"><option value="도쿄"><option value="베이징"><option value="상하이"><option value="홍콩">
+        <option value="타이베이"><option value="방콕"><option value="싱가포르"><option value="뉴욕"><option value="로스앤젤레스">
+        <option value="밴쿠버"><option value="런던"><option value="파리"><option value="시드니"><option value="기타 해외">
+      </datalist>
+      <datalist id="mbtiOptions">
+        <option value="INTJ"><option value="INTP"><option value="ENTJ"><option value="ENTP">
+        <option value="INFJ"><option value="INFP"><option value="ENFJ"><option value="ENFP">
+        <option value="ISTJ"><option value="ISFJ"><option value="ESTJ"><option value="ESFJ">
+        <option value="ISTP"><option value="ISFP"><option value="ESTP"><option value="ESFP">
+      </datalist>
+      <datalist id="marriageOptions">
+        <option value="미혼"><option value="기혼"><option value="이혼"><option value="재혼">
+      </datalist>
+      <datalist id="childrenOptions">
+        <option value="있음"><option value="없음">
+      </datalist>
 
       <div class="err" id="errMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="analyze-btn">✦ 사주 분석하기 ✦</button>
@@ -3654,6 +3591,71 @@ function syncHourInput(v){
   const n=parseInt(v);
   if(hidden){hidden.value=isNaN(n)?'-1':String(Math.max(0,Math.min(23,n)));}
 }
+const CITY_LABELS={
+  seoul:'서울특별시', busan:'부산광역시', daegu:'대구광역시', incheon:'인천광역시',
+  gwangju:'광주광역시', daejeon:'대전광역시', ulsan:'울산광역시', sejong:'세종특별자치시',
+  suwon:'수원·경기도', chuncheon:'춘천·강원도', cheongju:'청주·충청북도', jeonju:'전주·전라북도',
+  mokpo:'목포·전라남도', pohang:'포항·경상북도', changwon:'창원·경상남도', jeju:'제주특별자치도',
+  'kr-other':'기타 국내', tokyo:'도쿄', beijing:'베이징', shanghai:'상하이', hongkong:'홍콩',
+  taipei:'타이베이', bangkok:'방콕', singapore:'싱가포르', newyork:'뉴욕', losangeles:'로스앤젤레스',
+  vancouver:'밴쿠버', london:'런던', paris:'파리', sydney:'시드니', other:'기타 해외'
+};
+function normalizeLooseText(v){
+  return String(v||'').trim().toLowerCase().replace(/\s+/g,'').replace(/[·ㆍ\-.()]/g,'');
+}
+function normalizeCityInput(v){
+  const raw=String(v||'').trim();
+  if(!raw)return 'seoul';
+  if(CITY_LABELS[raw])return raw;
+  const key=normalizeLooseText(raw);
+  const aliases={
+    seoul:'seoul', 서울:'seoul', 서울특별시:'seoul',
+    busan:'busan', 부산:'busan', 부산광역시:'busan',
+    daegu:'daegu', 대구:'daegu', 대구광역시:'daegu',
+    incheon:'incheon', 인천:'incheon', 인천광역시:'incheon',
+    gwangju:'gwangju', 광주:'gwangju', 광주광역시:'gwangju',
+    daejeon:'daejeon', 대전:'daejeon', 대전광역시:'daejeon',
+    ulsan:'ulsan', 울산:'ulsan', 울산광역시:'ulsan',
+    sejong:'sejong', 세종:'sejong', 세종특별자치시:'sejong',
+    suwon:'suwon', 수원:'suwon', 경기:'suwon', 경기도:'suwon', 수원경기도:'suwon',
+    chuncheon:'chuncheon', 춘천:'chuncheon', 강원:'chuncheon', 강원도:'chuncheon', 춘천강원도:'chuncheon',
+    cheongju:'cheongju', 청주:'cheongju', 충북:'cheongju', 충청북도:'cheongju', 청주충청북도:'cheongju',
+    jeonju:'jeonju', 전주:'jeonju', 전북:'jeonju', 전라북도:'jeonju', 전주전라북도:'jeonju',
+    mokpo:'mokpo', 목포:'mokpo', 전남:'mokpo', 전라남도:'mokpo', 목포전라남도:'mokpo',
+    pohang:'pohang', 포항:'pohang', 경북:'pohang', 경상북도:'pohang', 포항경상북도:'pohang',
+    changwon:'changwon', 창원:'changwon', 경남:'changwon', 경상남도:'changwon', 창원경상남도:'changwon',
+    jeju:'jeju', 제주:'jeju', 제주도:'jeju', 제주특별자치도:'jeju',
+    krother:'kr-other', 기타국내:'kr-other',
+    tokyo:'tokyo', 도쿄:'tokyo', 일본도쿄:'tokyo',
+    beijing:'beijing', 베이징:'beijing', 북경:'beijing',
+    shanghai:'shanghai', 상하이:'shanghai', 상해:'shanghai',
+    hongkong:'hongkong', 홍콩:'hongkong',
+    taipei:'taipei', 타이베이:'taipei', 대만:'taipei',
+    bangkok:'bangkok', 방콕:'bangkok',
+    singapore:'singapore', 싱가포르:'singapore',
+    newyork:'newyork', 뉴욕:'newyork',
+    losangeles:'losangeles', la:'losangeles', 엘에이:'losangeles', 로스앤젤레스:'losangeles',
+    vancouver:'vancouver', 밴쿠버:'vancouver',
+    london:'london', 런던:'london',
+    paris:'paris', 파리:'paris',
+    sydney:'sydney', 시드니:'sydney',
+    other:'other', 기타해외:'other'
+  };
+  return aliases[key]||'seoul';
+}
+function cityLabelOf(key){return CITY_LABELS[key]||CITY_LABELS[normalizeCityInput(key)]||'서울특별시';}
+function normalizeMbtiInput(v){
+  const s=String(v||'').trim().toUpperCase();
+  return /^(I|E)(N|S)(T|F)(J|P)$/.test(s)?s:'';
+}
+function normalizeMarriageInput(v){
+  const k=normalizeLooseText(v);
+  return ({미혼:'single', single:'single', 기혼:'married', married:'married', 이혼:'divorced', divorced:'divorced', 재혼:'remarried', remarried:'remarried'})[k]||'';
+}
+function normalizeChildrenInput(v){
+  const k=normalizeLooseText(v);
+  return ({있음:'yes', 있다:'yes', yes:'yes', y:'yes', 없음:'no', 없다:'no', no:'no', n:'no'})[k]||'';
+}
 // 옵션 C — 카테고리별 고민 태그 선택. cat: 'daypick'|'monthly', tag: 'job'|... |'custom'|''
 function setContextTag(cat,tag){
   const capCat=cat.charAt(0).toUpperCase()+cat.slice(1);
@@ -3702,17 +3704,10 @@ function setGnCal(t){_gnCal=t;_setTog('gnCs',t==='solar');_setTog('gnCl',t==='lu
 function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);}
 function ensureGnTimeSelects(){
   const h=document.getElementById('gnH'), mi=document.getElementById('gnMin');
-  if(h&&h.options.length<=1){
-    for(let i=0;i<24;i++){const o=document.createElement('option');o.value=i;o.textContent=String(i).padStart(2,'0')+'시';h.appendChild(o);}
-  }
-  if(mi&&!mi.options.length){
-    [0,5,10,15,20,25,30,35,40,45,50,55].forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=String(m).padStart(2,'0')+'분';mi.appendChild(o);});
-  }
-  // 도시·MBTI select 옵션 — 본인 iCity·iMbti 옵션 그대로 복제
-  const gnCity=document.getElementById('gnCity'), iCity=document.getElementById('iCity');
-  if(gnCity&&iCity&&!gnCity.options.length){gnCity.innerHTML=iCity.innerHTML;}
-  const gnMbti=document.getElementById('gnMbti'), iMbti=document.getElementById('iMbti');
-  if(gnMbti&&iMbti&&!gnMbti.options.length){gnMbti.innerHTML=iMbti.innerHTML;}
+  if(h&&!h.value)h.value='';
+  if(mi&&!mi.value)mi.value='0';
+  const gnCity=document.getElementById('gnCity');
+  if(gnCity&&!gnCity.value)gnCity.value='서울특별시';
 }
 
 // ── View Router ──
@@ -3902,13 +3897,14 @@ function restoreLastInputs(){
   if(typeof i.isLeap==='boolean')setLeap(i.isLeap);
   const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null&&v!=='')e.value=v;};
   set('iY',i.year);set('iM',i.month);set('iD',i.day);
-  set('iH',i.hour);set('iMin',i.min);set('iCity',i.cityKey);
+  set('iH',i.hour);set('iMin',i.min);set('iCity',cityLabelOf(i.cityKey));
   set('iMbti',i.mbti);
   // 시간 입력 복원
   const hr=parseInt(i.hour);
   const tu=document.getElementById('iTimeUnknown');
   const hi=document.getElementById('iHourInput');
   if(hr<0||isNaN(hr)){
+    if(hi)hi.value='';
     if(tu){tu.checked=true;setTimeUnknown(true);}
   }else{
     if(hi)hi.value=String(hr); // select 먼저 복원 — setTimeUnknown(false)가 select 값으로 iH를 재산출하므로
@@ -15112,13 +15108,13 @@ function buildSajuContextForChat(){
   const isStrong=me>=tot/3;
   const gm=emptyBranches(_saju.dp.stem,_saju.dp.branch);
   const sinNames=[...new Set(sins.map(s=>s.n.split(' ')[0]))];
-  const cityName=document.querySelector('#iCity option[value="'+_meta.cityKey+'"]');
+  const cityName=cityLabelOf(_meta.cityKey);
   const t=_meta.hour<0?'시간 미상':`${String(_meta.hour).padStart(2,'0')}시 ${String(_meta.min).padStart(2,'0')}분`;
   const qaExtra=(_meta&&_meta.qaExtra)||null;
   return{
     birth:`${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일 ${t}`,
     gender:gender==='male'?'남성':'여성',
-    birthplace:cityName?cityName.textContent:'미상',
+    birthplace:cityName||'미상',
     pillars:`년주 ${STEMKO[_saju.yp.stem]}${BRCHKO[_saju.yp.branch]} · 월주 ${STEMKO[_saju.mp.stem]}${BRCHKO[_saju.mp.branch]} · 일주 ${STEMKO[_saju.dp.stem]}${BRCHKO[_saju.dp.branch]}${_saju.hp?` · 시주 ${STEMKO[_saju.hp.stem]}${BRCHKO[_saju.hp.branch]}`:''}`,
     dayMaster:`${STEMKO[_saju.dp.stem]} — ${dm.n.split('(')[0]}, ${dm.core}`,
     daySpouse:`${BRCHKO[_saju.dp.branch]} — ${ANIMAL[_saju.dp.branch]}, 오행 ${OHNAME[BOH[_saju.dp.branch]]}`,
@@ -15579,7 +15575,7 @@ function renderChatSection(catOpt){
     : `<div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>`;
   return `<div class="chat-card${isQna?' qna-chat-room':''}">
     <div class="chat-head">
-      <div class="chat-title">${isQna?'즉문즉답':'역술가에게 직접 물어보기'}</div>
+      <div class="chat-title">${isQna?'천기 상담':'역술가에게 직접 물어보기'}</div>
       <div class="chat-sub">${subText[cat]||subText.life}</div>
       <div class="chat-remaining" id="chatRemaining">${remaining}회 남음</div>
     </div>
@@ -15659,87 +15655,20 @@ function renderGunghapSection(){
       <div class="row3" style="margin-bottom:9px">
         <div class="ig">
           <label>시</label>
-          <select id="g2H">
-            <option value="-1">시간 미상</option>
-            ${[...Array(24)].map((_,i)=>`<option value="${i}">${String(i).padStart(2,'0')}시</option>`).join('')}
-          </select>
+          <input type="number" id="g2H" placeholder="모름 / 0~23" min="0" max="23" inputmode="numeric" autocomplete="off">
         </div>
         <div class="ig">
           <label>분</label>
-          <select id="g2Min">
-            ${[0,5,10,15,20,25,30,35,40,45,50,55].map(m=>`<option value="${m}">${String(m).padStart(2,'0')}분</option>`).join('')}
-          </select>
+          <input type="number" id="g2Min" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
         </div>
       </div>
       <div class="ig" style="margin-bottom:9px">
         <label>태어난 곳 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(시간 보정용)</span></label>
-        <select id="g2City">
-          <optgroup label="── 대한민국 ──">
-            <option value="seoul">서울특별시</option>
-            <option value="busan">부산광역시</option>
-            <option value="daegu">대구광역시</option>
-            <option value="incheon">인천광역시</option>
-            <option value="gwangju">광주광역시</option>
-            <option value="daejeon">대전광역시</option>
-            <option value="ulsan">울산광역시</option>
-            <option value="sejong">세종특별자치시</option>
-            <option value="suwon">수원·경기도</option>
-            <option value="chuncheon">춘천·강원도</option>
-            <option value="cheongju">청주·충청북도</option>
-            <option value="jeonju">전주·전라북도</option>
-            <option value="mokpo">목포·전라남도</option>
-            <option value="pohang">포항·경상북도</option>
-            <option value="changwon">창원·경상남도</option>
-            <option value="jeju">제주특별자치도</option>
-            <option value="kr-other">기타 국내 (시간 미보정)</option>
-          </optgroup>
-          <optgroup label="── 해외 ──">
-            <option value="tokyo">도쿄 (일본)</option>
-            <option value="beijing">베이징 (중국)</option>
-            <option value="shanghai">상하이 (중국)</option>
-            <option value="hongkong">홍콩</option>
-            <option value="taipei">타이베이 (대만)</option>
-            <option value="bangkok">방콕 (태국)</option>
-            <option value="singapore">싱가포르</option>
-            <option value="newyork">뉴욕 (미국)</option>
-            <option value="losangeles">로스앤젤레스 (미국)</option>
-            <option value="vancouver">밴쿠버 (캐나다)</option>
-            <option value="london">런던 (영국)</option>
-            <option value="paris">파리 (프랑스)</option>
-            <option value="sydney">시드니 (호주)</option>
-            <option value="other">기타 해외 (시간 미보정)</option>
-          </optgroup>
-        </select>
+        <input type="text" id="g2City" placeholder="예: 서울, 부산, Tokyo" list="cityOptions" autocomplete="off" value="서울특별시">
       </div>
       <div class="ig" style="margin-bottom:9px">
         <label>상대방 MBTI <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(선택사항 — 입력 시 MBTI 궁합도 함께 봐드려요)</span></label>
-        <select id="g2Mbti">
-          <option value="">선택 안 함</option>
-          <optgroup label="── 분석가 (NT) ──">
-            <option value="INTJ">INTJ — 전략가</option>
-            <option value="INTP">INTP — 논리술사</option>
-            <option value="ENTJ">ENTJ — 통솔자</option>
-            <option value="ENTP">ENTP — 변론가</option>
-          </optgroup>
-          <optgroup label="── 외교관 (NF) ──">
-            <option value="INFJ">INFJ — 옹호자</option>
-            <option value="INFP">INFP — 중재자</option>
-            <option value="ENFJ">ENFJ — 선도자</option>
-            <option value="ENFP">ENFP — 활동가</option>
-          </optgroup>
-          <optgroup label="── 관리자 (SJ) ──">
-            <option value="ISTJ">ISTJ — 현실주의자</option>
-            <option value="ISFJ">ISFJ — 수호자</option>
-            <option value="ESTJ">ESTJ — 경영자</option>
-            <option value="ESFJ">ESFJ — 집정관</option>
-          </optgroup>
-          <optgroup label="── 탐험가 (SP) ──">
-            <option value="ISTP">ISTP — 장인</option>
-            <option value="ISFP">ISFP — 모험가</option>
-            <option value="ESTP">ESTP — 사업가</option>
-            <option value="ESFP">ESFP — 연예인</option>
-          </optgroup>
-        </select>
+        <input type="text" id="g2Mbti" placeholder="예: ENFP / 모름" list="mbtiOptions" maxlength="4" autocomplete="off" oninput="this.value=this.value.toUpperCase()">
       </div>
       <div class="err" id="g2err"></div>
       <button class="lock-btn" style="width:100%;margin-top:6px" onclick="analyzeGunghapDetail()">궁합 분석하기</button>
@@ -15755,8 +15684,9 @@ function analyzeGunghapDetail(){
   const m=parseInt(document.getElementById('g2M').value)||0;
   const d=parseInt(document.getElementById('g2D').value)||0;
   let h=parseInt(document.getElementById('g2H').value);
-  let mn=parseInt((document.getElementById('g2Min')||{}).value)||0;
-  const cityKey=(document.getElementById('g2City')||{}).value||'seoul';
+  let mn=Math.max(0,Math.min(59,parseInt((document.getElementById('g2Min')||{}).value)||0));
+  const cityKey=normalizeCityInput((document.getElementById('g2City')||{}).value||'서울특별시');
+  if(isNaN(h))h=-1;
   if(!y||y<1900||y>2050){errEl.textContent='연도를 확인해주세요.';errEl.className='err vis';return;}
   if(!m||m<1||m>12){errEl.textContent='월을 확인해주세요.';errEl.className='err vis';return;}
   if(!d||d<1||d>31){errEl.textContent='일을 확인해주세요.';errEl.className='err vis';return;}
@@ -15776,7 +15706,7 @@ function analyzeGunghapDetail(){
     const saju2=calcSaju(sy,sm,sd,h,mn);
     const myMbti=(_meta&&_meta.mbti)||'';
     const g2MbtiEl=document.getElementById('g2Mbti');
-    const g2Mbti=(g2MbtiEl&&g2MbtiEl.value)||'';
+    const g2Mbti=normalizeMbtiInput((g2MbtiEl&&g2MbtiEl.value)||'');
     // 별도 궁합 카테고리(renderGunghapPaid)와 동일한 본문 사용 — 점수·내용 일치 보장
     const extraKey=`${sy}-${sm}-${sd}-${h}-${mn}-${_g2gender||''}-${g2Mbti||''}`;
     const box=document.getElementById('ggResultBox');
@@ -20020,11 +19950,12 @@ function analyze(){
   const month=parseInt(document.getElementById('iM').value)||0;
   const day=parseInt(document.getElementById('iD').value)||0;
   let hour=parseInt(document.getElementById('iH').value);
-  let min=parseInt(document.getElementById('iMin').value)||0;
-  const cityKey=document.getElementById('iCity').value;
+  let min=Math.max(0,Math.min(59,parseInt(document.getElementById('iMin').value)||0));
+  const cityInput=(document.getElementById('iCity').value||'').trim();
+  const cityKey=normalizeCityInput(cityInput);
   // 만세력·일일운세는 MBTI 비교 풀이를 제공하지 않음 (입력값과 무관하게 강제 비움)
   const cat0=_category||'manse';
-  const rawMbti=((document.getElementById('iMbti')||{}).value||'');
+  const rawMbti=normalizeMbtiInput((document.getElementById('iMbti')||{}).value||'');
   const mbti=(cat0==='manse'||cat0==='daily'||cat0==='name'||cat0==='qna')?'':rawMbti;
   if(isNaN(hour))hour=-1;
   if(isNaN(min))min=0;
@@ -20051,8 +19982,8 @@ function analyze(){
   };
   if(cat==='qna'){
     const job=(document.getElementById('qaJob')&&document.getElementById('qaJob').value||'').trim().slice(0,40);
-    const marriage=(document.getElementById('qaMarriage')&&document.getElementById('qaMarriage').value)||'';
-    const children=(document.getElementById('qaChildren')&&document.getElementById('qaChildren').value)||'';
+    const marriage=normalizeMarriageInput((document.getElementById('qaMarriage')&&document.getElementById('qaMarriage').value)||'');
+    const children=normalizeChildrenInput((document.getElementById('qaChildren')&&document.getElementById('qaChildren').value)||'');
     qaExtra={job,marriage,children};
   }else if(cat==='daypick'){
     const y=parseInt(document.getElementById('dpY').value)||0;
@@ -20086,15 +20017,15 @@ function analyze(){
     const gm=parseInt(document.getElementById('gnM').value)||0;
     const gd=parseInt(document.getElementById('gnD').value)||0;
     let gh=parseInt(document.getElementById('gnH').value);
-    let gmin=parseInt(document.getElementById('gnMin').value)||0;
+    let gmin=Math.max(0,Math.min(59,parseInt(document.getElementById('gnMin').value)||0));
     if(!gy||gy<1900||gy>2050)return showErr('상대방 연도(1900~2050)를 입력해주세요.','gnY');
     if(!gm||gm<1||gm>12)return showErr('상대방 월(1~12)을 입력해주세요.','gnM');
     if(!gd||gd<1||gd>31)return showErr('상대방 일(1~31)을 입력해주세요.','gnD');
     if(isNaN(gh))gh=-1;
     const gnCityEl=document.getElementById('gnCity');
-    const gnCityKey=(gnCityEl&&gnCityEl.value)||'seoul';
+    const gnCityKey=normalizeCityInput((gnCityEl&&gnCityEl.value)||'서울특별시');
     const gnMbtiEl=document.getElementById('gnMbti');
-    const gnMbtiVal=(gnMbtiEl&&gnMbtiEl.value)||'';
+    const gnMbtiVal=normalizeMbtiInput((gnMbtiEl&&gnMbtiEl.value)||'');
     window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,cityKey:gnCityKey,mbti:gnMbtiVal};
   }else if(cat==='name'){
     const surname=(document.getElementById('nmSurname').value||'').trim();
@@ -20361,6 +20292,99 @@ function _validateBirthField(id){
     _fieldHint(elD,'');
   }
 }
+function _isFocusableFormField(el){
+  if(!el||el.disabled||el.readOnly)return false;
+  const st=getComputedStyle(el);
+  if(st.display==='none'||st.visibility==='hidden')return false;
+  const box=el.getBoundingClientRect();
+  return box.width>0&&box.height>0;
+}
+function _focusInputField(id){
+  const el=document.getElementById(id);
+  if(!_isFocusableFormField(el))return false;
+  try{el.focus({preventScroll:false});}catch(e){el.focus();}
+  if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'){
+    try{el.select();}catch(e){}
+  }
+  return true;
+}
+function _focusNextVisible(ids){
+  for(const id of ids){
+    if(_focusInputField(id))return true;
+  }
+  return false;
+}
+function _autoAdvanceByValue(id,val){
+  const raw=String(val||'').trim();
+  if(!raw)return false;
+  const n=parseInt(raw,10);
+  const rules={
+    iY:{done:raw.length>=4,next:['iM']},
+    iM:{done:raw.length>=2||n>1,next:['iD']},
+    iD:{done:raw.length>=2||n>3,next:['iHourInput','iCity','iMbti']},
+    iHourInput:{done:raw.length>=2||n>2,next:['iMin']},
+    iMin:{done:raw.length>=2||n>5,next:['iCity']},
+    iCity:{done:raw.length>=2,next:['iMbti']},
+    iMbti:{done:raw.length>=4,next:['qaJob','qaMarriage','dpY','moStartY','nyY','gnY','nmSurname']},
+    qaMarriage:{done:raw.length>=2,next:['qaChildren']},
+    dpY:{done:raw.length>=4,next:['dpM']},
+    dpM:{done:raw.length>=2||n>1,next:['dpD']},
+    dpD:{done:raw.length>=2||n>3,next:['ctxCustomDaypick']},
+    moStartY:{done:raw.length>=4,next:['moStartM']},
+    moStartM:{done:raw.length>=2||n>1,next:['moEndY']},
+    moEndY:{done:raw.length>=4,next:['moEndM']},
+    moEndM:{done:raw.length>=2||n>1,next:['ctxCustomMonthly']},
+    nyY:{done:raw.length>=4,next:['iMbti']},
+    gnY:{done:raw.length>=4,next:['gnM']},
+    gnM:{done:raw.length>=2||n>1,next:['gnD']},
+    gnD:{done:raw.length>=2||n>3,next:['gnH','gnCity','gnMbti']},
+    gnH:{done:raw.length>=2||n>2,next:['gnMin']},
+    gnMin:{done:raw.length>=2||n>5,next:['gnCity']},
+    gnCity:{done:raw.length>=2,next:['gnMbti']},
+    gnMbti:{done:raw.length>=4,next:['iMbti']},
+    nmSurname:{done:raw.length>=1,next:['nmGiven']},
+    nmGiven:{done:raw.length>=2,next:['nmSurnameSel','nmSurnameHan']},
+    nmSurnameStroke:{done:raw.length>=1,next:['nmGiven1Sel','nmGiven1Han']},
+    nmGiven1Stroke:{done:raw.length>=1,next:['nmGiven2Sel','nmGiven2Han']},
+    nmGiven2Stroke:{done:raw.length>=1,next:['iMbti']}
+  }[id];
+  if(!rules||!rules.done)return false;
+  return _focusNextVisible(rules.next);
+}
+function setupInputAutoAdvance(){
+  const form=document.getElementById('formWrap');
+  if(!form||form.dataset.autoAdvanceReady==='1')return;
+  form.dataset.autoAdvanceReady='1';
+  const ids=['iY','iM','iD','iHourInput','iMin','iCity','iMbti','qaMarriage','qaChildren','dpY','dpM','dpD','moStartY','moStartM','moEndY','moEndM','nyY','gnY','gnM','gnD','gnH','gnMin','gnCity','gnMbti','nmSurname','nmGiven','nmSurnameStroke','nmGiven1Stroke','nmGiven2Stroke'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const selectCurrent=()=>{try{if(el.value)el.select();}catch(e){}};
+    el.addEventListener('focus',function(){setTimeout(selectCurrent,0);});
+    el.addEventListener('click',function(){setTimeout(selectCurrent,0);});
+    el.addEventListener('input',function(e){
+      if(e&&e.isComposing)return;
+      _autoAdvanceByValue(id,el.value);
+    });
+    el.addEventListener('compositionend',function(){_autoAdvanceByValue(id,el.value);});
+  });
+  [
+    ['iHourInput',['iMin']],
+    ['iMin',['iCity']],
+    ['iCity',['iMbti']],
+    ['qaMarriage',['qaChildren']],
+    ['gnH',['gnMin']],
+    ['gnMin',['gnCity']],
+    ['gnCity',['gnMbti']],
+    ['nmSurnameSel',['nmGiven1Sel','nmSurnameHan']],
+    ['nmGiven1Sel',['nmGiven2Sel','nmGiven1Han']],
+    ['nmGiven2Sel',['nmGiven2Han']],
+    ['gnMbti',['nmSurname']]
+  ].forEach(([id,next])=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('change',function(){_focusNextVisible(next);});
+  });
+}
 (function(){
   ['iY','iM','iD'].forEach(id=>{
     const el=document.getElementById(id);
@@ -20375,6 +20399,7 @@ function _validateBirthField(id){
     const elD=document.getElementById('iD');
     if(elD&&elD.value!=='')_validateBirthField('iD');
   });
+  setupInputAutoAdvance();
 })();
 
 // ══════════════════════════════════════════════
