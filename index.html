@@ -880,13 +880,19 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .home-share-current{min-width:78px;border:1px solid var(--border);background:rgba(17,20,21,.92);color:var(--text);font-family:inherit;font-size:.72rem;font-weight:900;border-radius:999px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
 .home-share-current::after{content:'▾';font-size:.58rem;color:var(--muted);transform:translateY(-1px)}
 .home-share-current .material-symbols-outlined{font-size:16px;color:var(--accent-bright)}
-.home-share-menu{position:absolute;right:0;top:38px;min-width:148px;padding:5px;background:rgba(17,20,21,.96);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.32);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none}
+.home-share-menu{position:absolute;right:0;top:38px;min-width:164px;max-height:calc(100vh - 64px);overflow-y:auto;padding:5px;background:rgba(17,20,21,.96);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.32);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none}
 .home-share-switch.open .home-share-menu{display:block}
 .home-share-option{width:100%;border:0;background:transparent;color:var(--sub);font-family:inherit;font-size:.72rem;font-weight:800;border-radius:8px;padding:9px;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:left}
 .home-share-option:hover,.home-share-option:focus-visible{background:var(--accent-soft);color:var(--accent-bright);outline:0}
 .home-share-option .material-symbols-outlined{font-size:17px;color:var(--accent-bright)}
-.home-share-option.kakao .share-logo{width:17px;height:17px;color:#3c1e1e;background:#fee500;border-radius:50%;padding:3px;box-sizing:content-box}
-.home-share-option.kakao .share-logo svg{width:16px;height:16px}
+.home-share-option .share-logo{width:17px;height:17px;color:#fff;border-radius:50%;padding:3px;box-sizing:content-box;flex:0 0 auto}
+.home-share-option .share-logo svg{width:16px;height:16px}
+.home-share-option.kakao .share-logo{color:#3c1e1e;background:#fee500}
+.home-share-option.band .share-logo{background:#21c531}
+.home-share-option.instagram .share-logo{background:linear-gradient(135deg,#fdf497,#fd5949 42%,#d6249f 64%,#285aeb)}
+.home-share-option.facebook .share-logo{background:#1877f2}
+.home-share-option.x .share-logo{background:#000}
+.home-share-option.line .share-logo{background:#00b900}
 .lang-note{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:48px;z-index:81;max-width:230px;padding:8px 10px;border-radius:9px;background:var(--card);border:1px solid var(--border);color:var(--sub);font-size:.68rem;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.22);display:none}
 .lang-note.on{display:block}
 
@@ -1923,6 +1929,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <button type="button" class="home-share-option" onclick="homeShareByChannel('native')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">ios_share</span><span>기기 공유</span></button>
         <button type="button" class="home-share-option kakao" onclick="homeShareByChannel('kakao')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg></span><span>카카오톡</span></button>
         <button type="button" class="home-share-option" onclick="homeShareByChannel('url')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">link</span><span>URL 복사</span></button>
+        <button type="button" class="home-share-option band" onclick="homeShareByChannel('band')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4h5.8c3.1 0 5 1.58 5 4.04 0 1.5-.71 2.57-1.95 3.17 1.58.55 2.55 1.82 2.55 3.74 0 3.03-2.21 5.05-5.7 5.05H7V4Zm5.33 6.4c1.23 0 1.9-.55 1.9-1.52s-.67-1.48-1.9-1.48H10.6v3h1.73Zm.28 6.2c1.42 0 2.16-.66 2.16-1.8 0-1.13-.74-1.79-2.16-1.79H10.6v3.59h2.01Z"/></svg></span><span>네이버 밴드</span></button>
+        <button type="button" class="home-share-option instagram" onclick="homeShareByChannel('instagram')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="7.5" r="1.1" fill="currentColor"/></svg></span><span>인스타그램</span></button>
+        <button type="button" class="home-share-option facebook" onclick="homeShareByChannel('facebook')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.1 8.2V6.9c0-.63.43-.78.74-.78h1.89V3.1L14.13 3c-2.89 0-3.55 2.16-3.55 3.54V8.2H8.3v3.37h2.28V21h3.52v-9.43h2.62l.35-3.37H14.1Z"/></svg></span><span>페이스북</span></button>
+        <button type="button" class="home-share-option x" onclick="homeShareByChannel('x')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.9 4h3.05l-6.66 7.61L21.12 20h-6.14l-4.8-5.79L4.68 20H1.62l7.12-8.14L1.22 4h6.3l4.34 5.22L16.9 4Zm-1.07 14.52h1.69L6.58 5.4H4.77l11.06 13.12Z"/></svg></span><span>X</span></button>
+        <button type="button" class="home-share-option line" onclick="homeShareByChannel('line')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.03 4 3 7.38 3 11.55c0 3.74 3.25 6.86 7.51 7.45.29.06.68.19.78.43.09.22.06.57.03.79l-.13.76c-.04.22-.2.86.78.47.99-.39 5.31-3.13 7.25-5.36C20.55 14.63 21 13.14 21 11.55 21 7.38 16.97 4 12 4Z"/></svg></span><span>라인</span></button>
       </div>
     </div>
     <div class="home-hero">
@@ -2993,9 +3004,7 @@ function closeHomeShareMenu(){
 }
 function homeShareByChannel(channel){
   closeHomeShareMenu();
-  if(channel==='kakao')return shareToKakao();
-  if(channel==='url')return copyShareUrl();
-  return shareNative();
+  return shareByChannel(channel);
 }
 function updateLanguageUI(){
   const lang=currentLanguage();
@@ -20678,7 +20687,8 @@ function shareToBand(){
 
 async function shareToInstagram(){
   closeShareModal();
-  if(!window.html2canvas){
+  const isHome=!!document.getElementById('view-home')?.classList.contains('on');
+  if(isHome||!window.html2canvas){
     _nativeShareFallback('instagram',generateShareText(),'인스타그램은 웹에서 직접 게시가 제한되어 공유 내용을 복사했어요.');
     return;
   }
