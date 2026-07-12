@@ -876,14 +876,17 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .hdr-back-meta{display:none}
 .hdr-back-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;letter-spacing:.05em;color:var(--text)}
 .hdr-back-sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:.04em}
-.lang-switch{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:12px;z-index:80}
-.lang-current{min-width:78px;border:1px solid var(--border);background:rgba(17,20,21,.92);color:var(--text);font-family:inherit;font-size:.72rem;font-weight:900;border-radius:999px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
-.lang-current::after{content:'▾';font-size:.58rem;color:var(--muted);transform:translateY(-1px)}
-.lang-menu{position:absolute;right:0;top:38px;min-width:126px;padding:5px;background:rgba(17,20,21,.96);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.32);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none}
-.lang-switch.open .lang-menu{display:block}
-.lang-option{width:100%;border:0;background:transparent;color:var(--sub);font-family:inherit;font-size:.72rem;font-weight:800;border-radius:8px;padding:8px 9px;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left}
-.lang-option:hover,.lang-option.on{background:var(--accent-soft);color:var(--accent-bright)}
-.lang-flag{font-size:.96rem;line-height:1}
+.home-share-switch{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:12px;z-index:80}
+.home-share-current{min-width:78px;border:1px solid var(--border);background:rgba(17,20,21,.92);color:var(--text);font-family:inherit;font-size:.72rem;font-weight:900;border-radius:999px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.home-share-current::after{content:'▾';font-size:.58rem;color:var(--muted);transform:translateY(-1px)}
+.home-share-current .material-symbols-outlined{font-size:16px;color:var(--accent-bright)}
+.home-share-menu{position:absolute;right:0;top:38px;min-width:148px;padding:5px;background:rgba(17,20,21,.96);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.32);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none}
+.home-share-switch.open .home-share-menu{display:block}
+.home-share-option{width:100%;border:0;background:transparent;color:var(--sub);font-family:inherit;font-size:.72rem;font-weight:800;border-radius:8px;padding:9px;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:left}
+.home-share-option:hover,.home-share-option:focus-visible{background:var(--accent-soft);color:var(--accent-bright);outline:0}
+.home-share-option .material-symbols-outlined{font-size:17px;color:var(--accent-bright)}
+.home-share-option.kakao .share-logo{width:17px;height:17px;color:#3c1e1e;background:#fee500;border-radius:50%;padding:3px;box-sizing:content-box}
+.home-share-option.kakao .share-logo svg{width:16px;height:16px}
 .lang-note{position:fixed;right:calc(max(12px,(100vw - 480px)/2 + 12px));top:48px;z-index:81;max-width:230px;padding:8px 10px;border-radius:9px;background:var(--card);border:1px solid var(--border);color:var(--sub);font-size:.68rem;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.22);display:none}
 .lang-note.on{display:block}
 
@@ -1908,19 +1911,20 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </head>
 <body>
 <div id="app">
-  <div class="lang-switch" id="langSwitch">
-    <button type="button" class="lang-current" id="langCurrent" onclick="toggleLanguageMenu(event)" aria-haspopup="listbox" aria-expanded="false">🇰🇷 KO</button>
-    <div class="lang-menu" id="langMenu" role="listbox" aria-label="언어 선택">
-      <button type="button" class="lang-option" data-lang="ko" onclick="setReadingLanguage('ko')" role="option"><span class="lang-flag">🇰🇷</span><span>한국어</span></button>
-      <button type="button" class="lang-option" data-lang="en" onclick="setReadingLanguage('en')" role="option"><span class="lang-flag">🇺🇸</span><span>English</span></button>
-      <button type="button" class="lang-option" data-lang="zh" onclick="setReadingLanguage('zh')" role="option"><span class="lang-flag">🇨🇳</span><span>中文</span></button>
-      <button type="button" class="lang-option" data-lang="ja" onclick="setReadingLanguage('ja')" role="option"><span class="lang-flag">🇯🇵</span><span>日本語</span></button>
-    </div>
-  </div>
   <div class="lang-note" id="langNote" aria-live="polite"></div>
 
   <!-- ───── HOME (카테고리 메뉴) ───── -->
   <div class="view on" id="view-home">
+    <div class="home-share-switch" id="homeShareSwitch">
+      <button type="button" class="home-share-current" id="homeShareCurrent" onclick="toggleHomeShareMenu(event)" aria-haspopup="menu" aria-expanded="false" aria-controls="homeShareMenu">
+        <span class="material-symbols-outlined" aria-hidden="true">share</span><span>공유</span>
+      </button>
+      <div class="home-share-menu" id="homeShareMenu" role="menu" aria-label="사이트 공유">
+        <button type="button" class="home-share-option" onclick="homeShareByChannel('native')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">ios_share</span><span>기기 공유</span></button>
+        <button type="button" class="home-share-option kakao" onclick="homeShareByChannel('kakao')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg></span><span>카카오톡</span></button>
+        <button type="button" class="home-share-option" onclick="homeShareByChannel('url')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">link</span><span>URL 복사</span></button>
+      </div>
+    </div>
     <div class="home-hero">
       <h1>천지인 사주</h1>
       <div class="h-sub">사주팔자와 MBTI를 함께 풀어내는 새로운 해석<br><span style="opacity:.75;font-size:.92em">만세력으로 천성을 알고, MBTI로 현재의 나를 이해하다</span></div>
@@ -2972,6 +2976,27 @@ function closeLanguageMenu(){
   const cur=document.getElementById('langCurrent');
   if(cur)cur.setAttribute('aria-expanded','false');
 }
+function toggleHomeShareMenu(event){
+  if(event)event.stopPropagation();
+  const wrap=document.getElementById('homeShareSwitch');
+  if(!wrap)return;
+  const open=!wrap.classList.contains('open');
+  wrap.classList.toggle('open',open);
+  const cur=document.getElementById('homeShareCurrent');
+  if(cur)cur.setAttribute('aria-expanded',open?'true':'false');
+}
+function closeHomeShareMenu(){
+  const wrap=document.getElementById('homeShareSwitch');
+  if(wrap)wrap.classList.remove('open');
+  const cur=document.getElementById('homeShareCurrent');
+  if(cur)cur.setAttribute('aria-expanded','false');
+}
+function homeShareByChannel(channel){
+  closeHomeShareMenu();
+  if(channel==='kakao')return shareToKakao();
+  if(channel==='url')return copyShareUrl();
+  return shareNative();
+}
 function updateLanguageUI(){
   const lang=currentLanguage();
   const meta=LANG_META[lang]||LANG_META.ko;
@@ -3195,8 +3220,13 @@ function scheduleLanguageApply(scope, delays){
     setTimeout(()=>{try{applyLanguageToVisibleResult(target);}catch(e){}},ms);
   });
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{updateLanguageUI();applyLanguageToPage();document.addEventListener('click',closeLanguageMenu);});
-else{updateLanguageUI();applyLanguageToPage();document.addEventListener('click',closeLanguageMenu);}
+function closeHeaderMenus(){closeLanguageMenu();closeHomeShareMenu();}
+function setupHeaderMenus(){
+  document.addEventListener('click',closeHeaderMenus);
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')closeHeaderMenus();});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{updateLanguageUI();applyLanguageToPage();setupHeaderMenus();});
+else{updateLanguageUI();applyLanguageToPage();setupHeaderMenus();}
 // 카테고리별 역술가 질문 횟수 — 인생총운·신년운세만 1회. 즉문즉답은 무료 질문 없이 질문권 결제만. 나머지는 미제공(0)
 const CHAT_MAX_BY_CAT={daypick:0,monthly:0,newyear:1,gunghap:0,name:0,life:1,qna:0};
 function chatLsKeyOf(cat){
@@ -3712,6 +3742,7 @@ function ensureGnTimeSelects(){
 
 // ── View Router ──
 function showView(name){
+  closeHomeShareMenu();
   ['home','input','result','tarot','astrology'].forEach(v=>{
     const el=document.getElementById('view-'+v);
     if(el)el.className='view'+(v===name?' on':'');
@@ -20407,14 +20438,16 @@ const KAKAO_APP_KEY='';
 // 공유 URL에 UTM 파라미터 자동 추가 (트래픽 트래킹)
 function shareURL(){
   const base='https://saju-mbti-9h1.pages.dev/';
-  const utm='?utm_source=share&utm_medium=copy&utm_campaign=result_share';
+  const isHome=!!document.getElementById('view-home')?.classList.contains('on');
+  const utm=`?utm_source=share&utm_medium=copy&utm_campaign=${isHome?'site_share':'result_share'}`;
   // 카테고리도 추적
-  const catTag=_category?`&utm_content=${_category}`:'';
+  const catTag=!isHome&&_category?`&utm_content=${_category}`:'';
   return base+utm+catTag;
 }
 
 function generateShareText(){
-  if(!_saju)return'';
+  const isHome=!!document.getElementById('view-home')?.classList.contains('on');
+  if(isHome||!_saju)return `✨ 천지인 사주\n\n만세력으로 천성을 알고, MBTI로 현재의 나를 이해해 보세요.\n사주팔자와 MBTI를 함께 풀어내는 새로운 해석이에요.\n\n${shareURL()}`;
   const oh=ohCount(_saju);
   const dm=DM[_saju.dp.stem];
   const pillars=[
