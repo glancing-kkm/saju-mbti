@@ -16,19 +16,7 @@ compatibility_date = "2024-11-01"
 # 카카오페이 가맹점 신청: https://biz.kakaopay.com
 # 신규 API 문서: https://developers.kakaopay.com/docs/payment/online/use-info
 
-# ─── 후기(Review) 시스템 ───
-#   wrangler secret put ADMIN_TOKEN --config wrangler.kakao-payment.toml
-#     → 관리자 후기 검토 페이지/CLI 접근용 토큰 (16자 이상 랜덤 권장)
-#
-#   KV namespace 생성 (binding 등록 전 1회):
-#     wrangler kv:namespace create REVIEWS_KV --config wrangler.kakao-payment.toml
-#     wrangler kv:namespace create REVIEWS_KV --preview --config wrangler.kakao-payment.toml
-#     → 출력된 id / preview_id 를 아래 [[kv_namespaces]] 블록에 채워 넣어 deploy
-#
-# 후기·보상코드 저장 — 아래 id/preview_id를 본인 네임스페이스 값으로 교체 후 deploy.
-#   wrangler kv:namespace create REVIEWS_KV --config worker/wrangler.kakao-payment.toml
-#   wrangler kv:namespace create REVIEWS_KV --preview --config worker/wrangler.kakao-payment.toml
-# ※ 교체 전에는 deploy가 실패합니다(의도적). KV 미바인딩 시 보상코드 기능은 503으로 비활성, 결제는 정상.
+# 공유 할인코드 발급·사용 상태 저장
 [[kv_namespaces]]
 binding = "REVIEWS_KV"
 id = "25586ee2f1ef4df39aa0996b5f02c085"
