@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin-reviews.html
 
-# 검색엔진 사이트맵
+# Google Search Console과 네이버 서치어드바이저에서 제출할 사이트맵
 Sitemap: https://saju-mbti-9h1.pages.dev/sitemap.xml

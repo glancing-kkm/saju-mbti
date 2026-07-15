@@ -365,8 +365,10 @@ def make_post(idx, m):
     "description": f"{m['code']}의 4축 결이 사주에서는 어느 일간과 가장 잘 어울리는가.",
     "datePublished": "2026-05-10",
     "dateModified": "2026-05-10",
-    "author": {"@type":"Organization","name":"천지인 사주"},
-    "publisher": {"@type":"Organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/"},
+    "author": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/about.html"},
+    "publisher": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/","logo":{"@type":"ImageObject","url":"https://saju-mbti-9h1.pages.dev/assets/og-image.png","width":1200,"height":630}},
+    "image": ["https://saju-mbti-9h1.pages.dev/assets/og-image.png"],
+    "isPartOf": {"@type":"Blog","@id":"https://saju-mbti-9h1.pages.dev/blog/#blog","name":"천지인 사주풀이 가이드","url":"https://saju-mbti-9h1.pages.dev/blog/"},
     "mainEntityOfPage": f"https://saju-mbti-9h1.pages.dev/blog/mbti-saju/{m['code'].lower()}.html",
     "inLanguage": "ko",
     "articleSection": "MBTI × 사주"

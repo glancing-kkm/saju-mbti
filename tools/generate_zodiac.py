@@ -345,8 +345,10 @@ def make_post(idx):
     "description": f"{animal}띠의 성품·연애·직업·건강·잘 맞는 띠와 피할 띠를 사주의 12지지 관점에서 풀이.",
     "datePublished": "2026-05-10",
     "dateModified": "2026-05-10",
-    "author": {"@type":"Organization","name":"천지인 사주"},
-    "publisher": {"@type":"Organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/"},
+    "author": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/about.html"},
+    "publisher": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/","logo":{"@type":"ImageObject","url":"https://saju-mbti-9h1.pages.dev/assets/og-image.png","width":1200,"height":630}},
+    "image": ["https://saju-mbti-9h1.pages.dev/assets/og-image.png"],
+    "isPartOf": {"@type":"Blog","@id":"https://saju-mbti-9h1.pages.dev/blog/#blog","name":"천지인 사주풀이 가이드","url":"https://saju-mbti-9h1.pages.dev/blog/"},
     "mainEntityOfPage": f"https://saju-mbti-9h1.pages.dev/blog/zodiac/{slug}.html",
     "inLanguage": "ko",
     "articleSection": "12 띠 풀이"
