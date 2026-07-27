@@ -806,9 +806,11 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 
 /* ── 공유·저장 버튼 ── */
 .share-bar{display:flex;gap:8px;padding:10px 14px 0}
-.share-bar-btn{flex:1;padding:11px 4px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:600;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit}
+.share-bar-btn{flex:1;padding:11px 4px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:600;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;white-space:nowrap}
 .share-bar-btn:active{transform:scale(.97)}
 .share-bar-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-color:transparent;font-weight:700}
+.share-bar-btn.ai-copy{color:var(--accent-bright);border-color:rgba(245,215,124,.38);background:linear-gradient(135deg,rgba(212,175,55,.13),var(--card))}
+.share-bar-btn[hidden]{display:none!important}
 .share-bar-btn:disabled{opacity:.6;cursor:not-allowed}
 
 /* ── 공유 모달 (하단 시트) ── */
@@ -837,6 +839,26 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .ic-url{background:var(--bg-deep);border:1px solid var(--border);color:var(--accent-bright)}
 .share-copy-btn{width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.83rem;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit}
 .share-copy-btn:active{opacity:.8}
+
+/* ── 만세력 AI용 복사 모달 ── */
+.ai-copy-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:205;align-items:flex-end;justify-content:center}
+.ai-copy-overlay.vis{display:flex}
+.ai-copy-sheet{background:var(--bg-mid);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:18px 16px calc(26px + env(safe-area-inset-bottom));animation:slideUp .25s ease}
+.ai-copy-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.ai-copy-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;color:var(--accent-bright);letter-spacing:.02em}
+.ai-copy-desc{font-size:.75rem;line-height:1.65;color:var(--sub);word-break:keep-all;margin-bottom:14px}
+.ai-copy-close{width:32px;height:32px;flex:0 0 32px;border:1px solid var(--border);border-radius:50%;background:var(--card);color:var(--sub);font:inherit;cursor:pointer}
+.ai-copy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ai-copy-provider{min-width:0;min-height:104px;padding:13px 5px 11px;border:1px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;transition:transform .12s,border-color .12s,background .12s}
+.ai-copy-provider:active{transform:scale(.96)}
+.ai-copy-provider:hover{border-color:rgba(245,215,124,.5);background:rgba(212,175,55,.09)}
+.ai-provider-mark{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:.93rem;font-weight:900;letter-spacing:-.04em}
+.ai-provider-mark.chatgpt{background:#10a37f;color:#fff}
+.ai-provider-mark.claude{background:#d97757;color:#fff}
+.ai-provider-mark.gemini{background:linear-gradient(135deg,#4285f4,#9b72cb 52%,#d96570);color:#fff}
+.ai-provider-name{font-size:.78rem;font-weight:800}
+.ai-provider-format{font-size:.62rem;color:var(--muted);line-height:1.35}
+.ai-copy-note{margin-top:12px;padding:9px 11px;border-radius:9px;background:var(--bg-deep);font-size:.67rem;line-height:1.6;color:var(--muted);word-break:keep-all}
 
 /* ── Views (랜딩/입력/분위기와 전환) ── */
 .view{display:none}
@@ -2465,6 +2487,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
     <div class="share-bar" role="toolbar" aria-label="분위기와 공유">
       <button class="share-bar-btn" onclick="goToInput(_category||'manse')" aria-label="입력 다시 하기"><span aria-hidden="true">✏️</span> 다시 입력</button>
+      <button class="share-bar-btn ai-copy" id="manseAiCopyBtn" onclick="showManseAiCopyModal()" aria-label="AI용 만세력 전체 정보 복사" hidden><span class="material-symbols-outlined" aria-hidden="true" style="font-size:17px">content_copy</span> 복사</button>
       <button class="share-bar-btn primary" onclick="showShareModal()" aria-label="분위기와 공유하기"><span aria-hidden="true">🔗</span> 공유</button>
     </div>
     <div class="panel" id="p0"></div>
@@ -2504,6 +2527,38 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
     </div>
     <div class="astro-shell" id="astroApp"></div>
+  </div>
+</div>
+
+<!-- ───── 만세력 AI용 복사 모달 ───── -->
+<div class="ai-copy-overlay" id="manseAiCopyOverlay" role="dialog" aria-modal="true" aria-labelledby="manseAiCopyTitle" onclick="if(event.target===this)closeManseAiCopyModal()">
+  <div class="ai-copy-sheet">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="ai-copy-head">
+      <div>
+        <div class="ai-copy-title" id="manseAiCopyTitle">AI에게 만세력 물어보기</div>
+      </div>
+      <button type="button" class="ai-copy-close" onclick="closeManseAiCopyModal()" aria-label="닫기">✕</button>
+    </div>
+    <div class="ai-copy-desc">사용할 AI를 누르면 해당 AI가 잘 읽는 형식으로 만세력 전체 정보가 복사돼요. 채팅창에 그대로 붙여넣으세요.</div>
+    <div class="ai-copy-grid">
+      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('chatgpt')" aria-label="ChatGPT용으로 복사">
+        <span class="ai-provider-mark chatgpt" aria-hidden="true">GPT</span>
+        <span class="ai-provider-name">ChatGPT</span>
+        <span class="ai-provider-format">Markdown 형식</span>
+      </button>
+      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('claude')" aria-label="Claude용으로 복사">
+        <span class="ai-provider-mark claude" aria-hidden="true">C</span>
+        <span class="ai-provider-name">Claude</span>
+        <span class="ai-provider-format">XML 구조</span>
+      </button>
+      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('gemini')" aria-label="Gemini용으로 복사">
+        <span class="ai-provider-mark gemini" aria-hidden="true">✦</span>
+        <span class="ai-provider-name">Gemini</span>
+        <span class="ai-provider-format">구획 지시 형식</span>
+      </button>
+    </div>
+    <div class="ai-copy-note">🔒 <span id="manseAiCopyMeta">출생일과 출생지가 포함된 문장이 복사돼요.</span> 민감한 정보는 붙여넣기 전에 확인해 보세요.</div>
   </div>
 </div>
 
@@ -3958,8 +4013,14 @@ function gotoCard(idx){
   const menu=document.getElementById('resultMenu');
   if(menu)menu.style.display='none';
   document.querySelectorAll('.panel').forEach((p,i)=>p.className='panel'+(i===idx?' on':''));
+  syncManseAiCopyButton(idx);
   if(idx===5)ensurePaidPanel();
   window.scrollTo({top:0,behavior:'instant'});
+}
+function syncManseAiCopyButton(activePanelIdx){
+  const btn=document.getElementById('manseAiCopyBtn');
+  if(!btn)return;
+  btn.hidden=!(activePanelIdx===0&&_category==='manse'&&_saju&&_meta);
 }
 // '메뉴로' 버튼 → 이제 홈(카테고리 메뉴)으로 복귀
 function gotoMenu(){goHome();}
@@ -20514,6 +20575,176 @@ function generateShareText(){
   }
   return `🔮 ${hookLine}\n\n일간: ${dm.n}\n사주: ${pillars}\n오행: ${ohStr}\n\n타고난 기질: ${dm.core}\n강점: ${dm.pos.slice(0,3).join(' · ')}\n\n✨ 천지인 사주 — 사주팔자 × MBTI 통합 분석\n${shareURL()}`;
 }
+
+// 만세력 계산값을 AI가 재계산 없이 읽을 수 있는 구조화 텍스트로 변환한다.
+// 화면의 textContent를 복사하지 않고 계산 원본(_saju, _meta)에서 만들어 표시 방향과 무관하게 값을 보존한다.
+const AI_COPY_HIDDEN_STEMS=[
+  [9],[5,9,7],[0,2,4],[1],[4,1,9],[2,4,6],
+  [3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]
+];
+function _aiPad2(v){return String(v).padStart(2,'0');}
+function _aiGanji(stem,branch){return STEMKO[stem]+BRCHKO[branch];}
+function _aiYearGanji(year){const n=(year-4+3600)%60;return {stem:n%10,branch:n%12};}
+function _aiYinYang(idx){return idx%2===0?'양':'음';}
+function _aiPillarLine(label,p,isDay){
+  if(!p)return `- ${label}: 미상 (출생시간 미입력)`;
+  const hidden=AI_COPY_HIDDEN_STEMS[p.branch].map(s=>`${STEMKO[s]}(${OHNAME[SOH[s]]}·${tenGod(_saju.dp.stem,s)})`).join(', ');
+  const stemGod=isDay?'본인':tenGod(_saju.dp.stem,p.stem);
+  const branchGod=tenGod(_saju.dp.stem,BRANCH_MAIN_STEM[p.branch]);
+  return `- ${label}: ${_aiGanji(p.stem,p.branch)} | 천간 ${STEMKO[p.stem]}=${OHNAME[SOH[p.stem]]}·${_aiYinYang(p.stem)}·${stemGod} | 지지 ${BRCHKO[p.branch]}=${OHNAME[BOH[p.branch]]}·${_aiYinYang(p.branch)}·본기 ${branchGod} | 숨은 기운 ${hidden} | 12단계 ${twelveStage(_saju.dp.stem,p.branch)}`;
+}
+function _aiSafe(fn,fallback){try{return fn();}catch(e){return fallback;}}
+function buildManseAiDataText(){
+  if(!_saju||!_meta)return '';
+  const s=_saju,m=_meta,i=_lastInputs||{};
+  const solar=`${m.sy}-${_aiPad2(m.sm)}-${_aiPad2(m.sd)}`;
+  const lunar=m.lunarInfo?`${m.lunarInfo.ly}-${_aiPad2(m.lunarInfo.lm)}-${_aiPad2(m.lunarInfo.ld)}${m.lunarInfo.leap?' (윤달)':' (평달)'}`:'미상';
+  const originalCal=(i.calType||calType)==='lunar'?'음력':'양력';
+  const originalDate=i.year?`${i.year}-${_aiPad2(i.month)}-${_aiPad2(i.day)}`:solar;
+  const inputHour=i.hour==null?m.hour:Number(i.hour),inputMin=i.min==null?m.min:Number(i.min||0);
+  const originalTime=inputHour<0||m.hour<0?'미상':`${_aiPad2(inputHour)}:${_aiPad2(inputMin)}`;
+  const correctedTime=m.hour<0?'미상':`${_aiPad2(m.hour)}:${_aiPad2(m.min||0)}`;
+  const city=cityLabelOf(m.cityKey);
+  const oh=ohCount(s),total=oh.reduce((a,b)=>a+b,0);
+  const ohText=OHNAME.map((n,idx)=>`${n} ${oh[idx]}개(${total?Math.round(oh[idx]/total*100):0}%)`).join(', ');
+  const allCells=[s.yp.stem,s.yp.branch,s.mp.stem,s.mp.branch,s.dp.stem,s.dp.branch].concat(s.hp?[s.hp.stem,s.hp.branch]:[]);
+  const yy=allCells.reduce((a,v)=>{a[v%2===0?0:1]++;return a;},[0,0]);
+  const ys=_aiSafe(()=>getYongsin(oh),null);
+  const gk=_aiSafe(()=>getGyeokguk(s),null);
+  const daeun=_aiSafe(()=>calcDaeun(s,m.sy,m.sm,m.sd,m.hour,m.min,m.gender||gender),null);
+  const now=new Date(),cy=now.getFullYear(),age=cy-m.sy+1;
+  let currentDaeun=null;
+  if(daeun&&daeun.daeuns){for(const du of daeun.daeuns){if(age>=du.age)currentDaeun=du;}}
+  const ip=_aiSafe(()=>jdToG(s.yp.ipKST),null);
+  const ipText=ip?`${ip.year}-${_aiPad2(ip.month)}-${_aiPad2(ip.day)} ${_aiPad2(Math.floor(ip.hour))}:${_aiPad2(Math.round((ip.hour-Math.floor(ip.hour))*60))} KST`:'미상';
+  const yIdx=(s.yp.year-4+3600)%60;
+  const dayNo=((Math.floor(gToJD(m.sy,m.sm,m.sd,12)+0.5)+49+600*60)%60)+1;
+  const gm=emptyBranches(s.dp.stem,s.dp.branch);
+  const gmLocs=findGongmangLoc(s,gm);
+  const sins=_aiSafe(()=>findSinsal(s),[]);
+  const sinSeen=new Set();
+  const sinLines=sins.filter(x=>{const k=`${x.n}|${x.loc}|${x.b}`;if(sinSeen.has(k))return false;sinSeen.add(k);return true;})
+    .map(x=>`- ${x.n} | 위치 ${x.loc}(${BRCHKO[x.b]}) | ${x.d}`);
+  const rels=_aiSafe(()=>findBranchRelations(s),[]);
+  const relLines=rels.map(x=>`- ${x.type} | 위치 ${(x.places||[]).join('·')||'미상'} | ${x.d}`);
+  const daeunLines=[];
+  const annualLines=[];
+  if(daeun&&daeun.daeuns){
+    daeun.daeuns.forEach((du,idx)=>{
+      const startYear=m.sy+du.age-1,endYear=startYear+9;
+      const isCurrent=currentDaeun===du;
+      daeunLines.push(`- ${idx+1}번 ${du.age}세~${du.age+9}세 (${startYear}~${endYear}): ${_aiGanji(du.stem,du.branch)} | 천간 ${tenGod(s.dp.stem,du.stem)} | 지지 본기 ${tenGod(s.dp.stem,BRANCH_MAIN_STEM[du.branch])} | 12단계 ${twelveStage(s.dp.stem,du.branch)}${isCurrent?' | ★ 현재 흐름':''}`);
+      const years=[];
+      for(let n=0;n<10;n++){
+        const year=startYear+n,g=_aiYearGanji(year);
+        years.push(`${year}(${du.age+n}세) ${_aiGanji(g.stem,g.branch)}[천간 ${tenGod(s.dp.stem,g.stem)}/지지 ${tenGod(s.dp.stem,BRANCH_MAIN_STEM[g.branch])}]${year===cy?'★':''}`);
+      }
+      annualLines.push(`- ${du.age}세 시작 10년: ${years.join(' ; ')}`);
+    });
+  }
+  const monthLines=[];
+  for(let month=1;month<=12;month++){
+    const yp=yearPillar(cy,month,15,12,0),mi=monthIdx(cy,month,15,12,0),mp=monthPillar(yp.stem,mi);
+    monthLines.push(`- ${cy}년 ${month}월: ${_aiGanji(mp.stem,mp.branch)} | 천간 ${tenGod(s.dp.stem,mp.stem)} | 지지 본기 ${tenGod(s.dp.stem,BRANCH_MAIN_STEM[mp.branch])}${month===now.getMonth()+1?' | ★ 현재 월':''}`);
+  }
+  const lines=[
+    '## 계산 기준과 입력',
+    `- 성별: ${(m.gender||gender)==='male'?'남성':'여성'}`,
+    `- 최초 입력: ${originalCal} ${originalDate} ${originalTime}`,
+    `- 양력 환산: ${solar}`,
+    `- 음력 환산: ${lunar}`,
+    `- 출생지: ${city}`,
+    `- 진태양시 보정: ${m.hour<0?'미적용(출생시간 미상)':`${m.tsoMin>=0?'+':''}${Math.round(m.tsoMin)}분, 계산 적용 시각 ${correctedTime}`}`,
+    `- 시주 정확도: ${s.hp?'출생시간을 반영함':'출생시간 미상으로 시주 제외'}`,
+    `- 입춘: ${ipText} / ${s.yp.beforeIp?'입춘 전 출생으로 이전 해 기준':'입춘 후 출생'}`,
+    `- 사주 기준년: ${s.yp.year}년 ${_aiGanji(yIdx%10,yIdx%12)}`,
+    `- 월주 기준 절기: ${JIEQI_NAMES[s.mi]}`,
+    `- 육십갑자 일주 순번: ${dayNo}번`,
+    '',
+    '## 사주 원국',
+    _aiPillarLine('년주',s.yp,false),
+    _aiPillarLine('월주',s.mp,false),
+    _aiPillarLine('일주',s.dp,true),
+    _aiPillarLine('시주',s.hp,false),
+    `- 본인을 뜻하는 글자: ${DM[s.dp.stem].n} / ${DM[s.dp.stem].core}`,
+    '',
+    '## 다섯 기운과 음양',
+    `- 표면 8글자 기준: ${ohText}`,
+    `- 음양: 양 ${yy[0]}개, 음 ${yy[1]}개`,
+    ys?`- 사이트 계산 주 도움 기운: ${OHNAME[ys.main]} / 보조 도움 기운: ${OHNAME[ys.support]} / 제어 필요 기운: ${OHNAME[ys.control]}`:'- 도움 기운: 계산 없음',
+    ys?`- 도움 기운 계산 설명: ${ys.desc}`:'',
+    gk?`- 사주 유형: ${gk.name} / 일상어 별칭 ${gk.nick}`:'',
+    gk?`- 사주 유형 설명: ${gk.desc}`:'',
+    '',
+    '## 10년 단위 큰 흐름',
+    daeun?`- 진행 방향: ${daeun.forward?'순행':'역행'}`:'- 진행 방향: 계산 없음',
+    daeun?`- 시작 시점: ${daeun.startYears}세 ${daeun.startMonths}개월`:'',
+    `- ${cy}년 한국식 나이: ${age}세`,
+    ...daeunLines,
+    '',
+    '## 10년 흐름별 1년 단위 전체 표',
+    ...annualLines,
+    '',
+    `## ${cy}년 월 단위 흐름`,
+    '- 월 글자는 각 양력월 15일을 대표값으로 사이트가 계산한 절기 기준이에요.',
+    ...monthLines,
+    '',
+    '## 작은 별자리 조합',
+    ...(sinLines.length?sinLines:['- 특별히 표시된 조합 없음']),
+    '',
+    '## 비어 있는 자리',
+    `- 일주 기준: ${BRCHKO[gm[0]]}·${BRCHKO[gm[1]]}`,
+    `- 원국 내 해당 위치: ${gmLocs.length?gmLocs.join(', '):'없음'}`,
+    '',
+    '## 원국 내 글자 관계',
+    ...(relLines.length?relLines:['- 뚜렷하게 표시된 관계 없음']),
+    '',
+    '## 해석 시 유의사항',
+    '- 위 값은 천지인 사주 만세력이 이미 계산한 결과예요. 글자를 임의로 바꾸거나 재계산하지 마세요.',
+    `- ${s.hp?'시주까지 포함해 해석하세요.':'출생시간이 없으므로 시주·자녀·말년 영역은 확정하지 마세요.'}`,
+    '- 운세는 가능성과 흐름으로 표현하고, 건강·투자·법률 결정을 단정하지 마세요.'
+  ];
+  return lines.filter((line,idx)=>line!==''||lines[idx-1]!=='').join('\n').trim();
+}
+
+function generateManseAiPrompt(provider){
+  const data=buildManseAiDataText();
+  if(!data)return '';
+  const commonTask='다음 만세력 계산값을 기준으로 본인의 타고난 성정·재능, 직업·재물, 연애·결혼, 건강 관리, 10년 흐름과 올해 흐름을 근거와 함께 풀어줘. 나이대에 맞는 현실적인 언어를 쓰고, 좋은 흐름은 살리는 법과 어려운 흐름을 넘는 행동도 함께 제안해줘. 전문용어는 먼저 쉽게 풀어 설명해줘.';
+  if(provider==='claude'){
+    return `<role>\n동양 명리를 뼈대로 사람의 삶을 균형 있게 읽는 상담가\n</role>\n<instructions>\n- manse_data는 이미 계산된 사실 데이터다. 재계산하거나 수정하지 말 것.\n- 결론 뒤에는 반드시 원국과 시간 흐름의 근거를 붙일 것.\n- 공포를 조장하지 말고 실천 방법을 함께 제시할 것.\n- 출생시간 미상으로 표시된 영역은 확정하지 말 것.\n</instructions>\n<manse_data>\n${data}\n</manse_data>\n<task>\n${commonTask}\n</task>`;
+  }
+  if(provider==='gemini'){
+    return `[ROLE]\n본인은 동양 명리 전문가이자 현실적인 삶의 상담가야.\n\n[GROUNDING RULES]\n1. MANSE DATA 구역을 이미 계산된 유일한 기준으로 사용해.\n2. 사주 글자나 운 흐름을 재계산·수정하지 마.\n3. 각 핵심 해석에 어느 데이터가 근거인지 연결해.\n4. 단정적인 예언 대신 가능성, 대비법, 실천 행동을 제안해.\n\n[MANSE DATA START]\n${data}\n[MANSE DATA END]\n\n[REQUEST]\n${commonTask}`;
+  }
+  return `# 역할\n본인은 동양 명리를 뼈대로 사람의 삶을 입체적으로 읽는 상담가야.\n\n# 필수 규칙\n- 아래 만세력은 이미 계산된 원본 데이터야. 사주 글자나 운 흐름을 재계산·수정하지 마.\n- 핵심 결론마다 원국·10년 흐름·1년 흐름 중 근거를 붙여줘.\n- 좋은 흐름은 살리는 법, 어려운 흐름은 대비법을 함께 말해줘.\n- 출생시간 미상 영역은 확정하지 마.\n\n# 만세력 원본 데이터\n${data}\n\n# 요청\n${commonTask}`;
+}
+
+function showManseAiCopyModal(){
+  if(_category!=='manse'||!_saju||!_meta){alert('먼저 무료 만세력을 계산해 주세요.');return;}
+  const overlay=document.getElementById('manseAiCopyOverlay');
+  if(!overlay)return;
+  const sample=generateManseAiPrompt('chatgpt');
+  const meta=document.getElementById('manseAiCopyMeta');
+  if(meta)meta.textContent=`출생일과 출생지가 포함된 약 ${sample.length.toLocaleString()}자의 문장이 복사돼요.`;
+  overlay.classList.add('vis');
+  setTimeout(()=>{const b=overlay.querySelector('.ai-copy-provider');if(b)b.focus();},0);
+}
+function closeManseAiCopyModal(){
+  const overlay=document.getElementById('manseAiCopyOverlay');
+  if(overlay)overlay.classList.remove('vis');
+}
+function copyManseForAI(provider){
+  const names={chatgpt:'ChatGPT',claude:'Claude',gemini:'Gemini'};
+  const text=generateManseAiPrompt(provider);
+  if(!text){alert('복사할 만세력 정보가 없어요.');return;}
+  closeManseAiCopyModal();
+  copyToClipboard(text,`📋 ${names[provider]||'AI'}용 만세력 전체 정보가 복사됐어요!\n해당 AI 채팅창에 붙여넣으세요.`);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('manseAiCopyOverlay')?.classList.contains('vis'))closeManseAiCopyModal();
+});
 
 function showShareModal(){
   document.getElementById('sharePreview').textContent=generateShareText();
