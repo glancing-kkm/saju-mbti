@@ -55,6 +55,7 @@ function augustPromoPriceForCategory(category) {
 // 카테고리·금액 위조 방지 — 월별은 월당 단가의 1~6배수 허용, 그 외는 단일 정가 일치
 function isAmountValid(category, amount, nowMs = Date.now()) {
   if (!CATEGORY_PRICE[category]) return false;
+  if (!Number.isSafeInteger(amount) || amount <= 0) return false;
   if (isAugust990Promo(nowMs)) return amount === augustPromoPriceForCategory(category);
   if (category === 'monthly') {
     if (amount % MONTHLY_UNIT !== 0) return false;

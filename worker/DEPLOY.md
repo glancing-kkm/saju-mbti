@@ -216,7 +216,7 @@ const KAKAO_PAYMENT_BASE='https://kakao-payment-worker.your-subdomain.workers.de
 
 ---
 
-# 후기 → 2,000원 할인 쿠폰 시스템 운영 가이드
+# 후기 시스템 운영 가이드
 
 ## 1. KV namespace 생성 (1회만)
 
@@ -283,9 +283,7 @@ wrangler kv:key list --binding REVIEWS_KV --prefix "review_blocked:" \
 
 - **자격**: 결제 후 24시간 이내 (`saju_paid_tokens_v1`) **또는** 7일 이내 (`saju_review_eligible_v1`)에만 후기 작성 가능
 - **중복 방지**: 사주ID 기준 1회만 (`saju_review_submitted_v1` + 서버 KV `review_submitted:{sajuId}`)
-- **쿠폰 발급**: 후기 작성 즉시 `saju_review_coupon_v1`에 30일 유효 쿠폰 저장
-- **차감**: 다음 결제 시 결제액 > 쿠폰액인 경우에만 자동 적용 (daypick 1,500원·chatpack1 1,000원은 제외)
-- **카테고리 무관**: 어느 카테고리에서 발급되었든 다른 카테고리 결제에 사용 가능
+- **카테고리 무관**: 어느 카테고리에서 작성하든 같은 사주ID에는 한 번만 작성 가능
 
 ## 6. 어뷰징 방지 (3중 레이어)
 
@@ -306,4 +304,3 @@ wrangler kv:key list --binding REVIEWS_KV --prefix "review_blocked:" \
 | "결제 후 운세를 보신 분만 후기 작성이 가능해요" | 미결제·자격 만료. 결제 후 7일 이내 작성 가능. |
 | "잠시 후 다시 시도해 주세요" | Rate limit. 10분 후 재시도. |
 | "오늘 후기 작성 한도를 초과했습니다" | 같은 IP에서 24시간 5건 초과. 다음 날 재시도. |
-| 쿠폰이 결제 모달에 표시 안 됨 | 결제액이 쿠폰액(2,000원) 이하. daypick·chatpack1는 적용 불가. |
