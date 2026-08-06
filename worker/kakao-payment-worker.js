@@ -44,6 +44,16 @@ const CATEGORY_PRICE = {
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;
+const AUGUST_990_PROMO_PRICE = 990;
+const AUGUST_CHAT_PACK_PRICE = { chatpack3: 990, chatpack5: 1490, chatpack7: 1990 };
+const AUGUST_990_PROMO_START_MS = Date.parse('2026-07-31T15:00:00.000Z');
+const AUGUST_990_PROMO_END_MS = Date.parse('2026-08-31T15:00:00.000Z');
+function isAugust990Promo(nowMs = Date.now()) {
+  return nowMs >= AUGUST_990_PROMO_START_MS && nowMs < AUGUST_990_PROMO_END_MS;
+}
+function augustPromoPriceForCategory(category) {
+  return AUGUST_CHAT_PACK_PRICE[category] || AUGUST_990_PROMO_PRICE;
+}
 
 // 공유 할인코드 — 최대 차감액 (서버 강제 캡)
 const MAX_COUPON_AMOUNT = 1500;
@@ -61,10 +71,12 @@ const SHARE_IP_DAILY_LIMIT = 8;               // 같은 IP 24h 공유코드 발�
 const PROMO_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 혼동문자 제외
 
 // 결제액과 쿠폰액이 합쳐서 원가가 되는지 검증 (서버에서 쿠폰 금액 강제)
-function isAmountValid(category, amount, couponAmount = 0) {
+function isAmountValid(category, amount, couponAmount = 0, nowMs = Date.now()) {
+  if (!CATEGORY_PRICE[category]) return false;
   const c = Number(couponAmount) || 0;
   if (c < 0 || c > MAX_COUPON_AMOUNT) return false;
   const gross = amount + c;
+  if (isAugust990Promo(nowMs)) return gross === augustPromoPriceForCategory(category);
   if (category === 'monthly') {
     if (gross % MONTHLY_UNIT !== 0) return false;
     const cnt = gross / MONTHLY_UNIT;

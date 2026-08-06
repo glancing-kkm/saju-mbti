@@ -42,8 +42,20 @@ const CATEGORY_PRICE = {
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;
+const AUGUST_990_PROMO_PRICE = 990;
+const AUGUST_CHAT_PACK_PRICE = { chatpack3: 990, chatpack5: 1490, chatpack7: 1990 };
+const AUGUST_990_PROMO_START_MS = Date.parse('2026-07-31T15:00:00.000Z');
+const AUGUST_990_PROMO_END_MS = Date.parse('2026-08-31T15:00:00.000Z');
+function isAugust990Promo(nowMs = Date.now()) {
+  return nowMs >= AUGUST_990_PROMO_START_MS && nowMs < AUGUST_990_PROMO_END_MS;
+}
+function augustPromoPriceForCategory(category) {
+  return AUGUST_CHAT_PACK_PRICE[category] || AUGUST_990_PROMO_PRICE;
+}
 // 카테고리·금액 위조 방지 — 월별은 월당 단가의 1~6배수 허용, 그 외는 단일 정가 일치
-function isAmountValid(category, amount) {
+function isAmountValid(category, amount, nowMs = Date.now()) {
+  if (!CATEGORY_PRICE[category]) return false;
+  if (isAugust990Promo(nowMs)) return amount === augustPromoPriceForCategory(category);
   if (category === 'monthly') {
     if (amount % MONTHLY_UNIT !== 0) return false;
     const cnt = amount / MONTHLY_UNIT;
@@ -86,7 +98,9 @@ export default {
       return json({ ok: false, code: 'UNKNOWN_CATEGORY', message: `Unknown category: ${category}` }, 400, corsHeaders);
     }
     if (!isAmountValid(category, amount)) {
-      const hint = category === 'monthly'
+      const hint = isAugust990Promo()
+        ? `expected ${augustPromoPriceForCategory(category)} for the August promotion`
+        : category === 'monthly'
         ? `monthly amount must be ${MONTHLY_UNIT} × 1~${MONTHLY_MAX}`
         : `expected ${CATEGORY_PRICE[category]}`;
       return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `${hint}, got ${amount}` }, 400, corsHeaders);
