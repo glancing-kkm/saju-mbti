@@ -64,6 +64,12 @@ function isAmountValid(category, amount, nowMs = Date.now()) {
   }
   return CATEGORY_PRICE[category] === amount;
 }
+// 결제창을 띄운 뒤 승인까지 걸리는 시간 동안 프로모션 경계를 넘긴 주문이 거부되지 않도록
+// 지금 시각과 ORDER_GRACE_MS 전 시각 두 기준을 모두 허용한다 (두 시점의 정당한 가격만 통과).
+const ORDER_GRACE_MS = 30 * 60 * 1000;
+function isAmountValidWithGrace(category, amount, nowMs = Date.now()) {
+  return isAmountValid(category, amount, nowMs) || isAmountValid(category, amount, nowMs - ORDER_GRACE_MS);
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -98,7 +104,7 @@ export default {
     if (!CATEGORY_PRICE[category]) {
       return json({ ok: false, code: 'UNKNOWN_CATEGORY', message: `Unknown category: ${category}` }, 400, corsHeaders);
     }
-    if (!isAmountValid(category, amount)) {
+    if (!isAmountValidWithGrace(category, amount)) {
       const hint = isAugust990Promo()
         ? `expected ${augustPromoPriceForCategory(category)} for the August promotion`
         : category === 'monthly'

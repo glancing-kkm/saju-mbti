@@ -238,6 +238,14 @@ async function handleReading(request, env) {
   const coreReading = isCoreReadingCategory(category);
 
   try {
+    // 핵심 리딩(life-core/newyear-core)은 3,000~4,200자 한국어를 요구한다.
+    // 한국어는 토큰이 촘촘해서 이 분량만 4,000~5,000 출력 토큰이 필요하고,
+    // gpt-5 계열은 추론 토큰까지 같은 예산에서 빼 쓴다. 예산이 모자라면 본문이 잘린 채 돌아온다.
+    const READING_MAX_TOKENS = coreReading ? 8000 : 2400;
+    const ANTHROPIC_READING_MAX_TOKENS = coreReading ? 6000 : 2400;
+    // 잘린 본문은 폴백 대상 — 클라이언트가 정적 상세 카드를 지우지 않도록 truncated 를 같이 내려준다.
+    let truncatedFallback = null;
+
     if (env.OPENAI_API_KEY) {
       try {
         const result = await callOpenAIResponses({
@@ -245,14 +253,21 @@ async function handleReading(request, env) {
           model: coreReading ? (env.OPENAI_READING_CORE_MODEL || env.OPENAI_MODEL || 'gpt-5.4-mini') : (env.OPENAI_MODEL || 'gpt-5.4-mini'),
           systemPrompt,
           userPrompt,
-          maxOutputTokens: coreReading ? 3800 : 1800,
+          maxOutputTokens: READING_MAX_TOKENS,
           reasoningEffort: coreReading ? 'medium' : 'low',
           verbosity: 'medium',
         });
-        return json({ ok: true, provider: 'openai', text: result.text, usage: result.usage || null });
+        if (result.text && !result.truncated) {
+          return json({ ok: true, provider: 'openai', text: result.text, truncated: false, usage: result.usage || null });
+        }
+        console.warn('OpenAI reading truncated or empty, trying next provider:', category, 'len=' + (result.text || '').length);
+        if (result.text) truncatedFallback = { provider: 'openai', text: result.text, usage: result.usage || null };
+        if (!env.ANTHROPIC_API_KEY && !env.AI) {
+          return json({ ok: true, provider: 'openai', text: result.text, truncated: true, usage: result.usage || null });
+        }
       } catch (e) {
         console.warn('OpenAI reading failed, falling back to Anthropic if available:', e && e.message);
-        if (!env.ANTHROPIC_API_KEY) throw e;
+        if (!env.ANTHROPIC_API_KEY && !env.AI) throw e;
       }
     }
 
@@ -261,7 +276,7 @@ async function handleReading(request, env) {
         apiKey: env.ANTHROPIC_API_KEY,
         body: {
           model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-          max_tokens: coreReading ? 3800 : 1800,
+          max_tokens: ANTHROPIC_READING_MAX_TOKENS,
           system: [{ type: 'text', text: systemPrompt }],
           messages: [{ role: 'user', content: userPrompt }],
         },
@@ -273,10 +288,16 @@ async function handleReading(request, env) {
           .map((b) => b.text)
           .join('\n')
           .trim();
-        return json({ ok: true, provider: 'anthropic', text: text || '', usage: data.usage || null });
+        const truncated = data.stop_reason === 'max_tokens';
+        if (text && !truncated) {
+          return json({ ok: true, provider: 'anthropic', text, truncated: false, usage: data.usage || null });
+        }
+        console.warn('Anthropic reading truncated or empty, trying Workers AI:', category, 'stop_reason=' + data.stop_reason);
+        if (text && !truncatedFallback) truncatedFallback = { provider: 'anthropic', text, usage: data.usage || null };
+      } else {
+        const errText = await apiResp.text();
+        console.warn('Reading Anthropic failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
       }
-      const errText = await apiResp.text();
-      console.warn('Reading Anthropic failed, falling back to Workers AI if available:', apiResp.status, errText.slice(0, 240));
     }
     if (env.AI) {
       const result = await callWorkersAIChat({
@@ -284,9 +305,14 @@ async function handleReading(request, env) {
         model: env.WORKERS_AI_READING_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8',
         systemPrompt,
         userPrompt,
-        maxTokens: coreReading ? 3800 : 1800,
+        maxTokens: READING_MAX_TOKENS,
       });
-      if (result.text) return json({ ok: true, provider: 'workers-ai', model: result.model, text: result.text, usage: result.usage || null });
+      if (result.text) return json({ ok: true, provider: 'workers-ai', model: result.model, text: result.text, truncated: false, usage: result.usage || null });
+    }
+    // 어느 제공자도 완결된 본문을 못 냈으면, 있는 것이라도 truncated 로 표시해서 내려준다.
+    // 클라이언트는 이걸 보고 AI 카드는 띄우되 정적 상세 카드를 그대로 유지한다.
+    if (truncatedFallback) {
+      return json({ ok: true, provider: truncatedFallback.provider, text: truncatedFallback.text, truncated: true, usage: truncatedFallback.usage });
     }
     return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   } catch (e) {
@@ -897,7 +923,10 @@ async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, ma
       .map((part) => part.text || '')
       .join('\n')
       .trim();
-  return { text, usage: data.usage || null };
+  // max_output_tokens 로 끊긴 응답은 문장이 중간에 잘려 있다.
+  // (gpt-5 계열은 추론 토큰도 이 예산을 함께 쓰므로 본문이 통째로 비는 경우도 있다.)
+  const truncated = data.status === 'incomplete' || !!(data.incomplete_details && data.incomplete_details.reason);
+  return { text, usage: data.usage || null, truncated };
 }
 
 function chooseQnaModel(question, ctx, env = {}) {

@@ -2727,20 +2727,48 @@ function augustPromoPriceLabel(regularLabel,nowMs=Date.now()){
 function augustChatPackPrice(count,regularPrice,nowMs=Date.now()){
   return isAugust990Promo(nowMs)?(AUGUST_CHAT_PACK_PRICES[count]||regularPrice):regularPrice;
 }
-function applyAugust990StaticLabels(){
-  if(!isAugust990Promo())return;
+// 메뉴 카드의 정가 문구는 HTML에 박혀 있다. 프로모션을 껐다 켤 수 있게 첫 실행 때 원본을 보관한다.
+const _PROMO_LABEL_ORIGINALS=new WeakMap();
+let _promoGuideOriginals=null;
+function applyAugust990StaticLabels(nowMs=Date.now()){
+  const on=isAugust990Promo(nowMs);
   document.querySelectorAll('#paidCoreMenu > .menu-card.locked').forEach(card=>{
     const price=card.querySelector('.mc-price');
     const title=card.querySelector('.mc-title');
+    if(!_PROMO_LABEL_ORIGINALS.has(card)){
+      _PROMO_LABEL_ORIGINALS.set(card,{price:price?price.textContent:'',aria:card.getAttribute('aria-label')||''});
+    }
+    const orig=_PROMO_LABEL_ORIGINALS.get(card);
     const isQna=title&&title.textContent==='즉문즉답';
-    const priceLabel=isQna?'8월 3회 990원부터':'8월 한정 990원';
+    const priceLabel=on?(isQna?'8월 3회 990원부터':'8월 한정 990원'):orig.price;
     if(price)price.textContent=priceLabel;
     if(title)card.setAttribute('aria-label',`${title.textContent} — ${priceLabel}`);
+    else if(orig.aria)card.setAttribute('aria-label',orig.aria);
   });
   const qnaGuide=document.getElementById('qnaPriceGuide');
-  if(qnaGuide)qnaGuide.textContent='질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요. 8월에는 3회 990원, 5회 1,490원, 7회 1,990원이에요.';
   const monthlyGuide=document.getElementById('monthlyPriceGuide');
-  if(monthlyGuide)monthlyGuide.textContent='시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드려요. 최대 6개월까지 선택할 수 있고, 8월에는 선택 기간과 관계없이 990원이에요.';
+  if(!_promoGuideOriginals){
+    _promoGuideOriginals={qna:qnaGuide?qnaGuide.textContent:'',monthly:monthlyGuide?monthlyGuide.textContent:''};
+  }
+  if(qnaGuide)qnaGuide.textContent=on
+    ?'질문권을 충전하면 궁금한 점을 채팅처럼 바로 물어볼 수 있어요. 8월에는 3회 990원, 5회 1,490원, 7회 1,990원이에요.'
+    :_promoGuideOriginals.qna;
+  if(monthlyGuide)monthlyGuide.textContent=on
+    ?'시작 월부터 종료 월까지 매달의 운세 흐름을 연속적으로 풀어드려요. 최대 6개월까지 선택할 수 있고, 8월에는 선택 기간과 관계없이 990원이에요.'
+    :_promoGuideOriginals.monthly;
+}
+// 프로모션 시작·종료 시각에 맞춰 표시 가격을 자동으로 다시 계산 (탭을 오래 열어두는 경우 대비)
+function schedulePromoBoundaryRefresh(){
+  const now=Date.now();
+  const next=now<AUGUST_990_PROMO_START_MS?AUGUST_990_PROMO_START_MS
+            :now<AUGUST_990_PROMO_END_MS?AUGUST_990_PROMO_END_MS:0;
+  if(!next)return;
+  const delay=next-now+1000;
+  if(delay>2147483647)return; // setTimeout 상한 초과 — 그 경우는 다음 방문에 반영된다
+  setTimeout(()=>{
+    try{if(typeof refreshPromoPricing==='function')refreshPromoPricing();}catch(e){}
+    schedulePromoBoundaryRefresh();
+  },delay);
 }
 applyAugust990StaticLabels();
 // 한자 표기를 한글로 통일 — STEMS와 STEMKO, BRCH와 BRCHKO는 이제 동일
@@ -9402,15 +9430,31 @@ const PAID_META={
   'astro-yearly':{icon:'',title:'올해 운세',desc:'현재 트랜짓과 출생차트의 주요 각도를 바탕으로 올해 흐름을 풀이해요.',features:['· 출생차트 + 현재 트랜짓','· 올해 흐름 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
   'astro-full-report':{icon:'',title:'종합 점성술 리포트',desc:'출생차트와 현재 운을 종합해 더 긴 리포트로 풀이해요.',features:['· 출생차트 + 트랜짓 종합','· 4,000자 이내 상세 리포트','· 결제 후 24시간 재조회 가능'],price:'2,500원'}
 };
-if(isAugust990Promo()){
-  Object.values(PAID_META).forEach(item=>{item.price='8월 한정 990원';});
-  PAID_META.qna.price='8월 3회 990원부터';
-  PAID_META.qna.features[2]='· 8월 질문권 3회 990원 · 5회 1,490원 · 7회 1,990원';
-  PAID_META.chatpack3.price='8월 한정 990원';
-  PAID_META.chatpack5.price='8월 한정 1,490원';
-  PAID_META.chatpack7.price='8월 한정 1,990원';
-  PAID_META.monthly.features[6]='· 최대 6개월까지 선택해도 8월 한정 990원';
+// 정가 원본 스냅샷 — 프로모션 라벨을 적용/복원할 때 되돌릴 기준
+const PAID_META_REGULAR=Object.fromEntries(Object.entries(PAID_META)
+  .map(([k,v])=>[k,{price:v.price,features:(v.features||[]).slice()}]));
+// 표시 가격을 현재 시각 기준으로 다시 계산. 프로모션 시작·종료 양방향 모두 처리한다.
+function refreshPromoPricing(nowMs=Date.now()){
+  const on=isAugust990Promo(nowMs);
+  Object.entries(PAID_META).forEach(([k,item])=>{
+    const reg=PAID_META_REGULAR[k];
+    if(!reg)return;
+    item.price=on?'8월 한정 990원':reg.price;
+    item.features=reg.features.slice();
+  });
+  if(on){
+    PAID_META.qna.price='8월 3회 990원부터';
+    PAID_META.qna.features[2]='· 8월 질문권 3회 990원 · 5회 1,490원 · 7회 1,990원';
+    PAID_META.chatpack3.price='8월 한정 990원';
+    PAID_META.chatpack5.price='8월 한정 1,490원';
+    PAID_META.chatpack7.price='8월 한정 1,990원';
+    PAID_META.monthly.features[6]='· 최대 6개월까지 선택해도 8월 한정 990원';
+  }
+  applyAugust990StaticLabels(nowMs);
 }
+refreshPromoPricing();
+// 페이지를 열어둔 채 경계를 넘겨도 화면이 스스로 정정되게 예약
+schedulePromoBoundaryRefresh();
 function getDecisionGuide(category){
   const m={
     daypick:'면접·계약·고백·이사처럼 날짜를 바꿀 수 있는 일을 언제 잡을지 판단할 수 있어요.',
@@ -9423,7 +9467,10 @@ function getDecisionGuide(category){
   const t=m[category]||m.life;
   return `<div class="lock-info" style="margin-top:-8px;margin-bottom:16px"><b>이 풀이로 결정할 수 있는 것</b><br>${preventOrphan(t)}</div>`;
 }
-// 카테고리당 기본 단가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재
+// 카테고리당 정가 (원). 월별은 월당 단가이므로 PAY_BASE_PRICE에 기재.
+// 주의: 이 표는 절대 덮어쓰지 않는다. 프로모션가는 항상 "계산 시점"에 판정한다.
+// (예전에는 로드 시점에 이 표를 990으로 덮어써서, 페이지를 열어둔 채 프로모션
+//  경계를 넘기면 화면 가격과 워커가 기대하는 금액이 어긋나 승인이 거부됐다.)
 const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1500,life:1500,
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack3:1500,chatpack5:2000,chatpack7:3000,
@@ -9431,25 +9478,29 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1
   tarot3:1500,tarot5:2000,tarot10:3000,
   // 점성술 — 유료 풀이
   'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
-if(isAugust990Promo()){
-  Object.keys(PAY_BASE_PRICE).forEach(category=>{PAY_BASE_PRICE[category]=AUGUST_990_PROMO_PRICE;});
-  PAY_BASE_PRICE.chatpack3=augustChatPackPrice(3,1500);
-  PAY_BASE_PRICE.chatpack5=augustChatPackPrice(5,2000);
-  PAY_BASE_PRICE.chatpack7=augustChatPackPrice(7,3000);
+const CHAT_PACK_COUNT={chatpack3:3,chatpack5:5,chatpack7:7};
+// 지금 이 순간의 카테고리 단가 — 워커 augustPromoPriceForCategory()와 같은 규칙
+function basePriceFor(category, nowMs=Date.now()){
+  const regular=PAY_BASE_PRICE[category]||0;
+  if(!isAugust990Promo(nowMs))return regular;
+  const cnt=CHAT_PACK_COUNT[category];
+  return cnt?augustChatPackPrice(cnt,regular,nowMs):AUGUST_990_PROMO_PRICE;
 }
 // 월별 최대 개월
 const MONTHLY_MAX=6;
 // 채팅 패키지 수량 매핑 — 결제 confirm 후 chatBonus에 더할 횟수
+// price는 getter — 프로모션 경계를 넘겨도 표시가가 항상 실제 청구액을 따라간다
 const CHAT_PACKS=[
-  {cat:'chatpack3', count:3,  price:augustChatPackPrice(3,1500),  label:'3회'},
-  {cat:'chatpack5', count:5,  price:augustChatPackPrice(5,2000),  label:'5회',  badge:'인기'},
-  {cat:'chatpack7', count:7,  price:augustChatPackPrice(7,3000),  label:'7회'}
+  {cat:'chatpack3', count:3,  get price(){return basePriceFor('chatpack3');},  label:'3회'},
+  {cat:'chatpack5', count:5,  get price(){return basePriceFor('chatpack5');},  label:'5회',  badge:'인기'},
+  {cat:'chatpack7', count:7,  get price(){return basePriceFor('chatpack7');},  label:'7회'}
 ];
 const QNA_CHAT_PACKS=CHAT_PACKS;
 // 카테고리 실제 결제 금액 계산 — _meta·인자에서 월별 개월수 도출
-function computePayAmount(category, meta){
-  if(isAugust990Promo())return PAY_BASE_PRICE[category]||0;
-  if(category!=='monthly')return PAY_BASE_PRICE[category]||0;
+function computePayAmount(category, meta, nowMs=Date.now()){
+  // 프로모션 중에는 월별도 기간과 무관하게 단일가 (워커 isAmountValid과 동일)
+  if(isAugust990Promo(nowMs))return basePriceFor(category,nowMs);
+  if(category!=='monthly')return basePriceFor(category,nowMs);
   const e=meta&&meta.moExtra; if(!e)return PAY_BASE_PRICE.monthly;
   const cnt=Math.max(1,Math.min(MONTHLY_MAX,(e.ey-e.sy)*12+(e.em-e.sm)+1));
   return PAY_BASE_PRICE.monthly*cnt;
@@ -15045,8 +15096,10 @@ function aiReadingDomId(category, extraKey){
 }
 function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
-  return 'saju_ai_reading_v3:'+(lang||currentLanguage())+':'+category+':'+birth+':'+(extraKey||'main');
+  // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
+  return 'saju_ai_reading_v4:'+(lang||currentLanguage())+':'+category+':'+birth+':'+(extraKey||'main');
 }
+// 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
   try{
     const raw=localStorage.getItem(aiReadingCacheKey(category,extraKey,lang));
@@ -15056,18 +15109,29 @@ function aiReadingCacheGet(category, extraKey, lang){
       localStorage.removeItem(aiReadingCacheKey(category,extraKey,lang));
       return null;
     }
-    return data.text;
+    return {text:data.text, complete:data.complete!==false};
   }catch(e){return null;}
 }
-function aiReadingCacheSet(category, extraKey, text, lang){
+function aiReadingCacheSet(category, extraKey, text, lang, complete){
   try{
-    localStorage.setItem(aiReadingCacheKey(category,extraKey,lang),JSON.stringify({text,exp:Date.now()+AI_READING_TTL_MS}));
+    localStorage.setItem(aiReadingCacheKey(category,extraKey,lang),JSON.stringify({text,complete:complete!==false,exp:Date.now()+AI_READING_TTL_MS}));
   }catch(e){}
 }
 const AI_REPLACED_CARD_LABELS={
   'life-core':['PERSONA','TOTAL','WEALTH','CAREER','LOVE','HEALTH','HUMAN','JOB','DAEUN10','SEWOON','TIMELINE','GAEWOON'],
   'newyear-core':['TOTAL','NY_WEALTH','NY_LOVE','NY_CAREER','NY_RELATION','NY_HEALTH','MONTHS','QUARTERS','CLASSIC']
 };
+// AI 핵심 풀이가 정적 상세 카드를 "대체"하려면 최소 이만큼은 나와야 한다.
+// 이 기준에 못 미치거나 워커가 잘림(truncated)을 알려오면 AI 카드는 그대로 보여주되
+// 숨겨진 상세 카드를 되살려서, 결제한 사람이 내용을 잃지 않게 한다.
+// (life-core가 가리는 정적 본문이 약 20,000자, newyear-core가 약 5,600자다.)
+const AI_READING_MIN_REPLACE_CHARS={'life-core':2400,'newyear-core':2000};
+function aiReadingCanReplace(category, text, truncated){
+  const min=AI_READING_MIN_REPLACE_CHARS[category];
+  if(!min)return true; // 대체 대상이 없는 카테고리는 판정 불필요
+  if(truncated)return false;
+  return String(text||'').replace(/\s/g,'').length>=min;
+}
 function aiReadingFallbackSelector(category, extraKey){
   return `[data-ai-fallback-for="${String(category).replace(/"/g,'')}"][data-ai-extra="${String(extraKey||'').replace(/"/g,'')}"]`;
 }
@@ -15106,14 +15170,15 @@ function aiReadingTextToHtml(text){
 function renderAIReadingCard(category, title, extraKey, opts){
   opts=opts||{};
   const cached=aiReadingCacheGet(category,extraKey);
+  const cachedText=cached&&cached.text;
   const id=aiReadingDomId(category,extraKey);
-  const cls='nb-card ai-reading-card'+(opts.main?' main-reading':'')+(cached?' ai-ready':'');
+  const cls='nb-card ai-reading-card'+(opts.main?' main-reading':'')+(cachedText?' ai-ready':'');
   const catHtml=opts.catLabel===null?'':`<div class="nb-cat">${chatEscape(opts.catLabel||'천기 풀이')}</div>`;
   const loading=opts.loadingText||'본인 사주를 바탕으로 풀이를 정리하고 있어요. 잠시만 기다려주세요.';
   return `<div class="${cls}" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
     ${catHtml}
     <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'맞춤 풀이')}</div>
-    <div class="nb-body ai-reading-body">${cached?aiReadingTextToHtml(cached):`<div class="ai-reading-status">${preventOrphan(chatEscape(loading))}</div>`}</div>
+    <div class="nb-body ai-reading-body">${cachedText?aiReadingTextToHtml(cachedText):`<div class="ai-reading-status">${preventOrphan(chatEscape(loading))}</div>`}</div>
   </div>`;
 }
 function buildAIReadingPayload(category, extra){
@@ -15141,10 +15206,11 @@ async function hydrateAIReading(category, opts){
   const reqLang=currentLanguage(); // 요청 시점 언어 고정 — 도중에 언어가 바뀌면 이 응답은 화면에 쓰지 않음
   const cached=aiReadingCacheGet(category,extraKey,reqLang);
   if(cached){
-    body.innerHTML=aiReadingTextToHtml(cached);
+    body.innerHTML=aiReadingTextToHtml(cached.text);
     card.style.display='';
     card.classList.add('ai-ready');
-    setAIReadingFallbackVisible(category,extraKey,false);
+    // 캐시된 풀이가 짧거나 잘린 것이면 정적 상세 카드를 계속 보여준다
+    setAIReadingFallbackVisible(category,extraKey,!cached.complete);
     if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
     return;
   }
@@ -15159,12 +15225,14 @@ async function hydrateAIReading(category, opts){
     if(!resp||!resp.ok)throw new Error((data&&data.error)||'맞춤 풀이를 불러오지 못했어요.');
     const text=(data.text||data.answer||'').trim();
     if(!text)throw new Error('맞춤 풀이가 비어 있어요.');
-    aiReadingCacheSet(category,extraKey,text,reqLang); // 요청 언어 키에 저장 (도착 시점 언어 오염 방지)
+    // 워커가 잘림을 알려줬거나 분량이 기준에 못 미치면 "대체"가 아니라 "추가"로만 쓴다
+    const canReplace=aiReadingCanReplace(category,text,data&&data.truncated);
+    aiReadingCacheSet(category,extraKey,text,reqLang,canReplace); // 요청 언어 키에 저장 (도착 시점 언어 오염 방지)
     if(currentLanguage()!==reqLang)return; // 언어가 바뀌었으면 새 언어용 hydrate가 따로 처리
     body.innerHTML=aiReadingTextToHtml(text);
     card.style.display='';
     card.classList.add('ai-ready');
-    setAIReadingFallbackVisible(category,extraKey,false);
+    setAIReadingFallbackVisible(category,extraKey,!canReplace);
     if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
     if(currentLanguage()!==reqLang)return;

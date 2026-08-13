@@ -72,6 +72,14 @@ function isAmountValid(category, amount, nowMs = Date.now()) {
   }
   return CATEGORY_PRICE[category] === amount;
 }
+// 주문 시작부터 승인까지는 시간이 걸린다(결제창 왕복·앱 전환). 그 사이 프로모션 경계를
+// 넘긴 주문이 거부되지 않도록, 지금 시각과 ORDER_GRACE_MS 전 시각 두 기준을 모두 허용한다.
+// 아무 금액이나 통과시키는 게 아니라 "두 시점의 정당한 가격"만 허용하는 것이다.
+// /ready 기록이 KV에 남아 있으면 이 경로는 쓰이지 않는다.
+const ORDER_GRACE_MS = 30 * 60 * 1000;
+function isAmountValidWithGrace(category, amount, nowMs = Date.now()) {
+  return isAmountValid(category, amount, nowMs) || isAmountValid(category, amount, nowMs - ORDER_GRACE_MS);
+}
 
 export default {
   async fetch(request, env) {
@@ -147,6 +155,11 @@ async function handleReady(request, env, cid, corsHeaders) {
     return json({ ok: false, code: data.error_code || 'KAKAO_REJECTED', message: data.error_message || `Kakao API ${res.status}` }, res.status, corsHeaders);
   }
 
+  // 주문 시점에 합의된 카테고리·금액을 고정 저장한다.
+  // 승인(/approve)은 이 기록으로 검증하므로, 결제창에 머무는 동안 프로모션이
+  // 시작·종료되어도 "결제는 됐는데 승인이 거부되는" 상황이 생기지 않는다.
+  await putPinnedOrder(env, partnerOrderId, { category, amount, tid: data.tid, createdAt: Date.now() });
+
   return json({
     ok: true,
     tid: data.tid,
@@ -156,6 +169,30 @@ async function handleReady(request, env, cid, corsHeaders) {
     iosAppScheme: data.ios_app_scheme,
     createdAt: data.created_at,
   }, 200, corsHeaders);
+}
+
+// ─── 주문 고정 기록 (프로모션 경계 대응) ───
+const PINNED_ORDER_TTL_SEC = 60 * 60 * 24; // 24시간 — 결제창 왕복에 충분
+function pinnedOrderKey(partnerOrderId) {
+  return `order:${partnerOrderId}`;
+}
+async function putPinnedOrder(env, partnerOrderId, record) {
+  if (!env.REVIEWS_KV) return;
+  try {
+    await env.REVIEWS_KV.put(pinnedOrderKey(partnerOrderId), JSON.stringify(record), { expirationTtl: PINNED_ORDER_TTL_SEC });
+  } catch (e) {
+    console.warn('Pinned order write failed (approve falls back to clock check):', e && e.message);
+  }
+}
+async function getPinnedOrder(env, partnerOrderId) {
+  if (!env.REVIEWS_KV) return null;
+  try {
+    const raw = await env.REVIEWS_KV.get(pinnedOrderKey(partnerOrderId));
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.warn('Pinned order read failed:', e && e.message);
+    return null;
+  }
 }
 
 // ─── 결제 승인 ───
@@ -169,7 +206,15 @@ async function handleApprove(request, env, cid, corsHeaders) {
     return json({ ok: false, code: 'MISSING_FIELDS', message: 'tid, partnerOrderId, partnerUserId, pgToken, category, amount required' }, 400, corsHeaders);
   }
   // 카테고리·금액 재검증 (위조 방지)
-  if (!isAmountValid(category, amount)) {
+  // 1순위: /ready 때 고정해둔 주문 기록과 대조 — 시계와 무관하므로 프로모션 경계에 흔들리지 않고,
+  //        결제창에 다녀오는 사이 금액이 바뀌치기되는 것도 함께 막는다.
+  const pinned = await getPinnedOrder(env, partnerOrderId);
+  if (pinned) {
+    if (pinned.category !== category || pinned.amount !== amount || (pinned.tid && pinned.tid !== tid)) {
+      return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Order does not match the pinned record` }, 400, corsHeaders);
+    }
+  } else if (!isAmountValidWithGrace(category, amount)) {
+    // 2순위(KV 미기록·구버전 주문): 시계 기준 검증에 경계 유예를 적용
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch` }, 400, corsHeaders);
   }
 
