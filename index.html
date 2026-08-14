@@ -1268,6 +1268,35 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(45,52,71,.4));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
+/* 카드 ↔ 캐릭터 능력치 연결 줄 */
+.stat-link{display:flex;align-items:flex-start;gap:10px;margin:12px 0 4px;padding:11px 13px;background:rgba(255,255,255,.035);border-radius:10px}
+.stat-link .sl-bar{flex:0 0 4px;align-self:stretch;min-height:34px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden;position:relative}
+.stat-link .sl-fill{position:absolute;left:0;bottom:0;width:100%;height:var(--sl-h,100%);background:var(--accent-bright);border-radius:999px}
+.stat-link .sl-txt{flex:1;font-size:.78rem;line-height:1.7;color:var(--sub);word-break:keep-all}
+.stat-link .sl-txt b{color:var(--accent-bright);font-weight:700}
+.stat-link.low .sl-fill{background:var(--muted)}
+.stat-link.low .sl-txt b{color:var(--sub)}
+.stat-link.mid .sl-fill{background:var(--accent)}
+/* 캐릭터 카드 — 별명·희귀도·능력치 */
+.char-card{background:linear-gradient(160deg,rgba(212,175,55,.10),rgba(212,175,55,.02) 55%,transparent),var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px 18px 16px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
+.cc-label{font-size:.7rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.cc-nick{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.5rem;line-height:1.35;color:var(--accent-bright);letter-spacing:-.01em;word-break:keep-all}
+.cc-sub{font-size:.88rem;color:var(--sub);margin-top:5px;word-break:keep-all}
+.cc-rarity{margin-top:12px;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;padding:7px 13px;background:var(--accent-soft);border-radius:999px}
+.cc-stars{color:var(--accent-bright);font-size:.82rem;letter-spacing:.08em;flex-shrink:0}
+.cc-rarity-txt{font-size:.75rem;color:var(--sub);word-break:keep-all}
+.cc-stats{margin-top:16px;display:flex;flex-direction:column;gap:7px;text-align:left}
+.cc-stat{display:flex;align-items:center;gap:9px}
+.cc-stat-name{flex:0 0 3.6em;font-size:.79rem;color:var(--sub);letter-spacing:-.02em}
+.cc-bar{flex:1;height:9px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+.cc-bar-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-bright))}
+.cc-stat-val{flex:0 0 1.4em;text-align:right;font-size:.76rem;color:var(--accent-bright);font-weight:700;font-variant-numeric:tabular-nums}
+.cc-note{margin-top:11px;padding:10px 12px;background:rgba(255,255,255,.035);border-left:3px solid var(--accent-bright);border-radius:0 8px 8px 0;font-size:.79rem;line-height:1.75;color:var(--sub);text-align:left;word-break:keep-all}
+.cc-note b{color:var(--accent)}
+.cc-note.low{border-left-color:var(--muted)}
+.cc-note.low b{color:var(--sub)}
+.cc-basis{margin-top:12px;font-size:.67rem;color:var(--muted);line-height:1.6;word-break:keep-all}
+@media(max-width:380px){.cc-nick{font-size:1.28rem}.cc-stat-name{flex-basis:3.3em;font-size:.74rem}}
 .nb-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
 .nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0}
 .nb-card.primary{background:var(--card);border:none;box-shadow:var(--card-shadow)}
@@ -6193,6 +6222,121 @@ function coreKeywordCardHTML(saju){
   </section>`;
 }
 
+// ══════════════════════════════════════════════
+//  캐릭터 카드 — 모든 풀이 상단에 노출되는 재미 요소
+//  별명·희귀도·능력치를 실제 사주 데이터에서 뽑는다. 지어낸 수치는 쓰지 않는다.
+// ══════════════════════════════════════════════
+// 유형 출현 빈도 실측표. 1950~2020년 출생 × 2시간 간격 12개 시각 = 311,196건을
+// 전부 계산해 (일간·계절·신강구간·최강십신축) 유형이 몇 %인지 세어둔 값이다.
+// index = ((일간*4 + 계절)*4 + 신강구간)*5 + 십신축, 각 칸은 만분율(bp)을 36진수 2자리.
+// 표 생성기: tools/build-rarity.js
+const CHAR_RARITY_SAMPLE=311196;
+const CHAR_RARITY_BP='1r010100011h050o0707000f100d0600030b02010j01000000170d0d0103001f180a06000m0o05030r0001000010030c0802000p1b0o07000b0s0i040j0001000110030h010b000n1a0b0o000a0m090c1d000101001g060l0805000s100b0800060d02030e0000000011080b0401001n14080400130q03050l000101000u010a0b01000p150p05000q0x0d080e000100000w010e0206000q190c0k000l0n060k0e010000010x0a030208001o0g0b0j001908060c1k010101011e0m060404001q0c0705000m0201020i010100000u0b0b0102001m0u0707001e0f05070d000001000z0a040802001p0f0p060015060e050k010000010u0a020108001g0h0c0i00150g090e1m010100011d0i050304001h0k0a06000n0302020n010100000t0a0a0102001b0w050700160s09090j010001000v09020602001g0h0p0500120b0k051x0101010114080a0g06000n0k0m0700080709032101010101110709070h000l0k0e0k000a0707081y01010101140g0b070700100f0d08000e0506031w010101010y080m0806000k0w0b0700080c04021x010001001c06030k03000n0h0s05000806090222010000011f0403050f000m0g0e0l000907050b1z010101011e0e05070500160b0d07000h0205031y010101001d050e0603000k0y0a0500070d03030m000100010x01080209000l110c0n000n0n080q0g00000101110104090a000n0l110t000d060t0o1h000101011i0407090j000m0g0e0t000604020c0i000000010z0702020900190e0b0q000z08070p0l000100010v0108020b000k100a0s000k0l04100g00000100100104090a000n0j0v11000d050j0y1h000101011f0307070o000k0f0911000503010e0i000000010x0602030a00170e0a0u000w07040w0g010000000y0a020603001a0e0w0b000q0a0t090f000100001202080803000o161108000c0r0r060f000000010u03010a0c000p0k100q000f0g0q0h1h010100011b05050f07000j0j10090002050i020w010001000u09020d04000w0d0s09000u0b0n0c0w000101000t03090f03000m0x0t0a000h0m0l0b0w000001010t03020f09000n0g0u0j000l0e0k0i1y010101010v07050j07000m0g0q0b0005040d04';
+const _CHAR_SEASONS=['봄','여름','가을','겨울'];
+const _CHAR_STRENGTHS=['강','중강','중약','약'];
+const _CHAR_AXES=['self','out','wealth','gwan','in_'];
+function charTypeRarityBp(dStem,season,strength,axis){
+  const si=_CHAR_SEASONS.indexOf(season),ti=_CHAR_STRENGTHS.indexOf(strength),ai=_CHAR_AXES.indexOf(axis);
+  if(si<0||ti<0||ai<0||!(dStem>=0&&dStem<10))return 0;
+  const bp=parseInt(CHAR_RARITY_BP.substr((((dStem*4+si)*4+ti)*5+ai)*2,2),36);
+  return Number.isFinite(bp)?bp:0;
+}
+// 일간 열 개의 물상 — 별명의 뼈대
+const _CHAR_STEM_IMAGE=['아름드리나무','들풀','태양','등불','너른 산','기름진 밭','강철','벼려진 칼날','큰 바다','이슬비'];
+// 계절 수식 — 기운이 두터우면 밝은 쪽, 얇으면 그늘진 쪽 이미지를 쓴다
+const _CHAR_SEASON_WORD={봄:['봄볕의','새벽 봄의'],여름:['한여름의','여름밤의'],가을:['가을 들녘의','서릿발의'],겨울:['한겨울의','눈 내린']};
+const _CHAR_STRENGTH_ADJ={'강':'뜨겁게 단련된','중강':'균형 잡힌','중약':'섬세하게 벼려진','약':'주변과 함께 가는'};
+const _CHAR_AXIS_TYPE={self:'개척자형',out:'표현가형',wealth:'실전형',gwan:'완성형',in_:'탐구형'};
+// 십신 5축을 능력치 다섯 개로. 이름만 바꾼 게 아니라 축 하나에 스탯 하나가 그대로 대응한다.
+const _CHAR_STAT_DEFS=[
+  {key:'self',name:'추진력'},
+  {key:'out',name:'친화력'},
+  {key:'wealth',name:'현실감'},
+  {key:'gwan',name:'버티기'},
+  {key:'in_',name:'직관'}
+];
+const _CHAR_STAT_TOP={
+  추진력:'한번 정하면 그냥 갑니다. 말리는 쪽이 더 지쳐요.',
+  친화력:'자리의 공기를 빨리 읽어요. 어색한 판을 살려내는 쪽이에요.',
+  현실감:'숫자와 조건이 먼저 보여요. 손해 보는 선택은 잘 안 해요.',
+  버티기:'한번 물면 안 놓아요. 남들이 포기한 자리에서 결과가 나와요.',
+  직관:'설명은 못 해도 느낌이 먼저 맞아요. 그 느낌 꽤 정확한 편이에요.'
+};
+const _CHAR_STAT_LOW={
+  추진력:'먼저 나서는 건 안 맞아요. 판을 읽고 붙는 쪽이 훨씬 유리해요.',
+  친화력:'두루 넓게 친해지긴 어려워요. 대신 남는 사람이 오래 가요.',
+  현실감:'숫자 계산은 다른 사람에게 맡기세요. 큰 그림에서 이득을 봐요.',
+  버티기:'오래 끄는 싸움은 손해예요. 짧게 끝나는 판에서 이기세요.',
+  직관:'감으로 가면 자주 틀려요. 근거를 한 번 확인하는 게 본인을 지켜줘요.'
+};
+// 희귀도 구간은 실측 분포의 사분위(0.035 / 0.103 / 0.227%)에서 끊었다
+function charRarityGrade(pct){
+  if(pct<0.035)return {stars:5,label:'아주 드문 유형'};
+  if(pct<0.103)return {stars:4,label:'꽤 드문 유형'};
+  if(pct<0.227)return {stars:3,label:'보기 드문 편'};
+  if(pct<0.40)return {stars:2,label:'종종 보이는 유형'};
+  return {stars:1,label:'주변에 많은 유형'};
+}
+function charRarityPeople(pct){
+  if(pct<=0)return '';
+  if(pct>=0.1)return `1,000명 중 약 ${Math.max(1,Math.round(pct*10))}명`;
+  return `10,000명 중 약 ${Math.max(1,Math.round(pct*100))}명`;
+}
+// 캐릭터 카드에 들어갈 값을 한 번에 계산 — 별명·희귀도·능력치
+function buildCharacterCard(saju){
+  if(!saju||!saju.dp)return null;
+  let p;
+  try{p=buildPersonaProfile(saju);}catch(e){return null;}
+  const dStem=saju.dp.stem;
+  const strong=p.strength==='강'||p.strength==='중강';
+  const seasonWords=_CHAR_SEASON_WORD[p.season]||_CHAR_SEASON_WORD['봄'];
+  const nickname=`${seasonWords[strong?0:1]} ${_CHAR_STEM_IMAGE[dStem]||'기운'}`;
+  const topAxis=p.axisSorted[0][0];
+  const subtitle=`${_CHAR_STRENGTH_ADJ[p.strength]||''} ${_CHAR_AXIS_TYPE[topAxis]||'유형'}`.trim();
+  const bp=charTypeRarityBp(dStem,p.season,p.strength,topAxis);
+  const pct=bp/100;
+  const grade=charRarityGrade(pct);
+  // 능력치 — 십신 5축의 비중을 1~10으로 편다. 기대 비중(20%)이 5점.
+  const axis=Object.fromEntries(p.axisSorted);
+  const total=_CHAR_STAT_DEFS.reduce((a,d)=>a+(axis[d.key]||0),0)||1;
+  const stats=_CHAR_STAT_DEFS.map(d=>{
+    const share=(axis[d.key]||0)/total;
+    let v=Math.round(5.4+(share-0.2)*18);
+    // 기운의 두께는 추진력·버티기에 실제로 영향을 주므로 한 칸만 반영
+    if(d.name==='추진력')v+=(p.strength==='강'?1:p.strength==='약'?-1:0);
+    if(d.name==='버티기')v+=(p.strength==='약'?1:0);
+    return {name:d.name,value:Math.max(1,Math.min(10,v))};
+  });
+  const sorted=stats.slice().sort((a,b)=>b.value-a.value);
+  const top=sorted[0],low=sorted[sorted.length-1];
+  return {nickname,subtitle,pct,grade,people:charRarityPeople(pct),stats,
+    top:{name:top.name,line:_CHAR_STAT_TOP[top.name]||''},
+    low:{name:low.name,line:_CHAR_STAT_LOW[low.name]||''}};
+}
+function characterCardHTML(saju){
+  const c=buildCharacterCard(saju);
+  if(!c)return '';
+  const stars='★'.repeat(c.grade.stars)+'☆'.repeat(5-c.grade.stars);
+  const bars=c.stats.map(s=>`<div class="cc-stat">
+      <span class="cc-stat-name">${s.name}</span>
+      <span class="cc-bar" role="img" aria-label="10점 만점에 ${s.value}점"><span class="cc-bar-fill" style="width:${s.value*10}%"></span></span>
+      <span class="cc-stat-val">${s.value}</span>
+    </div>`).join('');
+  const rarityLine=c.people
+    ? `<div class="cc-rarity"><span class="cc-stars" aria-hidden="true">${stars}</span><span class="cc-rarity-txt">${c.grade.label} · 같은 유형은 ${c.people}</span></div>`
+    : '';
+  return `<div class="char-card">
+    <div class="cc-label">본인의 캐릭터</div>
+    <div class="cc-nick">「${c.nickname}」</div>
+    <div class="cc-sub">${c.subtitle}</div>
+    ${rarityLine}
+    <div class="cc-stats">${bars}</div>
+    <div class="cc-note"><b>최고 스탯 · ${c.top.name}</b><br>${preventOrphan(c.top.line)}</div>
+    <div class="cc-note low"><b>최저 스탯 · ${c.low.name}</b><br>${preventOrphan(c.low.line)}</div>
+    <div class="cc-basis">출생 ${CHAR_RARITY_SAMPLE.toLocaleString()}건을 계산해 나온 실제 비율이에요</div>
+  </div>`;
+}
+
 function resultHeroHTML(saju, mbti, cat){
   const dStem=saju.dp.stem, dBr=saju.dp.branch;
   const dStemKo=STEMKO[dStem], dBrKo=BRCHKO[dBr];
@@ -6229,7 +6373,7 @@ function resultHeroHTML(saju, mbti, cat){
     <div class="result-hero-tag">${tag}</div>
     <h2 class="result-hero-headline">${headline}</h2>
     ${extraLine}
-  </header>${coreKeywordCardHTML(saju)}`;
+  </header>${characterCardHTML(saju)}${coreKeywordCardHTML(saju)}`;
 }
 
 // 점선 밑줄 용어 안내 (모든 유료 풀이 상단에 노출)
@@ -14084,6 +14228,103 @@ function _buildReadingBrief(catLabel,title,bodyHtml,goodWarn,compact){
     <p class="rb-action">${preventOrphan(_shortReadingSentence(action,subLen))}</p>
   </div>`;
 }
+// ── 카드 ↔ 캐릭터 능력치 연결 ──
+// 각 풀이 카드가 다루는 영역을 상단 캐릭터 카드의 능력치와 이어준다.
+// 능력치는 십신 5축 그대로라, 여기 붙는 문장이 본문 풀이와 어긋나지 않는다.
+const _CARD_TOPIC={
+  // 총론 — 본인 최고 스탯을 먼저 짚어준다
+  TOTAL:'overall',PERSONA:'overall',GUNGHAP:'overall',NAME:'overall',
+  // 재물
+  WEALTH:'money',NY_WEALTH:'money','AVG 재물':'money',WEALTH_TIMELINE:'money',
+  // 직업·일
+  CAREER:'work',NY_CAREER:'work','AVG 직업·관운':'work',CAREER_TIMELINE:'work',JOB:'work',
+  // 연애
+  LOVE:'love',NY_LOVE:'love','AVG 연애·관계':'love',LOVE_TIMELINE:'love',
+  // 인간관계
+  HUMAN:'people',NY_RELATION:'people',HUMAN_TIMELINE:'people',
+  // 건강
+  HEALTH:'health',NY_HEALTH:'health','AVG 건강':'health',HEALTH_TIMELINE:'health',
+  // 학업
+  STUDY:'study',NY_STUDY:'study',STUDY_TIMELINE:'study',
+  // 결혼·가정
+  MARRIAGE:'marriage',MARRIED_LIFE:'marriage',PARTNER:'marriage',
+  FAMILY:'family',NY_FAMILY:'family',FAMILY_TIMELINE:'family',NY_HOME:'family',
+  // 행동 처방
+  ACTION:'action',GAEWOON:'action',
+  // 이름으로 보완할 자리
+  STRENGTH:'nameboost'
+};
+// '__top__' / '__low__' 는 그 사람의 최고·최저 스탯을 그때그때 쓴다는 뜻
+const _TOPIC_STAT={overall:'__top__',money:'현실감',work:'버티기',love:'친화력',people:'친화력',
+  health:'버티기',study:'직관',marriage:'친화력',family:'친화력',action:'추진력',nameboost:'__low__'};
+const _TOPIC_STAT_LINE={
+  overall:{high:'본인을 끌고 가는 힘이에요. 아래 흐름에서도 이 힘이 가장 먼저 작동해요.',
+    mid:'본인을 끌고 가는 힘이에요. 아래 흐름도 이 힘을 기준으로 읽으면 이해가 빨라요.',
+    low:'본인을 끌고 가는 힘이에요. 아래 흐름도 이 힘을 기준으로 읽으면 이해가 빨라요.'},
+  money:{high:'돈 앞에서 계산이 빨라요. 아래에 나오는 기회는 본인이 남보다 먼저 알아봐요.',
+    mid:'돈 감각은 무난한 편이에요. 아래 내용 중 조건이 또렷한 것부터 손대면 편해요.',
+    low:'숫자를 오래 붙들면 지쳐요. 아래에서는 시기만 챙기고 계산은 도와줄 사람을 두세요.'},
+  work:{high:'오래 버티는 게 본인 무기예요. 아래 흐름도 길게 보고 잡으면 유리해요.',
+    mid:'일에서는 무난하게 견디는 편이에요. 아래 시기 중 하나만 골라 밀면 충분해요.',
+    low:'길게 끄는 일은 손해예요. 아래에서 짧게 끝낼 수 있는 구간을 먼저 보세요.'},
+  love:{high:'사람 사이 공기를 잘 읽어요. 아래 흐름에서는 먼저 다가가는 쪽이 이득이에요.',
+    mid:'관계는 큰 무리 없이 굴러가요. 아래 내용은 속도 조절용으로 보시면 돼요.',
+    low:'두루 넓게 친해지긴 어려워요. 아래에서도 한 사람에게 집중하는 쪽이 맞아요.'},
+  people:{high:'사람이 모이는 자리에서 힘이 나요. 아래 인연은 넓게 열어두면 좋아요.',
+    mid:'관계는 평균 이상으로 유지돼요. 아래에서 부딪히는 지점만 피하면 충분해요.',
+    low:'많은 사람을 상대하면 빨리 지쳐요. 아래에서는 남길 사람만 골라 보세요.'},
+  health:{high:'몸이 잘 버텨줘요. 버티는 힘을 믿고 신호를 넘기는 게 유일한 위험이에요.',
+    mid:'체력은 평균이에요. 아래에서 조심하라는 시기만 지키면 무리 없어요.',
+    low:'오래 무리하면 바로 티가 나요. 아래 주의 시기는 특히 그대로 지키세요.'},
+  study:{high:'감이 먼저 맞는 쪽이에요. 아래에서 배우고 정리하는 시기가 본인 최고 구간이에요.',
+    mid:'배우는 힘은 무난해요. 아래 시기에 맞춰 반복하면 충분히 올라와요.',
+    low:'감으로만 가면 자주 틀려요. 아래 시기에는 근거를 한 번 더 확인하세요.'},
+  marriage:{high:'가까운 사이에서 분위기를 만드는 쪽이에요. 아래 흐름은 본인이 먼저 열어도 좋아요.',
+    mid:'가까운 관계는 무난히 이어져요. 아래에서 어긋나는 시기만 살피면 돼요.',
+    low:'먼저 표현하는 게 어려운 편이에요. 아래 내용은 말 꺼낼 시기를 잡는 데 쓰세요.'},
+  family:{high:'가족 사이 분위기를 본인이 잡아줘요. 아래 흐름도 본인 중심으로 돌아가요.',
+    mid:'가족 관계는 큰 굴곡 없이 이어져요. 아래에서 겹치는 시기만 확인하세요.',
+    low:'가족 일까지 떠안으면 금방 지쳐요. 아래에서 본인 몫만 나눠 보세요.'},
+  action:{high:'먼저 움직이는 게 본인 방식이에요. 아래 행동은 미루지 말고 그날 바로 하세요.',
+    mid:'추진력은 무난해요. 아래 행동 중 하나만 골라 실행하면 충분해요.',
+    low:'먼저 나서는 건 부담이 돼요. 아래 행동은 가장 작은 것 하나부터 시작하세요.'},
+  nameboost:{high:'이름으로 기운을 보탠다면 이 자리부터예요. 아래 보완 방향이 여기에 맞춰져 있어요.',
+    mid:'이름으로 기운을 보탠다면 이 자리부터예요. 아래 보완 방향이 여기에 맞춰져 있어요.',
+    low:'이름으로 기운을 보탠다면 이 자리부터예요. 아래 보완 방향이 여기에 맞춰져 있어요.'}
+};
+// 한 번 렌더에 카드가 수십 개라 캐릭터 계산을 사주별로 한 번만 한다
+let _charCardCache={key:'',val:null};
+function currentCharacterCard(){
+  if(typeof _saju==='undefined'||!_saju)return null;
+  const key=[_saju.yp,_saju.mp,_saju.dp,_saju.hp].map(p=>p?p.stem+'-'+p.branch:'x').join('|');
+  if(_charCardCache.key===key)return _charCardCache.val;
+  const val=buildCharacterCard(_saju);
+  _charCardCache={key,val};
+  return val;
+}
+function statLinkHTML(catLabel){
+  const topic=_CARD_TOPIC[catLabel];
+  if(!topic)return '';
+  const c=currentCharacterCard();
+  if(!c)return '';
+  let statName=_TOPIC_STAT[topic];
+  if(statName==='__top__')statName=c.top.name;
+  else if(statName==='__low__')statName=c.low.name;
+  const st=c.stats.find(s=>s.name===statName);
+  if(!st)return '';
+  const isTop=c.top.name===statName,isLow=c.low.name===statName;
+  const level=(isTop||st.value>=8)?'high':(isLow||st.value<=3)?'low':'mid';
+  // 값은 바로 앞에 이미 적히므로 순위로 알려준다 (「현실감 2 · 10점 만점에 2점」 중복 방지)
+  const pos=c.stats.slice().sort((a,b)=>b.value-a.value).findIndex(s=>s.name===statName)+1;
+  const rank=isTop?'본인 최고 스탯':isLow?'본인 최저 스탯':`능력치 5개 중 ${pos}번째`;
+  const line=(_TOPIC_STAT_LINE[topic]||{})[level]||'';
+  if(!line)return '';
+  return `<div class="stat-link ${level}">
+    <span class="sl-bar" aria-hidden="true"><span class="sl-fill" style="--sl-h:${st.value*10}%"></span></span>
+    <span class="sl-txt"><b>${statName} ${st.value}</b> · ${rank}<br>${preventOrphan(line)}</span>
+  </div>`;
+}
+
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
   bodyHtml=_calmReadingHtml(_softenBodySubheads(normalizeReadingText(bodyHtml||'')));
@@ -14107,6 +14348,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
     ${badge}<div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
     ${briefHtml}
+    ${statLinkHTML(catLabel)}
     ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
     <div class="nb-body">${preventOrphan(bodyHtml)}${memoryHtml}</div>`;
