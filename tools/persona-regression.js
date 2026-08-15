@@ -65,6 +65,7 @@ sb.history = { pushState: () => {}, replaceState: () => {} };
 sb.URL = URL; sb.URLSearchParams = URLSearchParams;
 sb.html2canvas = () => Promise.resolve(mkProxy());
 sb.console = console;
+sb.__SOURCE_HTML__ = html;
 
 // 점검 본체 — 앱 코드와 같은 스코프에서 실행해야 const 테이블에 접근 가능
 const harness = `
@@ -142,6 +143,14 @@ const harness = `
     const deckLens = deck.map(card=>String(card.copy||'').replace(/<[^>]+>|&nbsp;/g,' ').length);
     ok('인생총운 덱: 8장 생성', deck.length===8, 'count='+deck.length);
     ok('인생총운 덱: 카드당 300~400자', deckLens.every(n=>n>=300&&n<=400), deckLens.join(','));
+    ok('인생총운 덱: 20대부터 100세 이후까지 9구간',
+       deck.every(card=>card.timeline.length===9&&card.timeline[0].label==='20대'&&card.timeline[8].label==='100세+'));
+    const secondDeckCard=lifeDeckCardHTML(deck[1],1,deck.length);
+    ok('인생총운 덱: 이전·근거·다음 버튼 제공',
+       secondDeckCard.includes('lifeDeckPrev()')&&secondDeckCard.includes('lifeOpenEvidence(')&&secondDeckCard.includes('lifeDeckNext()'));
+    const themeGradientLeaks=globalThis.__SOURCE_HTML__.split('\\n').filter(line=>/(?:linear|radial)-gradient/.test(line)&&
+      !/(tarot-card-label|mask-image|ic-insta|ai-provider-mark\.gemini|home-share-option\.instagram|lock-preview::after|key:'instagram')/.test(line));
+    ok('테마 UI: 브랜드·기능성 오버레이 외 그라데이션 0건', themeGradientLeaks.length===0, themeGradientLeaks.join(' | '));
     const portraitSet=new Set();
     [2,5,8,11].forEach(monthBranch=>{
       for(let stem=0;stem<10;stem++)portraitSet.add(characterPortraitSVG(C(1,3,0,monthBranch,stem,2,1,3)));

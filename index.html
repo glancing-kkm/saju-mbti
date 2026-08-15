@@ -214,7 +214,7 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
   }
 
 /* ── Header ── */
-.hdr{background:linear-gradient(140deg,#fffdf8,var(--bg-deep) 52%,#fffdf8);color:var(--text);padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--border)}
+.hdr{background:var(--card);color:var(--text);padding:18px 18px 14px;text-align:center;border-bottom:1px solid var(--border)}
 .hdr h1{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.3rem;font-weight:700;letter-spacing:.15em;color:var(--accent)}
 .hdr p{font-size:.76rem;margin-top:4px;color:var(--sub);letter-spacing:.05em}
 
@@ -235,7 +235,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .form-body{padding:14px 14px 30px;display:flex;flex-direction:column;gap:14px}
 .input-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:14px 14px 0}
 .input-steps span{display:flex;align-items:center;justify-content:center;min-height:34px;padding:7px 6px;border-radius:999px;background:rgba(0,98,65,.06);color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:-.01em}
-.input-steps span.on{background:linear-gradient(135deg,rgba(203,162,88,.22),rgba(237,209,138,.12));color:var(--accent-bright);box-shadow:0 0 0 1px rgba(237,209,138,.28)}
+.input-steps span.on{background:var(--earth-bg);color:var(--accent-bright);box-shadow:0 0 0 1px rgba(138,101,21,.28)}
 .form-body fieldset{border:0;padding:0;margin:0;min-width:0}
 .form-body legend{padding:0;font-size:.72rem;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:7px;text-transform:uppercase;display:block;width:100%}
 .form-body legend small{font-weight:400;text-transform:none;font-size:.7rem;letter-spacing:.02em;color:var(--muted)}
@@ -252,7 +252,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .sec-label{font-size:.72rem;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:7px;text-transform:uppercase}
 .tog-row{display:flex;gap:8px}
 .tog{flex:1;min-height:44px;padding:10px 4px;border:1px solid var(--border);border-radius:50px;background:var(--card);font-size:.88rem;font-weight:600;color:var(--sub);cursor:pointer;transition:.22s ease;font-family:inherit}
-.tog.on{border-color:rgba(203,162,88,.55);background:linear-gradient(135deg,rgba(216,192,138,.16),rgba(203,162,88,.22));color:var(--accent-bright);font-weight:700;box-shadow:0 0 0 1px rgba(203,162,88,.32),0 6px 18px rgba(203,162,88,.14),inset 0 1px 0 rgba(0,98,65,.06)}
+.tog.on{border-color:rgba(138,101,21,.45);background:var(--earth-bg);color:var(--accent-bright);font-weight:700;box-shadow:0 0 0 1px rgba(138,101,21,.24),0 6px 18px rgba(138,101,21,.10)}
 
 .row3{display:flex;gap:8px}
 .ig{display:flex;flex-direction:column;gap:5px;flex:1}
@@ -262,7 +262,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
   background:var(--card);font-size:.94rem;color:var(--text);outline:none;
   -webkit-appearance:none;appearance:none;font-family:inherit;transition:.18s
 }
-.ig input:focus,.ig select:focus{border-color:rgba(203,162,88,.55);box-shadow:0 0 0 3px rgba(203,162,88,.1),0 0 18px rgba(203,162,88,.08);background:linear-gradient(135deg,var(--card),rgba(203,162,88,.04))}
+.ig input:focus,.ig select:focus{border-color:rgba(138,101,21,.45);box-shadow:0 0 0 3px rgba(138,101,21,.1);background:var(--card)}
 .ig input::placeholder{color:var(--muted)}
 .ig select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23d8c4a8' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 
@@ -274,11 +274,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
   background:var(--card);font-size:1.1rem;color:var(--text);outline:none;
   text-transform:uppercase;letter-spacing:5px;text-align:center;font-weight:800
 }
-.mbti-wrap input:focus{border-color:rgba(203,162,88,.55);box-shadow:0 0 0 3px rgba(203,162,88,.1),0 0 18px rgba(203,162,88,.08);background:linear-gradient(135deg,var(--card),rgba(203,162,88,.04))}
+.mbti-wrap input:focus{border-color:rgba(138,101,21,.45);box-shadow:0 0 0 3px rgba(138,101,21,.1);background:var(--card)}
 .mbti-hint{font-size:.72rem;color:var(--muted);text-align:center;margin-top:5px}
 
 .analyze-btn{
-  width:100%;padding:15px;background:linear-gradient(135deg,#006241,#087a56);
+  width:100%;padding:15px;background:var(--accent);
   color:var(--on-accent);border:none;border-radius:50px;font-size:.95rem;font-weight:800;
   cursor:pointer;letter-spacing:.18em;text-transform:uppercase;
   box-shadow:0 6px 24px rgba(203,162,88,.18);
@@ -314,11 +314,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .free-menu-summary-sub{display:block;margin-top:4px;color:var(--muted);font-size:.68rem;font-weight:500;line-height:1.55}
 .free-menu-grid{padding:0 12px 14px}
 .menu-card{position:relative;padding:18px 12px 16px;background:var(--card);border:none;border-radius:var(--radius);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:.22s ease;font-family:inherit;min-height:108px;color:var(--text);overflow:hidden}
-.menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:.22s}
+.menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent);opacity:0;transition:.22s}
 .menu-card:hover{border-color:rgba(203,162,88,.55);transform:translateY(-2px);box-shadow:0 8px 22px rgba(203,162,88,.12)}
 .menu-card:hover::before{opacity:.55}
 .menu-card:active{transform:translateY(-1px)}
-.menu-card.locked{background:linear-gradient(135deg,var(--card),rgba(0,98,65,.08))}
+.menu-card.locked{background:var(--card);box-shadow:inset 0 0 0 1px rgba(0,98,65,.08)}
 .menu-card .mc-icon{font-size:1.7rem;line-height:1}
 .menu-card .mc-icon-ms{font-size:30px;color:var(--accent-bright);margin-bottom:2px;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
 .menu-card .mc-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
@@ -326,7 +326,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .menu-card .mc-tag{font-size:.6rem;padding:2px 9px;border-radius:50px;font-weight:700;letter-spacing:.06em;border:1px solid;text-transform:uppercase}
 .menu-card .mc-tag.t-free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
 .menu-card .mc-tag.t-paid{color:var(--accent-bright);background:var(--accent-soft);border-color:rgba(203,162,88,.4)}
-.menu-card .mc-tag.t-signature{color:var(--accent-bright);background:linear-gradient(135deg,rgba(203,162,88,.16),rgba(237,209,138,.09));border-color:rgba(138,101,21,.30)}
+.menu-card .mc-tag.t-signature{color:var(--accent-bright);background:var(--earth-bg);border-color:rgba(138,101,21,.30)}
 .menu-card .mc-price{display:inline-block;margin-top:4px;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:800;color:var(--accent-bright);letter-spacing:-.01em}
 .menu-card .mc-lock{position:absolute;top:8px;right:10px;font-size:.78rem;color:var(--accent);opacity:.85}
 /* 콘텐츠 내 '처음으로' 링크 숨김 — 고정 상단 바의 '‹ 뒤로' 버튼이 대신함 */
@@ -336,8 +336,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* ── 타로 ── */
 .tarot-shell{padding:14px 14px 36px}
-.tarot-hero{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(203,162,88,.12),rgba(255,253,248,.96) 48%,rgba(0,98,65,.08));border-radius:var(--radius-lg);padding:22px 18px;margin-bottom:14px;box-shadow:var(--card-shadow)}
-.tarot-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(237,209,138,.18),transparent 48%);pointer-events:none}
+.tarot-hero{position:relative;overflow:hidden;background:var(--card);border:1px solid rgba(138,101,21,.18);border-radius:var(--radius-lg);padding:22px 18px;margin-bottom:14px;box-shadow:var(--card-shadow)}
+.tarot-hero::before{content:'';position:absolute;inset:0;background:none;pointer-events:none}
 .tarot-kicker{position:relative;font-size:.68rem;color:var(--accent-bright);font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
 .tarot-title{position:relative;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;line-height:1.35;color:var(--text);margin-bottom:8px}
 .tarot-desc{position:relative;font-size:.88rem;line-height:1.8;color:var(--sub)}
@@ -348,7 +348,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-menu-icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(203,162,88,.16);color:var(--accent-bright);font-size:24px}
 .tarot-menu-title,.tarot-section-title,.tarot-product-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;color:var(--text);font-weight:800}
 .tarot-menu-desc,.tarot-small,.tarot-card-text{font-size:.82rem;line-height:1.75;color:var(--sub)}
-.tarot-cta,.tarot-btn{border:0;border-radius:50px;padding:12px 15px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(203,162,88,.16)}
+.tarot-cta,.tarot-btn{border:0;border-radius:50px;padding:12px 15px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(203,162,88,.16)}
 .tarot-btn.secondary{background:rgba(0,98,65,.07);color:var(--accent);box-shadow:none;border:1px solid var(--border)}
 .tarot-btn:disabled{opacity:.45;cursor:not-allowed}
 .tarot-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -408,7 +408,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-chip:hover{color:var(--accent-bright);background:rgba(203,162,88,.14)}
 .tarot-products{display:grid;gap:10px}
 .tarot-product{position:relative}
-.tarot-product.recommended{background:linear-gradient(145deg,rgba(203,162,88,.14),rgba(255,253,248,.96) 55%,rgba(0,98,65,.08))}
+.tarot-product.recommended{background:var(--card);box-shadow:inset 0 0 0 1px rgba(138,101,21,.22),var(--card-shadow)}
 .tarot-badge{display:inline-flex;border-radius:50px;padding:3px 9px;background:rgba(237,209,138,.16);color:var(--accent-bright);font-size:.62rem;font-weight:900;letter-spacing:.08em;margin-bottom:7px}
 .tarot-price{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;color:var(--accent-bright);font-weight:900;margin:6px 0 8px}
 .tarot-slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:8px;margin:12px 0}
@@ -421,7 +421,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-progress{font-size:.78rem;color:var(--accent-bright);font-weight:800;margin-top:6px}
 .tarot-selected-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:12px 0}
 .tarot-mini-card{min-width:74px;text-align:center;font-size:.65rem;color:var(--sub)}
-.tarot-mini-face{height:108px;border-radius:10px;background:linear-gradient(160deg,rgba(216,192,138,.18),rgba(29,32,33,.95));display:flex;align-items:center;justify-content:center;color:var(--accent-bright);font-family:'Do Hyeon','Noto Serif KR',serif;margin-bottom:5px;overflow:hidden}
+.tarot-mini-face{height:108px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--on-accent);font-family:'Do Hyeon','Noto Serif KR',serif;margin-bottom:5px;overflow:hidden}
 .tarot-mini-face img{width:100%;height:100%;object-fit:cover;display:block}
 .tarot-markdown{font-size:.9rem;line-height:1.85;color:var(--sub)}
 .tarot-markdown h1{font-size:1.08rem;color:var(--accent-bright);margin:18px 0 8px}
@@ -431,8 +431,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-history-list{display:grid;gap:10px}
 .tarot-empty{text-align:center;color:var(--muted);font-size:.86rem;line-height:1.8;padding:30px 12px}
 .astro-shell{padding:14px 14px 36px;display:flex;flex-direction:column;gap:14px}
-.astro-hero{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(74,144,226,.10),rgba(255,253,248,.96) 48%,rgba(0,98,65,.08));border-radius:var(--radius-lg);padding:22px 18px;margin-bottom:14px;box-shadow:var(--card-shadow)}
-.astro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(237,209,138,.14),transparent 48%);pointer-events:none}
+.astro-hero{position:relative;overflow:hidden;background:var(--card);border:1px solid rgba(0,98,65,.14);border-radius:var(--radius-lg);padding:22px 18px;margin-bottom:14px;box-shadow:var(--card-shadow)}
+.astro-hero::before{content:'';position:absolute;inset:0;background:none;pointer-events:none}
 .astro-kicker{position:relative;font-size:.68rem;color:var(--accent-bright);font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
 .astro-title{position:relative;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;line-height:1.35;color:var(--text);margin-bottom:8px}
 .astro-desc{position:relative;font-size:.88rem;line-height:1.8;color:var(--sub)}
@@ -449,7 +449,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-field label{font-size:.72rem;color:var(--accent-bright);font-weight:800}
 .astro-input,.astro-select{width:100%;border:0;border-radius:12px;background:rgba(0,98,65,.06);color:var(--text);font-family:inherit;font-size:.92rem;padding:12px 11px}
 .astro-check{display:flex;gap:8px;align-items:center;font-size:.82rem;color:var(--sub);line-height:1.5}
-.astro-btn{border:0;border-radius:50px;padding:12px 15px;background:linear-gradient(135deg,#4a90e2,var(--accent-bright));color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(74,144,226,.16)}
+.astro-btn{border:0;border-radius:50px;padding:12px 15px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(0,98,65,.16)}
 .astro-btn.secondary{background:rgba(0,98,65,.06);color:var(--accent-bright);box-shadow:none}
 .astro-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .astro-actions .astro-btn{flex:1;min-width:150px}
@@ -467,7 +467,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-overview .wide{grid-column:1/-1}
 .astro-feature-list{display:grid;gap:7px;margin-top:10px}
 .astro-feature-list div{font-size:.82rem;line-height:1.65;color:var(--sub);background:rgba(0,98,65,.06);border-radius:10px;padding:9px 10px}
-.astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:radial-gradient(circle at 50% 42%,rgba(6,71,52,.35),transparent 72%),rgba(0,98,65,.06);padding:6px}
+.astro-wheel-wrap{margin-top:12px;overflow:hidden;border-radius:14px;background:var(--accent-soft);padding:6px}
 .astro-wheel-wrap.compact{max-height:360px}
 .astro-wheel-wrap.compact .astro-wheel{max-width:330px}
 .astro-wheel-wrap.compact .wheel-touch-hint{display:none}
@@ -520,13 +520,13 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .tj-date-row b{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.04rem;color:var(--accent-bright);font-weight:900}
 .tj-date-input{border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--sub);font-family:inherit;font-size:.74rem;padding:7px 9px;color-scheme:light}
 .tj-slider{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0 0 4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.tj-slider::-webkit-slider-runnable-track{height:5px;border-radius:50px;background:linear-gradient(90deg,var(--accent-bright),#7b9bff 55%,#8f7bff)}
+.tj-slider::-webkit-slider-runnable-track{height:5px;border-radius:50px;background:var(--accent-bright)}
 .tj-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#003b2d;border:2.5px solid var(--accent-bright);box-shadow:0 0 12px rgba(203,162,88,.55);margin-top:-8.5px}
-.tj-slider::-moz-range-track{height:5px;border-radius:50px;background:linear-gradient(90deg,var(--accent-bright),#7b9bff 55%,#8f7bff)}
+.tj-slider::-moz-range-track{height:5px;border-radius:50px;background:var(--accent-bright)}
 .tj-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#003b2d;border:2.5px solid var(--accent-bright);box-shadow:0 0 12px rgba(203,162,88,.55)}
 .tj-chips{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 12px}
 .tj-chip{flex:1;min-width:62px;border:1px solid rgba(203,162,88,.25);background:rgba(0,98,65,.06);color:var(--sub);font-family:inherit;font-size:.74rem;font-weight:800;border-radius:50px;padding:9px 6px;cursor:pointer;transition:background .25s ease,color .25s ease,border-color .25s ease;-webkit-tap-highlight-color:transparent}
-.tj-chip.active{background:linear-gradient(135deg,rgba(203,162,88,.2),rgba(123,155,255,.18));color:var(--accent-bright);border-color:var(--accent-bright)}
+.tj-chip.active{background:var(--earth-bg);color:var(--accent-bright);border-color:var(--accent-bright)}
 .tj-asp-list{display:grid;gap:7px;margin-top:10px}
 .tj-asp{display:flex;align-items:center;gap:8px;background:rgba(0,98,65,.06);border-radius:10px;padding:9px 11px;font-size:.78rem;color:var(--sub)}
 .tj-asp i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
@@ -542,7 +542,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .astro-bars{display:grid;gap:9px;margin-top:10px}
 .astro-bar-row{display:grid;grid-template-columns:72px 1fr 30px;gap:8px;align-items:center;font-size:.8rem;color:var(--sub)}
 .astro-bar{height:9px;border-radius:50px;background:rgba(0,98,65,.06);overflow:hidden}
-.astro-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4a90e2,var(--accent-bright))}
+.astro-bar span{display:block;height:100%;border-radius:inherit;background:var(--accent)}
 .astro-two-col{display:grid;grid-template-columns:1fr;gap:10px}
 .astro-shell > .astro-hero,
 .astro-shell > .astro-panel,
@@ -578,7 +578,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .tq-div i{color:var(--accent-bright);font-style:normal;font-size:.8rem}
 .tq-sub{font-size:.92rem;line-height:1.7;color:var(--accent);max-width:19em;margin:0 auto;word-break:keep-all}
 .tq-panel{position:relative;background:var(--card-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;overflow:hidden;box-shadow:0 12px 34px rgba(0,0,0,.22)}
-.tq-panel::before{content:'';position:absolute;inset:0;opacity:.06;pointer-events:none;background-image:radial-gradient(var(--accent-bright) .5px,transparent .5px);background-size:16px 16px}
+.tq-panel::before{content:'';position:absolute;inset:0;opacity:0;pointer-events:none;background:none}
 .tq-label{position:relative;display:block;font-size:.7rem;font-weight:900;letter-spacing:.14em;color:var(--accent-bright);text-transform:uppercase;margin-bottom:12px}
 .tq-textarea{position:relative;width:100%;min-height:130px;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.12);color:var(--text);font-family:inherit;font-size:1.02rem;line-height:1.7;padding:6px 2px 12px;resize:none;transition:border-color .25s,box-shadow .25s}
 .tq-textarea::placeholder{color:rgba(216,192,138,.4)}
@@ -589,8 +589,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .tq-chips-label{font-size:.72rem;letter-spacing:.04em;color:rgba(216,192,138,.6);margin:18px 2px 10px}
 
 /* ══ 타로점 — 스프레드(카드 수) 선택 (code1/screen1) ══ */
-.ts-preview{position:relative;width:100%;aspect-ratio:16/10;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:radial-gradient(circle at 50% 30%,rgba(6,71,52,.55),rgba(0,79,61,.9));display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 12px 34px rgba(0,0,0,.28)}
-.ts-preview::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(203,162,88,.14),transparent 46%);pointer-events:none}
+.ts-preview{position:relative;width:100%;aspect-ratio:16/10;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+.ts-preview::after{content:'';position:absolute;inset:0;background:none;pointer-events:none}
 .ts-pv-slot{border:1px solid rgba(203,162,88,.4);border-radius:6px;background:rgba(203,162,88,.05)}
 .ts-pv-3{display:flex;gap:12px}
 .ts-pv-3 .ts-pv-slot{width:38px;height:58px}
@@ -610,7 +610,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .ts-list{display:grid;gap:12px;margin-bottom:16px}
 .ts-card{position:relative;display:flex;align-items:center;gap:14px;padding:15px;border-radius:var(--radius-lg);background:var(--card-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;text-align:left;font-family:inherit;color:var(--text);width:100%}
 .ts-card:active{transform:scale(.98)}
-.ts-card.on{border-color:var(--accent-bright);background:linear-gradient(145deg,rgba(203,162,88,.14),rgba(6,71,52,.28));box-shadow:0 0 0 1px rgba(203,162,88,.4),0 12px 30px rgba(203,162,88,.14)}
+.ts-card.on{border-color:var(--accent-bright);background:var(--earth-bg);box-shadow:0 0 0 1px rgba(138,101,21,.32),0 12px 30px rgba(138,101,21,.10)}
 .ts-card-ic{flex:0 0 auto;width:48px;height:64px;border-radius:8px;display:grid;place-items:center;background:var(--tarot-purple,#064734);border:1px solid rgba(203,162,88,.28);color:var(--accent-bright);transition:transform .2s}
 .ts-card.on .ts-card-ic{border-color:var(--accent-bright);transform:scale(1.05)}
 .ts-card-ic .material-symbols-outlined{font-size:26px}
@@ -619,7 +619,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .ts-card-desc{font-size:.75rem;color:rgba(216,192,138,.62);line-height:1.5}
 .ts-card-price{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;font-weight:900;color:var(--accent-bright);white-space:nowrap}
 .ts-badge{position:absolute;top:0;right:0;background:var(--accent-bright);color:var(--on-accent);font-size:.6rem;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:0 var(--radius-lg) 0 10px}
-.ts-cta{width:100%;border:0;border-radius:50px;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);font-family:inherit;font-size:.92rem;font-weight:900;cursor:pointer;box-shadow:0 10px 30px rgba(203,162,88,.28);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.ts-cta{width:100%;border:0;border-radius:50px;padding:16px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.92rem;font-weight:900;cursor:pointer;box-shadow:0 10px 30px rgba(203,162,88,.28);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
 .ts-cta:active{transform:scale(.98)}
 
 /* ══ 타로점 — 카드 뽑기 78장 (code3/screen3) ══ */
@@ -629,7 +629,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .td-spread .td-slot.next{border-style:dashed;border-color:var(--accent-bright);box-shadow:0 0 16px rgba(203,162,88,.3);background:rgba(203,162,88,.06)}
 .td-slot-n{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;color:rgba(203,162,88,.4)}
 .td-slot.filled{border-style:solid;border-color:rgba(203,162,88,.5)}
-.td-slot .td-mini{width:100%;height:100%;border-radius:7px;background:radial-gradient(circle at 50% 32%,rgba(237,209,138,.22),transparent 40%),linear-gradient(160deg,#064734,#003b2d);display:flex;align-items:center;justify-content:center;color:var(--accent-bright);font-size:1.1rem;overflow:hidden}
+.td-slot .td-mini{width:100%;height:100%;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--on-accent);font-size:1.1rem;overflow:hidden}
 .td-slot .td-mini img{width:100%;height:100%;object-fit:cover;display:block}
 .td-slot-lab{position:absolute;left:50%;transform:translateX(-50%);bottom:-16px;font-size:.56rem;color:rgba(216,192,138,.6);white-space:nowrap}
 .td-caption{text-align:center;margin:18px 0 10px}
@@ -647,7 +647,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* ── 일일운세 점수 화면 ── */
 .daily-wrap{padding:14px}
 .daily-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:24px 18px 22px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
-.daily-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.55}
+.daily-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:.55}
 .daily-date{font-size:.74rem;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
 .daily-score-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;border:5px solid;box-shadow:0 0 30px rgba(203,162,88,.18)}
 .daily-score-num{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:2.4rem;font-weight:700;line-height:1}
@@ -663,8 +663,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .daily-cat-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;color:var(--text)}
 .daily-cat-score{margin-left:auto;font-size:.76rem;font-weight:800;color:var(--accent-bright);white-space:nowrap}
 .daily-cat-body{font-size:.9rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.conversion-hook{background:linear-gradient(135deg,rgba(203,162,88,.10),rgba(255,253,248,.96) 48%,rgba(0,98,65,.08));border:1px solid rgba(138,101,21,.18);border-radius:var(--radius-lg);padding:18px;margin:14px 0;position:relative;overflow:hidden}
-.conversion-hook::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.65}
+.conversion-hook{background:var(--card);border:1px solid rgba(138,101,21,.18);border-radius:var(--radius-lg);padding:18px;margin:14px 0;position:relative;overflow:hidden}
+.conversion-hook::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:.65}
 .conversion-hook-kicker{font-size:.68rem;color:var(--accent);font-weight:800;letter-spacing:.08em;margin-bottom:7px;text-transform:uppercase}
 .conversion-hook-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.04rem;line-height:1.55;color:var(--text);font-weight:800;margin-bottom:10px;word-break:keep-all}
 .conversion-hook-body{font-size:.92rem;line-height:1.9;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -672,7 +672,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .conversion-hook-points{display:grid;grid-template-columns:1fr;gap:8px;margin:13px 0}
 .conversion-hook-point{background:rgba(0,0,0,.14);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;font-size:.8rem;line-height:1.7;color:var(--sub)}
 .conversion-hook-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.conversion-hook-btn{flex:1;min-width:180px;border:0;border-radius:10px;padding:12px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer}
+.conversion-hook-btn{flex:1;min-width:180px;border:0;border-radius:10px;padding:12px 14px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer}
 .conversion-hook-btn.secondary{background:var(--card);color:var(--accent-bright);border:1px solid rgba(203,162,88,.28)}
 .conversion-hook-foot{margin-top:9px;font-size:.68rem;color:var(--muted);line-height:1.6;text-align:center}
 
@@ -772,12 +772,12 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .ldate{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent)}
 .lsub{font-size:.73rem;color:var(--sub);margin-top:4px}
 
-.mbti-badge{display:inline-block;padding:6px 18px;border-radius:50px;font-size:1.1rem;font-weight:800;letter-spacing:3px;color:var(--on-accent);background:linear-gradient(135deg,var(--accent),var(--accent-bright))}
+.mbti-badge{display:inline-block;padding:6px 18px;border-radius:50px;font-size:1.1rem;font-weight:800;letter-spacing:3px;color:var(--on-accent);background:var(--accent)}
 
 /* ── 운세 ── */
 .fcat-wrap{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
 .fcat{flex-shrink:0;padding:7px 13px;border:1px solid var(--border);border-radius:50px;font-size:.75rem;font-weight:600;color:var(--sub);background:var(--card);cursor:pointer;white-space:nowrap;font-family:inherit;transition:.22s ease}
-.fcat.on{border-color:rgba(203,162,88,.55);background:linear-gradient(135deg,rgba(216,192,138,.16),rgba(203,162,88,.22));color:var(--accent-bright);font-weight:700;box-shadow:0 0 0 1px rgba(203,162,88,.32),0 4px 14px rgba(203,162,88,.14),inset 0 1px 0 rgba(0,98,65,.06)}
+.fcat.on{border-color:rgba(138,101,21,.45);background:var(--earth-bg);color:var(--accent-bright);font-weight:700;box-shadow:0 0 0 1px rgba(138,101,21,.24),0 4px 14px rgba(138,101,21,.10)}
 .fpanel{display:none}
 .fpanel.on{display:block}
 .star-on{color:var(--accent-bright);font-size:.95rem}
@@ -814,8 +814,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .share-bar{display:flex;gap:8px;padding:10px 14px 0}
 .share-bar-btn{flex:1;padding:11px 4px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:600;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;white-space:nowrap}
 .share-bar-btn:active{transform:scale(.97)}
-.share-bar-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);border-color:transparent;font-weight:700}
-.share-bar-btn.ai-copy{color:var(--accent-bright);border-color:rgba(237,209,138,.38);background:linear-gradient(135deg,rgba(203,162,88,.13),var(--card))}
+.share-bar-btn.primary{background:var(--accent);color:var(--on-accent);border-color:transparent;font-weight:700}
+.share-bar-btn.ai-copy{color:var(--accent-bright);border-color:rgba(138,101,21,.30);background:var(--earth-bg)}
 .share-bar-btn[hidden]{display:none!important}
 .share-bar-btn:disabled{opacity:.6;cursor:not-allowed}
 
@@ -841,7 +841,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .ic-fb{background:#1877F2}
 .ic-x{background:#000}
 .ic-line{background:#00B900}
-.ic-native{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent)}
+.ic-native{background:var(--accent);color:var(--on-accent)}
 .ic-url{background:var(--bg-deep);border:1px solid var(--border);color:var(--accent-bright)}
 .share-copy-btn{width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.83rem;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit}
 .share-copy-btn:active{opacity:.8}
@@ -871,15 +871,15 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .view.on{display:block}
 
 /* ── Home (랜딩) ── */
-.home-hero{background:linear-gradient(180deg,#fffdf8 0%,#f7f1e6 58%,#eee5d5 100%);color:var(--text);padding:64px 22px 50px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
-.home-hero::before{content:'';position:absolute;width:340px;height:340px;background:radial-gradient(circle,rgba(203,162,88,.14),transparent 65%);left:50%;top:35%;transform:translate(-50%,-50%);pointer-events:none}
+.home-hero{background:var(--bg-deep);color:var(--text);padding:64px 22px 50px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.home-hero::before{content:'';position:absolute;width:340px;height:340px;background:none;left:50%;top:35%;transform:translate(-50%,-50%);pointer-events:none}
 .home-hero::after{content:'';position:absolute;width:180px;height:180px;border:1px solid rgba(203,162,88,.12);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
 .home-hero h1{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;font-size:1.95rem;font-weight:700;letter-spacing:.2em;margin-bottom:12px;color:var(--accent);position:relative;z-index:1}
 .home-hero .h-sub{font-size:.85rem;color:var(--sub);letter-spacing:.04em;position:relative;z-index:1;line-height:1.7}
 .home-hero .h-deco{font-size:.68rem;color:var(--muted);margin-top:18px;letter-spacing:.5em;position:relative;z-index:1;text-transform:uppercase}
 .home-cards{padding:28px 16px 30px}
 .home-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:22px 22px 24px;margin-bottom:14px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
-.home-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
+.home-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent);opacity:.5}
 .home-card:active{transform:scale(.985);border-color:var(--border-strong)}
 .home-card .hc-arrow{position:absolute;right:18px;top:26px;color:var(--accent);font-size:1.4rem;font-weight:300}
 .home-card .hc-emoji{font-size:2.1rem;margin-bottom:10px}
@@ -931,13 +931,13 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .rv-counter{font-size:.68rem;color:var(--muted);text-align:right}
 .rv-counter.warn{color:#ff8888}
 .rv-policy{font-size:.66rem;color:var(--muted);line-height:1.7;padding:9px 11px;background:var(--bg-deep);border:1px dashed var(--border);border-radius:8px}
-.rv-submit{padding:12px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:.18s}
+.rv-submit{padding:12px;border:0;border-radius:9px;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:.18s}
 .rv-submit:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
 .rv-block-msg{padding:18px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--sub);line-height:1.72;text-align:center}
 
 /* ── Input view header ── */
 .hdr-back{color:var(--text);height:60px;box-sizing:border-box;padding:0 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:45;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,253,248,.95);box-shadow:0 4px 18px rgba(72,56,34,.07)}
-.hdr-back .bb{background:linear-gradient(135deg,#f4d36b,#cba258);border:none;color:#1a1c1d;padding:9px 16px 9px 13px;border-radius:50px;font-size:.86rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;font-family:inherit;transition:transform .12s,box-shadow .18s;letter-spacing:-.01em;box-shadow:0 3px 12px rgba(203,162,88,.35);line-height:1}
+.hdr-back .bb{background:var(--gold-soft);border:none;color:#1a1c1d;padding:9px 16px 9px 13px;border-radius:50px;font-size:.86rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;font-family:inherit;transition:transform .12s,box-shadow .18s;letter-spacing:-.01em;box-shadow:0 3px 12px rgba(203,162,88,.35);line-height:1}
 .hdr-back .bb:active{transform:scale(.94)}
 .hdr-back .bb:hover{box-shadow:0 4px 16px rgba(203,162,88,.5)}
 /* 상단 바 브랜드 워드마크 — 버튼 폭과 무관하게 항상 중앙 고정 */
@@ -978,13 +978,13 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .lock-input-row{display:flex;gap:8px}
 .lock-input{flex:1;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--card);font-size:1rem;text-align:center;letter-spacing:3px;font-weight:700;outline:none;text-transform:uppercase;color:var(--text);font-family:inherit;transition:.18s}
 .lock-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.lock-btn{padding:14px 22px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);border:none;border-radius:50px;font-size:.85rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.05em;font-family:inherit}
+.lock-btn{padding:14px 22px;background:var(--accent);color:var(--on-accent);border:none;border-radius:50px;font-size:.85rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.05em;font-family:inherit}
 .lock-btn:disabled{opacity:.5;cursor:not-allowed}
 .lock-info{margin-top:20px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:.76rem;color:var(--sub);line-height:1.78;text-align:left}
 .lock-info b{color:var(--accent)}
 
 /* ── 유료 전환 미리보기 카드 ── */
-.teaser-card{margin:12px 14px 18px;padding:18px 16px 16px;border-radius:14px;background:linear-gradient(135deg,#fffdf8 0%,#f7f1e6 48%,rgba(0,98,65,.07) 100%);border:1px solid rgba(138,101,21,.24);box-shadow:var(--card-shadow);position:relative;overflow:hidden}
+.teaser-card{margin:12px 14px 18px;padding:18px 16px 16px;border-radius:14px;background:var(--card);border:1px solid rgba(138,101,21,.24);box-shadow:var(--card-shadow);position:relative;overflow:hidden}
 .teaser-head{display:block;margin-bottom:12px;position:relative;z-index:1}
 .teaser-title{display:block;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent);letter-spacing:0;position:relative;z-index:1;line-height:1.45;word-break:keep-all;overflow-wrap:break-word}
 .teaser-score-row{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:12px;background:rgba(0,0,0,.35);border:1px solid rgba(203,162,88,.2);border-radius:14px;position:relative;z-index:1}
@@ -1000,19 +1000,19 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .teaser-insight b{color:var(--accent)}
 .teaser-blur-area{position:relative;margin:10px 0 14px;border-radius:12px;overflow:hidden;min-height:180px;z-index:1}
 .teaser-blurred{filter:blur(5px);user-select:none;pointer-events:none;opacity:.55}
-.teaser-blur-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,rgba(20,15,30,.1) 0%,rgba(20,15,30,.78) 100%);z-index:2;text-align:center}
+.teaser-blur-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(0,79,61,.86);z-index:2;text-align:center}
 .teaser-lock-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#006241;border:1px solid #8a6515;color:#fffdf8;font-size:1.25rem;box-shadow:0 4px 16px rgba(72,56,34,.18);cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .teaser-blur-overlay-text{background:rgba(0,98,65,.92);border:1px solid #8a6515;padding:10px 16px;border-radius:99px;font-weight:700;font-size:.78rem;color:#fffdf8;box-shadow:0 4px 16px rgba(72,56,34,.18);letter-spacing:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);max-width:84%;line-height:1.55}
 .teaser-fake-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
 .teaser-fake-title{font-size:.86rem;font-weight:700;color:var(--accent);margin-bottom:8px}
-.teaser-fake-line{height:9px;background:linear-gradient(90deg,var(--border) 30%,var(--bg-deep) 70%);border-radius:4px;margin-bottom:6px}
+.teaser-fake-line{height:9px;background:var(--bg-deep);border-radius:4px;margin-bottom:6px}
 .teaser-fake-line.short{width:65%}
 .teaser-fake-line.mid{width:88%}
 .teaser-pay-btn{margin-top:6px;box-shadow:0 4px 18px rgba(0,0,0,.28);min-height:60px}
 @supports (position:sticky){
   .lock-wrap-after-teaser .teaser-pay-btn{position:sticky;bottom:12px;z-index:45}
 }
-.pay-preview-mini{margin:13px 0 0;padding:12px 13px;border-radius:12px;background:linear-gradient(135deg,rgba(203,162,88,.10),rgba(0,98,65,.06));border:1px solid rgba(203,162,88,.18);color:var(--sub);font-size:.78rem;line-height:1.72;text-align:center}
+.pay-preview-mini{margin:13px 0 0;padding:12px 13px;border-radius:12px;background:var(--earth-bg);border:1px solid rgba(138,101,21,.18);color:var(--sub);font-size:.78rem;line-height:1.72;text-align:center}
 .pay-preview-mini b{display:block;margin-bottom:5px;color:var(--accent-bright);font-size:.82rem}
 .pay-preview-mini span{display:inline-block;margin:2px 3px;padding:3px 8px;border-radius:999px;background:rgba(0,98,65,.06);color:var(--sub)}
 .teaser-pay-text{font-weight:900;font-size:.86rem;white-space:normal;line-height:1.25;word-break:keep-all;overflow-wrap:break-word;text-align:left}
@@ -1032,8 +1032,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .paywall-price b{color:var(--accent-bright);font-weight:800}
 
 /* 이용방법 안내 박스 — 잠금 화면에서 결제 전 사용자에게 서비스 정책 안내 */
-.usage-guide{margin:0 0 22px;padding:16px 18px;background:linear-gradient(135deg,rgba(203,162,88,.08),var(--earth-bg));border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
-.usage-guide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.7}
+.usage-guide{margin:0 0 22px;padding:16px 18px;background:var(--earth-bg);border:1px solid var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
+.usage-guide::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:.7}
 .usage-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-.01em}
 .usage-list{margin:0;padding-left:20px;font-size:.85rem;line-height:1.78;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .usage-list li{margin-bottom:8px}
@@ -1055,9 +1055,9 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .easypay-foot a{color:var(--sub);text-decoration:underline}
 .lock-err{color:var(--fire);font-size:.78rem;margin-top:8px;display:none}
 .lock-err.vis{display:block}
-.pay-prep{margin-top:22px;padding:18px 18px 16px;background:linear-gradient(135deg,rgba(203,162,88,.12),rgba(0,98,65,.08));border:1px dashed var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
-.pay-prep::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
-.pay-prep-badge{display:inline-block;padding:4px 14px;border-radius:50px;font-size:.7rem;font-weight:800;color:var(--on-accent);background:linear-gradient(135deg,var(--accent),var(--accent-bright));letter-spacing:.06em;margin-bottom:10px}
+.pay-prep{margin-top:22px;padding:18px 18px 16px;background:var(--earth-bg);border:1px dashed var(--accent);border-radius:14px;text-align:left;position:relative;overflow:hidden}
+.pay-prep::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
+.pay-prep-badge{display:inline-block;padding:4px 14px;border-radius:50px;font-size:.7rem;font-weight:800;color:var(--on-accent);background:var(--accent);letter-spacing:.06em;margin-bottom:10px}
 .pay-prep-body{font-size:.78rem;color:var(--sub);line-height:1.78;margin-bottom:8px}
 .pay-prep-body b{color:var(--accent-bright);font-weight:700}
 .pay-prep-price{font-size:.78rem;color:var(--muted);letter-spacing:.02em;padding-top:8px;border-top:1px solid var(--border)}
@@ -1074,7 +1074,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .pay-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:220;align-items:center;justify-content:center;padding:14px}
 .pay-overlay.vis{display:flex}
 .pay-sheet{background:var(--bg-mid);border:1px solid var(--accent);border-radius:16px;width:100%;max-width:440px;max-height:92vh;overflow-y:auto;padding:22px 20px 18px;position:relative;animation:slideUp .25s ease}
-.pay-sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.pay-sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .pay-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
 .pay-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0;letter-spacing:-.01em}
 .pay-close{background:none;border:0;color:var(--sub);font-size:1.3rem;cursor:pointer;line-height:1;padding:2px 6px;font-family:inherit}
@@ -1089,7 +1089,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .pay-agree-row{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px;cursor:pointer;user-select:none;transition:.18s}
 .pay-agree-row:hover{border-color:var(--border-strong)}
 .pay-agree-row input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;margin-top:2px;flex-shrink:0}
-.pay-agree-row.all{background:linear-gradient(135deg,rgba(203,162,88,.1),var(--card));border-color:var(--accent);font-weight:700;color:var(--accent-bright)}
+.pay-agree-row.all{background:var(--earth-bg);border-color:var(--accent);font-weight:700;color:var(--accent-bright)}
 .pay-agree-text{flex:1;font-size:.82rem;color:var(--sub);line-height:1.55}
 .pay-agree-text .req{color:var(--fire);font-weight:700;font-size:.7rem;margin-right:5px}
 .pay-agree-text a{color:var(--accent);text-decoration:underline}
@@ -1107,8 +1107,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .pay-foot{font-size:.7rem;color:var(--muted);text-align:center;padding-top:12px;border-top:1px solid var(--border);margin-top:14px;line-height:1.7}
 
 /* ── 사주 × MBTI 배지 (분위기와 헤로 아래) ── */
-.mbti-badge{display:block;margin:10px 12px 14px;padding:14px 16px;background:linear-gradient(135deg,rgba(203,162,88,.12),rgba(0,98,65,.08));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden;letter-spacing:normal;font-size:initial;font-weight:normal;color:inherit}
-.mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
+.mbti-badge{display:block;margin:10px 12px 14px;padding:14px 16px;background:var(--card);border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden;letter-spacing:normal;font-size:initial;font-weight:normal;color:inherit}
+.mbti-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
 .mbti-badge-head{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent);letter-spacing:-.01em;margin-bottom:8px}
 .mbti-badge-head b{color:var(--accent-bright)}
 .mbti-badge-body{font-size:.9rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -1116,7 +1116,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── 사주 × MBTI 4지표 상세 분석 ── */
 .mbti-analysis{margin:14px 12px 18px;padding:20px 18px 18px;background:var(--card);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
-.mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
+.mbti-analysis::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
 .mbti-analysis-head{margin-bottom:14px}
 .mbti-analysis-cat{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.62rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--border-strong);letter-spacing:.08em;margin-bottom:8px;text-transform:uppercase}
 .mbti-analysis h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.01em}
@@ -1139,7 +1139,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .mbti-ind-reason em{color:var(--accent);font-style:normal;font-weight:700}
 .mbti-ind-example{font-size:.9rem;line-height:1.85;color:var(--muted);margin:0 0 6px;padding:10px 12px;background:var(--earth-bg);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-ind-advice{font-size:.9rem;line-height:1.85;color:var(--accent);margin:6px 0 0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.mbti-analysis-synth{padding:14px 16px;background:linear-gradient(135deg,rgba(203,162,88,.1),var(--earth-bg));border:none;border-radius:14px}
+.mbti-analysis-synth{padding:14px 16px;background:var(--earth-bg);border:none;border-radius:14px}
 .mbti-analysis-synth h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.94rem;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:-.01em}
 .mbti-analysis-synth p{font-size:.9rem;line-height:1.855;color:var(--sub);margin:0 0 10px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .mbti-analysis-synth p:last-child{margin-bottom:0}
@@ -1158,9 +1158,9 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .mbti-match-misaligned{color:var(--warn);background:rgba(229,116,98,.14);border-color:rgba(229,116,98,.42)}
 .mbti-axis{display:flex;flex-direction:column;gap:10px}
 .mbti-axis-row{padding:12px 13px;background:var(--card);border:1px solid var(--border);border-radius:10px}
-.mbti-axis-row.row-innate{background:linear-gradient(135deg,rgba(108,191,126,.06),var(--card));border-color:rgba(108,191,126,.3)}
-.mbti-axis-row.row-learned{background:linear-gradient(135deg,rgba(203,162,88,.06),var(--card));border-color:rgba(203,162,88,.3)}
-.mbti-axis-row.row-evolution{background:linear-gradient(135deg,rgba(120,140,180,.06),var(--card));border-color:rgba(120,140,180,.3)}
+.mbti-axis-row.row-innate{background:var(--wood-bg);border-color:rgba(108,191,126,.3)}
+.mbti-axis-row.row-learned{background:var(--earth-bg);border-color:rgba(203,162,88,.3)}
+.mbti-axis-row.row-evolution{background:var(--metal-bg);border-color:rgba(120,140,180,.3)}
 .mbti-axis-tag{font-size:.72rem;font-weight:800;letter-spacing:.02em;margin-bottom:6px;color:var(--accent)}
 .mbti-axis-row.row-innate .mbti-axis-tag{color:var(--good)}
 .mbti-axis-row.row-learned .mbti-axis-tag{color:var(--accent-bright)}
@@ -1170,16 +1170,16 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .mbti-axis-body b{color:var(--text);font-weight:700}
 
 /* ── TL;DR 카드 (분위기와 최상단 한 화면 요약) ── */
-.result-tldr{margin:8px 12px 16px;padding:18px 16px 14px;background:linear-gradient(135deg,var(--card),rgba(0,98,65,.10));border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
-.result-tldr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.result-tldr{margin:8px 12px 16px;padding:18px 16px 14px;background:var(--card);border:1px solid var(--accent);border-radius:14px;position:relative;overflow:hidden}
+.result-tldr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .tldr-headline{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .tldr-tag{display:inline-block;padding:3px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border-strong);font-size:.7rem;font-weight:800;letter-spacing:.06em;margin-bottom:8px}
 .tldr-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0;line-height:1.55;letter-spacing:-.01em;word-break:keep-all}
 .tldr-grid{display:flex;flex-direction:column;gap:10px}
 .tldr-card{padding:14px 16px;border-radius:14px;border:1px solid var(--accent)}
-.tldr-strengths{background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(0,98,65,.08))}
-.tldr-cautions{background:linear-gradient(135deg,rgba(229,116,98,.08),rgba(0,98,65,.08))}
-.tldr-times{background:linear-gradient(135deg,rgba(203,162,88,.1),rgba(0,98,65,.08))}
+.tldr-strengths{background:var(--wood-bg)}
+.tldr-cautions{background:var(--warn-bg)}
+.tldr-times{background:var(--earth-bg)}
 .tldr-card h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
 .tldr-strengths h3{color:var(--good)}
 .tldr-cautions h3{color:var(--warn)}
@@ -1191,20 +1191,20 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── 분위기와 끝 — 후속 행동 CTA ── */
 .next-actions{margin:24px 12px 18px;padding:20px 18px 18px;background:var(--card);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
-.next-actions::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.next-actions::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .next-actions-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin:0 0 14px;letter-spacing:-.01em;text-align:center}
 .next-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (min-width:540px){.next-actions-grid{grid-template-columns:1fr 1fr 1fr}}
 .next-action-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 10px 12px;background:rgba(0,98,65,.06);border:none;border-radius:12px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s;font-family:inherit;text-align:center;position:relative;min-height:118px}
 .next-action-card:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:0 6px 18px rgba(203,162,88,.1)}
-.next-action-card.highlight{background:linear-gradient(135deg,rgba(203,162,88,.14),var(--bg-deep));border-color:var(--accent)}
+.next-action-card.highlight{background:var(--earth-bg);border-color:var(--accent)}
 .na-icon{font-size:28px;color:var(--accent-bright);line-height:1;margin-bottom:4px;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
 .na-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.86rem;font-weight:700;color:var(--text);letter-spacing:-.01em}
 .na-desc{font-size:.68rem;color:var(--muted);line-height:1.55;letter-spacing:-.01em;padding:0 4px}
 .na-tag{display:inline-block;padding:2px 8px;border-radius:50px;font-size:.56rem;font-weight:800;letter-spacing:.06em;border:1px solid;text-transform:uppercase;margin-top:2px}
 .na-tag.free{color:var(--wood);background:var(--wood-bg);border-color:rgba(108,191,126,.4)}
 .na-tag.paid{color:var(--accent-bright);background:var(--accent-soft);border-color:rgba(203,162,88,.4)}
-.na-tag.signature{color:#edd18a;background:linear-gradient(135deg,rgba(203,162,88,.22),rgba(237,209,138,.12));border-color:rgba(237,209,138,.55)}
+.na-tag.signature{color:var(--accent-bright);background:var(--earth-bg);border-color:rgba(138,101,21,.34)}
 .na-tag.share,.na-tag.save,.na-tag.guide{color:var(--accent);background:var(--accent-soft);border-color:rgba(203,162,88,.4)}
 .next-actions-foot{margin:14px 0 0;font-size:.7rem;color:var(--muted);text-align:center;line-height:1.6}
 
@@ -1215,9 +1215,9 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 @media (min-width:560px){.sinsal-mini-grid{grid-template-columns:1fr 1fr}}
 .sinsal-mini-card{padding:11px 13px;border-radius:10px;border:1px solid var(--border);background:var(--bg-deep);position:relative;overflow:hidden}
 .sinsal-mini-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:currentColor;opacity:.7}
-.sinsal-mini-card.sin-good{color:var(--wood);border-color:rgba(108,191,126,.4);background:linear-gradient(135deg,rgba(108,191,126,.08),var(--bg-deep))}
-.sinsal-mini-card.sin-bad{color:var(--fire);border-color:rgba(229,116,98,.4);background:linear-gradient(135deg,rgba(229,116,98,.08),var(--bg-deep))}
-.sinsal-mini-card.sin-neutral{color:var(--accent);border-color:rgba(203,162,88,.4);background:linear-gradient(135deg,rgba(203,162,88,.08),var(--bg-deep))}
+.sinsal-mini-card.sin-good{color:var(--wood);border-color:rgba(108,191,126,.4);background:var(--wood-bg)}
+.sinsal-mini-card.sin-bad{color:var(--fire);border-color:rgba(229,116,98,.4);background:var(--fire-bg)}
+.sinsal-mini-card.sin-neutral{color:var(--accent-bright);border-color:rgba(203,162,88,.4);background:var(--earth-bg)}
 .sinsal-mini-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .sinsal-mini-badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:.6rem;font-weight:800;color:currentColor;background:currentColor;letter-spacing:.06em}
 .sinsal-mini-card .sinsal-mini-badge{background:rgba(0,98,65,.06)}
@@ -1228,7 +1228,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── 인생 타임라인 SVG 차트 ── */
 .life-timeline{margin:14px 0 12px;padding:14px 12px 12px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;position:relative;overflow:hidden}
-.life-timeline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
+.life-timeline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
 .lt-svg-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .lt-svg-wrap svg{display:block;min-width:420px}
 .lt-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0 6px;font-size:.68rem;color:var(--muted)}
@@ -1239,18 +1239,18 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── 분위기와 헤더 SNS 후크 헤드라인 ── */
 .result-hero{margin:8px 12px 16px;padding:28px 20px 24px;background:var(--card);border:none;border-radius:var(--radius);text-align:center;position:relative;overflow:hidden}
-.result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .result-hero-tag{display:inline-block;padding:3px 14px;border-radius:50px;font-size:.7rem;font-weight:800;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);letter-spacing:.04em;margin-bottom:10px}
 .result-hero-headline{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.5;margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
-.result-hero-match{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:50px;font-size:.74rem;font-weight:700;color:var(--accent-bright);background:linear-gradient(135deg,rgba(203,162,88,.18),rgba(237,209,138,.1));border:1px solid rgba(237,209,138,.4)}
+.result-hero-match{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:50px;font-size:.74rem;font-weight:700;color:var(--accent-bright);background:var(--earth-bg);border:1px solid rgba(138,101,21,.28)}
 .result-hero-keys{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .result-hero-keys span{display:inline-block;padding:3px 10px;border-radius:50px;background:var(--bg-deep);border:1px solid var(--border);color:var(--sub);font-size:.7rem;font-weight:600;letter-spacing:-.01em}
 /* 시안 ③ — 분석 완료 이브로 + 골드 글로우 */
 .result-hero-eyebrow{display:block;font-size:.62rem;font-weight:800;letter-spacing:.16em;color:var(--accent-bright);text-transform:uppercase;margin-bottom:8px;opacity:.92}
-.result-hero::after{content:'';position:absolute;left:50%;top:-45%;width:180px;height:180px;transform:translateX(-50%);background:radial-gradient(circle,rgba(203,162,88,.16),transparent 70%);pointer-events:none}
+.result-hero::after{content:'';position:absolute;left:50%;top:-45%;width:180px;height:180px;transform:translateX(-50%);background:none;pointer-events:none}
 /* 시안 ① — 핵심 운명 키워드 카드 */
 .core-keyword{margin:0 12px 16px;padding:20px;background:var(--card);border:none;border-radius:var(--radius);position:relative;overflow:hidden}
-.core-keyword::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.core-keyword::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .ck-label{font-size:.64rem;font-weight:800;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
 .ck-keyword{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent-bright);margin:6px 0 9px;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
 .ck-body{font-size:.9rem;line-height:1.8;color:var(--sub);margin:0 0 12px;word-break:keep-all;overflow-wrap:break-word}
@@ -1259,19 +1259,19 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* 시안 ② — 사주 × MBTI 에너지 균형 바 */
 .mbti-balance{margin:0 0 16px;padding:14px 15px;background:rgba(0,98,65,.06);border:none;border-radius:12px}
 .mbti-balance-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:8px}
-.mbti-balance-match{font-size:.72rem;font-weight:800;color:var(--accent-bright);background:linear-gradient(135deg,rgba(203,162,88,.18),rgba(237,209,138,.1));border:1px solid rgba(237,209,138,.4);padding:3px 11px;border-radius:50px;flex-shrink:0}
+.mbti-balance-match{font-size:.72rem;font-weight:800;color:var(--accent-bright);background:var(--earth-bg);border:1px solid rgba(138,101,21,.28);padding:3px 11px;border-radius:50px;flex-shrink:0}
 .bal-row{margin-bottom:13px}
 .bal-row:last-child{margin-bottom:0}
 .bal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:.76rem;color:var(--sub)}
 .bal-pct{font-weight:800;color:var(--accent-bright);font-size:.74rem;flex-shrink:0;margin-left:8px}
 .bal-bar{height:8px;background:rgba(0,98,65,.06);border-radius:50px;overflow:hidden}
-.bal-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--accent),var(--accent-bright));transition:width .7s ease}
+.bal-fill{height:100%;border-radius:50px;background:var(--accent);transition:width .7s ease}
 .bal-note{margin-top:5px;font-size:.67rem;color:var(--muted);line-height:1.5}
 .bal-note.ok{color:var(--wood)}
 .bal-note.diff{color:var(--earth)}
 
 /* 캡처 워터마크 — 이미지 저장 시 우하단 고정 */
-.cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:linear-gradient(135deg,rgba(203,162,88,.08),rgba(0,98,65,.07));border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
+.cap-watermark{margin:18px 12px 4px;padding:10px 14px;text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.78rem;color:var(--accent);background:var(--earth-bg);border:1px solid var(--border);border-radius:10px;letter-spacing:.05em;opacity:.85}
 
 /* ── Narrative cards (유료 풀이) ── */
 /* 일상 장면 — 캐릭터 카드 바로 아래 */
@@ -1298,7 +1298,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .stat-link.low .sl-txt b{color:var(--sub)}
 .stat-link.mid .sl-fill{background:var(--accent)}
 /* 캐릭터 카드 — 별명·희귀도·능력치 */
-.char-card{background:linear-gradient(160deg,rgba(203,162,88,.10),rgba(203,162,88,.02) 55%,transparent),var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px 18px 16px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
+.char-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px 18px 16px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
 .cc-label{font-size:.7rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .cc-nick{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.5rem;line-height:1.35;color:var(--accent-bright);letter-spacing:-.01em;word-break:keep-all}
 .cc-sub{font-size:.88rem;color:var(--sub);margin-top:5px;word-break:keep-all}
@@ -1309,7 +1309,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .cc-stat{display:flex;align-items:center;gap:9px}
 .cc-stat-name{flex:0 0 3.6em;font-size:.79rem;color:var(--sub);letter-spacing:-.02em}
 .cc-bar{flex:1;height:9px;background:rgba(0,98,65,.06);border-radius:999px;overflow:hidden}
-.cc-bar-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-bright))}
+.cc-bar-fill{display:block;height:100%;border-radius:999px;background:var(--accent)}
 .cc-stat-val{flex:0 0 1.4em;text-align:right;font-size:.76rem;color:var(--accent-bright);font-weight:700;font-variant-numeric:tabular-nums}
 .cc-note{margin-top:11px;padding:10px 12px;background:rgba(0,98,65,.06);border-left:3px solid var(--accent-bright);border-radius:0 8px 8px 0;font-size:.79rem;line-height:1.75;color:var(--sub);text-align:left;word-break:keep-all}
 .cc-note b{color:var(--accent)}
@@ -1318,18 +1318,18 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .cc-basis{margin-top:12px;font-size:.67rem;color:var(--muted);line-height:1.6;word-break:keep-all}
 @media(max-width:380px){.cc-nick{font-size:1.28rem}.cc-stat-name{flex-basis:3.3em;font-size:.74rem}}
 .nb-card{background:var(--card);border:none;border-radius:var(--radius-lg);padding:20px 20px 22px;margin-bottom:18px;position:relative;overflow:hidden}
-.nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0}
+.nb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent);opacity:0}
 .nb-card.primary{background:var(--card);border:none;box-shadow:var(--card-shadow)}
-.nb-card.primary::before{height:3px;opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright) 30%,var(--accent-bright) 70%,transparent)}
+.nb-card.primary::before{height:3px;opacity:1;background:var(--accent-bright)}
 .nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
-.nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#cba258);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(203,162,88,.4)}
+.nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:var(--gold-soft);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(203,162,88,.4)}
 .nb-cat{display:inline-block;padding:4px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:none;text-transform:uppercase}
 .nb-cat-icon{margin-right:5px;letter-spacing:0}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 /* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
-.chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(203,162,88,.10),rgba(0,98,65,.18));border-left:3px solid var(--accent-bright);border-radius:11px}
+.chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:var(--earth-bg);border-left:3px solid var(--accent-bright);border-radius:11px}
 .chapter-divider:first-child{margin-top:6px}
-.chapter-divider .ch-no{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:linear-gradient(135deg,#f4d36b,#cba258);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
+.chapter-divider .ch-no{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.82rem;font-weight:700;color:#1a1c1d;background:var(--gold-soft);padding:3px 12px;border-radius:50px;letter-spacing:.02em}
 .chapter-divider .ch-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.08rem;font-weight:700;color:var(--accent)}
 .chapter-divider .ch-desc{flex-basis:100%;font-size:.76rem;color:var(--sub);line-height:1.55}
 /* CHX: TOC 장별 그룹 소제목 */
@@ -1389,7 +1389,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .nb-warn{margin-top:8px;padding:12px 14px;background:var(--warn-bg);border-radius:9px;border-left:3px solid var(--warn)}
 .nb-warn-lab{font-size:.78rem;font-weight:800;color:var(--warn);margin-bottom:6px;letter-spacing:0;line-height:1.55}
 .nb-gw-body{font-size:inherit;line-height:1.75;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.reading-brief{margin:12px 0 14px;padding:14px 15px;background:linear-gradient(135deg,rgba(203,162,88,.07),rgba(12,15,16,.3));border:none;border-left:3px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
+.reading-brief{margin:12px 0 14px;padding:14px 15px;background:var(--earth-bg);border:none;border-left:3px solid var(--accent-bright);border-radius:10px;line-height:1.82;color:var(--sub);font-size:.9rem}
 .reading-brief.compact{padding:12px 13px;font-size:.84rem;line-height:1.7}
 .reading-brief p{margin:0 0 9px}
 .reading-brief p:last-child{margin-bottom:0}
@@ -1415,7 +1415,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* ── Timeline (대운×세운) ── */
 .tl{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .tl-item{padding:13px 15px;background:rgba(0,98,65,.07);border-left:3px solid var(--accent);border-radius:8px;border:1px solid var(--border);border-left-width:3px}
-.tl-item.cur{background:linear-gradient(90deg,rgba(216,192,138,.1),rgba(0,98,65,.07));border-left-color:var(--accent-bright);border-color:var(--border-strong)}
+.tl-item.cur{background:var(--earth-bg);border-left-color:var(--accent-bright);border-color:var(--border-strong)}
 .tl-age{font-size:.72rem;font-weight:800;color:var(--accent);letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
 .tl-item.cur .tl-age{color:var(--accent-bright)}
 .tl-pil{font-size:.74rem;color:var(--muted);margin-bottom:6px;font-weight:600}
@@ -1440,7 +1440,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* ── Mini 만세력 (섹션 인라인용, 강조 가능) ── */
 .mm{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0 6px;background:var(--bg-deep);padding:9px 7px;border-radius:10px;border:1px solid var(--border)}
 .mm-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 4px 8px;text-align:center;transition:.2s;position:relative}
-.mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(203,162,88,.15);background:linear-gradient(135deg,rgba(203,162,88,.12),rgba(0,98,65,.08));transform:translateY(-2px);z-index:2}
+.mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(138,101,21,.12);background:var(--earth-bg);transform:translateY(-2px);z-index:2}
 .mm-lab{font-size:.78rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
 .mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
@@ -1522,7 +1522,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .cat-where b{color:var(--accent)}
 
 /* ── 한 줄 결론 리드 카드 ── */
-.lead-card{padding:14px 16px;background:linear-gradient(135deg,rgba(203,162,88,.07),rgba(216,192,138,.04));border-left:3px solid var(--accent-bright);border-radius:10px;margin:6px 0 16px;font-size:inherit;line-height:1.78;color:var(--text);font-weight:500;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.lead-card{padding:14px 16px;background:var(--earth-bg);border-left:3px solid var(--accent-bright);border-radius:10px;margin:6px 0 16px;font-size:inherit;line-height:1.78;color:var(--text);font-weight:500;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .lead-card b{color:var(--accent-bright);font-weight:800}
 .lead-card em{font-style:normal;color:inherit;font-weight:600}
 .body-q{font-weight:700;color:var(--text);font-size:inherit;letter-spacing:0}
@@ -1548,7 +1548,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 }
 
 /* ── 인생총운 요약본 다운로드 카드 (화면) ── */
-.summary-card{background:linear-gradient(135deg,rgba(203,162,88,.08),rgba(0,98,65,.07));border:2px solid var(--accent-bright)}
+.summary-card{background:var(--earth-bg);border:2px solid var(--accent-bright)}
 .summary-intro{padding:6px 2px;font-size:.86rem;line-height:1.85;color:var(--sub)}
 .summary-intro b{color:var(--accent-bright)}
 .summary-intro ul{padding-left:18px;margin:8px 0}
@@ -1626,8 +1626,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .a4-mo.tg .a4-mo-lab{color:var(--warn);font-weight:800}
 
 /* ── 용어 안내 공지 카드 ── */
-.term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(203,162,88,.1),rgba(216,192,138,.06));border:1px solid rgba(203,162,88,.32);border-radius:14px;position:relative;overflow:hidden}
-.term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:0}
+.term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:var(--earth-bg);border:1px solid rgba(138,101,21,.28);border-radius:14px;position:relative;overflow:hidden}
+.term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
 .term-notice-icon{font-size:1.4rem;flex-shrink:0;line-height:1.2}
 .term-notice-body{font-size:.79rem;line-height:1.78;color:var(--sub)}
 .term-notice-body b{color:var(--accent-bright);font-weight:700}
@@ -1645,12 +1645,12 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .term-pop-close:hover{color:var(--accent);border-color:var(--accent)}
 .term-pop-cta{margin-top:11px;padding-top:10px;border-top:1px dashed var(--border);display:flex;flex-direction:column;gap:7px}
 .term-pop-cta-text{font-size:.73rem;color:var(--sub);line-height:1.55}
-.term-pop-cta-btn{width:100%;border:0;border-radius:8px;padding:9px 10px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer}
+.term-pop-cta-btn{width:100%;border:0;border-radius:8px;padding:9px 10px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer}
 .pstem,.pbranch,.mm-cell,.dx-col-s,.dx-col-b,.ms,.sinsal-mini-card,.irow{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pstem:active,.pbranch:active,.mm-cell:active,.dx-col-s:active,.dx-col-b:active,.ms:active,.sinsal-mini-card:active{transform:scale(.98)}
 .teaser-assurance{margin-top:8px;padding:9px 11px;border-radius:9px;background:rgba(0,98,65,.055);color:var(--sub);font-size:.72rem;line-height:1.6;text-align:center}
 .teaser-assurance b{color:var(--accent)}
-.chat-inline-upsell{margin:10px 0 2px;padding:12px;background:linear-gradient(135deg,rgba(203,162,88,.1),rgba(0,98,65,.08));border:1px dashed rgba(203,162,88,.42);border-radius:12px}
+.chat-inline-upsell{margin:10px 0 2px;padding:12px;background:var(--earth-bg);border:1px dashed rgba(138,101,21,.34);border-radius:12px}
 .chat-inline-upsell-title{font-size:.82rem;font-weight:900;color:var(--accent-bright);margin-bottom:4px}
 .chat-inline-upsell-desc{font-size:.74rem;color:var(--sub);line-height:1.6;margin-bottom:9px}
 .chat-inline-upsell-row{display:flex;gap:6px}
@@ -1659,7 +1659,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── 채팅 (자세한 사주 하단) ── */
 .chat-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
-.chat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.chat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .chat-head{text-align:center;margin-bottom:14px}
 .chat-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--accent);letter-spacing:-.01em}
 .chat-sub{font-size:.74rem;color:var(--sub);line-height:1.7}
@@ -1680,18 +1680,18 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .chat-input{flex:1;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font-size:.86rem;font-family:inherit;resize:none;outline:none;background:var(--bg-deep);color:var(--text);line-height:1.5;min-height:44px;max-height:90px;transition:.18s}
 .chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .chat-input::placeholder{color:var(--muted);font-size:.78rem;letter-spacing:-.02em}
-.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:radial-gradient(circle at 50% 0,rgba(203,162,88,.15),transparent 36%),linear-gradient(180deg,#fffdf8,#eee5d5);padding:0 10px 16px}
+.qna-room{min-height:calc(100vh - 68px);display:flex;flex-direction:column;background:var(--bg);padding:0 10px 16px}
 .qna-room .menu-back{align-self:flex-start;margin:0 0 8px;padding:11px 14px;background:rgba(255,253,248,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;top:0;z-index:5;border-radius:0 0 16px 16px;color:var(--accent)}
 .chat-card.qna-chat-room{flex:0 0 auto;display:flex;flex-direction:column;width:min(100%,390px) !important;height:clamp(560px,calc(100vh - 150px),720px);margin:0 auto !important;border:6px solid #006241 !important;border-radius:38px !important;background:#fffdf8;box-shadow:0 26px 70px rgba(72,56,34,.16),0 0 0 1px rgba(138,101,21,.16);padding:28px 0 0;overflow:hidden;color:var(--text)}
 .chat-card.qna-chat-room::before{content:'';display:block;position:absolute;top:8px;left:50%;right:auto;width:118px;height:24px;transform:translateX(-50%);border-radius:999px;background:#006241;z-index:4;box-shadow:0 1px 0 rgba(138,101,21,.16)}
 .chat-card.qna-chat-room::after{content:'';position:absolute;left:50%;bottom:7px;width:132px;height:5px;transform:translateX(-50%);border-radius:999px;background:#006241;opacity:.9;z-index:4}
 .qna-chat-room .chat-head{position:relative;padding:26px 15px 12px 58px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,253,248,.97);border-bottom:1px solid var(--border);box-shadow:0 1px 0 rgba(255,255,255,.8) inset}
-.qna-chat-room .chat-head::before{content:'';position:absolute;left:15px;bottom:12px;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8c08a,#edd18a);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.qna-chat-room .chat-head::before{content:'';position:absolute;left:15px;bottom:12px;width:34px;height:34px;border-radius:50%;background:var(--gold-soft);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .qna-chat-room .chat-head::after{content:'천';position:absolute;left:15px;bottom:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:#1b1d1f}
 .qna-chat-room .chat-title{margin:0;font-size:.98rem;color:var(--text);font-family:var(--font-main);font-weight:900;letter-spacing:-.02em}
 .qna-chat-room .chat-sub{display:none}
 .qna-chat-room .chat-remaining{margin:0;border:none;background:var(--accent-soft);color:var(--accent);font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap;padding:5px 10px}
-.qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:linear-gradient(180deg,#f8f3e9 0%,#eee5d5 100%);scrollbar-width:thin}
+.qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:var(--bg-deep);scrollbar-width:thin}
 .qna-chat-room .chat-msg{position:relative;max-width:78%;border:none;border-radius:19px;padding:9px 13px;font-size:.91rem;line-height:1.54;letter-spacing:-.01em;box-shadow:none}
 .qna-chat-room .chat-msg-user{background:#2f8f68;color:#f5fff9;border-bottom-right-radius:5px;align-self:flex-end}
 .qna-chat-room .chat-msg-user::after{content:'';position:absolute;right:-5px;bottom:0;width:12px;height:12px;background:#2f8f68;border-bottom-left-radius:10px}
@@ -1711,7 +1711,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .qna-chat-room .chat-btn:disabled::before{content:'+';font-size:1.15rem}
 .qna-chat-room .chat-tip,.qna-chat-room .chat-addbuy-btn{display:none}
 .ai-reading-card{background:var(--card);border:none}
-.ai-reading-card::before{opacity:1;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.ai-reading-card::before{opacity:1;background:var(--accent-bright)}
 .ai-reading-card .nb-cat{color:var(--accent-bright)}
 .ai-reading-status{padding:12px 14px;border-radius:10px;background:rgba(212,175,73,.07);border:1px dashed rgba(212,175,73,.32);font-size:.82rem;line-height:1.8;color:var(--sub)}
 .ai-reading-status.error{background:rgba(229,116,98,.07);border-color:rgba(229,116,98,.35);color:var(--fire)}
@@ -1790,7 +1790,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 @media (min-width:1280px){
   #app{max-width:840px}
 }
-.chat-btn{padding:0 20px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);border:none;border-radius:50px;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-family:inherit}
+.chat-btn{padding:0 20px;background:var(--accent);color:var(--on-accent);border:none;border-radius:50px;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-family:inherit}
 .chat-btn:disabled{opacity:.45;cursor:not-allowed}
 .chat-tip{font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6;letter-spacing:.02em}
 /* 채팅 카드 하단 — 추가 구매 버튼 (한도 남아있어도 미리 충전 가능) */
@@ -1803,7 +1803,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 .upsell-overlay.on{opacity:1;pointer-events:auto}
 .upsell-modal{background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:22px 22px 18px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.65);position:relative;transform:translateY(8px);transition:transform .2s}
 .upsell-overlay.on .upsell-modal{transform:translateY(0)}
-.upsell-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.8}
+.upsell-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:.8}
 .upsell-close{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--sub);font-size:1rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:.15s}
 .upsell-close:hover{color:var(--accent);border-color:var(--accent)}
 .upsell-head{text-align:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px dashed var(--border)}
@@ -1836,7 +1836,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 .ctx-custom-input:focus{box-shadow:0 0 0 3px var(--accent-soft)}
 .ctx-custom-input::placeholder{color:var(--muted);font-size:.74rem}
 .cat-extra{padding:16px 14px 6px;margin-top:6px;background:transparent;border:1px solid var(--accent);border-radius:0;position:relative;overflow:visible}
-.cat-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.cat-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 /* number input spinner 제거 (위·아래 화살표) */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
@@ -1853,7 +1853,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 /* ── 지정일/월별 풀이 분위기와 ── */
 .daypick-wrap,.monthly-wrap,.newyear-wrap{padding:12px 12px 24px;display:flex;flex-direction:column;gap:14px}
 .dp-card{background:var(--card);border:1px solid var(--border-strong);border-radius:14px;padding:18px 16px;position:relative;overflow:hidden}
-.dp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.dp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent)}
 .dp-date{text-align:center;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-.01em}
 .dp-pillar{text-align:center;font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:10px}
 .dp-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
@@ -1878,8 +1878,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .mo-cat-score{color:var(--text);font-weight:700}
 
 /* 신년운세 */
-.ny-hero{background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
-.ny-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
+.ny-hero{background:var(--card);border:1px solid var(--accent);border-radius:14px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
+.ny-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright)}
 .ny-year{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.45rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
 .ny-pillar{font-size:.86rem;color:var(--sub);margin-bottom:6px}
 .ny-pillar em{color:var(--accent-bright);font-style:normal;font-weight:700}
@@ -2072,33 +2072,34 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-character-layer .ds-txt br{display:none}
 .life-character-layer .ds-txt b{display:inline-block;margin-right:8px;font-size:.72rem}
 .life-character-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.life-character-actions button,.life-link-btn,.life-next-btn{min-height:44px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-family:inherit;font-weight:750;cursor:pointer}
+.life-character-actions button,.life-prev-btn,.life-link-btn,.life-next-btn{min-height:44px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-family:inherit;font-weight:750;cursor:pointer}
 .life-character-actions button{display:flex;align-items:center;justify-content:center;gap:6px}
-.life-character-actions button.primary,.life-next-btn{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent)}
+.life-character-actions button.primary,.life-next-btn{background:var(--accent);color:var(--on-accent)}
 .life-library-text{display:block;width:100%;margin:8px auto 0;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.7rem;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .life-layer-bar{display:grid;grid-template-columns:44px 1fr 64px;align-items:center;gap:8px;margin:4px 0 12px;padding:10px 12px;background:var(--card);border-radius:14px;box-shadow:var(--card-shadow)}
 .life-layer-bar>button{height:38px;border:0;border-radius:10px;background:var(--bg-deep);color:var(--accent);font-family:inherit;font-size:1.25rem;font-weight:800;cursor:pointer}
 .life-layer-bar>button:last-child{font-size:.72rem}
 .life-layer-bar div{text-align:center;line-height:1.3}.life-layer-bar small{display:block;color:var(--muted);font-size:.58rem;letter-spacing:.16em}.life-layer-bar b{font-size:.92rem;color:var(--text)}
-.life-deck-card{background:linear-gradient(150deg,rgba(203,162,88,.09),transparent 42%),var(--card);border-radius:20px;padding:18px 18px 15px;box-shadow:var(--card-shadow);min-height:560px;display:flex;flex-direction:column}
+.life-deck-card{background:var(--card);border:1px solid rgba(138,101,21,.16);border-radius:20px;padding:18px 18px 15px;box-shadow:var(--card-shadow);min-height:560px;display:flex;flex-direction:column}
 .life-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.72rem}.life-deck-head b{font-size:1rem;color:var(--accent-bright)}
 .life-deck-card .card-quote{font-size:1rem;margin:20px 0 8px}
 .life-deck-card .stat-link{margin:6px 0 12px}
 .life-deck-copy{font-size:.86rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word}
 .life-deck-period{margin-top:auto;padding-top:16px}.life-deck-period>span{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.68rem}.life-deck-period>span::after{content:'';height:1px;flex:1;background:var(--border)}
-.life-deck-timeline{display:grid;grid-template-columns:repeat(4,1fr);height:92px;gap:12px;margin:10px 6px 4px;align-items:end}
-.ldt-item{height:100%;display:grid;grid-template-rows:14px 1fr 14px;gap:3px;text-align:center;font-size:.64rem;color:var(--muted)}
-.ldt-item i{display:block;position:relative;border-radius:6px;background:rgba(0,98,65,.07);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,var(--accent),var(--accent-bright));border-radius:6px}
+.life-deck-timeline{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));height:104px;gap:6px;margin:10px 0 4px;align-items:end}
+.ldt-item{height:100%;min-width:0;display:grid;grid-template-rows:16px 1fr 14px;gap:3px;text-align:center;font-size:.58rem;color:var(--muted)}
+.ldt-item i{display:block;position:relative;border-radius:5px;background:rgba(0,98,65,.07);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:var(--accent);border-radius:5px}
 .ldt-item em{font-style:normal;color:var(--accent)}
-.life-deck-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.life-link-btn{background:var(--bg-deep);color:var(--sub)}
+.life-deck-actions{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin-top:12px}.life-prev-btn,.life-link-btn{background:var(--bg-deep);color:var(--sub)}
+.life-prev-btn:disabled{opacity:.42;cursor:not-allowed}
 .life-deck-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.life-deck-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.life-deck-dots i.on{width:18px;border-radius:6px;background:var(--accent-bright)}
 .life-library-intro{padding:13px 15px;margin-bottom:12px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}
 .life-library-layer #card-TOC{top:58px;background:var(--bg-deep) !important}
-.life-share-card{width:1080px;height:1080px;box-sizing:border-box;overflow:hidden;padding:58px 70px 42px;background:radial-gradient(circle at 50% 18%,rgba(203,162,88,.19),transparent 34%),linear-gradient(150deg,#fffdf8,#f4ecde 66%,#e4eee8);color:#24352f;font-family:var(--font-main);display:flex;flex-direction:column;align-items:center}
+.life-share-card{width:1080px;height:1080px;box-sizing:border-box;overflow:hidden;padding:58px 70px 42px;background:#fffdf8;color:#24352f;font-family:var(--font-main);display:flex;flex-direction:column;align-items:center}
 .lsc-brand{font-size:22px;letter-spacing:.24em;color:#006241;font-weight:800}.lsc-portrait{width:250px;height:250px;margin:20px auto 6px}.lsc-name{font-size:42px;font-weight:800;color:#006241}.lsc-sub{font-size:24px;color:#52645d;margin-top:5px}.lsc-rarity{font-size:20px;color:#8a6515;margin-top:10px}
-.lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#52645d}.lsc-stats i{height:12px;background:rgba(0,98,65,.10);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:linear-gradient(90deg,#006241,#8a6515);border-radius:9px}.lsc-stats em{font-style:normal;color:#8a6515;text-align:right}
+.lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#52645d}.lsc-stats i{height:12px;background:rgba(0,98,65,.10);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:#006241;border-radius:9px}.lsc-stats em{font-style:normal;color:#8a6515;text-align:right}
 .lsc-scenes{width:860px;margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.lsc-scenes>div{min-height:150px;padding:18px;background:rgba(255,253,248,.82);border:1px solid rgba(0,98,65,.10);border-radius:16px;text-align:left}.lsc-scenes span{font-size:28px}.lsc-scenes b{display:block;margin:9px 0 6px;color:#006241;font-size:18px}.lsc-scenes p{margin:0;font-size:17px;line-height:1.55;color:#52645d}.lsc-foot{margin-top:auto;font-size:16px;color:#7d8d85;letter-spacing:.06em}
-@media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:540px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}}
+@media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:560px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}.life-deck-timeline{gap:4px}.ldt-item{font-size:.53rem}.life-deck-actions{gap:6px}}
 </style>
 </head>
 <body>
@@ -2794,7 +2795,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
 
     <!-- 카카오톡 공유 카드 -->
-    <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:linear-gradient(135deg,rgba(255,235,0,.12),rgba(0,98,65,.08));border:1px dashed #FFEB00;border-radius:12px">
+    <div id="payDoneShareCard" style="margin-top:14px;padding:14px 14px 16px;background:var(--earth-bg);border:1px dashed #FFEB00;border-radius:12px">
       <div style="font-size:.82rem;font-weight:800;color:#8a6515;letter-spacing:.02em;margin-bottom:6px">카카오톡으로 풀이 공유하기</div>
       <div style="font-size:.78rem;color:var(--sub);line-height:1.68;margin-bottom:10px">친구에게 천지인 사주와 본인의 풀이를 간편하게 공유할 수 있어요.</div>
       <button type="button" id="payDoneShareBtn" onclick="payDoneClickShare()" aria-label="카카오톡으로 공유하기" title="카카오톡으로 공유하기" style="width:100%;padding:11px;border:0;border-radius:9px;background:#FFEB00;color:#3C1E1E;font-weight:800;font-size:.86rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px">
@@ -2804,7 +2805,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
     <div class="pay-cta-row" style="margin-top:14px">
       <button class="pay-cta-cancel" type="button" onclick="closePayDone()">닫기</button>
-      <button class="pay-cta-go" type="button" onclick="payDoneGoResult()" style="background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent)">결과 보러가기 →</button>
+      <button class="pay-cta-go" type="button" onclick="payDoneGoResult()" style="background:var(--accent);color:var(--on-accent)">결과 보러가기 →</button>
     </div>
   </div>
 </div>
@@ -2831,7 +2832,7 @@ window.addEventListener('pageshow',function(e){if(e.persisted)window.scrollTo(0,
     var b=document.createElement('div');
     b.id='_updBanner';
     b.textContent='✨ 새 버전이 나왔어요 · 탭하면 새로고침';
-    b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:9999;background:linear-gradient(135deg,#f4d36b,#cba258);color:#1a1c1d;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font-family:inherit;letter-spacing:-.01em;max-width:calc(100vw - 32px);text-align:center';
+    b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:9999;background:var(--gold-soft);color:#1a1c1d;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font-family:inherit;letter-spacing:-.01em;max-width:calc(100vw - 32px);text-align:center';
     b.setAttribute('role','button');
     b.onclick=function(){location.reload();};
     document.body.appendChild(b);
@@ -5035,7 +5036,7 @@ function _dailyDaeunStageCard(saju, f){
       if(r.kind==='합'||sr.kind==='합')_luckyHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
       else if(r.kind==='충'||sr.kind==='충')_cautionHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
     }
-    return `<div class="daily-card" style="text-align:left;padding:18px;background:linear-gradient(135deg,rgba(212,175,73,.06),rgba(108,140,200,.04))">
+    return `<div class="daily-card" style="text-align:left;padding:18px;background:var(--earth-bg)">
       <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
       <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
       ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:8px;font-size:.78rem;line-height:1.75">
@@ -6300,7 +6301,7 @@ function mbtiSajuFusionParagraph(saju, mbti, contextHint){
     ? `${mbti}의 외형 + 「${stemNk}」 사주의 흐름을 함께 사는 분 — 사회적 모습과 본질이 다른 분이라, 본인의 진짜 모습을 인정해주는 한 사람과의 관계가 마음을 안정시켜 줘요.`
     : `MBTI와 사주가 적절히 어우러진 균형형 — 상황에 따라 두 흐름을 번갈아 발현할 수 있는 자유로움이 있어요.`;
 
-  let h=`<div class="cat-where" style="background:linear-gradient(135deg,rgba(203,162,88,.1),var(--earth-bg));border-left-color:var(--accent-bright);margin:14px 0">☯︎ <b>MBTI × 사주 통합 풀이 (${matchPct}% 일치)</b><br>${contextHint||'후천적 MBTI와 선천적 사주를 함께 보면, 본인의 분위기를 더 또렷이 알 수 있어요.'}</div>`;
+  let h=`<div class="cat-where" style="background:var(--earth-bg);border-left-color:var(--accent-bright);margin:14px 0">☯︎ <b>MBTI × 사주 통합 풀이 (${matchPct}% 일치)</b><br>${contextHint||'후천적 MBTI와 선천적 사주를 함께 보면, 본인의 분위기를 더 또렷이 알 수 있어요.'}</div>`;
   h+=`<p>본인의 MBTI는 <b>${mbtiTrait}</b> 쪽으로 굳어져 있고, 사주는 <b>${sajuTrait}</b> 같은 본질을 보여줘요. MBTI가 지금 본인이 익숙하게 쓰는 방식이라면, 사주는 긴장을 풀었을 때 자연스럽게 돌아가는 바탕에 가까워요. 두 흐름이 같으면 에너지가 덜 들고, 다르면 사회에서 쓰는 모습과 혼자 있을 때의 본인 사이에 피로가 생길 수 있어요.</p>`;
   if(aligns.length){
     h+=`<p>본인에게 자연스럽게 잘 맞는 영역은 ${aligns.map(s=>`<b>${s.replace(/^[^—]+—\s*/,'')}</b>`).join(', ')}이에요. 이 부분은 굳이 애쓰지 않아도 본인다움으로 흘러나오는 자리라, 일과 관계에서 의식적으로 써도 부담이 적어요.</p>`;
@@ -6631,11 +6632,19 @@ function _lifeDeckCopy(parts,topic,age){
   return preventOrphan(text);
 }
 function _lifeMiniTimelineData(saju,daeuns,ys){
-  const decades=[20,30,40,50];
+  const decades=[20,30,40,50,60,70,80,90,100];
+  const timelineDaeuns=(daeuns||[]).map(du=>({...du}));
+  if(timelineDaeuns.length){
+    const direction=timelineDaeuns.length>1&&((timelineDaeuns[1].stem-timelineDaeuns[0].stem+10)%10===1)?1:-1;
+    while(timelineDaeuns[timelineDaeuns.length-1].age+9<109){
+      const prev=timelineDaeuns[timelineDaeuns.length-1];
+      timelineDaeuns.push({age:prev.age+10,stem:(prev.stem+direction+10)%10,branch:(prev.branch+direction+12)%12});
+    }
+  }
   return decades.map(start=>{
-    const hits=daeuns.filter(du=>du.age<=start+9&&du.age+9>=start);
+    const hits=timelineDaeuns.filter(du=>du.age<=start+9&&du.age+9>=start);
     const score=hits.length?Math.round(hits.reduce((n,du)=>n+_lifeDaeunScore(saju,du,ys),0)/hits.length):60;
-    return {label:`${start}대`,score};
+    return {label:start===100?'100세+':`${start}대`,score};
   });
 }
 function buildLifeDeck(saju,meta){
@@ -6679,7 +6688,7 @@ function buildLifeDeck(saju,meta){
 }
 
 function lifeDeckTimelineHTML(items){
-  return `<div class="life-deck-timeline" aria-label="20대부터 50대까지 흐름">${items.map(item=>`<div class="ldt-item"><span>${item.label}</span><i><b style="height:${Math.max(12,item.score)}%"></b></i><em>${item.score}</em></div>`).join('')}</div>`;
+  return `<div class="life-deck-timeline" aria-label="20대부터 100세 이후까지 흐름">${items.map(item=>`<div class="ldt-item"><span>${item.label}</span><i><b style="height:${Math.max(12,item.score)}%"></b></i><em>${item.score}</em></div>`).join('')}</div>`;
 }
 function lifeDeckCardHTML(card,index,total){
   if(!card)return '';
@@ -6691,6 +6700,7 @@ function lifeDeckCardHTML(card,index,total){
     <div class="life-deck-copy">${preventOrphan(card.copy)}</div>
     <div class="life-deck-period"><span>시기</span>${lifeDeckTimelineHTML(card.timeline)}</div>
     <div class="life-deck-actions">
+      <button type="button" class="life-prev-btn" onclick="lifeDeckPrev()"${index===0?' disabled aria-disabled="true"':''}>‹ 이전</button>
       <button type="button" class="life-link-btn" onclick="lifeOpenEvidence('${card.evidence}')">근거 보기</button>
       <button type="button" class="life-next-btn" onclick="lifeDeckNext()">${index===total-1?'서고 보기':'다음 ›'}</button>
     </div>
@@ -6751,6 +6761,10 @@ function lifeDeckNext(){
   const cards=buildLifeDeck(_saju,_meta||{});
   if(_lifeRoute.index>=cards.length-1)return lifeNavigate('library');
   lifeNavigate('deck',_lifeRoute.index+1);
+}
+function lifeDeckPrev(){
+  if(_lifeRoute.index<=0)return;
+  lifeNavigate('deck',_lifeRoute.index-1);
 }
 function lifeBack(){
   if(_lifeRoute.layer==='library')return lifeNavigate('deck',Math.min(7,_lifeRoute.index));
@@ -6904,7 +6918,7 @@ function getContextOpener(cat,tag,note){
   }
   // 호명형 — 사용자의 선택을 도입부에서 직접 호명
   const callOut=tag==='custom'?`「${label}」가 가장 큰 화두시군요.`:`<b>${label}</b>이 가장 알고 싶으시군요. 그 흐름을 중심으로 풀어드릴게요.`;
-  return `<div class="lead-card" style="background:linear-gradient(135deg,var(--accent-soft),var(--bg-deep));border-left:3px solid var(--accent-bright);margin-bottom:14px"><b>💭 ${callOut}</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">${body}<br><br>↓ 분위기와 본문에서 ★ <b>본인이 가장 알고 싶은 영역</b> 표시가 붙은 카드를 우선으로 보세요.</span></div>`;
+  return `<div class="lead-card" style="background:var(--accent-soft);border-left:3px solid var(--accent-bright);margin-bottom:14px"><b>💭 ${callOut}</b><br><span style="font-size:.82rem;line-height:1.7;color:var(--sub)">${body}<br><br>↓ 분위기와 본문에서 ★ <b>본인이 가장 알고 싶은 영역</b> 표시가 붙은 카드를 우선으로 보세요.</span></div>`;
 }
 
 // Phase BO-3: 시나리오별 추가 본문 (카드 본문을 더 자세히)
@@ -7189,7 +7203,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   const _luckyHoursAll=hourCards.filter(g=>g.kind==='길시').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
   const _cautionHoursAll=hourCards.filter(g=>g.kind==='주의').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
   if(_luckyHoursAll.length||_cautionHoursAll.length){
-    hourBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(229,116,98,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>⏰ 이 날의 핵심 시간대</b><br>${_luckyHoursAll.length?'<b style="color:var(--wood)">🍀 길시 — '+_luckyHoursAll.join(', ')+'</b><br>본인 자리(또는 그날 자리)와 자연스럽게 잘 통하거나 같은 흐름으로 만나는 시간대예요. 중요한 약속·면접·고백·계약은 이 시간에 배치하세요.':''}${_luckyHoursAll.length&&_cautionHoursAll.length?'<br>':''}${_cautionHoursAll.length?'<b style="color:var(--fire)">⚠️ 주의시 — '+_cautionHoursAll.join(', ')+'</b><br>본인 자리(또는 그날 자리)와 정면으로 부딪히는 시간대예요. 큰 결정·운전·논쟁은 이 시간을 피하세요.':''}</p>`;
+    hourBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--wood-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>⏰ 이 날의 핵심 시간대</b><br>${_luckyHoursAll.length?'<b style="color:var(--wood)">🍀 길시 — '+_luckyHoursAll.join(', ')+'</b><br>본인 자리(또는 그날 자리)와 자연스럽게 잘 통하거나 같은 흐름으로 만나는 시간대예요. 중요한 약속·면접·고백·계약은 이 시간에 배치하세요.':''}${_luckyHoursAll.length&&_cautionHoursAll.length?'<br>':''}${_cautionHoursAll.length?'<b style="color:var(--fire)">⚠️ 주의시 — '+_cautionHoursAll.join(', ')+'</b><br>본인 자리(또는 그날 자리)와 정면으로 부딪히는 시간대예요. 큰 결정·운전·논쟁은 이 시간을 피하세요.':''}</p>`;
   }
   // 사용자 맥락별 추천 시간대 (옵션 C 매칭 시만)
   if(_ctxTag&&_ctxTag!=='custom'){
@@ -7781,7 +7795,7 @@ function getPersonalizedSinsalInsight(mySinsals, activeSinsals, periodLabel){
   const onlyActive=[...activeNames].filter(n=>!myNames.has(n));
   let html='';
   if(matched.length>0){
-    html+=`<p style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:10px;border-left:3px solid var(--wood)"><b>🔆 본인 사주의 작은 별자리 × ${periodLabel} 흐름 — 더 강하게 살아나요</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주가 원래 가진 작은 별자리가 ${periodLabel}의 별자리와 만나, 그 분위기가 한 단계 더 강해지는 시기예요.</span></p>`;
+    html+=`<p style="margin-top:12px;padding:12px 14px;background:var(--wood-bg);border-radius:10px;border-left:3px solid var(--wood)"><b>🔆 본인 사주의 작은 별자리 × ${periodLabel} 흐름 — 더 강하게 살아나요</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주가 원래 가진 작은 별자리가 ${periodLabel}의 별자리와 만나, 그 분위기가 한 단계 더 강해지는 시기예요.</span></p>`;
     matched.forEach(n=>{
       const ins=_SINSAL_BOOST[n];
       if(ins)html+=`<p style="margin-top:6px;font-size:.82rem;line-height:1.85"><b>· ${n}</b> — ${ins.boost}</p>`;
@@ -7790,7 +7804,7 @@ function getPersonalizedSinsalInsight(mySinsals, activeSinsals, periodLabel){
   if(onlyActive.length>0){
     const newOnes=onlyActive.filter(n=>_SINSAL_BOOST[n]);
     if(newOnes.length>0){
-      html+=`<p style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,73,.05),rgba(108,191,126,.03));border-radius:10px;border-left:3px solid var(--accent)"><b>✨ ${periodLabel}에 새로 들어오는 작은 별자리 — 부족했던 분위기를 보태요</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주에 원래 없던 흐름이 ${periodLabel} 한 해 동안 잠깐 들어와요. 평소엔 약했던 영역이 살아나요.</span></p>`;
+      html+=`<p style="margin-top:12px;padding:12px 14px;background:var(--earth-bg);border-radius:10px;border-left:3px solid var(--accent)"><b>✨ ${periodLabel}에 새로 들어오는 작은 별자리 — 부족했던 분위기를 보태요</b><br><span style="font-size:.82rem;line-height:1.85">본인 사주에 원래 없던 흐름이 ${periodLabel} 한 해 동안 잠깐 들어와요. 평소엔 약했던 영역이 살아나요.</span></p>`;
       newOnes.forEach(n=>{
         const ins=_SINSAL_BOOST[n];
         if(ins)html+=`<p style="margin-top:6px;font-size:.82rem;line-height:1.85"><b>· ${n}</b> — ${ins.solo}</p>`;
@@ -11294,7 +11308,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _goodOhKo=OHNAME[ys.main];
   const _badOhIdx=(ys.main+2)%5;
   const _badOhKo=OHNAME[_badOhIdx];
-  totBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  totBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">🌟 본인 사주의 핵심 바탕 — 먼저 잡고 갈 큰 줄기</div>
     <div style="font-size:.81rem;line-height:1.95">
       · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
@@ -11353,7 +11367,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _wealthStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
   const _wealthBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   // [기] lead 박스 — 본인의 돈 자리 핵심
-  wBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  wBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     앞에서 잡은 핵심 바탕을 돈의 흐름으로 옮기면 <b>${wealthHeadline}</b>에 가까워요. 돈을 단순히 버는 것보다 <b>어떤 구조로 오래 붙잡을지</b>가 중요해지는 흐름이에요. 안정적으로 쌓이는 돈은 ${wealth.pj}자리, 움직이며 들어오는 돈은 ${wealth.pp}자리로 보여요.
   </div>`;
   // [기] 사주판 — 돈 자리 강조
@@ -11485,7 +11499,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _careerStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
   const _careerBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   // [기] lead 박스 — 본인의 직업 자리
-  cBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  cBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     본인의 일 흐름은 <b>${gk.name}</b>의 ${careerHeadline} 분위기에서 출발해요. 바깥에서 직책·자격·명예로 인정받는 흐름과, 본인이 콘텐츠·서비스·성과를 꺼내는 흐름이 함께 움직입니다. 그래서 본인은 아무 일이나 오래 버티는 타입이라기보다, <b>전문성을 쌓을 이유가 분명한 일</b>에서 힘이 살아나요.
   </div>`;
   // 사주판
@@ -11605,7 +11619,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _loveBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   const _hapBranch=getDajiHapDesc(dp.branch);
   // [기] lead 박스
-  lBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  lBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     본인의 관계 흐름은 <b>${loveHeadline}</b>에 가까워요. 본인이 앉은 자리 <em>${BRCHKO[dp.branch]}(${ANIMAL[dp.branch]})</em>가 배우자 자리와도 이어져 있어서, 연애와 결혼은 단순한 감정 문제가 아니라 본인의 생활 리듬·일·마음의 안정감까지 함께 흔드는 영역이에요. 잘 맞는 짝의 흐름은 <em>${_hapBranch}</em> 글자처럼 부드럽게 이어지는 관계예요.
   </div>`;
   lBody+=miniManseWithPointer(saju,lovePillars,'↑ 강조된 자리: 본인이 앉은 의자(일지) + '+(gender==='male'?'아내 자리':'남편 자리'));
@@ -11799,7 +11813,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _healthStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
   const _healthBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   // [기] lead
-  hBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  hBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     본인의 건강 흐름은 <b>${healthHeadline}</b>으로 볼 수 있어요. 가장 두터운 기운은 <em>${OHNAME[maxOhIdx]}</em>, 가장 옅은 기운은 <em>${OHNAME[minOhIdx]}</em>이라서 몸이 힘들 때도 이 두 축에서 신호가 먼저 나타나기 쉬워요. 그래서 건강운은 겁을 주는 풀이가 아니라, <b>무리하기 전에 어떤 생활 리듬을 먼저 조절할지</b>를 알려주는 지도에 가까워요.
   </div>`;
   if(healthPillars.length>0){
@@ -11977,7 +11991,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   const _studyStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
   const _studyBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   // [기] lead
-  stBody+=`<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  stBody+=`<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     <div style="font-size:.9rem;color:var(--accent);font-weight:700;margin-bottom:7px">📚 본인 사주의 「학습 자리」 — 어떻게 자리잡았나</div>
     <div style="font-size:.81rem;line-height:1.95">
       · <b>본인 중심 기운</b>: <em>${STEMKO[dp.stem]}${OHNAME[dStemOh]}</em> — ${stemNick(dp.stem)}<br>
@@ -12038,7 +12052,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     };
     const _rec=_recByGk[_gkS.tg]||'본인 흥미 기반 다양한 분야';
     const _cert=_certByGk[_gkS.tg]||'본인 관심 자격';
-    stBody+=`<p style="margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 흐름':''}</p>`;
+    stBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎓 ${_gkS.name} 추천 학과·자격증</b><br>· <b>추천 학과·전공</b>: ${_rec}<br>· <b>추천 자격증·시험</b>: ${_cert}${_hasMC?'<br>· <b>문창귀인</b> ★ — 시험·논문·문서 영역에 특별한 강점, 학자·교사 길운':''}${_hasHG?'<br>· <b>화개살</b> ★ — 한 분야 깊이 천착·종교·예술·연구에 큰 흐름':''}</p>`;
   }catch(e){}
   stBody+=_fieldConclusion('study',saju,ys,gender);
   stBody+=`<p style="margin-top:10px;font-size:.8rem;color:var(--sub)">⤵ 그 「때」가 몇 살 무렵인지는 이어지는 학업·시험 타임라인에서 연도로 확인할 수 있어요.</p>`;
@@ -12442,7 +12456,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       }else{
         _detail='중화 — 어떤 직업이든 균형 있게 잘 맞아요. 「현재 시기에 어떤 흐름이 들어오는가」를 보고 유연하게 선택하시면 돼요.';
       }
-      sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 사주 유형 정밀 매칭</b><br>${_detail}</p>`;
+      sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 사주 유형 정밀 매칭</b><br>${_detail}</p>`;
     }catch(e){}
     sjBody+=_areaDeepConclusion('singang',saju,ys,gender);
     h+=paidWrapBody('SINGANG','⚖','신강/신약 — 본인 사주의 그릇 크기',sjBody);
@@ -13261,7 +13275,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ═════════════════════════════════════
   // 마무리
   // ═════════════════════════════════════
-  h+=`<div class="nb-card" style="background:linear-gradient(135deg,rgba(203,162,88,.08),rgba(0,98,65,.07));text-align:center">
+  h+=`<div class="nb-card" style="background:var(--earth-bg);text-align:center">
     <div style="font-size:.95rem;font-weight:700;margin-bottom:8px">🎋 마무리</div>
     <div style="font-size:.82rem;line-height:1.85;color:var(--text)">사주는 인생의 지도이지, 운명의 족쇄가 아닙니다.<br>본인이 타고난 ${_ps.keyword}을 의식적으로 발현시키고, 의식해서 다스릴 부분을 꾸준히 보살피는 노력이 곧 좋은 사주를 완성하는 길이에요.</div>
   </div>`;
@@ -15069,7 +15083,7 @@ function _generateTOC(h, scopeLabel){
     // 배경 끝에 불투명 바탕색을 반드시 둔다. 이 카드는 position:sticky로 고정되는데,
     // 그라데이션만 주면 background-color가 transparent가 되어 시작색(금색 10%) 구간이 거의 투명해진다.
     // 그러면 고정된 목차 아래로 지나가는 본문이 그대로 비쳐서 두 겹으로 겹쳐 보인다.
-    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(203,162,88,.1),var(--bg-deep)) var(--bg-deep);border:none">
+    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:var(--bg-deep);border:none">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
@@ -15083,7 +15097,7 @@ function _generateTOC(h, scopeLabel){
 // 전체 서고 첫 카드에만 한 번 보여주는 사주 핵심 요약 박스
 function _sajuContextHeader(saju, ys, gk){
   const dStemOh=SOH[saju.dp.stem];
-  return `<div class="lead-card" style="background:linear-gradient(135deg,rgba(203,162,88,.14),rgba(0,98,65,.07));border-left-color:var(--accent-bright)">
+  return `<div class="lead-card" style="background:var(--earth-bg);border-left-color:var(--accent-bright)">
     본인 사주는 <b>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</b>, 즉 <em>${stemNick(saju.dp.stem)}</em> 같은 바탕에서 출발해요. 본인이 앉은 자리는 <em>${BRCHKO[saju.dp.branch]}(${ANIMAL[saju.dp.branch]})</em>${branchNick(saju.dp.branch)?`의 ${branchNick(saju.dp.branch)} 분위기`:''}이고, 전체 방향은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>으로 잡혀 있어요. 이 풀이에서는 이 바탕 위에 <b>${OHNAME[ys.main]}</b> 기운이 본인을 어떻게 도와주는지를 중심으로 읽어드릴게요.
   </div>`;
 }
@@ -15092,7 +15106,7 @@ function _sajuContextHeader(saju, ys, gk){
 function _generalAreaConclusion(saju, ys, areaLabel){
   const goodOh=OHNAME[ys.main];
   const badOh=OHNAME[(ys.main+2)%5];
-  return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(203,162,88,.07),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;line-height:1.85">
+  return `<div style="margin-top:14px;padding:12px 14px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;line-height:1.85">
     ${areaLabel}에서 큰 결정을 잡을 때는 <b style="color:var(--good)">${goodOh}</b> 기운이 들어오는 시기를 먼저 보세요. 이 기운은 본인 바탕을 받쳐주거나 약한 부분을 채워줘서 같은 선택도 덜 무리하게 풀려요. 반대로 <b style="color:var(--warn)">${badOh}</b> 기운이 강한 때는 속도를 늦추고, 확인·정리·휴식 쪽에 무게를 두는 편이 좋아요.
   </div>`;
 }
@@ -15180,7 +15194,7 @@ function _fieldConclusion(field, saju, ys, gender){
     helpStems=`대운·세운에 <b>${ohKoName[resourceOhIdx]}</b>(인성) 또는 <b>${ohKoName[officerOhIdx]}</b>(관성) 글자가 들어오는 시기.`;
     avoidStems=`<b>${ohKoName[outputOhIdx]}</b>(식상) 글자가 너무 강한 시기 — 자기 표현 활동은 좋지만 시험 집중은 의식적인 시간 확보가 필요해요.`;
   }
-  return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(203,162,88,.08),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.79rem;line-height:1.85">
+  return `<div style="margin-top:14px;padding:12px 14px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.79rem;line-height:1.85">
     <div style="font-weight:700;color:var(--accent);font-size:.85rem;margin-bottom:8px">본인 사주 「${dStemKo}${OHNAME[dStemOh]}」 기준으로 보면 이 분야는 이렇게 정리돼요.</div>
     <div style="margin-bottom:6px"><b style="color:var(--good)">먼저 살릴 강점은</b> ${pros}</div>
     <div style="margin-bottom:6px"><b style="color:var(--accent)">흐름을 키우려면</b> ${needs}</div>
@@ -15482,7 +15496,7 @@ function shareLogoHtml(key){
   return `<span class="share-logo" aria-hidden="true">${svg}</span>`;
 }
 const _SHARE_CHANNELS=[
-  {key:'native',   label:'기본 공유', bg:'linear-gradient(135deg,var(--accent),var(--accent-bright))', color:'var(--bg-mid)', fn:'shareNative'},
+  {key:'native',   label:'기본 공유', bg:'var(--accent)', color:'var(--bg-mid)', fn:'shareNative'},
   {key:'kakao',    label:'카카오톡', bg:'#FFEB00', color:'#3C1E1E'},
   {key:'url',      label:'URL 복사', bg:'var(--bg-deep)', color:'var(--accent-bright)'},
   {key:'band',     label:'네이버 밴드', bg:'#21C531', color:'#fff'},
@@ -18949,7 +18963,7 @@ function renderNamePaid(saju, nmExtra){
       </div>
     </div>
 
-    ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:8px;border-left:3px solid var(--good);font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 임시로 넣어 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능해요.</div>':''}`;
+    ${hanAutoFilled?'<div style="margin-top:12px;padding:10px 12px;background:var(--wood-bg);border-radius:8px;border-left:3px solid var(--good);font-size:.78rem;color:var(--sub);line-height:1.75">✨ 한자를 입력하지 않으셔서 <b>각 음별 가장 흔한 한자</b>를 임시로 넣어 풀이했어요. 실제 본인 한자가 다르면 「다시 입력」 화면에서 한자 칸을 채워주시면 정확한 풀이가 가능해요.</div>':''}`;
   h+=paidWrapBody('NAME','✒️',`이름풀이 종합 — ${full}`, summaryBody);
   h+=renderNameStrokeChart(surname, given, han, strokes);
 
@@ -19100,8 +19114,8 @@ function renderNamePaid(saju, nmExtra){
     let yyBody=`<div class="lead-card" style="border-left:3px solid ${_balanceCol}"><b>이름의 음양: ${_balance}</b><br><span style="font-size:.82rem;color:var(--sub)">양 ${_yang}자(${_yangPct}%) · 음 ${_yin}자(${_yinPct}%)</span></div>`;
     yyBody+=`<p><span class="body-q">음양은 어떻게 판단하나요?</span><br>한글 모음(중성)을 양(ㅏ·ㅑ·ㅗ·ㅛ·ㅐ·ㅒ 등)과 음(ㅓ·ㅕ·ㅜ·ㅠ·ㅡ·ㅣ 등)으로 분류해, 이름 전체의 음양 비율로 봐요. 양은 밝음·움직임·외향, 음은 고요·내면·사색을 의미해요.</p>`;
     yyBody+=`<div style="display:flex;align-items:stretch;height:32px;border-radius:8px;overflow:hidden;margin-top:14px;border:none">
-      <div style="flex:${_yangPct};background:linear-gradient(90deg,#d4a849,#e8c578);display:flex;align-items:center;justify-content:center;color:#1a1c1d;font-weight:800;font-size:.82rem">☀ 양 ${_yangPct}%</div>
-      <div style="flex:${_yinPct};background:linear-gradient(90deg,#4a6699,#6c8cc8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem">☾ 음 ${_yinPct}%</div>
+      <div style="flex:${_yangPct};background:#d4a849;display:flex;align-items:center;justify-content:center;color:#1a1c1d;font-weight:800;font-size:.82rem">☀ 양 ${_yangPct}%</div>
+      <div style="flex:${_yinPct};background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.82rem">☾ 음 ${_yinPct}%</div>
     </div>`;
     yyBody+=`<p style="margin-top:14px"><span class="body-q">${_balance}의 의미는?</span><br>${_meaning}</p>`;
     yyBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">💡 <b>음양 활용 가이드</b><br>${_advice}</p>`;
@@ -19262,7 +19276,7 @@ function renderNamePaid(saju, nmExtra){
     const goodCnt=bestCombo&&bestCombo.goodCnt;
     const goodBadge=goodCnt===4?'<b style="color:var(--wood)">(4격 모두 길수 ★)</b>':goodCnt===3?'<b style="color:var(--wood)">(4격 중 3개 길수 ✓)</b>':goodCnt===2?'<small style="color:var(--earth)">(4격 중 2개 길수)</small>':goodCnt===1?'<small style="color:var(--earth)">(4격 중 1개 길수)</small>':SURI_81_GOOD.has(bestCombo&&bestCombo.total)?'<b style="color:var(--wood)">(정격 길수 ✓)</b>':'<small style="color:var(--earth)">(흉수 — 다른 한자 조합 권장)</small>';
     const totalLine=bestCombo&&bestCombo.total>0?`<div style="margin-top:6px;font-size:.72rem;color:var(--muted)">↪ 한자 전체 ${bestCombo.total}획 ${goodBadge}</div>`:'';
-    recBody+=`<div style="padding:12px 14px;background:linear-gradient(135deg,rgba(203,162,88,.08),var(--bg-deep));border-radius:10px;border:none">
+    recBody+=`<div style="padding:12px 14px;background:var(--earth-bg);border-radius:10px;border:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
@@ -20074,14 +20088,14 @@ function renderGunghapSinsalGongmangCard(saju1, saju2, gen1, gen2){
   body+=`<p><span class="body-q">두 분의 별자리(신살)와 비어있는 자리는 어떻게 만날까요?</span><br>두 분 사주의 신살과 공망이 같으면 닮은꼴 분위기로 가까워지고, 서로 다른 신살이 있으면 부족한 영역을 채워주는 흐름이 만들어져요.</p>`;
   // 공통 신살
   if(common.length>0){
-    body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.04));border-radius:9px;border-left:3px solid var(--wood)"><b>🔆 두 분 모두 가진 별자리(공통 신살)</b><br><span style="font-size:.82rem">두 분 사주에 공통으로 들어있는 별자리는 <b>${common.join('·')}</b>예요. 같은 흐름을 공유하는 부분으로, 가장 빠르게 가까워질 수 있는 영역이에요.</span></p>`;
+    body+=`<p style="margin-top:10px;padding:11px 13px;background:var(--wood-bg);border-radius:9px;border-left:3px solid var(--wood)"><b>🔆 두 분 모두 가진 별자리(공통 신살)</b><br><span style="font-size:.82rem">두 분 사주에 공통으로 들어있는 별자리는 <b>${common.join('·')}</b>예요. 같은 흐름을 공유하는 부분으로, 가장 빠르게 가까워질 수 있는 영역이에요.</span></p>`;
   }
   // 보완 신살 (한쪽만 가진 길성)
   const goodNames=new Set(['천을귀인','문창귀인','화개살','천덕귀인','월덕귀인','암록','장성살','반안살']);
   const only1Good=only1.filter(n=>goodNames.has(n));
   const only2Good=only2.filter(n=>goodNames.has(n));
   if(only1Good.length>0||only2Good.length>0){
-    body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.06),rgba(108,191,126,.03));border-radius:9px;border-left:3px solid var(--accent)"><b>✨ 서로를 보완하는 별자리</b><br>${only1Good.length?`<span style="font-size:.82rem">본인의 <b>${only1Good.join('·')}</b>이 상대에게 부족한 흐름을 채워줘요.</span><br>`:''}${only2Good.length?`<span style="font-size:.82rem">상대의 <b>${only2Good.join('·')}</b>이 본인에게 부족한 흐름을 채워줘요.</span>`:''}</p>`;
+    body+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent)"><b>✨ 서로를 보완하는 별자리</b><br>${only1Good.length?`<span style="font-size:.82rem">본인의 <b>${only1Good.join('·')}</b>이 상대에게 부족한 흐름을 채워줘요.</span><br>`:''}${only2Good.length?`<span style="font-size:.82rem">상대의 <b>${only2Good.join('·')}</b>이 본인에게 부족한 흐름을 채워줘요.</span>`:''}</p>`;
   }
   // 공망 비교
   if(gmShared.length>0){
@@ -20090,7 +20104,7 @@ function renderGunghapSinsalGongmangCard(saju1, saju2, gen1, gen2){
     const gm1Filled=gm1.some(b=>b===saju2.yp.branch||b===saju2.mp.branch||b===saju2.dp.branch||(saju2.hp&&b===saju2.hp.branch));
     const gm2Filled=gm2.some(b=>b===saju1.yp.branch||b===saju1.mp.branch||b===saju1.dp.branch||(saju1.hp&&b===saju1.hp.branch));
     if(gm1Filled||gm2Filled){
-      body+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(108,191,126,.08),rgba(212,175,73,.03));border-radius:9px;border-left:3px solid var(--wood);font-size:.82rem"><b>🌱 비어있는 자리를 채워주는 분위기</b><br>${gm1Filled?'본인 사주의 비어있는 자리를 상대 사주가 채워줘요. ':''}${gm2Filled?'상대 사주의 비어있는 자리를 본인 사주가 채워줘요. ':''}함께 있으면 평소 약했던 영역이 자연스럽게 보강되는 기운이에요 — 부부 궁합으로 매우 좋은 분위기.</p>`;
+      body+=`<p style="margin-top:10px;padding:11px 13px;background:var(--wood-bg);border-radius:9px;border-left:3px solid var(--wood);font-size:.82rem"><b>🌱 비어있는 자리를 채워주는 분위기</b><br>${gm1Filled?'본인 사주의 비어있는 자리를 상대 사주가 채워줘요. ':''}${gm2Filled?'상대 사주의 비어있는 자리를 본인 사주가 채워줘요. ':''}함께 있으면 평소 약했던 영역이 자연스럽게 보강되는 기운이에요 — 부부 궁합으로 매우 좋은 분위기.</p>`;
     }
   }
   if(common.length===0&&only1Good.length===0&&only2Good.length===0&&gmShared.length===0){
@@ -20453,7 +20467,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
   h+=`<div class="card" style="background:var(--card);border:none">
     <div class="ctitle big">격국 — 사주의 대표 형태</div>
     <div style="text-align:center;margin:10px 0 8px">
-      <div style="display:inline-block;padding:9px 24px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--on-accent);border-radius:50px;font-size:1.05rem;font-weight:800;letter-spacing:.05em">${gk.name}</div>
+      <div style="display:inline-block;padding:9px 24px;background:var(--accent);color:var(--on-accent);border-radius:50px;font-size:1.05rem;font-weight:800;letter-spacing:.05em">${gk.name}</div>
     </div>
     <div class="abody">${gk.desc}</div>
     <div style="font-size:.7rem;color:var(--sub);margin-top:8px;line-height:1.6">※ 태어난 달의 중심 기운이 본인 중심 기운과 어떻게 만나는지를 바탕으로 읽어요.</div>
@@ -20627,7 +20641,7 @@ function renderAdvanced(saju,sy,sm,sd,sh,smin){
 
   // 개운법
   const gw=getGaewoon(ys.main);
-  h+=`<div class="card" style="background:linear-gradient(135deg,rgba(203,162,88,.08),rgba(0,98,65,.07))">
+  h+=`<div class="card" style="background:var(--earth-bg)">
     <div class="ctitle big">나만의 개운법 — 용신 ${OHNAME[ys.main]} 기반</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <div style="background:var(--card);border-radius:8px;padding:10px"><div style="font-size:.66rem;color:var(--sub);font-weight:700;margin-bottom:4px">유리한 색상</div><div style="font-size:.85rem;font-weight:600;color:${OHCOLOR[ys.main]}">${gw.color}</div></div>
