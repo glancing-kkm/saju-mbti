@@ -1320,6 +1320,7 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .nb-card.primary .nb-cat::before{content:'⭐ 내가 가장 알고 싶은 영역 · ';color:var(--accent-bright);font-weight:700}
 .nb-primary-badge{display:inline-block;font-size:.62rem;letter-spacing:.18em;color:#0f1010;background:linear-gradient(135deg,#f4d36b,#d4af37);padding:3px 10px;border-radius:99px;font-weight:800;text-transform:uppercase;margin-bottom:9px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
 .nb-cat{display:inline-block;padding:4px 12px;border-radius:50px;background:var(--accent-soft);color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.18em;margin-bottom:14px;border:none;text-transform:uppercase}
+.nb-cat-icon{margin-right:5px;letter-spacing:0}
 .nb-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.01em}
 /* CHX: 장(章) 구분 헤더 — 내러티브 흐름 구분선 */
 .chapter-divider{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:30px 4px 14px;padding:13px 16px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(45,52,71,.18));border-left:3px solid var(--accent-bright);border-radius:11px}
@@ -2045,6 +2046,55 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .a4-page :where(*){
   font-family:var(--font-main) !important;
 }
+/* 인생총운 3층 구조 — 캐릭터 / 카드 덱 / 전체 서고 */
+.life-experience{margin:0 12px 28px}
+.life-layer[hidden]{display:none !important}
+.life-layer{max-width:760px;margin:0 auto}
+.life-layer-kicker{text-align:center;color:var(--accent-bright);font-size:.65rem;font-weight:800;letter-spacing:.18em;margin:4px 0 10px}
+.life-character-layer .char-card{margin:0;padding:14px 16px 12px}
+.cc-portrait{width:126px;height:126px;margin:0 auto 8px}
+.character-portrait{display:block;width:100%;height:100%}
+.life-character-layer .cc-label{margin-bottom:5px}
+.life-character-layer .cc-nick{font-size:1.28rem}
+.life-character-layer .cc-sub{font-size:.8rem;margin-top:2px}
+.life-character-layer .cc-rarity{margin-top:7px;padding:4px 10px}
+.life-character-layer .cc-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin-top:11px}
+.life-character-layer .cc-stat-name{font-size:.72rem}
+.life-character-layer .cc-bar{height:7px}
+.life-character-layer .daily-scenes{margin:9px 0 0;padding:9px 14px 7px;border:none;border-radius:14px}
+.life-character-layer .ds-head{display:none}
+.life-character-layer .ds-row{padding:6px 0;gap:8px}
+.life-character-layer .ds-txt{font-size:.75rem;line-height:1.48}
+.life-character-layer .ds-txt br{display:none}
+.life-character-layer .ds-txt b{display:inline-block;margin-right:8px;font-size:.72rem}
+.life-character-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.life-character-actions button,.life-link-btn,.life-next-btn{min-height:44px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-family:inherit;font-weight:750;cursor:pointer}
+.life-character-actions button{display:flex;align-items:center;justify-content:center;gap:6px}
+.life-character-actions button.primary,.life-next-btn{background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:#181714}
+.life-library-text{display:block;width:100%;margin:8px auto 0;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.7rem;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.life-layer-bar{display:grid;grid-template-columns:44px 1fr 64px;align-items:center;gap:8px;margin:4px 0 12px;padding:10px 12px;background:var(--card);border-radius:14px;box-shadow:var(--card-shadow)}
+.life-layer-bar>button{height:38px;border:0;border-radius:10px;background:var(--bg-deep);color:var(--accent);font-family:inherit;font-size:1.25rem;font-weight:800;cursor:pointer}
+.life-layer-bar>button:last-child{font-size:.72rem}
+.life-layer-bar div{text-align:center;line-height:1.3}.life-layer-bar small{display:block;color:var(--muted);font-size:.58rem;letter-spacing:.16em}.life-layer-bar b{font-size:.92rem;color:var(--text)}
+.life-deck-card{background:linear-gradient(150deg,rgba(212,175,55,.09),transparent 42%),var(--card);border-radius:20px;padding:18px 18px 15px;box-shadow:var(--card-shadow);min-height:560px;display:flex;flex-direction:column}
+.life-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.72rem}.life-deck-head b{font-size:1rem;color:var(--accent-bright)}
+.life-deck-card .card-quote{font-size:1rem;margin:20px 0 8px}
+.life-deck-card .stat-link{margin:6px 0 12px}
+.life-deck-copy{font-size:.86rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word}
+.life-deck-period{margin-top:auto;padding-top:16px}.life-deck-period>span{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.68rem}.life-deck-period>span::after{content:'';height:1px;flex:1;background:var(--border)}
+.life-deck-timeline{display:grid;grid-template-columns:repeat(4,1fr);height:92px;gap:12px;margin:10px 6px 4px;align-items:end}
+.ldt-item{height:100%;display:grid;grid-template-rows:14px 1fr 14px;gap:3px;text-align:center;font-size:.64rem;color:var(--muted)}
+.ldt-item i{display:block;position:relative;border-radius:6px;background:rgba(255,255,255,.05);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,var(--accent),var(--accent-bright));border-radius:6px}
+.ldt-item em{font-style:normal;color:var(--accent)}
+.life-deck-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.life-link-btn{background:var(--bg-deep);color:var(--sub)}
+.life-deck-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.life-deck-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.life-deck-dots i.on{width:18px;border-radius:6px;background:var(--accent-bright)}
+.life-library-intro{padding:13px 15px;margin-bottom:12px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}
+.life-library-layer #card-TOC{top:58px;background:var(--bg-deep) !important}
+.life-share-card{width:1080px;height:1080px;box-sizing:border-box;overflow:hidden;padding:58px 70px 42px;background:radial-gradient(circle at 50% 18%,rgba(212,175,55,.22),transparent 34%),linear-gradient(150deg,#1e2423,#0e1112 66%);color:#f6f2e8;font-family:var(--font-main);display:flex;flex-direction:column;align-items:center}
+.lsc-brand{font-size:22px;letter-spacing:.24em;color:#d4af37;font-weight:800}.lsc-portrait{width:250px;height:250px;margin:20px auto 6px}.lsc-name{font-size:42px;font-weight:800;color:#f5d77c}.lsc-sub{font-size:24px;color:#d7d2c8;margin-top:5px}.lsc-rarity{font-size:20px;color:#e8c65f;margin-top:10px}
+.lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#d7d2c8}.lsc-stats i{height:12px;background:rgba(255,255,255,.09);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:linear-gradient(90deg,#b58d32,#f5d77c);border-radius:9px}.lsc-stats em{font-style:normal;color:#f5d77c;text-align:right}
+.lsc-scenes{width:860px;margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.lsc-scenes>div{min-height:150px;padding:18px;background:rgba(255,255,255,.055);border-radius:16px;text-align:left}.lsc-scenes span{font-size:28px}.lsc-scenes b{display:block;margin:9px 0 6px;color:#e9c75e;font-size:18px}.lsc-scenes p{margin:0;font-size:17px;line-height:1.55;color:#d7d2c8}.lsc-foot{margin-top:auto;font-size:16px;color:#8f918e;letter-spacing:.06em}
+@media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:540px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}}
 </style>
 </head>
 <body>
@@ -6371,6 +6421,55 @@ function buildCharacterCard(saju){
     top:{name:top.name,line:_CHAR_STAT_TOP[top.name]||''},
     low:{name:low.name,line:_CHAR_STAT_LOW[low.name]||''}};
 }
+
+// 캐릭터 초상 — 일간 10종 × 계절 4종을 외부 이미지 없이 그린다.
+// 같은 사주는 언제 다시 열어도 같은 SVG가 나오며 캡처에도 그대로 포함된다.
+function characterPortraitSVG(saju){
+  if(!saju||!saju.dp)return '';
+  const c=buildCharacterCard(saju);
+  let p;
+  try{p=buildPersonaProfile(saju);}catch(e){return '';}
+  const stem=Math.max(0,Math.min(9,saju.dp.stem||0));
+  const seasonIndex={봄:0,여름:1,가을:2,겨울:3}[p.season]??0;
+  const palettes=[
+    ['#d8f0c8','#5d9b67','#173f2a'],['#ffe6a7','#e76f51','#56242a'],
+    ['#f5dfb8','#b07d42','#443222'],['#dce8f5','#6b86a8','#202d45']
+  ];
+  const [sky,glow,deep]=palettes[seasonIndex];
+  const strength={강:1,중강:.82,중약:.64,약:.48}[p.strength]||.7;
+  const grade=c&&c.grade?c.grade.stars:2;
+  const id=`cp-${stem}-${seasonIndex}-${grade}`;
+  const motifs=[
+    `<path d="M116 178V82m0 38-39-35m39 20 42-42m-42 73-49-20m49 4 51-27"/><circle cx="77" cy="83" r="18"/><circle cx="158" cy="62" r="21"/>`,
+    `<path d="M72 177c16-61 39-81 44-115 5 34 27 54 42 115M89 152c-16-15-28-20-42-19m96 18c16-16 29-20 43-19"/>`,
+    `<circle cx="116" cy="104" r="45"/><path d="M116 35v-20m0 178v-20M47 104H26m180 0h-21M67 55 52 40m113 113 15 15M67 153l-15 15M165 55l15-15"/>`,
+    `<path d="M116 45c32 35 38 58 25 82-9 17-28 27-25 56-25-15-39-37-32-59 5-18 23-28 32-79Z"/><path d="M116 91c13 21 13 37 0 50"/>`,
+    `<path d="m38 174 45-75 28 33 30-62 55 104Z"/><path d="m115 125 26-55 17 45"/>`,
+    `<path d="M38 164c27-25 49-26 78-5 27-23 53-21 80 5M49 127c22-19 43-20 67-3 23-19 45-18 67 3M66 91c17-13 33-13 50 0 17-13 34-13 51 0"/>`,
+    `<path d="m64 169 14-104 38-27 38 27 14 104-52 22Z"/><path d="M116 38v153M78 65l38 30 38-30M72 122h88"/>`,
+    `<path d="m53 174 41-98 22-35 22 35 42 98-64 19Z"/><path d="m94 76 22 25 22-25M82 132h68"/>`,
+    `<path d="M28 128c22-29 44-29 66 0s44 29 66 0 44-29 66 0M28 159c22-29 44-29 66 0s44 29 66 0 44-29 66 0"/><circle cx="116" cy="75" r="26"/>`,
+    `<path d="M116 39c31 40 48 63 48 91a48 48 0 0 1-96 0c0-28 17-51 48-91Z"/><path d="M91 139c14 15 36 16 51 1"/>`
+  ];
+  const particles=[
+    `<circle cx="37" cy="48" r="4"/><circle cx="194" cy="75" r="5"/><circle cx="55" cy="193" r="3"/>`,
+    `<circle cx="42" cy="50" r="7"/><path d="m190 40 5 11 11 5-11 5-5 11-5-11-11-5 11-5Z"/>`,
+    `<path d="m42 54 12 5-8 11Zm150 18 11 8-12 5ZM50 190l12-4-3 12Z"/>`,
+    `<circle cx="42" cy="49" r="4"/><circle cx="190" cy="58" r="4"/><circle cx="46" cy="190" r="5"/><circle cx="196" cy="178" r="3"/>`
+  ][seasonIndex];
+  return `<svg class="character-portrait" viewBox="0 0 232 232" role="img" aria-label="${c?c.nickname:'본인'} 캐릭터 초상">
+    <defs>
+      <linearGradient id="${id}-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${deep}"/><stop offset="1" stop-color="#101516"/></linearGradient>
+      <radialGradient id="${id}-halo"><stop stop-color="${glow}" stop-opacity="${strength}"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient>
+      <filter id="${id}-soft"><feGaussianBlur stdDeviation="8"/></filter>
+    </defs>
+    <rect x="4" y="4" width="224" height="224" rx="56" fill="url(#${id}-bg)" stroke="${grade>=4?'#f6d66b':glow}" stroke-width="${2+grade}"/>
+    <circle cx="116" cy="112" r="86" fill="url(#${id}-halo)" filter="url(#${id}-soft)"/>
+    <g fill="${sky}" opacity=".65">${particles}</g>
+    <g fill="none" stroke="${sky}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${motifs[stem]}</g>
+    <text x="116" y="216" text-anchor="middle" fill="${sky}" font-family="sans-serif" font-size="12" font-weight="700">${_CHAR_STEM_IMAGE[stem]}</text>
+  </svg>`;
+}
 // ── 일상 장면 ──
 // 캐릭터 카드를 구체적인 하루로 옮겨준다.
 // 장면 다섯 개가 각각 사주의 서로 다른 자리를 쓴다. 명대사(신강약·음양)나
@@ -6438,10 +6537,11 @@ function buildDailyScenes(saju){
     {icon:'🌙',label:'혼자 충전할 때',text:_SCENE_CHARGE[p.lack]||_SCENE_CHARGE[0]}
   ];
 }
-function dailyScenesHTML(saju){
+function dailyScenesHTML(saju,limit){
   const scenes=buildDailyScenes(saju);
   if(!scenes||!scenes.length)return '';
-  const rows=scenes.filter(s=>s&&s.text).map(s=>`<div class="ds-row">
+  const max=Number.isFinite(limit)?Math.max(1,limit):3;
+  const rows=scenes.filter(s=>s&&s.text).slice(0,max).map(s=>`<div class="ds-row">
       <span class="ds-icon" aria-hidden="true">${s.icon}</span>
       <span class="ds-txt"><b>${s.label}</b><br>${preventOrphan(s.text)}</span>
     </div>`).join('');
@@ -6451,9 +6551,10 @@ function dailyScenesHTML(saju){
     ${rows}
   </div>`;
 }
-function characterCardHTML(saju){
+function characterCardHTML(saju,opts){
   const c=buildCharacterCard(saju);
   if(!c)return '';
+  const compact=!!(opts&&opts.compact);
   const stars='★'.repeat(c.grade.stars)+'☆'.repeat(5-c.grade.stars);
   const bars=c.stats.map(s=>`<div class="cc-stat">
       <span class="cc-stat-name">${s.name}</span>
@@ -6465,14 +6566,227 @@ function characterCardHTML(saju){
     : '';
   return `<div class="char-card">
     <div class="cc-label">본인의 캐릭터</div>
+    <div class="cc-portrait">${characterPortraitSVG(saju)}</div>
     <div class="cc-nick">「${c.nickname}」</div>
     <div class="cc-sub">${c.subtitle}</div>
     ${rarityLine}
     <div class="cc-stats">${bars}</div>
-    <div class="cc-note"><b>최고 스탯 · ${c.top.name}</b><br>${preventOrphan(c.top.line)}</div>
+    ${compact?'':`<div class="cc-note"><b>최고 스탯 · ${c.top.name}</b><br>${preventOrphan(c.top.line)}</div>
     <div class="cc-note low"><b>최저 스탯 · ${c.low.name}</b><br>${preventOrphan(c.low.line)}</div>
-    <div class="cc-basis">출생 ${CHAR_RARITY_SAMPLE.toLocaleString()}건을 계산해 나온 실제 비율이에요</div>
+    <div class="cc-basis">출생 ${CHAR_RARITY_SAMPLE.toLocaleString()}건을 계산해 나온 실제 비율이에요</div>`}
   </div>`;
+}
+
+let _lifeRoute={layer:'character',index:0,key:''};
+let _lifeDeckCache={key:'',cards:[]};
+
+function _lifeDaeunScore(saju,du,ys){
+  if(!du||!ys)return 60;
+  const tg=tenGod(saju.dp.stem,du.stem);
+  const btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
+  let score=(TG_SCORE[tg]||60)*.6+(TG_SCORE[btg]||60)*.4;
+  const oh=SOH[du.stem],sheng=[1,2,3,4,0],ke=[2,3,4,0,1];
+  if(oh===ys.main)score+=10;
+  else if(sheng[oh]===ys.main)score+=5;
+  else if(ke[ys.main]===oh)score-=8;
+  return Math.max(30,Math.min(95,Math.round(score)));
+}
+function _lifeStageAdvice(age,topic){
+  if(age<6){
+    const early={money:'물건을 아끼고 제자리에 두는 놀이가 생활 감각의 시작이에요.',work:'성취보다 안전하게 탐색하고 끝까지 해보는 경험을 칭찬해주세요.',love:'부모와의 안정적인 애착과 따뜻한 표현이 먼저예요.',people:'많은 친구보다 편안한 양육 환경과 익숙한 사람이 중요해요.',health:'체질과 잔병치레를 살피며 수면·식사 리듬을 지켜주세요.',study:'학습 성과보다 놀이·감각·말하기를 즐겁게 반복해주세요.'};
+    return early[topic]||early.health;
+  }
+  const stage=lifeStageOf(age);
+  const lines={
+    school:{money:'소비 기록과 작은 저축을 시작하면 현실 감각이 빠르게 자라요.',work:'진로를 서두르기보다 잘하는 과목과 활동을 모아보세요.',love:'친구 사이의 신뢰와 경계를 배우는 때예요.',people:'친구 수보다 편하게 말할 수 있는 사람을 남기세요.',health:'성장기에는 잠을 줄여 얻는 성과보다 회복이 더 중요해요.',study:'공부 시간보다 매일 같은 시간에 앉는 리듬을 만드세요.'},
+    youth:{money:'첫 수입과 지출의 기준을 세우면 이후 선택이 훨씬 편해져요.',work:'전공·첫 직장·기술 하나를 실제 결과물로 연결해보세요.',love:'끌림만큼 생활 속도와 가치관이 맞는지도 살펴보세요.',people:'넓은 인맥보다 함께 성장할 동료를 고르는 시기예요.',health:'밤샘과 불규칙한 식사가 쌓이지 않도록 회복일을 정하세요.',study:'자격·포트폴리오처럼 눈에 보이는 결과를 하나 남기세요.'},
+    young:{money:'집·저축·투자처럼 오래 갈 자산의 틀을 잡기 좋은 시기예요.',work:'취업·이직·결혼처럼 사회적 기반이 남는 선택을 우선하세요.',love:'결혼과 동거는 감정보다 생활 방식까지 함께 확인하세요.',people:'일과 사생활의 경계를 정해야 좋은 인연이 오래 남아요.',health:'검진과 근력 운동을 일정에 먼저 넣어야 오래 버텨요.',study:'업무와 바로 연결되는 깊은 공부가 가장 큰 자산이 돼요.'},
+    prime:{money:'불리는 속도보다 지키는 구조와 가족의 합의를 먼저 세우세요.',work:'성과를 혼자 떠안지 말고 권한과 책임을 함께 나누세요.',love:'익숙함 속에서도 대화 시간을 따로 잡아야 온기가 이어져요.',people:'도움을 주는 사람과 에너지만 쓰게 하는 사람을 구분하세요.',health:'버티는 힘을 믿고 신호를 넘기지 말고 정기 검진을 챙기세요.',study:'경험을 체계로 정리하면 강의·자문·후배 양성으로 이어져요.'},
+    mid:{money:'자산을 불리는 일과 지키는 일의 비율을 다시 맞춰보세요.',work:'사회적 정점에서 본인이 없어도 굴러가는 구조를 남기세요.',love:'함께 쉬고 움직이는 생활 리듬을 맞추는 일이 중요해요.',people:'많이 만나는 것보다 마음 편한 사람과 시간을 깊게 쓰세요.',health:'회복 속도에 맞춰 운동 강도를 조절하고 꾸준함을 지키세요.',study:'경험을 체계로 정리해 다음 사람에게 전하면 좋아요.'},
+    senior1:{money:'노후 현금 흐름과 큰 지출의 순서를 먼저 정리하세요.',work:'직위보다 오래 즐길 수 있는 인생 2막의 역할을 찾으세요.',love:'함께 쉬고 움직이는 생활 리듬을 맞추는 일이 중요해요.',people:'많이 만나는 것보다 마음 편한 사람과 시간을 깊게 쓰세요.',health:'회복 속도에 맞춰 운동 강도를 조절하고 꾸준함을 지키세요.',study:'배움 자체를 즐기되 생활에 쓰는 주제를 고르면 좋아요.'},
+    senior2:{money:'복잡한 자산을 단순하게 정리하고 가족과 기록을 공유하세요.',work:'경험을 전하고 본인이 즐거운 만큼만 역할을 이어가세요.',love:'곁에 있는 사람과 평온한 일상을 나누는 일이 가장 큰 복이에요.',people:'자주 안부를 나눌 수 있는 작은 관계망을 지켜주세요.',health:'무리한 목표보다 매일 걷기·수면·약 복용 같은 기본이 먼저예요.',study:'호기심을 놓지 않는 가벼운 배움이 마음의 활력을 지켜줘요.'}
+  };
+  const group=lines[stage]||lines.young;
+  return group[topic]||group.work;
+}
+function _lifeDeckCopy(parts,topic,age){
+  let text=parts.filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  const extras=[
+    _lifeStageAdvice(age,topic),
+    '좋은 흐름은 크게 쓰고, 버거운 흐름은 할 일을 작게 나누면 본인 선택권이 살아나요.',
+    '오늘 한 가지부터 기록해보세요. 반복해서 남는 선택이 결국 본인의 방향을 보여줘요.'
+  ];
+  for(const extra of extras){if(text.length<300)text+=' '+extra;}
+  if(text.length>400){
+    const candidate=text.slice(0,390);
+    const ends=['.','!','?'].map(mark=>candidate.lastIndexOf(mark)).sort((a,b)=>b-a);
+    const cut=ends.find(n=>n>=300);
+    text=(cut!=null?candidate.slice(0,cut+1):candidate).trim();
+  }
+  if(text.length<300)text+=' 본인에게 맞는 속도를 지키고, 작은 선택을 기록으로 남기면 다음 기회를 고르기가 훨씬 쉬워져요.';
+  return preventOrphan(text);
+}
+function _lifeMiniTimelineData(saju,daeuns,ys){
+  const decades=[20,30,40,50];
+  return decades.map(start=>{
+    const hits=daeuns.filter(du=>du.age<=start+9&&du.age+9>=start);
+    const score=hits.length?Math.round(hits.reduce((n,du)=>n+_lifeDaeunScore(saju,du,ys),0)/hits.length):60;
+    return {label:`${start}대`,score};
+  });
+}
+function buildLifeDeck(saju,meta){
+  if(!saju||!meta)return [];
+  const key=`${sajuIdOf(saju,meta)}|${meta.sy||''}`;
+  if(_lifeDeckCache.key===key)return _lifeDeckCache.cards;
+  const char=buildCharacterCard(saju);
+  const profile=buildPersonaProfile(saju);
+  const oh=ohCount(saju),ys=getYongsin(oh);
+  const age=new Date().getFullYear()-meta.sy+1;
+  const dq=calcDaeun(saju,meta.sy,meta.sm,meta.sd,meta.hour||12,meta.min||0,meta.gender||gender);
+  let cur=dq.daeuns[0];
+  for(let i=0;i<dq.daeuns.length;i++)if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){cur=dq.daeuns[i];break;}
+  const now=new Date().getFullYear(),idx=(now-4+3600)%60;
+  const yearTg=plainTG(tenGod(saju.dp.stem,idx%10));
+  const stat=name=>char.stats.find(s=>s.name===name)||{name,value:5};
+  const wealth=stat('현실감'),work=stat('버티기'),love=stat('친화력'),intuition=stat('직관'),drive=stat('추진력');
+  const strongest=OHNAME[profile.top],weakest=OHNAME[profile.lack];
+  const timeline=_lifeMiniTimelineData(saju,dq.daeuns,ys);
+  const common=`본인 사주에서 ${strongest} 기운은 자연스럽게 쓰는 힘이고, ${weakest} 기운은 생활 속에서 의식적으로 채울 부분이에요.`;
+  const cards=[
+    {key:'money',icon:'💰',title:'돈',evidence:'card-WEALTH',quoteLabel:'WEALTH',statLabel:'WEALTH',stat:wealth,
+      copy:_lifeDeckCopy([`현실감은 10점 중 ${wealth.value}점이에요. ${wealth.value>=7?'조건과 숫자를 빠르게 읽어 손해를 줄이는 쪽이에요.':'숫자만 좇기보다 실력과 이름값을 쌓을 때 돈이 뒤따르는 쪽이에요.'}`,common,`현재 ${cur.age}~${cur.age+9}세 흐름에서는 큰돈을 한 번에 움직이기보다 수입·고정비·비상금을 분리해 두면 안정감이 커져요. 친한 사람과 돈을 섞을수록 말보다 기록을 남기세요.`],'money',age),timeline},
+    {key:'work',icon:'💼',title:'일',evidence:'card-CAREER',quoteLabel:'CAREER',statLabel:'CAREER',stat:work,
+      copy:_lifeDeckCopy([`버티기는 10점 중 ${work.value}점이에요. ${work.value>=7?'맡은 일을 끝까지 가져가 신뢰로 바꾸는 힘이 커요. 다만 책임을 혼자 떠안기 쉬워요.':'길게 버티는 승부보다 역할과 마감이 분명한 일에서 성과가 빨라요.'}`,`추진력 ${drive.value}점과 함께 보면, 본인은 ${drive.value>=6?'먼저 판을 여는 일':'좋은 판을 골라 깊게 붙는 일'}에 더 잘 맞아요.`,_lifeStageAdvice(age,'work')],'work',age),timeline},
+    {key:'love',icon:'💕',title:'사랑',evidence:'card-LOVE',quoteLabel:'LOVE',statLabel:'LOVE',stat:love,
+      copy:_lifeDeckCopy([`친화력은 10점 중 ${love.value}점이에요. ${love.value>=7?'상대의 기분과 관계의 온도를 빨리 읽어요.':'많은 사람에게 고르게 마음을 열기보다 한 사람을 오래 보는 쪽이에요.'}`,`본인이 앉은 자리의 분위기는 ${plainTG(profile.seatTg)} 쪽이라, 설렘이 생겨도 말과 행동의 속도를 맞춰야 오래가요. 표현을 참아 상대가 추측하게 만들지 마세요.`,_lifeStageAdvice(age,'love')],'love',age),timeline},
+    {key:'people',icon:'🤝',title:'관계',evidence:'card-HUMAN',quoteLabel:'HUMAN',statLabel:'HUMAN',stat:love,
+      copy:_lifeDeckCopy([`관계에서는 친화력 ${love.value}점과 추진력 ${drive.value}점이 함께 작동해요. ${love.value>=6?'사람 사이 공기를 읽고 필요한 말을 건네는 힘이 있어요.':'두루 넓게 만나면 빨리 지치지만, 믿는 사람에게는 오래 남는 편이에요.'}`,`연락이 늦거나 혼자 쉬는 시간이 필요할 때는 미리 알려주세요. 본인에게 자연스러운 침묵이 상대에게는 거리감으로 보일 수 있어요.`,_lifeStageAdvice(age,'people')],'people',age),timeline},
+    {key:'health',icon:'🌿',title:'건강',evidence:'card-HEALTH',quoteLabel:'HEALTH',statLabel:'HEALTH',stat:work,
+      copy:_lifeDeckCopy([`몸의 리듬은 버티기 ${work.value}점으로 드러나요. ${work.value>=7?'겉으로 잘 버티는 만큼 피로 신호를 늦게 알아차릴 수 있어요.':'하루 무리가 며칠 피로로 이어질 수 있어 회복을 먼저 잡는 편이 좋아요.'}`,`${weakest} 기운이 옅으니 수면·식사·걷기 중 한 가지를 같은 시간에 반복해 균형을 채우세요. 불편이 오래가면 운세보다 검진과 전문가 상담을 먼저 챙기세요.`,_lifeStageAdvice(age,'health')],'health',age),timeline},
+    {key:'study',icon:'📚',title:'공부',evidence:'card-STUDY',quoteLabel:'STUDY',statLabel:'STUDY',stat:intuition,
+      copy:_lifeDeckCopy([`직관은 10점 중 ${intuition.value}점이에요. ${intuition.value>=7?'전체 그림을 먼저 알아차린 뒤 세부를 채우는 공부가 잘 맞아요.':'감으로 넘기기보다 근거와 순서를 확인할 때 실력이 안정적으로 쌓여요.'}`,`본인은 한 번에 여러 주제를 벌이기보다 한 주제를 결과물로 끝낼 때 자신감이 커져요. 읽기만 하지 말고 요약·문제풀이·설명 중 하나로 꺼내보세요.`,_lifeStageAdvice(age,'study')],'study',age),timeline},
+    {key:'decade',icon:'🧭',title:'지금 10년',evidence:'card-DAEUN10',quoteLabel:'DAEUN10',statLabel:'DAEUN10',stat:drive,
+      copy:_lifeDeckCopy([`본인은 지금 ${age}세이고, ${cur.age}~${cur.age+9}세의 큰 흐름 안에 있어요. 이 시기는 ${plainTG(tenGod(saju.dp.stem,cur.stem))}의 분위기가 바깥에서 들어와 선택의 배경을 만들어요.`,`지금 구간의 점수는 ${_lifeDaeunScore(saju,cur,ys)}점이에요. 점수가 높으면 오래 미룬 일을 앞당기고, 낮으면 규모를 줄여 경험과 기록을 남기세요. 흐름보다 중요한 건 본인 인생 단계에 맞는 결정을 고르는 일이에요.`,_lifeStageAdvice(age,'work')],'work',age),timeline},
+    {key:'year',icon:'🗓',title:'올해',evidence:'card-SEWOON',quoteLabel:'SEWOON',statLabel:'SEWOON',stat:drive,
+      copy:_lifeDeckCopy([`${now}년에는 ${yearTg}의 분위기가 들어와요. 추진력 ${drive.value}점인 본인은 ${drive.value>=7?'기회가 보이면 빠르게 움직이되 마감과 예산을 먼저 정해야 해요.':'해야 할 일을 작게 나누고 완료 표시를 남길수록 흐름을 안정적으로 쓸 수 있어요.'}`,`올해의 선택은 지금 10년 흐름 위에 놓여요. 월별 기복에 흔들리기보다 분기마다 한 가지 목표만 끝내세요. 큰 결정은 일정·돈·관계를 한 번 더 확인한 뒤 움직이면 좋아요.`,_lifeStageAdvice(age,'work')],'work',age),timeline}
+  ];
+  _lifeDeckCache={key,cards};
+  return cards;
+}
+
+function lifeDeckTimelineHTML(items){
+  return `<div class="life-deck-timeline" aria-label="20대부터 50대까지 흐름">${items.map(item=>`<div class="ldt-item"><span>${item.label}</span><i><b style="height:${Math.max(12,item.score)}%"></b></i><em>${item.score}</em></div>`).join('')}</div>`;
+}
+function lifeDeckCardHTML(card,index,total){
+  if(!card)return '';
+  const dots=Array.from({length:total},(_,i)=>`<i class="${i===index?'on':''}"></i>`).join('');
+  return `<article class="life-deck-card tarot-reveal" data-deck-key="${card.key}">
+    <div class="life-deck-head"><span>${index+1} / ${total}</span><b>${card.icon} ${card.title}</b></div>
+    ${cardQuoteHTML(card.quoteLabel)}
+    ${statLinkHTML(card.statLabel)}
+    <div class="life-deck-copy">${preventOrphan(card.copy)}</div>
+    <div class="life-deck-period"><span>시기</span>${lifeDeckTimelineHTML(card.timeline)}</div>
+    <div class="life-deck-actions">
+      <button type="button" class="life-link-btn" onclick="lifeOpenEvidence('${card.evidence}')">근거 보기</button>
+      <button type="button" class="life-next-btn" onclick="lifeDeckNext()">${index===total-1?'서고 보기':'다음 ›'}</button>
+    </div>
+    <div class="life-deck-dots" aria-label="${total}장 중 ${index+1}장">${dots}</div>
+  </article>`;
+}
+function buildLifeCharacterLayer(saju){
+  return `<section class="life-layer life-character-layer on" data-life-layer="character" aria-label="본인 캐릭터 요약">
+    <div class="life-layer-kicker">MY LIFE CHARACTER</div>
+    ${characterCardHTML(saju,{compact:true})}
+    ${dailyScenesHTML(saju,3)}
+    <div class="life-character-actions">
+      <button type="button" onclick="downloadLifeShareCard(this)"><span class="material-symbols-outlined" aria-hidden="true">download</span> 이미지 저장</button>
+      <button type="button" class="primary" onclick="lifeNavigate('deck',0)">풀이 보러가기 <span aria-hidden="true">›</span></button>
+    </div>
+    <button type="button" class="life-library-text" onclick="lifeNavigate('library')">전체 리포트가 필요하면 서고에서 모두 볼 수 있어요</button>
+  </section>`;
+}
+function buildLifeExperienceHTML(saju,libraryHtml){
+  const cards=buildLifeDeck(saju,_meta||{});
+  const key=`${sajuIdOf(saju,_meta)}|${_meta&&_meta.sy||''}`;
+  _lifeRoute={layer:'character',index:0,key};
+  return `<div class="life-experience" data-life-key="${key}">
+    ${buildLifeCharacterLayer(saju)}
+    <section class="life-layer life-deck-layer" data-life-layer="deck" hidden aria-label="인생총운 카드 덱">
+      <div class="life-layer-bar"><button type="button" onclick="lifeBack()" aria-label="이전">‹</button><div><small>LIFE DECK</small><b>인생총운 핵심 8장</b></div><button type="button" onclick="lifeNavigate('library')">서고</button></div>
+      <div class="td-count">한 장씩 가볍게 넘겨보세요</div>
+      <div id="lifeDeckStage">${lifeDeckCardHTML(cards[0],0,cards.length)}</div>
+    </section>
+    <section class="life-layer life-library-layer" data-life-layer="library" hidden aria-label="인생총운 전체 리포트">
+      <div class="life-layer-bar library"><button type="button" onclick="lifeBack()" aria-label="이전">‹</button><div><small>LIBRARY</small><b>인생총운 전체 서고</b></div><button type="button" onclick="lifeNavigate('character')">캐릭터</button></div>
+      <div class="life-library-intro">38장의 전체 풀이와 계산 근거를 보관해 두었어요. 필요한 카드만 목차에서 골라 읽으세요.</div>
+      ${termNoticeHTML()}
+      <div class="life-library-content">${libraryHtml}</div>
+      ${nextActionsHTML('life')}
+    </section>
+  </div>`;
+}
+function lifeNavigate(layer,index){
+  const root=document.querySelector('#p5 .life-experience');
+  if(!root)return;
+  const target=['character','deck','library'].includes(layer)?layer:'character';
+  if(target==='deck'&&Number.isFinite(index))_lifeRoute.index=Math.max(0,Math.min(7,index));
+  _lifeRoute.layer=target;
+  root.querySelectorAll('[data-life-layer]').forEach(el=>{
+    const on=el.dataset.lifeLayer===target;
+    el.hidden=!on;el.classList.toggle('on',on);
+  });
+  if(target==='deck'){
+    const cards=buildLifeDeck(_saju,_meta||{});
+    const stage=root.querySelector('#lifeDeckStage');
+    if(stage)stage.innerHTML=lifeDeckCardHTML(cards[_lifeRoute.index],_lifeRoute.index,cards.length);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  scheduleLanguageApply(root,[0,250]);
+}
+function lifeDeckNext(){
+  const cards=buildLifeDeck(_saju,_meta||{});
+  if(_lifeRoute.index>=cards.length-1)return lifeNavigate('library');
+  lifeNavigate('deck',_lifeRoute.index+1);
+}
+function lifeBack(){
+  if(_lifeRoute.layer==='library')return lifeNavigate('deck',Math.min(7,_lifeRoute.index));
+  if(_lifeRoute.layer==='deck'&&_lifeRoute.index>0)return lifeNavigate('deck',_lifeRoute.index-1);
+  lifeNavigate('character');
+}
+function lifeOpenEvidence(id){
+  lifeNavigate('library');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>jumpToCard(id)));
+}
+function buildLifeShareCardHtml(saju){
+  const c=buildCharacterCard(saju),scenes=(buildDailyScenes(saju)||[]).slice(0,3);
+  if(!c)return '';
+  const stars='★'.repeat(c.grade.stars)+'☆'.repeat(5-c.grade.stars);
+  return `<div class="life-share-card">
+    <div class="lsc-brand">天機 · LIFE CHARACTER</div>
+    <div class="lsc-portrait">${characterPortraitSVG(saju)}</div>
+    <div class="lsc-name">「${c.nickname}」</div><div class="lsc-sub">${c.subtitle}</div>
+    <div class="lsc-rarity">${stars} · ${c.people||c.grade.label}</div>
+    <div class="lsc-stats">${c.stats.map(s=>`<div><span>${s.name}</span><i><b style="width:${s.value*10}%"></b></i><em>${s.value}</em></div>`).join('')}</div>
+    <div class="lsc-scenes">${scenes.map(s=>`<div><span>${s.icon}</span><b>${s.label}</b><p>${preventOrphan(s.text)}</p></div>`).join('')}</div>
+    <div class="lsc-foot">천지인 사주 · saju-mbti-9h1.pages.dev</div>
+  </div>`;
+}
+async function downloadLifeShareCard(btn){
+  if(!_saju)return;
+  if(typeof html2canvas==='undefined'){alert('이미지 기능을 불러오는 중이에요. 잠시 후 다시 눌러주세요.');return;}
+  const original=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.innerHTML='⏳ 이미지 만드는 중';}
+  const off=document.createElement('div');
+  off.style.cssText='position:fixed;left:-12000px;top:0;width:1080px;height:1080px;z-index:-1';
+  off.innerHTML=buildLifeShareCardHtml(_saju);document.body.appendChild(off);
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const target=off.querySelector('.life-share-card');
+    const canvas=await html2canvas(target,{..._captureOpts(target),backgroundColor:'#111415',scale:1,width:1080,height:1080,windowWidth:1080,windowHeight:1080});
+    const result=await _saveCanvas(canvas,`인생총운_캐릭터_${new Date().toISOString().slice(0,10)}.jpg`);
+    if(result==='opened')alert('이미지를 길게 눌러 저장해주세요.');
+  }catch(e){console.error(e);alert('이미지를 만들지 못했어요. 잠시 후 다시 시도해주세요.');}
+  finally{off.remove();if(btn){btn.disabled=false;btn.innerHTML=original;}}
 }
 
 function resultHeroHTML(saju, mbti, cat){
@@ -6540,7 +6854,9 @@ const CLASSIC_QUOTES={
 };
 function pickQuote(score){
   const arr=score>=70?CLASSIC_QUOTES.good:score<=45?CLASSIC_QUOTES.caution:CLASSIC_QUOTES.neutral;
-  return arr[Math.floor(Math.random()*arr.length)];
+  const key=String(arguments.length>1&&arguments[1]!=null?arguments[1]:(sajuIdOf(_saju,_meta)||''));
+  const hash=parseInt(textHash(`${key}|${score}`),36)||0;
+  return arr[hash%arr.length];
 }
 // 십신 핵심 키워드 (월별·신년 키워드용)
 const TG_KEYWORD={
@@ -10158,7 +10474,8 @@ function unlockAndRender(category){
   const renderTarget=(panelId,html)=>{
     const el=document.getElementById(panelId);
     if(!el)return;
-    el.innerHTML=fixKoreanJosa(back+headerBlock+termNoticeHTML()+html+nextActions);
+    const isLife=category==='life';
+    el.innerHTML=fixKoreanJosa(back+(isLife?'':headerBlock+termNoticeHTML())+html+(isLife?'':nextActions));
     enrichTerms(el);
     el.dataset.rendered='1';
     setTimeout(()=>{try{applyLanguageToVisibleResult(el);}catch(e){}},0);
@@ -10837,22 +11154,25 @@ function getTenGodLocReading(tg,loc){
   return (TENGOD_LOC_IMPACT[tg]&&TENGOD_LOC_IMPACT[tg][loc])||'';
 }
 
+function goodWarnHTML(goodWarn){
+  if(!goodWarn)return '';
+  let h='';
+  if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">이 부분은 흐름을 살려요</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
+  if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">이 부분은 한 번 더 살펴요</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
+  return h;
+}
 function paidWrap(catLabel,emoji,title,paragraphs,goodWarn){
   let body=paragraphs.map(p=>`<p>${preventOrphan(p)}</p>`).join('');
   let h=`<div class="nb-card">
     <div class="nb-cat">${catLabel}</div>
     <div class="nb-title">${title}</div>
     <div class="nb-body">${body}</div>`;
-  if(goodWarn){
-    if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">이 부분은 흐름을 살려요</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
-    if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">이 부분은 한 번 더 살펴요</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
-  }
+  h+=goodWarnHTML(goodWarn);
   h+='</div>';
   return h;
 }
 
 function renderSajuPaid(saju,sy,sm,sd,sh,smin){
-  _ctxHeaderN=0;_areaConclN=0; // 카드 공용 헤더/결론 변주 카운터 리셋 (재렌더 대비)
   const oh=ohCount(saju);
   const dm=DM[saju.dp.stem];
   const ys=getYongsin(oh);
@@ -10932,7 +11252,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   // ⑥ 여덟 글자 무늬는 별도 카드(PERSONA)로 분리 — 1장에 노출 (CHX)
   // ▼ MBTI×사주 통합 풀이 (MBTI 선택 시만) — 사주팔자 종합 풀이 안에 직접 끼움
   sajuBody+=mbtiSajuFusionParagraph(saju, (_meta&&_meta.mbti)||'', '평생의 흐름을 읽을 때 「후천적 MBTI」와 「선천적 사주」를 함께 보면, 본인의 본질이 더 또렷이 보여요.');
-  sajuBody=_sajuContextHeader(saju,ys,gk,'사주팔자 종합')+sajuBody;
+  sajuBody=_sajuContextHeader(saju,ys,gk)+sajuBody;
   sajuBody+=_generalAreaConclusion(saju,ys,'사주팔자 종합');
 
   h+=`<!--CARD_START:SAJUCORE--><div class="nb-card" data-cardid="SAJUCORE" id="card-SAJUCORE">
@@ -11146,8 +11466,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     wtBody+=`</div>`;
     wtBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>재물의 흐름을 잘 쓰는 법</b><br>안정 재물기에는 저축·부동산·결혼 자금에, 활동 재물기에는 사업·창업·새 거래에, 학습 투자기에는 자격증·학위에 시간을 쓰세요. <b>주의기에 들어온 큰돈 결정·동업·계약은 일단 묵혀두는 것</b>이 평생 모은 돈을 지키는 가장 싼 보험이에요.</p>`;
-    wtBody=_sajuContextHeader(saju,ys,gk,'평생 재물 흐름')+wtBody;
-    wtBody+=_generalAreaConclusion(saju,ys,'평생 재물 타임라인');
     h+=paidWrapBody('WEALTH_TIMELINE','💎','평생 재물 타임라인 — 재물기·주의기',wtBody);
   }catch(e){}
 
@@ -11265,8 +11583,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ctBody+=`</div>`;
     ctBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 흐름을 잘 쓰는 법</b><br>안정 직장기에는 입사·자격증·승진에, 사업·이동기에는 창업·이직·새 거래에, 학습·전문성 시기에는 학위·자격증에 시간을 쓰세요. <b>변동·갈등기의 사직서·계약서는 하룻밤 재우고 다시 읽는 습관</b>이 커리어를 길게 지켜줘요.</p>`;
-    ctBody=_sajuContextHeader(saju,ys,gk,'평생 직업·사업 흐름')+ctBody;
-    ctBody+=_generalAreaConclusion(saju,ys,'평생 직업·사업 타임라인');
     h+=paidWrapBody('CAREER_TIMELINE','💼','평생 직업·사업 타임라인 — 진학·취업·승진·창업·이직·은퇴',ctBody);
   }catch(e){}
 
@@ -11394,8 +11710,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ltBody+=`</div>`;
     ltBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>연애·결혼의 흐름을 잘 쓰는 법</b><br>결혼 적기·만남기에는 적극적으로 인연을 만나고, 정리기·갈등기에는 큰 결정(이별·결혼·동거)을 서두르지 말고 미뤄두세요. 갈등은 흉이 아니라 「자리를 흔드는 신호」예요 — 미루던 솔직한 대화나 정리해야 할 인연이 자연스럽게 드러나는 시기예요.</p>`;
-    ltBody=_sajuContextHeader(saju,ys,gk,'평생 연애·결혼 흐름')+ltBody;
-    ltBody+=_generalAreaConclusion(saju,ys,'평생 연애·결혼 타임라인');
     h+=paidWrapBody('LOVE_TIMELINE','💕','평생 연애·결혼 타임라인 — 만남·결혼·이별 시기',ltBody);
   }catch(e){}
 
@@ -11462,8 +11776,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     ftBody+=`</div>`;
     ftBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>가족 흐름을 잘 쓰는 법</b><br>양육기에는 자녀에게 시간을, 안정기에는 가정 자산에, 책임 무거운 시기에는 본인 컨디션 관리에 무게를 두세요. 가족 변동기에는 큰 결정보다 대화로 흐름을 다지세요.</p>`;
-    ftBody=_sajuContextHeader(saju,ys,gk,'평생 가족·자녀 흐름')+ftBody;
-    ftBody+=_generalAreaConclusion(saju,ys,'평생 가족·자녀 타임라인');
     h+=paidWrapBody('FAMILY_TIMELINE','👨‍👩‍👧‍👦','평생 가족·자녀 타임라인 — 결혼·출산·양육·부모 봉양·자녀 독립',ftBody);
   }catch(e){}
 
@@ -11588,8 +11900,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     htBody+=`</div>`;
     htBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>평생 건강 관리 한 줄</b><br>본인이 평생 의식해야 할 핵심 부위는 <b>${_organByOh[_weak]}</b>예요. 약한 오행 영역이라 정기 검진을 평소보다 한 박자 더 신경 쓰시고, 회복기 대운에서는 적극적으로 건강 검진·치료·생활습관 개선을 배치하세요.</p>`;
-    htBody=_sajuContextHeader(saju,ys,gk,'평생 건강 흐름')+htBody;
-    htBody+=_generalAreaConclusion(saju,ys,'평생 건강 타임라인');
     h+=paidWrapBody('HEALTH_TIMELINE','🩺','평생 건강 타임라인 — 회복기·주의기',htBody);
   }catch(e){}
 
@@ -11650,8 +11960,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     mtBody+=`</div>`;
     mtBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>이동 흐름을 잘 쓰는 법</b><br>역마기에는 유학·해외·이주를, 안정 정착기에는 내실 다지기와 자기 자리 굳히기를, 환경 변동기에는 큰 결정 전 찬찬히 짚어보기를 우선하세요.</p>`;
-    mtBody=_sajuContextHeader(saju,ys,gk,'평생 이동·이주 흐름')+mtBody;
-    mtBody+=_generalAreaConclusion(saju,ys,'평생 이동·이주 타임라인');
     h+=paidWrapBody('MOVE_TIMELINE','🚄','평생 이사·이주·해외 타임라인 — 이동·정착·환경 변동 시기',mtBody);
   }catch(e){}
 
@@ -11803,8 +12111,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     stlBody+=`</div>`;
     stlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>학업·시험의 흐름을 잘 쓰는 법</b><br>정형 학습기에는 자격증·학위·국가고시에, 전문 연구기에는 박사·전문직 자격에, 도전 시험기에는 고시·경쟁률 높은 시험에 시간을 잡으세요. 큰 시험 결정은 정인·편인이 들어오는 대운을 기준으로 잡으면 흐름이 가장 잘 풀려요.</p>`;
-    stlBody=_sajuContextHeader(saju,ys,gk,'평생 학업·시험 흐름')+stlBody;
-    stlBody+=_generalAreaConclusion(saju,ys,'평생 학업·시험 타임라인');
     h+=paidWrapBody('STUDY_TIMELINE','📜','평생 학업·시험 타임라인 — 학습·자격·시험 시기',stlBody);
   }catch(e){}
 
@@ -11865,8 +12171,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     spBody+=`</div>`;
     spBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>정신 흐름을 잘 쓰는 법</b><br>화개기·학습 깊이기에는 학문·예술·종교 활동을, 공망 채움기에는 명상·일기·자기 돌봄을, 평이한 시기에는 일상 속에서 짧은 내면 시간을 확보하세요.</p>`;
-    spBody=_sajuContextHeader(saju,ys,gk,'평생 영성·정신 흐름')+spBody;
-    spBody+=_generalAreaConclusion(saju,ys,'평생 영성·정신 타임라인');
     h+=paidWrapBody('SPIRIT_TIMELINE','🪷','평생 영성·정신·내면 타임라인 — 학문·예술·종교·명상 시기',spBody);
   }catch(e){}
 
@@ -11974,7 +12278,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gwBody+=`<p style="margin-top:8px;padding:11px 13px;background:rgba(229,116,98,.05);border-radius:9px;border-left:3px solid var(--warn);font-size:.82rem"><b>⚖ 가장 강한 ${_ohEmoji[_strongOh]} ${_ohName[_strongOh]} 기운 절제법</b><br>본인 사주에 과한 기운이라, ${_ohName[_strongOh]}을 줄이는 색·음식은 평소보다 한 박자 줄이세요. 균형이 본인을 살려요.</p>`;
     }
     gwBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>개운법의 핵심은 「작은 일상 실천」</b><br>거창한 부적·의식보다 매일 작은 색·음식·습관을 일상에 들이는 것이 평생 흐름을 만들어요. 위 8가지 중 본인이 가장 자연스럽게 들일 수 있는 한두 가지부터 시작하세요.</p>`;
-    gwBody=_sajuContextHeader(saju,ys,gk,'개운법')+gwBody;
     gwBody+=_areaDeepConclusion('gaewoon',saju,ys,gender);
     h+=paidWrapBody('GAEWOON','✨','평생 개운법 — 색·방향·음식·물건·습관',gwBody);
   }catch(e){}
@@ -12075,7 +12378,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     }
     rsBody+=`</div>`;
     rsBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 안의 관계가 알려주는 것</b><br>본인 사주의 좋은 관계는 평생 본인을 「자연스럽게 살려주는 자산」이고, 주의 관계는 「평생 의식해서 다스려야 할 과제」예요. 좋은 관계는 의식적으로 활용하고, 주의 관계는 의식적으로 다듬으면 같은 사주도 다른 흐름으로 펼쳐져요.</p>`;
-    rsBody=_sajuContextHeader(saju,ys,gk,'사주 글자 관계')+rsBody;
     rsBody+=_areaDeepConclusion('sajurel',saju,ys,gender);
     h+=paidWrapBody('SAJU_REL','🔗','본인 사주 안의 관계 — 평생 자산과 과제',rsBody);
   }catch(e){}
@@ -12138,7 +12440,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       }
       sjBody+=`<p style="margin-top:10px;padding:11px 13px;background:linear-gradient(135deg,rgba(212,175,73,.08),rgba(108,191,126,.04));border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem"><b>🎯 신강/신약 × 사주 유형 정밀 매칭</b><br>${_detail}</p>`;
     }catch(e){}
-    sjBody=_sajuContextHeader(saju,ys,gk,'신강·신약')+sjBody;
     sjBody+=_areaDeepConclusion('singang',saju,ys,gender);
     h+=paidWrapBody('SINGANG','⚖','신강/신약 — 본인 사주의 그릇 크기',sjBody);
   }catch(e){}
@@ -12324,7 +12625,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
         <div style="font-size:.82rem;line-height:1.85">${_myGk.challenge}</div>
       </div>`;
       gkBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>사주 유형이 알려주는 것</b><br>사주 유형은 본인 사주의 「타고난 방향」을 보여줘요. 같은 유형이라도 10년 흐름·환경·노력에 따라 결과가 갈리니, 위 풀이는 「본인 흐름이 가장 자연스럽게 흐르는 방향」으로 활용하세요. 강점은 적극 발휘하고, 평생 과제는 의식적으로 다듬어 가시면 돼요.</p>`;
-      gkBody=_sajuContextHeader(saju,ys,gk,'사주 유형')+gkBody;
       gkBody+=_areaDeepConclusion('gyeokguk',saju,ys,gender);
       h+=paidWrapBody('GYEOKGUK','📜','사주 유형 종합 — 본인 타고난 방향',gkBody);
     }
@@ -12383,7 +12683,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       gfBody+=`</div>`;
     }
     gfBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>비어 있는 자리가 채워지는 의미</b><br>본인 사주의 비어있는 자리에 해당하는 글자가 운에서 들어오는 시기는 「평소 약했던 영역에 결실이 들어오는 보강의 시기」예요. 위 시기에 의도적으로 그 영역(학습·관계·재물·자녀 등)을 챙기시면 자연스럽게 결실이 따라와요.</p>`;
-    gfBody=_sajuContextHeader(saju,ys,gk,'비어있는 자리')+gfBody;
     gfBody+=_areaDeepConclusion('gongmang',saju,ys,gender);
     h+=paidWrapBody('GONGMANG_TL','✨','평생 비어있는 자리 채워짐 — 약했던 영역의 결실기',gfBody);
   }catch(e){}
@@ -12400,7 +12699,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   huBody+=`<p><span class="body-q">💡 본인 인간관계의 강점과 의식할 부분</span><br>· <b>강점</b>: ${has('천을귀인')?'<b>천을귀인 별자리</b>가 자리잡아 위기마다 귀인이 자연스럽게 나타나는 평생 자산':oh[dStemOh]>=3?'본인 색이 또렷해 한 분야 1인 직업·본인 사업에서 빛나는 자기 주도형':'일대일 깊은 인연으로 신뢰를 쌓는 진정성형'}${has('역마')?' + 이동·해외 별자리로 새 환경 적응이 빠른 사교형':''}<br>· <b>주의</b>: ${has('겁재')?'경쟁심이 깊어 동업·금전 거래에서 신뢰가 흔들리기 쉬움 — 친할수록 명확한 기록·계약 필수':has('상관')?'표현이 튀어 윗사람·규율과 마찰 — 톤 한 단계 부드럽게':'본인 주장과 상대 의견의 균형을 의식해서 잡기'}</p>`;
   huBody+=`<p><span class="body-q">✦ 지금 ${_userAge}세 ${_userStageLabel} — 관계망을 어떻게 가꿀까요?</span><br>${_userStage==='school'?'학교·동아리·또래 모임에서 본인 페이스를 지키되 1~2명과 깊게 신뢰를 쌓기':_userStage==='youth'?'대학·동기·진로 네트워크 안에서 평생 친구 만남 — 깊은 인연 2~3명이 평생 자산':_userStage==='young'?'직장 동료·동기·고객과의 신뢰 — 1:1로 깊게 만나는 관계 우선':_userStage==='prime'?'동업·전문가 그룹 활용 — 다만 동업 자금은 명확한 기록 필수':_userStage==='mid'?'동기·동창 재회 + 자녀 독립 후 새 관계 — 의식적인 깊이 다지기':_userStage==='senior1'?'옛 친구·은퇴 모임 풍성 — 한 사람과 깊은 시간이 가장 큰 자산':'가족·자손·소수의 진심 어린 관계 — 인생 정리의 시기'} · 추천 액션: <em>${stageActionOf('relation',_userAge)}</em></p>`;
   huBody+=getRelevantRelationsHtml(saju,'human');
-  huBody=_sajuContextHeader(saju,ys,gk,'인간관계')+huBody;
   huBody+=_areaDeepConclusion('human',saju,ys,gender);
   h+=paidWrapBody('HUMAN','👥','인간관계',huBody,
     {good:'타고난 인덕을 살리시고, 어려울 때 도움을 청할 수 있는 관계망을 평소에 잘 가꿔두세요. 일대일로 깊게 만나는 관계 몇 개가 넓은 인맥보다 훨씬 든든해요.',
@@ -12469,8 +12767,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     httBody+=`</div>`;
     httBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>인맥 흐름을 잘 쓰는 법</b><br>확장기에는 새 인맥과 적극 만남을, 안정 인연기에는 깊은 1:1 관계를 다지기에, 정리기에는 갈등 회피보다 솔직한 대화를 우선하세요.</p>`;
-    httBody=_sajuContextHeader(saju,ys,gk,'평생 인간관계 흐름')+httBody;
-    httBody+=_generalAreaConclusion(saju,ys,'평생 인간관계 타임라인');
     h+=paidWrapBody('HUMAN_TIMELINE','🤝','평생 인간관계 타임라인 — 친구·동료·인맥의 흐름',httBody);
   }catch(e){}
 
@@ -12533,7 +12829,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     </div>`;
     yckBody+=`</div>`;
     yckBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>6친 풀이의 의미</b><br>사주의 십신 강약은 인연의 「타고난 분위기」을 보여줘요. 약하다고 흉이 아니라 「의식적으로 가꿔야 할 영역」이라는 뜻. 부모 인연이 약하면 어른과의 관계를 의식적으로 가꾸고, 자녀 인연이 약하면 후배·아랫사람 돌봄으로 그 흐름을 채울 수 있어요.</p>`;
-    yckBody=_sajuContextHeader(saju,ys,gk,'6친 가족 인연')+yckBody;
     yckBody+=_areaDeepConclusion('yookchin',saju,ys,gender);
     h+=paidWrapBody('YOOKCHIN','👨‍👩‍👧','6친 관계 — 부모·형제·배우자·자녀 인연',yckBody);
   }catch(e){}
@@ -12618,7 +12913,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     const _isCreator=_topSS==='bigeop'||_topSS==='jaesung'||_topSS==='siksang';
     jobBody+=`<p style="margin-top:14px"><span class="body-q">창업이 맞을까요, 직장이 맞을까요?</span><br>${_isCreator?'<b>본인 사업·창업·자영업 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기가 또렷해서 남 밑에서 일하면 답답함을 느끼기 쉽고, 본인 이름으로 일할 때 가장 큰 결실이 나와요.':'<b>체계 잡힌 조직·직장 쪽이 더 잘 맞는</b> 사주예요. 본인의 분위기가 책임·학습·관리 쪽이라 안정적인 조직에서 차근차근 성장할 때 운이 가장 잘 살아나요.'}</p>`;
     jobBody+=`<p style="margin-top:10px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>직업 적성은 「가능성」이지 「운명」이 아니에요</b><br>위 추천은 본인 분위기와 자연스럽게 맞는 영역이에요. 본인의 노력·환경·관심사로 다른 영역에서도 충분히 성공할 수 있고, 평생 한 직업이 아니라 여러 흐름을 거치는 것도 정상이에요. 위 추천은 「큰 결정 시 한 번 더 살펴볼 영역」으로 활용하세요.</p>`;
-    jobBody=_sajuContextHeader(saju,ys,gk,'직업 적성')+jobBody;
     jobBody+=_areaDeepConclusion('job',saju,ys,gender);
     h+=paidWrapBody('JOB','💼','직업 적성 — 평생 잘 맞는 일터 색깔',jobBody);
   }catch(e){}
@@ -12663,7 +12957,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
       sinBody+=getPersonalizedSinsalInsight(sins,_activeNow,`${_curY}년`);
     }
   }catch(e){}
-  sinBody=_sajuContextHeader(saju,ys,gk,'별자리·신살')+sinBody;
   sinBody+=_areaDeepConclusion('sinsal',saju,ys,gender);
   h+=paidWrapBody('SINSAL','⚡','별자리·비어있는 자리 종합 분석',sinBody);
 
@@ -12792,7 +13085,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   swBody+=`<p><span class="body-q">${_userAge}세 ${_userStageLabel} 기준으로 올해를 이렇게 쓰면 좋아요.</span><br>${getSewoonDesc(swTG,swBTG,curDaeun,saju,_userAge)}</p>`;
   const swHapChung=analyzeSewoonHapChung(saju,swSaewoon);
   if(swHapChung)swBody+=`<p>${swHapChung}</p>`;
-  swBody=_sajuContextHeader(saju,ys,gk,'올해 흐름')+swBody;
   h+=paidWrapBody('SEWOON','🗓','올해 흐름 — 한 해를 읽는 순서',swBody);
 
   // ═════════════════════════════════════
@@ -12818,8 +13110,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     });
     tlBody+=`</div>`;
     tlBody+=`<p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.82rem">📌 <b>큰 결정은 「이 시기에 흐름이 들어오는가」를 보고 배치하세요</b><br>결혼·이주·창업 같은 큰 결정은 사주의 분위기와 외부 시기가 함께 맞을 때 가장 크게 열매 맺어요. 위 타임라인의 「결혼 적기」·「승진 자리」 시기에 큰 결정을 배치하시면, 같은 결정도 한 단계 더 부드럽게 흐릅니다.</p>`;
-    tlBody=_sajuContextHeader(saju,ys,gk,'평생 사건 종합')+tlBody;
-    tlBody+=_generalAreaConclusion(saju,ys,'평생 사건 종합 타임라인');
     h+=paidWrapBody('TIMELINE','📜','평생 사건 타임라인 — 결혼·승진·재물·시험 시기',tlBody);
   }catch(e){}
 
@@ -12951,8 +13241,6 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
     htBody+=`</tbody></table>
     </div>
     <p style="margin-top:14px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent);font-size:.79rem;color:var(--sub);line-height:1.85">💡 <b>이 차트를 어떻게 활용하나요?</b><br>① 평생 가장 좋은 시기(🟢 많은 컬럼)에 큰 결정·결혼·창업을 배치<br>② 🔴 변동 시기에는 큰 결정을 잠시 미뤄두고 정리·내실에 집중<br>③ 본인 인생 단계(★ 현재)와 다음 10년 흐름을 함께 보면 평생 계획을 세우기 좋아요</p>`;
-    htBody=_sajuContextHeader(saju,ys,gk,'평생 흐름 마스터 차트')+htBody;
-    htBody+=_generalAreaConclusion(saju,ys,'평생 흐름 마스터 차트');
     h+=paidWrapBody('LIFE_HEATMAP','📊','평생 흐름 통합 마스터 차트 — 12종 분야 × 대운 한눈에',htBody);
   }catch(e){}
 
@@ -12978,7 +13266,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   h=reorderByChapters(h,[
     {no:1,title:'핵심 바탕',desc:'본질·삶의 방향·그릇을 먼저 한 번만 잡아요',labels:['TOTAL','PERSONA']},
     {no:2,title:'지금의 시간',desc:'현재 10년·올해·앞으로 10년을 이어서 읽어요',labels:['DAEUN10','SEWOON','YEAR10']},
-    {no:3,title:'분야별 흐름',desc:'앞에서 잡은 바탕이 돈·일·관계·건강에서 어떻게 나타나는지 봐요',labels:['WEALTH','CAREER','LOVE','HEALTH','HUMAN','JOB','STUDY','WEALTH_TIMELINE','CAREER_TIMELINE','LOVE_TIMELINE','HEALTH_TIMELINE','HUMAN_TIMELINE','STUDY_TIMELINE','FAMILY_TIMELINE','MOVE_TIMELINE','SPIRIT_TIMELINE']},
+    {no:3,title:'분야별 흐름',desc:'주제 카드 다음에 바로 같은 분야의 시기 흐름을 이어서 봐요',labels:['WEALTH','WEALTH_TIMELINE','CAREER','CAREER_TIMELINE','LOVE','LOVE_TIMELINE','FAMILY_TIMELINE','HEALTH','HEALTH_TIMELINE','HUMAN','HUMAN_TIMELINE','JOB','STUDY','STUDY_TIMELINE','MOVE_TIMELINE','SPIRIT_TIMELINE']},
     {no:4,title:'근거 보기',desc:'네 자리와 기운의 구조를 더 깊게 확인하는 자리',labels:['SAJUCORE','SINGANG','PILLAR4','BRANCH12','GYEOKGUK','STAGE12','SAJU_REL','SINSAL','STAR12','YOOKCHIN','TIMELINE','GONGMANG_TL','LIFE_HEATMAP']},
     {no:5,title:'실천',desc:'타고난 흐름을 일상에서 살리는 방법',labels:['GAEWOON']}
   ]);
@@ -13059,7 +13347,7 @@ function renderSajuPaid(saju,sy,sm,sd,sh,smin){
   let _daeunChartCard=''; try{_daeunChartCard=renderDaeunFlowChart(saju,sy,sm,sd,sh,smin);}catch(e){}
   h=_quickCard+_aiLifeCoreCard+_daeunChartCard+_masterCard+`<div data-ai-fallback-for="life-core" data-ai-extra="">${_tocCard+h}</div>`;
 
-  return h;
+  return buildLifeExperienceHTML(saju,h);
 }
 
 // ══════════════════════════════════════════════
@@ -14580,8 +14868,6 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   const isScopedFold=!!scopedFoldLabels&&scopedFoldLabels.has(catLabel);
   const isLegacyFold=!scopedFoldLabels&&foldCats.has(_paidFoldMode)&&!noFoldLabels.has(catLabel);
   const isDetail=!isPrimary&&!isTl&&(isScopedFold||isLegacyFold);
-  const briefHtml='';
-  const memoryHtml=briefHtml?`<div class="remember-line">${preventOrphan(_memoryLineForCard(title,(_readingSentences(bodyHtml).find(s=>/하세요|좋아요|필요|활용|챙기|줄이|미루|잡으|정리|확인|주의/.test(s))||'')))}</div>`:'';
   const cls='nb-card'+(isPrimary?' primary':'')+(isTl?' tl-collapsible':'')+(isDetail?' detail-collapsible':'');
   const badge=isPrimary?`<div class="nb-primary-badge">본인이 가장 알고 싶은 영역이라 가장 위로 올렸어요</div>`:'';
   // 카드 시작/끝 주석 마커로 컨텍스트 우선 재정렬 가능 (BO-2)
@@ -14589,14 +14875,13 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   // 주의: _generateTOC 정규식이 <div class="nb-title">를 리터럴 매칭 — 이 태그에 속성 추가 금지
   const safeId='card-'+catLabel.replace(/[^A-Za-z0-9_-]/g,'_');
   let h=`<!--CARD_START:${catLabel}--><div class="${cls}" data-cardid="${catLabel}" id="${safeId}">
-    ${badge}<div class="nb-cat">${catLabel}</div>
+    ${badge}<div class="nb-cat">${emoji?`<span class="nb-cat-icon" aria-hidden="true">${emoji}</span>`:''}${catLabel}</div>
     <div class="nb-title">${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
-    ${briefHtml}
     ${cardQuoteHTML(catLabel)}
     ${statLinkHTML(catLabel)}
     ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
-    <div class="nb-body">${preventOrphan(bodyHtml)}${memoryHtml}</div>`;
+    <div class="nb-body">${preventOrphan(bodyHtml)}</div>`;
   if(goodWarn){
     // 새 3박스 포맷 우선 — {strengths, todos, avoids} 또는 배열
     const has3=Array.isArray(goodWarn.strengths)||Array.isArray(goodWarn.todos)||Array.isArray(goodWarn.avoids);
@@ -14615,8 +14900,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
       h+=`</div>`;
     }else{
       // 하위 호환 — 기존 good/warn 2박스
-      if(goodWarn.good)h+=`<div class="nb-good"><div class="nb-good-lab">이 부분은 흐름을 살려요</div><div class="nb-gw-body">${preventOrphan(goodWarn.good)}</div></div>`;
-      if(goodWarn.warn)h+=`<div class="nb-warn"><div class="nb-warn-lab">이 부분은 한 번 더 살펴요</div><div class="nb-gw-body">${preventOrphan(goodWarn.warn)}</div></div>`;
+      h+=goodWarnHTML(goodWarn);
     }
   }
   if(isDetail)h+=`</div>`; // .detail-body-wrap 닫기
@@ -14688,6 +14972,12 @@ document.addEventListener('click',function(e){
 function jumpToCard(id){
   const el=document.getElementById(id);
   if(!el)return;
+  const library=el.closest('[data-life-layer="library"]');
+  if(library&&library.hidden){
+    lifeNavigate('library');
+    requestAnimationFrame(()=>jumpToCard(id));
+    return;
+  }
   if(el.classList.contains('tl-collapsible')&&!el.classList.contains('tl-open'))_tlToggle(el,true);
   if(el.classList.contains('detail-collapsible')&&!el.classList.contains('detail-open'))_detailToggle(el,true);
   el.scrollIntoView({behavior:'smooth',block:'start'});
@@ -14786,33 +15076,18 @@ function _generateTOC(h, scopeLabel){
   }catch(e){return '';}
 }
 
-// CF: 모든 카드 도입에 본인 사주 핵심 요약 박스 (5분야 lead 박스 수준 강화)
-let _ctxHeaderN=0; // 인생총운 한 화면에서 22회 호출 — 첫 호출만 풀버전, 이후는 짧은 변주(중복 제거)
-function _sajuContextHeader(saju, ys, gk, fieldLabel){
+// 전체 서고 첫 카드에만 한 번 보여주는 사주 핵심 요약 박스
+function _sajuContextHeader(saju, ys, gk){
   const dStemOh=SOH[saju.dp.stem];
-  _ctxHeaderN++;
-  if(_ctxHeaderN>1){
-    return '';
-  }
-  const _ctxStemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
-  const _ctxBrCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   return `<div class="lead-card" style="background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(45,52,71,.4));border-left-color:var(--accent-bright)">
     본인 사주는 <b>${STEMKO[saju.dp.stem]}${OHNAME[dStemOh]}</b>, 즉 <em>${stemNick(saju.dp.stem)}</em> 같은 바탕에서 출발해요. 본인이 앉은 자리는 <em>${BRCHKO[saju.dp.branch]}(${ANIMAL[saju.dp.branch]})</em>${branchNick(saju.dp.branch)?`의 ${branchNick(saju.dp.branch)} 분위기`:''}이고, 전체 방향은 <em>${gk.name}${gk.nick?' · '+gk.nick.split('·')[0]+'형':''}</em>으로 잡혀 있어요. 이 풀이에서는 이 바탕 위에 <b>${OHNAME[ys.main]}</b> 기운이 본인을 어떻게 도와주는지를 중심으로 읽어드릴게요.
   </div>`;
 }
 
-// CF: 카드 끝 일반 결론 — 영역명만 받아 도움/주의 글자 안내
-let _areaConclN=0; // 한 화면 12회 호출 — 첫 호출만 풀버전, 이후는 한 줄 변주(중복 제거)
+// 전체 서고 첫 카드의 공통 마무리
 function _generalAreaConclusion(saju, ys, areaLabel){
-  const dStemOh=SOH[saju.dp.stem];
   const goodOh=OHNAME[ys.main];
   const badOh=OHNAME[(ys.main+2)%5];
-  _areaConclN++;
-  if(_areaConclN>1){
-    return '';
-  }
-  const _stemCh={0:'갑·을',1:'병·정',2:'무·기',3:'경·신',4:'임·계'};
-  const _brCh={0:'인·묘',1:'사·오',2:'진·술·축·미',3:'신·유',4:'해·자'};
   return `<div style="margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,175,55,.07),var(--earth-bg));border-radius:9px;border-left:3px solid var(--accent-bright);font-size:.78rem;line-height:1.85">
     ${areaLabel}에서 큰 결정을 잡을 때는 <b style="color:var(--good)">${goodOh}</b> 기운이 들어오는 시기를 먼저 보세요. 이 기운은 본인 바탕을 받쳐주거나 약한 부분을 채워줘서 같은 선택도 덜 무리하게 풀려요. 반대로 <b style="color:var(--warn)">${badOh}</b> 기운이 강한 때는 속도를 늦추고, 확인·정리·휴식 쪽에 무게를 두는 편이 좋아요.
   </div>`;
@@ -15484,10 +15759,13 @@ function chatResetCount(cat){
 
 // 자세한 사주 패널에 표시된 텍스트를 추출해 컨텍스트로 사용 (현재 카테고리 패널)
 const CAT_PANEL_ID={manse:'p0',daily:'p1',daypick:'p2',monthly:'p3',newyear:'p4',life:'p5',gunghap:'p6',name:'p7',qna:'p8'};
-function cleanReadingTextFromElement(root){
+function cleanReadingTextFromElement(root,opts){
   if(!root)return '';
   const clone=root.cloneNode(true);
-  ['.chat-card','.gg-input','#ggResultBox','.lock-wrap','.mm-sin-row','.mm','.dx-wrap','.gg-wrap','.tl-pillars','.ai-reading-card'].forEach(sel=>{
+  const keepGunghap=!!(opts&&opts.keepGunghap);
+  const remove=['.chat-card','.gg-input','.lock-wrap','.mm-sin-row','.mm','.dx-wrap','.tl-pillars','.ai-reading-card'];
+  if(!keepGunghap)remove.push('#ggResultBox','.gg-wrap');
+  remove.forEach(sel=>{
     clone.querySelectorAll(sel).forEach(el=>el.remove());
   });
   ['p','div','h1','h2','h3','h4','h5','li'].forEach(tag=>{
@@ -15511,14 +15789,18 @@ function buildHiddenLifeReadingTextForQna(){
     return '';
   }
 }
-function extractDetailedReadingText(){
+function extractDetailedReadingText(source){
   if(_category==='qna')return buildHiddenLifeReadingTextForQna();
+  if(source==='life-gunghap'){
+    const box=document.getElementById('ggResultBox');
+    return cleanReadingTextFromElement(box,{keepGunghap:true});
+  }
   const id=CAT_PANEL_ID[_category]||'p5';
   const p=document.getElementById(id);
   return cleanReadingTextFromElement(p);
 }
 
-function buildSajuContextForChat(){
+function buildSajuContextForChat(source){
   if(!_saju||!_meta)return null;
   const oh=ohCount(_saju);
   const dm=DM[_saju.dp.stem];
@@ -15567,7 +15849,7 @@ function buildSajuContextForChat(){
       marriage:qaExtra.marriage||'',
       children:qaExtra.children||'',
     }:null,
-    detailedReading:extractDetailedReadingText(),
+    detailedReading:extractDetailedReadingText(source),
   };
 }
 
@@ -15672,7 +15954,7 @@ function renderAIReadingCard(category, title, extraKey, opts){
   </div>`;
 }
 function buildAIReadingPayload(category, extra){
-  const ctx=buildSajuContextForChat();
+  const ctx=buildSajuContextForChat(extra&&extra.source);
   if(!ctx)return null;
   return{
     category,
@@ -20608,9 +20890,9 @@ function analyze(){
         targetIdx=4;
       }else if(cat==='life'){
         const _p5=document.getElementById('p5');
-        _p5.innerHTML=fixKoreanJosa(back+(unlocked?headerFull:headerTeaser)+(unlocked
-          ?termTip+renderSajuPaid(saju,sy,sm,sd,hour,min)
-          :renderPaidLock('life',saju))+(unlocked?nextActions:''));
+        _p5.innerHTML=fixKoreanJosa(back+(unlocked
+          ?renderSajuPaid(saju,sy,sm,sd,hour,min)
+          :headerTeaser+renderPaidLock('life',saju)));
         if(unlocked)enrichTerms(_p5);
         _p5.dataset.rendered='1';
         targetIdx=5;

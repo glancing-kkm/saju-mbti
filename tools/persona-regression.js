@@ -136,6 +136,44 @@ const harness = `
     const da = renderSajuAnalysis(SELF), db_ = renderSajuAnalysis(GWAN);
     ok('renderSajuAnalysis 천성: 같은 일간이라도 다름',
        da.includes('봄 태생') && db_.includes('가을 태생') && !leaky(da));
+
+    // 11) 인생총운 3층 구조 — 덱 8장·카드당 300~400자·초상 40조합
+    const deck = buildLifeDeck(SELF,_meta);
+    const deckLens = deck.map(card=>String(card.copy||'').replace(/<[^>]+>|&nbsp;/g,' ').length);
+    ok('인생총운 덱: 8장 생성', deck.length===8, 'count='+deck.length);
+    ok('인생총운 덱: 카드당 300~400자', deckLens.every(n=>n>=300&&n<=400), deckLens.join(','));
+    const portraitSet=new Set();
+    [2,5,8,11].forEach(monthBranch=>{
+      for(let stem=0;stem<10;stem++)portraitSet.add(characterPortraitSVG(C(1,3,0,monthBranch,stem,2,1,3)));
+    });
+    ok('캐릭터 초상: 일간 10종 × 계절 4종', portraitSet.size===40, 'unique='+portraitSet.size);
+    const share=buildLifeShareCardHtml(SELF);
+    ok('공유 카드: 1080 정사각형 클래스 생성', /life-share-card/.test(share)&&/character-portrait/.test(share));
+    const layered=renderSajuPaid(SELF,1990,5,15,12,0);
+    ok('인생총운 3층: 캐릭터·덱·서고 순서',
+       (layered.match(/data-life-layer=/g)||[]).length===3 &&
+       layered.indexOf('data-life-layer="character"')<layered.indexOf('data-life-layer="deck"') &&
+       layered.indexOf('data-life-layer="deck"')<layered.indexOf('data-life-layer="library"'));
+    ok('전체 서고: 기존 38카드 보존', (layered.match(/<!--CARD_START:/g)||[]).length===38);
+
+    // 12) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
+    const OTHER=C(6,8,7,9,3,7,6,8);
+    const deterministicRenderers={
+      life:()=>renderSajuPaid(SELF,1990,5,15,12,0),
+      newyear:()=>renderNewyearFortune(SELF,2026),
+      daypick:()=>renderDaypickFortune(SELF,2026,8,20,{}),
+      monthly:()=>renderMonthlyFortune(SELF,2026,8,2026,9,{}),
+      gunghap:()=>renderGunghapBody(SELF,OTHER,'male','female','',''),
+      name:()=>renderNamePaid(SELF,null)
+    };
+    const unstable=[];
+    Object.entries(deterministicRenderers).forEach(([cat,render])=>{
+      const set=new Set();for(let i=0;i<12;i++)set.add(render());
+      if(set.size!==1)unstable.push(cat+':'+set.size);
+    });
+    ok('결정성: 유료 6종 × 12회 모두 동일', unstable.length===0, unstable.join(', '));
+    const quoteSet=new Set();for(let i=0;i<12;i++)quoteSet.add(pickQuote(68,'regression-seed'));
+    ok('결정성: 고전 한 줄 시드 고정', quoteSet.size===1, 'variants='+quoteSet.size);
   } catch (e) {
     ok('예외 없이 완주', false, e.message + ' | ' + String(e.stack||'').split('\\n')[1]);
   }
