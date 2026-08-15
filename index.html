@@ -1348,7 +1348,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 #card-TOC.toc-compact .toc-collapse-btn{top:10px;right:10px}
 #card-TOC.toc-compact .toc-collapse-btn .material-symbols-outlined{transform:rotate(180deg)}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
-.toc-details{border:none;border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
+/* 목차 카드 배경(--bg-deep) 위에 얹히므로 한 단계 밝은 면으로 구분한다 (다크 테마 잔재 제거) */
+.toc-details{border:none;border-radius:9px;background:var(--card);overflow:hidden}
 .toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
 .toc-details summary::-webkit-details-marker{display:none}
 .toc-details summary::after{content:'▾';float:right;color:var(--accent);transition:transform .15s}
@@ -1375,12 +1376,14 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .detail-collapsible.detail-open .detail-body-wrap{display:block;margin-top:14px;animation:tlOpen .3s ease}
 .quick-summary{background:var(--card);border:none}
 .quick-summary-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}
-.quick-summary-item{padding:11px 13px;background:rgba(12,15,16,.42);border:none;border-radius:9px;line-height:1.7}
+/* 아이보리 테마에서는 흰 카드 위에 옅은 미색 패널로 구분한다.
+   다크 테마 시절의 rgba(12,15,16,.42)가 남아 검은 음영처럼 깔려 있었다. */
+.quick-summary-item{padding:11px 13px;background:var(--card-elev);border:none;border-radius:9px;line-height:1.7}
 .quick-summary-item b{display:block;color:var(--accent);margin-bottom:4px}
 .name-compare{margin:12px 0 14px;padding:12px;background:rgba(108,191,126,.08);border:1px solid rgba(108,191,126,.28);border-radius:9px}
 .name-compare-head{color:var(--accent);font-size:.82rem;font-weight:800;line-height:1.6;margin-bottom:9px}
 .name-compare-grid{display:flex;flex-direction:column;gap:7px}
-.name-compare-row{display:grid;grid-template-columns:34px 72px 1fr;gap:8px;align-items:start;padding:10px 11px;background:rgba(12,15,16,.4);border:1px solid var(--border);border-radius:8px;line-height:1.55}
+.name-compare-row{display:grid;grid-template-columns:34px 72px 1fr;gap:8px;align-items:start;padding:10px 11px;background:var(--card-elev);border:1px solid var(--border);border-radius:8px;line-height:1.55}
 .ncr-rank{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(203,162,88,.16);color:var(--accent-bright);font-weight:900;font-size:.78rem}
 .ncr-name{color:var(--accent);font-weight:900;word-break:keep-all}
 .ncr-reason{color:var(--sub);font-size:.78rem}
