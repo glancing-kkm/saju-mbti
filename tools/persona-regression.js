@@ -145,9 +145,18 @@ const harness = `
     ok('인생총운 덱: 카드당 300~400자', deckLens.every(n=>n>=300&&n<=400), deckLens.join(','));
     ok('인생총운 덱: 20대부터 100세 이후까지 9구간',
        deck.every(card=>card.timeline.length===9&&card.timeline[0].label==='20대'&&card.timeline[8].label==='100세+'));
+    ok('인생총운 덱: 본인 현재 나이대 한 곳만 강조',
+       deck.every(card=>card.timeline.filter(item=>item.current).length===1));
+    const firstDeckCard=lifeDeckCardHTML(deck[0],0,deck.length);
+    ok('인생총운 덱: 분야별 전용 심볼 배지 사용',
+       firstDeckCard.includes('life-deck-emblem emblem-money')&&firstDeckCard.includes('material-symbols-outlined'));
     const secondDeckCard=lifeDeckCardHTML(deck[1],1,deck.length);
     ok('인생총운 덱: 이전·근거·다음 버튼 제공',
        secondDeckCard.includes('lifeDeckPrev()')&&secondDeckCard.includes('lifeOpenEvidence(')&&secondDeckCard.includes('lifeDeckNext()'));
+    ok('전체 서고: 고정 목차 접기 버튼 제공',
+       ha.includes('toc-collapse-btn')&&globalThis.__SOURCE_HTML__.includes('function toggleStickyTOC('));
+    ok('미니 만세력: 네 기둥 명칭 확대 스타일 적용',
+       globalThis.__SOURCE_HTML__.includes('.mm-lab .term{display:inline-block;font-size:1.45rem'));
     const themeGradientLeaks=globalThis.__SOURCE_HTML__.split('\\n').filter(line=>/(?:linear|radial)-gradient/.test(line)&&
       !/(tarot-card-label|mask-image|ic-insta|ai-provider-mark\.gemini|home-share-option\.instagram|lock-preview::after|key:'instagram')/.test(line));
     ok('테마 UI: 브랜드·기능성 오버레이 외 그라데이션 0건', themeGradientLeaks.length===0, themeGradientLeaks.join(' | '));

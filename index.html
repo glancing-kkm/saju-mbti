@@ -1338,7 +1338,15 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* 목차는 스크롤 중에도 고정된다. 고정되는 층이므로 반드시 불투명해야 하고(인라인 배경에 바탕색 지정),
    화면을 반이나 가리지 않도록 높이를 제한한다. 그림자로 본문이 아래를 지나간다는 걸 드러낸다. */
 #card-TOC{position:sticky;top:58px;z-index:32;padding:14px 16px 12px;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+#card-TOC .nb-title{padding-right:88px}
 #card-TOC .nb-body{max-height:26vh;overflow:auto;padding-right:2px;overscroll-behavior:contain}
+.toc-collapse-btn{position:absolute;top:12px;right:14px;min-width:72px;height:34px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;gap:2px;padding:0 9px;font-family:inherit;font-size:.7rem;font-weight:800;cursor:pointer}
+.toc-collapse-btn .material-symbols-outlined{font-size:18px;transition:transform .18s ease}
+#card-TOC.toc-compact{padding:10px 12px;margin-bottom:10px;min-height:56px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+#card-TOC.toc-compact .nb-cat,#card-TOC.toc-compact .nb-body{display:none}
+#card-TOC.toc-compact .nb-title{height:36px;line-height:36px;margin:0;padding-right:84px;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#card-TOC.toc-compact .toc-collapse-btn{top:10px;right:10px}
+#card-TOC.toc-compact .toc-collapse-btn .material-symbols-outlined{transform:rotate(180deg)}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
 .toc-details{border:none;border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
 .toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
@@ -1442,6 +1450,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .mm-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 4px 8px;text-align:center;transition:.2s;position:relative}
 .mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(138,101,21,.12);background:var(--earth-bg);transform:translateY(-2px);z-index:2}
 .mm-lab{font-size:.78rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.mm-lab .term{display:inline-block;font-size:1.45rem;line-height:1.18;letter-spacing:0;text-underline-offset:4px}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
 .mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
 .mm-cell .mm-sub{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
@@ -2081,16 +2090,20 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-layer-bar>button:last-child{font-size:.72rem}
 .life-layer-bar div{text-align:center;line-height:1.3}.life-layer-bar small{display:block;color:var(--muted);font-size:.58rem;letter-spacing:.16em}.life-layer-bar b{font-size:.92rem;color:var(--text)}
 .life-deck-card{background:var(--card);border:1px solid rgba(138,101,21,.16);border-radius:20px;padding:18px 18px 15px;box-shadow:var(--card-shadow);min-height:560px;display:flex;flex-direction:column}
-.life-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.72rem}.life-deck-head b{font-size:1rem;color:var(--accent-bright)}
+.life-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.72rem}.life-deck-head b{display:flex;align-items:center;gap:8px;font-size:1rem;color:var(--accent-bright)}
+.life-deck-emblem{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 4px 12px rgba(0,98,65,.18)}
+.life-deck-emblem .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1,'wght' 550,'GRAD' 0,'opsz' 24}
+.life-deck-emblem.emblem-money,.life-deck-emblem.emblem-love,.life-deck-emblem.emblem-decade,.life-deck-emblem.emblem-year{background:var(--gold-soft);color:#24483d;box-shadow:0 4px 12px rgba(138,101,21,.16)}
 .life-deck-card .card-quote{font-size:1rem;margin:20px 0 8px}
 .life-deck-card .stat-link{margin:6px 0 12px}
 .life-deck-copy{font-size:.86rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word}
 .life-deck-period{margin-top:auto;padding-top:16px}.life-deck-period>span{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.68rem}.life-deck-period>span::after{content:'';height:1px;flex:1;background:var(--border)}
 .life-deck-timeline{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));height:104px;gap:6px;margin:10px 0 4px;align-items:end}
 .ldt-item{height:100%;min-width:0;display:grid;grid-template-rows:16px 1fr 14px;gap:3px;text-align:center;font-size:.58rem;color:var(--muted)}
-.ldt-item i{display:block;position:relative;border-radius:5px;background:rgba(0,98,65,.07);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:var(--accent);border-radius:5px}
-.ldt-item em{font-style:normal;color:var(--accent)}
-.life-deck-actions{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin-top:12px}.life-prev-btn,.life-link-btn{background:var(--bg-deep);color:var(--sub)}
+.ldt-item i{display:block;position:relative;border-radius:5px;background:rgba(138,101,21,.08);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:var(--accent-bright);border-radius:5px}
+.ldt-item em{font-style:normal;color:var(--accent-bright)}
+.ldt-item.current{color:var(--accent);font-weight:900}.ldt-item.current i{box-shadow:0 0 0 2px rgba(0,98,65,.18)}.ldt-item.current i b{background:var(--accent)}.ldt-item.current em{color:var(--accent);font-weight:900}
+.life-deck-actions{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin-top:12px}.life-link-btn{background:var(--bg-deep);color:var(--sub)}.life-prev-btn{background:var(--accent);color:var(--on-accent)}
 .life-prev-btn:disabled{opacity:.42;cursor:not-allowed}
 .life-deck-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.life-deck-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.life-deck-dots i.on{width:18px;border-radius:6px;background:var(--accent-bright)}
 .life-library-intro{padding:13px 15px;margin-bottom:12px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}
@@ -6631,7 +6644,7 @@ function _lifeDeckCopy(parts,topic,age){
   if(text.length<300)text+=' 본인에게 맞는 속도를 지키고, 작은 선택을 기록으로 남기면 다음 기회를 고르기가 훨씬 쉬워져요.';
   return preventOrphan(text);
 }
-function _lifeMiniTimelineData(saju,daeuns,ys){
+function _lifeMiniTimelineData(saju,daeuns,ys,currentAge){
   const decades=[20,30,40,50,60,70,80,90,100];
   const timelineDaeuns=(daeuns||[]).map(du=>({...du}));
   if(timelineDaeuns.length){
@@ -6644,7 +6657,8 @@ function _lifeMiniTimelineData(saju,daeuns,ys){
   return decades.map(start=>{
     const hits=timelineDaeuns.filter(du=>du.age<=start+9&&du.age+9>=start);
     const score=hits.length?Math.round(hits.reduce((n,du)=>n+_lifeDaeunScore(saju,du,ys),0)/hits.length):60;
-    return {label:start===100?'100세+':`${start}대`,score};
+    const current=Number.isFinite(currentAge)&&currentAge>=start&&(start===100||currentAge<=start+9);
+    return {label:start===100?'100세+':`${start}대`,score,current};
   });
 }
 function buildLifeDeck(saju,meta){
@@ -6663,24 +6677,24 @@ function buildLifeDeck(saju,meta){
   const stat=name=>char.stats.find(s=>s.name===name)||{name,value:5};
   const wealth=stat('현실감'),work=stat('버티기'),love=stat('친화력'),intuition=stat('직관'),drive=stat('추진력');
   const strongest=OHNAME[profile.top],weakest=OHNAME[profile.lack];
-  const timeline=_lifeMiniTimelineData(saju,dq.daeuns,ys);
+  const timeline=_lifeMiniTimelineData(saju,dq.daeuns,ys,age);
   const common=`본인 사주에서 ${strongest} 기운은 자연스럽게 쓰는 힘이고, ${weakest} 기운은 생활 속에서 의식적으로 채울 부분이에요.`;
   const cards=[
-    {key:'money',icon:'💰',title:'돈',evidence:'card-WEALTH',quoteLabel:'WEALTH',statLabel:'WEALTH',stat:wealth,
+    {key:'money',icon:'payments',title:'돈',evidence:'card-WEALTH',quoteLabel:'WEALTH',statLabel:'WEALTH',stat:wealth,
       copy:_lifeDeckCopy([`현실감은 10점 중 ${wealth.value}점이에요. ${wealth.value>=7?'조건과 숫자를 빠르게 읽어 손해를 줄이는 쪽이에요.':'숫자만 좇기보다 실력과 이름값을 쌓을 때 돈이 뒤따르는 쪽이에요.'}`,common,`현재 ${cur.age}~${cur.age+9}세 흐름에서는 큰돈을 한 번에 움직이기보다 수입·고정비·비상금을 분리해 두면 안정감이 커져요. 친한 사람과 돈을 섞을수록 말보다 기록을 남기세요.`],'money',age),timeline},
-    {key:'work',icon:'💼',title:'일',evidence:'card-CAREER',quoteLabel:'CAREER',statLabel:'CAREER',stat:work,
+    {key:'work',icon:'business_center',title:'일',evidence:'card-CAREER',quoteLabel:'CAREER',statLabel:'CAREER',stat:work,
       copy:_lifeDeckCopy([`버티기는 10점 중 ${work.value}점이에요. ${work.value>=7?'맡은 일을 끝까지 가져가 신뢰로 바꾸는 힘이 커요. 다만 책임을 혼자 떠안기 쉬워요.':'길게 버티는 승부보다 역할과 마감이 분명한 일에서 성과가 빨라요.'}`,`추진력 ${drive.value}점과 함께 보면, 본인은 ${drive.value>=6?'먼저 판을 여는 일':'좋은 판을 골라 깊게 붙는 일'}에 더 잘 맞아요.`,_lifeStageAdvice(age,'work')],'work',age),timeline},
-    {key:'love',icon:'💕',title:'사랑',evidence:'card-LOVE',quoteLabel:'LOVE',statLabel:'LOVE',stat:love,
+    {key:'love',icon:'favorite',title:'사랑',evidence:'card-LOVE',quoteLabel:'LOVE',statLabel:'LOVE',stat:love,
       copy:_lifeDeckCopy([`친화력은 10점 중 ${love.value}점이에요. ${love.value>=7?'상대의 기분과 관계의 온도를 빨리 읽어요.':'많은 사람에게 고르게 마음을 열기보다 한 사람을 오래 보는 쪽이에요.'}`,`본인이 앉은 자리의 분위기는 ${plainTG(profile.seatTg)} 쪽이라, 설렘이 생겨도 말과 행동의 속도를 맞춰야 오래가요. 표현을 참아 상대가 추측하게 만들지 마세요.`,_lifeStageAdvice(age,'love')],'love',age),timeline},
-    {key:'people',icon:'🤝',title:'관계',evidence:'card-HUMAN',quoteLabel:'HUMAN',statLabel:'HUMAN',stat:love,
+    {key:'people',icon:'diversity_3',title:'관계',evidence:'card-HUMAN',quoteLabel:'HUMAN',statLabel:'HUMAN',stat:love,
       copy:_lifeDeckCopy([`관계에서는 친화력 ${love.value}점과 추진력 ${drive.value}점이 함께 작동해요. ${love.value>=6?'사람 사이 공기를 읽고 필요한 말을 건네는 힘이 있어요.':'두루 넓게 만나면 빨리 지치지만, 믿는 사람에게는 오래 남는 편이에요.'}`,`연락이 늦거나 혼자 쉬는 시간이 필요할 때는 미리 알려주세요. 본인에게 자연스러운 침묵이 상대에게는 거리감으로 보일 수 있어요.`,_lifeStageAdvice(age,'people')],'people',age),timeline},
-    {key:'health',icon:'🌿',title:'건강',evidence:'card-HEALTH',quoteLabel:'HEALTH',statLabel:'HEALTH',stat:work,
+    {key:'health',icon:'health_and_safety',title:'건강',evidence:'card-HEALTH',quoteLabel:'HEALTH',statLabel:'HEALTH',stat:work,
       copy:_lifeDeckCopy([`몸의 리듬은 버티기 ${work.value}점으로 드러나요. ${work.value>=7?'겉으로 잘 버티는 만큼 피로 신호를 늦게 알아차릴 수 있어요.':'하루 무리가 며칠 피로로 이어질 수 있어 회복을 먼저 잡는 편이 좋아요.'}`,`${weakest} 기운이 옅으니 수면·식사·걷기 중 한 가지를 같은 시간에 반복해 균형을 채우세요. 불편이 오래가면 운세보다 검진과 전문가 상담을 먼저 챙기세요.`,_lifeStageAdvice(age,'health')],'health',age),timeline},
-    {key:'study',icon:'📚',title:'공부',evidence:'card-STUDY',quoteLabel:'STUDY',statLabel:'STUDY',stat:intuition,
+    {key:'study',icon:'auto_stories',title:'공부',evidence:'card-STUDY',quoteLabel:'STUDY',statLabel:'STUDY',stat:intuition,
       copy:_lifeDeckCopy([`직관은 10점 중 ${intuition.value}점이에요. ${intuition.value>=7?'전체 그림을 먼저 알아차린 뒤 세부를 채우는 공부가 잘 맞아요.':'감으로 넘기기보다 근거와 순서를 확인할 때 실력이 안정적으로 쌓여요.'}`,`본인은 한 번에 여러 주제를 벌이기보다 한 주제를 결과물로 끝낼 때 자신감이 커져요. 읽기만 하지 말고 요약·문제풀이·설명 중 하나로 꺼내보세요.`,_lifeStageAdvice(age,'study')],'study',age),timeline},
-    {key:'decade',icon:'🧭',title:'지금 10년',evidence:'card-DAEUN10',quoteLabel:'DAEUN10',statLabel:'DAEUN10',stat:drive,
+    {key:'decade',icon:'explore',title:'지금 10년',evidence:'card-DAEUN10',quoteLabel:'DAEUN10',statLabel:'DAEUN10',stat:drive,
       copy:_lifeDeckCopy([`본인은 지금 ${age}세이고, ${cur.age}~${cur.age+9}세의 큰 흐름 안에 있어요. 이 시기는 ${plainTG(tenGod(saju.dp.stem,cur.stem))}의 분위기가 바깥에서 들어와 선택의 배경을 만들어요.`,`지금 구간의 점수는 ${_lifeDaeunScore(saju,cur,ys)}점이에요. 점수가 높으면 오래 미룬 일을 앞당기고, 낮으면 규모를 줄여 경험과 기록을 남기세요. 흐름보다 중요한 건 본인 인생 단계에 맞는 결정을 고르는 일이에요.`,_lifeStageAdvice(age,'work')],'work',age),timeline},
-    {key:'year',icon:'🗓',title:'올해',evidence:'card-SEWOON',quoteLabel:'SEWOON',statLabel:'SEWOON',stat:drive,
+    {key:'year',icon:'calendar_month',title:'올해',evidence:'card-SEWOON',quoteLabel:'SEWOON',statLabel:'SEWOON',stat:drive,
       copy:_lifeDeckCopy([`${now}년에는 ${yearTg}의 분위기가 들어와요. 추진력 ${drive.value}점인 본인은 ${drive.value>=7?'기회가 보이면 빠르게 움직이되 마감과 예산을 먼저 정해야 해요.':'해야 할 일을 작게 나누고 완료 표시를 남길수록 흐름을 안정적으로 쓸 수 있어요.'}`,`올해의 선택은 지금 10년 흐름 위에 놓여요. 월별 기복에 흔들리기보다 분기마다 한 가지 목표만 끝내세요. 큰 결정은 일정·돈·관계를 한 번 더 확인한 뒤 움직이면 좋아요.`,_lifeStageAdvice(age,'work')],'work',age),timeline}
   ];
   _lifeDeckCache={key,cards};
@@ -6688,13 +6702,13 @@ function buildLifeDeck(saju,meta){
 }
 
 function lifeDeckTimelineHTML(items){
-  return `<div class="life-deck-timeline" aria-label="20대부터 100세 이후까지 흐름">${items.map(item=>`<div class="ldt-item"><span>${item.label}</span><i><b style="height:${Math.max(12,item.score)}%"></b></i><em>${item.score}</em></div>`).join('')}</div>`;
+  return `<div class="life-deck-timeline" aria-label="20대부터 100세 이후까지 흐름">${items.map(item=>`<div class="ldt-item${item.current?' current':''}"${item.current?' aria-current="true"':''}><span>${item.label}</span><i><b style="height:${Math.max(12,item.score)}%"></b></i><em>${item.score}</em></div>`).join('')}</div>`;
 }
 function lifeDeckCardHTML(card,index,total){
   if(!card)return '';
   const dots=Array.from({length:total},(_,i)=>`<i class="${i===index?'on':''}"></i>`).join('');
   return `<article class="life-deck-card tarot-reveal" data-deck-key="${card.key}">
-    <div class="life-deck-head"><span>${index+1} / ${total}</span><b>${card.icon} ${card.title}</b></div>
+    <div class="life-deck-head"><span>${index+1} / ${total}</span><b><span class="life-deck-emblem emblem-${card.key}" aria-hidden="true"><span class="material-symbols-outlined">${card.icon}</span></span><span>${card.title}</span></b></div>
     ${cardQuoteHTML(card.quoteLabel)}
     ${statLinkHTML(card.statLabel)}
     <div class="life-deck-copy">${preventOrphan(card.copy)}</div>
@@ -6756,6 +6770,7 @@ function lifeNavigate(layer,index){
   }
   window.scrollTo({top:0,behavior:'smooth'});
   scheduleLanguageApply(root,[0,250]);
+  requestAnimationFrame(_scheduleStickyTOCUpdate);
 }
 function lifeDeckNext(){
   const cards=buildLifeDeck(_saju,_meta||{});
@@ -14987,6 +15002,43 @@ document.addEventListener('click',function(e){
   if(e.target.closest('.nb-title')||e.target.closest('.detail-hint'))_detailToggle(card);
 });
 // TOC 점프 — 접힌 타임라인 카드면 펼친 뒤 스크롤
+function _setStickyTOCCompact(toc,compact){
+  if(!toc)return;
+  toc.classList.toggle('toc-compact',!!compact);
+  const btn=toc.querySelector('.toc-collapse-btn');
+  if(!btn)return;
+  btn.setAttribute('aria-expanded',compact?'false':'true');
+  btn.setAttribute('aria-label',compact?'목차 펼치기':'목차 접기');
+  const label=btn.querySelector('.toc-collapse-label');
+  if(label)label.textContent=compact?'펼치기':'접기';
+}
+function toggleStickyTOC(button){
+  const toc=button&&button.closest('#card-TOC');
+  if(!toc)return;
+  const compact=!toc.classList.contains('toc-compact');
+  toc.dataset.tocManual=compact?'collapsed':'expanded';
+  _setStickyTOCCompact(toc,compact);
+}
+let _stickyTocScrollRaf=0;
+function _updateStickyTOCState(){
+  _stickyTocScrollRaf=0;
+  document.querySelectorAll('#view-result #card-TOC').forEach(toc=>{
+    if(!toc.offsetParent)return;
+    const stuck=window.scrollY>0&&toc.getBoundingClientRect().top<=59;
+    if(!stuck){
+      delete toc.dataset.tocManual;
+      _setStickyTOCCompact(toc,false);
+    }else if(!toc.dataset.tocManual){
+      _setStickyTOCCompact(toc,true);
+    }
+  });
+}
+function _scheduleStickyTOCUpdate(){
+  if(_stickyTocScrollRaf)return;
+  _stickyTocScrollRaf=requestAnimationFrame(_updateStickyTOCState);
+}
+window.addEventListener('scroll',_scheduleStickyTOCUpdate,{passive:true});
+window.addEventListener('resize',_scheduleStickyTOCUpdate,{passive:true});
 function jumpToCard(id){
   const el=document.getElementById(id);
   if(!el)return;
@@ -15086,6 +15138,7 @@ function _generateTOC(h, scopeLabel){
     return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:var(--bg-deep);border:none">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
+      <button type="button" class="toc-collapse-btn" onclick="toggleStickyTOC(this)" aria-expanded="true" aria-label="목차 접기"><span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_up</span><span class="toc-collapse-label">접기</span></button>
       <div class="nb-body">
         <p style="font-size:.78rem;color:var(--sub);margin-bottom:10px;line-height:1.7">먼저 장 단위로 훑어보고, 필요한 장만 펼쳐서 이동하세요.</p>
         <div class="toc-grid">${grid}</div>
