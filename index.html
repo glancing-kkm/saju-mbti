@@ -2093,15 +2093,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.72rem}.life-deck-head b{display:flex;align-items:center;gap:8px;font-size:1rem;color:var(--accent-bright)}
 .life-deck-emblem{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 4px 12px rgba(0,98,65,.18)}
 .life-deck-emblem .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1,'wght' 550,'GRAD' 0,'opsz' 24}
-.life-deck-emblem.emblem-money,.life-deck-emblem.emblem-love,.life-deck-emblem.emblem-decade,.life-deck-emblem.emblem-year{background:var(--gold-soft);color:#24483d;box-shadow:0 4px 12px rgba(138,101,21,.16)}
+/* 엠블럼은 8장 전부 녹색 바탕 + 흰 아이콘으로 통일한다.
+   예전에는 돈·사랑·10년·올해만 금색 바탕이라 덱을 넘길 때 색이 튀었다. */
 .life-deck-card .card-quote{font-size:1rem;margin:20px 0 8px}
 .life-deck-card .stat-link{margin:6px 0 12px}
 .life-deck-copy{font-size:.86rem;line-height:1.85;color:var(--sub);word-break:keep-all;overflow-wrap:break-word}
 .life-deck-period{margin-top:auto;padding-top:16px}.life-deck-period>span{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.68rem}.life-deck-period>span::after{content:'';height:1px;flex:1;background:var(--border)}
 .life-deck-timeline{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));height:104px;gap:6px;margin:10px 0 4px;align-items:end}
 .ldt-item{height:100%;min-width:0;display:grid;grid-template-rows:16px 1fr 14px;gap:3px;text-align:center;font-size:.58rem;color:var(--muted)}
-.ldt-item i{display:block;position:relative;border-radius:5px;background:rgba(138,101,21,.08);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:var(--accent-bright);border-radius:5px}
-.ldt-item em{font-style:normal;color:var(--accent-bright)}
+/* 막대는 맑은 앤티크 골드(#bf9b30). 기존 --accent-bright(#8a6515)는 텍스트 가독성용으로
+   어둡게 잡힌 색이라 넓은 면으로 깔리면 황토빛으로 칙칙해 보인다.
+   숫자는 아이보리 배경 대비가 필요해 진한 금색을 그대로 둔다(#bf9b30은 2.3:1로 미달). */
+.ldt-item i{display:block;position:relative;border-radius:5px;background:rgba(191,155,48,.16);overflow:hidden}.ldt-item i b{position:absolute;left:0;right:0;bottom:0;background:#bf9b30;border-radius:5px}
+.ldt-item em{font-style:normal;color:var(--gold)}
 .ldt-item.current{color:var(--accent);font-weight:900}.ldt-item.current i{box-shadow:0 0 0 2px rgba(0,98,65,.18)}.ldt-item.current i b{background:var(--accent)}.ldt-item.current em{color:var(--accent);font-weight:900}
 .life-deck-actions{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin-top:12px}.life-link-btn{background:var(--bg-deep);color:var(--sub)}.life-prev-btn{background:var(--accent);color:var(--on-accent)}
 .life-prev-btn:disabled{opacity:.42;cursor:not-allowed}
@@ -6477,11 +6481,10 @@ function characterPortraitSVG(saju){
   ][seasonIndex];
   return `<svg class="character-portrait" viewBox="0 0 232 232" role="img" aria-label="${c?c.nickname:'본인'} 캐릭터 초상">
     <defs>
-      <linearGradient id="${id}-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${deep}"/><stop offset="1" stop-color="#044333"/></linearGradient>
       <radialGradient id="${id}-halo"><stop stop-color="${glow}" stop-opacity="${strength}"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient>
       <filter id="${id}-soft"><feGaussianBlur stdDeviation="8"/></filter>
     </defs>
-    <rect x="4" y="4" width="224" height="224" rx="56" fill="url(#${id}-bg)" stroke="${grade>=4?'#f6d66b':glow}" stroke-width="${2+grade}"/>
+    <rect x="4" y="4" width="224" height="224" rx="56" fill="#044333" stroke="${grade>=4?'#f6d66b':glow}" stroke-width="${2+grade}"/>
     <circle cx="116" cy="112" r="86" fill="url(#${id}-halo)" filter="url(#${id}-soft)"/>
     <g fill="${sky}" opacity=".65">${particles}</g>
     <g fill="none" stroke="${sky}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${motifs[stem]}</g>
