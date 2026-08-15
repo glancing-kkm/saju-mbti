@@ -167,12 +167,14 @@
   --good-bg:rgba(143,181,151,0.10);
   --warn-bg:rgba(211,145,132,0.10);
 
+  --font-main:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+
   --radius:14px;
   --radius-lg:18px;
   /* 카드 음영 — 테두리 대신 톤/그림자로 배경과 구분 (DESIGN.md: 글래스 엣지 + 부드러운 그림자) */
   --card-shadow:0 6px 22px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06), inset 1px 0 0 rgba(255,255,255,.035);
 }
-html,body{font-family:'Do Hyeon','Manrope','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{font-family:var(--font-main);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* 전역 고아글자 차단 — 한국어 단어 단위 줄바꿈 (사용자 요청: 모든 글자 영역) */
 *{word-break:keep-all;overflow-wrap:break-word}
 h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-spacing:-.01em}
@@ -466,7 +468,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .astro-wheel-wrap.compact .astro-wheel{max-width:330px}
 .astro-wheel-wrap.compact .wheel-touch-hint{display:none}
 .astro-wheel{width:100%;max-width:440px;display:block;margin:0 auto}
-.astro-wheel text{font-family:'Hanken Grotesk','Noto Sans KR',sans-serif}
+.astro-wheel text{font-family:var(--font-main)}
 .astro-wheel-legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:8px;font-size:.7rem;color:var(--sub)}
 .astro-wheel-legend span{display:inline-flex;align-items:center;gap:5px}
 .astro-wheel-legend i{width:14px;height:2px;border-radius:2px;display:inline-block}
@@ -1278,7 +1280,7 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .ds-txt b{color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.01em}
 @media(max-width:380px){.ds-txt{font-size:.79rem}}
 /* 카드 한 줄 명대사 */
-.card-quote{margin:12px 0 2px;padding:0 6px;font-family:'Noto Serif KR',serif;font-size:.94rem;line-height:1.8;color:var(--accent);text-align:center;word-break:keep-all;letter-spacing:-.01em}
+.card-quote{margin:12px 0 2px;padding:0 6px;font-family:var(--font-main);font-size:.94rem;line-height:1.8;color:var(--accent);text-align:center;word-break:keep-all;letter-spacing:-.01em}
 .card-quote::before{content:'“ ';color:var(--accent-bright);opacity:.75}
 .card-quote::after{content:' ”';color:var(--accent-bright);opacity:.75}
 @media(max-width:380px){.card-quote{font-size:.88rem}}
@@ -1328,8 +1330,10 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 /* CHX: TOC 장별 그룹 소제목 */
 .toc-chapter-head{grid-column:1/-1;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.74rem;font-weight:700;color:var(--accent-bright);margin:8px 0 2px;padding-left:2px;letter-spacing:.02em}
 .toc-chapter-head:first-child{margin-top:0}
-#card-TOC{position:sticky;top:58px;z-index:32}
-#card-TOC .nb-body{max-height:42vh;overflow:auto;padding-right:2px}
+/* 목차는 스크롤 중에도 고정된다. 고정되는 층이므로 반드시 불투명해야 하고(인라인 배경에 바탕색 지정),
+   화면을 반이나 가리지 않도록 높이를 제한한다. 그림자로 본문이 아래를 지나간다는 걸 드러낸다. */
+#card-TOC{position:sticky;top:58px;z-index:32;padding:14px 16px 12px;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+#card-TOC .nb-body{max-height:26vh;overflow:auto;padding-right:2px;overscroll-behavior:contain}
 .toc-grid{display:flex;flex-direction:column;gap:7px}
 .toc-details{border:none;border-radius:9px;background:rgba(12,15,16,.35);overflow:hidden}
 .toc-details summary{list-style:none;cursor:pointer;padding:10px 12px;color:var(--accent-bright);font-size:.82rem;font-weight:800}
@@ -1553,9 +1557,9 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .summary-btn.secondary:hover{background:rgba(212,175,55,.1)}
 
 /* ── A4 가로 요약본 (오프스크린 캡처용) ── */
-.a4-page{width:1123px;height:794px;background:#fdfaf0;color:#1a1c1d;font-family:'Kakao Small Sans','Noto Sans KR','Malgun Gothic',sans-serif;padding:14px 24px;box-sizing:border-box;display:flex;flex-direction:column;position:relative;text-align:left}
+.a4-page{width:1123px;height:794px;background:#fdfaf0;color:#1a1c1d;font-family:var(--font-main);padding:14px 24px;box-sizing:border-box;display:flex;flex-direction:column;position:relative;text-align:left}
 .a4-header{text-align:center;border-bottom:2px solid #8b6f47;padding-bottom:6px;margin-bottom:8px}
-.a4-title{font-size:22px;font-weight:800;color:#8b6f47;letter-spacing:.04em;font-family:'Noto Serif KR','Malgun Gothic',serif}
+.a4-title{font-size:22px;font-weight:800;color:#8b6f47;letter-spacing:.04em;font-family:var(--font-main)}
 .a4-subtitle{font-size:12px;color:#6b574a;margin-top:3px}
 .a4-body{flex:1;display:flex;gap:20px;overflow:hidden;min-height:0}
 .a4-col-left{flex:1;padding-right:18px;border-right:1.5px dashed #b8a075;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0}
@@ -1679,7 +1683,7 @@ button.astro-bar-row.tappable.active{background:rgba(212,175,55,.13);box-shadow:
 .qna-chat-room .chat-head{position:relative;padding:26px 15px 12px 58px;margin:0;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(18,24,26,.96);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
 .qna-chat-room .chat-head::before{content:'';position:absolute;left:15px;bottom:12px;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d8c4a8,#f5d77c);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .qna-chat-room .chat-head::after{content:'천';position:absolute;left:15px;bottom:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;color:#1b1d1f}
-.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:#f2f4f0;font-family:'Hanken Grotesk','Noto Sans KR',sans-serif;font-weight:900;letter-spacing:-.02em}
+.qna-chat-room .chat-title{margin:0;font-size:.98rem;color:#f2f4f0;font-family:var(--font-main);font-weight:900;letter-spacing:-.02em}
 .qna-chat-room .chat-sub{display:none}
 .qna-chat-room .chat-remaining{margin:0;border:none;background:rgba(255,255,255,.08);color:#c8cec8;font-size:.64rem;letter-spacing:0;text-transform:none;white-space:nowrap;padding:5px 10px}
 .qna-chat-room .chat-log{flex:1;min-height:0;max-height:none;margin:0;padding:16px 12px 22px;gap:8px;background:linear-gradient(180deg,#151b1d 0%,#0f1416 100%);scrollbar-width:thin}
@@ -2000,7 +2004,47 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-timeline::before{
   opacity:0 !important;
 }
-/* action-guide·ag-block은 카드 내부 — 통일 표준 미적용 */
+/* 모든 풀이 화면·요약본의 굵은 왼쪽 강조선 제거 */
+:is(#view-result,#view-tarot,#view-astrology) [style*="border-left"],
+.a4-page [style*="border-left"],
+:is(#view-result,#view-tarot,#view-astrology) :where(
+  .conversion-hook-point,
+  .citem,
+  .month-advice,
+  .teaser-leadline,
+  .mbti-ind-example,
+  .cc-note,
+  .chapter-divider,
+  .nb-good,
+  .nb-warn,
+  .reading-brief,
+  .ag-block,
+  .cat-where,
+  .lead-card,
+  .pillar4-card,
+  .dp-tip
+),
+.a4-page :where(.a4-rel-col,.a4-daeun){
+  border-left-width:0 !important;
+  border-left-style:none !important;
+}
+:is(#view-result,#view-tarot,#view-astrology) .tl-item{
+  border-left-width:1px !important;
+  border-left-color:var(--border) !important;
+}
+:is(#view-result,#view-tarot,#view-astrology) .tl-item.cur{
+  border-left-color:var(--border-strong) !important;
+}
+:is(#view-result,#view-tarot,#view-astrology) .sinsal-mini-card::before{
+  display:none !important;
+}
+/* 풀이마다 달랐던 명조체·차트 글꼴을 사이트 기본 글꼴로 통일 */
+:is(#view-result,#view-tarot,#view-astrology),
+:is(#view-result,#view-tarot,#view-astrology) :where(*):not(.material-symbols-outlined),
+.a4-page,
+.a4-page :where(*){
+  font-family:var(--font-main) !important;
+}
 </style>
 </head>
 <body>
@@ -13515,8 +13559,8 @@ function buildOhSangsaengSvg(oh){
   // 노드
   positions.forEach((p,i)=>{
     svg+=`<circle cx="${p.x}" cy="${p.y}" r="${nodeR}" fill="${bgs[i]}" stroke="${colors[i]}" stroke-width="2"/>`;
-    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="13" font-weight="800" fill="${colors[i]}" font-family="Noto Serif KR, serif">${names[i]}</text>`;
-    svg+=`<text x="${p.x}" y="${p.y+12}" text-anchor="middle" font-size="10" font-weight="700" fill="${colors[i]}" font-family="sans-serif">${oh[i]}개</text>`;
+    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="13" font-weight="800" fill="${colors[i]}" font-family="Do Hyeon, Manrope, Noto Sans KR, sans-serif">${names[i]}</text>`;
+    svg+=`<text x="${p.x}" y="${p.y+12}" text-anchor="middle" font-size="10" font-weight="700" fill="${colors[i]}" font-family="Do Hyeon, Manrope, Noto Sans KR, sans-serif">${oh[i]}개</text>`;
   });
   // 범례
   svg+=`<text x="100" y="210" text-anchor="middle" font-size="9" fill="#555"><tspan fill="#5fa969" font-weight="700">→ 돕는 흐름</tspan>  <tspan dx="6" fill="#c44" font-weight="700">⇢ 누르는 흐름</tspan></text>`;
@@ -14728,7 +14772,10 @@ function _generateTOC(h, scopeLabel){
       });
       if(group)grid+=`</div></details>`;
     }else grid=items.map(btn).join('');
-    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep));border:none">
+    // 배경 끝에 불투명 바탕색을 반드시 둔다. 이 카드는 position:sticky로 고정되는데,
+    // 그라데이션만 주면 background-color가 transparent가 되어 시작색(금색 10%) 구간이 거의 투명해진다.
+    // 그러면 고정된 목차 아래로 지나가는 본문이 그대로 비쳐서 두 겹으로 겹쳐 보인다.
+    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:linear-gradient(135deg,rgba(212,175,55,.1),var(--bg-deep)) var(--bg-deep);border:none">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <div class="nb-body">
