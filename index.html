@@ -2115,11 +2115,30 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-deck-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.life-deck-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.life-deck-dots i.on{width:18px;border-radius:6px;background:var(--accent-bright)}
 .life-library-intro{padding:13px 15px;margin-bottom:12px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}
 .life-library-layer #card-TOC{top:58px;background:var(--bg-deep) !important}
+/* 유료 풀이 공통 3층 구조 — 한눈 요약 / 핵심 덱 / 전체 서고 */
+.story-experience{max-width:760px;margin:0 auto 28px;padding:0 12px}
+.story-layer[hidden]{display:none !important}.story-layer{margin:0 auto}
+.story-summary-card,.story-deck-card{background:var(--card);border:1px solid rgba(138,101,21,.14);border-radius:22px;box-shadow:var(--card-shadow)}
+.story-summary-card{min-height:520px;padding:22px 22px 18px;display:flex;flex-direction:column;text-align:center}
+.story-kicker{color:var(--accent-bright);font-size:.64rem;font-weight:850;letter-spacing:.2em;text-transform:uppercase}
+.story-emblem{width:92px;height:92px;margin:14px auto 10px;border-radius:30px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 12px 30px rgba(0,98,65,.18)}
+.story-emblem .material-symbols-outlined{font-size:48px;font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 48}
+.story-title{font-size:1.42rem;font-weight:850;line-height:1.35;color:var(--text);word-break:keep-all}.story-subtitle{margin-top:5px;color:var(--sub);font-size:.82rem}
+.story-score{display:inline-flex;align-items:baseline;justify-content:center;gap:5px;margin:12px auto 0;padding:6px 14px;border-radius:999px;background:var(--gold-soft);color:var(--accent-bright);font-weight:800}.story-score b{font-size:1.15rem}.story-score span{font-size:.68rem}
+.story-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:8px;margin-top:18px}
+.story-stat{padding:10px 7px 9px;border-radius:13px;background:var(--bg-deep);text-align:left}.story-stat-head{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:.65rem}.story-stat-head b{color:var(--accent);font-size:.7rem}.story-stat i{display:block;height:6px;margin-top:7px;border-radius:8px;background:rgba(191,155,48,.15);overflow:hidden}.story-stat i b{display:block;height:100%;border-radius:8px;background:#bf9b30}
+.story-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.story-highlight{padding:11px 9px;border-radius:13px;background:rgba(0,98,65,.055);color:var(--sub);font-size:.7rem;line-height:1.55;word-break:keep-all}.story-highlight .material-symbols-outlined{display:block;margin-bottom:4px;color:var(--accent);font-size:21px}.story-highlight b{display:block;margin-bottom:2px;color:var(--text);font-size:.7rem}
+.story-summary-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:auto;padding-top:16px}.story-summary-actions button,.story-prev-btn,.story-link-btn,.story-next-btn{min-height:44px;border:0;border-radius:12px;background:var(--bg-deep);color:var(--sub);font-family:inherit;font-weight:750;cursor:pointer}.story-summary-actions .primary,.story-next-btn,.story-prev-btn{background:var(--accent);color:var(--on-accent)}
+.story-layer-bar{display:grid;grid-template-columns:44px 1fr 66px;align-items:center;gap:8px;margin:4px 0 12px;padding:10px 12px;border-radius:14px;background:var(--card);box-shadow:var(--card-shadow)}.story-layer-bar button{height:38px;border:0;border-radius:10px;background:var(--bg-deep);color:var(--accent);font-family:inherit;font-weight:800;cursor:pointer}.story-layer-bar div{text-align:center;line-height:1.3}.story-layer-bar small{display:block;color:var(--muted);font-size:.58rem;letter-spacing:.15em}.story-layer-bar b{font-size:.9rem;color:var(--text)}
+.story-deck-card{min-height:530px;padding:20px 20px 16px;display:flex;flex-direction:column}.story-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.7rem}.story-deck-head b{display:flex;align-items:center;gap:8px;color:var(--accent-bright);font-size:1rem}.story-deck-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}.story-deck-icon .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1,'wght' 550,'GRAD' 0,'opsz' 24}
+.story-deck-quote{margin:30px 0 18px;color:var(--accent-bright);font-size:1.08rem;font-weight:800;line-height:1.65;text-align:center;word-break:keep-all}.story-deck-copy{color:var(--sub);font-size:.86rem;line-height:1.9;word-break:keep-all}.story-deck-points{display:grid;gap:7px;margin-top:16px}.story-deck-point{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:var(--bg-deep);color:var(--sub);font-size:.74rem}.story-deck-point i{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:#bf9b30}.story-deck-point b{margin-left:auto;color:var(--accent)}
+.story-deck-actions{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin-top:auto;padding-top:18px}.story-prev-btn:disabled{opacity:.42;cursor:not-allowed}.story-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.story-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.story-dots i.on{width:18px;border-radius:8px;background:var(--accent-bright)}
+.story-library-intro{margin-bottom:12px;padding:13px 15px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}.story-library-content #card-TOC{top:58px;background:var(--bg-deep) !important}
 .life-share-card{width:1080px;height:1080px;box-sizing:border-box;overflow:hidden;padding:58px 70px 42px;background:#fffdf8;color:#24352f;font-family:var(--font-main);display:flex;flex-direction:column;align-items:center}
 .lsc-brand{font-size:22px;letter-spacing:.24em;color:#006241;font-weight:800}.lsc-portrait{width:250px;height:250px;margin:20px auto 6px}.lsc-name{font-size:42px;font-weight:800;color:#006241}.lsc-sub{font-size:24px;color:#52645d;margin-top:5px}.lsc-rarity{font-size:20px;color:#8a6515;margin-top:10px}
 .lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#52645d}.lsc-stats i{height:12px;background:rgba(0,98,65,.10);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:#006241;border-radius:9px}.lsc-stats em{font-style:normal;color:#8a6515;text-align:right}
 .lsc-scenes{width:860px;margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.lsc-scenes>div{min-height:150px;padding:18px;background:rgba(255,253,248,.82);border:1px solid rgba(0,98,65,.10);border-radius:16px;text-align:left}.lsc-scenes span{font-size:28px}.lsc-scenes b{display:block;margin:9px 0 6px;color:#006241;font-size:18px}.lsc-scenes p{margin:0;font-size:17px;line-height:1.55;color:#52645d}.lsc-foot{margin-top:auto;font-size:16px;color:#7d8d85;letter-spacing:.06em}
-@media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:560px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}.life-deck-timeline{gap:4px}.ldt-item{font-size:.53rem}.life-deck-actions{gap:6px}}
+@media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:560px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}.life-deck-timeline{gap:4px}.ldt-item{font-size:.53rem}.life-deck-actions{gap:6px}.story-experience{padding:0 10px}.story-summary-card{min-height:500px;padding:18px 14px 15px}.story-emblem{width:78px;height:78px;border-radius:25px}.story-emblem .material-symbols-outlined{font-size:40px}.story-title{font-size:1.2rem}.story-stats{gap:5px}.story-stat{padding:8px 5px}.story-stat-head{display:block;text-align:center}.story-stat-head b{display:block;margin-top:2px}.story-highlights{gap:5px}.story-highlight{padding:9px 5px;font-size:.64rem}.story-deck-card{min-height:540px;padding:17px 15px}.story-deck-copy{font-size:.82rem;line-height:1.82}.story-deck-actions{gap:6px}}
 </style>
 </head>
 <body>
@@ -6796,6 +6815,78 @@ function lifeOpenEvidence(id){
   lifeNavigate('library');
   requestAnimationFrame(()=>requestAnimationFrame(()=>jumpToCard(id)));
 }
+
+const _storyDeckStore=Object.create(null);
+function storyEsc(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function storySafeId(value){return String(value||'story').replace(/[^a-zA-Z0-9_-]/g,'-');}
+function storyStatHTML(stat){
+  const value=Math.max(0,Math.min(100,Number(stat.value)||0));
+  const display=stat.display!=null?stat.display:Math.round(value);
+  return `<div class="story-stat"><div class="story-stat-head"><span>${storyEsc(stat.label)}</span><b>${storyEsc(display)}</b></div><i aria-hidden="true"><b style="width:${value}%"></b></i></div>`;
+}
+function storyDeckCardHTML(id,card,index,total){
+  if(!card)return '';
+  const dots=Array.from({length:total},(_,i)=>`<i class="${i===index?'on':''}"></i>`).join('');
+  const points=(card.points||[]).slice(0,4).map(point=>`<div class="story-deck-point"><i></i><span>${preventOrphan(storyEsc(point.label||''))}</span>${point.value!=null?`<b>${storyEsc(point.value)}</b>`:''}</div>`).join('');
+  return `<article class="story-deck-card tarot-reveal" data-story-card="${storyEsc(card.key||index)}">
+    <div class="story-deck-head"><span>${index+1} / ${total}</span><b><span class="story-deck-icon" aria-hidden="true"><span class="material-symbols-outlined">${storyEsc(card.icon||'auto_awesome')}</span></span><span>${storyEsc(card.title)}</span></b></div>
+    <div class="story-deck-quote">“ ${preventOrphan(storyEsc(card.quote||''))} ”</div>
+    <div class="story-deck-copy">${preventOrphan(storyEsc(card.copy||''))}</div>
+    ${points?`<div class="story-deck-points">${points}</div>`:''}
+    <div class="story-deck-actions">
+      <button type="button" class="story-prev-btn" onclick="storyDeckPrev('${id}')"${index===0?' disabled aria-disabled="true"':''}>‹ 이전</button>
+      <button type="button" class="story-link-btn" onclick="storyOpenEvidence('${id}','${storyEsc(card.evidence||'')}')">${card.evidence?'근거 보기':'전체 풀이'}</button>
+      <button type="button" class="story-next-btn" onclick="storyDeckNext('${id}')">${index===total-1?'서고 보기':'다음 ›'}</button>
+    </div>
+    <div class="story-dots" aria-label="${total}장 중 ${index+1}장">${dots}</div>
+  </article>`;
+}
+function buildStoryExperienceHTML(config){
+  const id=storySafeId(config.id),cards=Array.isArray(config.deck)?config.deck:[];
+  _storyDeckStore[id]=cards;
+  const stats=(config.stats||[]).slice(0,5).map(storyStatHTML).join('');
+  const highlights=(config.highlights||[]).slice(0,3).map(item=>`<div class="story-highlight"><span class="material-symbols-outlined" aria-hidden="true">${storyEsc(item.icon||'auto_awesome')}</span><b>${storyEsc(item.label)}</b>${preventOrphan(storyEsc(item.text||''))}</div>`).join('');
+  const score=config.score==null?'':`<div class="story-score"><b>${storyEsc(config.score)}</b><span>${storyEsc(config.scoreSuffix||'점')}</span></div>`;
+  return `<div class="story-experience" data-story-id="${id}" data-story-index="0">
+    <section class="story-layer story-summary-layer" data-story-layer="summary" aria-label="${storyEsc(config.title)} 한눈 요약">
+      <div class="story-summary-card">
+        <div class="story-kicker">${storyEsc(config.kicker||'MY READING')}</div>
+        <div class="story-emblem" aria-hidden="true"><span class="material-symbols-outlined">${storyEsc(config.icon||'auto_awesome')}</span></div>
+        <div class="story-title">${preventOrphan(storyEsc(config.title))}</div>
+        <div class="story-subtitle">${preventOrphan(storyEsc(config.subtitle||''))}</div>${score}
+        <div class="story-stats">${stats}</div><div class="story-highlights">${highlights}</div>
+        <div class="story-summary-actions"><button type="button" onclick="storyNavigate('${id}','library')">전체 서고</button><button type="button" class="primary" onclick="storyNavigate('${id}','deck',0)">핵심 카드 보기 ›</button></div>
+      </div>
+    </section>
+    <section class="story-layer story-deck-layer" data-story-layer="deck" hidden aria-label="${storyEsc(config.title)} 핵심 카드 덱">
+      <div class="story-layer-bar"><button type="button" onclick="storyNavigate('${id}','summary')" aria-label="요약으로 돌아가기">‹</button><div><small>${storyEsc(config.deckKicker||'CORE DECK')}</small><b>${storyEsc(config.deckTitle||`핵심 ${cards.length}장`)}</b></div><button type="button" onclick="storyNavigate('${id}','library')">서고</button></div>
+      <div class="td-count">한 장씩 가볍게 넘겨보세요</div><div id="storyDeckStage-${id}">${storyDeckCardHTML(id,cards[0],0,cards.length)}</div>
+    </section>
+    <section class="story-layer story-library-layer" data-story-layer="library" hidden aria-label="${storyEsc(config.title)} 전체 리포트">
+      <div class="story-layer-bar"><button type="button" onclick="storyNavigate('${id}','deck')" aria-label="카드 덱으로 돌아가기">‹</button><div><small>LIBRARY</small><b>${storyEsc(config.libraryTitle||'전체 풀이 서고')}</b></div><button type="button" onclick="storyNavigate('${id}','summary')">요약</button></div>
+      <div class="story-library-intro">${preventOrphan(storyEsc(config.libraryIntro||'계산 근거와 긴 풀이를 그대로 보관했어요. 필요한 카드만 목차에서 골라 읽으세요.'))}</div>
+      <div class="story-library-content">${config.libraryHtml||''}</div>
+    </section>
+  </div>`;
+}
+function storyNavigate(id,layer,index){
+  const root=document.querySelector(`[data-story-id="${storySafeId(id)}"]`);if(!root)return;
+  const cards=_storyDeckStore[storySafeId(id)]||[];
+  let idx=Number(root.dataset.storyIndex)||0;
+  if(Number.isFinite(index))idx=Math.max(0,Math.min(Math.max(0,cards.length-1),index));
+  root.dataset.storyIndex=String(idx);
+  root.querySelectorAll('[data-story-layer]').forEach(el=>{const on=el.dataset.storyLayer===layer;el.hidden=!on;el.classList.toggle('on',on);});
+  if(layer==='deck'){
+    const stage=root.querySelector(`#storyDeckStage-${storySafeId(id)}`);
+    if(stage)stage.innerHTML=storyDeckCardHTML(storySafeId(id),cards[idx],idx,cards.length);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});scheduleLanguageApply(root,[0,250]);requestAnimationFrame(_scheduleStickyTOCUpdate);
+}
+function storyDeckNext(id){const root=document.querySelector(`[data-story-id="${storySafeId(id)}"]`);if(!root)return;const cards=_storyDeckStore[storySafeId(id)]||[],idx=Number(root.dataset.storyIndex)||0;if(idx>=cards.length-1)return storyNavigate(id,'library');storyNavigate(id,'deck',idx+1);}
+function storyDeckPrev(id){const root=document.querySelector(`[data-story-id="${storySafeId(id)}"]`);if(!root)return;const idx=Number(root.dataset.storyIndex)||0;if(idx>0)storyNavigate(id,'deck',idx-1);}
+function storyOpenEvidence(id,evidence){storyNavigate(id,'library');if(evidence)requestAnimationFrame(()=>requestAnimationFrame(()=>jumpToCard(evidence)));}
 function buildLifeShareCardHtml(saju){
   const c=buildCharacterCard(saju),scenes=(buildDailyScenes(saju)||[]).slice(0,3);
   if(!c)return '';
@@ -8438,7 +8529,18 @@ function renderNewyearFortune(saju,y){
   h=_nyVisualHead+
     renderAIReadingCard('newyear-core',`${y}년 신년운세 핵심 풀이`,String(y),{main:true,catLabel:null,loadingText:`${y}년 신년운세 풀이를 정리하고 있어요. 잠시만 기다려주세요.`})+
     `<div data-ai-fallback-for="newyear-core" data-ai-extra="${String(y)}">${h}</div>`;
-  return h;
+  const seasonBest=[...seasons].sort((a,b)=>(b.score||0)-(a.score||0))[0];
+  const nyDeck=[
+    {key:'overview',icon:'wb_sunny',title:'올해 큰 그림',evidence:'card-TOTAL',quote:`${y}년은 속도보다 방향을 먼저 잡는 해예요`,copy:`올해 종합 흐름은 ${total}점, ${grade.lab}이에요. 본인에게는 ${plainTG(tg)}의 분위기가 앞에 서요. 좋은 달에는 오래 미룬 선택을 움직이고, 조심할 달에는 규모를 줄여 내실을 다지세요. 한 해의 점수보다 본인에게 맞는 속도로 기회를 배치하는 일이 더 중요해요.`,points:[{label:'종합 흐름',value:`${total}점`},{label:'결정에 좋은 달',value:`${decisive}월`}]},
+    {key:'money',icon:'savings',title:'돈',evidence:'card-NY_WEALTH',quote:'돈은 좋은 달에 벌리고, 조심할 달에 지켜요',copy:`재물 흐름은 ${wealthYr}점이에요. ${monthLab(lucky)}에는 계약·저축·수입 구조를 손보기 좋아요. ${monthLab(tough)}에는 충동 결제와 말뿐인 약속을 줄이세요. 큰돈은 한 번에 움직이기보다 목적별로 나누어 기록하면 본인의 선택권이 오래 남아요.`,points:[{label:'재물 점수',value:`${wealthYr}`},{label:'좋은 달',value:monthLab(lucky)}]},
+    {key:'love',icon:'favorite',title:'사랑',evidence:'card-NY_LOVE',quote:'좋은 관계는 마음을 짐작하지 않고 말로 확인해요',copy:`연애와 결혼 흐름은 ${loveYr}점이에요. 올해는 관계의 온도를 억지로 올리기보다 짧고 자주 마음을 확인하는 방식이 잘 맞아요. 새로운 인연도 생활 속도가 맞는지 함께 살펴보세요. 중요한 대화는 ${monthLab(lucky)}에 잡으면 한결 부드러워져요.`,points:[{label:'관계 점수',value:`${loveYr}`},{label:'본인 자리와 올해',value:rel.kind||'평'}]},
+    {key:'career',icon:'rocket_launch',title:'일',evidence:'card-NY_CAREER',quote:'올해의 기회는 준비해 둔 사람에게 먼저 보여요',copy:`일과 진로 흐름은 ${careerYr}점이에요. ${plainTG(tg)}의 분위기를 일상어로 옮기면, 본인이 맡은 역할을 실제 결과로 보여주는 해에 가까워요. 이직·창업·시험 같은 큰 선택은 ${decisive}월을 중심으로 준비하세요. 일정과 예산을 함께 적어두면 기회를 놓치지 않아요.`,points:[{label:'일 점수',value:`${careerYr}`},{label:'결정의 달',value:`${decisive}월`}]},
+    {key:'health',icon:'health_and_safety',title:'건강',evidence:'card-NY_HEALTH',quote:'올해의 체력은 몰아서 쓰기보다 매일 지켜야 해요',copy:`건강 흐름은 ${healthYr}점이에요. 바쁜 달일수록 수면과 식사 시간을 먼저 일정에 넣으세요. 컨디션이 흔들리면 일을 줄이는 것이 아니라 회복 시간을 고정하는 편이 좋아요. 불편한 신호가 이어지면 운세보다 검진과 전문가의 판단을 우선하세요.`,points:[{label:'건강 점수',value:`${healthYr}`},{label:'조심할 달',value:monthLab(tough)}]},
+    {key:'people',icon:'groups',title:'관계',evidence:'card-NY_RELATION',quote:'사람 수보다 편하게 말할 수 있는 관계가 남아요',copy:`사람 관계 흐름은 ${relationYr}점이에요. 올해는 넓게 만나는 일과 깊게 남기는 일을 구분하면 좋아요. 약속은 기억에 맡기지 말고 기록하세요. 오해가 생기면 바로 결론 내리기보다 상대의 뜻을 한 번 더 묻는 습관이 본인의 좋은 인연을 지켜줘요.`,points:[{label:'관계 점수',value:`${relationYr}`},{label:'올해 띠의 만남',value:zodiacRel.kind||'평'}]},
+    {key:'seasons',icon:'filter_vintage',title:'계절',evidence:'card-SEASONS',quote:'한 해에도 밀 때와 쉬어갈 때가 따로 있어요',copy:`올해 가장 힘이 잘 모이는 계절은 ${seasonBest?seasonBest.name.replace(/^[^ ]+\s*/,''):''}이고 평균 ${seasonBest&&seasonBest.score!=null?seasonBest.score:'-'}점이에요. 계절 흐름이 좋을 때는 시작과 확장을, 낮을 때는 점검과 정리를 배치하세요. 달마다 흔들려도 분기 목표 하나를 끝내면 한 해의 중심은 쉽게 무너지지 않아요.`,points:seasons.map(s=>({label:s.name.replace(/^[^ ]+\s*/,''),value:s.score==null?'-':s.score}))},
+    {key:'months',icon:'calendar_month',title:'월별 지도',evidence:'card-MONTHS',quote:'큰 결정은 좋은 달에, 정리는 조심할 달에 놓으세요',copy:`${monthLab(lucky)}은 본인의 흐름이 비교적 잘 살아나는 달이에요. ${monthLab(tough)}에는 중요한 일을 포기하기보다 크기를 줄이고 확인 단계를 늘리세요. 가장 좋은 ${decisive}월에도 계약·건강·투자 판단은 실제 조건을 함께 확인해야 해요. 운은 일정을 고르는 참고 지도예요.`,points:[{label:'좋은 달',value:monthLab(lucky)},{label:'조심할 달',value:monthLab(tough)}]}
+  ];
+  return buildStoryExperienceHTML({id:`newyear-${y}`,kicker:'YEAR CHARACTER',icon:'calendar_month',title:`${y}년의 본인 흐름`,subtitle:`${grade.lab} · 좋은 때는 크게 쓰고, 버거운 때는 작게 나누세요`,score:total,stats:[{label:'돈',value:wealthYr},{label:'사랑',value:loveYr},{label:'일',value:careerYr},{label:'건강',value:healthYr}],highlights:[{icon:'stars',label:'좋은 달',text:monthLab(lucky)},{icon:'warning',label:'조심할 달',text:monthLab(tough)},{icon:'flag',label:'결정의 달',text:`${decisive}월`}],deck:nyDeck,deckTitle:`${y}년 핵심 8장`,libraryTitle:`${y}년 신년운세 전체 서고`,libraryIntro:'월별·분야별·계절별 계산 근거와 전체 풀이를 그대로 보관했어요.',libraryHtml:h});
 }
 
 // ══════════════════════════════════════════════
@@ -19455,7 +19557,17 @@ function renderNamePaid(saju, nmExtra){
   ]);
   // BT: 카드 목차
   h=_generateTOC(h,'이름풀이')+h;
-  return h;
+  const nameMax=Math.max(1,...nameOh.oh);
+  const suriGoodCount=suri?[suri.won,suri.hyeong,suri.i,suri.jeong].filter(item=>item.good).length:0;
+  const nameDeck=[
+    {key:'name-overview',icon:'badge',title:'이름 종합',evidence:'card-NAME',quote:`「${full}」은 본인 사주와 ${grade}이에요`,copy:`이름 종합 점수는 ${nameScore}점이에요. 한글 소리의 다섯 기운과 사주의 균형${hasHan?', 한자 획수와 글자 의미까지':''} 함께 살펴본 결과예요. 점수는 이름을 단정하는 판정표가 아니라, 잘 살아나는 힘과 의식적으로 채울 부분을 찾는 지도예요.`,points:[{label:'종합 점수',value:`${nameScore}`},{label:'도움이 되는 기운',value:ohNamesShort[ys.main]}]},
+    {key:'sound',icon:'graphic_eq',title:'한글 소리',evidence:'card-HANGUL',quote:'이름은 매일 가장 많이 불리는 작은 리듬이에요',copy:`「${full}」의 소리를 나무·불·흙·금속·물의 다섯 분위기로 나눠봤어요. 가장 많이 드러나는 쪽은 ${ohNamesShort[nameOh.oh.indexOf(Math.max(...nameOh.oh))]} 기운이에요. 본인을 도와주는 ${ohNamesShort[ys.main]} 기운이 이름에 ${nameOh.oh[ys.main]>0?'들어 있어 자연스럽게 힘을 보태요':'없어 생활 환경과 활동에서 보완하면 좋아요'}.`,points:ohNamesShort.map((label,i)=>({label,value:nameOh.oh[i]}))},
+    {key:'hanja',icon:'translate',title:'한자와 획수',evidence:hasHan?'card-SURI':'card-HANZAWON',quote:'같은 발음도 어떤 글자를 고르느냐에 따라 인상이 달라져요',copy:hasHan?`선택된 한자를 네 시기의 자리로 나눠보니 ${suriGoodCount}곳이 편안한 흐름으로 잡혔어요. 특히 평생의 큰 흐름을 보는 마지막 자리는 ${suri.jeong.good?'안정적으로 받쳐주는 편이에요':'의식적인 보완이 필요해요'}. 뜻이 좋더라도 실제 등록 한자와 획수가 맞는지 한 번 더 확인하세요.`:`현재는 한글 소리를 중심으로 풀이했어요. 한자를 선택하면 글자 뜻과 획수, 인생 시기별 흐름까지 더 자세히 비교할 수 있어요. 같은 발음의 후보를 고를 때는 뜻과 실제 등록 가능 여부를 함께 확인하세요.`,points:[{label:'한자 입력',value:hasHan?'완료':'미입력'},{label:'편안한 자리',value:hasHan?`${suriGoodCount}/4`:'-'}]},
+    {key:'balance',icon:'balance',title:'사주와 균형',evidence:'card-COMBINE',quote:'좋은 이름은 본인의 강점을 살리고 빈 곳을 조용히 채워요',copy:`본인 사주에서 가장 옅은 쪽은 ${ohNamesShort[sajuMinIdx]} 기운이고, 가장 도움 되는 쪽은 ${ohNamesShort[ys.main]} 기운이에요. 이름을 더했을 때 다섯 기운의 차이는 ${span}칸이에요. 한쪽을 과하게 밀기보다 부족한 힘이 생활 속에서 자연스럽게 살아나는 선택이 좋아요.`,points:[{label:'가장 옅은 기운',value:ohNamesShort[sajuMinIdx]},{label:'도움 기운',value:ohNamesShort[ys.main]}]},
+    {key:'strength',icon:'diamond',title:'강점과 보완',evidence:'card-STRENGTH',quote:'이름의 장점은 실제로 자주 쓰일 때 더 선명해져요',copy:`이 이름은 본인의 타고난 분위기와 소리의 리듬이 만나는 지점에서 ${grade}으로 보여요. 좋은 부분은 소개·서명·작업 이름처럼 일상에서 자신 있게 쓰세요. 부족한 부분은 이름 하나에 맡기기보다 색·공간·습관과 함께 천천히 채우는 편이 안정적이에요.`,points:[{label:'현재 평가',value:grade},{label:'균형 차이',value:`${span}`}]},
+    {key:'recommend',icon:'edit_note',title:'작명 추천',evidence:'card-RECOMMEND',quote:'추천 이름은 점수보다 본인이 오래 부를 수 있는지가 먼저예요',copy:`본인에게 어울리는 추천 후보 ${recommended.length}개를 계산해 두었어요. 우선은 ${ohNamesShort[ys.main]} 기운을 살리는 소리를 보고, 그다음 뜻과 한자 조합을 비교하세요. 실제 출생 신고나 개명 전에는 가족의 성명, 등록 가능한 한자, 발음의 자연스러움을 함께 확인하는 것이 좋아요.`,points:recommended.slice(0,3).map(item=>({label:item.name,value:'추천'}))}
+  ];
+  return buildStoryExperienceHTML({id:'name-reading',kicker:'NAME CHARACTER',icon:'signature',title:`「${full}」 이름 캐릭터`,subtitle:grade,score:nameScore,stats:ohNamesShort.map((label,i)=>({label,value:Math.round(nameOh.oh[i]/nameMax*100),display:nameOh.oh[i]})),highlights:[{icon:'eco',label:'도움 기운',text:ohNamesShort[ys.main]},{icon:'water_drop',label:'채울 기운',text:ohNamesShort[sajuMinIdx]},{icon:'recommend',label:'추천 후보',text:`${recommended.length}개`}],deck:nameDeck,deckTitle:'이름 핵심 6장',libraryTitle:'이름풀이·작명 전체 서고',libraryIntro:'한글 소리·한자·획수·추천 후보의 전체 계산 근거를 그대로 보관했어요.',libraryHtml:h});
 }
 
 // 이름풀이 A4 빌더
@@ -20282,7 +20394,18 @@ function renderGunghapPaid(saju1, gnExtra){
   const saju2=calcSaju(sy2,sm2,sd2,gh,gmin);
   const myMbti=(_meta&&_meta.mbti)||'';
   const extraKey=`${sy2}-${sm2}-${sd2}-${gh}-${gmin}-${gnExtra.gender||''}-${gnExtra.mbti||''}`;
-  return renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
+  const result=calcGunghap(saju1,saju2,gender,gnExtra.gender);
+  const libraryHtml=renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
+  const relationLabel=({상생:'서로 힘을 보태는 사이',비화:'닮아서 편한 사이',상극:'차이로 성장하는 사이',중립:'함께 만들어가는 사이'})[result.ohRelType]||'함께 만들어가는 사이';
+  const relationDeck=[
+    {key:'chemistry',icon:'handshake',title:'두 사람 케미',evidence:'card-GUNGHAP',quote:`두 분은 ${relationLabel}예요`,copy:`종합 궁합은 ${result.score}점, ${result.grade}이에요. 점수는 두 사람의 타고난 분위기와 서로를 보는 방식, 관계의 자리, 함께 있을 때의 균형을 합쳐 계산했어요. 높은 점수는 자연스러움을 뜻하고, 낮은 점수는 대화와 거리 조절이 더 필요하다는 뜻이에요.`,points:[{label:'종합 점수',value:`${result.score}`},{label:'본질의 만남',value:result.ohRelType}]},
+    {key:'attraction',icon:'favorite',title:'연애',evidence:'card-LOVE',quote:'끌림은 시작이고, 오래 가는 힘은 생활 속 대화예요',copy:`두 분의 배우자 자리는 ${result.brLabel}으로 만나요. 처음의 끌림만큼 말투와 연락 속도, 혼자 쉬는 시간을 맞추는 일이 중요해요. 감정이 커진 날에는 바로 결론 내리지 말고 한 번 쉬었다가 이야기하세요. 좋은 관계는 상대가 알아서 맞춰주길 기다리지 않을 때 더 단단해져요.`,points:[{label:'자리 만남',value:`${result.brScore}`},{label:'관계 특징',value:result.brLabel}]},
+    {key:'marriage',icon:'diversity_1',title:'결혼',evidence:'card-MARRIAGE',quote:'결혼은 사랑에 생활의 합의를 더하는 일이에요',copy:`결혼 생활에서는 돈·집안일·가족 연락의 기준을 미리 말로 정하는 편이 좋아요. 본질의 어울림은 ${result.ohScore}점이고, 함께 있을 때의 균형은 ${result.balScore}점이에요. 잘 맞는 부분은 역할을 맡기고, 약한 부분은 한 사람의 희생으로 메우지 말고 규칙으로 보완하세요.`,points:[{label:'본질 어울림',value:result.ohScore},{label:'함께한 균형',value:result.balScore}]},
+    {key:'talk',icon:'forum',title:'대화',evidence:'card-PARTNER',quote:'다름을 고치려 하기보다 번역해 주는 대화가 필요해요',copy:`본인이 상대를 보는 분위기와 상대가 본인을 보는 분위기는 서로 다를 수 있어요. 설명 없이 기대하면 서운함이 쌓이기 쉬워요. 부탁은 구체적으로, 거절은 이유와 가능한 대안을 함께 말해보세요. 두 분의 차이는 갈등의 원인만이 아니라 서로가 못 보는 지점을 알려주는 힘이기도 해요.`,points:[{label:'서로를 보는 점수',value:result.tgScore},{label:'본인→상대',value:plainTG(result.tg12)}]},
+    {key:'family',icon:'home_and_garden',title:'가족과 일상',evidence:'card-FAMILY',quote:'두 사람의 평온은 반복되는 작은 약속에서 만들어져요',copy:`함께 살수록 큰 이벤트보다 식사·수면·지출 같은 반복이 관계의 온도를 정해요. 한쪽이 늘 챙기고 다른 쪽이 받기만 하는 구조가 되지 않게 역할을 바꿔보세요. 가족 문제는 두 사람의 기준을 먼저 합의한 뒤 바깥에 설명하면 흔들림이 줄어요.`,points:[{label:'함께한 균형',value:result.balScore},{label:'생활 키워드',value:'기록과 합의'}]},
+    {key:'timing',icon:'schedule',title:'관계의 시기',evidence:'card-TIMELINE_MATCH',quote:'좋은 시기는 결정을 대신하지 않고 준비를 도와줘요',copy:`두 사람의 흐름이 함께 올라가는 때에는 결혼·이사·공동 목표를 논의하기 좋아요. 한쪽만 바쁜 때에는 속도를 맞추고 역할을 나누세요. 관계의 시기는 절대적인 판정이 아니라 대화를 시작할 타이밍을 잡는 참고 지도예요. 실제 결정은 건강·돈·가족 상황을 함께 확인해야 해요.`,points:[{label:'현재 궁합',value:`${result.score}`},{label:'핵심 원칙',value:'함께 확인'}]}
+  ];
+  return buildStoryExperienceHTML({id:'gunghap-reading',kicker:'RELATION CHARACTER',icon:'diversity_3',title:relationLabel,subtitle:`${result.grade} · 두 사람의 차이까지 관계의 자원으로 써보세요`,score:result.score,stats:[{label:'본질',value:result.ohScore},{label:'관계',value:result.tgScore},{label:'자리',value:result.brScore},{label:'균형',value:result.balScore}],highlights:[{icon:'favorite',label:'관계 성격',text:result.ohRelType},{icon:'join_inner',label:'자리 만남',text:result.brLabel},{icon:'chat',label:'관계 비책',text:'짧고 자주 확인'}],deck:relationDeck,deckTitle:'궁합 핵심 6장',libraryTitle:'궁합 전체 서고',libraryIntro:'연애·결혼·가족·시기까지 두 사람의 전체 계산 근거를 보관했어요.',libraryHtml});
 }
 
 // ── 연애·데이트 분위기 ──

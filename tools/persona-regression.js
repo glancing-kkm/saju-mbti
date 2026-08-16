@@ -127,6 +127,8 @@ const harness = `
     // 8) 신년운세 — 띠 작용 개인화 구절 포함
     const ny = renderNewyearFortune(SELF, 2026);
     ok('renderNewyearFortune 렌더 + 띠작용 개인화 구절', typeof ny==='string' && ny.includes('다만 같은 띠라도') && !leaky(ny));
+    ok('신년운세 3층: 요약·핵심 덱·전체 서고',
+       (ny.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['newyear-2026']||[]).length===8);
 
     // 9) MBTI 통합 — 사주 측 강점/약점이 사주별로 다름
     const ma = renderMBTI(SELF,'INTJ'), mb = renderMBTI(GWAN,'INTJ');
@@ -174,7 +176,20 @@ const harness = `
        layered.indexOf('data-life-layer="deck"')<layered.indexOf('data-life-layer="library"'));
     ok('전체 서고: 기존 38카드 보존', (layered.match(/<!--CARD_START:/g)||[]).length===38);
 
-    // 12) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
+    // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.
+    const nameExtra={surname:'김',given:'민수',han:{surname:'金',given1:'珉',given2:'秀'},strokes:{surname:8,given1:10,given2:7}};
+    const nameLayered=renderNamePaid(SELF,nameExtra);
+    ok('이름풀이·작명 3층: 요약·핵심 6장·전체 서고',
+       (nameLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['name-reading']||[]).length===6 && nameLayered.includes('card-RECOMMEND'));
+    const pairExtra={gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:'ENFP'};
+    _meta.gnExtra=pairExtra;
+    const pairLayered=renderGunghapPaid(SELF,pairExtra);
+    ok('궁합 3층: 요약·핵심 6장·전체 서고',
+       (pairLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['gunghap-reading']||[]).length===6 && pairLayered.includes('card-MARRIAGE'));
+    ok('공통 카드 덱: 이전·근거·다음 버튼 제공',
+       pairLayered.includes('storyDeckPrev(')&&pairLayered.includes('storyOpenEvidence(')&&pairLayered.includes('storyDeckNext('));
+
+    // 13) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
     const OTHER=C(6,8,7,9,3,7,6,8);
     const deterministicRenderers={
       life:()=>renderSajuPaid(SELF,1990,5,15,12,0),
@@ -213,5 +228,25 @@ try {
 } catch (e) {
   console.error('하니스 실행 중 오류(앱 코드 파싱/로딩 실패):', e.message);
   process.exit(2);
+}
+try {
+  const astroCode = fs.readFileSync(path.join(path.dirname(target), 'assets', 'astrology.js'), 'utf8');
+  const astroHarness = `
+    astrologyResultVisualHTML=()=>'<section class="astro-panel">원형 차트</section>';
+    const __astroPlanets=[
+      ['sun','leo'],['moon','pisces'],['mercury','virgo'],['venus','libra'],['mars','aries'],
+      ['jupiter','sagittarius'],['saturn','capricorn'],['uranus','aquarius'],['neptune','pisces'],['pluto','scorpio']
+    ].map(([planet,sign])=>({planet,sign,degree:10}));
+    const __astroFlowMock={productName:'종합 리포트',birthInfo:{city:'서울'},createdAt:'2026-08-16T00:00:00.000Z',resultMarkdown:'# 상세 풀이',chart:{birthInfo:{city:'서울',birthTimeUnknown:false},planets:__astroPlanets,ascendant:{sign:'taurus',degree:4},elementBalance:{fire:3,earth:2,air:2,water:3},modalityBalance:{cardinal:4,fixed:3,mutable:3},aspects:[]}};
+    const __astroConfig=buildAstrologyStoryConfig(__astroFlowMock);
+    const __astroHtml=buildStoryExperienceHTML(__astroConfig);
+    globalThis.__ASTRO_STORY_OK__=(__astroConfig.deck.length===7&&(__astroHtml.match(/data-story-layer=/g)||[]).length===3&&__astroHtml.includes('점성술 전체 서고'));
+  `;
+  vm.runInContext(astroCode + astroHarness, ctx, { filename: 'astrology.js' });
+  console.log((sb.__ASTRO_STORY_OK__?'  ✅ ':'  ❌ ')+'점성술 3층: 요약·핵심 7장·전체 서고');
+  if (!sb.__ASTRO_STORY_OK__) sb.__REGRESSION_FAILED__++;
+} catch (e) {
+  console.error('  ❌ 점성술 3층 회귀 검사 →', e.message);
+  sb.__REGRESSION_FAILED__++;
 }
 process.exit(sb.__REGRESSION_FAILED__ ? 1 : 0);
