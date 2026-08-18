@@ -123,12 +123,25 @@ const harness = `
     ok('renderSajuPaid 누수 없음(dm 미치환·undefined)', !leaky(ha) && !leaky(hb));
     ok('renderSajuPaid 비유 본질: 같은 일간이라도 다름',
        ha.includes('봄 태생') && hb.includes('가을 태생'));
+    const fpSelf=buildPersonalFingerprint(SELF),fpGwan=buildPersonalFingerprint(GWAN);
+    ok('개인 지문: 같은 일주도 나머지 여섯 글자에 따라 다름',
+       fpSelf.key!==fpGwan.key && fpSelf.hook!==fpGwan.hook);
+    const fingerprintSet=new Set();
+    for(let i=0;i<120;i++){
+      const sample=C(i%10,(i*5+1)%12,(i*7+3)%10,(i*7+2)%12,(i*3+1)%10,(i*11+4)%12,(i*9+2)%10,(i*5+7)%12);
+      const fp=buildPersonalFingerprint(sample);if(fp)fingerprintSet.add(fp.key+'|'+fp.hook);
+    }
+    ok('개인 지문: 120개 표본에서 60개 이상의 조합', fingerprintSet.size>=60, 'unique='+fingerprintSet.size);
+    ok('인생총운: 캐릭터와 긴 풀이에 개인 지문 노출',
+       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.includes('personal-proof'));
 
     // 8) 신년운세 — 띠 작용 개인화 구절 포함
     const ny = renderNewyearFortune(SELF, 2026);
     ok('renderNewyearFortune 렌더 + 띠작용 개인화 구절', typeof ny==='string' && ny.includes('다만 같은 띠라도') && !leaky(ny));
     ok('신년운세 3층: 요약·핵심 덱·전체 서고',
        (ny.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['newyear-2026']||[]).length===8);
+    ok('신년운세: 요약과 핵심 카드에 개인 지문 연결',
+       ny.includes('story-personal-note') && (_storyDeckStore['newyear-2026'][0].copy||'').includes(fpSelf.hook));
 
     // 9) MBTI 통합 — 사주 측 강점/약점이 사주별로 다름
     const ma = renderMBTI(SELF,'INTJ'), mb = renderMBTI(GWAN,'INTJ');
@@ -181,13 +194,20 @@ const harness = `
     const nameLayered=renderNamePaid(SELF,nameExtra);
     ok('이름풀이·작명 3층: 요약·핵심 6장·전체 서고',
        (nameLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['name-reading']||[]).length===6 && nameLayered.includes('card-RECOMMEND'));
+    ok('이름풀이·작명: 사주 개인 지문 연결', nameLayered.includes('story-personal-note'));
     const pairExtra={gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:'ENFP'};
     _meta.gnExtra=pairExtra;
     const pairLayered=renderGunghapPaid(SELF,pairExtra);
     ok('궁합 3층: 요약·핵심 6장·전체 서고',
        (pairLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['gunghap-reading']||[]).length===6 && pairLayered.includes('card-MARRIAGE'));
+    ok('궁합: 두 사람의 관계 반응을 함께 비교',
+       pairLayered.includes('story-personal-note') && (_storyDeckStore['gunghap-reading'][0].copy||'').includes('상대는'));
     ok('공통 카드 덱: 이전·근거·다음 버튼 제공',
        pairLayered.includes('storyDeckPrev(')&&pairLayered.includes('storyOpenEvidence(')&&pairLayered.includes('storyDeckNext('));
+    const storyNavigateSource=globalThis.__SOURCE_HTML__.match(/function storyNavigate[\s\S]*?function storyDeckNext/)?.[0]||'';
+    const lifeNavigateSource=globalThis.__SOURCE_HTML__.match(/function lifeNavigate[\s\S]*?function lifeDeckNext/)?.[0]||'';
+    ok('카드 이동: 전환·이전·다음 버튼이 스크롤을 맨 위로 올리지 않음',
+       !storyNavigateSource.includes('window.scrollTo')&&!lifeNavigateSource.includes('window.scrollTo'));
 
     // 13) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
     const OTHER=C(6,8,7,9,3,7,6,8);

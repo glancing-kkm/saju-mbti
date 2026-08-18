@@ -130,6 +130,8 @@ function buildAstrologyStoryConfig(flow){
   const dominant=getDominantElement(chart.elementBalance),weak=getWeakElement(chart.elementBalance),mode=getDominantModality(chart.modalityBalance);
   const elementKo={fire:'불',earth:'흙',air:'바람',water:'물'};
   const modeKo={cardinal:'시작형',fixed:'꾸준형',mutable:'변화형'};
+  const ascName=chart.ascendant?signNameKo(chart.ascendant.sign):'출생시간 미상';
+  const personalNote=`겉으로는 ${sunSign.keywords[0]}을 앞세우지만, 마음은 ${moonSign.keywords[1]}이 확보돼야 편해져요. 첫인상은 ${ascName} 분위기라 가까워진 뒤의 본인과 차이가 날 수 있어요.`;
   const elementStats=[['불','fire'],['흙','earth'],['바람','air'],['물','water']].map(([label,key])=>({label,value:(chart.elementBalance[key]||0)*10,display:chart.elementBalance[key]||0}));
   const deck=[
     {key:'astro-core',icon:'sunny',title:'삶의 중심',quote:`태양 ${sunSign.nameKo}, 본인이 빛나는 방식이에요`,copy:`본인의 삶의 방향은 ${sunSign.personality} 중요한 선택에서는 남의 기대보다 본인이 오래 책임질 수 있는지를 먼저 보세요. ${sunSign.caution} 본인의 강점은 숨기기보다 작은 결과로 자주 보여줄 때 더 선명해져요.`,points:[{label:'태양',value:sunSign.nameKo},{label:'핵심 단어',value:sunSign.keywords[0]}]},
@@ -140,6 +142,7 @@ function buildAstrologyStoryConfig(flow){
     {key:'astro-work',icon:'work',title:'일과 돈',quote:'별의 강점은 생활의 구조 안에서 현실이 돼요',copy:`일에서는 ${sunSign.careerStyle} 돈의 흐름은 ${sunSign.moneyStyle} 본인의 강한 ${elementKo[dominant]} 분위기는 익숙한 무기예요. 부족한 ${elementKo[weak]} 분위기는 일정·기록·협업처럼 구체적인 습관으로 보완하세요. 큰 결정은 차트와 함께 실제 조건을 반드시 확인해야 해요.`,points:[{label:'강한 원소',value:elementKo[dominant]},{label:'채울 원소',value:elementKo[weak]}]},
     {key:'astro-balance',icon:'orbit',title:'차트의 균형',quote:'강한 힘은 방향이 되고, 빈 곳은 성장할 자리가 돼요',copy:`본인 차트에는 ${elementKo[dominant]} 분위기와 ${modeKo[mode]} 성향이 두드러져요. 익숙한 방식만 고집하면 장점이 과해질 수 있어요. 반대 성향을 없애려 하지 말고 작은 행동으로 빌려 쓰세요. 차트는 본인을 가두는 이름표가 아니라 선택의 폭을 넓히는 지도예요.`,points:[{label:'강한 분위기',value:elementKo[dominant]},{label:'움직임 방식',value:modeKo[mode]}]}
   ];
+  deck.personalNote=personalNote;
   const created=flow.createdAt?new Date(flow.createdAt).toLocaleString('ko-KR'):'';
   const libraryHtml=`<section class="astro-panel"><div class="astro-section-title">${astroEsc(flow.productName||'점성술 풀이')}</div><div class="astro-small">${astroEsc(flow.birthInfo.city)}${created?` · ${astroEsc(created)}`:''}</div></section>${astrologyResultVisualHTML(flow)}<section class="astro-panel"><div class="astro-markdown">${markdownToAstroHTML(flow.resultMarkdown)}</div></section><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('products')">다른 풀이 보기</button><button class="astro-btn secondary" onclick="astroNavigate('history')">히스토리 보기</button></div>`;
   return {id:'astrology-reading',kicker:'COSMIC CHARACTER',icon:'orbit',title:`태양 ${sunSign.nameKo} · 달 ${moonSign.nameKo}`,subtitle:`${flow.productName||'점성술 풀이'} · 계산된 출생차트를 가볍게 먼저 만나보세요`,stats:elementStats,highlights:[{icon:'north_east',label:'첫인상',text:chart.ascendant?signNameKo(chart.ascendant.sign):'출생시간 미상'},{icon:'local_fire_department',label:'강한 원소',text:elementKo[dominant]},{icon:'sync_alt',label:'움직임',text:modeKo[mode]}],deck,deckTitle:'점성술 핵심 7장',libraryTitle:'점성술 전체 서고',libraryIntro:'원형 차트와 상세 리포트를 그대로 보관했어요. 핵심을 본 뒤 필요한 부분을 깊게 읽으세요.',libraryHtml};

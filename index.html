@@ -1297,11 +1297,15 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .stat-link.low .sl-fill{background:var(--muted)}
 .stat-link.low .sl-txt b{color:var(--sub)}
 .stat-link.mid .sl-fill{background:var(--accent)}
+.personal-proof{margin:10px 0 13px;padding:11px 13px;border-radius:11px;background:rgba(191,155,48,.09);color:var(--sub);font-size:.78rem;line-height:1.75;word-break:keep-all}
+.personal-proof b{display:block;margin-bottom:3px;color:var(--accent-bright);font-size:.68rem;letter-spacing:.06em}
 /* 캐릭터 카드 — 별명·희귀도·능력치 */
 .char-card{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:20px 18px 16px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
 .cc-label{font-size:.7rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .cc-nick{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.5rem;line-height:1.35;color:var(--accent-bright);letter-spacing:-.01em;word-break:keep-all}
 .cc-sub{font-size:.88rem;color:var(--sub);margin-top:5px;word-break:keep-all}
+.cc-fingerprint{margin:12px 0 2px;padding:11px 13px;border-radius:12px;background:rgba(0,98,65,.055);color:var(--text);font-size:.8rem;line-height:1.72;text-align:left;word-break:keep-all}
+.cc-fingerprint b{display:block;margin-bottom:3px;color:var(--accent);font-size:.67rem;letter-spacing:.08em}
 .cc-rarity{margin-top:12px;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;padding:7px 13px;background:var(--accent-soft);border-radius:999px}
 .cc-stars{color:var(--accent-bright);font-size:.82rem;letter-spacing:.08em;flex-shrink:0}
 .cc-rarity-txt{font-size:.75rem;color:var(--sub);word-break:keep-all}
@@ -2124,6 +2128,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .story-emblem{width:92px;height:92px;margin:14px auto 10px;border-radius:30px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 12px 30px rgba(0,98,65,.18)}
 .story-emblem .material-symbols-outlined{font-size:48px;font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 48}
 .story-title{font-size:1.42rem;font-weight:850;line-height:1.35;color:var(--text);word-break:keep-all}.story-subtitle{margin-top:5px;color:var(--sub);font-size:.82rem}
+.story-personal-note{margin:12px 0 0;padding:10px 13px;border-radius:12px;background:rgba(0,98,65,.055);color:var(--text);font-size:.76rem;line-height:1.68;text-align:left;word-break:keep-all}.story-personal-note b{display:block;margin-bottom:2px;color:var(--accent);font-size:.65rem;letter-spacing:.08em}
 .story-score{display:inline-flex;align-items:baseline;justify-content:center;gap:5px;margin:12px auto 0;padding:6px 14px;border-radius:999px;background:var(--gold-soft);color:var(--accent-bright);font-weight:800}.story-score b{font-size:1.15rem}.story-score span{font-size:.68rem}
 .story-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:8px;margin-top:18px}
 .story-stat{padding:10px 7px 9px;border-radius:13px;background:var(--bg-deep);text-align:left}.story-stat-head{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:.65rem}.story-stat-head b{color:var(--accent);font-size:.7rem}.story-stat i{display:block;height:6px;margin-top:7px;border-radius:8px;background:rgba(191,155,48,.15);overflow:hidden}.story-stat i b{display:block;height:100%;border-radius:8px;background:#bf9b30}
@@ -6461,7 +6466,9 @@ function buildCharacterCard(saju){
   });
   const sorted=stats.slice().sort((a,b)=>b.value-a.value);
   const top=sorted[0],low=sorted[sorted.length-1];
+  const fingerprint=buildPersonalFingerprint(saju);
   return {nickname,subtitle,pct,grade,people:charRarityPeople(pct),stats,
+    fingerprint,
     top:{name:top.name,line:_CHAR_STAT_TOP[top.name]||''},
     low:{name:low.name,line:_CHAR_STAT_LOW[low.name]||''}};
 }
@@ -6580,6 +6587,91 @@ function buildDailyScenes(saju){
     {icon:'🌙',label:'혼자 충전할 때',text:_SCENE_CHARGE[p.lack]||_SCENE_CHARGE[0]}
   ];
 }
+
+// 같은 한두 글자가 아니라 여덟 글자의 조합을 생활 장면으로 번역한 개인 지문.
+// 계절·기운의 두께·주 동력·앉은 자리·내면 작용·강약을 함께 써서 문장을 가른다.
+function buildPersonalFingerprint(saju){
+  if(!saju||!saju.dp)return null;
+  let p;try{p=buildPersonaProfile(saju);}catch(e){return null;}
+  const topAxis=p.axisSorted[0][0],secondAxis=p.axisSorted[1][0],lowAxis=p.axisSorted[p.axisSorted.length-1][0];
+  const seatAxis=_SEAT_AXIS_MAP[p.seatTg]||'self';
+  const AXIS_NAME={self:'자기 주도',out:'표현',wealth:'현실 판단',gwan:'책임',in_:'관찰과 학습'};
+  const SURFACE={self:'주도권을 쉽게 넘기지 않는 사람',out:'말과 분위기로 가까워지는 사람',wealth:'필요와 손익을 먼저 보는 사람',gwan:'선을 지키고 책임지는 사람',in_:'말보다 관찰이 먼저인 사람'};
+  const ENGINE={self:'본인이 납득한 방향을 직접 정하는 힘',out:'생각을 말·글·결과물로 꺼내는 힘',wealth:'조건을 비교해 실리를 남기는 힘',gwan:'맡은 일을 끝까지 닫는 힘',in_:'자료와 맥락을 읽어 정확도를 높이는 힘'};
+  const CONTRAST={
+    self:'남이 방향을 정해주면 편해지기보다 답답함이 먼저 올라와요.',
+    out:'아무 반응 없는 자리에서는 의욕이 빠르게 식어요.',
+    wealth:'명분이 좋아도 조건이 불분명하면 마음을 주지 않아요.',
+    gwan:'가벼워 보이는 자리에서도 본인 몫은 끝까지 챙겨요.',
+    in_:'즉답을 요구받을수록 말수가 줄고 머릿속 검토가 길어져요.'
+  };
+  const WORK={
+    self:'회의에서 방향이 흐려지면 결국 본인이 결론을 내는 편이에요.',
+    out:'혼자 완성하려 할 때보다 초안을 꺼내 반응을 받을 때 아이디어가 살아나요.',
+    wealth:'직함보다 시간·보상·성과 조건이 분명한 일을 오래 하는 편이에요.',
+    gwan:'남들이 손을 놓은 마감과 문제를 끝까지 정리해 신뢰를 얻어요.',
+    in_:'바로 답을 내기보다 자료를 모은 뒤 한 번에 정확히 말하는 편이에요.'
+  };
+  const WORK_LOW={
+    self:'다만 권한 없이 보조 역할만 길어지면 의욕이 급격히 꺼져요.',
+    out:'잘해도 밖으로 말하지 않아 평가가 늦게 따라오는 때가 있어요.',
+    wealth:'좋은 뜻만 보고 시간·보상 조건을 건너뛰면 나중에 손해로 느껴져요.',
+    gwan:'끝나는 기준이 없는 일에서는 시작보다 마무리가 더 힘들어요.',
+    in_:'검토할 시간 없이 바로 움직인 날에는 되돌릴 일이 생기기 쉬워요.'
+  };
+  const MONEY={
+    self:'돈도 본인이 통제할 수 있는 구조에서 마음이 놓여요. 공동 자금은 결정권부터 정해야 해요.',
+    out:'말·기획·콘텐츠처럼 안의 재능을 밖으로 꺼낼 때 수입 통로가 열려요.',
+    wealth:'가격만 보지 않고 시간과 수고까지 돈으로 환산하는 감각이 빠른 편이에요.',
+    gwan:'월수입·고정비·장기 계약처럼 예측 가능한 구조에서 자산이 가장 잘 남아요.',
+    in_:'배운 것과 정보가 쌓인 뒤 돈이 따라오는 편이에요. 급한 수익화는 오히려 값을 낮춰요.'
+  };
+  const RELATION={
+    self:'가까운 사람도 본인의 선택을 대신하려 들면 애정보다 통제로 느껴져요.',
+    out:'대화와 반응이 끊기면 관계가 멀어졌다고 느끼기 쉬워요.',
+    wealth:'말보다 약속 시간과 행동이 맞는지를 보고 사람을 믿어요.',
+    gwan:'관계의 이름과 책임이 분명해야 마음을 오래 놓을 수 있어요.',
+    in_:'상대 말을 오래 곱씹는 편이라, 혼자 내린 해석을 사실처럼 믿지 않는 게 중요해요.'
+  };
+  const INNER={
+    충:'가까워지고 싶은 마음과 벗어나고 싶은 마음이 번갈아 나와요.',
+    원진:'큰 싸움보다 말투와 작은 습관이 오래 마음에 남는 편이에요.',
+    형:'상대보다 본인을 더 엄격하게 몰아붙인 뒤 뒤늦게 지쳐요.',
+    자형:'이미 내린 결정도 혼자 다시 검열하며 마음을 소모하기 쉬워요.',
+    합:'마음이 맞는 사람에게는 생각보다 빠르게 경계를 풀어요.',
+    반합:'함께할 목표가 생기면 관계가 빠르게 단단해져요.',
+    반합약:'강한 자극보다 잔잔하게 반복되는 만남에서 정이 들어요.',
+    파:'시작할 때의 열정과 마무리할 때의 온도가 달라지기 쉬워요.',
+    해:'겉으로 넘긴 불편을 안에서 오래 처리하는 편이에요.'
+  };
+  const STRESS={
+    '강-양':'힘들수록 더 움직이고 목소리도 또렷해져요. 멈춘 뒤 피로가 한꺼번에 와요.',
+    '강-음':'겉으로는 오래 버티지만 혼자 있는 순간 긴장이 풀리며 탈진하기 쉬워요.',
+    '약-양':'시작은 빠르지만 사람과 환경의 반응이 나쁘면 힘이 급격히 빠져요.',
+    '약-음':'생각으로 버티다가 몸이 먼저 무거워지는 편이에요. 쉬는 결정을 일찍 내려야 해요.'
+  };
+  const LEARN={
+    self:'정답을 외우기보다 본인 방식으로 다시 풀어볼 때 오래 기억해요.',
+    out:'읽기만 하는 공부보다 설명·발표·문제풀이로 꺼낼 때 실력이 붙어요.',
+    wealth:'배운 내용이 어디에 쓰이는지 보여야 집중력이 오래가요.',
+    gwan:'시험일과 분량이 정해지면 꾸준히 완주하는 힘이 살아나요.',
+    in_:'한 주제를 깊게 연결해 이해할 때 남들보다 오래 기억해요.'
+  };
+  const strengthBand=(p.strength==='강'||p.strength==='중강')?'강':'약';
+  const energyBand=p.yangRatio>=50?'양':'음';
+  const innerRel=(p.innerRels||[])[0];
+  const contrast=seatAxis===topAxis
+    ?`겉과 실제 결정 방식이 모두 ${ENGINE[topAxis]} 쪽으로 모여요. ${CONTRAST[topAxis]}`
+    :`사람들은 본인을 ${SURFACE[seatAxis]}로 보지만, 중요한 결정에서는 ${ENGINE[topAxis]}이 먼저 나와요. ${CONTRAST[topAxis]}`;
+  const second=`그다음으로 ${AXIS_NAME[secondAxis]}의 힘이 받쳐줘서, 한 가지 방식으로만 움직이는 사람은 아니에요.`;
+  const relation=[RELATION[seatAxis],innerRel&&INNER[innerRel.kind]].filter(Boolean).join(' ');
+  const stress=[STRESS[`${strengthBand}-${energyBand}`],p.excess.length?`${OHNAME[p.top]} 분위기가 몰리는 날에는 익숙한 방식만 고집하기 쉬워요.`:`${OHNAME[p.lack]} 분위기가 필요한 날에는 혼자 해결하려는 습관을 내려놓는 편이 좋아요.`].join(' ');
+  const proof=`${p.iljuKey} · ${p.season} 태생 · ${AXIS_NAME[topAxis]} ${p.axisSorted[0][1]}자리 · 본인 자리 ${plainTG(p.seatTg)} · ${OHNAME[p.top]}은 두텁고 ${OHNAME[p.lack]}은 옅음`;
+  const key=[saju.dp.stem,saju.dp.branch,p.season,p.strength,topAxis,secondAxis,seatAxis,innerRel?innerRel.kind:'평',p.lack,energyBand].join('-');
+  return {key,hook:`${contrast} ${second}`,work:`${WORK[topAxis]} ${WORK_LOW[lowAxis]}`,
+    money:MONEY[topAxis],relationship:relation,stress,learning:LEARN[topAxis],proof};
+}
+
 function dailyScenesHTML(saju,limit){
   const scenes=buildDailyScenes(saju);
   if(!scenes||!scenes.length)return '';
@@ -6613,6 +6705,7 @@ function characterCardHTML(saju,opts){
     <div class="cc-nick">「${c.nickname}」</div>
     <div class="cc-sub">${c.subtitle}</div>
     ${rarityLine}
+    ${c.fingerprint?`<div class="cc-fingerprint"><b>본인 사주의 개인 지문</b>${preventOrphan(c.fingerprint.hook)}</div>`:''}
     <div class="cc-stats">${bars}</div>
     ${compact?'':`<div class="cc-note"><b>최고 스탯 · ${c.top.name}</b><br>${preventOrphan(c.top.line)}</div>
     <div class="cc-note low"><b>최저 스탯 · ${c.low.name}</b><br>${preventOrphan(c.low.line)}</div>
@@ -6654,6 +6747,13 @@ function _lifeStageAdvice(age,topic){
 }
 function _lifeDeckCopy(parts,topic,age){
   let text=parts.filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  const fingerprint=buildPersonalFingerprint(_saju);
+  if(fingerprint){
+    const personalByTopic={money:fingerprint.money,work:fingerprint.work,love:fingerprint.relationship,
+      people:fingerprint.relationship,health:fingerprint.stress,study:fingerprint.learning};
+    const lead=/\uBCF8\uC778\uC740 \uC9C0\uAE08|\uB144\uC5D0\uB294/.test(text)?fingerprint.hook:personalByTopic[topic];
+    if(lead)text=`${lead} ${text}`;
+  }
   const extras=[
     _lifeStageAdvice(age,topic),
     '좋은 흐름은 크게 쓰고, 버거운 흐름은 할 일을 작게 나누면 본인 선택권이 살아나요.',
@@ -6793,7 +6893,6 @@ function lifeNavigate(layer,index){
     const stage=root.querySelector('#lifeDeckStage');
     if(stage)stage.innerHTML=lifeDeckCardHTML(cards[_lifeRoute.index],_lifeRoute.index,cards.length);
   }
-  window.scrollTo({top:0,behavior:'smooth'});
   scheduleLanguageApply(root,[0,250]);
   requestAnimationFrame(_scheduleStickyTOCUpdate);
 }
@@ -6849,13 +6948,15 @@ function buildStoryExperienceHTML(config){
   const stats=(config.stats||[]).slice(0,5).map(storyStatHTML).join('');
   const highlights=(config.highlights||[]).slice(0,3).map(item=>`<div class="story-highlight"><span class="material-symbols-outlined" aria-hidden="true">${storyEsc(item.icon||'auto_awesome')}</span><b>${storyEsc(item.label)}</b>${preventOrphan(storyEsc(item.text||''))}</div>`).join('');
   const score=config.score==null?'':`<div class="story-score"><b>${storyEsc(config.score)}</b><span>${storyEsc(config.scoreSuffix||'점')}</span></div>`;
+  const personalText=config.personalNote||(config.deck&&config.deck.personalNote)||'';
+  const personalNote=personalText?`<div class="story-personal-note"><b>본인만의 지문</b>${preventOrphan(storyEsc(personalText))}</div>`:'';
   return `<div class="story-experience" data-story-id="${id}" data-story-index="0">
     <section class="story-layer story-summary-layer" data-story-layer="summary" aria-label="${storyEsc(config.title)} 한눈 요약">
       <div class="story-summary-card">
         <div class="story-kicker">${storyEsc(config.kicker||'MY READING')}</div>
         <div class="story-emblem" aria-hidden="true"><span class="material-symbols-outlined">${storyEsc(config.icon||'auto_awesome')}</span></div>
         <div class="story-title">${preventOrphan(storyEsc(config.title))}</div>
-        <div class="story-subtitle">${preventOrphan(storyEsc(config.subtitle||''))}</div>${score}
+        <div class="story-subtitle">${preventOrphan(storyEsc(config.subtitle||''))}</div>${score}${personalNote}
         <div class="story-stats">${stats}</div><div class="story-highlights">${highlights}</div>
         <div class="story-summary-actions"><button type="button" onclick="storyNavigate('${id}','library')">전체 서고</button><button type="button" class="primary" onclick="storyNavigate('${id}','deck',0)">핵심 카드 보기 ›</button></div>
       </div>
@@ -6882,7 +6983,7 @@ function storyNavigate(id,layer,index){
     const stage=root.querySelector(`#storyDeckStage-${storySafeId(id)}`);
     if(stage)stage.innerHTML=storyDeckCardHTML(storySafeId(id),cards[idx],idx,cards.length);
   }
-  window.scrollTo({top:0,behavior:'smooth'});scheduleLanguageApply(root,[0,250]);requestAnimationFrame(_scheduleStickyTOCUpdate);
+  scheduleLanguageApply(root,[0,250]);requestAnimationFrame(_scheduleStickyTOCUpdate);
 }
 function storyDeckNext(id){const root=document.querySelector(`[data-story-id="${storySafeId(id)}"]`);if(!root)return;const cards=_storyDeckStore[storySafeId(id)]||[],idx=Number(root.dataset.storyIndex)||0;if(idx>=cards.length-1)return storyNavigate(id,'library');storyNavigate(id,'deck',idx+1);}
 function storyDeckPrev(id){const root=document.querySelector(`[data-story-id="${storySafeId(id)}"]`);if(!root)return;const idx=Number(root.dataset.storyIndex)||0;if(idx>0)storyNavigate(id,'deck',idx-1);}
@@ -8530,6 +8631,7 @@ function renderNewyearFortune(saju,y){
     renderAIReadingCard('newyear-core',`${y}년 신년운세 핵심 풀이`,String(y),{main:true,catLabel:null,loadingText:`${y}년 신년운세 풀이를 정리하고 있어요. 잠시만 기다려주세요.`})+
     `<div data-ai-fallback-for="newyear-core" data-ai-extra="${String(y)}">${h}</div>`;
   const seasonBest=[...seasons].sort((a,b)=>(b.score||0)-(a.score||0))[0];
+  const nyFingerprint=buildPersonalFingerprint(saju);
   const nyDeck=[
     {key:'overview',icon:'wb_sunny',title:'올해 큰 그림',evidence:'card-TOTAL',quote:`${y}년은 속도보다 방향을 먼저 잡는 해예요`,copy:`올해 종합 흐름은 ${total}점, ${grade.lab}이에요. 본인에게는 ${plainTG(tg)}의 분위기가 앞에 서요. 좋은 달에는 오래 미룬 선택을 움직이고, 조심할 달에는 규모를 줄여 내실을 다지세요. 한 해의 점수보다 본인에게 맞는 속도로 기회를 배치하는 일이 더 중요해요.`,points:[{label:'종합 흐름',value:`${total}점`},{label:'결정에 좋은 달',value:`${decisive}월`}]},
     {key:'money',icon:'savings',title:'돈',evidence:'card-NY_WEALTH',quote:'돈은 좋은 달에 벌리고, 조심할 달에 지켜요',copy:`재물 흐름은 ${wealthYr}점이에요. ${monthLab(lucky)}에는 계약·저축·수입 구조를 손보기 좋아요. ${monthLab(tough)}에는 충동 결제와 말뿐인 약속을 줄이세요. 큰돈은 한 번에 움직이기보다 목적별로 나누어 기록하면 본인의 선택권이 오래 남아요.`,points:[{label:'재물 점수',value:`${wealthYr}`},{label:'좋은 달',value:monthLab(lucky)}]},
@@ -8540,7 +8642,12 @@ function renderNewyearFortune(saju,y){
     {key:'seasons',icon:'filter_vintage',title:'계절',evidence:'card-SEASONS',quote:'한 해에도 밀 때와 쉬어갈 때가 따로 있어요',copy:`올해 가장 힘이 잘 모이는 계절은 ${seasonBest?seasonBest.name.replace(/^[^ ]+\s*/,''):''}이고 평균 ${seasonBest&&seasonBest.score!=null?seasonBest.score:'-'}점이에요. 계절 흐름이 좋을 때는 시작과 확장을, 낮을 때는 점검과 정리를 배치하세요. 달마다 흔들려도 분기 목표 하나를 끝내면 한 해의 중심은 쉽게 무너지지 않아요.`,points:seasons.map(s=>({label:s.name.replace(/^[^ ]+\s*/,''),value:s.score==null?'-':s.score}))},
     {key:'months',icon:'calendar_month',title:'월별 지도',evidence:'card-MONTHS',quote:'큰 결정은 좋은 달에, 정리는 조심할 달에 놓으세요',copy:`${monthLab(lucky)}은 본인의 흐름이 비교적 잘 살아나는 달이에요. ${monthLab(tough)}에는 중요한 일을 포기하기보다 크기를 줄이고 확인 단계를 늘리세요. 가장 좋은 ${decisive}월에도 계약·건강·투자 판단은 실제 조건을 함께 확인해야 해요. 운은 일정을 고르는 참고 지도예요.`,points:[{label:'좋은 달',value:monthLab(lucky)},{label:'조심할 달',value:monthLab(tough)}]}
   ];
-  return buildStoryExperienceHTML({id:`newyear-${y}`,kicker:'YEAR CHARACTER',icon:'calendar_month',title:`${y}년의 본인 흐름`,subtitle:`${grade.lab} · 좋은 때는 크게 쓰고, 버거운 때는 작게 나누세요`,score:total,stats:[{label:'돈',value:wealthYr},{label:'사랑',value:loveYr},{label:'일',value:careerYr},{label:'건강',value:healthYr}],highlights:[{icon:'stars',label:'좋은 달',text:monthLab(lucky)},{icon:'warning',label:'조심할 달',text:monthLab(tough)},{icon:'flag',label:'결정의 달',text:`${decisive}월`}],deck:nyDeck,deckTitle:`${y}년 핵심 8장`,libraryTitle:`${y}년 신년운세 전체 서고`,libraryIntro:'월별·분야별·계절별 계산 근거와 전체 풀이를 그대로 보관했어요.',libraryHtml:h});
+  if(nyFingerprint){
+    const nyLead={overview:nyFingerprint.hook,money:nyFingerprint.money,love:nyFingerprint.relationship,
+      career:nyFingerprint.work,health:nyFingerprint.stress,people:nyFingerprint.relationship};
+    nyDeck.forEach(card=>{if(nyLead[card.key])card.copy=`${nyLead[card.key]} ${card.copy}`;});
+  }
+  return buildStoryExperienceHTML({id:`newyear-${y}`,kicker:'YEAR CHARACTER',icon:'calendar_month',title:`${y}년의 본인 흐름`,subtitle:`${grade.lab} · 좋은 때는 크게 쓰고, 버거운 때는 작게 나누세요`,personalNote:nyFingerprint?nyFingerprint.hook:'',score:total,stats:[{label:'돈',value:wealthYr},{label:'사랑',value:loveYr},{label:'일',value:careerYr},{label:'건강',value:healthYr}],highlights:[{icon:'stars',label:'좋은 달',text:monthLab(lucky)},{icon:'warning',label:'조심할 달',text:monthLab(tough)},{icon:'flag',label:'결정의 달',text:`${decisive}월`}],deck:nyDeck,deckTitle:`${y}년 핵심 8장`,libraryTitle:`${y}년 신년운세 전체 서고`,libraryIntro:'월별·분야별·계절별 계산 근거와 전체 풀이를 그대로 보관했어요.',libraryHtml:h});
 }
 
 // ══════════════════════════════════════════════
@@ -14998,6 +15105,24 @@ function statLinkHTML(catLabel){
   </div>`;
 }
 
+// 긴 풀이에서도 누구에게나 맞는 조언으로 평평해지지 않도록,
+// 카드 주제마다 원국 전체에서 뽑은 개인 지문을 먼저 보여준다.
+function personalProofHTML(catLabel,title){
+  if(!_saju||/TIMELINE|TOC|MASTER|EPILOGUE|SUMMARY|QUICK|MONTHS|QUARTERS|SEASONS/.test(catLabel))return '';
+  const fingerprint=buildPersonalFingerprint(_saju);
+  if(!fingerprint)return '';
+  const label=`${catLabel} ${title||''}`;
+  let line='';
+  if(/WEALTH|MONEY|\uC7AC\uBB3C|\uB3C8/.test(label))line=fingerprint.money;
+  else if(/CAREER|BUSINESS|WORK|\uC9C1\uC5C5|\uC0AC\uC5C5|\uC77C\uC6B4/.test(label))line=fingerprint.work;
+  else if(/LOVE|MARRIAGE|HUMAN|FAMILY|RELATION|\uC5F0\uC560|\uACB0\uD63C|\uAD00\uACC4|\uAC00\uC871/.test(label))line=fingerprint.relationship;
+  else if(/HEALTH|\uAC74\uAC15/.test(label))line=fingerprint.stress;
+  else if(/STUDY|LEARN|\uD559\uC5C5|\uACF5\uBD80/.test(label))line=fingerprint.learning;
+  else if(/TOTAL|PERSONA|DAEUN|SEWOON|YEAR|CORE|\uCD1D\uC6B4|\uD575\uC2EC|\uC62C\uD574|10\uB144/.test(label))line=fingerprint.hook;
+  if(!line)return '';
+  return `<div class="personal-proof"><b>\uBCF8\uC778 \uC0AC\uC8FC에만 대입하면</b>${preventOrphan(line)}</div>`;
+}
+
 function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
   title=normalizeReadingText(title);
   bodyHtml=_calmReadingHtml(_softenBodySubheads(normalizeReadingText(bodyHtml||'')));
@@ -15019,6 +15144,7 @@ function paidWrapBody(catLabel,emoji,title,bodyHtml,goodWarn,isPrimary){
     ${badge}<div class="nb-cat">${emoji?`<span class="nb-cat-icon" aria-hidden="true">${emoji}</span>`:''}${catLabel}</div>
     <div class="nb-title">${title}${isTl?'<span class="tl-chevron" aria-hidden="true">▾</span>':isDetail?'<span class="detail-chevron" aria-hidden="true">▾</span>':''}</div>
     ${cardQuoteHTML(catLabel)}
+    ${personalProofHTML(catLabel,title)}
     ${statLinkHTML(catLabel)}
     ${isTl?'<button type="button" class="tl-hint" aria-expanded="false">탭하면 시기별 상세 풀이가 펼쳐져요</button><button type="button" class="tl-current">현재 시기 먼저 보기</button><div class="tl-body-wrap">':''}
     ${isDetail?'<button type="button" class="detail-hint" aria-expanded="false">핵심만 먼저 보고, 탭하면 자세한 풀이가 펼쳐져요</button><div class="detail-body-wrap">':''}
@@ -19559,6 +19685,7 @@ function renderNamePaid(saju, nmExtra){
   h=_generateTOC(h,'이름풀이')+h;
   const nameMax=Math.max(1,...nameOh.oh);
   const suriGoodCount=suri?[suri.won,suri.hyeong,suri.i,suri.jeong].filter(item=>item.good).length:0;
+  const nameFingerprint=buildPersonalFingerprint(saju);
   const nameDeck=[
     {key:'name-overview',icon:'badge',title:'이름 종합',evidence:'card-NAME',quote:`「${full}」은 본인 사주와 ${grade}이에요`,copy:`이름 종합 점수는 ${nameScore}점이에요. 한글 소리의 다섯 기운과 사주의 균형${hasHan?', 한자 획수와 글자 의미까지':''} 함께 살펴본 결과예요. 점수는 이름을 단정하는 판정표가 아니라, 잘 살아나는 힘과 의식적으로 채울 부분을 찾는 지도예요.`,points:[{label:'종합 점수',value:`${nameScore}`},{label:'도움이 되는 기운',value:ohNamesShort[ys.main]}]},
     {key:'sound',icon:'graphic_eq',title:'한글 소리',evidence:'card-HANGUL',quote:'이름은 매일 가장 많이 불리는 작은 리듬이에요',copy:`「${full}」의 소리를 나무·불·흙·금속·물의 다섯 분위기로 나눠봤어요. 가장 많이 드러나는 쪽은 ${ohNamesShort[nameOh.oh.indexOf(Math.max(...nameOh.oh))]} 기운이에요. 본인을 도와주는 ${ohNamesShort[ys.main]} 기운이 이름에 ${nameOh.oh[ys.main]>0?'들어 있어 자연스럽게 힘을 보태요':'없어 생활 환경과 활동에서 보완하면 좋아요'}.`,points:ohNamesShort.map((label,i)=>({label,value:nameOh.oh[i]}))},
@@ -19567,7 +19694,15 @@ function renderNamePaid(saju, nmExtra){
     {key:'strength',icon:'diamond',title:'강점과 보완',evidence:'card-STRENGTH',quote:'이름의 장점은 실제로 자주 쓰일 때 더 선명해져요',copy:`이 이름은 본인의 타고난 분위기와 소리의 리듬이 만나는 지점에서 ${grade}으로 보여요. 좋은 부분은 소개·서명·작업 이름처럼 일상에서 자신 있게 쓰세요. 부족한 부분은 이름 하나에 맡기기보다 색·공간·습관과 함께 천천히 채우는 편이 안정적이에요.`,points:[{label:'현재 평가',value:grade},{label:'균형 차이',value:`${span}`}]},
     {key:'recommend',icon:'edit_note',title:'작명 추천',evidence:'card-RECOMMEND',quote:'추천 이름은 점수보다 본인이 오래 부를 수 있는지가 먼저예요',copy:`본인에게 어울리는 추천 후보 ${recommended.length}개를 계산해 두었어요. 우선은 ${ohNamesShort[ys.main]} 기운을 살리는 소리를 보고, 그다음 뜻과 한자 조합을 비교하세요. 실제 출생 신고나 개명 전에는 가족의 성명, 등록 가능한 한자, 발음의 자연스러움을 함께 확인하는 것이 좋아요.`,points:recommended.slice(0,3).map(item=>({label:item.name,value:'추천'}))}
   ];
-  return buildStoryExperienceHTML({id:'name-reading',kicker:'NAME CHARACTER',icon:'signature',title:`「${full}」 이름 캐릭터`,subtitle:grade,score:nameScore,stats:ohNamesShort.map((label,i)=>({label,value:Math.round(nameOh.oh[i]/nameMax*100),display:nameOh.oh[i]})),highlights:[{icon:'eco',label:'도움 기운',text:ohNamesShort[ys.main]},{icon:'water_drop',label:'채울 기운',text:ohNamesShort[sajuMinIdx]},{icon:'recommend',label:'추천 후보',text:`${recommended.length}개`}],deck:nameDeck,deckTitle:'이름 핵심 6장',libraryTitle:'이름풀이·작명 전체 서고',libraryIntro:'한글 소리·한자·획수·추천 후보의 전체 계산 근거를 그대로 보관했어요.',libraryHtml:h});
+  if(nameFingerprint){
+    const nameLead={
+      'name-overview':nameFingerprint.hook,
+      strength:nameFingerprint.hook,
+      recommend:`${nameFingerprint.hook} 이 이름은 ${ohNamesShort[ys.main]} 기운을 보태는 쪽으로 고르는 게 좋아요.`
+    };
+    nameDeck.forEach(card=>{if(nameLead[card.key])card.copy=`${nameLead[card.key]} ${card.copy}`;});
+  }
+  return buildStoryExperienceHTML({id:'name-reading',kicker:'NAME CHARACTER',icon:'signature',title:`「${full}」 이름 캐릭터`,subtitle:grade,personalNote:nameFingerprint?`${nameFingerprint.hook} 이름에서는 ${ohNamesShort[ys.main]} 기운을 보태면 본인의 장점이 더 잘 살아나요.`:'',score:nameScore,stats:ohNamesShort.map((label,i)=>({label,value:Math.round(nameOh.oh[i]/nameMax*100),display:nameOh.oh[i]})),highlights:[{icon:'eco',label:'도움 기운',text:ohNamesShort[ys.main]},{icon:'water_drop',label:'채울 기운',text:ohNamesShort[sajuMinIdx]},{icon:'recommend',label:'추천 후보',text:`${recommended.length}개`}],deck:nameDeck,deckTitle:'이름 핵심 6장',libraryTitle:'이름풀이·작명 전체 서고',libraryIntro:'한글 소리·한자·획수·추천 후보의 전체 계산 근거를 그대로 보관했어요.',libraryHtml:h});
 }
 
 // 이름풀이 A4 빌더
@@ -20395,6 +20530,11 @@ function renderGunghapPaid(saju1, gnExtra){
   const myMbti=(_meta&&_meta.mbti)||'';
   const extraKey=`${sy2}-${sm2}-${sd2}-${gh}-${gmin}-${gnExtra.gender||''}-${gnExtra.mbti||''}`;
   const result=calcGunghap(saju1,saju2,gender,gnExtra.gender);
+  const myFingerprint=buildPersonalFingerprint(saju1);
+  const partnerFingerprint=buildPersonalFingerprint(saju2);
+  const firstPersonalSentence=text=>String(text||'').split(/(?<=[.!?])\s+/)[0];
+  const pairPersonalNote=myFingerprint&&partnerFingerprint
+    ?`본인은 ${firstPersonalSentence(myFingerprint.relationship)} 상대는 ${firstPersonalSentence(partnerFingerprint.relationship)} 두 반응의 속도를 말로 맞추는 게 이 관계의 핵심이에요.`:'';
   const libraryHtml=renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey)+renderOhaengHarmony(saju1, saju2)+renderGunghapBody(saju1, saju2, gender, gnExtra.gender, myMbti, gnExtra.mbti||'');
   const relationLabel=({상생:'서로 힘을 보태는 사이',비화:'닮아서 편한 사이',상극:'차이로 성장하는 사이',중립:'함께 만들어가는 사이'})[result.ohRelType]||'함께 만들어가는 사이';
   const relationDeck=[
@@ -20405,7 +20545,13 @@ function renderGunghapPaid(saju1, gnExtra){
     {key:'family',icon:'home_and_garden',title:'가족과 일상',evidence:'card-FAMILY',quote:'두 사람의 평온은 반복되는 작은 약속에서 만들어져요',copy:`함께 살수록 큰 이벤트보다 식사·수면·지출 같은 반복이 관계의 온도를 정해요. 한쪽이 늘 챙기고 다른 쪽이 받기만 하는 구조가 되지 않게 역할을 바꿔보세요. 가족 문제는 두 사람의 기준을 먼저 합의한 뒤 바깥에 설명하면 흔들림이 줄어요.`,points:[{label:'함께한 균형',value:result.balScore},{label:'생활 키워드',value:'기록과 합의'}]},
     {key:'timing',icon:'schedule',title:'관계의 시기',evidence:'card-TIMELINE_MATCH',quote:'좋은 시기는 결정을 대신하지 않고 준비를 도와줘요',copy:`두 사람의 흐름이 함께 올라가는 때에는 결혼·이사·공동 목표를 논의하기 좋아요. 한쪽만 바쁜 때에는 속도를 맞추고 역할을 나누세요. 관계의 시기는 절대적인 판정이 아니라 대화를 시작할 타이밍을 잡는 참고 지도예요. 실제 결정은 건강·돈·가족 상황을 함께 확인해야 해요.`,points:[{label:'현재 궁합',value:`${result.score}`},{label:'핵심 원칙',value:'함께 확인'}]}
   ];
-  return buildStoryExperienceHTML({id:'gunghap-reading',kicker:'RELATION CHARACTER',icon:'diversity_3',title:relationLabel,subtitle:`${result.grade} · 두 사람의 차이까지 관계의 자원으로 써보세요`,score:result.score,stats:[{label:'본질',value:result.ohScore},{label:'관계',value:result.tgScore},{label:'자리',value:result.brScore},{label:'균형',value:result.balScore}],highlights:[{icon:'favorite',label:'관계 성격',text:result.ohRelType},{icon:'join_inner',label:'자리 만남',text:result.brLabel},{icon:'chat',label:'관계 비책',text:'짧고 자주 확인'}],deck:relationDeck,deckTitle:'궁합 핵심 6장',libraryTitle:'궁합 전체 서고',libraryIntro:'연애·결혼·가족·시기까지 두 사람의 전체 계산 근거를 보관했어요.',libraryHtml});
+  if(pairPersonalNote){
+    ['chemistry','attraction','marriage','talk','family'].forEach(key=>{
+      const card=relationDeck.find(item=>item.key===key);
+      if(card)card.copy=`${pairPersonalNote} ${card.copy}`;
+    });
+  }
+  return buildStoryExperienceHTML({id:'gunghap-reading',kicker:'RELATION CHARACTER',icon:'diversity_3',title:relationLabel,subtitle:`${result.grade} · 두 사람의 차이까지 관계의 자원으로 써보세요`,personalNote:pairPersonalNote,score:result.score,stats:[{label:'본질',value:result.ohScore},{label:'관계',value:result.tgScore},{label:'자리',value:result.brScore},{label:'균형',value:result.balScore}],highlights:[{icon:'favorite',label:'관계 성격',text:result.ohRelType},{icon:'join_inner',label:'자리 만남',text:result.brLabel},{icon:'chat',label:'관계 비책',text:'짧고 자주 확인'}],deck:relationDeck,deckTitle:'궁합 핵심 6장',libraryTitle:'궁합 전체 서고',libraryIntro:'연애·결혼·가족·시기까지 두 사람의 전체 계산 근거를 보관했어요.',libraryHtml});
 }
 
 // ── 연애·데이트 분위기 ──
