@@ -78,7 +78,7 @@ const harness = `
                      /undefined(을|를|의|이|가|이라는| 경향)|,\\s*undefined/.test(s);
 
   // 사주 만들기: (년간,년지, 월간,월지, 일간,일지, 시간,시지)
-  const C = (ys,yb,ms,mb,ds,db,hs,hb) => ({yp:{stem:ys,branch:yb},mp:{stem:ms,branch:mb},dp:{stem:ds,branch:db},hp:{stem:hs,branch:hb}});
+  const C = (ys,yb,ms,mb,ds,db,hs,hb) => ({yp:{stem:ys,branch:yb},mp:{stem:ms,branch:mb},dp:{stem:ds,branch:db},hp:{stem:hs,branch:hb},mi:Math.max(0,MON_BRN.indexOf(mb))});
   // 두 사주는 일주(갑인=0,2) 동일, 나머지 여섯 글자만 다름 → 십신축 self vs gwan
   const SELF = C(1,3, 0,2, 0,2, 1,3);   // 목 가득 → 자기 주도
   const GWAN = C(6,8, 7,9, 0,2, 6,8);   // 금 가득 → 책임·완성
@@ -119,7 +119,7 @@ const harness = `
 
     // 7) 인생총운 full 렌더 — 깨짐/누수 없음 + 두 사주 다름
     const ha = renderSajuPaid(SELF,1990,5,15,12,0), hb = renderSajuPaid(GWAN,1990,5,15,12,0);
-    ok('renderSajuPaid 렌더 정상', typeof ha === 'string' && ha.length > 50000);
+    ok('renderSajuPaid 렌더 정상', typeof ha === 'string' && ha.length > 30000, 'length='+ha.length);
     ok('renderSajuPaid 누수 없음(dm 미치환·undefined)', !leaky(ha) && !leaky(hb));
     ok('renderSajuPaid 비유 본질: 같은 일간이라도 다름',
        ha.includes('봄 태생') && hb.includes('가을 태생'));
@@ -132,8 +132,8 @@ const harness = `
       const fp=buildPersonalFingerprint(sample);if(fp)fingerprintSet.add(fp.key+'|'+fp.hook);
     }
     ok('개인 지문: 120개 표본에서 60개 이상의 조합', fingerprintSet.size>=60, 'unique='+fingerprintSet.size);
-    ok('인생총운: 캐릭터와 긴 풀이에 개인 지문 노출',
-       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.includes('personal-proof'));
+    ok('인생총운: 캐릭터와 통합 풀이에 개인 지문 노출',
+       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.includes('life-v2-lead') && ha.includes(fpSelf.hook));
 
     // 8) 신년운세 — 띠 작용 개인화 구절 포함
     const ny = renderNewyearFortune(SELF, 2026);
@@ -187,7 +187,27 @@ const harness = `
        (layered.match(/data-life-layer=/g)||[]).length===3 &&
        layered.indexOf('data-life-layer="character"')<layered.indexOf('data-life-layer="deck"') &&
        layered.indexOf('data-life-layer="deck"')<layered.indexOf('data-life-layer="library"'));
-    ok('전체 서고: 기존 38카드 보존', (layered.match(/<!--CARD_START:/g)||[]).length===38);
+    const lifeV2Labels=['TOTAL','PERSONA','CAREER','WEALTH','LOVE','HUMAN','HEALTH','STUDY','DAEUN10','SEWOON','YEAR10','GAEWOON','MASTER'];
+    ok('전체 서고: 비슷한 주제를 13개 통합 카드로 구성',
+       lifeV2Labels.every(label=>layered.includes('<!--CARD_START:'+label+'-->')) &&
+       lifeV2Labels.filter(label=>layered.includes('<!--CARD_START:'+label+'-->')).length===13);
+    ok('인생총운 V2: 근거 흐름도·아이콘 단어 맵 노출',
+       (layered.match(/class="life-evidence"/g)||[]).length>=7 &&
+       (layered.match(/class="life-word-tile"/g)||[]).length>=20);
+    ok('인생총운 V2: 기존 반복 타임라인 카드 제거',
+       !layered.includes('CARD_START:WEALTH_TIMELINE') && !layered.includes('CARD_START:CAREER_TIMELINE'));
+    const lifeVisible=clean(layered);
+    const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
+    ok('인생총운 V2: 풀이 본문 전문용어·단독 명사 결 노출 없음',
+       lifeForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(lifeVisible), lifeForbidden.join(','));
+    ok('인생총운 V2: 새 요약본이 구조·공식·현재 시간을 사용',
+       layered.includes('새 인생총운 요약본') && _lifeSummaryData && _lifeSummaryData.version===2 &&
+       buildLifeSummaryA4Html().includes('이 풀이가 나온 구조'));
+    const EXAMPLE=C(3,3,5,9,9,9,2,4); // 정묘·기유·계유·병진
+    const exampleHtml=renderSajuPaid(EXAMPLE,1987,9,21,8,0);
+    ok('인생총운 V2: 예시 사주 네 자리를 도식에 그대로 반영',
+       ['정묘','기유','계유','병진'].every(gz=>exampleHtml.includes(gz)) && exampleHtml.includes('life-evidence-node'),
+       ['정묘','기유','계유','병진'].filter(gz=>!exampleHtml.includes(gz)).join(','));
 
     // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.
     const nameExtra={surname:'김',given:'민수',han:{surname:'金',given1:'珉',given2:'秀'},strokes:{surname:8,given1:10,given2:7}};
