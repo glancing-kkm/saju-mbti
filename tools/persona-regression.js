@@ -135,9 +135,9 @@ const harness = `
     ok('인생총운: 캐릭터와 통합 풀이에 개인 지문 노출',
        characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.includes('life-v2-lead') && ha.includes(fpSelf.hook));
 
-    // 8) 신년운세 — 띠 작용 개인화 구절 포함
+    // 8) 신년운세 — 10개 심층 상담 카드 + 3층 UI
     const ny = renderNewyearFortune(SELF, 2026);
-    ok('renderNewyearFortune 렌더 + 띠작용 개인화 구절', typeof ny==='string' && ny.includes('다만 같은 띠라도') && !leaky(ny));
+    ok('renderNewyearFortune V3 렌더 정상', typeof ny==='string' && ny.includes('NY_OVERVIEW') && !leaky(ny));
     ok('신년운세 3층: 요약·핵심 덱·전체 서고',
        (ny.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['newyear-2026']||[]).length===8);
     ok('신년운세: 요약과 핵심 카드에 개인 지문 연결',
@@ -187,27 +187,77 @@ const harness = `
        (layered.match(/data-life-layer=/g)||[]).length===3 &&
        layered.indexOf('data-life-layer="character"')<layered.indexOf('data-life-layer="deck"') &&
        layered.indexOf('data-life-layer="deck"')<layered.indexOf('data-life-layer="library"'));
-    const lifeV2Labels=['TOTAL','PERSONA','CAREER','WEALTH','LOVE','HUMAN','HEALTH','STUDY','DAEUN10','SEWOON','YEAR10','GAEWOON','MASTER'];
-    ok('전체 서고: 비슷한 주제를 13개 통합 카드로 구성',
-       lifeV2Labels.every(label=>layered.includes('<!--CARD_START:'+label+'-->')) &&
-       lifeV2Labels.filter(label=>layered.includes('<!--CARD_START:'+label+'-->')).length===13);
-    ok('인생총운 V2: 근거 흐름도·아이콘 단어 맵 노출',
-       (layered.match(/class="life-evidence"/g)||[]).length>=7 &&
-       (layered.match(/class="life-word-tile"/g)||[]).length>=20);
-    ok('인생총운 V2: 기존 반복 타임라인 카드 제거',
+    const lifeV3Labels=['PROFILE','OPENING','PERSONA','TALENT','CAREER','WEALTH','LOVE','HUMAN','HEALTH','DAEUN10','SEWOON','MONTH12','YEAR10','GOLDEN','PRACTICE','CAUTION','MASTER'];
+    ok('전체 서고: 첨부 상담 흐름을 17개 심층 카드로 구성',
+       lifeV3Labels.every(label=>layered.includes('<!--CARD_START:'+label+'-->')) &&
+       lifeV3Labels.filter(label=>layered.includes('<!--CARD_START:'+label+'-->')).length===17);
+    ok('인생총운 V3: 사주판·관계도·이모티콘 도식 노출',
+       layered.includes('life-v3-pillar-board') && layered.includes('life-v3-relation') &&
+       (layered.match(/class="life-evidence"/g)||[]).length>=6 &&
+       (layered.match(/class="life-v3-emoji"/g)||[]).length>=40,
+       'evidence='+(layered.match(/class="life-evidence"/g)||[]).length+' emoji='+(layered.match(/class="life-v3-emoji"/g)||[]).length);
+    ok('인생총운 V3: 12개월과 향후 10년을 모두 제공',
+       (layered.match(/class="life-v3-time-card/g)||[]).length>=22 &&
+       buildLifeV2Model(SELF,_meta).months.length===12 && buildLifeV2Model(SELF,_meta).futureYears.length===10);
+    ok('인생총운 V3: 기존 반복 타임라인 카드 제거',
        !layered.includes('CARD_START:WEALTH_TIMELINE') && !layered.includes('CARD_START:CAREER_TIMELINE'));
     const lifeVisible=clean(layered);
     const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
-    ok('인생총운 V2: 풀이 본문 전문용어·단독 명사 결 노출 없음',
+    ok('인생총운 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
        lifeForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(lifeVisible), lifeForbidden.join(','));
-    ok('인생총운 V2: 새 요약본이 구조·공식·현재 시간을 사용',
-       layered.includes('새 인생총운 요약본') && _lifeSummaryData && _lifeSummaryData.version===2 &&
+    ok('인생총운 V3: 심층 요약본이 구조·공식·현재 시간을 사용',
+       layered.includes('심층 인생총운 요약본') && _lifeSummaryData && _lifeSummaryData.version===3 &&
        buildLifeSummaryA4Html().includes('이 풀이가 나온 구조'));
     const EXAMPLE=C(3,3,5,9,9,9,2,4); // 정묘·기유·계유·병진
-    const exampleHtml=renderSajuPaid(EXAMPLE,1987,9,21,8,0);
-    ok('인생총운 V2: 예시 사주 네 자리를 도식에 그대로 반영',
-       ['정묘','기유','계유','병진'].every(gz=>exampleHtml.includes(gz)) && exampleHtml.includes('life-evidence-node'),
-       ['정묘','기유','계유','병진'].filter(gz=>!exampleHtml.includes(gz)).join(','));
+    const savedMeta=_meta,savedInputs=_lastInputs;
+    _meta={gender:'male',sy:1987,sm:9,sd:21,hour:8,min:15,cityKey:'daejeon',tsoMin:-30};
+    _lastInputs={hour:'8',min:'45',cityKey:'daejeon'};
+    const exampleHtml=renderSajuPaid(EXAMPLE,1987,9,21,8,15);
+    const examplePlain=exampleHtml.replace(/&nbsp;|\u00a0/g,' ');
+    const exampleModel=buildLifeV2Model(EXAMPLE,_meta);
+    ok('인생총운 V3: 예시 사주 네 자리·출생지·보정 시각을 그대로 반영',
+       ['정묘','기유','계유','병진'].every(gz=>exampleHtml.includes(gz)) && exampleHtml.includes('life-v3-pillar-board') &&
+       examplePlain.includes('대전광역시') && examplePlain.includes('08시 45분') && examplePlain.includes('08시 15분'),
+       'missing='+['정묘','기유','계유','병진','대전광역시','08시 45분','08시 15분'].filter(x=>!examplePlain.includes(x)).join(','));
+    ok('인생총운 V3: 예시 사주에 12개월·향후 10년·황금기 노출',
+       (exampleHtml.match(/class="life-v3-time-card/g)||[]).length>=22 && (exampleHtml.match(/life-v3-golden-card/g)||[]).length>=3);
+    ok('인생총운 V3: 첨부 예시의 현재 10년·8월·다음 해 원본값 유지',
+       STEMKO[exampleModel.cur.stem]+BRCHKO[exampleModel.cur.branch]==='을사' &&
+       exampleModel.months[7].gz==='병신' && exampleModel.futureYears[0].gz==='정미',
+       'current='+STEMKO[exampleModel.cur.stem]+BRCHKO[exampleModel.cur.branch]+' aug='+exampleModel.months[7].gz+' next='+exampleModel.futureYears[0].gz);
+
+    const newyearExample=renderNewyearFortune(EXAMPLE,2027);
+    const newyearModel=buildNewyearV3Model(EXAMPLE,2027,_meta);
+    const newyearPlain=clean(newyearExample).replace(/&nbsp;|\u00a0/g,' ');
+    const newyearLabels=['NY_PROFILE','NY_OVERVIEW','NY_ORIGIN','NY_WEALTH','NY_LOVE','NY_HEALTH','NY_CAREER','NY_LUCK','NY_DAEUN','NY_MASTER'];
+    ok('신년운세 V3: 첨부 상담 흐름을 10개 심층 카드로 구성',
+       newyearLabels.every(label=>newyearExample.includes('<!--CARD_START:'+label+'-->')) &&
+       newyearLabels.filter(label=>newyearExample.includes('<!--CARD_START:'+label+'-->')).length===10);
+    ok('신년운세 V3: 사주판·관계도·이모티콘·기운 분포 도식 노출',
+       newyearExample.includes('life-v3-pillar-board') && newyearExample.includes('life-v3-relation') &&
+       newyearExample.includes('ny-v3-oh') && (newyearExample.match(/class="life-v3-emoji"/g)||[]).length>=45,
+       'emoji='+(newyearExample.match(/class="life-v3-emoji"/g)||[]).length);
+    ok('신년운세 V3: 예시의 출생·음력·보정 시각 원본값 반영',
+       newyearPlain.includes('1987년 9월 21일') && newyearPlain.includes('1987년 7월 29일') &&
+       newyearPlain.includes('08시 45분') && newyearPlain.includes('08시 15분') && newyearPlain.includes('대전광역시'));
+    ok('신년운세 V3: 2027 정미·현재 을사 34~43세·나이 변화를 유지',
+       newyearModel.info.gz==='정미' && STEMKO[newyearModel.cur.stem]+BRCHKO[newyearModel.cur.branch]==='을사' &&
+       newyearModel.cur.age===34 && newyearModel.ageText.includes('만 39세에서 40세') &&
+       newyearPlain.includes('34~43세') && newyearPlain.includes('정미'),
+       'year='+newyearModel.info.gz+' current='+STEMKO[newyearModel.cur.stem]+BRCHKO[newyearModel.cur.branch]+' age='+newyearModel.ageText);
+    ok('신년운세 V3: 예시 다섯 기운 분포와 도움 방향 유지',
+       newyearModel.ohPct.join(',')==='13,25,25,25,13' && OHNAME[newyearModel.ys.main]==='목' && OHNAME[newyearModel.ys.support]==='수',
+       'oh='+newyearModel.ohPct.join(',')+' help='+OHNAME[newyearModel.ys.main]+'/'+OHNAME[newyearModel.ys.support]);
+    ok('신년운세 V3: 기존 반복 카드와 AI 대체 본문 제거',
+       !newyearExample.includes('CARD_START:MONTHDETAIL') && !newyearExample.includes('CARD_START:SAMJAE') &&
+       !newyearExample.includes('data-ai-fallback-for="newyear-core"'));
+    const newyearForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>newyearPlain.includes(word));
+    ok('신년운세 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
+       newyearForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(newyearPlain),newyearForbidden.join(','));
+    ok('신년운세 V3: 심층 요약본도 V3 구조를 사용',
+       _newyearSummaryData && _newyearSummaryData.version===3 &&
+       buildNewyearSummaryA4Html().includes('신년운세 상담 요약') && buildNewyearSummaryA4Html().includes('10년 단위 큰 흐름'));
+    _meta=savedMeta;_lastInputs=savedInputs;
 
     // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.
     const nameExtra={surname:'김',given:'민수',han:{surname:'金',given1:'珉',given2:'秀'},strokes:{surname:8,given1:10,given2:7}};
