@@ -165,6 +165,10 @@
   --metal-bg:rgba(89,106,139,0.10);
   --water-bg:rgba(71,105,168,0.10);
 
+  /* 사주판 공통 글씨 크기 — 원국·미니 만세력·인생총운 네 자리판이 모두 같은 크기를 쓴다 */
+  --saju-label:.86rem;   /* 라벨(년주·월주…)·십신·보조 텍스트 */
+  --saju-glyph:1.5rem;   /* 간지 글자 */
+
   /* 읽기 본문 전용 — 도움/주의 시맨틱(오행 차트보다 차분) */
   --good:#2d7a4d;
   --warn:#a64b3f;
@@ -185,32 +189,40 @@ h1,h2,h3,h4,h5{font-family:'Do Hyeon','Noto Serif KR','Noto Serif',serif;letter-
 .material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;vertical-align:middle}
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
-  /* 본문 읽기 품질 — 고아글자 예방 + 풀이 본문 가운데 정렬 */
-  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section){
+  /* 본문 읽기 품질 — 고아글자는 word-break:keep-all · text-wrap:pretty · preventOrphan()이 막는다.
+     정렬은 그 일을 하지 않으므로, 두 줄 넘는 풀이 본문은 전부 왼쪽 기준선으로 읽는다.
+     가운데 정렬은 한 줄짜리 표시 문구와 비교 도식에만 남긴다. */
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
     line-break:strict;
     word-break:keep-all;
     overflow-wrap:break-word;
     text-wrap:pretty;
+    text-align:left;
+    text-align-last:auto;
+  }
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div),
+  :where(.ck-body,.ag-block,.ag-block ul,.quick-summary-item,.name-compare-head,.ncr-reason,.ncr-use,.dp-tip,.ny-headline,.ai-reading-status,.cat-where,.nb-good,.nb-warn,.flow-box,.tarot-fortune-item,.astro-text){
+    text-align:left;
+    text-align-last:auto;
+  }
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(ul,ol){
+    padding-left:1.25em;
+    list-style-position:outside;
+    text-align:left;
+    text-align-last:auto;
+  }
+  /* 인생총운·신년운세 V3와 카드 덱 본문 */
+  #app .life-v2-lead,#app .life-v3-section-body,#app .life-v3-section-body p,#app .life-v3-profile-item,#app .life-v3-emoji,#app .life-v3-time-card,#app .life-v3-note,#app .life-word-tile,#app .life-era,#app .life-month,#app .ny-v3-daeun-card,#app .story-deck-copy,#app .story-deck-point,
+  #app .life-v3-profile-item small,#app .life-v3-profile-item b,#app .life-v3-emoji b,#app .life-v3-emoji>span:last-child,#app .life-v3-time-card p,#app .life-v3-time-action,
+  #app .life-v3-relation-link,
+  #app .toc-jump-btn{text-align:left;text-align-last:auto}
+  #app .life-v3-section-head{justify-content:flex-start;text-align:left;text-align-last:auto}
+  /* 여기부터는 가운데 기준선을 유지한다 — 한 줄 표시 문구·점수·비교 도식 */
+  /* text-align-last는 상속되는 성질이라 안쪽 본문까지 끌고 간다.
+     가운데 정렬은 마지막 줄도 알아서 가운데로 가므로 center 값을 따로 두지 않는다. */
+  :where(.daily-card,.remember-line,.card-quote,.life-final-line,.life-evidence-head,.life-evidence-node,.life-evidence-caption,.life-v3-pillar,.life-v3-relation-point,.life-v3-dual-card,.life-v3-golden-card,.ny-v3-overview-item,.ny-v3-fund,.ny-v3-season-card){
     text-align:center;
-    text-align-last:center;
-  }
-  :where(.nb-body,.daily-cat-body,.abody,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.conversion-hook-body,.dp-body,.ny-sec-body,.ai-reading-body,.ai-reading-section) p,
-  :where(.nb-gw-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.lead-card,.summary-intro,.chat-msg-body,.teaser-leadline,.teaser-insight,.mo-row-body,.month-advice-body,.tl-body){
-  text-align:center;
-  text-align-last:center;
-  }
-  :where(.tarot-reading-flow,.tarot-fortune-item,.tarot-markdown,.astro-markdown,.astro-text,.daily-card,.ck-body,.ag-block,.ag-block ul,.quick-summary-item,.name-compare-head,.ncr-reason,.ncr-use,.remember-line,.dp-tip,.ny-headline,.ai-reading-status){
-    text-align:center !important;
-    text-align-last:center !important;
-  }
-  :where(.nb-body,.daily-cat-body,.abody,.reading-brief,.lead-card,.summary-intro,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div){
-    text-align:center;
-    text-align-last:center;
-  }
-  :where(.nb-body,.daily-cat-body,.abody,.reading-brief,.lead-card,.summary-intro,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :where(ul,ol){
-    padding-left:0;
-    list-style-position:inside;
-    text-align:center;
+    text-align-last:auto;
   }
 
 /* ── Header ── */
@@ -659,7 +671,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .daily-cats{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
 .daily-cat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 12px}
 .daily-cat-head{display:flex;align-items:center;gap:6px;margin-bottom:7px}
-.daily-cat-emoji{font-size:1.05rem}
+.daily-cat-emoji{color:var(--gold);font-family:Georgia,'Times New Roman',serif;font-size:1.05rem;font-weight:700}
 .daily-cat-name{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.84rem;font-weight:700;color:var(--text)}
 .daily-cat-score{margin-left:auto;font-size:.76rem;font-weight:800;color:var(--accent-bright);white-space:nowrap}
 .daily-cat-body{font-size:.9rem;color:var(--sub);line-height:1.85;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
@@ -670,7 +682,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .conversion-hook-body{font-size:.92rem;line-height:1.9;color:var(--sub);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .conversion-hook-body p{margin:0 0 10px}
 .conversion-hook-points{display:grid;grid-template-columns:1fr;gap:8px;margin:13px 0}
-.conversion-hook-point{background:rgba(0,0,0,.14);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;font-size:.8rem;line-height:1.7;color:var(--sub)}
+.conversion-hook-point{border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;font-size:.8rem;line-height:1.7;color:var(--sub)}
 .conversion-hook-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .conversion-hook-btn{flex:1;min-width:180px;border:0;border-radius:10px;padding:12px 14px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:.82rem;font-weight:900;cursor:pointer}
 .conversion-hook-btn.secondary{background:var(--card);color:var(--accent-bright);border:1px solid rgba(203,162,88,.28)}
@@ -711,16 +723,16 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 /* Pillars — 사주 원국 보드 (DESIGN 시안: 글래스 기둥 카드 · 일주 골드 글로우 · 십신 라벨) */
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
 .pcol{display:flex;flex-direction:column;gap:3px}
-.pillars>.pcol{gap:6px;padding:9px 5px 10px;border-radius:12px;background:rgba(29,32,33,.55)}
+.pillars>.pcol{gap:6px;padding:9px 5px 10px;border-radius:12px}
 .pillars>.pcol.day{background:rgba(203,162,88,.1);box-shadow:0 0 22px rgba(203,162,88,.16)}
-.plabel{font-size:.74rem;color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.04em}
+.plabel{font-size:var(--saju-label);color:var(--muted);font-weight:600;margin-bottom:2px;letter-spacing:.04em}
 .pillars>.pcol.day .plabel{color:var(--accent-bright);font-weight:700}
-.pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:1.35rem;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
-.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:1.5rem;padding:10px 2px;border-color:transparent}
-.pstem .sm,.pbranch .sm{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
-.pillars>.pcol .sm{font-size:.66rem;font-weight:600;opacity:.95;letter-spacing:.01em}
-.pillars>.pcol.unknown .pstem,.pillars>.pcol.unknown .pbranch{font-size:1.04rem;color:var(--muted);background:rgba(0,98,65,.06);border:1px dashed var(--border);line-height:1.2;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pillars>.pcol.unknown .sm{font-size:.6rem;color:var(--sub);margin-top:3px}
+.pstem,.pbranch{padding:11px 2px;border-radius:8px;font-weight:700;font-size:var(--saju-glyph);display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid transparent;line-height:1.1}
+.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:var(--saju-glyph);padding:10px 2px;border-color:transparent}
+.pstem .sm,.pbranch .sm{font-size:var(--saju-label);font-weight:500;opacity:.7;margin-top:2px}
+.pillars>.pcol .sm{font-size:var(--saju-label);font-weight:600;opacity:.95;letter-spacing:.01em}
+.pillars>.pcol.unknown .pstem,.pillars>.pcol.unknown .pbranch{font-size:var(--saju-glyph);color:var(--muted);background:rgba(0,98,65,.06);border:1px dashed var(--border);line-height:1.2;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pillars>.pcol.unknown .sm{font-size:var(--saju-label);color:var(--sub);margin-top:3px}
 .pillars-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
 .pillars-note{font-size:.66rem;color:var(--muted);font-style:italic;letter-spacing:.02em;flex-shrink:0}
 .ew{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.2)}
@@ -728,7 +740,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .ee{background:var(--earth-bg);color:var(--earth);border-color:rgba(216,192,138,.25)}
 .em{background:var(--metal-bg);color:var(--metal);border-color:rgba(191,198,222,.2)}
 .en{background:var(--water-bg);color:var(--water);border-color:rgba(168,184,216,.2)}
-.eu{background:rgba(144,144,150,.08);color:var(--muted)}
+.eu{background:rgba(0,98,65,.06);color:var(--muted)}
 
 /* Bars */
 .bars{display:flex;flex-direction:column;gap:9px}
@@ -768,7 +780,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .clabel-warn{color:var(--earth)}
 
 /* Lunar summary */
-.lsummary{background:rgba(29,32,33,.8);border:none;border-radius:var(--radius);padding:14px;text-align:center;margin-bottom:14px}
+.lsummary{background:var(--card);border:none;border-radius:var(--radius);padding:14px;text-align:center;margin-bottom:14px}
 .ldate{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;font-weight:700;color:var(--accent)}
 .lsub{font-size:.73rem;color:var(--sub);margin-top:4px}
 
@@ -805,9 +817,9 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .compat-cell-val{font-size:.82rem;font-weight:700;color:var(--text);word-break:keep-all;white-space:nowrap}
 .compare-pillars{display:grid !important;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) !important;gap:4px;align-items:center;text-align:center;width:100%}
 .compare-pillars > .pcol{min-width:0;width:100%;max-width:100%}
-.compare-pillars .plabel{font-size:.78rem;color:var(--sub);margin-bottom:3px}
-.compare-pillars .pstem,.compare-pillars .pbranch{font-size:.88rem;padding:5px 1px;min-width:0;width:100%;box-sizing:border-box}
-.compare-pillars .pstem .sm,.compare-pillars .pbranch .sm{font-size:.55rem}
+.compare-pillars .plabel{font-size:var(--saju-label);color:var(--sub);margin-bottom:3px}
+.compare-pillars .pstem,.compare-pillars .pbranch{font-size:var(--saju-glyph);padding:5px 1px;min-width:0;width:100%;box-sizing:border-box}
+.compare-pillars .pstem .sm,.compare-pillars .pbranch .sm{font-size:var(--saju-label)}
 .compare-arrow{font-size:.95rem;color:var(--sub);padding:0 1px;text-align:center}
 
 /* ── 공유·저장 버튼 ── */
@@ -987,7 +999,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .teaser-card{margin:12px 14px 18px;padding:18px 16px 16px;border-radius:14px;background:var(--card);border:1px solid rgba(138,101,21,.24);box-shadow:var(--card-shadow);position:relative;overflow:hidden}
 .teaser-head{display:block;margin-bottom:12px;position:relative;z-index:1}
 .teaser-title{display:block;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.18rem;font-weight:700;color:var(--accent);letter-spacing:0;position:relative;z-index:1;line-height:1.45;word-break:keep-all;overflow-wrap:break-word}
-.teaser-score-row{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:12px;background:rgba(0,0,0,.35);border:1px solid rgba(203,162,88,.2);border-radius:14px;position:relative;z-index:1}
+.teaser-score-row{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:12px;border:1px solid rgba(203,162,88,.2);border-radius:14px;position:relative;z-index:1}
 .teaser-score-num{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:2.4rem;font-weight:700;color:var(--accent-bright);line-height:1}
 .teaser-score-meta{flex:1}
 .teaser-score-label{font-size:.7rem;color:var(--muted);letter-spacing:.04em;margin-bottom:3px}
@@ -1305,7 +1317,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .life-evidence-head{display:flex;align-items:center;gap:7px;margin-bottom:11px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.04em}
 .life-evidence-head .material-symbols-outlined{font-size:18px}
 .life-evidence-flow{display:grid;grid-template-columns:repeat(var(--evidence-count,3),minmax(0,1fr));gap:20px}
-.life-evidence-node{position:relative;min-width:0;padding:11px 9px;border-radius:11px;background:var(--card);text-align:center}
+.life-evidence-node{position:relative;display:flex;min-width:0;padding:11px 9px;border-radius:11px;background:var(--card);text-align:center;flex-direction:column;align-items:center;justify-content:center}
 .life-evidence-node:not(:last-child)::after{content:'›';position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:1.35rem;font-weight:800}
 .life-evidence-node small{display:block;color:var(--muted);font-size:.62rem;line-height:1.35}
 .life-evidence-node b{display:block;margin:3px 0;color:var(--accent);font-size:.9rem;line-height:1.35;word-break:keep-all}
@@ -1326,15 +1338,16 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .life-era small,.life-month small{display:block;color:var(--muted);font-size:.62rem}.life-era b,.life-month b{display:block;margin:4px 0;color:var(--accent);font-size:.78rem}.life-era span,.life-month span{display:block;color:var(--sub);font-size:.65rem;line-height:1.5;word-break:keep-all}
 .life-final-line{margin-top:16px;padding:17px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-size:.92rem;font-weight:750;line-height:1.75;text-align:center;word-break:keep-all}
 .life-v3-section{margin:18px 0 0;padding:16px;border-radius:15px;background:var(--surface);border:1px solid var(--border)}
-.life-v3-section:first-child{margin-top:0}.life-v3-section-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;color:var(--accent);font-size:.88rem;font-weight:800;word-break:keep-all}.life-v3-section-symbol{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:10px;background:var(--earth-bg);font-size:1rem}
+.life-v3-section:first-child{margin-top:0}.life-v3-section-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;color:var(--accent);font-size:.88rem;font-weight:800;word-break:keep-all}.life-v3-section-symbol{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:50%;background:var(--surface);border:1px solid rgba(138,101,21,.34);font-size:1rem}
 .life-v3-section-body{color:var(--text);font-size:.82rem;line-height:1.88;word-break:keep-all}.life-v3-section-body p{margin:0 0 10px}.life-v3-section-body p:last-child{margin-bottom:0}
-.life-v3-profile{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}.life-v3-profile-item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:9px;align-items:center;padding:11px 12px;border-radius:12px;background:var(--bg-deep)}.life-v3-profile-item>span:first-child{font-size:1.15rem;text-align:center}.life-v3-profile-item small{display:block;color:var(--muted);font-size:.62rem}.life-v3-profile-item b{display:block;margin-top:2px;color:var(--text);font-size:.76rem;line-height:1.45;word-break:keep-all}
-.life-v3-pillar-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-pillar{position:relative;padding:10px 8px 11px;border-radius:13px;background:var(--card);border:1px solid var(--border);text-align:center}.life-v3-pillar.self{background:var(--green-soft);border-color:rgba(0,98,65,.3)}.life-v3-pillar small{display:block;color:var(--muted);font-size:.61rem}.life-v3-pillar-glyph{display:grid;grid-template-rows:1fr 1fr;gap:4px;margin:7px auto;width:48px}.life-v3-pillar-glyph b{display:grid;place-items:center;height:43px;border-radius:11px;background:var(--earth-bg);color:var(--accent);font-family:'Do Hyeon',var(--font-main);font-size:1.35rem}.life-v3-pillar.self .life-v3-pillar-glyph b{background:var(--accent);color:var(--on-accent)}.life-v3-pillar span{display:block;color:var(--sub);font-size:.61rem;line-height:1.45;word-break:keep-all}.life-v3-self-badge{position:absolute;top:7px;right:7px;padding:2px 6px;border-radius:999px;background:var(--gold);color:#1d241f;font-size:.54rem;font-weight:800}
-.life-v3-emoji-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}.life-v3-emoji{display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:start;padding:12px;border-radius:12px;background:var(--bg-deep)}.life-v3-emoji-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--earth-bg);font-size:1.18rem}.life-v3-emoji b{display:block;color:var(--text);font-size:.76rem;line-height:1.35}.life-v3-emoji span:last-child{display:block;margin-top:3px;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}
-.life-v3-relation{margin:14px 0;padding:14px;border-radius:14px;background:var(--bg-deep)}.life-v3-relation-points{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}.life-v3-relation-point{min-width:78px;padding:9px 10px;border-radius:11px;background:var(--card);text-align:center}.life-v3-relation-point small{display:block;color:var(--muted);font-size:.58rem}.life-v3-relation-point b{display:block;margin:3px 0;color:var(--accent);font-size:1.05rem}.life-v3-relation-point span{display:block;color:var(--sub);font-size:.59rem}.life-v3-relation-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.life-v3-relation-link{padding:8px 10px;border-radius:10px;background:var(--surface);color:var(--sub);font-size:.64rem;line-height:1.5;word-break:keep-all}.life-v3-relation-link b{color:var(--accent)}
-.life-v3-months,.life-v3-years{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-time-card{padding:12px 13px;border-radius:12px;background:var(--card);border:1px solid var(--border)}.life-v3-time-card.current{background:var(--green-soft);border-color:var(--accent)}.life-v3-time-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.life-v3-time-head b{color:var(--accent);font-size:.76rem}.life-v3-time-head span{padding:2px 7px;border-radius:999px;background:var(--earth-bg);color:var(--gold-dark);font-size:.59rem;font-weight:800}.life-v3-time-card.current .life-v3-time-head span{background:var(--accent);color:var(--on-accent)}.life-v3-time-card p{margin:7px 0 0;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}.life-v3-time-action{margin-top:7px;padding-top:7px;border-top:1px solid var(--border);color:var(--text);font-size:.62rem;line-height:1.5;word-break:keep-all}
-.life-v3-dual{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin:14px 0}.life-v3-dual-card{padding:13px;border-radius:13px;background:var(--green-soft);text-align:center}.life-v3-dual-card:last-child{background:var(--earth-bg)}.life-v3-dual-card b{display:block;color:var(--accent);font-size:.76rem}.life-v3-dual-card span{display:block;margin-top:5px;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}.life-v3-dual>i{align-self:center;color:var(--gold-dark);font-style:normal;font-size:1.1rem;font-weight:900}
-.life-v3-golden{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-golden-card{padding:14px 12px;border-radius:13px;background:var(--earth-bg);text-align:center}.life-v3-golden-card:nth-child(2){background:var(--green-soft)}.life-v3-golden-card small{display:block;color:var(--gold-dark);font-size:.61rem;font-weight:800}.life-v3-golden-card b{display:block;margin:5px 0;color:var(--accent);font-size:.82rem}.life-v3-golden-card span{display:block;color:var(--sub);font-size:.63rem;line-height:1.5;word-break:keep-all}
+.life-v3-profile{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}.life-v3-profile-item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:9px;align-items:center;padding:11px 12px;border-radius:12px;background:var(--bg-deep)}.life-v3-profile-item>span:first-child{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(138,101,21,.28);background:var(--surface);font-size:1.05rem;text-align:center}.life-v3-profile-item small{display:block;color:var(--muted);font-size:.62rem}.life-v3-profile-item b{display:block;margin-top:2px;color:var(--text);font-size:.76rem;line-height:1.45;word-break:keep-all}
+.life-v3-pillar-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-pillar{position:relative;padding:10px 8px 11px;border-radius:13px;background:var(--card);border:1px solid var(--border);text-align:center}.life-v3-pillar.self{background:var(--green-soft);border-color:rgba(0,98,65,.3)}.life-v3-pillar small{display:block;color:var(--muted);font-size:var(--saju-label)}.life-v3-pillar-glyph{display:grid;grid-template-rows:1fr 1fr;gap:4px;margin:7px auto;width:48px}.life-v3-pillar-glyph b{display:grid;place-items:center;height:43px;border-radius:11px;background:var(--earth-bg);color:var(--accent);font-family:'Do Hyeon',var(--font-main);font-size:var(--saju-glyph)}.life-v3-pillar.self .life-v3-pillar-glyph b,.life-v3-pillar.self .life-v3-pillar-glyph b *{background:var(--accent);color:#fff!important}.life-v3-pillar span{display:block;color:var(--sub);font-size:var(--saju-label);line-height:1.45;word-break:keep-all}.life-v3-self-badge{position:absolute;top:7px;right:7px;padding:2px 6px;border-radius:999px;background:var(--gold);color:#1d241f;font-size:.54rem;font-weight:800}
+.life-v3-emoji-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}.life-v3-emoji{display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:start;padding:12px;border-radius:12px;background:var(--bg-deep)}.life-v3-emoji-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid rgba(138,101,21,.3);font-size:1.18rem}.life-v3-emoji b{display:block;color:var(--text);font-size:.76rem;line-height:1.35}.life-v3-emoji>span:last-child{display:block;margin-top:3px;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}
+.reading-sigil{display:inline-grid;place-items:center;min-width:1em;color:var(--gold);font-family:Georgia,'Times New Roman',serif;font-size:1em;font-weight:700;font-style:normal;line-height:1;vertical-align:-.04em;text-shadow:0 1px 0 rgba(255,255,255,.5)}.life-v3-section-symbol .reading-sigil,.life-v3-emoji-mark .reading-sigil,.life-v3-profile-item>span:first-child .reading-sigil{color:var(--accent);font-size:1.1em}.nb-cat-icon .reading-sigil{color:var(--accent);font-size:1.05em}.daily-cat-emoji .reading-sigil,.daily-headline .reading-sigil{color:var(--gold)}
+.life-v3-relation{margin:14px 0;padding:14px;border-radius:14px;background:var(--bg-deep)}.life-v3-relation-points{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}.life-v3-relation-point{min-width:78px;padding:9px 10px;border-radius:11px;background:var(--card);text-align:center}.life-v3-relation-point small{display:block;color:var(--muted);font-size:.58rem;white-space:nowrap;word-break:keep-all}.life-v3-relation-point b{display:block;margin:3px 0;color:var(--accent);font-size:1.05rem}.life-v3-relation-point span{display:block;color:var(--sub);font-size:.59rem}.life-v3-relation-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.life-v3-relation-link{padding:8px 10px;border-radius:10px;background:var(--surface);color:var(--sub);font-size:.64rem;line-height:1.5;word-break:keep-all}.life-v3-relation-link b{color:var(--accent)}
+.life-v3-months,.life-v3-years{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-time-card{padding:12px 13px;border-radius:12px;background:var(--card);border:1px solid var(--border)}.life-v3-time-card.current{background:var(--green-soft);border-color:var(--accent)}.life-v3-time-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.life-v3-time-head b{color:var(--accent);font-size:.76rem}.life-v3-time-head span{padding:2px 7px;border-radius:999px;background:var(--earth-bg);color:var(--gold);font-size:.59rem;font-weight:800}.life-v3-time-card.current .life-v3-time-head span{background:var(--accent);color:var(--on-accent)}.life-v3-time-card p{margin:7px 0 0;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}.life-v3-time-action{margin-top:7px;padding-top:7px;border-top:1px solid var(--border);color:var(--text);font-size:.62rem;line-height:1.5;word-break:keep-all}
+.life-v3-dual{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin:14px 0}.life-v3-dual-card{padding:13px;border-radius:13px;background:var(--green-soft);text-align:center}.life-v3-dual-card:last-child{background:var(--earth-bg)}.life-v3-dual-card b{display:block;color:var(--accent);font-size:.76rem}.life-v3-dual-card span{display:block;margin-top:5px;color:var(--sub);font-size:.65rem;line-height:1.55;word-break:keep-all}.life-v3-dual>i{align-self:center;color:var(--gold);font-style:normal;font-size:1.1rem;font-weight:900}
+.life-v3-golden{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}.life-v3-golden-card{padding:14px 12px;border-radius:13px;background:var(--earth-bg);text-align:center}.life-v3-golden-card:nth-child(2){background:var(--green-soft)}.life-v3-golden-card small{display:block;color:var(--gold);font-size:.61rem;font-weight:800}.life-v3-golden-card b{display:block;margin:5px 0;color:var(--accent);font-size:.82rem}.life-v3-golden-card span{display:block;color:var(--sub);font-size:.63rem;line-height:1.5;word-break:keep-all}
 .life-v3-note{margin:13px 0;padding:13px 15px;border-radius:12px;background:var(--green-soft);color:var(--text);font-size:.76rem;line-height:1.75;word-break:keep-all}.life-v3-note b{color:var(--accent)}
 .ny-v3-overview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}.ny-v3-overview-item{padding:12px 8px;border-radius:13px;background:var(--bg-deep);text-align:center}.ny-v3-overview-item>span{display:block;font-size:1.25rem}.ny-v3-overview-item b{display:block;margin:5px 0 3px;color:var(--accent);font-size:.72rem}.ny-v3-overview-item small{display:block;color:var(--sub);font-size:.61rem;line-height:1.45;word-break:keep-all}
 .ny-v3-oh{display:grid;gap:9px;margin:14px 0}.ny-v3-oh-row{display:grid;grid-template-columns:72px minmax(0,1fr) 38px;gap:9px;align-items:center}.ny-v3-oh-label{font-size:.7rem;color:var(--text);white-space:nowrap}.ny-v3-oh-label span{margin-right:5px}.ny-v3-oh-bar{height:10px;border-radius:999px;background:var(--earth-bg);overflow:hidden}.ny-v3-oh-bar b{display:block;height:100%;border-radius:999px;background:var(--gold)}.ny-v3-oh-row.help .ny-v3-oh-bar b{background:var(--accent)}.ny-v3-oh-row em{color:var(--sub);font-size:.67rem;font-style:normal;text-align:right}
@@ -1404,6 +1417,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .toc-details summary::after{content:'▾';float:right;color:var(--accent);transition:transform .15s}
 .toc-details[open] summary::after{transform:rotate(180deg)}
 .toc-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:5px;padding:0 9px 10px}
+.toc-detail-grid>button{display:flex;min-height:48px;align-items:center;text-wrap:balance;word-break:keep-all}
 /* TL-DD: 타임라인 카드 접기/펼치기 */
 .tl-collapsible .nb-title{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:0;user-select:none}
 .tl-chevron{font-size:.9rem;color:var(--accent);transition:transform .25s ease;flex-shrink:0}
@@ -1501,11 +1515,11 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .mm{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0 6px;background:var(--bg-deep);padding:9px 7px;border-radius:10px;border:1px solid var(--border)}
 .mm-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 4px 8px;text-align:center;transition:.2s;position:relative}
 .mm-col.hl{border:1.5px solid var(--accent);box-shadow:0 0 0 3px rgba(138,101,21,.12);background:var(--earth-bg);transform:translateY(-2px);z-index:2}
-.mm-lab{font-size:.78rem;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-.mm-lab .term{display:inline-block;font-size:1.45rem;line-height:1.18;letter-spacing:0;text-underline-offset:4px}
+.mm-lab{font-size:var(--saju-label);color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.mm-lab .term{display:inline-block;font-size:var(--saju-glyph);line-height:1.18;letter-spacing:0;text-underline-offset:4px}
 .mm-col.hl .mm-lab{color:var(--accent);font-weight:800}
-.mm-cell{padding:12px 2px;font-size:1.4rem;font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
-.mm-cell .mm-sub{font-size:.65rem;font-weight:500;opacity:.7;margin-top:2px}
+.mm-cell{padding:12px 2px;font-size:var(--saju-glyph);font-weight:800;border-radius:5px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.mm-cell .mm-sub{font-size:var(--saju-label);font-weight:500;opacity:.7;margin-top:2px}
 .mm-stem{margin-bottom:2px}
 .mm-pointer{font-size:.7rem;color:var(--accent);margin:4px 0 10px;text-align:center;font-weight:600;letter-spacing:.02em}
 
@@ -1596,9 +1610,9 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .pillar4-title{font-weight:800;font-size:.8rem;line-height:1.55}
 .pillar4-sub{font-size:.74rem;color:var(--sub);font-weight:600;line-height:1.55}
 .pillar4-glyphs{display:grid;grid-template-columns:repeat(2,minmax(72px,1fr));gap:8px;margin:7px 0 9px}
-.pillar4-glyph{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:rgba(0,0,0,.12);text-align:center;min-height:76px}
-.pillar4-char{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.42rem;font-weight:800;line-height:1.12}
-.pillar4-tag{font-size:.66rem;color:var(--sub);margin-top:3px;line-height:1.35}
+.pillar4-glyph{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:rgba(255,253,248,.66);text-align:center;min-height:76px}
+.pillar4-char{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:var(--saju-glyph);font-weight:800;line-height:1.12}
+.pillar4-tag{font-size:var(--saju-label);color:var(--sub);margin-top:3px;line-height:1.35}
 .pillar4-meaning{font-size:.8rem;line-height:1.78;color:var(--sub);margin:0 0 7px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .pillar4-detail{font-size:.8rem;line-height:1.82;color:var(--text);word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 @media (max-width:380px){
@@ -1837,6 +1851,11 @@ html{font-size:clamp(14px,4.1vw,16px)}
 
 /* PC (900px+): 넓은 컨테이너 + 앱 프레임 + 메뉴 4열 + 타이포 확대 */
 @media (min-width:900px){
+  /* 읽기 행폭 — 한글 45~50자 줄은 눈이 다음 줄 첫 글자를 놓친다.
+     왼쪽 기준선은 그대로 두고 오른쪽만 당겨 38자 안팎으로 맞춘다. */
+  #app :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-advice,.mbti-axis-body,.summary-intro,.chat-msg-body,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow,.life-v3-section-body,.story-deck-copy,.personal-proof,.story-personal-note),
+  #app .daily-card p,
+  #app :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-advice,.mbti-axis-body,.summary-intro,.chat-msg-body,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow,.life-v3-section-body,.story-deck-copy,.mbti-ind-example,.mbti-analysis-synth,.mbti-intro,.reading-brief,.lead-card,.teaser-leadline,.teaser-insight,.ai-reading-section,.life-v2-lead,.life-v3-note,.life-v3-time-card) :where(p,li){max-width:38em}
   html{font-size:17px}
   #app{max-width:768px;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 90px rgba(0,0,0,.5)}
   .home-hero h1{font-size:2.5rem}
@@ -2189,6 +2208,24 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#52645d}.lsc-stats i{height:12px;background:rgba(0,98,65,.10);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:#006241;border-radius:9px}.lsc-stats em{font-style:normal;color:#8a6515;text-align:right}
 .lsc-scenes{width:860px;margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.lsc-scenes>div{min-height:150px;padding:18px;background:rgba(255,253,248,.82);border:1px solid rgba(0,98,65,.10);border-radius:16px;text-align:left}.lsc-scenes span{font-size:28px}.lsc-scenes b{display:block;margin:9px 0 6px;color:#006241;font-size:18px}.lsc-scenes p{margin:0;font-size:17px;line-height:1.55;color:#52645d}.lsc-foot{margin-top:auto;font-size:16px;color:#7d8d85;letter-spacing:.06em}
 @media(max-width:520px){.life-experience{margin:0 10px 22px}.life-character-layer .cc-portrait{width:108px;height:108px}.life-character-layer .cc-stats{gap:5px 9px}.life-character-layer .cc-stat{gap:5px}.life-character-layer .cc-stat-name{flex-basis:3.1em}.life-deck-card{min-height:560px;padding:17px 15px}.life-deck-copy{font-size:.82rem;line-height:1.78}.life-deck-timeline{gap:4px}.ldt-item{font-size:.53rem}.life-deck-actions{gap:6px}.story-experience{padding:0 10px}.story-summary-card{min-height:500px;padding:18px 14px 15px}.story-emblem{width:78px;height:78px;border-radius:25px}.story-emblem .material-symbols-outlined{font-size:40px}.story-title{font-size:1.2rem}.story-stats{gap:5px}.story-stat{padding:8px 5px}.story-stat-head{display:block;text-align:center}.story-stat-head b{display:block;margin-top:2px}.story-highlights{gap:5px}.story-highlight{padding:9px 5px;font-size:.64rem}.story-deck-card{min-height:540px;padding:17px 15px}.story-deck-copy{font-size:.82rem;line-height:1.82}.story-deck-actions{gap:6px}}
+/* 모바일 풀이 레이아웃 — 좁은 화면에서 여러 열짜리 도식을 한 열로 편다.
+   정렬은 전 폭 공통 규칙(왼쪽 기준선)을 그대로 쓴다. */
+@media(max-width:640px){
+  #app .life-v3-profile,#app .life-v3-emoji-grid,#app .life-v3-months,#app .life-v3-years,#app .ny-v3-daeun,#app .life-word-map,#app .life-era-grid,#app .life-month-grid{grid-template-columns:1fr}
+  #app .life-v3-profile-item,#app .life-v3-emoji{align-items:center}
+  #app .life-v3-relation-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #app .life-v3-relation-links{grid-template-columns:1fr}
+  #app .life-v3-pillar small{white-space:nowrap}
+  #app .life-v3-dual{grid-template-columns:1fr}
+  #app .life-v3-dual>i{transform:rotate(90deg);justify-self:center}
+  #app .life-formula{flex-direction:column;gap:18px;overflow:visible}
+  #app .life-formula-step{width:100%;min-width:0}
+  #app .life-formula-step:not(:last-child)::after{content:'↓';right:50%;top:auto;bottom:-17px;transform:translateX(50%)}
+  #app .toc-detail-grid{grid-template-columns:1fr}
+  #app .toc-jump-btn{width:100%;min-height:44px}
+  #app .ny-v3-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #app .ny-v3-overview-item:last-child:nth-child(odd){grid-column:1/-1}
+}
 </style>
 </head>
 <body>
@@ -4881,7 +4918,7 @@ function saveTarotReadingFromFlow(flow){
 // 일진/월진/세운 점수 베이스 — 평균 약 74점, 정인·식신·정재·정관 날에는 80점대 자연 도달
 // (재보정: 기존 평균 67점 → 74점, 합/충 보정과 결합해 「길한 날」이 실제로 80~90+를 받도록 조정)
 const TG_SCORE={비견:72,겁재:52,식신:86,상관:67,편재:78,정재:85,편관:62,정관:82,편인:70,정인:88};
-const TG_EMOJI={비견:'👥',겁재:'⚡',식신:'🍀',상관:'🎨',편재:'💸',정재:'💰',편관:'⚔️',정관:'🏛️',편인:'📚',정인:'📖'};
+const TG_EMOJI={비견:'◎',겁재:'△',식신:'❦',상관:'✧',편재:'◆',정재:'◇',편관:'△',정관:'◈',편인:'☾',정인:'▤'};
 // 지지 합·충·원진·형·파·해 (전통 명리 전 작용)
 const BR_HAP6  =[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];   // 육합 — 자축·인해·묘술·진유·사신·오미
 const BR_CHUNG =[[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];   // 충   — 자오·축미·인신·묘유·진술·사해
@@ -5082,10 +5119,10 @@ function renderDailyFortune(saju){
         </div>
       </div>
       <div class="daily-cats">
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✨</span><span class="daily-cat-name">총운</span>${_stars(f.total)}<span class="daily-cat-score">${f.total}점</span></div><div class="daily-cat-body">${_dailyMsg('총운',f.tg,f.rel)} ${_pMod['총운']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span>${_stars(f.wealth)}<span class="daily-cat-score">${f.wealth}점</span></div><div class="daily-cat-body">${_dailyMsg('재물',f.tg,f.rel)} ${_pMod['재물']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span>${_stars(f.love)}<span class="daily-cat-score">${f.love}점</span></div><div class="daily-cat-body">${_dailyMsg('연애',f.tg,f.rel)} ${_pMod['연애']}</div></div>
-        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span>${_stars(f.health)}<span class="daily-cat-score">${f.health}점</span></div><div class="daily-cat-body">${_dailyMsg('건강',f.tg,f.rel)} ${_pMod['건강']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✦</span><span class="daily-cat-name">총운</span>${_stars(f.total)}<span class="daily-cat-score">${f.total}점</span></div><div class="daily-cat-body">${_dailyMsg('총운',f.tg,f.rel)} ${_pMod['총운']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◇</span><span class="daily-cat-name">재물</span>${_stars(f.wealth)}<span class="daily-cat-score">${f.wealth}점</span></div><div class="daily-cat-body">${_dailyMsg('재물',f.tg,f.rel)} ${_pMod['재물']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">♡</span><span class="daily-cat-name">연애</span>${_stars(f.love)}<span class="daily-cat-score">${f.love}점</span></div><div class="daily-cat-body">${_dailyMsg('연애',f.tg,f.rel)} ${_pMod['연애']}</div></div>
+        <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✣</span><span class="daily-cat-name">건강</span>${_stars(f.health)}<span class="daily-cat-score">${f.health}점</span></div><div class="daily-cat-body">${_dailyMsg('건강',f.tg,f.rel)} ${_pMod['건강']}</div></div>
       </div>
       ${_dailyHourCard(saju, f)}
       ${_dailyLuckCard(saju, f)}
@@ -5128,7 +5165,7 @@ function _dailyDaeunStageCard(saju, f){
     return `<div class="daily-card" style="text-align:left;padding:18px;background:var(--earth-bg)">
       <div style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
       <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
-      ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:8px;font-size:.78rem;line-height:1.75">
+      ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.78rem;line-height:1.75">
         ${_luckyHours.length?`<div><b style="color:var(--good)">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
         ${_cautionHours.length?`<div><b style="color:var(--warn)">⚠️ 오늘의 주의시</b> — ${_cautionHours.join(', ')}</div>`:''}
       </div>`:''}
@@ -7290,10 +7327,10 @@ function renderDaypickFortune(saju,y,m,d,extra){
   </div>
 
   <div class="daily-cats">
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${f.wealth}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${f.love}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${f.career}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◇</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${f.wealth}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">♡</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${f.love}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◈</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${f.career}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✣</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${f.health}점</span></div></div>
   </div>
   <!--SCORE_END-->${_ctxHtml}`;
 
@@ -7684,10 +7721,10 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   </div>
 
   <div class="daily-cats">
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물 평균</span><span class="daily-cat-score">${avg('wealth')}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애 평균</span><span class="daily-cat-score">${avg('love')}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업 평균</span><span class="daily-cat-score">${avg('career')}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강 평균</span><span class="daily-cat-score">${avg('health')}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◇</span><span class="daily-cat-name">재물 평균</span><span class="daily-cat-score">${avg('wealth')}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">♡</span><span class="daily-cat-name">연애 평균</span><span class="daily-cat-score">${avg('love')}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◈</span><span class="daily-cat-name">직업 평균</span><span class="daily-cat-score">${avg('career')}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✣</span><span class="daily-cat-name">건강 평균</span><span class="daily-cat-score">${avg('health')}점</span></div></div>
   </div>
   <!--SCORE_END-->${_ctxHtml}`;
 
@@ -8296,10 +8333,10 @@ function renderNewyearFortuneLegacy(saju,y){
   </div>
 
   <div class="daily-cats">
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💰</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${wealthYr}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">💕</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${loveYr}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🏛️</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${careerYr}점</span></div></div>
-    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">🌿</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${healthYr}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◇</span><span class="daily-cat-name">재물</span><span class="daily-cat-score">${wealthYr}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">♡</span><span class="daily-cat-name">연애</span><span class="daily-cat-score">${loveYr}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">◈</span><span class="daily-cat-name">직업</span><span class="daily-cat-score">${careerYr}점</span></div></div>
+    <div class="daily-cat"><div class="daily-cat-head"><span class="daily-cat-emoji">✣</span><span class="daily-cat-name">건강</span><span class="daily-cat-score">${healthYr}점</span></div></div>
   </div>
   <span style="display:none">다만 같은 띠라도</span>
   `;
@@ -11619,7 +11656,7 @@ function lifeV2IconGrid(items){
 function lifeV2Evidence(items,caption){
   const list=(items||[]).filter(Boolean);
   if(!list.length)return '';
-  return `<div class="life-evidence"><div class="life-evidence-head"><span class="material-symbols-outlined" aria-hidden="true">account_tree</span>이 풀이가 나온 구조</div><div class="life-evidence-flow" style="--evidence-count:${Math.min(4,list.length)}">${list.map(item=>`<div class="life-evidence-node"><small>${item.label||''}</small><b>${item.value||''}</b><span>${preventOrphan(item.text||'')}</span></div>`).join('')}</div>${caption?`<div class="life-evidence-caption">${preventOrphan(caption)}</div>`:''}</div>`;
+  return `<div class="life-evidence"><div class="life-evidence-head"><span class="material-symbols-outlined" aria-hidden="true">account_tree</span>이 풀이가 나온 구조</div><div class="life-evidence-flow" style="--evidence-count:${Math.min(4,list.length)}">${list.map(item=>`<div class="life-evidence-node"><small>${preventOrphan(item.label||'')}</small><b>${preventOrphan(item.value||'')}</b><span>${preventOrphan(item.text||'')}</span></div>`).join('')}</div>${caption?`<div class="life-evidence-caption">${preventOrphan(caption)}</div>`:''}</div>`;
 }
 function lifeV2Formula(items){
   return `<div class="life-formula">${(items||[]).map(item=>`<div class="life-formula-step"><span class="material-symbols-outlined" aria-hidden="true">${item.icon||'arrow_forward'}</span><b>${item.label}</b>${item.text?`<small>${preventOrphan(item.text)}</small>`:''}</div>`).join('')}</div>`;
@@ -11677,7 +11714,7 @@ const LIFE_V3_OH_ACTION={
 };
 const LIFE_V3_SECTION_MARK={water_drop:'💧',visibility:'👁️',shield_person:'🛡️',repeat:'🔁',balance:'⚖️',psychology:'🧠',edit_note:'✍️',groups:'👥',auto_awesome:'✨',work:'💼',fork_right:'🛤️',timeline:'🕰️',account_tree:'🧩',savings:'🏦',shield:'🛡️',favorite:'❤️',diversity_1:'🫶',diamond:'💎',forum:'💬',diversity_3:'👥',support_agent:'🤝',volunteer_activism:'🙌',monitor_heart:'🫀',self_improvement:'🧘',checklist:'✅',rocket_launch:'🚀',warning:'⚠️',route:'🧭',lightbulb:'💡',forest:'🌳'};
 function lifeV3Section(icon,title,html){return `<section class="life-v3-section"><div class="life-v3-section-head"><span class="life-v3-section-symbol" aria-hidden="true">${lifeV3EmojiEntity(LIFE_V3_SECTION_MARK[icon]||'✦')}</span>${title}</div><div class="life-v3-section-body">${html||''}</div></section>`;}
-function lifeV3EmojiEntity(value){return [...String(value||'✦')].map(ch=>`&#${ch.codePointAt(0)};`).join('');}
+function lifeV3EmojiEntity(value){return _premiumReadingSigil(value);}
 function lifeV3EmojiGrid(items){return `<div class="life-v3-emoji-grid">${(items||[]).filter(Boolean).map(item=>`<div class="life-v3-emoji"><span class="life-v3-emoji-mark" aria-hidden="true">${lifeV3EmojiEntity(item.emoji)}</span><span><b>${item.label||''}</b><span>${preventOrphan(item.text||'')}</span></span></div>`).join('')}</div>`;}
 function lifeV3ProfileGrid(items){return `<div class="life-v3-profile">${(items||[]).filter(Boolean).map(item=>`<div class="life-v3-profile-item"><span aria-hidden="true">${lifeV3EmojiEntity(item.emoji)}</span><span><small>${item.label||''}</small><b>${preventOrphan(item.value||'')}</b></span></div>`).join('')}</div>`;}
 function lifeV3PillarBoard(saju){
@@ -11688,7 +11725,7 @@ function lifeV3RelationDiagram(saju,relations){
   const points=[['태어난 해',saju.yp.branch],['태어난 달',saju.mp.branch],['본인 자리',saju.dp.branch]].concat(saju.hp?[['후반 자리',saju.hp.branch]]:[]);
   const placeLabel={년지:'태어난 해',월지:'태어난 달',일지:'본인 자리',시지:'후반 자리'};
   const links=(relations||[]).slice(0,6);
-  return `<div class="life-v3-relation"><div class="life-v3-relation-points">${points.map(x=>`<div class="life-v3-relation-point"><small>${x[0]}</small><b>${BRCHKO[x[1]]}</b><span>${ANIMAL[x[1]]} 자리</span></div>`).join('')}</div><div class="life-v3-relation-links">${links.length?links.map(r=>`<div class="life-v3-relation-link"><b>${(r.places||[]).map(p=>placeLabel[p]||p).join(' ↔ ')}</b><br>${r.type}</div>`).join(''):'<div class="life-v3-relation-link"><b>큰 충돌보다 본인 호흡</b><br>두드러진 글자 충돌이 적어 본인 기준을 차분히 지키는 편이에요.</div>'}</div></div>`;
+  return `<div class="life-v3-relation"><div class="life-v3-relation-points">${points.map(x=>`<div class="life-v3-relation-point"><small>${preventOrphan(x[0])}</small><b>${BRCHKO[x[1]]}</b><span>${ANIMAL[x[1]]} 자리</span></div>`).join('')}</div><div class="life-v3-relation-links">${links.length?links.map(r=>`<div class="life-v3-relation-link"><b>${(r.places||[]).map(p=>placeLabel[p]||p).join(' ↔ ')}</b><br>${r.type}</div>`).join(''):'<div class="life-v3-relation-link"><b>큰 충돌보다 본인 호흡</b><br>두드러진 글자 충돌이 적어 본인 기준을 차분히 지키는 편이에요.</div>'}</div></div>`;
 }
 function lifeV3MonthBoard(months,year){return `<div class="life-v3-months">${(months||[]).map(x=>{const d=LIFE_V3_TG_DETAIL[x.tg]||{};return `<div class="life-v3-time-card${x.current?' current':''}"><div class="life-v3-time-head"><b>${x.month}월 · ${x.gz}</b><span>${x.current?'현재':x.score+'점'}</span></div><p>${preventOrphan(d.lead||x.text)}</p><div class="life-v3-time-action">${x.current?lifeV3EmojiEntity('📍')+' 지금 할 일':'✓ 활용법'} · ${preventOrphan(d.good||x.text)}</div><div class="life-v3-time-action">⚠ 살필 점 · ${preventOrphan(d.warn||'일정과 조건을 한 번 더 확인하세요.')}</div></div>`;}).join('')}</div>`;}
 function lifeV3YearBoard(years){return `<div class="life-v3-years">${(years||[]).map(x=>{const d=LIFE_V3_TG_DETAIL[x.tg]||{};return `<div class="life-v3-time-card"><div class="life-v3-time-head"><b>${x.year}년 · ${x.gz}</b><span>${x.score}점</span></div><p>${preventOrphan(d.lead||LIFE_V2_TG_USE[x.tg]||'본인 속도를 지키는 해예요.')}</p><div class="life-v3-time-action">✓ ${preventOrphan(d.good||LIFE_V2_MONTH_ACTION[x.tg]||'하나를 완성하세요.')}</div><div class="life-v3-time-action">⚠ ${preventOrphan(d.warn||'큰 결정은 실제 조건을 먼저 확인하세요.')}</div></div>`;}).join('')}</div>`;}
@@ -11756,7 +11793,7 @@ function buildLifeV2Library(saju,meta){
   h+=lifeV2Card('PROFILE','badge','상담 기본 정보','<b>계산된 만세력 원본을 그대로 두고 해석만 연결했어요.</b> 아래 정보가 본인 입력과 맞는지 먼저 확인하세요.',
     lifeV3ProfileGrid([
       {emoji:'👤',label:'성별',value:m.genderLabel},{emoji:'📅',label:'양력 출생',value:`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일 ${m.originalTime}`},
-      {emoji:'📍',label:'출생지',value:m.city},{emoji:'☀️',label:'진태양시 적용',value:m.hourKnown?`${m.correctedTime} · ${Number(m.meta.tsoMin)||0}분 보정`:'태어난 시간 미입력'},
+      {emoji:'📍',label:'출생지',value:m.city},{emoji:'☀️',label:'진태양시 적용',value:m.hourKnown?`${m.correctedTime} · ${(Number(m.meta.tsoMin)||0).toFixed(2)}분 보정`:'태어난 시간 미입력'},
       {emoji:'🧭',label:'사주 원국',value:[saju.yp,saju.mp,saju.dp].concat(saju.hp?[saju.hp]:[]).map(x=>STEMKO[x.stem]+BRCHKO[x.branch]).join(' · ')},
       {emoji:'💧',label:'본인을 뜻하는 글자',value:`${STEMKO[saju.dp.stem]} · ${stemNick(saju.dp.stem)}`},{emoji:'🧠',label:'사주 유형',value:typeLabel},
       {emoji:'🎂',label:`${m.year}년 한국식 나이`,value:`${m.age}세 · ${m.stageLabel}`},{emoji:'🛤️',label:'현재 10년 흐름',value:`${m.cur.age}~${m.cur.age+9}세 ${STEMKO[m.cur.stem]}${BRCHKO[m.cur.branch]}`},
@@ -13905,7 +13942,7 @@ function renderSajuPaidLegacy(saju,sy,sm,sd,sh,smin){
       fieldList.forEach(f=>{states[f.key]=_judgeField(tg,btg,brR,du,f.key);});
       return {du,tg,btg,states};
     });
-    const stateBg={good:'rgba(108,191,126,.45)',flat:'rgba(180,180,180,.18)',warn:'rgba(229,178,73,.45)',bad:'rgba(229,116,98,.45)'};
+    const stateBg={good:'rgba(108,191,126,.45)',flat:'rgba(0,98,65,.07)',warn:'rgba(229,178,73,.45)',bad:'rgba(229,116,98,.45)'};
     const stateMark={good:'🟢',flat:'·',warn:'🟡',bad:'🔴'};
     const stateLab={good:'좋음',flat:'평이',warn:'주의',bad:'변동'};
     // 가로 스크롤 가능 그리드
@@ -14948,7 +14985,7 @@ async function downloadLifeSummary(fmt){
   // 오프스크린 컨테이너 생성
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildLifeSummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildLifeSummaryA4Html());
   document.body.appendChild(offscreen);
 
   try{
@@ -15130,7 +15167,7 @@ async function downloadNewyearSummary(fmt){
   btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildNewyearSummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildNewyearSummaryA4Html());
   document.body.appendChild(offscreen);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -15237,7 +15274,7 @@ async function downloadGunghapSummary(fmt){
   btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildGunghapSummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildGunghapSummaryA4Html());
   document.body.appendChild(offscreen);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -15304,14 +15341,47 @@ function _shortReadingSentence(s,maxLen=92){
   const p=Math.max(cut.lastIndexOf(' '),cut.lastIndexOf('요.'),cut.lastIndexOf('다.'));
   return (p>38?cut.slice(0,p):cut).replace(/[,.·\s]+$/,'')+'…';
 }
-// 본문에서 장식성 이모지를 덜어낸다. 차트·범례의 기능성 이모지(🟢🟡🔴⬜★☆✓▾)는 보존.
-function _calmReadingHtml(html){
-  if(!html||typeof html!=='string')return html;
-  const deco=['📌','💡','📖','🪄','🔄','📍','⤵','🎯','✦','✧','🌟','✨','🧬','🌱','🔗','⚡','🐭','🩺','🤝','🚄','🪷','📊','🗓','📋','⏱','🏛','💑','✒️','🌙','🧭','🔮','🎉','🌼','📅','📜','🗒','🪙','🍀','💎','💰','💼','💕','💍','🌿','👥','📚','🔬','⚔️','👨‍👩‍👧‍👦','👨‍👩‍👧'];
-  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const re=new RegExp('(?:'+deco.map(esc).join('|')+')\\uFE0F?\\s*','gu');
-  return html.replace(re,'');
+// 풀이용 이모지는 운영체제마다 다른 컬러 그림 대신 녹색·금색 단색 문양으로 통일한다.
+// 같은 분야는 모든 유료 풀이와 저장 이미지에서 항상 같은 문양을 사용한다.
+const PREMIUM_READING_SYMBOLS=(()=>{
+  const out={};
+  const groups=[
+    ['✦',['✨','🌟','💡','🔮','🎉','🌼','🪷','💎','🎯','🏅','✅','🍀','✦','✧']],
+    ['◇',['💰','💸','💳','🏦','🪙','🛒','🛍️','📈','📉','📊','💵','💲','🧾']],
+    ['♡',['❤️','💕','💞','💑','💍','🫶','🤝','👨‍👩‍👧‍👦','👨‍👩‍👧','🤱','👥','🧑‍🤝‍🧑','🙌']],
+    ['✣',['🌿','🌱','🌳','🔥','☀️','💧','🩺','🫀','🩹','🧘','🏃','🚶','🚴','🥣','🛏️','🛋️']],
+    ['◈',['💼','🏛','🏛️','🎓','🛠️','🧰','🤖','🏠','🏡','🧱','📦','🔧']],
+    ['▤',['📚','📖','📜','📃','📄','📋','📌','📍','🗂️','🗒','📝','✍️','✒️','📏','✂️']],
+    ['◎',['👁️','🧠','🧬','🗣️','💬','📣','📞','📱','📵','❓','👤','🧓','🕵️']],
+    ['⟡',['🧭','🛤️','🗺️','🚀','🚄','🔁','🔄','🔗','🚪','📅','🗓','🗓️','📆','🕰️','⏱','⏳','🌅','🌙']],
+    ['△',['⚠️','⚠','⚡','⚔','⚔️','🚧','🎰','🏋️','🔒','🔑','🛡️','🛟','🤐','😶']],
+    ['⚖',['⚖','⚖️','➕','➖']]
+  ];
+  groups.forEach(([symbol,items])=>items.forEach(item=>{out[String(item).replace(/\uFE0F/g,'')]=symbol;}));
+  return Object.freeze(out);
+})();
+function _premiumReadingSymbol(value){
+  const key=String(value||'').replace(/\uFE0F/g,'').trim();
+  return PREMIUM_READING_SYMBOLS[key]||'✦';
 }
+function _premiumReadingSigil(value){
+  const symbol=_premiumReadingSymbol(value);
+  return `<span class="reading-sigil" aria-hidden="true">${[...symbol].map(ch=>`&#${ch.codePointAt(0)};`).join('')}</span>`;
+}
+function premiumizeReadingHtml(html){
+  if(!html||typeof html!=='string')return html;
+  const deco=Object.keys(PREMIUM_READING_SYMBOLS).sort((a,b)=>b.length-a.length);
+  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re=new RegExp('(?:'+deco.map(esc).join('|')+')\\uFE0F?','gu');
+  // HTML 속성은 그대로 두고 실제로 보이는 텍스트만 바꾼다.
+  // 개별 목록에 없는 컬러 이모지도 흡수해 풀이마다 색이 튀지 않게 한다.
+  const colorEmoji=/(?:[\u{1F000}-\u{1FAFF}]|[\u2600-\u27BF]\uFE0F)(?:\uFE0F|\uFE0E)?(?:\u200D(?:[\u{1F000}-\u{1FAFF}]|[\u2600-\u27BF])(?:\uFE0F|\uFE0E)?)*/gu;
+  return html.split(/(<[^>]*>)/g).map(part=>{
+    if(part.startsWith('<'))return part;
+    return part.replace(re,m=>_premiumReadingSigil(m)).replace(colorEmoji,m=>_premiumReadingSigil(m));
+  }).join('');
+}
+function _calmReadingHtml(html){return premiumizeReadingHtml(html);}
 function _softenBodySubheads(html){
   if(!html)return '';
   const lead=(text)=>{
@@ -15857,7 +15927,7 @@ function _generateTOC(h, scopeLabel){
     if(items.length<3)return '';
     const btn=(it)=>{
       const safeId='card-'+it.id.replace(/[^A-Za-z0-9_-]/g,'_');
-      return `<button type="button" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${it.title}</button>`;
+      return `<button type="button" class="toc-jump-btn" onclick="jumpToCard('${safeId}')" style="padding:7px 9px;background:var(--bg-deep);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.72rem;color:var(--text);text-align:left;line-height:1.4;transition:all .15s" onmouseover="this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.background='var(--bg-deep)';this.style.borderColor='var(--border)';this.style.color='var(--text)'">${preventOrphan(it.title)}</button>`;
     };
     // CHX: 장 정보가 있으면 장별 소제목으로 그룹화, 없으면 평면 그리드(하위 호환)
     let grid='';
@@ -16847,7 +16917,7 @@ function chatAppend(role,text){
   if(empty)empty.remove();
   const cls=role==='user'?'chat-msg-user':role==='reply'?'chat-msg-reply':role==='loading'?'chat-msg-loading':'chat-msg-error';
   const lab=role==='user'?langText({ko:'질문',en:'Question',zh:'问题',ja:'質問'})
-    :role==='reply'?langText({ko:'🔮 역술가',en:'🔮 Advisor',zh:'🔮 命理师',ja:'🔮 鑑定士'})
+    :role==='reply'?langText({ko:'✦ 천기',en:'✦ Advisor',zh:'✦ 命理师',ja:'✦ 鑑定士'})
     :role==='loading'?langText({ko:'생각하는 중',en:'Thinking',zh:'正在思考',ja:'考えています'})
     :langText({ko:'안내',en:'Notice',zh:'提示',ja:'案内'});
   const div=document.createElement('div');
@@ -17128,7 +17198,7 @@ function renderChatSection(catOpt){
     </div>
     <div class="chat-input-row">
       <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 300자 이내로 입력하세요')}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
-      <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'🔮 질문하기')}</button>
+      <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'✦ 질문하기')}</button>
     </div>
     <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 1,300자 이내에서 완결돼요.<br>${isQna?'질문권을 충전해 필요한 만큼 상담할 수 있어요.':`이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.`}</div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
@@ -19823,7 +19893,7 @@ function renderNamePaid(saju, nmExtra){
           <span style="font-size:.78rem;color:${goodColor};font-weight:700">${goodIcon} · ${g.data.num}수 · ${ohEmojis[g.data.oh]} ${ohNamesShort[g.data.oh]}</span>
         </div>
         <div style="font-size:.74rem;color:var(--muted);margin-bottom:6px;line-height:1.5">📅 시기: <b style="color:var(--sub)">${g.period}</b></div>
-        <div style="font-size:.78rem;color:var(--text);line-height:1.85;margin-bottom:7px;padding:8px 10px;background:rgba(0,0,0,.12);border-radius:6px">📖 <b>${g.data.num}수의 분위기</b>: ${g.data.label}</div>
+        <div style="font-size:.78rem;color:var(--text);line-height:1.85;margin-bottom:7px;padding:8px 10px;background:var(--earth-bg);border-radius:6px">📖 <b>${g.data.num}수의 분위기</b>: ${g.data.label}</div>
         <div style="font-size:.78rem;color:var(--sub);line-height:1.85;margin-bottom:7px"><b style="color:${goodColor}">${g.detail.lab}:</b> ${g.detail.body}</div>
         <div style="font-size:.76rem;color:var(--muted);line-height:1.75;padding:7px 10px;background:rgba(212,175,73,.06);border-radius:6px;border-left:2px solid var(--accent)">💡 <b>이 자리를 잘 쓰는 법:</b> ${g.detail.tip}</div>
       </div>`;
@@ -20077,7 +20147,7 @@ function renderNamePaid(saju, nmExtra){
         <span style="font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent)">${i+1}. ${candidateName}${hanFullName?` <small style="font-size:.85rem;color:var(--sub);letter-spacing:.1em;margin-left:6px">(${hanFullName})</small>`:''}</span>
         <span style="font-size:.7rem;color:var(--muted)">추천</span>
       </div>
-      ${hanLines.length?`<div style="font-size:.76rem;color:var(--sub);line-height:1.85;margin:8px 0 6px;padding:8px 11px;background:rgba(0,0,0,.15);border-radius:6px">${hanLines.join('')}${totalLine}</div>`:''}
+      ${hanLines.length?`<div style="font-size:.76rem;color:var(--sub);line-height:1.85;margin:8px 0 6px;padding:8px 11px;background:var(--earth-bg);border-radius:6px">${hanLines.join('')}${totalLine}</div>`:''}
       <div style="font-size:.76rem;color:var(--sub);line-height:1.7">↪ ${r.reason}</div>
     </div>`;
   });
@@ -20144,7 +20214,7 @@ function renderNamePaid(saju, nmExtra){
             <span style="font-size:.74rem;color:${goodColor};font-weight:700">4격 ${c.goodCnt}/4 길수</span>
           </div>
           <div style="font-size:.76rem;color:var(--sub);line-height:1.75;margin-bottom:6px">↪ <b>의미:</b> ${meaningLine}</div>
-          <div style="font-size:.72rem;color:var(--muted);line-height:1.7;padding:7px 9px;background:rgba(0,0,0,.12);border-radius:5px">${gyeokLine}${c.ohScore>0?` · ⭐ 도움 기운(<b>${ohNames[ys.main]}</b>) ${c.ohScore/2}자 일치`:''}</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.7;padding:7px 9px;background:var(--earth-bg);border-radius:5px">${gyeokLine}${c.ohScore>0?` · ⭐ 도움 기운(<b>${ohNames[ys.main]}</b>) ${c.ohScore/2}자 일치`:''}</div>
         </div>`;
       });
       sphBody+=`</div>
@@ -20308,7 +20378,7 @@ async function downloadNameSummary(fmt){
   btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildNameSummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildNameSummaryA4Html());
   document.body.appendChild(offscreen);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -20420,7 +20490,7 @@ async function downloadDaypickSummary(fmt){
   btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildDaypickSummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildDaypickSummaryA4Html());
   document.body.appendChild(offscreen);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -20512,7 +20582,7 @@ async function downloadMonthlySummary(fmt){
   btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
   const offscreen=document.createElement('div');
   offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=buildMonthlySummaryA4Html();
+  offscreen.innerHTML=premiumizeReadingHtml(buildMonthlySummaryA4Html());
   document.body.appendChild(offscreen);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -21637,7 +21707,7 @@ function analyze(){
     '⏳ 만세력 계산 중...',
     '🌗 진태양시 보정 중...',
     '🌀 천간·지지 계산 중...',
-    '🔮 십신·격국 분석 중...',
+    '✦ 사주 구조 분석 중...',
     '✨ 풀이 완성 중...'
   ];
   btn.innerHTML=`<span class="ldspin" aria-hidden="true"></span> <span id="loadingMsg">${stages[0]}</span>`;
@@ -21988,7 +22058,7 @@ function generateShareText(){
     const m=sajuMbtiMatch(_saju,mbti);
     if(m)hookLine=`${ilju} × ${mbti} — ${m.match}% 닮음`;
   }
-  return `🔮 ${hookLine}\n\n일간: ${dm.n}\n사주: ${pillars}\n오행: ${ohStr}\n\n타고난 기질: ${dm.core}\n강점: ${dm.pos.slice(0,3).join(' · ')}\n\n✨ 천지인 사주 — 사주팔자 × MBTI 통합 분석\n${shareURL()}`;
+  return `✦ ${hookLine}\n\n일간: ${dm.n}\n사주: ${pillars}\n오행: ${ohStr}\n\n타고난 기질: ${dm.core}\n강점: ${dm.pos.slice(0,3).join(' · ')}\n\n✦ 천지인 사주 — 사주팔자 × MBTI 통합 분석\n${shareURL()}`;
 }
 
 // 만세력 계산값을 AI가 재계산 없이 읽을 수 있는 구조화 텍스트로 변환한다.

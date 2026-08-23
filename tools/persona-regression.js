@@ -171,7 +171,31 @@ const harness = `
     ok('전체 서고: 고정 목차 접기 버튼 제공',
        ha.includes('toc-collapse-btn')&&globalThis.__SOURCE_HTML__.includes('function toggleStickyTOC('));
     ok('미니 만세력: 네 기둥 명칭 확대 스타일 적용',
-       globalThis.__SOURCE_HTML__.includes('.mm-lab .term{display:inline-block;font-size:1.45rem'));
+       globalThis.__SOURCE_HTML__.includes('.mm-lab .term{display:inline-block;font-size:var(--saju-glyph)') &&
+       parseFloat((globalThis.__SOURCE_HTML__.match(/--saju-glyph:\\s*([\\d.]+)rem/)||[])[1]||0) >= 1.4);
+    // 사주판은 어디에 나오든 라벨·십신은 --saju-label, 간지 글자는 --saju-glyph 하나로 맞춘다.
+    const sajuSizeRules=[
+      '.plabel{font-size:var(--saju-label)',
+      '.pstem .sm,.pbranch .sm{font-size:var(--saju-label)',
+      '.pillars>.pcol .sm{font-size:var(--saju-label)',
+      '.pillars>.pcol .pstem,.pillars>.pcol .pbranch{font-size:var(--saju-glyph)',
+      '.pillars>.pcol.unknown .sm{font-size:var(--saju-label)',
+      '.mm-lab{font-size:var(--saju-label)',
+      '.mm-cell{padding:12px 2px;font-size:var(--saju-glyph)',
+      '.mm-cell .mm-sub{font-size:var(--saju-label)',
+      'serif;font-size:var(--saju-glyph);font-weight:800;line-height:1.12}',
+      '.pillar4-tag{font-size:var(--saju-label)',
+      '.life-v3-pillar small{display:block;color:var(--muted);font-size:var(--saju-label)}',
+      '.life-v3-pillar span{display:block;color:var(--sub);font-size:var(--saju-label)'
+    ];
+    const sajuSizeMiss=sajuSizeRules.filter(rule=>!globalThis.__SOURCE_HTML__.includes(rule));
+    ok('사주판: 모든 판이 같은 글씨 크기 토큰 사용',
+       globalThis.__SOURCE_HTML__.includes('--saju-label:') && sajuSizeMiss.length===0, sajuSizeMiss.join(' | '));
+    // 회색 음영은 다크 테마 잔재다. 팝업 뒤 딤 처리 외에는 본문 어디에도 남기지 않는다.
+    const grayFills=globalThis.__SOURCE_HTML__.split(String.fromCharCode(10)).filter(line=>
+      /background(?:-color)?:\\s*.?rgba\\((?:29,32,33|0,0,0|144,144,150|180,180,180)/.test(line) &&
+      !/(share-overlay|ai-copy-overlay|pay-overlay|manse-modal|upsell-overlay|position:fixed)/.test(line));
+    ok('테마 UI: 본문 회색 음영 0건', grayFills.length===0, grayFills.map(l=>l.trim().slice(0,90)).join(' | '));
     const themeGradientLeaks=globalThis.__SOURCE_HTML__.split('\\n').filter(line=>/(?:linear|radial)-gradient/.test(line)&&
       !/(tarot-card-label|mask-image|ic-insta|ai-provider-mark\.gemini|home-share-option\.instagram|lock-preview::after|key:'instagram')/.test(line));
     ok('테마 UI: 브랜드·기능성 오버레이 외 그라데이션 0건', themeGradientLeaks.length===0, themeGradientLeaks.join(' | '));
@@ -210,7 +234,7 @@ const harness = `
        buildLifeSummaryA4Html().includes('이 풀이가 나온 구조'));
     const EXAMPLE=C(3,3,5,9,9,9,2,4); // 정묘·기유·계유·병진
     const savedMeta=_meta,savedInputs=_lastInputs;
-    _meta={gender:'male',sy:1987,sm:9,sd:21,hour:8,min:15,cityKey:'daejeon',tsoMin:-30};
+    _meta={gender:'male',sy:1987,sm:9,sd:21,hour:8,min:15,cityKey:'daejeon',tsoMin:-30.46199999999999};
     _lastInputs={hour:'8',min:'45',cityKey:'daejeon'};
     const exampleHtml=renderSajuPaid(EXAMPLE,1987,9,21,8,15);
     const examplePlain=exampleHtml.replace(/&nbsp;|\u00a0/g,' ');
@@ -219,6 +243,37 @@ const harness = `
        ['정묘','기유','계유','병진'].every(gz=>exampleHtml.includes(gz)) && exampleHtml.includes('life-v3-pillar-board') &&
        examplePlain.includes('대전광역시') && examplePlain.includes('08시 45분') && examplePlain.includes('08시 15분'),
        'missing='+['정묘','기유','계유','병진','대전광역시','08시 45분','08시 15분'].filter(x=>!examplePlain.includes(x)).join(','));
+    ok('인생총운 V3: 진태양시 보정값은 소수 둘째 자리까지만 표시',
+       examplePlain.includes('-30.46분 보정') && !examplePlain.includes('-30.461999'),
+       (examplePlain.match(/-30[^분]*분 보정/)||[])[0]);
+    ok('인생총운 V3: 목차 글자와 관계도 고아글자 방지',
+       exampleHtml.includes('class="toc-jump-btn"') && /태어난(?:&nbsp;|\u00a0)(?:<span[^>]*>)?해/.test(exampleHtml));
+    ok('인생총운 V3: 녹색 사주판 글자는 흰색으로 고정',
+       globalThis.__SOURCE_HTML__.includes('.life-v3-pillar.self .life-v3-pillar-glyph b *{background:var(--accent);color:#fff!important}'));
+    ok('인생총운 V3: 근거 노드 내용은 가로·세로 중앙 정렬',
+       globalThis.__SOURCE_HTML__.includes('.life-evidence-node{position:relative;display:flex') &&
+       globalThis.__SOURCE_HTML__.includes('flex-direction:column;align-items:center;justify-content:center'));
+    // 고아글자는 keep-all·text-wrap:pretty·preventOrphan()이 막는다. 정렬로 막지 않는다.
+    ok('풀이 본문: 화면 폭과 무관하게 왼쪽 기준선으로 정렬',
+       globalThis.__SOURCE_HTML__.includes('두 줄 넘는 풀이 본문은 전부 왼쪽 기준선으로 읽는다') &&
+       globalThis.__SOURCE_HTML__.includes('list-style-position:outside') &&
+       !/@media\\(max-width:640px\\)\\{[^}]*text-align:left/.test(globalThis.__SOURCE_HTML__));
+    const alignBlock=globalThis.__SOURCE_HTML__.slice(
+      globalThis.__SOURCE_HTML__.indexOf('/* 본문 읽기 품질'),
+      globalThis.__SOURCE_HTML__.indexOf('/* \\u2500\\u2500 Header \\u2500\\u2500 */'));
+    ok('풀이 본문: 긴 글에 가운데 정렬이 남아있지 않음',
+       /text-align:left;\\s*text-align-last:auto/.test(alignBlock) &&
+       !/(\\.nb-body|\\.conversion-hook-body|\\.tarot-markdown)[^{]*\\{[^}]*text-align:center/.test(alignBlock),
+       alignBlock.length+'자');
+    ok('풀이 본문: 한 줄 표시 문구와 비교 도식은 가운데 유지',
+       ['.daily-card','.card-quote','.life-final-line','.life-evidence-node','.life-v3-pillar','.ny-v3-season-card']
+         .every(cls=>alignBlock.includes(cls)) && /text-align:center;\\s*text-align-last:auto/.test(alignBlock));
+    // text-align-last는 상속된다. center로 두면 가운데 카드 안쪽 본문 마지막 줄까지 끌려간다.
+    ok('풀이 본문: text-align-last:center 잔재 0건',
+       !globalThis.__SOURCE_HTML__.includes('text-align-last:center'));
+    ok('모바일 풀이: 설명형 카드와 목차는 한 열로 정돈',
+       globalThis.__SOURCE_HTML__.includes('#app .life-v3-profile,#app .life-v3-emoji-grid,#app .life-v3-months') &&
+       globalThis.__SOURCE_HTML__.includes('#app .toc-detail-grid{grid-template-columns:1fr}'));
     ok('인생총운 V3: 예시 사주에 12개월·향후 10년·황금기 노출',
        (exampleHtml.match(/class="life-v3-time-card/g)||[]).length>=22 && (exampleHtml.match(/life-v3-golden-card/g)||[]).length>=3);
     ok('인생총운 V3: 첨부 예시의 현재 10년·8월·다음 해 원본값 유지',
@@ -237,6 +292,13 @@ const harness = `
        newyearExample.includes('life-v3-pillar-board') && newyearExample.includes('life-v3-relation') &&
        newyearExample.includes('ny-v3-oh') && (newyearExample.match(/class="life-v3-emoji"/g)||[]).length>=45,
        'emoji='+(newyearExample.match(/class="life-v3-emoji"/g)||[]).length);
+    const cheapReadingEmoji=['💰','💕','❤️','🌿','🧠','📦','🤝','🚀','⚠️','📅'].filter(mark=>newyearExample.includes(mark));
+    ok('풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용',
+       newyearExample.includes('class="reading-sigil"') && cheapReadingEmoji.length===0,
+       cheapReadingEmoji.join(','));
+    const premiumBody=_calmReadingHtml('<p>💰 돈 · ❤️ 사랑 · 🌿 건강 · ⚠️ 주의</p>');
+    ok('풀이 심볼: 모든 유료 본문 공통 변환 계층 적용',
+       (premiumBody.match(/class="reading-sigil"/g)||[]).length===4 && !/[💰❤️🌿⚠]/u.test(premiumBody));
     ok('신년운세 V3: 예시의 출생·음력·보정 시각 원본값 반영',
        newyearPlain.includes('1987년 9월 21일') && newyearPlain.includes('1987년 7월 29일') &&
        newyearPlain.includes('08시 45분') && newyearPlain.includes('08시 15분') && newyearPlain.includes('대전광역시'));
@@ -257,6 +319,9 @@ const harness = `
     ok('신년운세 V3: 심층 요약본도 V3 구조를 사용',
        _newyearSummaryData && _newyearSummaryData.version===3 &&
        buildNewyearSummaryA4Html().includes('신년운세 상담 요약') && buildNewyearSummaryA4Html().includes('10년 단위 큰 흐름'));
+    const premiumA4=premiumizeReadingHtml(buildNewyearSummaryA4Html());
+    ok('풀이 심볼: 저장 이미지·PDF도 프리미엄 문양으로 변환',
+       premiumA4.includes('class="reading-sigil"') && !/[💰❤️🌿⚠]/u.test(premiumA4));
     _meta=savedMeta;_lastInputs=savedInputs;
 
     // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.
