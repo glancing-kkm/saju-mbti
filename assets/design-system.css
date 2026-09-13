@@ -1,5 +1,8 @@
+/* Baemin fonts are self-hosted. Copyright and licenses: /assets/fonts/. */
+@font-face{font-family:'BM Hanna Air';src:url('/assets/fonts/bm-hanna-air.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'BM Dohyeon';src:url('/assets/fonts/bm-dohyeon.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 /* Shared reading surface: app, guides and service policies. */
-:root{--bg:#f7f7f2;--bg-deep:#f0f2eb;--bg-mid:#fafbf7;--card:#fff;--card-elev:#f0f2eb;--text:#243b33;--sub:#526259;--muted:#67756d;--accent:#245c47;--accent-bright:#765d31;--accent-soft:#edf3ed;--on-accent:#fff;--border:#dce3d9;--border-strong:#b7c8b8;--earth-bg:#f3efe5;--font-main:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;--radius:16px;--radius-lg:20px;--card-shadow:0 3px 16px rgba(36,59,51,.04);--reading-width:720px;--site-width:1040px}
+:root{--bg:#f7f7f2;--bg-deep:#f0f2eb;--bg-mid:#fafbf7;--card:#fff;--card-elev:#f0f2eb;--text:#243b33;--sub:#526259;--muted:#67756d;--accent:#245c47;--accent-bright:#765d31;--accent-soft:#edf3ed;--on-accent:#fff;--border:#dce3d9;--border-strong:#b7c8b8;--earth-bg:#f3efe5;--font-main:'BM Hanna Air','Apple SD Gothic Neo','Malgun Gothic',sans-serif;--font-heading:'BM Dohyeon','Apple SD Gothic Neo','Malgun Gothic',sans-serif;--radius:16px;--radius-lg:20px;--card-shadow:0 3px 16px rgba(36,59,51,.04);--reading-width:720px;--site-width:1040px}
 html{scroll-padding-top:88px}
 body{font-family:var(--font-main);background:var(--bg);color:var(--text);line-height:1.7}
 button,input,select,textarea{font-family:inherit}
@@ -7,12 +10,12 @@ button,a,input,select,textarea,summary{-webkit-tap-highlight-color:transparent}
 button,a,summary{touch-action:manipulation}
 :focus-visible{outline:3px solid #447d64;outline-offset:4px}
 [hidden]{display:none!important}
-h1,h2,h3,h4,h5{font-family:var(--font-main);letter-spacing:-.04em}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:400;font-synthesis:none;letter-spacing:-.02em}
 p,li{word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .blog-shell{max-width:var(--site-width)}
 .blog-article{max-width:var(--reading-width);padding:36px 24px 64px}
 .blog-nav{background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:none}
-.blog-brand,.blog-section h2,.blog-card h3,.blog-article-head h1,.blog-article-body h2,.blog-article-body h3{font-family:var(--font-main)}
+.blog-brand,.blog-section h2,.blog-card h3,.blog-article-head h1,.blog-article-body h2,.blog-article-body h3{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
 .blog-article-body{font-size:1rem;line-height:1.95}
 .blog-card{box-shadow:var(--card-shadow)}
 .blog-card p,.blog-section .sec-desc{font-size:.9rem}

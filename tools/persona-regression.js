@@ -183,7 +183,7 @@ const harness = `
       '.mm-lab{font-size:var(--saju-label)',
       '.mm-cell{padding:12px 2px;font-size:var(--saju-glyph)',
       '.mm-cell .mm-sub{font-size:var(--saju-label)',
-      'serif;font-size:var(--saju-glyph);font-weight:800;line-height:1.12}',
+      ';font-size:var(--saju-glyph);font-weight:800;line-height:1.12}',
       '.pillar4-tag{font-size:var(--saju-label)',
       '.life-v3-pillar small{display:block;color:var(--muted);font-size:var(--saju-label)}',
       '.life-v3-pillar span{display:block;color:var(--sub);font-size:var(--saju-label)'

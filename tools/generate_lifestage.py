@@ -341,9 +341,6 @@ TEMPLATE = """<!DOCTYPE html>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9194151925851653" crossorigin="anonymous"></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/blog/blog.css">
 
 <script type="application/ld+json">

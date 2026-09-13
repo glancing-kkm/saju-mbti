@@ -24,7 +24,7 @@
 html{scroll-behavior:smooth}
 body{
   margin:0;background:var(--bg-deep);color:var(--text);
-  font-family:'Do Hyeon','Noto Serif KR','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family:var(--font-heading);font-synthesis:none;
   line-height:1.78;-webkit-text-size-adjust:100%;
 }
 *:focus{outline:none}
@@ -34,19 +34,19 @@ body{
 .blog-shell{max-width:760px;margin:0 auto;padding:0 16px}
 .blog-nav{padding:18px 16px 12px;border-bottom:1px solid var(--border);background:var(--bg-mid);position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
 .blog-nav .blog-shell{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.blog-brand{display:inline-flex;align-items:center;gap:10px;color:var(--accent);text-decoration:none;font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
+.blog-brand{display:inline-flex;align-items:center;gap:10px;color:var(--accent);text-decoration:none;font-family:var(--font-heading);font-synthesis:none;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
 .blog-brand-mark{font-size:1.05rem}
 .blog-cta{display:inline-block;padding:8px 16px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-radius:50px;font-size:.78rem;font-weight:800;text-decoration:none;letter-spacing:.04em;white-space:nowrap}
 .blog-cta:hover{filter:brightness(1.07)}
 
 /* ── 허브 ── */
 .blog-hero{padding:48px 16px 30px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg-mid) 0%,var(--bg-deep) 100%)}
-.blog-hero h1{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.85rem;font-weight:700;letter-spacing:.16em;margin:0 0 12px;color:var(--accent)}
+.blog-hero h1{font-family:var(--font-heading);font-synthesis:none;font-size:1.85rem;font-weight:700;letter-spacing:.16em;margin:0 0 12px;color:var(--accent)}
 .blog-hero .tagline{font-size:.92rem;color:var(--sub);line-height:1.78}
 .blog-hero .deco{font-size:.7rem;color:var(--muted);letter-spacing:.5em;margin-top:14px;text-transform:uppercase}
 
 .blog-section{padding:34px 0 12px}
-.blog-section h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.15rem;font-weight:700;color:var(--accent);margin:0 0 16px;letter-spacing:-.01em}
+.blog-section h2{font-family:var(--font-heading);font-synthesis:none;font-size:1.15rem;font-weight:700;color:var(--accent);margin:0 0 16px;letter-spacing:-.01em}
 .blog-section .sec-desc{font-size:.84rem;color:var(--muted);margin:-8px 0 18px;line-height:1.78}
 
 .blog-grid{display:grid;grid-template-columns:1fr;gap:14px}
@@ -55,7 +55,7 @@ body{
 .blog-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
 .blog-card:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:0 8px 22px rgba(212,175,55,.1)}
 .blog-card .card-tag{display:inline-block;padding:2px 10px;border-radius:50px;background:var(--accent-soft);color:var(--accent);font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;border:1px solid var(--border)}
-.blog-card h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1rem;font-weight:700;margin:0 0 6px;color:var(--text);line-height:1.5;letter-spacing:-.01em}
+.blog-card h3{font-family:var(--font-heading);font-synthesis:none;font-size:1rem;font-weight:700;margin:0 0 6px;color:var(--text);line-height:1.5;letter-spacing:-.01em}
 .blog-card p{margin:0;font-size:.78rem;color:var(--sub);line-height:1.7}
 .blog-card-stub{opacity:.55;cursor:not-allowed}
 .blog-card-stub h3::after{content:' · 준비 중';font-weight:400;color:var(--muted);font-size:.78rem}
@@ -64,14 +64,14 @@ body{
 .blog-article{max-width:680px;margin:0 auto;padding:30px 16px 60px}
 .blog-article-head{margin-bottom:28px}
 .blog-article-cat{display:inline-block;padding:3px 12px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border);border-radius:50px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
-.blog-article-head h1{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.65rem;font-weight:700;color:var(--text);line-height:1.45;letter-spacing:-.01em;margin:0 0 14px}
+.blog-article-head h1{font-family:var(--font-heading);font-synthesis:none;font-size:1.65rem;font-weight:700;color:var(--text);line-height:1.45;letter-spacing:-.01em;margin:0 0 14px}
 .blog-article-meta{font-size:.74rem;color:var(--muted);letter-spacing:.04em}
 .blog-article-meta time{color:var(--sub)}
 .blog-article-meta .dot{margin:0 8px;color:var(--border-strong)}
 
 .blog-article-body{font-size:.92rem;color:var(--sub);line-height:1.95}
-.blog-article-body h2{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.18rem;color:var(--accent);font-weight:700;margin:36px 0 12px;letter-spacing:-.01em;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.blog-article-body h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.02rem;color:var(--accent-bright);font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
+.blog-article-body h2{font-family:var(--font-heading);font-synthesis:none;font-size:1.18rem;color:var(--accent);font-weight:700;margin:36px 0 12px;letter-spacing:-.01em;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.blog-article-body h3{font-family:var(--font-heading);font-synthesis:none;font-size:1.02rem;color:var(--accent-bright);font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
 .blog-article-body p{margin:0 0 16px}
 .blog-article-body b,.blog-article-body strong{color:var(--text);font-weight:700}
 .blog-article-body em{font-style:normal;color:var(--accent);font-weight:700}
@@ -87,14 +87,14 @@ body{
 /* CTA — 글 끝 */
 .article-cta{margin-top:40px;padding:28px 22px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--accent);border-radius:14px;text-align:center;position:relative;overflow:hidden}
 .article-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent)}
-.article-cta-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.article-cta-title{font-family:var(--font-heading);font-synthesis:none;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:8px}
 .article-cta-desc{font-size:.84rem;color:var(--sub);line-height:1.78;margin-bottom:18px}
 .article-cta-btn{display:inline-block;padding:13px 28px;background:linear-gradient(135deg,var(--accent),var(--accent-bright));color:var(--bg-mid);border-radius:50px;font-size:.92rem;font-weight:800;text-decoration:none;letter-spacing:.04em;transition:.18s}
 .article-cta-btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
 /* 관련 글 */
 .related{margin-top:40px;padding-top:28px;border-top:1px solid var(--border)}
-.related h3{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.95rem;color:var(--accent);font-weight:700;margin:0 0 14px}
+.related h3{font-family:var(--font-heading);font-synthesis:none;font-size:.95rem;color:var(--accent);font-weight:700;margin:0 0 14px}
 
 /* footer */
 .blog-foot{padding:28px 16px;text-align:center;color:var(--muted);font-size:.74rem;border-top:1px solid var(--border);background:var(--bg-mid);margin-top:60px}
@@ -104,10 +104,10 @@ body{
 /* ── 관련 콘텐츠 그래프 (1.5 SEO 내부 링크) ── */
 .related-links{margin:40px auto 0;max-width:880px;padding:28px 22px 22px;background:linear-gradient(135deg,var(--card),var(--bg-deep));border:1px solid var(--border);border-radius:14px;position:relative;overflow:hidden}
 .related-links::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-bright),transparent);opacity:.6}
-.related-links .rl-heading{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0 0 18px;letter-spacing:-.01em;text-align:center;padding-bottom:14px;border-bottom:1px dashed var(--border)}
+.related-links .rl-heading{font-family:var(--font-heading);font-synthesis:none;font-size:1.12rem;font-weight:700;color:var(--accent);margin:0 0 18px;letter-spacing:-.01em;text-align:center;padding-bottom:14px;border-bottom:1px dashed var(--border)}
 .related-links .rl-group{margin-bottom:18px}
 .related-links .rl-group:last-child{margin-bottom:0}
-.related-links .rl-title{font-family:'Do Hyeon','Noto Serif KR',serif;font-size:.92rem;font-weight:700;color:var(--accent-bright);margin:0 0 10px;letter-spacing:-.01em}
+.related-links .rl-title{font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent-bright);margin:0 0 10px;letter-spacing:-.01em}
 .related-links .rl-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
 .related-links .rl-list li{margin:0}
 .related-links .rl-list a{display:block;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--sub);text-decoration:none;font-size:.82rem;line-height:1.5;transition:.15s;letter-spacing:-.01em}
@@ -123,5 +123,7 @@ body{
 
 :root{--bg-deep:#f0f2eb;--bg-mid:#fafbf7;--card:#fff;--border:#dce3d9;--border-strong:#b7c8b8;--accent:#245c47;--accent-bright:#765d31;--accent-soft:#edf3ed;--text:#243b33;--sub:#526259;--muted:#67756d;--earth-bg:#f3efe5}
 body{background:#f7f7f2;font-family:var(--font-main)}
-.blog-nav{background:#f7f7f2}.blog-shell{max-width:1040px}.blog-article{max-width:720px}.blog-article-body{font-size:1rem;line-height:1.95}.blog-article-body h2,.blog-article-body h3,.blog-hero h1,.blog-section h2,.blog-card h3,.blog-article-head h1{font-family:var(--font-main)}
+.blog-nav{background:#f7f7f2}.blog-shell{max-width:1040px}.blog-article{max-width:720px}.blog-article-body{font-size:1rem;line-height:1.95}.blog-article-body h2,.blog-article-body h3,.blog-hero h1,.blog-section h2,.blog-card h3,.blog-article-head h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
 .blog-cta{background:var(--accent);color:#fff}.blog-card p{font-size:.9rem}.blog-card h3{font-size:1.05rem}.blog-article-body table{display:block;overflow-x:auto;max-width:100%}
+
+.blog-brand,.blog-links a,.blog-cta,.article-cta-title{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
