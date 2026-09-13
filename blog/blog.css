@@ -1,3 +1,4 @@
+@import url("/assets/design-system.css");
 /* ──────────────────────────────────────────────
  * 천지인 사주 블로그 — 공통 스타일
  * ────────────────────────────────────────────── */
@@ -117,3 +118,10 @@ body{
   .related-links .rl-list{grid-template-columns:1fr;gap:6px}
   .related-links .rl-list a{padding:11px 13px;font-size:.84rem}
 }
+
+/* Keep guides and policy pages on the same visual system as the app. */
+
+:root{--bg-deep:#f0f2eb;--bg-mid:#fafbf7;--card:#fff;--border:#dce3d9;--border-strong:#b7c8b8;--accent:#245c47;--accent-bright:#765d31;--accent-soft:#edf3ed;--text:#243b33;--sub:#526259;--muted:#67756d;--earth-bg:#f3efe5}
+body{background:#f7f7f2;font-family:var(--font-main)}
+.blog-nav{background:#f7f7f2}.blog-shell{max-width:1040px}.blog-article{max-width:720px}.blog-article-body{font-size:1rem;line-height:1.95}.blog-article-body h2,.blog-article-body h3,.blog-hero h1,.blog-section h2,.blog-card h3,.blog-article-head h1{font-family:var(--font-main)}
+.blog-cta{background:var(--accent);color:#fff}.blog-card p{font-size:.9rem}.blog-card h3{font-size:1.05rem}.blog-article-body table{display:block;overflow-x:auto;max-width:100%}

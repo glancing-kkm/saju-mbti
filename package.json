@@ -1,0 +1,10 @@
+{
+  "name": "cheonjiin-saju",
+  "private": true,
+  "scripts": {
+    "test": "node tools/persona-regression.js && node tools/journey-regression.js"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
