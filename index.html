@@ -182,7 +182,7 @@
   /* 카드 음영 — 테두리 대신 톤/그림자로 배경과 구분 (DESIGN.md: 글래스 엣지 + 부드러운 그림자) */
   --card-shadow:0 8px 24px rgba(72,56,34,.10),0 1px 3px rgba(72,56,34,.07),inset 0 1px 0 rgba(255,255,255,.86);
 }
-html,body{font-family:var(--font-main);background:var(--bg);color:var(--text);color-scheme:light;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{font-family:var(--font-main);background:var(--bg);color:var(--text);color-scheme:light;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* 전역 고아글자 차단 — 한국어 단어 단위 줄바꿈 (사용자 요청: 모든 글자 영역) */
 *{word-break:keep-all;overflow-wrap:break-word}
 h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacing:-.01em}
@@ -950,7 +950,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 
 /* ── Input view header ── */
 .hdr-back{color:var(--text);height:60px;box-sizing:border-box;padding:0 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:45;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,253,248,.95);box-shadow:0 4px 18px rgba(72,56,34,.07)}
-.hdr-back .bb{background:var(--gold-soft);border:none;color:#1a1c1d;padding:9px 16px 9px 13px;border-radius:50px;font-size:.86rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;font-family:inherit;transition:transform .12s,box-shadow .18s;letter-spacing:-.01em;box-shadow:0 3px 12px rgba(203,162,88,.35);line-height:1}
+.hdr-back .bb{background:var(--gold-soft);border:none;color:#1a1c1d;padding:9px 16px 9px 13px;border-radius:50px;font-size:.86rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;font-family:inherit;transition:transform .12s,box-shadow .18s;letter-spacing:-.01em;box-shadow:0 3px 12px rgba(203,162,88,.35);line-height:1.1}
 .hdr-back .bb:active{transform:scale(.94)}
 .hdr-back .bb:hover{box-shadow:0 4px 16px rgba(203,162,88,.5)}
 /* 상단 바 브랜드 워드마크 — 버튼 폭과 무관하게 항상 중앙 고정 */
