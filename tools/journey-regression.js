@@ -34,6 +34,22 @@ const submitBirth=async()=>{
     run(scripts);
     await wait(30);
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
+    check('홈: 주요 사주 6개가 펼침 없이 바로 노출',()=>{
+      const cards=[...d.querySelectorAll('[data-home-category]')];
+      assert.deepEqual(cards.map(c=>c.dataset.homeCategory),['manse','daily','life','newyear','gunghap','name']);
+      assert(cards.every(c=>!c.closest('details')));
+      assert(d.querySelector('.home-help .journey-sample'));
+      assert(!d.querySelector('.home-help').open);
+    });
+    for(const card of d.querySelectorAll('[data-home-category]')){
+      run(card.getAttribute('onclick'));
+      check('홈 카테고리 → 해당 입력 화면: '+card.dataset.homeCategory,()=>{
+        assert.equal(run('_category'),card.dataset.homeCategory);
+        assert(d.getElementById('view-input').classList.contains('on'));
+        assert(!d.getElementById('payOverlay').classList.contains('vis'));
+      });
+      run('goHome()');
+    }
     run("startJourney('career')");
     check('무료 시작: 입력 화면과 결제 없는 안내',()=>{assert(d.getElementById('view-input').classList.contains('on'));assert.match(d.querySelector('.analyze-btn').textContent,/무료/);});
     run('analyze()');

@@ -141,3 +141,46 @@ html{font-size:16px}
 .journey-hero h1,.journey-sample h2,.journey-overview h2{font-weight:400;letter-spacing:-.025em}
 .journey-topic p,.journey-topic small,.mc-desc{font-family:var(--font-main)}
 .a4-title,.a4-h{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
+
+/* The home screen starts with directly selectable saju categories. */
+.home-start{padding:32px 0 0}
+.home-start-heading{margin-bottom:22px}
+.home-start-heading h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:2rem;line-height:1.35;letter-spacing:-.025em;margin:0 0 8px}
+.home-start-heading p{color:var(--sub);font-size:.95rem;margin:0}
+.home-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.home-category{display:flex;flex-direction:column;min-width:0;padding:20px;text-align:left;border:1px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
+.home-category:hover{border-color:var(--accent);background:var(--accent-soft)}
+.home-category-top{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;margin-bottom:14px}
+.home-category-top>.material-symbols-outlined{font-size:25px;color:var(--accent)}
+.home-category-price{font-size:.8rem;white-space:nowrap;color:var(--accent)}
+.home-category strong{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.2rem;line-height:1.4;word-break:keep-all}
+.home-category-desc{font-family:var(--font-main);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:5px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.home-category-action{display:flex;justify-content:space-between;gap:8px;width:100%;margin-top:auto;padding-top:18px;font-size:.8rem;color:var(--accent)}
+.home-category-featured{background:var(--accent-soft);border-color:var(--accent)}
+.home-start-note{text-align:center;color:var(--sub);font-size:.8rem;margin:16px 0 24px}
+.home-other{margin:0 0 24px}
+.home-other>summary{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
+.home-other>summary>span{font-family:var(--font-main);font-size:.78rem;color:var(--sub);margin-left:8px}
+.home-help{border-top:1px solid var(--border)}
+.home-help>summary{padding:18px 4px;min-height:52px;cursor:pointer;font-family:var(--font-main);font-size:.9rem;font-weight:400;color:var(--sub)}
+.home-help>.journey-sample{max-width:640px;margin:0 auto 24px;transform:none;box-shadow:none}
+.home-help.journey-faq>details{margin-inline:16px}
+.home-help.journey-faq>details:last-child{margin-bottom:20px;border-bottom:0}
+.home-guide>.home-seo{margin:0 0 20px}
+@media(max-width:640px){
+  .site-nav-links a[href="#readings"]{display:none}
+  .home-start{padding-top:24px}
+  .home-start-heading{margin-bottom:18px}
+  .home-start-heading h1{font-size:1.65rem}
+  .home-start-heading p{font-size:.88rem}
+  .home-categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .home-category{padding:14px;border-radius:12px}
+  .home-category-top{margin-bottom:10px}
+  .home-category-top>.material-symbols-outlined{font-size:22px}
+  .home-category strong{font-size:1.06rem}
+  .home-category-desc{font-size:.78rem;margin-top:4px}
+  .home-category-price{font-size:.74rem}
+  .home-category-action{padding-top:12px;font-size:.74rem}
+  .home-start-note{font-size:.73rem;margin:14px 0 20px}
+  .home-other>summary>span{display:none}
+}

@@ -2281,16 +2281,61 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
     <nav class="site-nav" aria-label="주요 메뉴">
       <a class="site-brand" href="/" aria-label="천지인 사주 홈"><img src="/favicon.svg" alt="" width="30" height="30">천지인 사주</a>
-      <div class="site-nav-links"><a href="#readings">상세 풀이</a><a href="/blog/">사주 가이드</a><a href="#journeyFaq">이용 안내</a></div>
+      <div class="site-nav-links"><a href="#readings">사주 보기</a><a href="/blog/">사주 가이드</a><a href="#journeyFaq">이용 안내</a></div>
     </nav>
-    <section class="journey-hero" aria-labelledby="journeyTitle">
-      <div>
-        <p class="journey-kicker">나를 이해하는 작은 시작</p>
-        <h1 id="journeyTitle">요즘 내 마음,<br><em>사주로 읽어볼까요?</em></h1>
-        <p class="journey-description">반복되는 연애 패턴, 잘 맞는 일, 앞으로의 방향.<br>타고난 성향부터 쉬운 말로 하나씩 풀어드려요.</p>
-        <button type="button" class="journey-primary" onclick="startJourney('self')">내 사주 무료로 읽어보기 <span aria-hidden="true">→</span></button>
-        <p class="journey-fine">회원가입 없이 · 생년월일로 시작 · 태어난 시간은 몰라도 돼요</p>
+    <section class="home-start" id="readings" aria-labelledby="journeyTitle">
+      <header class="home-start-heading">
+        <h1 id="journeyTitle">어떤 사주를 볼까요?</h1>
+        <p>궁금한 풀이를 고르면 바로 시작해요.</p>
+      </header>
+      <div class="home-categories" id="paidCoreMenu" aria-label="사주 카테고리">
+        <button type="button" class="home-category home-category-featured" data-home-category="manse" onclick="goToInput('manse')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">person</span><span class="home-category-price">무료</span></span>
+          <strong>나의 사주</strong><span class="home-category-desc">타고난 성향과 강점</span>
+          <span class="home-category-action">무료로 보기 <span aria-hidden="true">→</span></span>
+        </button>
+        <button type="button" class="home-category" data-home-category="daily" onclick="goToInput('daily')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span class="home-category-price">무료</span></span>
+          <strong>오늘의 운세</strong><span class="home-category-desc">오늘의 흐름과 조언</span>
+          <span class="home-category-action">무료로 보기 <span aria-hidden="true">→</span></span>
+        </button>
+        <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price" data-journey-price="life">1,500원</span></span>
+          <strong>인생총운</strong><span class="home-category-desc">일·재물·연애의 큰 흐름</span>
+          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+        </button>
+        <button type="button" class="home-category" data-home-category="newyear" onclick="goToInput('newyear')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price" data-journey-price="newyear">1,500원</span></span>
+          <strong>신년운세</strong><span class="home-category-desc">한 해의 월별 흐름</span>
+          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+        </button>
+        <button type="button" class="home-category" data-home-category="gunghap" onclick="goToInput('gunghap')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price" data-journey-price="gunghap">1,000원</span></span>
+          <strong>두 사람 궁합</strong><span class="home-category-desc">잘 맞는 점과 관계 조언</span>
+          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+        </button>
+        <button type="button" class="home-category" data-home-category="name" onclick="goToInput('name')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price" data-journey-price="name">1,500원</span></span>
+          <strong>이름풀이·작명</strong><span class="home-category-desc">이름의 의미와 추천</span>
+          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+        </button>
       </div>
+      <p class="home-start-note">회원가입 없이 시작 · 유료 풀이는 미리보기 후 결제</p>
+    </section>
+    <details class="journey-more home-other">
+      <summary>타로·별자리·사주 질문 <span>다른 운세도 보기</span></summary>
+      <div class="menu-grid" aria-label="타로와 별자리, 사주 질문">
+          <button type="button" class="menu-card" onclick="goToInput('qna')"><div class="mc-title">사주에 질문하기</div><div class="mc-desc">질문권 3회부터</div><div class="mc-price" data-journey-price="chatpack3">1,500원</div></button>
+          <button type="button" class="menu-card" onclick="goToTarot('today')"><div class="mc-title">오늘의 타로</div><div class="mc-desc">카드 한 장이 전하는 메시지</div><div class="mc-tag t-free">무료</div></button>
+          <button type="button" class="menu-card" onclick="goToTarot('question')"><div class="mc-title">질문 타로</div><div class="mc-desc">직접 고르는 3장부터</div><div class="mc-price"><span data-journey-price="tarot3">1,500원</span>부터</div></button>
+          <button type="button" class="menu-card" onclick="goToAstrology('natal')"><div class="mc-title">나의 출생차트</div><div class="mc-desc">태어난 순간의 별자리</div><div class="mc-tag t-free">무료</div></button>
+          <button type="button" class="menu-card" onclick="goToAstrology('today')"><div class="mc-title">오늘의 점성술</div><div class="mc-desc">오늘의 별과 나의 흐름</div><div class="mc-tag t-free">무료</div></button>
+          <button type="button" class="menu-card" onclick="goToAstrology('input')"><div class="mc-title">점성술 상세 풀이</div><div class="mc-desc">관계·직업·재물 리포트</div><div class="mc-price"><span data-journey-price="astro-birth-basic">1,500원</span>부터</div></button>
+      </div>
+    </details>
+    <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
+    <details class="home-help">
+      <summary>풀이가 어떻게 나오나요?</summary>
       <aside class="journey-sample" aria-label="실제 결과가 아닌 풀이 형식 예시">
         <div class="sample-label">이렇게 쉽게 풀어드려요 <span>풀이 예시</span></div>
         <h2>생각은 깊게,<br>시작은 가볍게 해보세요.</h2>
@@ -2299,46 +2344,18 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <div class="sample-action">오늘 한 가지 · 고민 중인 일을 10분만 시작해보세요.</div>
         <p class="journey-fine">설명을 돕는 예시예요. 본인 풀이는 입력 후 확인해요.</p>
       </aside>
-    </section>
-    <div class="journey-process" aria-label="이용 순서">
-      <div><b><span>01</span>출생정보 입력</b>시간은 몰라도 괜찮아요</div>
-      <div><b><span>02</span>내 성향 무료 확인</b>핵심과 이유를 먼저 읽어요</div>
-      <div><b><span>03</span>필요한 풀이만 선택</b>가격을 확인하고 결정해요</div>
-    </div>
-    <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
-    <section class="journey-section" id="readings" aria-labelledby="readingTitle">
-      <div class="journey-section-head"><h2 id="readingTitle">지금, 어떤 고민이 있나요?</h2><p>무료로 나를 알아본 뒤, 더 깊게 이어보세요.</p></div>
-      <div class="journey-topics" id="paidCoreMenu">
-        <button type="button" class="journey-topic" onclick="startJourney('love')"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><strong>연애에서 왜 늘 비슷할까요?</strong><p>본인의 관계 성향을 먼저 알아봐요.<br>두 사람의 차이는 궁합으로 이어서 봐요.</p><small>무료 성향 보기 → 궁합 <b data-journey-price="gunghap">1,000원</b></small></button>
-        <button type="button" class="journey-topic" onclick="startJourney('career')"><span class="material-symbols-outlined" aria-hidden="true">work</span><strong>내게 맞는 길을 찾고 싶어요</strong><p>잘하는 일과 지치기 쉬운 순간을 읽어요.<br>일·재물·인생 흐름까지 살펴볼 수 있어요.</p><small>무료 성향 보기 → 인생총운 <b data-journey-price="life">1,500원</b></small></button>
-        <button type="button" class="journey-topic" onclick="startJourney('year')"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><strong>앞으로 언제 움직이면 좋을까요?</strong><p>타고난 성향과 올해 흐름을 이어봐요.<br>월별 기회와 살펴볼 점을 확인해요.</p><small>무료 성향 보기 → 한 해 풀이 <b data-journey-price="newyear">1,500원</b></small></button>
-      </div>
-      <details class="journey-more"><summary>원하는 풀이로 바로 가기</summary>
-        <div class="menu-grid" aria-label="전체 풀이">
-          <button class="menu-card" onclick="goToInput('manse')"><div class="mc-title">무료 만세력</div><div class="mc-desc">나의 성향과 사주 정보</div><div class="mc-tag t-free">무료</div></button>
-          <button class="menu-card" onclick="goToInput('daily')"><div class="mc-title">오늘의 운세</div><div class="mc-desc">오늘을 보내는 작은 힌트</div><div class="mc-tag t-free">무료</div></button>
-          <button class="menu-card" onclick="goToInput('life')"><div class="mc-title">인생총운</div><div class="mc-desc">일·재물·관계·인생 시기</div><div class="mc-price" data-journey-price="life">1,500원</div></button>
-          <button class="menu-card" onclick="goToInput('newyear')"><div class="mc-title">한 해 풀이</div><div class="mc-desc">원하는 해의 월별 흐름</div><div class="mc-price" data-journey-price="newyear">1,500원</div></button>
-          <button class="menu-card" onclick="goToInput('gunghap')"><div class="mc-title">두 사람 궁합</div><div class="mc-desc">잘 맞는 점과 대화 방법</div><div class="mc-price" data-journey-price="gunghap">1,000원</div></button>
-          <button class="menu-card" onclick="goToInput('qna')"><div class="mc-title">사주에 질문하기</div><div class="mc-desc">질문권 3회부터</div><div class="mc-price" data-journey-price="chatpack3">1,500원</div></button>
-          <button class="menu-card" onclick="goToInput('name')"><div class="mc-title">이름풀이·작명</div><div class="mc-desc">이름의 결과 보완 방향</div><div class="mc-price" data-journey-price="name">1,500원</div></button>
-          <button class="menu-card" onclick="goToTarot('today')"><div class="mc-title">오늘의 타로</div><div class="mc-desc">카드 한 장이 전하는 메시지</div><div class="mc-tag t-free">무료</div></button>
-          <button class="menu-card" onclick="goToTarot('question')"><div class="mc-title">질문 타로</div><div class="mc-desc">직접 고르는 3장부터</div><div class="mc-price"><span data-journey-price="tarot3">1,500원</span>부터</div></button>
-          <button class="menu-card" onclick="goToAstrology('natal')"><div class="mc-title">나의 출생차트</div><div class="mc-desc">태어난 순간의 별자리</div><div class="mc-tag t-free">무료</div></button>
-          <button class="menu-card" onclick="goToAstrology('today')"><div class="mc-title">오늘의 점성술</div><div class="mc-desc">오늘의 별과 나의 흐름</div><div class="mc-tag t-free">무료</div></button>
-          <button class="menu-card" onclick="goToAstrology('input')"><div class="mc-title">점성술 상세 풀이</div><div class="mc-desc">관계·직업·재물 리포트</div><div class="mc-price"><span data-journey-price="astro-birth-basic">1,500원</span>부터</div></button>
-        </div>
-      </details>
-    </section>
-    <section class="journey-section journey-faq" id="journeyFaq" aria-labelledby="faqTitle">
-      <div class="journey-section-head"><h2 id="faqTitle">시작하기 전에 궁금한 점</h2></div>
+    </details>
+    <details class="home-help journey-faq" id="journeyFaq">
+      <summary>이용 안내 · 무료 범위와 구매 내역</summary>
       <details><summary>어디까지 무료인가요?</summary><p>본인의 성향 요약, 만세력, 오늘의 운세는 무료예요. 인생총운·궁합 등 상세 풀이는 미리보기와 가격을 확인한 뒤 선택해요. 자동으로 결제되거나 정기 구독으로 전환되지 않아요.</p></details>
       <details><summary>태어난 시간을 몰라도 볼 수 있나요?</summary><p>네. ‘시간을 몰라요’를 선택하면 돼요. 시간에 해당하는 자리는 제외하고 풀이해요. 결과에도 시간 미상으로 표시해요.</p></details>
       <details><summary>결제한 풀이를 다시 볼 수 있나요?</summary><p>같은 브라우저에서 같은 사주와 구매한 카테고리를 24시간 다시 볼 수 있어요. 홈의 최근 구매 내역에서도 이어봐요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 복원이 어려울 수 있어요.</p></details>
       <details><summary>사주 풀이와 상담은 어떻게 만들어지나요?</summary><p>출생정보로 계산한 사주와 해석 규칙을 바탕으로 풀이해요. 일부 상세 설명과 질문 상담에는 AI가 사용돼요. 미래를 확정하는 예언이 아니라, 본인의 성향과 선택을 돌아보는 참고 정보예요. <a href="/legal/editorial-policy.html">콘텐츠 작성 기준 보기</a></p></details>
       <details><summary>결제가 안 되거나 풀이가 열리지 않으면요?</summary><p>먼저 같은 브라우저로 돌아와 구매 내역을 확인해 주세요. 해결되지 않으면 주문번호와 함께 <a href="mailto:na37zzang@gmail.com">고객 문의</a>로 알려주세요. 자세한 기준은 <a href="/legal/refund.html">결제·환불 정책</a>에서 확인할 수 있어요.</p></details>
-    </section>
+    </details>
 
+    <details class="home-help home-guide">
+      <summary>사주가 처음이라면 · 사주 보는 법</summary>
     <section class="home-seo" aria-labelledby="homeSeoTitle">
       <div class="home-seo-kicker">사주풀이 안내</div>
       <h2 id="homeSeoTitle">사주팔자와 만세력, 무엇을 확인할 수 있나요?</h2>
@@ -2365,6 +2382,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <a class="home-seo-all" href="/blog/">사주풀이 가이드 전체 보기 <span class="material-symbols-outlined" aria-hidden="true">east</span></a>
       <p class="home-seo-note">사주와 운세 풀이는 가능성과 흐름을 살펴보는 참고 정보예요. 의료·법률·투자 같은 중요한 결정은 관련 전문가의 조언과 본인의 판단을 함께 확인해 주세요.</p>
     </section>
+    </details>
 
     <div class="home-foot">
       ☯ 만세력은 천문 계산(절기·신월) 기반으로 정확하게 계산돼요.<br>
@@ -4189,7 +4207,7 @@ function initJourney(){
     if(['self','love','career','year'].includes(entry))startJourney(entry);
   }
   journeyEvent('landing_view','home');
-  document.querySelectorAll('.journey-sample p,.journey-faq p,.journey-topic p,.journey-description').forEach(el=>{el.innerHTML=preventOrphan(el.innerHTML);});
+  document.querySelectorAll('.journey-sample p,.journey-faq p,.journey-topic p,.journey-description,.home-category-desc,.home-start-note').forEach(el=>{el.innerHTML=preventOrphan(el.innerHTML);});
   const form=document.getElementById('formWrap');
   if(form)form.addEventListener('input',()=>journeyEvent('form_start',_category),{once:true});
   document.addEventListener('keydown',event=>{
