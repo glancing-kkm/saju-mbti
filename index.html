@@ -2990,29 +2990,50 @@ let gender='male', calType='solar', isLeap=false;
 let _lastFlow='manse';   // legacy: 'manse'|'saju' (kept for backward compat)
 let _category='manse';   // 'manse'|'daily'|'daypick'|'monthly'|'newyear'|'gunghap'|'name'|'life'|'qna'
 let _saju=null, _meta=null;
-// 카테고리별 잠금 해제 — 메모리(Set) + 사주별 24시간 영속화 정책
+// 카테고리별 잠금 해제 — 메모리(Map) + 풀이 범위별 24시간 영속화 정책
 //
 // 정책:
-//   - 결제(또는 운영자 코드)로 잠금을 풀면 그 사주(4기둥+성별) 기준으로 24시간 동안
-//     localStorage에 토큰이 보관됨. 같은 사주로 다시 들어오면 자동으로 잠금 해제 복원.
-//   - 다른 사주를 입력하면 토큰이 일치하지 않아 다시 결제·코드 입력 필요.
+//   - 결제(또는 운영자 코드)로 잠금을 풀면 그 범위(unlockScopeOf: 4기둥+성별, 궁합 상대·이름·연도·날짜)
+//     기준으로 24시간 동안 localStorage에 토큰이 보관됨. 같은 범위로 다시 들어오면 자동으로 복원.
+//   - 다른 사주나 다른 상대·이름·연도를 입력하면 범위가 달라 다시 결제·코드 입력 필요.
+//     메모리에 열려 있던 카테고리도 범위가 맞을 때만 열린 것으로 본다.
 //   - 24시간 지나면 토큰 만료 → 같은 사주라도 다시 결제 필요.
-//   - _unlockedCats 자체는 메모리 Set. 페이지 로드 시 restore로 채우고, 결제/코드 시 토큰을 같이 저장.
+//   - _unlockedCats는 카테고리 → 범위 Map. 페이지 로드 시 restore로 채우고, 결제/코드 시 토큰을 같이 저장.
 //
 // 이전 정책(`saju_unlocked_cats_v1` 등)의 localStorage 잔재는 마이그레이션 차원에서 제거.
 const _UNLOCKED_LS_KEY='saju_unlocked_cats_v1';
 try{localStorage.removeItem(_UNLOCKED_LS_KEY);}catch(e){}
 const _PAID_TOKEN_LS_KEY='saju_paid_tokens_v1';
 const _PAID_TOKEN_TTL_MS=24*60*60*1000; // 24시간
-const _unlockedCats=new Set();
+// 카테고리 → 열린 범위(unlockScopeOf). ''는 사주 입력 전에 운영자 코드로 연 상태이며, 다음 사주 입력 때 그 사주에 묶인다.
+const _unlockedCats=new Map();
 function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v4`;} // (호환용 — 이제 사용처 없음)
-function isUnlockedFor(cat){return _unlockedCats.has(cat);}
+function isUnlockedFor(cat){
+  const scope=_unlockedCats.get(cat);
+  return scope!==undefined&&(scope===''||scope===unlockScopeOf(cat));
+}
 // 사주 식별자 — 성별 + 4기둥(년/월/일/시) 한글 표기. 같은 사주면 같은 식별자.
 function sajuIdOf(saju,meta){
   if(!saju)return '';
   const g=(meta&&meta.gender)||(typeof gender==='string'?gender:'?');
   const cell=(p)=>p?STEMKO[p.stem]+BRCHKO[p.branch]:'XX';
   return g+'_'+cell(saju.yp)+cell(saju.mp)+cell(saju.dp)+cell(saju.hp);
+}
+// 결제 1건이 여는 범위 — 같은 사주에 더해, 풀이를 바꾸는 추가 입력까지 같아야 한다.
+// 궁합은 상대, 이름풀이는 이름, 신년운세는 연도, 지정일·월별은 날짜가 다르면 다른 풀이다.
+function unlockScopeOf(cat,saju=_saju,meta=_meta){
+  const sid=sajuIdOf(saju,meta);
+  if(!sid)return '';
+  const m=meta||{};
+  const gn=m.gnExtra,nm=m.nmExtra,ny=m.nyExtra,dp=m.dpExtra,mo=m.moExtra;
+  const extra={
+    gunghap:gn&&[gn.gy,gn.gm,gn.gd,gn.gh,gn.gmin,gn.gender,gn.cal,gn.leap?1:0].join('.'),
+    name:nm&&[nm.surname,nm.given,JSON.stringify(nm.han||''),JSON.stringify(nm.strokes||'')].join('.'),
+    newyear:ny&&String(ny.y),
+    daypick:dp&&[dp.y,dp.m,dp.d].join('.'),
+    monthly:mo&&[mo.sy,mo.sm,mo.ey,mo.em].join('.')
+  }[cat];
+  return extra?sid+'|'+extra:sid;
 }
 // 유효(만료 안 됨) 토큰만 반환. 만료된 항목은 자동 정리.
 function _loadValidPaidTokens(){
@@ -3026,10 +3047,10 @@ function _loadValidPaidTokens(){
   }
   return valid;
 }
-function _savePaidToken(cat,sajuId){
-  if(!cat||!sajuId)return;
-  const tokens=_loadValidPaidTokens().filter(t=>!(t.cat===cat&&t.sajuId===sajuId));
-  tokens.push({cat,sajuId,exp:Date.now()+_PAID_TOKEN_TTL_MS});
+function _savePaidToken(cat,scope){
+  if(!cat||!scope)return;
+  const tokens=_loadValidPaidTokens().filter(t=>!(t.cat===cat&&t.sajuId===scope));
+  tokens.push({cat,sajuId:scope,scoped:1,exp:Date.now()+_PAID_TOKEN_TTL_MS});
   try{localStorage.setItem(_PAID_TOKEN_LS_KEY,JSON.stringify(tokens));}catch(e){}
 }
 // 현재 _saju 기준으로 유효 토큰들을 메모리 _unlockedCats에 복원
@@ -3038,18 +3059,26 @@ function restorePaidUnlocksForCurrentSaju(){
   const sid=sajuIdOf(_saju,_meta);
   if(!sid)return;
   _loadValidPaidTokens().forEach(t=>{
-    if(t.sajuId===sid)_unlockedCats.add(t.cat);
+    const scope=unlockScopeOf(t.cat);
+    // scoped 표시가 없는 토큰은 범위 도입 전 결제분 — 사주만 같으면 인정한다(24시간 안에 모두 만료).
+    if(t.sajuId===scope||(!t.scoped&&t.sajuId===sid))_unlockedCats.set(t.cat,scope);
+  });
+}
+// 사주 입력 전에 열어둔 카테고리를 지금 사주에 묶고 토큰으로 남긴다.
+function bindPendingUnlocksToCurrentSaju(){
+  _unlockedCats.forEach((scope,cat)=>{
+    if(scope!=='')return;
+    const now=unlockScopeOf(cat);
+    if(!now)return;
+    _unlockedCats.set(cat,now);
+    _savePaidToken(cat,now);
   });
 }
 function setUnlockedFor(cat){
-  _unlockedCats.add(cat);
-  // 현재 사주가 있으면 토큰도 같이 저장 (24h 영속화 — 같은 사주만 자동 복원)
-  if(_saju){
-    const sid=sajuIdOf(_saju,_meta);
-    if(sid){
-      _savePaidToken(cat,sid);
-    }
-  }
+  // 현재 사주가 있으면 그 범위로 열고 토큰도 저장 (24h 영속화 — 같은 범위만 자동 복원)
+  const scope=unlockScopeOf(cat);
+  _unlockedCats.set(cat,scope);
+  if(scope)_savePaidToken(cat,scope);
 }
 function clearAllUnlocks(){_unlockedCats.clear();/* 토큰은 만료 시까지 유지 */}
 // 영속 잠금 정책 폐지 — 이전 버전 localStorage 기록 일괄 정리 (재방문 시에도 잠금 유지)
@@ -3099,7 +3128,7 @@ function openSajuPaidHistory(id){
   const r=loadSajuPaidHistory().find(x=>x.id===id);
   if(!r){alert('24시간이 지나 만료된 운세예요.');renderSajuPaidHistoryHome();return;}
   _saju=r.saju;_meta=r.meta;_category=r.category;_lastFlow='saju';
-  _unlockedCats.add(r.category);
+  _unlockedCats.set(r.category,unlockScopeOf(r.category));
   try{restorePaidUnlocksForCurrentSaju();}catch(e){}
   const rendered=renderPaymentReturnTarget(r.category);
   if(!rendered){alert('저장된 정보를 불러오지 못했어요. 다시 입력해 주세요.');goToInput(r.category);}
@@ -21874,8 +21903,8 @@ function analyze(){
       _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
-      // 결제·코드를 사주 입력 전에 한 케이스 — 사주가 생긴 지금 시점에 메모리 unlock을 토큰으로 영속화
-      { const _sid=sajuIdOf(_saju,_meta); if(_sid)_unlockedCats.forEach(c=>_savePaidToken(c,_sid)); }
+      // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.
+      bindPendingUnlocksToCurrentSaju();
 
       // 패널 초기화 (선택 카테고리만 렌더)
       ['p0','p1','p2','p3','p4','p5','p6','p7','p8'].forEach(id=>{
