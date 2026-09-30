@@ -2252,16 +2252,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </nav>
     <section class="home-start" id="readings" aria-labelledby="journeyTitle">
       <h1 id="journeyTitle">어떤 풀이를 볼까요?</h1>
-      <h2 class="home-group">사주</h2>
-      <div class="home-categories" id="paidCoreMenu" aria-label="사주">
-        <button type="button" class="home-category" data-home-category="manse" onclick="goToInput('manse')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">person</span><span class="home-category-price">무료</span></span>
-          <strong>나의 사주</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="daily" onclick="goToInput('daily')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span class="home-category-price">무료</span></span>
-          <strong>오늘의 운세</strong>
-        </button>
+      <h2 class="home-group">유료 풀이</h2>
+      <div class="home-categories" id="paidCoreMenu" aria-label="유료 풀이">
         <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price"><span data-journey-price="life">1,500원</span></span></span>
           <strong>인생총운</strong>
@@ -2278,34 +2270,44 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price"><span data-journey-price="name">1,500원</span></span></span>
           <strong>이름풀이·작명</strong>
         </button>
-      </div>
-      <h2 class="home-group">타로 · 별자리 · 질문</h2>
-      <div class="home-categories" aria-label="타로, 별자리, 사주 질문">
-        <button type="button" class="home-category" data-home-extra="tarot-today" onclick="goToTarot('today')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">style</span><span class="home-category-price">무료</span></span>
-          <strong>오늘의 타로</strong>
+        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
+          <strong>사주에 질문하기</strong>
         </button>
         <button type="button" class="home-category" data-home-extra="tarot-question" onclick="goToTarot('question')">
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">help</span><span class="home-category-price"><span data-journey-price="tarot3">1,500원</span>~</span></span>
           <strong>질문 타로</strong>
         </button>
-        <button type="button" class="home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">public</span><span class="home-category-price">무료</span></span>
-          <strong>나의 출생차트</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span><span class="home-category-price">무료</span></span>
-          <strong>오늘의 점성술</strong>
-        </button>
         <button type="button" class="home-category" data-home-extra="astro-report" onclick="goToAstrology('input')">
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">insights</span><span class="home-category-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span></span>
           <strong>점성술 상세 풀이</strong>
         </button>
-        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
-          <strong>사주에 질문하기</strong>
-        </button>
       </div>
+      <details class="home-free">
+        <summary class="home-group home-free-toggle">무료 풀이 <span class="home-free-count">5</span><span class="material-symbols-outlined" aria-hidden="true">expand_more</span></summary>
+        <div class="home-categories" aria-label="무료 풀이">
+          <button type="button" class="home-category" data-home-category="manse" onclick="goToInput('manse')">
+            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">person</span><span class="home-category-price">무료</span></span>
+            <strong>만세력</strong>
+          </button>
+          <button type="button" class="home-category" data-home-category="daily" onclick="goToInput('daily')">
+            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span class="home-category-price">무료</span></span>
+            <strong>오늘의 운세</strong>
+          </button>
+          <button type="button" class="home-category" data-home-extra="tarot-today" onclick="goToTarot('today')">
+            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">style</span><span class="home-category-price">무료</span></span>
+            <strong>오늘의 타로</strong>
+          </button>
+          <button type="button" class="home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
+            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">public</span><span class="home-category-price">무료</span></span>
+            <strong>나의 출생차트</strong>
+          </button>
+          <button type="button" class="home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
+            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span><span class="home-category-price">무료</span></span>
+            <strong>오늘의 점성술</strong>
+          </button>
+        </div>
+      </details>
     </section>
     <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
 

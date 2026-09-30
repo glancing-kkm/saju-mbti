@@ -34,15 +34,14 @@ const submitBirth=async()=>{
     run(scripts);
     await wait(30);
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
-    check('홈: 주요 사주 6개가 펼침 없이 바로 노출',()=>{
-      const cards=[...d.querySelectorAll('[data-home-category]')];
-      assert.deepEqual(cards.map(c=>c.dataset.homeCategory),['manse','daily','life','newyear','gunghap','name']);
-      assert(cards.every(c=>!c.closest('details')));
-    });
-    check('홈: 타로·별자리·질문 6개도 펼침 없이 노출, 접힌 칸 없음',()=>{
-      const extras=[...d.querySelectorAll('[data-home-extra]')];
-      assert.equal(extras.length,6);
-      assert.equal(d.querySelectorAll('#view-home details').length,0);
+    check('홈: 유료 풀이는 바로 보이고, 무료 풀이는 접힌 칸 안에 모임',()=>{
+      const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
+      assert.deepEqual(paid,['life','newyear','gunghap','name','qna','tarot-question','astro-report']);
+      assert(!d.querySelector('#paidCoreMenu').closest('details'));
+      const free=d.querySelector('#view-home details.home-free');
+      assert(free&&!free.open);
+      assert.deepEqual([...free.querySelectorAll('.home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-natal','astro-today']);
+      assert.equal(d.querySelectorAll('#view-home details').length,1);
     });
     for(const card of d.querySelectorAll('[data-home-category]')){
       run(card.getAttribute('onclick'));
