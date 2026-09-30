@@ -76,7 +76,6 @@ html{font-size:16px}
 .journey-contents h3{font-size:1rem;margin-bottom:14px}
 .journey-contents li{margin:10px 0 10px 18px;color:var(--sub)}
 .journey-contents a{color:var(--accent)}
-#view-result .teaser-blur-area{display:none}
 #view-result .teaser-pay-btn{min-height:56px;border-radius:12px;flex-wrap:wrap;gap:10px;padding:14px;font-size:.95rem}
 #view-result .teaser-assurance{font-size:.82rem;line-height:1.85}
 #view-result .nb-cat{font-size:.72rem;color:var(--muted)}
@@ -96,7 +95,7 @@ html{font-size:16px}
 .pay-product-price b{font-size:1.6rem}.pay-agree-text{font-size:.85rem;line-height:1.75}
 .pay-agree-row{min-height:48px;align-items:center}.pay-notice,.pay-foot{font-size:.8rem;line-height:1.8}
 .pay-cta-go,.pay-cta-cancel{min-height:52px;font-size:.95rem}
-.pay-close{min-width:44px;min-height:44px}.pay-secret-lock{display:none}
+.pay-close{min-width:44px;min-height:44px}.pay-product{position:relative}.pay-secret-lock{background:var(--accent-soft);color:var(--accent);box-shadow:none}
 .pay-status{font-size:.9rem;line-height:1.8}.pay-status:empty{display:none}
 .journey-return{padding:16px 20px;border:1px solid var(--border-strong);border-radius:12px;background:var(--accent-soft);color:var(--accent);margin:16px 0;font-size:.9rem}
 .journey-toc{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
@@ -130,7 +129,7 @@ html{font-size:16px}
 .home-category-price{font-size:.8rem;white-space:nowrap;color:var(--accent)}
 .home-category strong{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.12rem;line-height:1.4;word-break:keep-all}
 #sajuPaidHistoryHome:empty{display:none}
-.home-free{margin-top:28px;border-top:1px solid var(--border)}
+.home-free{margin-top:20px;border-block:1px solid var(--border)}
 .home-free-toggle{display:flex;align-items:center;gap:8px;margin:0;padding:16px 0;min-height:52px;cursor:pointer;list-style:none}
 .home-free-toggle::-webkit-details-marker{display:none}
 .home-free-count{font-family:var(--font-main);font-size:.78rem;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px}
@@ -198,3 +197,20 @@ html{font-size:16px}
 #app .life-v3-relation-point{min-width:0}
 #app :is(#view-result,#view-tarot,#view-astrology) .chapter-divider{margin-inline:0}
 @media(max-width:640px){:root{--card-pad:20px}}
+
+/* Paid preview: the first lines of the real reading, the rest blurred under a lock.
+   Same block on saju previews and the tarot/astrology payment screens. */
+.paid-preview{margin:16px 0}
+.paid-preview-kicker{font-size:.8rem;color:var(--accent);margin:0 0 8px}
+.paid-preview-kicker b{font-weight:400;font-family:var(--font-heading)}
+.paid-preview-clear{font-size:1rem;line-height:1.95;color:var(--text);margin:0}
+.paid-preview-locked{position:relative;min-height:190px;max-height:260px;overflow:hidden;border-radius:var(--inner-radius)}
+.paid-preview-blur{filter:blur(5px);user-select:none;-webkit-user-select:none;pointer-events:none;font-size:1rem;line-height:1.95;color:var(--text)}
+.paid-preview-blur p{margin:0 0 8px}
+.paid-preview-blur h4{font-size:1rem;margin:14px 0 6px}
+.paid-preview-bar{display:block;height:12px;margin:10px 0;border-radius:999px;background:var(--border)}
+.paid-preview-bar.short{width:62%}
+.paid-preview-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.85) 45%,var(--card))}
+.paid-preview-lockbtn{width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--border-strong);border-radius:50%;background:var(--card);color:var(--accent);cursor:pointer;touch-action:manipulation}
+.paid-preview-lockbtn .material-symbols-outlined{font-size:26px}
+.paid-preview-lock p{margin:0;font-size:.85rem;color:var(--sub)}

@@ -2252,37 +2252,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </nav>
     <section class="home-start" id="readings" aria-labelledby="journeyTitle">
       <h1 id="journeyTitle">어떤 풀이를 볼까요?</h1>
-      <h2 class="home-group">유료 풀이</h2>
-      <div class="home-categories" id="paidCoreMenu" aria-label="유료 풀이">
-        <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price"><span data-journey-price="life">1,500원</span></span></span>
-          <strong>인생총운</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="newyear" onclick="goToInput('newyear')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price"><span data-journey-price="newyear">1,500원</span></span></span>
-          <strong>신년운세</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="gunghap" onclick="goToInput('gunghap')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price"><span data-journey-price="gunghap">1,000원</span></span></span>
-          <strong>두 사람 궁합</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="name" onclick="goToInput('name')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price"><span data-journey-price="name">1,500원</span></span></span>
-          <strong>이름풀이·작명</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
-          <strong>사주에 질문하기</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="tarot-question" onclick="goToTarot('question')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">help</span><span class="home-category-price"><span data-journey-price="tarot3">1,500원</span>~</span></span>
-          <strong>질문 타로</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="astro-report" onclick="goToAstrology('input')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">insights</span><span class="home-category-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span></span>
-          <strong>점성술 상세 풀이</strong>
-        </button>
-      </div>
       <details class="home-free">
         <summary class="home-group home-free-toggle">무료 풀이 <span class="home-free-count">5</span><span class="material-symbols-outlined" aria-hidden="true">expand_more</span></summary>
         <div class="home-categories" aria-label="무료 풀이">
@@ -2308,6 +2277,37 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           </button>
         </div>
       </details>
+      <h2 class="home-group">유료 풀이</h2>
+      <div class="home-categories" id="paidCoreMenu" aria-label="유료 풀이">
+        <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price"><span data-journey-price="life">1,500원</span></span></span>
+          <strong>인생총운</strong>
+        </button>
+        <button type="button" class="home-category" data-home-category="newyear" onclick="goToInput('newyear')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price"><span data-journey-price="newyear">1,500원</span></span></span>
+          <strong>신년운세</strong>
+        </button>
+        <button type="button" class="home-category" data-home-category="gunghap" onclick="goToInput('gunghap')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price"><span data-journey-price="gunghap">1,000원</span></span></span>
+          <strong>궁합</strong>
+        </button>
+        <button type="button" class="home-category" data-home-category="name" onclick="goToInput('name')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price"><span data-journey-price="name">1,500원</span></span></span>
+          <strong>이름풀이·작명</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
+          <strong>역술가에게 질문하기</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="tarot-question" onclick="goToTarot('question')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">help</span><span class="home-category-price"><span data-journey-price="tarot3">1,500원</span>~</span></span>
+          <strong>타로</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="astro-report" onclick="goToAstrology('input')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">insights</span><span class="home-category-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span></span>
+          <strong>점성술</strong>
+        </button>
+      </div>
     </section>
     <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
 
@@ -4779,13 +4779,10 @@ function renderTarotPayment(root){
   const cat=_tarotFlow.selectedSpreadId;
   root.innerHTML=tarotHtml(`
     <div class="tq-panel" style="margin-bottom:16px">
-      <button type="button" class="paid-secret-lock tarot-secret-lock" onclick="_secretUnlockTap('${cat}')" aria-label="관리자 잠금 해제 코드 입력" title="관리자 잠금 해제">
-        <span class="material-symbols-outlined" aria-hidden="true">lock</span>
-      </button>
       <div class="ts-card-title" style="font-size:1.12rem;margin-bottom:8px">${tarotEsc(_tarotFlow.spreadName)}</div>
       <div class="ts-card-desc" style="margin-bottom:14px">${tarotEsc(p?p.shortDesc:'')} · 카드 ${_tarotFlow.positions.length}장</div>
       <div class="tarot-small" style="position:relative;padding:12px;background:rgba(0,98,65,.06);border-radius:10px;line-height:1.65"><b style="color:var(--accent-bright)">질문</b><br>${tarotEsc(_tarotFlow.question)}</div>
-      <div class="pay-preview-mini"><b>결제 후 바로 제공돼요</b><span>직접 카드 선택</span><span>카드별 풀이</span><span>조합 해석</span><span>현실 조언</span><span>24시간 재조회</span></div>
+      ${paidPreviewHTML(cat,{sections:_tarotFlow.positions.slice(0,3).map(pos=>({title:(pos.label||pos.name||pos)+' 카드'})).concat([{title:'조합 해석과 현실 조언'}])})}
       <div class="tarot-price" style="text-align:right;margin:14px 0 0">${price}원</div>
     </div>
     <button class="ts-cta" onclick="startTarotPayment()"><span class="material-symbols-outlined">lock</span> ${price}원 결제하고 카드 뽑기</button>
@@ -6813,7 +6810,7 @@ function buildPersonalFingerprint(saju){
   const innerRel=(p.innerRels||[])[0];
   const contrast=seatAxis===topAxis
     ?`겉과 실제 결정 방식이 모두 ${ENGINE[topAxis]} 쪽으로 모여요. ${CONTRAST[topAxis]}`
-    :`사람들은 본인을 ${SURFACE[seatAxis]}로 보지만, 중요한 결정에서는 ${ENGINE[topAxis]}이 먼저 나와요. ${CONTRAST[topAxis]}`;
+    :`사람들은 본인을 ${SURFACE[seatAxis]}으로 보지만, 중요한 결정에서는 ${ENGINE[topAxis]}이 먼저 나와요. ${CONTRAST[topAxis]}`;
   const second=`그다음으로 ${AXIS_NAME[secondAxis]}의 힘이 받쳐줘서, 한 가지 방식으로만 움직이는 사람은 아니에요.`;
   const relation=[RELATION[seatAxis],innerRel&&INNER[innerRel.kind]].filter(Boolean).join(' ');
   const stress=[STRESS[`${strengthBand}-${energyBand}`],p.excess.length?`${OHNAME[p.top]} 분위기가 몰리는 날에는 익숙한 방식만 고집하기 쉬워요.`:`${OHNAME[p.lack]} 분위기가 필요한 날에는 혼자 해결하려는 습관을 내려놓는 편이 좋아요.`].join(' ');
@@ -10735,22 +10732,66 @@ function _teaserCta(category){
     <span class="teaser-pay-text">${cta}${priceText}</span>
   </button><div class="teaser-assurance"><b>카카오페이 안전 결제</b> · ${assurance}</div>`;
 }
-// 블러 영역 — 본문 카드 placeholder
-function _teaserBlurArea(fakeTitles,category){
-  const fakeCards=fakeTitles.map(t=>`<div class="teaser-fake-card">
-    <div class="teaser-fake-title">${t}</div>
-    <div class="teaser-fake-line mid"></div>
-    <div class="teaser-fake-line"></div>
-    <div class="teaser-fake-line short"></div>
-    <div class="teaser-fake-line mid"></div>
-  </div>`).join('');
-  return `<div class="teaser-blur-area">
-    <div class="teaser-blurred">${fakeCards}</div>
-    <div class="teaser-blur-overlay">
-      <div class="teaser-lock-icon" onclick="_secretUnlockTap('${category||'life'}')" aria-label="잠금 해제 코드 입력">🔒</div>
-      <div class="teaser-blur-overlay-text">${preventOrphan('여기부터는 잠금 해제 후 이어서 볼 수 있어요')}</div>
+// 유료 풀이 미리보기 — 핵심 2~3줄은 그대로 보여주고, 그 아래는 흐리게 가린 뒤 자물쇠를 둔다.
+// 자물쇠를 1.5초 안에 5번 누르면 운영자 코드 입력창이 뜬다(_secretUnlockTap). 'open'이면 결제 없이 열린다.
+// 흐린 영역에 실제 문장을 쓸 때도 몇 줄만 넣는다. 전체 풀이는 결제 후에만 화면에 그린다.
+function paidPreviewHTML(category,{title='',clear='',rest='',sections=[]}={}){
+  const esc=tarotEsc;
+  const bars='<span class="paid-preview-bar"></span><span class="paid-preview-bar short"></span><span class="paid-preview-bar"></span>';
+  const blurred=(rest?`<p>${esc(rest)}</p>`:'')+sections.map(x=>`<h4>${esc(x.title)}</h4>${x.text?`<p>${esc(x.text)}</p>`:bars}`).join('')||bars+bars;
+  return `<div class="paid-preview">
+    <p class="paid-preview-kicker">유료 풀이 미리보기${title?` · <b>${esc(title)}</b>`:''}</p>
+    ${clear?`<p class="paid-preview-clear">${esc(clear)}</p>`:''}
+    <div class="paid-preview-locked">
+      <div class="paid-preview-blur" aria-hidden="true">${blurred}</div>
+      <div class="paid-preview-lock">
+        <button type="button" class="paid-preview-lockbtn" onclick="_secretUnlockTap('${category}')" aria-label="잠긴 풀이"><span class="material-symbols-outlined" aria-hidden="true">lock</span></button>
+        <p>결제하면 이어서 볼 수 있어요</p>
+      </div>
     </div>
   </div>`;
+}
+// 사주 유료 풀이는 브라우저에서 계산된다. 실제 풀이를 그려 핵심 카드 한 장의 첫 문장만 뽑는다.
+// 풀이 앞쪽 카드는 계산 근거·용어 설명이라, 카테고리마다 "핵심"에 해당하는 카드 제목을 지정한다.
+const PAID_PREVIEW_PICK={life:/상담을 시작하며/,newyear:/한눈에 보기/,gunghap:/연애·데이트/,name:/81수리/};
+function _sajuPaidPreview(category){
+  if(!_saju||!_meta)return null;
+  const render={
+    life:()=>renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min),
+    newyear:()=>_meta.nyExtra&&renderNewyearFortune(_saju,_meta.nyExtra.y),
+    gunghap:()=>_meta.gnExtra&&renderGunghapPaid(_saju,_meta.gnExtra),
+    name:()=>_meta.nmExtra&&renderNamePaid(_saju,_meta.nmExtra),
+    daypick:()=>_meta.dpExtra&&renderDaypickFortune(_saju,_meta.dpExtra.y,_meta.dpExtra.m,_meta.dpExtra.d,_meta.dpExtra),
+    monthly:()=>_meta.moExtra&&renderMonthlyFortune(_saju,_meta.moExtra.sy,_meta.moExtra.sm,_meta.moExtra.ey,_meta.moExtra.em,_meta.moExtra)
+  }[category];
+  if(!render)return null;
+  const prevFold=_paidFoldMode;
+  let html;
+  try{_paidFoldMode=category;html=render();}catch(e){return null;}finally{_paidFoldMode=prevFold;}
+  if(!html)return null;
+  // DOMParser 문서는 이미지·스크립트를 불러오지 않는다.
+  const doc=new DOMParser().parseFromString(fixKoreanJosa(html),'text/html');
+  const cards=[...doc.querySelectorAll('.nb-card')].filter(c=>c.id!=='card-TOC'&&!c.classList.contains('ai-reading-card')&&c.querySelector('.nb-body'));
+  const titleOf=c=>((c.querySelector('.nb-title')||{}).textContent||'').replace(/[▾▴▸◂›‹]/g,'').replace(/\s+/g,' ').trim();
+  const textsOf=c=>[...c.querySelectorAll('.nb-body p,.nb-body div,.nb-body li')].filter(el=>!el.querySelector('p,div,li')).map(el=>el.textContent.replace(/\s+/g,' ').trim()).filter(t=>t.length>30&&!/기다려주세요/.test(t));
+  const pick=PAID_PREVIEW_PICK[category];
+  let at=cards.findIndex(c=>pick&&pick.test(titleOf(c))&&textsOf(c).length);
+  if(at<0)at=cards.findIndex(c=>!/기본|정보|목차/.test(titleOf(c))&&textsOf(c).length);
+  if(at<0)return null;
+  const texts=textsOf(cards[at]);
+  const sentences=texts.join(' ').split(/(?<=[.!?])\s+/);
+  let clear='';
+  while(sentences.length&&(clear.length<70||clear.length+sentences[0].length<=150))clear+=(clear?' ':'')+sentences.shift();
+  const rest=sentences.join(' ').slice(0,220);
+  const sections=cards.slice(at+1,at+3).map(c=>({title:titleOf(c),text:(textsOf(c)[0]||'').slice(0,120)}));
+  return {title:titleOf(cards[at]).replace(/^PART\s*\d+\s*·\s*/,''),clear,rest,sections};
+}
+// 체험판 블러 영역 — 실제 풀이 미리보기를 우선 쓰고, 뽑지 못하면 소제목만 흐리게 보여준다.
+function _teaserBlurArea(fakeTitles,category){
+  const cat=category||'life';
+  let snip=null;
+  try{snip=_sajuPaidPreview(cat);}catch(e){snip=null;}
+  return paidPreviewHTML(cat,snip||{sections:fakeTitles.map(t=>({title:t}))});
 }
 function _teaserInsights(items){
   return `<div class="teaser-insight-list">${items.map(t=>`<div class="teaser-insight">${preventOrphan(t)}</div>`).join('')}</div>`;
@@ -10906,7 +10947,7 @@ function renderNewyearTeaser(saju, y){
 
 // ── 인생총운 체험판
 function renderLifeTeaser(saju){
-  return journeyOverviewHTML(saju)+`<div class="teaser-card"><div class="teaser-head"><span class="teaser-title">본인의 강점, 언제 어떻게 쓰면 좋을까요?</span></div><p class="teaser-leadline">일·재물·연애와 인생 시기별 흐름을 이어서 읽어요. 관심 있는 주제부터 골라볼 수 있어요.</p>${journeyProductDetails('life')}${_teaserCta('life')}</div>`;
+  return `<div class="teaser-card"><div class="teaser-head"><span class="teaser-title">본인의 강점, 언제 어떻게 쓰면 좋을까요?</span></div>${_teaserBlurArea(['PART 1 · 타고난 성정','PART 2 · 타고난 재능','일·재물·연애 흐름'],'life')}${journeyProductDetails('life')}${_teaserCta('life')}</div>`;
 }
 
 // ── 궁합 체험판

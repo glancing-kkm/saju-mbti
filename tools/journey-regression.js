@@ -60,7 +60,13 @@ const submitBirth=async()=>{
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(d.querySelector('#p0 .journey-overview'));assert.match(d.querySelector('#p0 .journey-overview').textContent,/시간은 모르는/);assert(d.querySelector('#journeyManseBoard .pillars'));});
     check('무료 결과: 개인화 요약과 유료 미리보기 연결',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 미리보기 · 1,500원/);assert(events().some(e=>e[1]==='free_reading_view'));});
     run("continueJourney('life')");await wait(150);
-    check('입력 재사용: 동일한 생년월일로 인생총운 미리보기',()=>{assert(d.querySelector('#p5 .journey-overview'));assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
+    check('입력 재사용: 동일한 생년월일로 인생총운 미리보기',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
+    check('유료 미리보기: 실제 풀이 첫 문장 + 흐린 영역 + 자물쇠',()=>{
+      const pv=d.querySelector('#p5 .paid-preview');assert(pv);
+      assert(pv.querySelector('.paid-preview-clear').textContent.length>=40);
+      assert(pv.querySelector('.paid-preview-blur'));assert(pv.querySelector('.paid-preview-lockbtn'));
+      assert.equal(run("isUnlockedFor('life')"),false);
+    });
     run("openPaymentConsent('life','KAKAOPAY')");
     check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'1,500원');assert.match(d.getElementById('payCtaGo').textContent,/1,500원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
     let readyCalls=0,resolveReady;
@@ -87,6 +93,18 @@ const submitBirth=async()=>{
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("journeyEvent('test','life',{value:1500,birthYear:'1994',name:'SECRET_NAME',pg_token:'SECRET_TOKEN'})");
     check('분석 이벤트: 개인정보와 결제 토큰 제외',()=>{const e=events().find(e=>e[1]==='test');assert(!('birthYear' in e[2]));assert(!JSON.stringify(e).includes('SECRET'));});
+    run("goToInput('newyear')");run('analyze()');await wait(150);
+    check('운영자 코드: 자물쇠 4번은 그대로, 5번 + open이면 결제 없이 열림',()=>{
+      const lock=()=>d.querySelector('#p4 .paid-preview-lockbtn');
+      assert(lock());
+      let asked=0;w.prompt=()=>{asked++;return 'open';};
+      const tap=lock().getAttribute('onclick');assert.match(tap,/_secretUnlockTap\('newyear'\)/);
+      for(let i=0;i<4;i++)run(tap);
+      assert.equal(asked,0);assert.equal(run("isUnlockedFor('newyear')"),false);
+      run(tap);
+      assert.equal(asked,1);assert.equal(run("isUnlockedFor('newyear')"),true);
+      w.prompt=()=>'';
+    });
     run("goToInput('newyear')");
     check('한 해 풀이: 올해를 기본값으로 사용',()=>assert.equal(d.getElementById('nyY').value,String(new Date().getFullYear())));
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));
