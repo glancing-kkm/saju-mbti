@@ -105,17 +105,20 @@ const submitBirth=async()=>{
     run("journeyEvent('test','life',{value:1500,birthYear:'1994',name:'SECRET_NAME',pg_token:'SECRET_TOKEN'})");
     check('분석 이벤트: 개인정보와 결제 토큰 제외',()=>{const e=events().find(e=>e[1]==='test');assert(!('birthYear' in e[2]));assert(!JSON.stringify(e).includes('SECRET'));});
     run("goToInput('newyear')");run('analyze()');await wait(150);
-    check('운영자 코드: 자물쇠 4번은 그대로, 5번 + open이면 결제 없이 열림',()=>{
-      const lock=()=>d.querySelector('#p4 .paid-preview-lockbtn');
-      assert(lock());
-      let asked=0;w.prompt=()=>{asked++;return 'open';};
-      const tap=lock().getAttribute('onclick');assert.match(tap,/_secretUnlockTap\('newyear'\)/);
+    {
+      if(!w.crypto||!w.crypto.subtle)Object.defineProperty(w,'crypto',{value:require('node:crypto').webcrypto,configurable:true});
+      if(!w.TextEncoder)w.TextEncoder=require('node:util').TextEncoder; // 브라우저에는 기본으로 있음
+      const tap=d.querySelector('#p4 .paid-preview-lockbtn').getAttribute('onclick');
+      check('운영자 코드: 자물쇠 onclick이 해당 카테고리로 연결',()=>assert.match(tap,/_secretUnlockTap\('newyear'\)/));
+      let asked=0,answer='wrong';w.prompt=()=>{asked++;return answer;};w.alert=()=>{};
       for(let i=0;i<4;i++)run(tap);
-      assert.equal(asked,0);assert.equal(run("isUnlockedFor('newyear')"),false);
-      run(tap);
-      assert.equal(asked,1);assert.equal(run("isUnlockedFor('newyear')"),true);
+      check('운영자 코드: 자물쇠 4번은 입력창 없음',()=>{assert.equal(asked,0);assert.equal(run("isUnlockedFor('newyear')"),false);});
+      await run(tap);
+      check('운영자 코드: 틀린 코드는 거절',()=>{assert.equal(asked,1);assert.equal(run("isUnlockedFor('newyear')"),false);});
+      answer=' Open ';for(let i=0;i<4;i++)run(tap);await run(tap);
+      check('운영자 코드: 5번 + open(대소문자·공백 무시)이면 결제 없이 열림',()=>{assert.equal(asked,2);assert.equal(run("isUnlockedFor('newyear')"),true);});
       w.prompt=()=>'';
-    });
+    }
     run("goToInput('newyear')");
     check('한 해 풀이: 올해를 기본값으로 사용',()=>assert.equal(d.getElementById('nyY').value,String(new Date().getFullYear())));
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));

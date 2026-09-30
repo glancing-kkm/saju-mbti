@@ -10762,7 +10762,7 @@ function _teaserCta(category){
   </button><div class="teaser-assurance"><b>카카오페이 안전 결제</b> · ${assurance}</div>`;
 }
 // 유료 풀이 미리보기 — 핵심 2~3줄은 그대로 보여주고, 그 아래는 흐리게 가린 뒤 자물쇠를 둔다.
-// 자물쇠를 1.5초 안에 5번 누르면 운영자 코드 입력창이 뜬다(_secretUnlockTap). 'open'이면 결제 없이 열린다.
+// 자물쇠를 1.5초 안에 5번 누르면 운영자 코드 입력창이 뜬다(_secretUnlockTap). 코드가 맞으면 결제 없이 열린다.
 // 흐린 영역에 실제 문장을 쓸 때도 몇 줄만 넣는다. 전체 풀이는 결제 후에만 화면에 그린다.
 function paidPreviewHTML(category,{title='',clear='',rest='',sections=[]}={}){
   const esc=tarotEsc;
@@ -11114,7 +11114,18 @@ function unlockAndRender(category){
   return true;
 }
 
-// 운영자용 — 잠금 자물쇠 5회 탭 시 코드 입력창을 띄워 'open' 입력 시 결제 없이 해제
+// 운영자용 — 잠금 자물쇠 5회 탭 시 코드 입력창을 띄워, 운영자 코드(open)가 맞으면 결제 없이 해제.
+// 입력값을 PBKDF2-SHA256(15만 회)로 바꿔 아래 hash와 비교한다. 코드를 바꿀 때는 salt·hash만 교체한다.
+const _ADMIN_CODE={salt:'b26d106e016fe285192f90101467ef08',hash:'12ffb1d535f5765b22a9929bcf44ba93d42d2d5236ef4ffc0ed636a18c53c6f1',iterations:150000};
+async function _isAdminCode(input){
+  const subtle=window.crypto&&window.crypto.subtle;
+  if(!subtle||!input)return false;
+  const salt=new Uint8Array(_ADMIN_CODE.salt.match(/../g).map(h=>parseInt(h,16)));
+  const key=await subtle.importKey('raw',new TextEncoder().encode(input),'PBKDF2',false,['deriveBits']);
+  const bits=await subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:_ADMIN_CODE.iterations},key,256);
+  const hex=[...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  return hex===_ADMIN_CODE.hash;
+}
 let _secretTapCount=0;
 let _secretTapTimer=null;
 function _secretUnlockTap(category){
@@ -11126,11 +11137,10 @@ function _secretUnlockTap(category){
   if(_secretTapTimer){clearTimeout(_secretTapTimer);_secretTapTimer=null;}
   const code=window.prompt('운영자 코드를 입력하세요');
   if(code===null)return;
-  if(code.trim().toLowerCase()!=='open'){
-    alert('코드가 올바르지 않습니다.');
-    return;
-  }
-  _adminUnlockPaidCategory(category);
+  return _isAdminCode(code.trim().toLowerCase()).catch(()=>false).then(ok=>{
+    if(!ok){alert('코드가 올바르지 않습니다.');return;}
+    _adminUnlockPaidCategory(category);
+  });
 }
 function _adminUnlockPaidCategory(category){
   const cat=String(category||'life');
