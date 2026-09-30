@@ -372,7 +372,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-today-hero .tarot-kicker{margin-bottom:5px}
 .tarot-today-hero .tarot-title{font-size:1.32rem;margin-bottom:5px}
 .tarot-today-hero .tarot-desc{font-size:.82rem;line-height:1.62}
-.tarot-today-grid{gap:6px;margin:10px -9px 12px;align-items:stretch}
+.tarot-today-grid{gap:6px;margin:10px 0 12px;align-items:stretch}
 .tarot-today-grid .tarot-card-btn{aspect-ratio:896/1200;border-radius:10px;width:100%;min-width:0;display:block}
 .tarot-today-grid.single{grid-template-columns:minmax(162px,210px);margin-left:0;margin-right:0}
 .tarot-card-btn{aspect-ratio:2/3;border:0;border-radius:12px;background:transparent;padding:0;perspective:900px;cursor:pointer;font-family:inherit;display:block;width:100%;min-width:0}
@@ -428,7 +428,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-slot{min-height:122px;border-radius:12px;background:rgba(0,98,65,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;gap:6px}
 .tarot-slot.active{box-shadow:0 0 0 2px rgba(203,162,88,.35),0 0 18px rgba(203,162,88,.12)}
 .tarot-slot-label{font-size:.67rem;color:var(--muted);line-height:1.4}
-.tarot-deck-stage{position:relative;height:245px;overflow:hidden;margin:8px -14px 0;touch-action:pan-y}
+.tarot-deck-stage{position:relative;height:245px;overflow:hidden;margin:8px 0 0;touch-action:pan-y}
 .tarot-deck-card{position:absolute;left:50%;top:38px;width:78px;height:117px;margin-left:-39px;border:0;border-radius:12px;background:transparent;padding:0;transform-origin:50% 170px;transition:transform .18s,opacity .18s;cursor:pointer}
 .tarot-deck-card.center .tarot-card-face{box-shadow:0 0 0 2px rgba(237,209,138,.62),0 14px 34px rgba(203,162,88,.22),inset 0 0 0 1px rgba(0,98,65,.06)}
 .tarot-progress{font-size:.78rem;color:var(--accent-bright);font-weight:800;margin-top:6px}
@@ -648,7 +648,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .td-caption{text-align:center;margin:18px 0 10px}
 .td-caption h3{font-family:var(--font-heading);font-synthesis:none;font-size:1.25rem;color:var(--accent-bright);margin-bottom:4px}
 .td-caption p{font-size:.8rem;color:rgba(216,192,138,.6)}
-.td-fan-wrap{position:relative;margin:0 -14px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.td-fan-wrap{position:relative;margin:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .td-fan{display:flex;align-items:flex-end;overflow-x:auto;scroll-snap-type:x proximity;gap:0;padding:76px 42vw 8px;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none}
 .td-fan::-webkit-scrollbar{display:none}
 .td-fan-card{flex:0 0 auto;width:58px;height:92px;margin:0 -12px;border-radius:8px;border:1px solid rgba(203,162,88,.4);background:#003b2d url("assets/tarot/back.jpg") center/cover no-repeat;scroll-snap-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s;transform-origin:bottom center}
@@ -715,7 +715,7 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .menu-card .mc-tag,.na-tag,.mbti-analysis-cat,.tldr-tag,.result-hero-tag,.result-hero-match,.mbti-balance-match,.result-hero-keys span,
 .tl-item,.dx-wrap,.dx-col,.ck-chips span,.chat-card,.chat-remaining,.chat-msg-reply,.dp-card,.review-card,.sinsal-mini-card,.compat-cell,.daily-cat,.simple-card,
 .mm,.mm-col,.ny-month,
-.life-timeline,.cap-watermark,.name-compare-row,.simple-emoji,.sin-card,.gg-side,.gg-mc,.mo-row,.mo-cat,.ny-hero,.ny-section,.term-notice,.remember-line{border:none !important}
+.life-timeline,.cap-watermark,.name-compare-row,.simple-emoji,.sin-card,.gg-side,.gg-mc,.mo-row,.mo-cat,.term-notice,.remember-line{border:none !important}
 .summary-btn.secondary{background:var(--accent-soft);border:none}
 .lock-pay,.pay-cta-cancel{background:rgba(0,98,65,.06)}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
@@ -901,18 +901,6 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .tag-free{background:var(--wood-bg);color:var(--wood);border-color:rgba(163,199,168,.3)}
 .tag-paid{background:var(--earth-bg);color:var(--accent);border-color:rgba(216,192,138,.35)}
 .home-card .hc-desc{font-size:.8rem;color:var(--sub);line-height:1.75;padding-right:25px;font-family:var(--font-heading);font-synthesis:none}
-.home-seo{padding:30px 18px 8px;border-top:1px solid var(--border)}
-.home-seo-kicker{font-size:.66rem;font-weight:800;color:var(--accent-bright);letter-spacing:0;margin-bottom:7px}
-.home-seo h2{font-family:var(--font-heading);font-synthesis:none;font-size:1.16rem;line-height:1.45;color:var(--text);letter-spacing:0;margin-bottom:11px}
-.home-seo-intro{font-size:.79rem;line-height:1.85;color:var(--sub);margin-bottom:18px;text-wrap:pretty}
-.home-guide-links{border-top:1px solid var(--border)}
-.home-guide-link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:13px 2px;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}
-.home-guide-link strong{display:block;font-family:var(--font-heading);font-synthesis:none;font-size:.88rem;letter-spacing:0;margin-bottom:3px}
-.home-guide-link span{display:block;font-size:.68rem;line-height:1.55;color:var(--muted)}
-.home-guide-link .material-symbols-outlined{font-size:19px;color:var(--accent);margin:0 2px}
-.home-guide-link:focus-visible{outline:2px solid var(--accent-bright);outline-offset:4px}
-.home-seo-all{display:inline-flex;align-items:center;gap:4px;margin-top:15px;color:var(--accent-bright);font-size:.76rem;font-weight:800;text-decoration:none}
-.home-seo-note{font-size:.67rem;line-height:1.7;color:var(--muted);margin-top:16px}
 .home-foot{text-align:center;font-size:.7rem;color:var(--muted);padding:24px 14px 30px;line-height:1.85;letter-spacing:.02em}
 /* 이용자 후기 섹션 */
 .reviews-sec{margin:28px 14px 8px;padding-top:24px;border-top:1px solid var(--border)}
@@ -1400,12 +1388,12 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .toc-chapter-head:first-child{margin-top:0}
 /* 목차는 스크롤 중에도 고정된다. 고정되는 층이므로 반드시 불투명해야 하고(인라인 배경에 바탕색 지정),
    화면을 반이나 가리지 않도록 높이를 제한한다. 그림자로 본문이 아래를 지나간다는 걸 드러낸다. */
-#card-TOC{position:sticky;top:58px;z-index:32;padding:14px 16px 12px;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+#card-TOC{position:sticky;top:12px;z-index:32;padding:14px 16px 12px}
 #card-TOC .nb-title{padding-right:88px}
 #card-TOC .nb-body{max-height:26vh;overflow:auto;padding-right:2px;overscroll-behavior:contain}
 .toc-collapse-btn{position:absolute;top:12px;right:14px;min-width:72px;height:34px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;gap:2px;padding:0 9px;font-family:inherit;font-size:.7rem;font-weight:800;cursor:pointer}
 .toc-collapse-btn .material-symbols-outlined{font-size:18px;transition:transform .18s ease}
-#card-TOC.toc-compact{padding:10px 12px;margin-bottom:10px;min-height:56px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+#card-TOC.toc-compact{padding:10px 12px;margin-bottom:10px;min-height:56px;overflow:hidden}
 #card-TOC.toc-compact .nb-cat,#card-TOC.toc-compact .nb-body{display:none}
 #card-TOC.toc-compact .nb-title{height:36px;line-height:36px;margin:0;padding-right:84px;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #card-TOC.toc-compact .toc-collapse-btn{top:10px;right:10px}
@@ -1879,11 +1867,7 @@ html{font-size:clamp(14px,4.1vw,16px)}
 
 /* PC (900px+): 넓은 컨테이너 + 앱 프레임 + 메뉴 4열 + 타이포 확대 */
 @media (min-width:900px){
-  /* 읽기 행폭 — 한글 45~50자 줄은 눈이 다음 줄 첫 글자를 놓친다.
-     왼쪽 기준선은 그대로 두고 오른쪽만 당겨 38자 안팎으로 맞춘다. */
-  #app :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-advice,.mbti-axis-body,.summary-intro,.chat-msg-body,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow,.life-v3-section-body,.story-deck-copy,.personal-proof,.story-personal-note),
-  #app .daily-card p,
-  #app :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-advice,.mbti-axis-body,.summary-intro,.chat-msg-body,.conversion-hook-body,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow,.life-v3-section-body,.story-deck-copy,.mbti-ind-example,.mbti-analysis-synth,.mbti-intro,.reading-brief,.lead-card,.teaser-leadline,.teaser-insight,.ai-reading-section,.life-v2-lead,.life-v3-note,.life-v3-time-card) :where(p,li){max-width:38em}
+  /* 읽기 행폭은 카드 안쪽 폭(720px 기둥 - 좌우 24px)으로 모든 풀이가 같다. 한 줄 42자 안팎. */
   html{font-size:17px}
   #app{max-width:768px;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 90px rgba(0,0,0,.5)}
   .home-hero h1{font-size:2.5rem}
@@ -2043,8 +2027,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   max-width: none !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  border-radius: 14px !important;
-  border: none !important;
   position: relative;
   overflow: hidden;
 }
@@ -2068,8 +2050,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-timeline,
 .mo-row,
 .review-card{
-  margin-top: 12px !important;
-  margin-bottom: 14px !important;
+  margin-top: 0 !important;
+  margin-bottom: var(--card-gap) !important;
 }
 .daily-cats{
   margin-top:0 !important;
@@ -2210,7 +2192,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-prev-btn:disabled{opacity:.42;cursor:not-allowed}
 .life-deck-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.life-deck-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.life-deck-dots i.on{width:18px;border-radius:6px;background:var(--accent-bright)}
 .life-library-intro{padding:13px 15px;margin-bottom:12px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}
-.life-library-layer #card-TOC{top:58px;background:var(--bg-deep) !important}
+.life-library-layer #card-TOC{top:12px;background:var(--bg-deep) !important}
 /* 유료 풀이 공통 3층 구조 — 한눈 요약 / 핵심 덱 / 전체 풀이 */
 .story-experience{max-width:760px;margin:0 auto 28px;padding:0 12px}
 .story-layer[hidden]{display:none !important}.story-layer{margin:0 auto}
@@ -2230,7 +2212,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .story-deck-card{min-height:530px;padding:20px 20px 16px;display:flex;flex-direction:column}.story-deck-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.7rem}.story-deck-head b{display:flex;align-items:center;gap:8px;color:var(--accent-bright);font-size:1rem}.story-deck-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}.story-deck-icon .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1,'wght' 550,'GRAD' 0,'opsz' 24}
 .story-deck-quote{margin:30px 0 18px;color:var(--accent-bright);font-size:1.08rem;font-weight:800;line-height:1.65;text-align:center;word-break:keep-all}.story-deck-copy{color:var(--sub);font-size:.86rem;line-height:1.9;word-break:keep-all}.story-deck-points{display:grid;gap:7px;margin-top:16px}.story-deck-point{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:var(--bg-deep);color:var(--sub);font-size:.74rem}.story-deck-point i{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:#bf9b30}.story-deck-point b{margin-left:auto;color:var(--accent)}
 .story-deck-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:auto;padding-top:18px}.story-prev-btn:disabled{opacity:.42;cursor:not-allowed}.story-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}.story-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong)}.story-dots i.on{width:18px;border-radius:8px;background:var(--accent-bright)}
-.story-library-intro{margin-bottom:12px;padding:13px 15px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}.story-library-content #card-TOC{top:58px;background:var(--bg-deep) !important}
+.story-library-intro{margin-bottom:12px;padding:13px 15px;border-radius:12px;background:var(--card);color:var(--sub);font-size:.78rem;line-height:1.7;text-align:center}.story-library-content #card-TOC{top:12px;background:var(--bg-deep) !important}
 .life-share-card{width:1080px;height:1080px;box-sizing:border-box;overflow:hidden;padding:58px 70px 42px;background:#fffdf8;color:#24352f;font-family:var(--font-main);display:flex;flex-direction:column;align-items:center}
 .lsc-brand{font-size:22px;letter-spacing:.24em;color:#006241;font-weight:800}.lsc-portrait{width:250px;height:250px;margin:20px auto 6px}.lsc-name{font-size:42px;font-weight:800;color:#006241}.lsc-sub{font-size:24px;color:#52645d;margin-top:5px}.lsc-rarity{font-size:20px;color:#8a6515;margin-top:10px}
 .lsc-stats{width:720px;display:grid;grid-template-columns:1fr 1fr;gap:15px 34px;margin-top:28px}.lsc-stats>div{display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;font-size:18px;color:#52645d}.lsc-stats i{height:12px;background:rgba(0,98,65,.10);border-radius:9px;overflow:hidden}.lsc-stats i b{display:block;height:100%;background:#006241;border-radius:9px}.lsc-stats em{font-style:normal;color:#8a6515;text-align:right}
@@ -2264,147 +2246,80 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
   <!-- ───── HOME (카테고리 메뉴) ───── -->
   <div class="view on" id="view-home">
-    <div class="home-share-switch" id="homeShareSwitch">
-      <button type="button" class="home-share-current" id="homeShareCurrent" onclick="toggleHomeShareMenu(event)" aria-haspopup="menu" aria-expanded="false" aria-controls="homeShareMenu">
-        <span class="material-symbols-outlined" aria-hidden="true">share</span><span>공유</span>
-      </button>
-      <div class="home-share-menu" id="homeShareMenu" role="menu" aria-label="사이트 공유">
-        <button type="button" class="home-share-option" onclick="homeShareByChannel('native')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">ios_share</span><span>기기 공유</span></button>
-        <button type="button" class="home-share-option kakao" onclick="homeShareByChannel('kakao')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C6.95 4 3 7.13 3 11.08c0 2.51 1.62 4.71 4.06 5.98l-.55 2.44c-.09.4.35.72.68.48l2.9-2.05c.62.12 1.26.18 1.91.18 5.05 0 9-3.13 9-7.03S17.05 4 12 4Z"/></svg></span><span>카카오톡</span></button>
-        <button type="button" class="home-share-option" onclick="homeShareByChannel('url')" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">link</span><span>URL 복사</span></button>
-        <button type="button" class="home-share-option band" onclick="homeShareByChannel('band')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4h5.8c3.1 0 5 1.58 5 4.04 0 1.5-.71 2.57-1.95 3.17 1.58.55 2.55 1.82 2.55 3.74 0 3.03-2.21 5.05-5.7 5.05H7V4Zm5.33 6.4c1.23 0 1.9-.55 1.9-1.52s-.67-1.48-1.9-1.48H10.6v3h1.73Zm.28 6.2c1.42 0 2.16-.66 2.16-1.8 0-1.13-.74-1.79-2.16-1.79H10.6v3.59h2.01Z"/></svg></span><span>네이버 밴드</span></button>
-        <button type="button" class="home-share-option instagram" onclick="homeShareByChannel('instagram')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="7.5" r="1.1" fill="currentColor"/></svg></span><span>인스타그램</span></button>
-        <button type="button" class="home-share-option facebook" onclick="homeShareByChannel('facebook')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.1 8.2V6.9c0-.63.43-.78.74-.78h1.89V3.1L14.13 3c-2.89 0-3.55 2.16-3.55 3.54V8.2H8.3v3.37h2.28V21h3.52v-9.43h2.62l.35-3.37H14.1Z"/></svg></span><span>페이스북</span></button>
-        <button type="button" class="home-share-option x" onclick="homeShareByChannel('x')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.9 4h3.05l-6.66 7.61L21.12 20h-6.14l-4.8-5.79L4.68 20H1.62l7.12-8.14L1.22 4h6.3l4.34 5.22L16.9 4Zm-1.07 14.52h1.69L6.58 5.4H4.77l11.06 13.12Z"/></svg></span><span>X</span></button>
-        <button type="button" class="home-share-option line" onclick="homeShareByChannel('line')" role="menuitem"><span class="share-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.03 4 3 7.38 3 11.55c0 3.74 3.25 6.86 7.51 7.45.29.06.68.19.78.43.09.22.06.57.03.79l-.13.76c-.04.22-.2.86.78.47.99-.39 5.31-3.13 7.25-5.36C20.55 14.63 21 13.14 21 11.55 21 7.38 16.97 4 12 4Z"/></svg></span><span>라인</span></button>
-      </div>
-    </div>
     <nav class="site-nav" aria-label="주요 메뉴">
       <a class="site-brand" href="/" aria-label="천지인 사주 홈"><img src="/favicon.svg" alt="" width="30" height="30">천지인 사주</a>
-      <div class="site-nav-links"><a href="#readings">사주 보기</a><a href="/blog/">사주 가이드</a><a href="#journeyFaq">이용 안내</a></div>
+      <div class="site-nav-links"><a href="/blog/">가이드</a></div>
     </nav>
     <section class="home-start" id="readings" aria-labelledby="journeyTitle">
-      <header class="home-start-heading">
-        <h1 id="journeyTitle">어떤 사주를 볼까요?</h1>
-        <p>궁금한 풀이를 고르면 바로 시작해요.</p>
-      </header>
-      <div class="home-categories" id="paidCoreMenu" aria-label="사주 카테고리">
-        <button type="button" class="home-category home-category-featured" data-home-category="manse" onclick="goToInput('manse')">
+      <h1 id="journeyTitle">어떤 풀이를 볼까요?</h1>
+      <h2 class="home-group">사주</h2>
+      <div class="home-categories" id="paidCoreMenu" aria-label="사주">
+        <button type="button" class="home-category" data-home-category="manse" onclick="goToInput('manse')">
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">person</span><span class="home-category-price">무료</span></span>
-          <strong>나의 사주</strong><span class="home-category-desc">타고난 성향과 강점</span>
-          <span class="home-category-action">무료로 보기 <span aria-hidden="true">→</span></span>
+          <strong>나의 사주</strong>
         </button>
         <button type="button" class="home-category" data-home-category="daily" onclick="goToInput('daily')">
           <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span class="home-category-price">무료</span></span>
-          <strong>오늘의 운세</strong><span class="home-category-desc">오늘의 흐름과 조언</span>
-          <span class="home-category-action">무료로 보기 <span aria-hidden="true">→</span></span>
+          <strong>오늘의 운세</strong>
         </button>
         <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price" data-journey-price="life">1,500원</span></span>
-          <strong>인생총운</strong><span class="home-category-desc">일·재물·연애의 큰 흐름</span>
-          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price"><span data-journey-price="life">1,500원</span></span></span>
+          <strong>인생총운</strong>
         </button>
         <button type="button" class="home-category" data-home-category="newyear" onclick="goToInput('newyear')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price" data-journey-price="newyear">1,500원</span></span>
-          <strong>신년운세</strong><span class="home-category-desc">한 해의 월별 흐름</span>
-          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price"><span data-journey-price="newyear">1,500원</span></span></span>
+          <strong>신년운세</strong>
         </button>
         <button type="button" class="home-category" data-home-category="gunghap" onclick="goToInput('gunghap')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price" data-journey-price="gunghap">1,000원</span></span>
-          <strong>두 사람 궁합</strong><span class="home-category-desc">잘 맞는 점과 관계 조언</span>
-          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price"><span data-journey-price="gunghap">1,000원</span></span></span>
+          <strong>두 사람 궁합</strong>
         </button>
         <button type="button" class="home-category" data-home-category="name" onclick="goToInput('name')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price" data-journey-price="name">1,500원</span></span>
-          <strong>이름풀이·작명</strong><span class="home-category-desc">이름의 의미와 추천</span>
-          <span class="home-category-action">풀이 보기 <span aria-hidden="true">→</span></span>
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price"><span data-journey-price="name">1,500원</span></span></span>
+          <strong>이름풀이·작명</strong>
         </button>
       </div>
-      <p class="home-start-note">회원가입 없이 시작 · 유료 풀이는 미리보기 후 결제</p>
-    </section>
-    <details class="journey-more home-other">
-      <summary>타로·별자리·사주 질문 <span>다른 운세도 보기</span></summary>
-      <div class="menu-grid" aria-label="타로와 별자리, 사주 질문">
-          <button type="button" class="menu-card" onclick="goToInput('qna')"><div class="mc-title">사주에 질문하기</div><div class="mc-desc">질문권 3회부터</div><div class="mc-price" data-journey-price="chatpack3">1,500원</div></button>
-          <button type="button" class="menu-card" onclick="goToTarot('today')"><div class="mc-title">오늘의 타로</div><div class="mc-desc">카드 한 장이 전하는 메시지</div><div class="mc-tag t-free">무료</div></button>
-          <button type="button" class="menu-card" onclick="goToTarot('question')"><div class="mc-title">질문 타로</div><div class="mc-desc">직접 고르는 3장부터</div><div class="mc-price"><span data-journey-price="tarot3">1,500원</span>부터</div></button>
-          <button type="button" class="menu-card" onclick="goToAstrology('natal')"><div class="mc-title">나의 출생차트</div><div class="mc-desc">태어난 순간의 별자리</div><div class="mc-tag t-free">무료</div></button>
-          <button type="button" class="menu-card" onclick="goToAstrology('today')"><div class="mc-title">오늘의 점성술</div><div class="mc-desc">오늘의 별과 나의 흐름</div><div class="mc-tag t-free">무료</div></button>
-          <button type="button" class="menu-card" onclick="goToAstrology('input')"><div class="mc-title">점성술 상세 풀이</div><div class="mc-desc">관계·직업·재물 리포트</div><div class="mc-price"><span data-journey-price="astro-birth-basic">1,500원</span>부터</div></button>
+      <h2 class="home-group">타로 · 별자리 · 질문</h2>
+      <div class="home-categories" aria-label="타로, 별자리, 사주 질문">
+        <button type="button" class="home-category" data-home-extra="tarot-today" onclick="goToTarot('today')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">style</span><span class="home-category-price">무료</span></span>
+          <strong>오늘의 타로</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="tarot-question" onclick="goToTarot('question')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">help</span><span class="home-category-price"><span data-journey-price="tarot3">1,500원</span>~</span></span>
+          <strong>질문 타로</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">public</span><span class="home-category-price">무료</span></span>
+          <strong>나의 출생차트</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span><span class="home-category-price">무료</span></span>
+          <strong>오늘의 점성술</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="astro-report" onclick="goToAstrology('input')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">insights</span><span class="home-category-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span></span>
+          <strong>점성술 상세 풀이</strong>
+        </button>
+        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
+          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
+          <strong>사주에 질문하기</strong>
+        </button>
       </div>
-    </details>
+    </section>
     <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
-    <details class="home-help">
-      <summary>풀이가 어떻게 나오나요?</summary>
-      <aside class="journey-sample" aria-label="실제 결과가 아닌 풀이 형식 예시">
-        <div class="sample-label">이렇게 쉽게 풀어드려요 <span>풀이 예시</span></div>
-        <h2>생각은 깊게,<br>시작은 가볍게 해보세요.</h2>
-        <div class="sample-line"><b>나의 특징</b><p>충분히 이해해야 움직이는 편이에요.<br>새로운 일에도 나만의 기준이 필요해요.</p></div>
-        <div class="sample-line"><b>왜 그럴까요</b><p>배우고 받아들이는 기운이 두드러질 때<br>이런 성향으로 읽을 수 있어요.</p></div>
-        <div class="sample-action">오늘 한 가지 · 고민 중인 일을 10분만 시작해보세요.</div>
-        <p class="journey-fine">설명을 돕는 예시예요. 본인 풀이는 입력 후 확인해요.</p>
-      </aside>
-    </details>
-    <details class="home-help journey-faq" id="journeyFaq">
-      <summary>이용 안내 · 무료 범위와 구매 내역</summary>
-      <details><summary>어디까지 무료인가요?</summary><p>본인의 성향 요약, 만세력, 오늘의 운세는 무료예요. 인생총운·궁합 등 상세 풀이는 미리보기와 가격을 확인한 뒤 선택해요. 자동으로 결제되거나 정기 구독으로 전환되지 않아요.</p></details>
-      <details><summary>태어난 시간을 몰라도 볼 수 있나요?</summary><p>네. ‘시간을 몰라요’를 선택하면 돼요. 시간에 해당하는 자리는 제외하고 풀이해요. 결과에도 시간 미상으로 표시해요.</p></details>
-      <details><summary>결제한 풀이를 다시 볼 수 있나요?</summary><p>같은 브라우저에서 같은 사주와 구매한 카테고리를 24시간 다시 볼 수 있어요. 홈의 최근 구매 내역에서도 이어봐요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 복원이 어려울 수 있어요.</p></details>
-      <details><summary>사주 풀이와 상담은 어떻게 만들어지나요?</summary><p>출생정보로 계산한 사주와 해석 규칙을 바탕으로 풀이해요. 일부 상세 설명과 질문 상담에는 AI가 사용돼요. 미래를 확정하는 예언이 아니라, 본인의 성향과 선택을 돌아보는 참고 정보예요. <a href="/legal/editorial-policy.html">콘텐츠 작성 기준 보기</a></p></details>
-      <details><summary>결제가 안 되거나 풀이가 열리지 않으면요?</summary><p>먼저 같은 브라우저로 돌아와 구매 내역을 확인해 주세요. 해결되지 않으면 주문번호와 함께 <a href="mailto:na37zzang@gmail.com">고객 문의</a>로 알려주세요. 자세한 기준은 <a href="/legal/refund.html">결제·환불 정책</a>에서 확인할 수 있어요.</p></details>
-    </details>
 
-    <details class="home-help home-guide">
-      <summary>사주가 처음이라면 · 사주 보는 법</summary>
-    <section class="home-seo" aria-labelledby="homeSeoTitle">
-      <div class="home-seo-kicker">사주풀이 안내</div>
-      <h2 id="homeSeoTitle">사주팔자와 만세력, 무엇을 확인할 수 있나요?</h2>
-      <p class="home-seo-intro">사주팔자는 태어난 연월일시를 여덟 글자로 바꿔 본인의 타고난 성향과 삶의 흐름을 살펴보는 방식이에요. 천지인 사주는 출생 지역에 따른 시간 차이까지 자동으로 보정해 만세력을 계산합니다. 먼저 무료 만세력에서 사주 원국과 다섯 기운의 분포를 확인하고, 오늘의 운세나 인생 흐름처럼 필요한 풀이를 이어서 볼 수 있어요.</p>
-      <nav class="home-guide-links" aria-label="사주 입문 핵심 가이드">
-<a class="home-guide-link" href="/blog/basics/birth-time-unknown.html"><span><strong>태어난 시간을 모를 때 사주 보는 법</strong>시간을 몰라도 볼 수 있는 부분과 달라지는 부분을 알아봐요. 시간을 지어내지 않고 무료 만세력을 시작하는 방법을 안내해요.</span><span aria-hidden="true">→</span></a><a class="home-guide-link" href="/blog/basics/love-pattern.html"><span><strong>연애에서 같은 패턴이 반복될 때, 사주로 돌아볼 질문</strong>연락 속도, 애정 표현, 갈등을 푸는 방법을 먼저 돌아봐요. 무료 성향 풀이와 두 사람 궁합을 어떻게 활용할지 안내해요.</span><span aria-hidden="true">→</span></a><a class="home-guide-link" href="/blog/basics/career-direction.html"><span><strong>나에게 맞는 일을 찾을 때, 사주 풀이 활용법</strong>잘하는 일과 지치는 순간을 구분하고 실제 경험으로 확인해봐요. 무료 성향 풀이에서 직업·인생 흐름을 이어보는 방법이에요.</span><span aria-hidden="true">→</span></a>
-        <a class="home-guide-link" href="/blog/basics/saju-basics.html">
-          <span><strong>사주 보는 법</strong>사주팔자 여덟 글자와 네 기둥의 의미</span>
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-        </a>
-        <a class="home-guide-link" href="/blog/basics/manseryeok.html">
-          <span><strong>무료 만세력 활용법</strong>절기와 진태양시 보정이 필요한 이유</span>
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-        </a>
-        <a class="home-guide-link" href="/blog/basics/ohaeng.html">
-          <span><strong>다섯 기운 알아보기</strong>나무·불·흙·금속·물이 보여주는 성향</span>
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-        </a>
-        <a class="home-guide-link" href="/blog/basics/daeun-saewoon.html">
-          <span><strong>인생 흐름 읽는 법</strong>10년 단위 큰 흐름과 해마다 달라지는 기운</span>
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-        </a>
+    <footer class="home-foot">
+      <nav class="home-foot-links" aria-label="서비스 정보">
+        <a href="/about.html">서비스 소개</a><a href="/legal/editorial-policy.html">콘텐츠 작성 기준</a><a href="/legal/terms.html">이용약관</a><a href="/legal/privacy.html"><b>개인정보처리방침</b></a><a href="/legal/refund.html">결제·환불 정책</a>
       </nav>
-      <a class="home-seo-all" href="/blog/">사주풀이 가이드 전체 보기 <span class="material-symbols-outlined" aria-hidden="true">east</span></a>
-      <p class="home-seo-note">사주와 운세 풀이는 가능성과 흐름을 살펴보는 참고 정보예요. 의료·법률·투자 같은 중요한 결정은 관련 전문가의 조언과 본인의 판단을 함께 확인해 주세요.</p>
-    </section>
-    </details>
-
-    <div class="home-foot">
-      ☯ 만세력은 천문 계산(절기·신월) 기반으로 정확하게 계산돼요.<br>
-      태어난 곳에 따라 진태양시 보정도 자동 적용돼요.
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        📚 <a href="/blog/" style="color:var(--accent);text-decoration:none;font-weight:700;letter-spacing:.04em">사주 가이드 · 블로그 보기</a>
-        <span style="color:var(--muted);margin-left:6px">— 사주 보는 법 · 60갑자 일주 · MBTI×사주</span>
-      </div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:.7rem">
-        <a href="/about.html" style="color:var(--sub);text-decoration:none;margin:0 6px">서비스 소개</a>·
-        <a href="/legal/editorial-policy.html" style="color:var(--sub);text-decoration:none;margin:0 6px">콘텐츠 작성 기준</a>·
-        <a href="/legal/terms.html" style="color:var(--sub);text-decoration:none;margin:0 6px">이용약관</a>·
-        <a href="/legal/privacy.html" style="color:var(--sub);text-decoration:none;margin:0 6px"><b style="color:var(--accent)">개인정보처리방침</b></a>·
-        <a href="/legal/refund.html" style="color:var(--sub);text-decoration:none;margin:0 6px">결제·환불 정책</a>
-        <div style="margin-top:10px;color:var(--muted);font-size:.66rem;letter-spacing:.02em;line-height:1.7">
-          상호 강림 · 사업자등록번호 740-13-02692 · 통신판매업신고 (신고 예정)<br>
-          대표 김강민 · 소재지 대전광역시 유성구 과학성장로 80, 107동 2003호(둔곡동, 우미린아파트)<br>
-          연락처 010-9487-4593 · 문의 <a href="mailto:na37zzang@gmail.com" style="color:var(--muted)">na37zzang@gmail.com</a>
-          <br>사주·운세 풀이는 참고용 정보이며 의료·법률·투자 판단을 대신하지 않아요.
-        </div>
-      </div>
-    </div>
+      <p class="home-foot-biz">
+        상호 강림 · 사업자등록번호 740-13-02692 · 통신판매업신고 (신고 예정)<br>
+        대표 김강민 · 소재지 대전광역시 유성구 과학성장로 80, 107동 2003호(둔곡동, 우미린아파트)<br>
+        연락처 010-9487-4593 · 문의 <a href="mailto:na37zzang@gmail.com">na37zzang@gmail.com</a><br>
+        사주·운세 풀이는 참고용 정보이며 의료·법률·투자 판단을 대신하지 않아요.
+      </p>
+    </footer>
   </div>
 
   <!-- ───── INPUT ───── -->
@@ -3174,7 +3089,9 @@ function renderSajuPaidHistoryHome(){
   if(!root)return;
   const list=loadSajuPaidHistory();
   if(!list.length){root.innerHTML='';return;}
-  root.innerHTML=`<div class="menu-head" style="margin-top:2px"><div class="menu-head-title">최근 유료 운세</div><div class="menu-head-sub">결제 후 24시간 동안 다시 볼 수 있어요</div></div><div class="menu-grid" role="list">${list.map(r=>`<button class="menu-card locked" onclick="openSajuPaidHistory('${r.id}')" role="listitem"><span class="material-symbols-outlined mc-icon-ms" aria-hidden="true">${r.category==='newyear'?'calendar_month':'timeline'}</span><div class="mc-title">${CAT_LABEL[r.category]||r.label}</div><div class="mc-desc">${new Date(r.createdAt).toLocaleString('ko-KR')} 결제<br>만료 ${new Date(r.expiresAt).toLocaleString('ko-KR')}</div><div class="mc-tag t-paid">24시간</div><div class="mc-price">다시 보기</div></button>`).join('')}</div>`;
+  const icon={life:'timeline',newyear:'calendar_month',gunghap:'favorite',name:'edit_note'};
+  const until=t=>new Date(t).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  root.innerHTML=`<h2 class="home-group">최근 구매한 풀이</h2><div class="home-categories" role="list">${list.map(r=>`<button type="button" class="home-category" onclick="openSajuPaidHistory('${r.id}')" role="listitem"><span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">${icon[r.category]||'timeline'}</span><span class="home-category-price">${until(r.expiresAt)}까지</span></span><strong>${CAT_LABEL[r.category]||r.label}</strong></button>`).join('')}</div>`;
 }
 function openSajuPaidHistory(id){
   const r=loadSajuPaidHistory().find(x=>x.id===id);
@@ -4207,7 +4124,6 @@ function initJourney(){
     if(['self','love','career','year'].includes(entry))startJourney(entry);
   }
   journeyEvent('landing_view','home');
-  document.querySelectorAll('.journey-sample p,.journey-faq p,.journey-topic p,.journey-description,.home-category-desc,.home-start-note').forEach(el=>{el.innerHTML=preventOrphan(el.innerHTML);});
   const form=document.getElementById('formWrap');
   if(form)form.addEventListener('input',()=>journeyEvent('form_start',_category),{once:true});
   document.addEventListener('keydown',event=>{
@@ -5252,7 +5168,7 @@ function renderDailyFortune(saju){
         <div class="daily-headline">${TG_EMOJI[f.tg]||'🌟'} ${plainTG(f.tg)} 흐름의 날</div>
         <div class="daily-pillar">오늘 하루는 <em>${plainTG(f.tg)}</em> 기운이 들어오는 날이에요${f.rel.kind!=='평'?` · 본인 자리와는 <b>${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[f.rel.kind]||f.rel.kind}</b>`:''}</div>
       </div>
-      <div class="daily-card" style="text-align:left;padding:16px 18px">
+      <div class="daily-card" style="text-align:left">
         <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 하루를 한 줄로 정리하면</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.95">
           <p style="margin-bottom:10px">${personaDeepHTML(saju,'line')}에게 오늘은 <b>${plainTG(f.tg)}</b>의 기운이 들어오는 날이에요. 「${(TG_KEYWORD[f.tg]||[]).slice(0,3).join('·')}」의 색채로 하루가 펼쳐져요.</p>
@@ -5270,7 +5186,7 @@ function renderDailyFortune(saju){
       ${_dailyLuckCard(saju, f)}
       ${_dailyActionCard(saju, f)}
       ${_dailyDaeunStageCard(saju, f)}
-      <div class="daily-card" style="text-align:left;padding:18px">
+      <div class="daily-card" style="text-align:left">
         <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
       </div>
@@ -5313,7 +5229,7 @@ function _dailyDaeunStageCard(saju, f){
       if(r.kind==='합'||sr.kind==='합')_luckyHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
       else if(r.kind==='충'||sr.kind==='충')_cautionHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
     }
-    return `<div class="daily-card" style="text-align:left;padding:18px;background:var(--earth-bg)">
+    return `<div class="daily-card" style="text-align:left">
       <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
       <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
       ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.78rem;line-height:1.75">
@@ -5344,7 +5260,7 @@ function _dailyHourCard(saju, f){
   cards.forEach(g=>{
     body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.74rem;line-height:1.55"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.7rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
   });
-  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+  return `<div class="daily-card" style="text-align:left">
     <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 분위기 (12시진)</div>
     ${body}
   </div>`;
@@ -5364,7 +5280,7 @@ function _dailyLuckCard(saju, f){
   const badZs=_zm.bad.slice(0,2).map(zodiacLabel);
   // 용신 보강 한 줄
   const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
-  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+  return `<div class="daily-card" style="text-align:left">
     <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
     <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘의 기운을 바탕으로 오늘만의 행운 색·방향·숫자·음식을 정리해드렸어요. 옷이나 액세서리 색, 점심 메뉴 같은 일상 선택에 살짝 반영해보시면 흐름이 더 부드러워져요.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
@@ -5403,7 +5319,7 @@ function _dailyActionCard(saju, f){
   if(f.rel.kind==='원진')avoid.push('🌀 가까운 사람과 사소한 시비·즉답');
   if(f.rel.kind==='형')avoid.push('⚠️ 시비·과거 들춤·격한 운동');
   if(avoid.length===0)avoid.push('🤚 평소보다 한 톤 신중한 정도면 충분');
-  return `<div class="daily-card" style="text-align:left;padding:16px 18px">
+  return `<div class="daily-card" style="text-align:left">
     <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">오늘은 잘 풀리는 활동과 잠시 미룰 활동을 나눠보면 좋아요</div>
     <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘 일진(<b>${f.tg}</b>)이 본인 사주와 만나는 흐름을 바탕으로, 오늘 하루 잘 풀리는 활동과 잠시 미뤄두는 게 좋은 활동을 정리해드렸어요. 일정을 잡거나 결정을 미루실 때 참고하세요.</p>
     <div style="margin-bottom:10px">
@@ -16118,7 +16034,7 @@ function _generateTOC(h, scopeLabel){
     // 배경 끝에 불투명 바탕색을 반드시 둔다. 이 카드는 position:sticky로 고정되는데,
     // 그라데이션만 주면 background-color가 transparent가 되어 시작색(금색 10%) 구간이 거의 투명해진다.
     // 그러면 고정된 목차 아래로 지나가는 본문이 그대로 비쳐서 두 겹으로 겹쳐 보인다.
-    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:var(--bg-deep);border:none">
+    return `<!--CARD_START:TOC--><div class="nb-card" data-cardid="TOC" id="card-TOC" style="background:var(--bg-deep)">
       <div class="nb-cat">TOC</div>
       <div class="nb-title">${scopeLabel||'카드'} 목차 — 보고 싶은 카드로 바로 이동</div>
       <button type="button" class="toc-collapse-btn" onclick="toggleStickyTOC(this)" aria-expanded="true" aria-label="목차 접기"><span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_up</span><span class="toc-collapse-label">접기</span></button>

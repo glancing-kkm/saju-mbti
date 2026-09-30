@@ -2,13 +2,11 @@
 html{font-size:16px}
 #app{width:100%;max-width:var(--site-width);padding:0 24px;margin:0 auto;border:0;box-shadow:none;overflow:visible}
 #app>.view{width:100%;max-width:var(--reading-width);margin:0 auto}
-#app>#view-home{max-width:none}
 .site-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 0;border-bottom:1px solid var(--border)}
 .site-brand{display:flex;gap:10px;align-items:center;color:var(--text);text-decoration:none;font-weight:700;font-size:1.15rem;letter-spacing:-.05em}
 .site-brand img{width:30px;height:30px}
 .site-nav-links{display:flex;gap:24px;align-items:center}
 .site-nav-links a{font-size:.875rem;color:var(--sub);text-decoration:none;min-height:44px;display:flex;align-items:center}
-#view-home>.home-share-switch{display:none}
 .journey-hero{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:64px;padding:64px 0 56px}
 .journey-kicker{color:var(--accent);font-size:.75rem;font-weight:700;letter-spacing:.1em;margin-bottom:16px}
 .journey-hero h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:clamp(2rem,4vw,3.25rem);font-weight:600;line-height:1.45;letter-spacing:-.055em;margin:0 0 20px}
@@ -17,13 +15,6 @@ html{font-size:16px}
 .journey-primary{display:inline-flex;align-items:center;justify-content:center;gap:18px;border:1px solid var(--accent);border-radius:12px;background:var(--accent);color:#fff;padding:16px 24px;min-height:54px;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none}
 .journey-primary:hover{background:#194b38}
 .journey-fine{font-size:.8rem;color:var(--muted);margin:12px 0 0;line-height:1.7}
-.journey-sample{padding:30px;border:1px solid var(--border);border-radius:20px;background:var(--card);box-shadow:0 16px 48px rgba(36,59,51,.07);transform:rotate(1deg)}
-.sample-label{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--muted);padding-bottom:16px;border-bottom:1px solid var(--border)}
-.sample-label span{background:var(--accent-soft);border-radius:6px;padding:3px 8px;color:var(--accent)}
-.journey-sample h2{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.6rem;font-weight:600;line-height:1.6;margin:22px 0}
-.sample-line{display:grid;grid-template-columns:62px 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--border);font-size:.88rem;color:var(--sub);line-height:1.85}
-.sample-line b{color:var(--accent);font-size:.75rem}
-.sample-action{padding:14px 16px;border-radius:10px;background:var(--accent-soft);font-size:.88rem;color:var(--accent);margin-top:14px}
 .journey-process{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--border);padding:22px 0;margin-bottom:48px;gap:20px}
 .journey-process div{font-size:.85rem;color:var(--sub)}
 .journey-process b{display:block;color:var(--text);font-size:.9rem;margin-bottom:3px}
@@ -40,19 +31,6 @@ html{font-size:16px}
 .journey-topic p{font-size:.85rem;color:var(--sub);line-height:1.85;margin:8px 0 20px}
 .journey-topic small{margin-top:auto;color:var(--accent);font-size:.8rem;font-weight:700}
 .journey-topic small b{font-size:1rem}
-.journey-more{border:1px solid var(--border);border-radius:16px;padding:0 20px;margin-top:20px;background:var(--bg-mid)}
-.journey-more>summary{padding:18px 0;cursor:pointer;font-size:.9rem;font-weight:700}
-.journey-more .menu-grid{margin:0 0 20px;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.journey-more .menu-card{padding:18px 14px;min-height:0;background:var(--card);border:1px solid var(--border);box-shadow:none;border-radius:12px}
-.journey-more .mc-title{font-family:var(--font-heading);font-synthesis:none;font-size:.95rem}
-.journey-more .mc-desc{font-size:.8rem;line-height:1.7}
-.journey-faq details{padding:0 4px;border-bottom:1px solid var(--border)}
-.journey-faq summary{padding:20px 0;cursor:pointer;font-size:.95rem;font-weight:600}
-.journey-faq p{font-size:.9rem;line-height:1.9;color:var(--sub);padding:0 0 20px}
-#view-home .home-seo{padding:28px;margin:0 0 40px;border:1px solid var(--border);border-radius:16px;box-shadow:none;background:var(--card)}
-#view-home .home-seo h2{font-family:var(--font-heading);font-synthesis:none;font-size:1.2rem}
-#view-home .home-seo-intro{font-size:.92rem;line-height:1.95}
-#view-home .home-foot{padding:28px 0 36px;text-align:left;border-top:1px solid var(--border);font-size:.85rem}
 .hdr-back{position:relative;top:auto;left:auto;transform:none;max-width:none;height:auto;display:grid;grid-template-columns:1fr auto 1fr;padding:20px 0;background:none;border-bottom:1px solid var(--border);box-shadow:none;backdrop-filter:none}
 .hdr-back .bb{justify-self:start;box-shadow:none;background:var(--accent-soft);font-size:.85rem;color:var(--accent);padding:10px 14px}
 .hdr-brand{position:static;transform:none;font-family:var(--font-heading);font-synthesis:none;font-size:1.05rem;letter-spacing:-.04em;color:var(--accent)}
@@ -80,10 +58,9 @@ html{font-size:16px}
 .share-bar-btn{font-size:.85rem;min-height:44px;border-radius:10px;box-shadow:none}
 #view-result .panel{padding:0}
 #view-result .panel>.menu-back{display:none}
-#view-result :is(.card,.nb-card,.teaser-card,.lsummary,.daily-card){border:1px solid var(--border);border-radius:16px;box-shadow:var(--card-shadow);background:var(--card);margin:0 0 20px;padding:24px;width:100%;max-width:100%;min-width:0}
-#view-result :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.teaser-leadline,.teaser-insight,.life-deck-copy,.story-deck-copy,.ai-reading-body,.chat-msg-body){font-family:var(--font-main);font-size:1rem;line-height:1.95;color:var(--text);text-align:left;letter-spacing:0}
-#view-result :is(.nb-body p,.abody p,.ai-reading-body p){margin-bottom:16px}
-#view-result :is(.nb-title,.ctitle){font-family:var(--font-heading);font-synthesis:none;font-size:1.2rem;line-height:1.6;color:var(--text)}
+:is(#view-result,#view-tarot,#view-astrology) :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.teaser-leadline,.teaser-insight,.life-deck-copy,.story-deck-copy,.ai-reading-body,.chat-msg-body){font-family:var(--font-main);font-size:1rem;line-height:1.95;color:var(--text);text-align:left;letter-spacing:0}
+:is(#view-result,#view-tarot,#view-astrology) :is(.nb-body p,.abody p,.ai-reading-body p){margin-bottom:16px}
+:is(#view-result,#view-tarot,#view-astrology) :is(.nb-title,.ctitle){font-family:var(--font-heading);font-synthesis:none;font-size:1.2rem;line-height:1.6;color:var(--text)}
 .journey-overview{padding:28px;border:1px solid var(--border);border-radius:20px;background:var(--card);margin:0 0 20px}
 .journey-overview h2{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.65rem;line-height:1.6;margin-bottom:20px}
 .journey-reading-row{border-top:1px solid var(--border);padding:18px 0;font-size:1rem;line-height:1.95}
@@ -108,12 +85,11 @@ html{font-size:16px}
 #view-result .reading-brief small{display:block;color:var(--accent);font-size:.75rem;font-weight:700;margin-bottom:5px}
 #view-result .reading-brief .rb-action{padding:14px 16px;background:var(--accent-soft);border-radius:10px}
 #view-result .detail-hint,#view-result .tl-hint{font-size:.88rem;min-height:44px}
-#view-result :is(.story-experience,.life-experience){margin:0 0 24px;padding:0;width:100%}
-#view-result :is(.story-summary-card,.story-deck-card,.life-deck-card){min-height:0;padding:24px;box-shadow:var(--card-shadow);border:1px solid var(--border);border-radius:16px}
-#view-result :is(.story-deck-quote,.life-deck-quote){text-align:left;font-family:var(--font-heading);font-synthesis:none;font-size:1.15rem;margin:20px 0}
-#view-result :is(.story-layer-bar,.life-layer-bar){background:var(--bg);border:1px solid var(--border);box-shadow:none}
-#view-result :is(.story-kicker,.life-layer-bar small,.story-layer-bar small){display:none}
-#view-result .story-summary-actions>button,#view-result .life-primary-actions>button{min-height:48px;font-family:var(--font-heading);font-synthesis:none}
+:is(#view-result,#view-tarot,#view-astrology) :is(.story-experience,.life-experience){margin:0 0 24px;padding:0;width:100%}
+:is(#view-result,#view-tarot,#view-astrology) :is(.story-deck-quote,.life-deck-quote){text-align:left;font-family:var(--font-heading);font-synthesis:none;font-size:1.15rem;margin:20px 0}
+:is(#view-result,#view-tarot,#view-astrology) :is(.story-layer-bar,.life-layer-bar){background:var(--bg);border:1px solid var(--border);box-shadow:none}
+:is(#view-result,#view-tarot,#view-astrology) :is(.story-kicker,.life-layer-bar small,.story-layer-bar small){display:none}
+:is(#view-result,#view-tarot,#view-astrology) :is(.story-summary-actions,.life-primary-actions)>button{min-height:48px;font-family:var(--font-heading);font-synthesis:none}
 .pay-sheet{max-width:520px;max-height:90dvh;padding:24px;border-radius:20px;font-family:var(--font-main);background:var(--card);overflow-y:auto}
 .pay-title{font-family:var(--font-heading);font-synthesis:none;font-size:1.25rem}
 .pay-product-name{font-size:1.2rem}.pay-product-desc{font-size:.9rem;line-height:1.8}
@@ -132,55 +108,86 @@ html{font-size:16px}
 #app :is(.tarot-shell,.astro-shell){width:100%;max-width:none;padding-inline:0}
 #app :is(.story-deck-copy,.life-deck-copy) p{margin:0 0 16px}
 #app .life-layer-kicker{display:none}
-@media(min-width:760px){#view-result :is(.life-v3-section-body,.nb-body){max-width:64ch}#view-result .next-actions-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:640px){#app{padding:0 20px}.site-nav{padding:16px 0}.site-nav-links{gap:16px}.site-nav-links a{font-size:.78rem}.journey-hero{grid-template-columns:1fr;gap:28px;padding:36px 0}.journey-hero h1{font-size:2.2rem}.journey-description{font-size:.95rem;margin-bottom:20px}.journey-hero .journey-primary{width:100%}.journey-sample{padding:24px;transform:none}.journey-sample h2{font-size:1.4rem}.journey-process{gap:12px;margin-bottom:32px;padding:18px 0}.journey-process b{font-size:.78rem}.journey-process div{font-size:.72rem}.journey-process span{display:block;margin:0 0 4px}.journey-section{margin-bottom:32px}.journey-section-head{display:block;margin-bottom:18px}.journey-section-head h2{font-size:1.25rem;margin-bottom:5px}.journey-topics{grid-template-columns:1fr;gap:12px}.journey-topic{position:relative;padding:22px 22px 22px 76px}.journey-topic .material-symbols-outlined{position:absolute;left:20px;top:24px;font-size:22px;padding:8px}.journey-topic p{margin:6px 0 12px}.journey-topic strong{font-size:1rem}.journey-more .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#view-home .home-seo{padding:22px}.hdr-back-title{font-size:1.3rem}.form-body fieldset{padding:16px}.form-body legend small{display:block}.input-steps{font-size:.74rem}.journey-overview{padding:22px}.journey-overview h2{font-size:1.45rem}#view-result :is(.card,.nb-card,.teaser-card,.lsummary,.daily-card){padding:20px}.journey-recommend{padding:20px}.pay-sheet{padding:20px}.journey-contents{padding:20px}}
-@media(max-width:360px){#app{padding:0 14px}.journey-hero h1{font-size:1.95rem}.site-nav-links{gap:12px}.site-nav-links a{font-size:.72rem}.journey-sample{padding:20px}.journey-process{gap:8px}.form-body fieldset{padding:12px}.row3{gap:7px}}
+@media(min-width:760px){#view-result .next-actions-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){#app{padding:0 20px}.site-nav{padding:16px 0}.site-nav-links{gap:16px}.site-nav-links a{font-size:.78rem}.journey-hero{grid-template-columns:1fr;gap:28px;padding:36px 0}.journey-hero h1{font-size:2.2rem}.journey-description{font-size:.95rem;margin-bottom:20px}.journey-hero .journey-primary{width:100%}.journey-process{gap:12px;margin-bottom:32px;padding:18px 0}.journey-process b{font-size:.78rem}.journey-process div{font-size:.72rem}.journey-process span{display:block;margin:0 0 4px}.journey-section{margin-bottom:32px}.journey-section-head{display:block;margin-bottom:18px}.journey-section-head h2{font-size:1.25rem;margin-bottom:5px}.journey-topics{grid-template-columns:1fr;gap:12px}.journey-topic{position:relative;padding:22px 22px 22px 76px}.journey-topic .material-symbols-outlined{position:absolute;left:20px;top:24px;font-size:22px;padding:8px}.journey-topic p{margin:6px 0 12px}.journey-topic strong{font-size:1rem}.hdr-back-title{font-size:1.3rem}.form-body fieldset{padding:16px}.form-body legend small{display:block}.input-steps{font-size:.74rem}.journey-overview{padding:22px}.journey-overview h2{font-size:1.45rem}.journey-recommend{padding:20px}.pay-sheet{padding:20px}.journey-contents{padding:20px}}
+@media(max-width:360px){#app{padding:0 14px}.journey-hero h1{font-size:1.95rem}.site-nav-links{gap:12px}.site-nav-links a{font-size:.72rem}.journey-process{gap:8px}.form-body fieldset{padding:12px}.row3{gap:7px}}
 
 /* Display type for short signposts; Air stays on descriptions and reading text. */
-.site-brand,.site-nav-links a,.journey-primary,.journey-topic strong,.journey-process b,.journey-more>summary,.journey-faq summary{font-family:var(--font-heading);font-weight:400;font-synthesis:none;letter-spacing:-.015em}
-.journey-hero h1,.journey-sample h2,.journey-overview h2{font-weight:400;letter-spacing:-.025em}
+.site-brand,.site-nav-links a,.journey-primary,.journey-topic strong,.journey-process b{font-family:var(--font-heading);font-weight:400;font-synthesis:none;letter-spacing:-.015em}
+.journey-hero h1,.journey-overview h2{font-weight:400;letter-spacing:-.025em}
 .journey-topic p,.journey-topic small,.mc-desc{font-family:var(--font-main)}
 .a4-title,.a4-h{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
 
-/* The home screen starts with directly selectable saju categories. */
-.home-start{padding:32px 0 0}
-.home-start-heading{margin-bottom:22px}
-.home-start-heading h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:2rem;line-height:1.35;letter-spacing:-.025em;margin:0 0 8px}
-.home-start-heading p{color:var(--sub);font-size:.95rem;margin:0}
-.home-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.home-category{display:flex;flex-direction:column;min-width:0;padding:20px;text-align:left;border:1px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
+/* Home: one column, grouped menus, nothing but names and prices. */
+.home-start{padding:32px 0 8px}
+.home-start h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:2rem;line-height:1.35;letter-spacing:-.025em;margin:0 0 8px}
+.home-group{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:.95rem;color:var(--sub);letter-spacing:0;margin:28px 0 12px}
+.home-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.home-category{display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px;text-align:left;border:1px solid var(--border);border-radius:var(--card-radius);background:var(--card);color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
 .home-category:hover{border-color:var(--accent);background:var(--accent-soft)}
-.home-category-top{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;margin-bottom:14px}
-.home-category-top>.material-symbols-outlined{font-size:25px;color:var(--accent)}
+.home-category-top{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%}
+.home-category-top>.material-symbols-outlined{font-size:24px;color:var(--accent)}
 .home-category-price{font-size:.8rem;white-space:nowrap;color:var(--accent)}
-.home-category strong{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.2rem;line-height:1.4;word-break:keep-all}
-.home-category-desc{font-family:var(--font-main);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:5px;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.home-category-action{display:flex;justify-content:space-between;gap:8px;width:100%;margin-top:auto;padding-top:18px;font-size:.8rem;color:var(--accent)}
-.home-category-featured{background:var(--accent-soft);border-color:var(--accent)}
-.home-start-note{text-align:center;color:var(--sub);font-size:.8rem;margin:16px 0 24px}
-.home-other{margin:0 0 24px}
-.home-other>summary{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
-.home-other>summary>span{font-family:var(--font-main);font-size:.78rem;color:var(--sub);margin-left:8px}
-.home-help{border-top:1px solid var(--border)}
-.home-help>summary{padding:18px 4px;min-height:52px;cursor:pointer;font-family:var(--font-main);font-size:.9rem;font-weight:400;color:var(--sub)}
-.home-help>.journey-sample{max-width:640px;margin:0 auto 24px;transform:none;box-shadow:none}
-.home-help.journey-faq>details{margin-inline:16px}
-.home-help.journey-faq>details:last-child{margin-bottom:20px;border-bottom:0}
-.home-guide>.home-seo{margin:0 0 20px}
+.home-category strong{font-family:var(--font-heading);font-weight:400;font-synthesis:none;font-size:1.12rem;line-height:1.4;word-break:keep-all}
+#sajuPaidHistoryHome:empty{display:none}
+#view-home .home-foot{margin-top:48px;padding:24px 0 36px;text-align:left;border-top:1px solid var(--border);font-size:.75rem;color:var(--muted);letter-spacing:0}
+.home-foot-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:12px}
+.home-foot-links a{color:var(--sub);text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
+.home-foot-links b{color:var(--accent);font-weight:400}
+.home-foot-biz{font-size:.7rem;line-height:1.8;margin:0}
+.home-foot-biz a{color:inherit}
 @media(max-width:640px){
-  .site-nav-links a[href="#readings"]{display:none}
   .home-start{padding-top:24px}
-  .home-start-heading{margin-bottom:18px}
-  .home-start-heading h1{font-size:1.65rem}
-  .home-start-heading p{font-size:.88rem}
+  .home-start h1{font-size:1.6rem}
+  .home-group{margin:24px 0 10px}
   .home-categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .home-category{padding:14px;border-radius:12px}
-  .home-category-top{margin-bottom:10px}
+  .home-category{padding:14px;gap:10px}
   .home-category-top>.material-symbols-outlined{font-size:22px}
-  .home-category strong{font-size:1.06rem}
-  .home-category-desc{font-size:.78rem;margin-top:4px}
+  .home-category strong{font-size:1.02rem}
   .home-category-price{font-size:.74rem}
-  .home-category-action{padding-top:12px;font-size:.74rem}
-  .home-start-note{font-size:.73rem;margin:14px 0 20px}
-  .home-other>summary>span{display:none}
 }
+
+/* ── One reading surface ──────────────────────────────────────────────
+   Every screen sits in the same 720px column. Every result card, in every
+   reading (saju, tarot, astrology), shares one shape: white, 1px border,
+   16px corners, 24px inside, 16px apart. Blocks inside a card are flat
+   tinted panels with 10px corners, never a second bordered card. */
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.nb-card,.card,.simple-card,.quick-summary,.chat-card,.summary-card,.dp-card,.ny-section,.ny-hero,.daily-card,.mbti-analysis,.result-tldr,.result-hero,.next-actions,.core-keyword,.lsummary,.teaser-card,.journey-overview,.journey-recommend,.journey-contents,.char-card,.daily-scenes,.conversion-hook,.story-summary-card,.story-deck-card,.life-deck-card,.paywall-compact,.tarot-hero,.tarot-panel,.astro-hero,.astro-panel,.astro-details){
+  box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:0;
+  margin:0 0 var(--card-gap);padding:var(--card-pad);
+  background:var(--card);border:1px solid var(--border);border-radius:var(--card-radius);box-shadow:none;
+  text-align:left
+}
+#app :is(#view-result,#view-tarot,#view-astrology) .journey-recommend{background:var(--accent-soft);border-color:var(--border-strong)}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.nb-card,.card,.chat-card,.dp-card,.ny-hero,.daily-card,.result-tldr,.result-hero,.next-actions,.core-keyword,.char-card,.conversion-hook,.usage-guide,.life-timeline,.term-notice,.mbti-badge)::before{display:none}
+/* A card inside a card becomes a flat panel. */
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.nb-card,.card,.simple-card,.quick-summary,.chat-card,.summary-card,.dp-card,.ny-section,.ny-hero,.daily-card,.mbti-analysis,.result-tldr,.result-hero,.next-actions,.core-keyword,.lsummary,.teaser-card,.journey-overview,.journey-recommend,.journey-contents,.char-card,.daily-scenes,.conversion-hook,.story-summary-card,.story-deck-card,.life-deck-card,.paywall-compact,.tarot-panel,.astro-panel,.astro-details) :is(.nb-card,.card,.simple-card,.quick-summary,.summary-card,.dp-card,.ny-section,.daily-card,.mbti-analysis,.result-tldr,.next-actions,.core-keyword,.lsummary,.journey-contents,.journey-recommend,.char-card,.daily-scenes,.conversion-hook,.paywall-compact,.tarot-panel,.astro-panel,.astro-details){
+  margin:0 0 12px;padding:16px;background:var(--bg-mid);border:0;border-radius:var(--inner-radius)
+}
+/* Blocks inside cards: one corner size, no borders of their own. */
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.term-notice,.usage-guide,.life-timeline,.life-v3-profile-item,.life-v3-emoji,.life-v3-dual-card,.life-v3-golden-card,.life-v3-time-card,.life-evidence-node,.life-era,.life-word-tile,.story-stat,.story-highlight,.cc-fingerprint,.cc-note,.toc-details,.chapter-divider,.life-v3-relation,.life-final-line,.story-personal-note,.nb-good,.nb-warn,.stat-link,.life-v3-section,.life-v2-lead,.life-evidence,.life-formula-step,.daily-cat,.story-library-intro,.life-library-intro,.story-layer-bar,.life-layer-bar,.teaser-leadline,.teaser-insight,.journey-reading-action,.name-compare,.name-compare-row,.compat-cell,.gg-side,.gg-mc,.astro-warn,.astro-wheel-wrap,.ny-v3-overview-item,.ny-v3-fund,.ny-v3-daeun-card,.ny-v3-season-card,.sinsal-mini-card,.mo-row,.mo-cat,.ny-month,.mbti-badge,.mbti-intro,.mbti-axis-row,.mbti-balance,.lead-card,.flow-box,.action-guide,.summary-intro){
+  border:0;border-radius:var(--inner-radius);box-shadow:none
+}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.life-v3-section,.usage-guide,.term-notice,.story-library-intro,.life-library-intro,.story-layer-bar,.life-layer-bar,.life-timeline){background:var(--bg-mid)}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.usage-guide,.term-notice,.mbti-badge){margin:0 0 12px}
+/* Renderers still carry hand-set corners on inner boxes; round them all alike. Circles and pills keep their shape. */
+#app :is(#view-result,#view-tarot,#view-astrology) [style*="border-radius"]:not([style*="50%"]):not([style*="999"]):not([style*="border-radius:0"]){border-radius:var(--inner-radius)!important}
+/* First summary card reads like every other card: left-aligned, compact mark. */
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.story-summary-card,.ny-hero,.result-hero,.tarot-hero,.astro-hero){align-items:stretch}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.tarot-kicker,.astro-kicker){display:none}
+#app :is(#view-result,#view-tarot,#view-astrology) .story-emblem{width:52px;height:52px;margin:0 0 16px;border-radius:14px;box-shadow:none;align-self:flex-start}
+#app :is(#view-result,#view-tarot,#view-astrology) .story-emblem .material-symbols-outlined{font-size:28px}
+#app :is(#view-result,#view-tarot,#view-astrology) .story-score{align-self:flex-start;margin:12px 0 0}
+#app :is(#view-result,#view-tarot,#view-astrology) .story-personal-note{width:100%;max-width:none;margin-inline:0}
+#app :is(.tarot-shell,.astro-shell){padding:0 0 40px;gap:0}
+#app .tarot-shell>*,#app .astro-shell>*{margin-bottom:var(--card-gap)}
+/* Question chat: a plain card, not a phone mock-up. */
+#app #view-result .chat-card.qna-chat-room{width:100%!important;margin:0 0 var(--card-gap)!important;padding:0;overflow:hidden;border:1px solid var(--border)!important;border-radius:var(--card-radius)!important;background:var(--card);box-shadow:none!important}
+#app .chat-card.qna-chat-room::before,#app .chat-card.qna-chat-room::after{display:none}
+#app .qna-chat-room .chat-head{padding:14px 16px 12px 58px}
+#app .qna-room{min-height:0;padding:0}
+#app :is(.astro-input,.astro-select){min-height:50px;border-radius:10px;font-size:16px}
+#app .life-v3-relation-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+#app .life-v3-relation-point{min-width:0}
+#app :is(#view-result,#view-tarot,#view-astrology) .chapter-divider{margin-inline:0}
+@media(max-width:640px){:root{--card-pad:20px}}

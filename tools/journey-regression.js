@@ -38,8 +38,11 @@ const submitBirth=async()=>{
       const cards=[...d.querySelectorAll('[data-home-category]')];
       assert.deepEqual(cards.map(c=>c.dataset.homeCategory),['manse','daily','life','newyear','gunghap','name']);
       assert(cards.every(c=>!c.closest('details')));
-      assert(d.querySelector('.home-help .journey-sample'));
-      assert(!d.querySelector('.home-help').open);
+    });
+    check('홈: 타로·별자리·질문 6개도 펼침 없이 노출, 접힌 칸 없음',()=>{
+      const extras=[...d.querySelectorAll('[data-home-extra]')];
+      assert.equal(extras.length,6);
+      assert.equal(d.querySelectorAll('#view-home details').length,0);
     });
     for(const card of d.querySelectorAll('[data-home-category]')){
       run(card.getAttribute('onclick'));
