@@ -39,6 +39,7 @@ PRIORITY_RULES: list[tuple[str, float, str]] = [
     ("/blog/mbti-saju/",    0.7, "monthly"),      # MBTI×사주
     ("/blog/sinsal/",       0.7, "monthly"),      # 신살
     ("/blog/basics/",       0.7, "monthly"),      # 기초
+    ("/blog/guide/",        0.7, "monthly"),      # 주제별 가이드
     ("/blog/lifestage/",    0.6, "monthly"),      # 생애주기
     ("/blog/zodiac/",       0.6, "monthly"),      # 띠
     ("/blog/glossary/",     0.5, "monthly"),      # 용어

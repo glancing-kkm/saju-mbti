@@ -116,10 +116,12 @@
 <!-- html2canvas: 이미지 저장 (분석 후 사용자 상호작용 시점에만 필요 → defer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" defer></script>
-<script src="assets/vendor/astronomy.browser.min.js"></script>
+<!-- 천체 계산 엔진: 점성술·베딕 계산 때만 쓰므로 첫 화면을 막지 않게 defer -->
+<script src="assets/vendor/astronomy.browser.min.js" defer></script>
 <!-- 카카오페이는 직접 API(서버사이드 redirect) 방식 — 별도 SDK 불필요 -->
 <!-- Kakao SDK (앱 키 등록 필요: https://developers.kakao.com) -->
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+<!-- 공유 버튼을 누를 때만 쓰므로 defer (shareToKakao가 window.Kakao 유무를 확인함) -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous" defer></script>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -4534,6 +4536,9 @@ function initJourney(){
   if(!params.has('kpay')){
     const entry=params.get('start');
     if(['self','love','career','year'].includes(entry))startJourney(entry);
+    // 가이드 글에서 온 링크(/?go=상품) — 해당 풀이 소개 화면이나 무료 풀이로 바로 연다
+    const go=params.get('go');
+    if(go&&(PRODUCT_INTRO[go]||FREE_START[go]))openProduct(go);
   }
   journeyEvent('landing_view','home');
   const form=document.getElementById('formWrap');

@@ -141,3 +141,6 @@ body{background:radial-gradient(80vw 50vh at 50% -10%,rgba(255,90,54,.10),transp
 .article-cta-title{color:#fff}
 
 .blog-brand,.blog-links a,.blog-cta,.article-cta-title{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
+
+/* 한국어 단어 중간에서 줄이 끊기지 않게 */
+body{word-break:keep-all;overflow-wrap:break-word}
