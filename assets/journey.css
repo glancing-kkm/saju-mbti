@@ -198,19 +198,9 @@ html{font-size:16px}
 #app :is(#view-result,#view-tarot,#view-astrology) .chapter-divider{margin-inline:0}
 @media(max-width:640px){:root{--card-pad:20px}}
 
-/* Paid preview: the first lines of the real reading, the rest blurred under a lock.
-   Same block on saju previews and the tarot/astrology payment screens. */
-.paid-preview{margin:16px 0}
-.paid-preview-kicker{font-size:.8rem;color:var(--accent);margin:0 0 8px}
-.paid-preview-kicker b{font-weight:400;font-family:var(--font-heading)}
-.paid-preview-clear{font-size:1rem;line-height:1.95;color:var(--text);margin:0}
-.paid-preview-locked{position:relative;min-height:190px;max-height:260px;overflow:hidden;border-radius:var(--inner-radius)}
-.paid-preview-blur{filter:blur(5px);user-select:none;-webkit-user-select:none;pointer-events:none;font-size:1rem;line-height:1.95;color:var(--text)}
-.paid-preview-blur p{margin:0 0 8px}
-.paid-preview-blur h4{font-size:1rem;margin:14px 0 6px}
-.paid-preview-bar{display:block;height:12px;margin:10px 0;border-radius:999px;background:var(--border)}
-.paid-preview-bar.short{width:62%}
-.paid-preview-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.85) 45%,var(--card))}
-.paid-preview-lockbtn{width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--border-strong);border-radius:50%;background:var(--card);color:var(--accent);cursor:pointer;touch-action:manipulation}
-.paid-preview-lockbtn .material-symbols-outlined{font-size:26px}
-.paid-preview-lock p{margin:0;font-size:.85rem;color:var(--sub)}
+/* 결제 전 상품 안내. 풀이와 점수는 결제 후에만 렌더링한다. */
+.paid-access-notice{margin-bottom:var(--card-gap)}
+.paid-access-heading{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.paid-access-heading h2{font-family:var(--font-heading);font-weight:400;font-size:1.2rem;line-height:1.5;margin:0}
+.paid-access-lockbtn{flex:0 0 44px;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border-strong);border-radius:12px;background:var(--card);color:var(--accent);cursor:pointer;touch-action:manipulation}
+.paid-access-copy{color:var(--sub);line-height:1.7;margin:0 0 16px}

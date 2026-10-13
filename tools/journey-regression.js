@@ -32,6 +32,7 @@ const submitBirth=async()=>{
   try{
     run(fs.readFileSync(path.join(root,'assets/vendor/astronomy.browser.min.js'),'utf8'));
     run(scripts);
+    run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
     await wait(30);
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
     check('홈: 무료 풀이 줄과 전체 풀이 목록이 모두 보임',()=>{
@@ -63,6 +64,8 @@ const submitBirth=async()=>{
         check('유료 카드 → 소개 화면: '+card.dataset.homeCategory,()=>{
           assert.match(d.querySelector('#view-intro .ni-pricebox').textContent,/원/);
           assert(d.querySelector('#view-intro .ni-cta'));
+          assert(!/미리보기/.test(d.getElementById('view-intro').textContent));
+          assert(!d.querySelector('#view-intro .ni-teasers,#view-intro .ni-chat'));
         });
         run('startIntro()');
       }
@@ -83,15 +86,24 @@ const submitBirth=async()=>{
     check('빈 입력: 오류를 표시하고 결제로 넘어가지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/연도/);assert(!d.getElementById('payOverlay').classList.contains('vis'));});
     await submitBirth();
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(d.querySelector('#p0 .journey-overview'));assert.match(d.querySelector('#p0 .journey-overview').textContent,/시간은 모르는/);assert(d.querySelector('#journeyManseBoard .pillars'));});
-    check('무료 결과: 개인화 요약과 유료 미리보기 연결',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 미리보기 · 1,500원/);assert(events().some(e=>e[1]==='free_reading_view'));});
+    check('무료 결과: 개인화 요약과 유료 풀이 연결',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 1,500원/);assert(events().some(e=>e[1]==='free_reading_view'));});
     run("continueJourney('life')");await wait(150);
-    check('입력 재사용: 동일한 생년월일로 인생총운 미리보기',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
-    check('유료 미리보기: 실제 풀이 첫 문장 + 흐린 영역 + 자물쇠',()=>{
-      const pv=d.querySelector('#p5 .paid-preview');assert(pv);
-      assert(pv.querySelector('.paid-preview-clear').textContent.length>=40);
-      assert(pv.querySelector('.paid-preview-blur'));assert(pv.querySelector('.paid-preview-lockbtn'));
+    check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
+    check('유료 풀이: 미리보기 없이 바로 결제 안내 표시',()=>{
+      assert(d.querySelector('#p5 .paid-access-notice'));
+      assert(!d.querySelector('#p5 .paid-preview,#p5 .journey-overview,#p5 .life-experience'));
+      assert(d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
+      assert(events().some(e=>e[1]==='payment_gate_view'));
     });
+    for(const cat of ['life','newyear','monthly','daypick','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-health']){
+      check('결제 전 풀이 비공개: '+cat,()=>{
+        const lock=run(`renderPaidLock('${cat}',_saju)`);
+        assert(!/paid-preview|journey-overview|teaser-score|미리보기/.test(lock));
+        assert.match(lock,/paid-access-notice/);
+        assert.match(lock,new RegExp("openPaymentConsent\\('"+cat+"'"));
+      });
+    }
     run("openPaymentConsent('life','KAKAOPAY')");
     check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'1,500원');assert.match(d.getElementById('payCtaGo').textContent,/1,500원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
     let readyCalls=0,resolveReady;
@@ -109,7 +121,7 @@ const submitBirth=async()=>{
     check('결제 이동: 입력·사주 정보를 보존',()=>{assert(pending().saju);assert(pending().meta);assert.equal(pending().amount,1500);});
     run("_paymentStarting=false;closePaymentConsent();history.replaceState({},'','?kpay=cancel');");
     await run('_handlePaymentReturn()');
-    check('결제 취소: 잠금을 풀지 않고 보던 미리보기 복원',()=>{assert(d.querySelector('#p5 .journey-return'));assert.match(d.querySelector('#p5 .journey-return').textContent,/취소/);assert.equal(run("isUnlockedFor('life')"),false);assert.equal(pending(),null);});
+    check('결제 취소: 잠금을 풀지 않고 결제 안내 복원',()=>{assert(d.querySelector('#p5 .journey-return'));assert.match(d.querySelector('#p5 .journey-return').textContent,/취소/);assert.equal(run("isUnlockedFor('life')"),false);assert.equal(pending(),null);});
     run("_savePendingPayment({tid:'TEST_APPROVE',partnerOrderId:'TEST-ORDER-1',category:'life',amount:1500,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=life&pg_token=TEST_TOKEN');");
     w.fetch=async()=>({ok:true,json:async()=>({ok:true}),text:async()=>'',headers:{get:()=>null}});
     await run('_handlePaymentReturn()');await wait(30);
@@ -121,7 +133,7 @@ const submitBirth=async()=>{
     run("goHome()");
     const birth=async(y,m,dd)=>{d.getElementById('iY').value=y;d.getElementById('iM').value=m;d.getElementById('iD').value=dd;run('setTimeUnknown(true);analyze();');await wait(150);};
     run("goToInput('life')");await birth('1995','3','9');
-    check('다른 사주: 이전 결제로 열리지 않고 미리보기만 노출',()=>{assert.equal(run("isUnlockedFor('life')"),false);assert(d.querySelector('#p5 .paid-preview'));assert(!d.querySelector('#p5 .life-experience'));});
+    check('다른 사주: 이전 결제로 열리지 않고 결제 안내만 노출',()=>{assert.equal(run("isUnlockedFor('life')"),false);assert(d.querySelector('#p5 .paid-access-notice'));assert(!d.querySelector('#p5 .life-experience'));});
     run("goToInput('life')");await birth('1994','5','18');
     check('원래 사주로 돌아오면 24시간 안에는 다시 열림',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert(d.querySelector('#p5 .life-experience'));});
     const partner=async(y)=>{run("goToInput('gunghap')");d.getElementById('gnY').value=y;d.getElementById('gnM').value='3';d.getElementById('gnD').value='9';await birth('1994','5','18');};
@@ -136,7 +148,7 @@ const submitBirth=async()=>{
     {
       if(!w.crypto||!w.crypto.subtle)Object.defineProperty(w,'crypto',{value:require('node:crypto').webcrypto,configurable:true});
       if(!w.TextEncoder)w.TextEncoder=require('node:util').TextEncoder; // 브라우저에는 기본으로 있음
-      const tap=d.querySelector('#p4 .paid-preview-lockbtn').getAttribute('onclick');
+      const tap=d.querySelector('#p4 .paid-access-lockbtn').getAttribute('onclick');
       check('운영자 코드: 자물쇠 onclick이 해당 카테고리로 연결',()=>assert.match(tap,/_secretUnlockTap\('newyear'\)/));
       let asked=0,answer='wrong';w.prompt=()=>{asked++;return answer;};w.alert=()=>{};
       for(let i=0;i<4;i++)run(tap);
@@ -148,8 +160,10 @@ const submitBirth=async()=>{
       w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');
-    check('주제별 풀이: 연애운 미리보기는 실제 첫 문장과 1,000원 결제 버튼',()=>{
-      assert(d.querySelector('#p9 .paid-preview-clear').textContent.length>=30);
+    check('주제별 풀이: 연애운은 미리보기 없이 1,000원 결제 버튼',()=>{
+      assert(d.querySelector('#p9 .paid-access-notice'));
+      assert(!d.querySelector('#p9 .paid-preview'));
+      assert(d.getElementById('payOverlay').classList.contains('vis'));
       assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
       assert.equal(run("isUnlockedFor('topic-love')"),false);
       assert(!/역술가 질문/.test(d.querySelector('#p9 .usage-guide').textContent));
@@ -175,6 +189,12 @@ const submitBirth=async()=>{
     check('연애 타로: 주제가 흐름에 저장되고 5장을 추천',()=>{assert.equal(run('_tarotFlow.topic'),'love');assert.equal(run('_tarotFlow.recommendedSpreadId'),'tarot5');});
     run("selectTarotProduct('tarot3')");
     check('연애 타로 3장: 나의 마음 · 그 사람의 마음 · 두 사람의 흐름',()=>assert.equal(run('JSON.stringify(_tarotFlow.positions.map(p=>p.label))'),JSON.stringify(['나의 마음','그 사람의 마음','두 사람의 흐름'])));
+    run("tarotNavigate('payment')");
+    check('타로: 결제 화면에 무료·블러 미리보기 없이 상품 안내만 표시',()=>{
+      assert(d.querySelector('#tarotApp .paid-access-heading'));
+      assert(!d.querySelector('#tarotApp .paid-preview'));
+      assert.match(d.querySelector('#tarotApp .ts-cta').textContent,/결제하고 카드 뽑기/);
+    });
     run("selectTarotProduct('tarot10')");
     check('연애 타로 10장: 켈틱크로스 자리는 그대로',()=>assert.equal(run('_tarotFlow.positions[0].label'),'현재 상황'));
     run("goToTarot('question')");
@@ -193,7 +213,7 @@ const submitBirth=async()=>{
     run("goToInput('ziwei')");d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';run('setTimeUnknown(true);analyze();');await wait(150);
     check('자미두수: 태어난 시간이 없으면 안내하고 진행하지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/태어난 시간/);assert(d.getElementById('view-input').classList.contains('on'));});
     d.getElementById('iHourInput').value='9';run("setTimeUnknown(false);document.getElementById('iTimeUnknown').checked=false;analyze()");await wait(150);
-    check('자미두수: 미리보기와 1,500원 결제 버튼',()=>{assert(d.querySelector('#p9 .paid-preview-clear'));assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,500원/);});
+    check('자미두수: 결제 안내와 1,500원 결제 버튼',()=>{assert(d.querySelector('#p9 .paid-access-notice'));assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,500원/);});
     run("unlockAndRender('ziwei')");
     check('자미두수: 결제 후 12궁 판과 주성 14개',()=>{assert(d.querySelector('#p9 .zw-board'));assert.equal(run("buildZiweiChart(_saju,_meta).palaces.reduce((n,p)=>n+p.stars.length,0)"),14);});
     run("goToInput('vedic')");run('analyze()');await wait(150);
@@ -203,11 +223,43 @@ const submitBirth=async()=>{
     run("goToInput('topic-child')");
     check('아이 사주: 보호자 생년월일을 비우고 입력란 이름을 바꿈',()=>{assert.equal(d.getElementById('iY').value,'');assert.equal(d.getElementById('lgBirth').textContent,'아이 생년월일');});
     await birth('2019','3','9');
-    check('아이 사주: 보호자 입력 캐시를 덮어쓰지 않음',()=>{assert.equal(run('_lastInputs.year'),'1994');assert(d.querySelector('#p9 .paid-preview'));});
+    check('아이 사주: 보호자 입력 캐시를 덮어쓰지 않음',()=>{assert.equal(run('_lastInputs.year'),'1994');assert(d.querySelector('#p9 .paid-access-notice'));});
     run("goToInput('life')");
     check('아이 사주 뒤 다른 풀이: 보호자 생년월일이 다시 채워짐',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.equal(d.getElementById('lgBirth').textContent,'생년월일');});
     run("goToInput('newyear')");
     check('한 해 풀이: 올해를 기본값으로 사용',()=>assert.equal(d.getElementById('nyY').value,String(new Date().getFullYear())));
+    run("closePaymentConsent();window._astroPreferProduct='';goToAstrology('input')");
+    d.getElementById('astroYear').value='1994';d.getElementById('astroMonth').value='5';d.getElementById('astroDay').value='18';
+    d.getElementById('astroTimeUnknown').checked=true;
+    run('submitAstrologyBirth()');
+    check('점성술: 출생정보 입력 후 무료 요약 없이 유료 상품 선택',()=>{
+      assert.equal(run('_astroRoute'),'products');
+      assert.equal(d.querySelectorAll('#astroApp .astro-product').length,5);
+      assert(!/무료 요약/.test(d.getElementById('astroApp').textContent));
+      assert(!d.querySelector('#astroApp .astro-chart-grid'));
+    });
+    for(const product of ['birth-basic','love-marriage','career-money','yearly','full-report']){
+      run(`selectAstrologyProduct('${product}')`);
+      check('점성술 결제: '+product+'에 미리보기 없이 결제창 표시',()=>{
+        assert(d.querySelector('#astroApp .paid-access-heading'));
+        assert(!d.querySelector('#astroApp .paid-preview'));
+        assert(d.getElementById('payOverlay').classList.contains('vis'));
+        assert.equal(run('_payCategory'),'astro-'+product);
+      });
+      run('closePaymentConsent()');
+    }
+    run("window._astroPreferProduct='love-marriage';goToAstrology('input');submitAstrologyBirth()");
+    check('점성술 연애 카테고리: 무료 요약·상품 재선택 없이 해당 풀이 결제로 연결',()=>{
+      assert.equal(run('_astroRoute'),'payment');
+      assert.equal(run('_astroFlow.productType'),'love-marriage');
+      assert(d.getElementById('payOverlay').classList.contains('vis'));
+    });
+    run("closePaymentConsent();goToAstrology('natalInput');submitNatalChart()");
+    check('무료 출생차트 카테고리: 결제 없이 기존 결과 제공',()=>{
+      assert.equal(run('_astroRoute'),'natalResult');
+      assert(d.querySelector('#astroApp .astro-wheel-wrap'));
+      assert(!d.getElementById('payOverlay').classList.contains('vis'));
+    });
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));
     console.log('Journey integration checks passed. Network fully mocked; no live payment.');
   }finally{w.close();}

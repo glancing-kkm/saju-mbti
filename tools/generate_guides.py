@@ -18,7 +18,7 @@ DATE_KO = '2026년 10월 14일'
 
 GUIDES = [
     {
-        'slug': 'love-fortune', 'go': 'topic-love', 'cta': '내 연애운 무료 미리보기',
+        'slug': 'love-fortune', 'go': 'topic-love', 'cta': '내 연애운 풀이 보기',
         'title': '연애운 보는 법, 인연이 가까워지는 때를 읽는 세 가지 신호',
         'desc': '사주로 연애운을 볼 때 무엇을 보는지, 좋은 해와 좋은 달을 어떻게 쓰면 좋은지 쉬운 말로 정리했어요.',
         'sections': [
@@ -41,7 +41,7 @@ GUIDES = [
         'related': ['reunion-fortune', 'marriage-fortune', 'tarot-topics'],
     },
     {
-        'slug': 'reunion-fortune', 'go': 'topic-reunion', 'cta': '재회운 무료 미리보기',
+        'slug': 'reunion-fortune', 'go': 'topic-reunion', 'cta': '재회운 풀이 보기',
         'title': '재회운, 사주로 볼 때 꼭 함께 봐야 할 것',
         'desc': '다시 이어질 흐름이 있는지보다 먼저 확인할 질문, 다가가는 순서, 멈춰야 할 신호까지 정리했어요.',
         'sections': [
@@ -64,7 +64,7 @@ GUIDES = [
         'related': ['love-fortune', 'tarot-topics', 'marriage-fortune'],
     },
     {
-        'slug': 'money-fortune', 'go': 'topic-money', 'cta': '내 재물운 무료 미리보기',
+        'slug': 'money-fortune', 'go': 'topic-money', 'cta': '내 재물운 풀이 보기',
         'title': '재물운 보는 법, 돈 버는 방식과 새는 구멍 찾기',
         'desc': '사주로 재물운을 볼 때 안정 재물과 활동 재물을 어떻게 나눠 읽는지, 돈이 새는 습관은 어떻게 보는지 정리했어요.',
         'sections': [
@@ -87,7 +87,7 @@ GUIDES = [
         'related': ['love-fortune', 'ziwei-doushu', 'child-saju'],
     },
     {
-        'slug': 'marriage-fortune', 'go': 'topic-marriage', 'cta': '내 결혼운 무료 미리보기',
+        'slug': 'marriage-fortune', 'go': 'topic-marriage', 'cta': '내 결혼운 풀이 보기',
         'title': '결혼운과 배우자 자리, 어떻게 읽을까',
         'desc': '사주에서 배우자 자리와 결혼 흐름을 읽는 방법, 결혼 전 두 사람이 함께 맞춰볼 생활 기준을 정리했어요.',
         'sections': [
@@ -110,7 +110,7 @@ GUIDES = [
         'related': ['love-fortune', 'reunion-fortune', 'child-saju'],
     },
     {
-        'slug': 'child-saju', 'go': 'topic-child', 'cta': '우리 아이 사주 무료 미리보기',
+        'slug': 'child-saju', 'go': 'topic-child', 'cta': '우리 아이 사주 풀이 보기',
         'title': '우리 아이 사주, 이렇게 활용하세요',
         'desc': '아이 사주로 타고난 기질과 재능, 칭찬과 훈육 방법을 읽는 법과 꼭 지켜야 할 마음가짐을 정리했어요.',
         'sections': [
@@ -133,7 +133,7 @@ GUIDES = [
         'related': ['marriage-fortune', 'money-fortune', 'ziwei-doushu'],
     },
     {
-        'slug': 'ziwei-doushu', 'go': 'ziwei', 'cta': '내 자미두수 무료 미리보기',
+        'slug': 'ziwei-doushu', 'go': 'ziwei', 'cta': '내 자미두수 풀이 보기',
         'title': '자미두수란? 12궁과 14주성 쉽게 이해하기',
         'desc': '자미두수가 사주와 어떻게 다른지, 명궁·부부궁·재백궁 같은 12개의 방과 14개의 별을 어떻게 읽는지 쉽게 정리했어요.',
         'sections': [
@@ -250,7 +250,7 @@ def page(g):
     body = f'<p>{nbsp_last(esc(g["desc"]))}</p>'
     for h, ps in g['sections']:
         body += f'<h2>{esc(h)}</h2>' + ''.join(f'<p>{nbsp_last(esc(p))}</p>' for p in ps)
-    body += (f'<div class="callout"><b>{esc(g["cta"])}</b><p>생년월일로 시작해요. 상세 풀이는 무료 미리보기를 본 뒤 선택할 수 있어요.</p>'
+    body += (f'<div class="callout"><b>{esc(g["cta"])}</b><p>생년월일로 시작해요. 상세 풀이는 결제 후 바로 확인할 수 있어요.</p>'
              f'<a class="blog-cta" href="{cta}">{esc(g["cta"])} →</a></div>'
              '<p>사주와 점성술은 본인의 선택을 돌아보는 참고 정보예요. <a href="/legal/editorial-policy.html">콘텐츠 작성 기준</a>을 확인할 수 있어요.</p>')
     related = ' · '.join(f'<a href="/blog/guide/{r}.html">{esc(TITLES[r])}</a>' for r in g['related']) + ' · <a href="/blog/">가이드 전체 보기</a>'

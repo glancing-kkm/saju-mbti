@@ -212,7 +212,8 @@ body{background:
 #app .journey-form-note b{color:var(--accent)}
 #app .form-body fieldset{position:relative;padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--card)}
 #app .form-body legend{float:left;width:100%;padding:0;margin:0 0 12px;font-family:var(--font-heading);font-weight:400;font-size:.98rem;color:var(--text)}
-#app .form-body legend+*{clear:both}
+/* 숨김 입력이 제목 뒤에 있어도 모든 실제 입력 행은 제목 아래로 배치한다. */
+#app .form-body legend~*{clear:both}
 #app .form-body legend small{font-family:var(--font-main);color:var(--muted)}
 #app .form-body .ig input,#app .form-body .ig select,#app .form-body textarea,#app .form-body input[type=text]{background:#121016;border:1px solid rgba(255,255,255,.14);color:var(--text);border-radius:12px;transition:border-color .2s,box-shadow .2s}
 #app .form-body .ig input:focus,#app .form-body .ig select:focus,#app .form-body textarea:focus,#app .form-body input[type=text]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(240,198,116,.18)}
@@ -226,6 +227,14 @@ body{background:
 #app .time-unknown-row{color:var(--sub)}
 #app input[type=checkbox]{accent-color:var(--accent)}
 
+/* 타로 스프레드 — 어두운 바탕과 선명한 카드 뒷면 */
+#app .ts-preview{background:var(--bg-deep);border-color:var(--border);box-shadow:inset 0 0 40px rgba(0,0,0,.2)}
+#app .ts-pv-slot{position:relative;background:var(--tarot-purple);border:1px solid rgba(240,198,116,.78);box-shadow:0 5px 12px rgba(0,0,0,.4)}
+#app .ts-pv-slot::before{content:'';position:absolute;inset:4px;border:1px solid rgba(240,198,116,.28);border-radius:3px}
+#app .ts-pv-slot::after{content:'✦';position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);font-size:14px;line-height:1}
+#app .ts-pv-3 .ts-pv-slot:nth-child(2),#app .ts-pv-5 .p1,#app .ts-pv-10 .c2{background:#3b2d50;border-color:var(--gold);box-shadow:0 5px 14px rgba(0,0,0,.45),0 0 16px rgba(240,198,116,.12)}
+@media(min-width:640px){#app :is(.ts-pv-3,.ts-pv-5,.ts-pv-10){transform:scale(1.25)}}
+
 /* 결과 공통 */
 #app .share-bar-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text)}
 #app .share-bar-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
@@ -236,8 +245,6 @@ body{background:
 #app .life-v3-pillar.self .life-v3-pillar-glyph b,#app .life-v3-pillar.self .life-v3-pillar-glyph b *{color:var(--on-accent)!important}
 #app .teaser-lock-icon{background:var(--brand);border-color:var(--brand);color:#fff}
 #app .teaser-blur-overlay-text{background:rgba(20,16,26,.92);border-color:var(--border-strong);color:var(--text)}
-#app .paid-preview-lock{background:linear-gradient(180deg,rgba(28,25,34,.1),rgba(28,25,34,.85) 45%,var(--card))}
-#app .paid-preview-lockbtn{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 0 24px rgba(255,90,54,.45);animation:nh-pulse 2.4s ease-in-out infinite}
 @keyframes nh-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,90,54,.45)}50%{box-shadow:0 0 0 12px rgba(255,90,54,0)}}
 
 /* 풀이를 여는 순간의 짧은 연출 — 눌러서 건너뛸 수 있다 */
