@@ -34,22 +34,38 @@ const submitBirth=async()=>{
     run(scripts);
     await wait(30);
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
-    check('홈: 유료 풀이는 바로 보이고, 무료 풀이는 접힌 칸 안에 모임',()=>{
+    check('홈: 무료 풀이 줄과 전체 풀이 목록이 모두 보임',()=>{
       const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
       assert.deepEqual(paid,['life','newyear','gunghap','name','qna','tarot-question','astro-report']);
-      assert(!d.querySelector('#paidCoreMenu').closest('details'));
-      const free=d.querySelector('#view-home details.home-free');
-      assert(free&&!free.open);
-      assert.deepEqual([...free.querySelectorAll('.home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-natal','astro-today']);
-      assert.equal(d.querySelectorAll('#view-home details').length,1);
+      assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
+      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-natal','astro-today']);
+    });
+    check('홈 분류 탭: 무료만 고르면 무료 풀이 5개, 전체로 돌아오면 원래 목록',()=>{
+      run("setHomeTab('free')");
+      assert(d.getElementById('homeMain').hidden);
+      assert.equal(d.querySelectorAll('#homeFiltered .pc').length,5);
+      run("setHomeTab('all')");
+      assert(!d.getElementById('homeMain').hidden&&d.getElementById('homeFiltered').hidden);
     });
     for(const card of d.querySelectorAll('[data-home-category]')){
       run(card.getAttribute('onclick'));
+      const viaIntro=d.getElementById('view-intro').classList.contains('on');
+      if(viaIntro){
+        check('유료 카드 → 소개 화면: '+card.dataset.homeCategory,()=>{
+          assert.match(d.querySelector('#view-intro .ni-pricebox').textContent,/원/);
+          assert(d.querySelector('#view-intro .ni-cta'));
+        });
+        run('startIntro()');
+      }
       check('홈 카테고리 → 해당 입력 화면: '+card.dataset.homeCategory,()=>{
         assert.equal(run('_category'),card.dataset.homeCategory);
         assert(d.getElementById('view-input').classList.contains('on'));
         assert(!d.getElementById('payOverlay').classList.contains('vis'));
       });
+      if(viaIntro){
+        run('inputBack()');
+        check('입력 뒤로 → 소개 화면으로 복귀: '+card.dataset.homeCategory,()=>assert(d.getElementById('view-intro').classList.contains('on')));
+      }
       run('goHome()');
     }
     run("startJourney('career')");

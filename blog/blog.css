@@ -1,4 +1,5 @@
 @import url("/assets/design-system.css");
+@import url("https://fonts.googleapis.com/css2?family=Song+Myung&display=swap");
 /* ──────────────────────────────────────────────
  * 천지인 사주 블로그 — 공통 스타일
  * ────────────────────────────────────────────── */
@@ -121,9 +122,22 @@ body{
 
 /* Keep guides and policy pages on the same visual system as the app. */
 
-:root{--bg-deep:#f0f2eb;--bg-mid:#fafbf7;--card:#fff;--border:#dce3d9;--border-strong:#b7c8b8;--accent:#245c47;--accent-bright:#765d31;--accent-soft:#edf3ed;--text:#243b33;--sub:#526259;--muted:#67756d;--earth-bg:#f3efe5}
-body{background:#f7f7f2;font-family:var(--font-main)}
-.blog-nav{background:#f7f7f2}.blog-shell{max-width:1040px}.blog-article{max-width:720px}.blog-article-body{font-size:1rem;line-height:1.95}.blog-article-body h2,.blog-article-body h3,.blog-hero h1,.blog-section h2,.blog-card h3,.blog-article-head h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
-.blog-cta{background:var(--accent);color:#fff}.blog-card p{font-size:.9rem}.blog-card h3{font-size:1.05rem}.blog-article-body table{display:block;overflow-x:auto;max-width:100%}
+/* 앱과 같은 밤하늘 팔레트 — assets/night.css 와 값을 맞춘다 */
+:root{--bg:#0f0d13;--bg-deep:#0f0d13;--bg-mid:#15121b;--card:#1c1922;--border:rgba(255,255,255,.09);--border-strong:rgba(240,198,116,.36);--accent:#f0c674;--accent-bright:#ffa077;--accent-soft:rgba(240,198,116,.12);--text:#f4efe7;--sub:#c4bcb2;--muted:#9a929d;--earth-bg:rgba(233,191,104,.10);--brand:#ff5a36;--brand-2:#ff3d6e;color-scheme:dark}
+html{background:#0f0d13}
+body{background:radial-gradient(80vw 50vh at 50% -10%,rgba(255,90,54,.10),transparent 70%),#0f0d13;font-family:var(--font-main);color:var(--text)}
+.blog-nav{background:rgba(15,13,19,.92);border-bottom:1px solid var(--border)}.blog-shell{max-width:1040px}.blog-article{max-width:720px}.blog-article-body{font-size:1rem;line-height:1.95;color:var(--sub)}.blog-article-body h2,.blog-article-body h3,.blog-hero h1,.blog-section h2,.blog-card h3,.blog-article-head h1{font-family:var(--font-heading);font-weight:400;font-synthesis:none}
+.blog-brand{color:var(--brand)}
+.blog-cta,.article-cta-btn{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 0 20px rgba(255,74,80,.3)}
+.blog-hero{background:radial-gradient(70% 120% at 50% 0%,rgba(240,198,116,.10),transparent 70%)}
+.blog-hero h1{color:#fff;font-family:'Song Myung',var(--font-heading);letter-spacing:.04em;font-size:2.2rem}
+.blog-section h2,.related h3,.related-links .rl-heading{color:var(--text)}
+.blog-card{background:linear-gradient(160deg,#221e2a,var(--card));box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.blog-card:hover{box-shadow:0 12px 28px rgba(0,0,0,.4),0 0 0 1px var(--border-strong)}
+.blog-card p{font-size:.9rem}.blog-card h3{font-size:1.05rem}.blog-article-body table{display:block;overflow-x:auto;max-width:100%}
+.blog-article-body .callout{border-color:var(--border-strong)}
+.blog-foot{background:transparent}
+.article-cta{background:linear-gradient(150deg,rgba(255,90,54,.16),rgba(240,198,116,.06) 60%,var(--card));border-color:rgba(255,90,54,.35)}
+.article-cta-title{color:#fff}
 
 .blog-brand,.blog-links a,.blog-cta,.article-cta-title{font-family:var(--font-heading);font-weight:400;font-synthesis:none}

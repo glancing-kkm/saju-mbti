@@ -37,7 +37,7 @@
 <meta name="twitter:image" content="https://saju-mbti-9h1.pages.dev/assets/og-image.png">
 
 <!-- 테마 색상 -->
-<meta name="theme-color" content="#f7f7f2">
+<meta name="theme-color" content="#0f0d13">
 
 <!-- 파비콘 -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -104,7 +104,7 @@
 <link rel="preload" href="/assets/fonts/bm-dohyeon.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Song+Myung&display=swap" rel="stylesheet">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTY72BCHHC"></script>
 <script>
@@ -2239,95 +2239,238 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
+<link rel="stylesheet" href="/assets/night.css">
 </head>
 <body>
 <div id="app">
   <div class="lang-note" id="langNote" aria-live="polite"></div>
 
-  <!-- ───── HOME (카테고리 메뉴) ───── -->
+  <!-- ───── HOME ───── -->
   <div class="view on" id="view-home">
-    <nav class="site-nav" aria-label="주요 메뉴">
-      <a class="site-brand" href="/" aria-label="천지인 사주 홈"><img src="/favicon.svg" alt="" width="30" height="30">천지인 사주</a>
-      <div class="site-nav-links"><a href="/blog/">가이드</a></div>
+    <header class="nh-top">
+      <a class="nh-brand" href="/" aria-label="천지인 사주 홈"><img src="/favicon.svg" alt="" width="26" height="26">천지인 사주</a>
+      <a class="nh-icon" href="/blog/" aria-label="사주 가이드 읽기"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span></a>
+    </header>
+    <nav class="nh-tabs" id="homeTabs" aria-label="풀이 분류">
+      <button type="button" class="on" data-home-tab="all" aria-pressed="true">전체</button>
+      <button type="button" data-home-tab="free" aria-pressed="false">무료</button>
+      <button type="button" data-home-tab="love" aria-pressed="false">연애·궁합</button>
+      <button type="button" data-home-tab="year" aria-pressed="false">운세</button>
+      <button type="button" data-home-tab="life" aria-pressed="false">인생·이름</button>
+      <button type="button" data-home-tab="star" aria-pressed="false">타로·별자리</button>
     </nav>
-    <section class="home-start" id="readings" aria-labelledby="journeyTitle">
-      <h1 id="journeyTitle">어떤 풀이를 볼까요?</h1>
-      <details class="home-free">
-        <summary class="home-group home-free-toggle">무료 풀이 <span class="home-free-count">5</span><span class="material-symbols-outlined" aria-hidden="true">expand_more</span></summary>
-        <div class="home-categories" aria-label="무료 풀이">
-          <button type="button" class="home-category" data-home-category="manse" onclick="goToInput('manse')">
-            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">person</span><span class="home-category-price">무료</span></span>
-            <strong>만세력</strong>
+
+    <div class="nh-filtered" id="homeFiltered" hidden aria-live="polite"></div>
+
+    <div class="nh-main" id="homeMain">
+      <h1 class="sr-only" id="journeyTitle">천지인 사주 · 무료 사주풀이와 운세</h1>
+
+      <section class="nh-hero" aria-label="대표 풀이">
+        <div class="nh-hero-track" id="heroTrack">
+          <button type="button" class="nh-slide" data-go="life" aria-label="인생총운 소개 보기">
+            <span class="pc-art"><img src="/assets/posters/life.svg" alt="" width="300" height="400"></span>
+            <span class="pc-badge">대표</span>
+            <span class="nh-slide-text"><span class="pc-chip">평생 사주</span><strong>인생총운</strong><span>타고난 분위기부터 10년 단위 큰 흐름까지 한&nbsp;번에</span></span>
           </button>
-          <button type="button" class="home-category" data-home-category="daily" onclick="goToInput('daily')">
-            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span class="home-category-price">무료</span></span>
-            <strong>오늘의 운세</strong>
+          <button type="button" class="nh-slide" data-go="newyear" aria-label="신년운세 소개 보기">
+            <span class="pc-art"><img src="/assets/posters/newyear.svg" alt="" width="300" height="400" loading="lazy"></span>
+            <span class="nh-slide-text"><span class="pc-chip">한 해 운세</span><strong>신년운세</strong><span>열두 달 중 언제 움직이고 언제&nbsp;쉬어갈까</span></span>
           </button>
-          <button type="button" class="home-category" data-home-extra="tarot-today" onclick="goToTarot('today')">
-            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">style</span><span class="home-category-price">무료</span></span>
-            <strong>오늘의 타로</strong>
+          <button type="button" class="nh-slide" data-go="gunghap" aria-label="궁합 소개 보기">
+            <span class="pc-art"><img src="/assets/posters/gunghap.svg" alt="" width="300" height="400" loading="lazy"></span>
+            <span class="nh-slide-text"><span class="pc-chip">두 사람</span><strong>궁합</strong><span>잘 맞는 지점과 자꾸 부딪히는&nbsp;이유까지</span></span>
           </button>
-          <button type="button" class="home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
-            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">public</span><span class="home-category-price">무료</span></span>
-            <strong>나의 출생차트</strong>
+          <button type="button" class="nh-slide" data-go="tarot-question" aria-label="타로 소개 보기">
+            <span class="pc-art pc-art--tarot"><img src="/assets/posters/tarot-bg.svg" alt="" width="300" height="400" loading="lazy"><span class="pc-fan"><img src="/assets/posters/tarot-back.jpg" alt="" loading="lazy"><img src="/assets/posters/tarot-07.jpg" alt="" loading="lazy"><img src="/assets/posters/tarot-18.jpg" alt="" loading="lazy"></span></span>
+            <span class="nh-slide-text"><span class="pc-chip">타로</span><strong>타로</strong><span>지금 마음에 걸리는 질문, 카드에게&nbsp;물어봐요</span></span>
           </button>
-          <button type="button" class="home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
-            <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span><span class="home-category-price">무료</span></span>
-            <strong>오늘의 점성술</strong>
+          <button type="button" class="nh-slide" data-go="astro-report" aria-label="점성술 소개 보기">
+            <span class="pc-art"><img src="/assets/posters/astro.svg" alt="" width="300" height="400" loading="lazy"></span>
+            <span class="nh-slide-text"><span class="pc-chip">별자리</span><strong>점성술</strong><span>태어난 순간의 하늘로 읽는 나의&nbsp;성향</span></span>
+          </button>
+          <button type="button" class="nh-slide" data-go="name" aria-label="이름풀이·작명 소개 보기">
+            <span class="pc-art"><img src="/assets/posters/name.svg" alt="" width="300" height="400" loading="lazy"></span>
+            <span class="nh-slide-text"><span class="pc-chip">이름</span><strong>이름풀이</strong><span>이름에 담긴 다섯 기운과 어울리는 이름&nbsp;추천</span></span>
           </button>
         </div>
-      </details>
-      <h2 class="home-group">유료 풀이</h2>
-      <div class="home-categories" id="paidCoreMenu" aria-label="유료 풀이">
-        <button type="button" class="home-category" data-home-category="life" onclick="goToInput('life')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">timeline</span><span class="home-category-price"><span data-journey-price="life">1,500원</span></span></span>
-          <strong>인생총운</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="newyear" onclick="goToInput('newyear')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><span class="home-category-price"><span data-journey-price="newyear">1,500원</span></span></span>
-          <strong>신년운세</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="gunghap" onclick="goToInput('gunghap')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span class="home-category-price"><span data-journey-price="gunghap">1,000원</span></span></span>
-          <strong>궁합</strong>
-        </button>
-        <button type="button" class="home-category" data-home-category="name" onclick="goToInput('name')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span class="home-category-price"><span data-journey-price="name">1,500원</span></span></span>
-          <strong>이름풀이·작명</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="qna" onclick="goToInput('qna')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">forum</span><span class="home-category-price"><span data-journey-price="chatpack3">1,500원</span>~</span></span>
-          <strong>역술가에게 질문하기</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="tarot-question" onclick="goToTarot('question')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">help</span><span class="home-category-price"><span data-journey-price="tarot3">1,500원</span>~</span></span>
-          <strong>타로</strong>
-        </button>
-        <button type="button" class="home-category" data-home-extra="astro-report" onclick="goToAstrology('input')">
-          <span class="home-category-top"><span class="material-symbols-outlined" aria-hidden="true">insights</span><span class="home-category-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span></span>
-          <strong>점성술</strong>
-        </button>
-      </div>
-    </section>
-    <section id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
+        <div class="nh-dots" id="heroDots" aria-hidden="true"></div>
+      </section>
 
-    <footer class="home-foot">
-      <nav class="home-foot-links" aria-label="서비스 정보">
-        <a href="/about.html">서비스 소개</a><a href="/legal/editorial-policy.html">콘텐츠 작성 기준</a><a href="/legal/terms.html">이용약관</a><a href="/legal/privacy.html"><b>개인정보처리방침</b></a><a href="/legal/refund.html">결제·환불 정책</a>
+      <section class="nh-today" id="homeToday" aria-label="오늘의 기운" hidden></section>
+
+      <section class="nh-sec" aria-labelledby="homeFreeTitle">
+        <p class="nh-eyebrow">부담 없이</p>
+        <h2 class="nh-title" id="homeFreeTitle">무료로 먼저 보기</h2>
+        <div class="nh-rail" id="freeMenu" aria-label="무료 풀이">
+          <button type="button" class="pc home-category" data-home-category="manse" onclick="goToInput('manse')">
+            <span class="pc-art"><img src="/assets/posters/manse.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">만세력</strong><span class="pc-sub">내 사주 여덟 글자와 성향</span></span>
+          </button>
+          <button type="button" class="pc home-category" data-home-category="daily" onclick="goToInput('daily')">
+            <span class="pc-art"><img src="/assets/posters/daily.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">오늘의 운세</strong><span class="pc-sub">오늘 하루의 흐름</span></span>
+          </button>
+          <button type="button" class="pc home-category" data-home-extra="tarot-today" onclick="goToTarot('today')">
+            <span class="pc-art pc-art--tarot"><img src="/assets/posters/tarot-bg.svg" alt="" loading="lazy"><span class="pc-fan pc-fan--one"><img src="/assets/posters/tarot-20.jpg" alt="" loading="lazy"></span></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">오늘의 타로</strong><span class="pc-sub">카드 한 장으로 보는 오늘</span></span>
+          </button>
+          <button type="button" class="pc home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
+            <span class="pc-art"><img src="/assets/posters/natal.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">나의 출생차트</strong><span class="pc-sub">태양·달·상승궁 계산</span></span>
+          </button>
+          <button type="button" class="pc home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
+            <span class="pc-art"><img src="/assets/posters/astro-today.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">오늘의 점성술</strong><span class="pc-sub">오늘 하늘의 흐름</span></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="nh-sec" aria-labelledby="homeLoveTitle">
+        <p class="nh-eyebrow">연애·궁합</p>
+        <h2 class="nh-title" id="homeLoveTitle">그 사람과 나, 얼마나 잘 맞을까?</h2>
+        <div class="nh-rail nh-rail--lg">
+          <button type="button" class="pc pc--lg" data-go="gunghap">
+            <span class="pc-art"><img src="/assets/posters/gunghap.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><span class="pc-chip">사주 궁합</span><strong class="pc-title">궁합</strong><span class="pc-sub">두 사람 사주가 만나는 자리</span></span>
+          </button>
+          <button type="button" class="pc pc--lg" data-go="tarot-question">
+            <span class="pc-art pc-art--tarot"><img src="/assets/posters/tarot-bg.svg" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/posters/tarot-back.jpg" alt="" loading="lazy"><img src="/assets/posters/tarot-07.jpg" alt="" loading="lazy"><img src="/assets/posters/tarot-03.jpg" alt="" loading="lazy"></span></span>
+            <span class="pc-text"><span class="pc-chip">타로</span><strong class="pc-title">그 사람의 마음</strong><span class="pc-sub">질문하고 카드를 직접 뽑아요</span></span>
+          </button>
+          <button type="button" class="pc pc--lg" data-go="astro-report">
+            <span class="pc-art"><img src="/assets/posters/astro.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><span class="pc-chip">점성술</span><strong class="pc-title">연애·결혼운</strong><span class="pc-sub">금성과 달로 보는 관계 패턴</span></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="nh-sec" aria-labelledby="homeYearTitle">
+        <p class="nh-eyebrow">운세</p>
+        <h2 class="nh-title" id="homeYearTitle">올해, 언제 움직이면 좋을까?</h2>
+        <div class="nh-rail">
+          <button type="button" class="pc" data-go="newyear">
+            <span class="pc-art"><img src="/assets/posters/newyear.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><strong class="pc-title">신년운세</strong><span class="pc-sub">열두 달 흐름과 분야별 조언</span></span>
+          </button>
+          <button type="button" class="pc" data-go="daily">
+            <span class="pc-art"><img src="/assets/posters/daily.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">오늘의 운세</strong><span class="pc-sub">오늘 하루의 흐름</span></span>
+          </button>
+          <button type="button" class="pc" data-go="qna">
+            <span class="pc-art"><img src="/assets/posters/qna.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><strong class="pc-title">역술가에게 질문</strong><span class="pc-sub">궁금한 걸 채팅으로 바로</span></span>
+          </button>
+          <button type="button" class="pc" data-go="astro-today">
+            <span class="pc-art"><img src="/assets/posters/astro-today.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">오늘의 점성술</strong><span class="pc-sub">오늘 하늘의 흐름</span></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="nh-sec" aria-labelledby="homeLifeTitle">
+        <p class="nh-eyebrow">인생·이름</p>
+        <h2 class="nh-title" id="homeLifeTitle">내 인생, 지금 어디쯤일까?</h2>
+        <div class="nh-rail nh-rail--lg">
+          <button type="button" class="pc pc--lg" data-go="life">
+            <span class="pc-art"><img src="/assets/posters/life.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><span class="pc-chip">평생 사주</span><strong class="pc-title">인생총운</strong><span class="pc-sub">돈·일·사랑과 10년 흐름</span></span>
+          </button>
+          <button type="button" class="pc pc--lg" data-go="name">
+            <span class="pc-art"><img src="/assets/posters/name.svg" alt="" loading="lazy"></span>
+            <span class="pc-text"><span class="pc-chip">이름</span><strong class="pc-title">이름풀이·작명</strong><span class="pc-sub">이름과 사주의 궁합</span></span>
+          </button>
+          <button type="button" class="pc pc--lg" data-go="manse">
+            <span class="pc-art"><img src="/assets/posters/manse.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><span class="pc-chip">만세력</span><strong class="pc-title">내 사주 여덟 글자</strong><span class="pc-sub">무료로 성향부터 읽어요</span></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="nh-sec nh-how" aria-labelledby="homeHowTitle">
+        <p class="nh-eyebrow">천지인은 이렇게 풀어요</p>
+        <h2 class="nh-title" id="homeHowTitle">어려운 사주, 친구처럼 쉽게</h2>
+        <ul class="nh-how-grid">
+          <li><span class="material-symbols-outlined" aria-hidden="true">account_tree</span><b>여덟 글자의 관계부터</b><p>한 글자만 보지 않고 자리끼리 어떻게 만나는지&nbsp;읽어요.</p></li>
+          <li><span class="material-symbols-outlined" aria-hidden="true">cake</span><b>나이에 맞는 말로</b><p>같은 흐름도 학생에겐 공부로, 직장인에겐 일로&nbsp;풀어요.</p></li>
+          <li><span class="material-symbols-outlined" aria-hidden="true">translate</span><b>쉬운 일상어로</b><p>어려운 한자 용어 대신 생활 속 말로&nbsp;설명해요.</p></li>
+          <li><span class="material-symbols-outlined" aria-hidden="true">visibility</span><b>결제 전 미리보기</b><p>앞부분을 먼저 읽고, 마음에 들 때만&nbsp;결제해요.</p></li>
+        </ul>
+      </section>
+
+      <section class="nh-sec" id="readings" aria-labelledby="homeAllTitle">
+        <p class="nh-eyebrow">전체</p>
+        <h2 class="nh-title" id="homeAllTitle">모든 풀이 한눈에</h2>
+        <div class="nh-list" id="paidCoreMenu" aria-label="유료 풀이">
+          <button type="button" class="nh-row home-category" data-home-category="life" onclick="openIntro('life')">
+            <span class="nh-row-art"><img src="/assets/posters/life.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>인생총운</strong><span>타고난 분위기와 10년 흐름</span></span>
+            <span class="nh-row-price"><span data-journey-price="life">1,500원</span></span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-category="newyear" onclick="openIntro('newyear')">
+            <span class="nh-row-art"><img src="/assets/posters/newyear.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>신년운세</strong><span>열두 달 흐름과 분야별 조언</span></span>
+            <span class="nh-row-price"><span data-journey-price="newyear">1,500원</span></span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-category="gunghap" onclick="openIntro('gunghap')">
+            <span class="nh-row-art"><img src="/assets/posters/gunghap.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>궁합</strong><span>두 사람이 잘 맞는 곳과 다른 곳</span></span>
+            <span class="nh-row-price"><span data-journey-price="gunghap">1,000원</span></span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-category="name" onclick="openIntro('name')">
+            <span class="nh-row-art"><img src="/assets/posters/name.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>이름풀이·작명</strong><span>이름의 기운과 추천 이름 5개</span></span>
+            <span class="nh-row-price"><span data-journey-price="name">1,500원</span></span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-extra="qna" onclick="openIntro('qna')">
+            <span class="nh-row-art"><img src="/assets/posters/qna.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>역술가에게 질문하기</strong><span>궁금한 걸 채팅처럼 바로</span></span>
+            <span class="nh-row-price"><span data-journey-price="chatpack3">1,500원</span>~</span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-extra="tarot-question" onclick="openIntro('tarot-question')">
+            <span class="nh-row-art"><img src="/assets/posters/tarot-07.jpg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>타로</strong><span>질문하고 카드 3·5·10장</span></span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-extra="astro-report" onclick="openIntro('astro-report')">
+            <span class="nh-row-art"><img src="/assets/posters/astro.svg" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>점성술</strong><span>출생차트로 보는 성향·연애·일</span></span>
+            <span class="nh-row-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span>
+          </button>
+        </div>
+      </section>
+      <section class="nh-sec" id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
+
+      <footer class="home-foot">
+        <nav class="home-foot-links" aria-label="서비스 정보">
+          <a href="/about.html">서비스 소개</a><a href="/legal/editorial-policy.html">콘텐츠 작성 기준</a><a href="/legal/terms.html">이용약관</a><a href="/legal/privacy.html"><b>개인정보처리방침</b></a><a href="/legal/refund.html">결제·환불 정책</a>
+        </nav>
+        <p class="home-foot-biz">
+          상호 강림 · 사업자등록번호 740-13-02692 · 통신판매업신고 (신고 예정)<br>
+          대표 김강민 · 소재지 대전광역시 유성구 과학성장로 80, 107동 2003호(둔곡동, 우미린아파트)<br>
+          연락처 010-9487-4593 · 문의 <a href="mailto:na37zzang@gmail.com">na37zzang@gmail.com</a><br>
+          사주·운세 풀이는 참고용 정보이며 의료·법률·투자 판단을 대신하지 않아요.
+        </p>
+      </footer>
+    </div>
+
+    <div class="nh-dock">
+      <button type="button" class="nh-cta" onclick="startJourney('self')"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>무료로 내 사주 먼저 보기<span class="nh-cta-arrow" aria-hidden="true">›</span></button>
+      <nav class="nh-tabbar" aria-label="바로가기">
+        <a href="/" class="on" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">home</span>홈</a>
+        <button type="button" onclick="goToInput('daily')"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span>오늘의 운세</button>
+        <button type="button" onclick="goToTarot('today')"><span class="material-symbols-outlined" aria-hidden="true">style</span>오늘의 타로</button>
+        <a href="/blog/"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>사주 가이드</a>
       </nav>
-      <p class="home-foot-biz">
-        상호 강림 · 사업자등록번호 740-13-02692 · 통신판매업신고 (신고 예정)<br>
-        대표 김강민 · 소재지 대전광역시 유성구 과학성장로 80, 107동 2003호(둔곡동, 우미린아파트)<br>
-        연락처 010-9487-4593 · 문의 <a href="mailto:na37zzang@gmail.com">na37zzang@gmail.com</a><br>
-        사주·운세 풀이는 참고용 정보이며 의료·법률·투자 판단을 대신하지 않아요.
-      </p>
-    </footer>
+    </div>
   </div>
+
+  <!-- ───── INTRO (풀이 소개) ───── -->
+  <div class="view" id="view-intro" aria-live="polite"></div>
 
   <!-- ───── INPUT ───── -->
   <div class="view" id="view-input">
     <div class="hdr-back">
-      <button class="bb" onclick="goHome()" aria-label="처음으로 돌아가기">‹ 뒤로</button>
+      <button class="bb" onclick="inputBack()" aria-label="이전 화면으로 돌아가기">‹ 뒤로</button>
       <div class="hdr-brand">천지인 사주</div>
       <span class="hdr-spacer" aria-hidden="true"></span>
       <div class="hdr-back-meta">
@@ -4171,14 +4314,287 @@ function initJourney(){
 }
 document.addEventListener('DOMContentLoaded',initJourney);
 
+// ── 홈 · 풀이 소개 화면 ─────────────────────────────
+// 홈 카드(data-go)는 유료 풀이면 소개 화면으로, 무료 풀이면 바로 시작한다.
+// 소개 문구의 가려진 칸(<i>)은 실제 풀이에 들어 있는 항목만 쓴다.
+const PRODUCT_INTRO={
+  life:{title:'인생총운',kicker:'평생 사주',tagline:'타고난 분위기부터 10년 단위 큰 흐름까지',poster:'life.svg',tone:['#041a17','#0f4a40','#7fe0c4'],
+    teasers:['본인 재물운이 가장 크게 열리는 때는 <i>██대</i>예요','본인과 잘 맞는 사람은 <i>████</i>한 사람이에요','지금 10년은 <i>█████</i>을 다지는 시기예요'],
+    price:'life',meta:'life',steps:['출생정보 입력','무료 미리보기 확인','마음에 들면 결제'],cta:'무료 미리보기 먼저 보기',start:()=>goToInput('life')},
+  newyear:{title:'신년운세',kicker:'한 해 운세',tagline:'열두 달 중 언제 움직이고 언제 쉬어갈까',poster:'newyear.svg',tone:['#1c0309','#6a0f1d','#ffb08a'],
+    teasers:['올해 가장 힘이 붙는 달은 <i>█월</i>이에요','올해 한 박자 쉬어갈 달은 <i>██월</i>이에요','올해를 여는 키워드는 <i>███ · ███ · ███</i>예요'],
+    price:'newyear',meta:'newyear',steps:['출생정보와 연도 입력','무료 미리보기 확인','마음에 들면 결제'],cta:'무료 미리보기 먼저 보기',start:()=>goToInput('newyear')},
+  gunghap:{title:'궁합',kicker:'두 사람',tagline:'잘 맞는 지점과 자꾸 부딪히는 이유까지',poster:'gunghap.svg',tone:['#16051b','#5a1440','#ffa3c0'],
+    teasers:['두 사람의 궁합 점수는 <i>██점</i>이에요','두 사람 관계는 <i>████형</i>에 가까워요','자꾸 부딪히는 이유는 <i>██████</i> 때문이에요'],
+    price:'gunghap',meta:'gunghap',steps:['두 사람 출생정보 입력','무료 미리보기 확인','마음에 들면 결제'],cta:'무료 미리보기 먼저 보기',start:()=>goToInput('gunghap')},
+  name:{title:'이름풀이',kicker:'이름·작명',tagline:'이름에 담긴 다섯 기운과 어울리는 이름',poster:'name.svg',tone:['#0a0c24','#262c70','#b9b0ff'],
+    teasers:['본인 이름과 사주의 궁합 점수는 <i>██점</i>이에요','이름에서 가장 강한 기운은 <i>███</i>이에요','사주에 어울리는 추천 이름 다섯 개를 골라드려요'],
+    price:'name',meta:'name',steps:['출생정보와 이름 입력','무료 미리보기 확인','마음에 들면 결제'],cta:'무료 미리보기 먼저 보기',start:()=>goToInput('name')},
+  qna:{title:'역술가에게 질문',kicker:'즉문즉답',tagline:'풀이를 읽다 생긴 질문, 채팅으로 바로 물어봐요',poster:'qna.svg',tone:['#0d0520','#3a1670','#cbb0ff'],
+    chat:[['올해 이직해도 괜찮을까요?','본인 사주에서 올해는 <i>██████████</i> 흐름이라 <i>████████</i>'],['그 사람과 잘 맞는 편인가요?','두 분은 <i>████</i>이 닮아서 <i>██████████</i>']],
+    options:[['chatpack3','질문 3회'],['chatpack5','질문 5회'],['chatpack7','질문 7회']],
+    meta:'qna',steps:['출생정보 입력','질문권 고르기','채팅으로 질문하기'],cta:'질문하러 가기',start:()=>goToInput('qna')},
+  'tarot-question':{title:'타로',kicker:'질문 타로',tagline:'지금 마음에 걸리는 질문, 카드에게 물어봐요',poster:'tarot',tone:['#0a0620','#2b1a5a','#e8c46a'],
+    teasers:['지금 흐름을 보여주는 카드는 <i>████</i>예요','앞을 막고 있는 건 <i>██████</i>이에요','카드가 건네는 조언은 <i>████████</i>예요'],
+    features:['3장 · 현재 흐름과 조언을 빠르게','5장 · 현재·장애물·숨은 흐름·조언·결과','10장 켈틱크로스 · 내면·환경·장기 흐름까지','카드는 본인이 직접 골라요'],
+    options:[['tarot3','카드 3장'],['tarot5','카드 5장'],['tarot10','켈틱크로스 10장']],
+    steps:['질문 적고 장수 고르기','결제하기','카드 직접 뽑고 풀이 보기'],cta:'질문 적으러 가기',start:()=>goToTarot('question')},
+  'astro-report':{title:'점성술',kicker:'출생차트',tagline:'태어난 순간의 하늘로 읽는 나의 성향',poster:'astro.svg',tone:['#030820','#0d2464','#a9c4ff'],
+    teasers:['본인 태양은 <i>███자리</i>, 달은 <i>███자리</i>예요','연애에서 반복되는 패턴은 <i>██████</i>예요','올해 가장 크게 움직이는 행성은 <i>██</i>이에요'],
+    features:['출생차트 성향 분석 · 태양·달·상승궁','연애·결혼운 · 금성·화성·7하우스','직업·재물운 · 수성·목성·토성','올해 운세 · 지금 하늘과 출생차트의 각도'],
+    options:[['astro-birth-basic','성향 분석'],['astro-love-marriage','연애·결혼운'],['astro-career-money','직업·재물운'],['astro-yearly','올해 운세'],['astro-full-report','종합 리포트']],
+    steps:['출생정보 입력','무료 출생차트 확인','원하는 상세 풀이 고르기'],cta:'출생차트 계산하러 가기',start:()=>goToAstrology('input')}
+};
+const FREE_START={manse:()=>goToInput('manse'),daily:()=>goToInput('daily'),'tarot-today':()=>goToTarot('today'),'astro-natal':()=>goToAstrology('natal'),'astro-today':()=>goToAstrology('today')};
+const HOME_CATALOG=[
+  {go:'life',title:'인생총운',sub:'돈·일·사랑과 10년 흐름',art:'life.svg',tags:['life']},
+  {go:'newyear',title:'신년운세',sub:'열두 달 흐름과 분야별 조언',art:'newyear.svg',tags:['year']},
+  {go:'gunghap',title:'궁합',sub:'두 사람 사주가 만나는 자리',art:'gunghap.svg',tags:['love']},
+  {go:'name',title:'이름풀이·작명',sub:'이름과 사주의 궁합',art:'name.svg',tags:['life']},
+  {go:'qna',title:'역술가에게 질문',sub:'궁금한 걸 채팅으로 바로',art:'qna.svg',tags:['love','year','life']},
+  {go:'tarot-question',title:'타로',sub:'질문하고 카드를 직접 뽑아요',art:'tarot',tags:['love','star']},
+  {go:'astro-report',title:'점성술',sub:'출생차트로 보는 성향·연애·일',art:'astro.svg',tags:['love','star']},
+  {go:'manse',title:'만세력',sub:'내 사주 여덟 글자와 성향',art:'manse.svg',tags:['free','life'],free:true},
+  {go:'daily',title:'오늘의 운세',sub:'오늘 하루의 흐름',art:'daily.svg',tags:['free','year'],free:true},
+  {go:'tarot-today',title:'오늘의 타로',sub:'카드 한 장으로 보는 오늘',art:'tarot1',tags:['free','star'],free:true},
+  {go:'astro-natal',title:'나의 출생차트',sub:'태양·달·상승궁 계산',art:'natal.svg',tags:['free','star'],free:true},
+  {go:'astro-today',title:'오늘의 점성술',sub:'오늘 하늘의 흐름',art:'astro-today.svg',tags:['free','year','star'],free:true}
+];
+const HOME_TAB_LABEL={free:'무료 풀이',love:'연애·궁합',year:'운세',life:'인생·이름',star:'타로·별자리'};
+let _introKey='';
+function posterArtHTML(art){
+  const P='/assets/posters/';
+  if(art==='tarot')return `<span class="pc-art pc-art--tarot"><img src="${P}tarot-bg.svg" alt="" loading="lazy"><span class="pc-fan"><img src="${P}tarot-back.jpg" alt="" loading="lazy"><img src="${P}tarot-07.jpg" alt="" loading="lazy"><img src="${P}tarot-18.jpg" alt="" loading="lazy"></span></span>`;
+  if(art==='tarot1')return `<span class="pc-art pc-art--tarot"><img src="${P}tarot-bg.svg" alt="" loading="lazy"><span class="pc-fan pc-fan--one"><img src="${P}tarot-20.jpg" alt="" loading="lazy"></span></span>`;
+  return `<span class="pc-art"><img src="${P}${art}" alt="" loading="lazy"></span>`;
+}
+function posterCardHTML(item){
+  return `<button type="button" class="pc" data-go="${item.go}">${posterArtHTML(item.art)}${item.free?'<span class="pc-badge pc-badge--free">무료</span>':''}<span class="pc-text"><strong class="pc-title">${storyEsc(item.title)}</strong><span class="pc-sub">${storyEsc(item.sub)}</span></span></button>`;
+}
+function openProduct(go){
+  if(PRODUCT_INTRO[go])return openIntro(go);
+  if(FREE_START[go])return FREE_START[go]();
+}
+function setHomeTab(tab){
+  const main=document.getElementById('homeMain'),box=document.getElementById('homeFiltered');
+  document.querySelectorAll('#homeTabs [data-home-tab]').forEach(b=>{const on=b.dataset.homeTab===tab;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+  if(!main||!box)return;
+  if(tab==='all'){box.hidden=true;box.innerHTML='';main.hidden=false;return;}
+  const items=HOME_CATALOG.filter(x=>x.tags.includes(tab));
+  box.innerHTML=`<p class="nh-eyebrow">${HOME_TAB_LABEL[tab]}</p><h2 class="nh-title">${items.length}개의 풀이</h2><div class="nh-grid">${items.map(posterCardHTML).join('')}</div>`;
+  main.hidden=true;box.hidden=false;
+  window.scrollTo(0,0);
+}
+function introPriceHTML(cfg){
+  if(cfg.options){
+    return `<ul class="ni-options">${cfg.options.map(([k,label])=>`<li><span>${label}</span><b>${formatWon(basePriceFor(k))}</b></li>`).join('')}</ul>`;
+  }
+  return `<p class="ni-price"><b>${formatWon(basePriceFor(cfg.price))}</b><span>한 번 결제</span></p>`;
+}
+function introFeatures(cfg){
+  if(cfg.features)return cfg.features;
+  const m=PAID_META[cfg.meta]||{};
+  return (m.features||[]).map(x=>x.replace(/^·\s*/,'')).filter(x=>!/원\b|\d+회 \d/.test(x));
+}
+function renderIntro(key){
+  const cfg=PRODUCT_INTRO[key];
+  const root=document.getElementById('view-intro');
+  if(!cfg||!root)return;
+  const [c1,c2,ac]=cfg.tone;
+  root.style.setProperty('--t-bg',c1);root.style.setProperty('--t-bg2',c2);root.style.setProperty('--t-accent',ac);
+  const art=cfg.poster==='tarot'?posterArtHTML('tarot'):`<span class="pc-art"><img src="/assets/posters/${cfg.poster}" alt=""></span>`;
+  const po=s=>preventOrphan(s);
+  const teaser=cfg.chat
+    ?`<div class="ni-chat">${cfg.chat.map(([q,a])=>`<p class="ni-q">${q}</p><p class="ni-a">${a}</p>`).join('')}</div><p class="ni-fine">질문 예시예요. 실제 답변은 본인 사주로 만들어져요.</p>`
+    :`<ol class="ni-teasers">${cfg.teasers.map((t,i)=>`<li><span>${i+1}</span><p>${po(t)}</p></li>`).join('')}</ol>`;
+  const others=Object.keys(PRODUCT_INTRO).filter(k=>k!==key).map(k=>HOME_CATALOG.find(x=>x.go===k)).filter(Boolean);
+  root.innerHTML=`
+    <header class="ni-top"><button type="button" class="ni-back" onclick="goHome()" aria-label="홈으로 돌아가기"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span></button><span class="ni-brand">천지인 사주</span><span aria-hidden="true"></span></header>
+    <section class="ni-hero">
+      <p class="ni-kicker">${cfg.kicker}</p>
+      <h1 class="ni-title" id="introTitle" tabindex="-1">${cfg.title}</h1>
+      <p class="ni-tagline">${po(cfg.tagline)}</p>
+      <div class="ni-poster" aria-hidden="true">${art}</div>
+    </section>
+    <section class="ni-glass" aria-label="풀어보면 알 수 있는 것">
+      <h2>풀어보면 이런 걸 알 수 있어요</h2>
+      ${teaser}
+    </section>
+    <section class="ni-sec">
+      <h2>풀이에 담긴 내용</h2>
+      <ul class="ni-features">${introFeatures(cfg).map(x=>`<li><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><p>${po(storyEsc(x))}</p></li>`).join('')}</ul>
+    </section>
+    <section class="ni-sec">
+      <h2>이렇게 진행돼요</h2>
+      <ol class="ni-steps">${cfg.steps.map((s,i)=>`<li><b>${i+1}</b><span>${s}</span></li>`).join('')}</ol>
+    </section>
+    <section class="ni-sec ni-pricebox">
+      <h2>가격</h2>
+      ${introPriceHTML(cfg)}
+      <p class="ni-fine">결제한 풀이는 같은 브라우저에서 24시간 다시 볼 수 있어요.<br><a href="/legal/refund.html" target="_blank" rel="noopener">결제·환불 정책</a> · <a href="mailto:na37zzang@gmail.com">고객 문의</a></p>
+    </section>
+    <section class="ni-sec ni-more">
+      <h2>다른 풀이도 둘러보기</h2>
+      <div class="nh-rail">${others.map(posterCardHTML).join('')}</div>
+    </section>
+    <div class="ni-dock"><button type="button" class="ni-cta" onclick="startIntro()">${cfg.cta}<span aria-hidden="true">›</span></button></div>`;
+}
+function openIntro(key){
+  if(!PRODUCT_INTRO[key])return;
+  _introKey=key;
+  renderIntro(key);
+  showView('intro');
+  journeyEvent('view_item',key,{step:'intro'});
+  const t=document.getElementById('introTitle');
+  if(t)t.focus({preventScroll:true});
+}
+function startIntro(){
+  const cfg=PRODUCT_INTRO[_introKey];
+  if(!cfg)return goHome();
+  journeyEvent('select_content',_introKey,{step:'intro'});
+  cfg.start();
+}
+function initHeroCarousel(){
+  const track=document.getElementById('heroTrack'),dots=document.getElementById('heroDots');
+  if(!track||!dots)return;
+  const slides=[...track.children];
+  dots.innerHTML=slides.map(()=>'<i></i>').join('');
+  let idx=0,timer=null,paused=false;
+  const mark=()=>{
+    const mid=track.scrollLeft+track.clientWidth/2;
+    let best=0,dist=Infinity;
+    slides.forEach((s,i)=>{const d=Math.abs(s.offsetLeft+s.offsetWidth/2-mid);if(d<dist){dist=d;best=i;}});
+    idx=best;
+    slides.forEach((s,i)=>s.classList.toggle('is-active',i===best));
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===best));
+  };
+  const go=i=>{const s=slides[(i+slides.length)%slides.length];if(!s)return;const left=s.offsetLeft-(track.clientWidth-s.offsetWidth)/2;if(typeof track.scrollTo==='function')track.scrollTo({left,behavior:'smooth'});else track.scrollLeft=left;};
+  let raf=0;
+  track.addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(mark);},{passive:true});
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tick=()=>{if(!paused&&!document.hidden&&document.getElementById('view-home').classList.contains('on'))go(idx+1);};
+  if(!reduce)timer=setInterval(tick,4800);
+  ['pointerdown','focusin','mouseenter'].forEach(ev=>track.addEventListener(ev,()=>{paused=true;}));
+  ['mouseleave'].forEach(ev=>track.addEventListener(ev,()=>{paused=false;}));
+  track.addEventListener('pointerup',()=>setTimeout(()=>{paused=false;},6000));
+  mark();
+  // 처음엔 첫 장이 가운데 오도록
+  requestAnimationFrame(()=>{go(0);mark();});
+}
+// 홈 '오늘의 기운' — 오늘 날짜의 일진(하늘·땅 글자)으로 누구에게나 같은 하루 분위기를 보여준다.
+// 본인 사주와 맞춘 풀이는 무료 '오늘의 운세'로 이어진다.
+function renderHomeToday(){
+  const root=document.getElementById('homeToday');
+  if(!root)return;
+  try{
+    const now=new Date();
+    const p=dayPillar(now.getFullYear(),now.getMonth()+1,now.getDate());
+    const el=Math.floor(p.stem/2);
+    const EL=[
+      {name:'나무',color:'#6fd39a',msg:'새로 시작하는 일에 힘이 붙는 날이에요.',tip:'미뤄 둔 첫 연락을 오늘 보내보세요.'},
+      {name:'불',color:'#ff8a7a',msg:'말과 표현이 잘 전해지는 날이에요.',tip:'고마운 사람에게 한마디 건네보세요.'},
+      {name:'흙',color:'#e9bf68',msg:'차분히 정리하고 다지기 좋은 날이에요.',tip:'책상 한 칸, 일정 하나를 정리해보세요.'},
+      {name:'금속',color:'#dfe6f5',msg:'결정하고 마무리하기 좋은 날이에요.',tip:'끝내지 못한 일 하나를 마무리해보세요.'},
+      {name:'물',color:'#86b4ff',msg:'생각을 깊게 하고 쉬어가기 좋은 날이에요.',tip:'잠깐 걸으며 머리를 비워보세요.'}
+    ][el];
+    const animal=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'][p.branch];
+    const ganji=STEMKO[p.stem]+BRCHKO[p.branch];
+    root.style.setProperty('--el',EL.color);
+    root.innerHTML=`<div class="nh-today-orb" aria-hidden="true"></div>
+      <div class="nh-today-body">
+        <p class="nh-today-date">${now.getMonth()+1}월 ${now.getDate()}일 · ${ganji}일</p>
+        <h2 class="nh-today-title">${preventOrphan(EL.msg)}</h2>
+        <p class="nh-today-chips"><span>${EL.name}의 기운</span><span>${animal}의 날</span></p>
+        <p class="nh-today-tip">오늘 한 가지 · ${EL.tip}</p>
+        <button type="button" class="nh-today-btn" onclick="goToInput('daily')">내 사주로 오늘 운세 보기 <span aria-hidden="true">›</span></button>
+      </div>`;
+    root.hidden=false;
+  }catch(e){root.hidden=true;}
+}
+function initHomeReveal(){
+  if(!('IntersectionObserver' in window))return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  document.documentElement.classList.add('js-anim');
+  const io=new IntersectionObserver(entries=>entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('#view-home .nh-sec,#view-home .nh-today').forEach(el=>io.observe(el));
+}
+function initHome(){
+  document.addEventListener('click',e=>{
+    const card=e.target.closest('[data-go]');
+    if(card&&card.closest('#view-home,#view-intro')){e.preventDefault();openProduct(card.dataset.go);return;}
+    const tab=e.target.closest('#homeTabs [data-home-tab]');
+    if(tab)setHomeTab(tab.dataset.homeTab);
+  });
+  initHeroCarousel();
+  renderHomeToday();
+  initHomeReveal();
+}
+document.addEventListener('DOMContentLoaded',initHome);
+
+// 읽기 화면 머리 배너에 풀이 포스터를 깐다
+const VIEW_ART={manse:'manse.svg',daily:'daily.svg',daypick:'daily.svg',monthly:'newyear.svg',newyear:'newyear.svg',life:'life.svg',gunghap:'gunghap.svg',name:'name.svg',qna:'qna.svg',tarot:'tarot-bg.svg',astrology:'astro.svg'};
+function applyViewTheme(name){
+  const view=document.getElementById('view-'+name);
+  if(!view||name==='home'||name==='intro')return;
+  const key=(name==='tarot'||name==='astrology')?name:(_category||'manse');
+  const art=VIEW_ART[key];
+  view.style.setProperty('--hdr-art',art?`url(/assets/posters/${art})`:'none');
+  if(name==='result'){
+    const t=view.querySelector('.hdr-back-title');
+    const label=CAT_LABEL[_category]||'사주';
+    if(t)t.textContent=['manse','daily'].includes(_category)?label:label+' 풀이';
+  }
+}
+// 소개 화면을 거쳐 왔다면 뒤로 가기는 소개 화면으로
+function inputBack(){
+  if(_introKey&&PRODUCT_INTRO[_introKey]&&(_introKey===_category||(_introKey==='qna'&&_category==='qna')))return openIntro(_introKey);
+  goHome();
+}
+// 풀이를 여는 순간의 짧은 연출. 계산은 이미 끝났고, 눌러서 바로 건너뛸 수 있다.
+function playReveal(cat){
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const old=document.getElementById('revealLayer');if(old)old.remove();
+  const msg={manse:'여덟 글자를 펼치는 중',daily:'오늘의 기운을 읽는 중',life:'인생의 큰 흐름을 읽는 중',newyear:'한 해의 흐름을 읽는 중',gunghap:'두 사람의 기운을 맞춰보는 중',name:'이름의 기운을 읽는 중',daypick:'그날의 기운을 읽는 중',monthly:'달마다의 흐름을 읽는 중'}[cat]||'하늘의 기운을 읽는 중';
+  const el=document.createElement('div');
+  el.id='revealLayer';el.className='reveal';el.setAttribute('role','status');
+  el.innerHTML=`<div><div class="reveal-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p>${msg}</p><small>다섯 기운의 균형을 맞추고 있어요</small></div>`;
+  const done=()=>{if(el.parentNode)el.remove();};
+  el.addEventListener('click',done);
+  el.addEventListener('animationend',e=>{if(e.animationName==='reveal-out')done();});
+  document.body.appendChild(el);
+  setTimeout(done,2200);
+}
+// 휴대폰 뒤로 가기 — 홈을 떠날 때 한 칸만 쌓아 두고, 뒤로 가면 홈으로 돌아온다.
+// 결제 창이 열려 있으면 먼저 결제 창만 닫는다.
+let _skipNextPop=false,_popping=false;
+function syncHistory(name){
+  if(_popping||!window.history||typeof history.pushState!=='function')return;
+  const inApp=!!(history.state&&history.state.app);
+  if(name==='home'){if(inApp){_skipNextPop=true;history.back();}return;}
+  if(!inApp)history.pushState({app:1},'',location.href);
+}
+window.addEventListener('popstate',()=>{
+  if(_skipNextPop){_skipNextPop=false;return;}
+  const overlay=document.getElementById('payOverlay');
+  if(overlay&&overlay.classList.contains('vis')){
+    if(!_paymentStarting)closePaymentConsent();
+    history.pushState({app:1},'',location.href);
+    return;
+  }
+  if(document.getElementById('view-home').classList.contains('on'))return;
+  _popping=true;
+  try{goHome();}finally{_popping=false;}
+});
 // ── View Router ──
 function showView(name){
   closeHomeShareMenu();
-  ['home','input','result','tarot','astrology'].forEach(v=>{
+  ['home','intro','input','result','tarot','astrology'].forEach(v=>{
     const el=document.getElementById('view-'+v);
     if(el)el.className='view'+(v===name?' on':'');
   });
   window.scrollTo(0,0);
+  applyViewTheme(name);
+  syncHistory(name);
   if(name==='home')refreshJourneyPrices();
   const heading=document.querySelector('#view-'+name+' .hdr-back-title');
   if(heading){heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
@@ -4722,9 +5138,9 @@ function renderTarotQuestion(root){
   const hist=loadTarotHistory();
   root.innerHTML=tarotHtml(`
     <div class="tq-head">
-      <div class="tq-title">당신의 질문</div>
+      <div class="tq-title">본인의 질문</div>
       <div class="tq-div"><span></span><i>✦</i><span></span></div>
-      <div class="tq-sub">마음을 집중하세요. 카드는 당신이 지금 들을 준비가 된 것을 보여줍니다.</div>
+      <div class="tq-sub">마음을 모아 보세요. 카드는 본인이 지금 들을 준비가 된 이야기를 보여줘요.</div>
     </div>
     <div class="tq-panel">
       <label class="tq-label" for="tarotQuestionInput">질문 내용</label>
@@ -15489,9 +15905,12 @@ function _plainReadingText(html){
   return normalizeReadingText(String(html))
     .replace(/<style[\s\S]*?<\/style>/gi,' ')
     .replace(/<script[\s\S]*?<\/script>/gi,' ')
+    // 장식 문양(reading-sigil)은 요약 문장에 넣지 않는다 — 남기면 &#10022; 가 글자로 새어 나온다
+    .replace(/<span class="reading-sigil"[^>]*>[\s\S]*?<\/span>/g,' ')
     .replace(/<br\s*\/?>/gi,' ')
     .replace(/<\/(?:p|div|li|h\d|ul|ol)>/gi,' ')
     .replace(/<[^>]+>/g,' ')
+    .replace(/&#(\d+);/g,(m,n)=>{const c=+n;return c>=0x2190&&c<=0x2BFF?' ':String.fromCodePoint(c);})
     .replace(/&nbsp;/g,' ')
     .replace(/&amp;/g,'&')
     .replace(/&lt;/g,'<')
@@ -22015,6 +22434,7 @@ function analyze(){
 
       gotoCard(targetIdx);
       showView('result');
+      playReveal(cat);
       journeyEvent(cat==='manse'||cat==='daily'?'free_reading_view':unlocked?'paid_reading_view':'reading_preview_view',cat);
       setTimeout(()=>{try{applyLanguageToVisibleResult(document.getElementById('p'+targetIdx));}catch(e){}},0);
       setTimeout(()=>{try{hydrateAIReadings(document.getElementById('p'+targetIdx));}catch(e){}},0);
@@ -22423,7 +22843,8 @@ function _safeScale(target){
   return Math.max(1,s);          // 1배 미만으로는 내리지 않음
 }
 function _captureOpts(target){
-  return {backgroundColor:'#f6f1e7',scale:_safeScale(target),useCORS:true,logging:false,imageTimeout:0,windowWidth:document.documentElement.clientWidth};
+  // 결과 화면은 밤하늘 테마라 저장 이미지 바탕도 같은 색으로 깐다
+  return {backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0f0d13',scale:_safeScale(target),useCORS:true,logging:false,imageTimeout:0,windowWidth:document.documentElement.clientWidth};
 }
 function _canvasToBlob(canvas){
   // PNG는 이미지 길이가 길면 10MB+가 되어 폰 갤러리가 자동 다운샘플 → 흐려 보임.
