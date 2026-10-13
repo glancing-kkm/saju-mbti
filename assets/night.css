@@ -312,3 +312,63 @@ body{background:
 #app .qna-chat-room .chat-btn{background:var(--brand);color:#fff}
 #app .qna-chat-room .chat-btn:disabled{background:#3a3542;color:#8d8592}
 #app .qna-chat-room .chat-msg-user::after,#app .qna-chat-room .chat-msg-reply::after,#app .qna-chat-room .chat-msg-loading::after{display:none}
+
+/* 그림이 없는 카드(컵 2·8·10·여왕) — 슈트 문양을 카드처럼 보여준다 */
+.tarot-mini-face>.tarot-card-sym,.td-mini>.tarot-card-sym,.tarot-card-front>.tarot-card-sym{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:inherit;background:radial-gradient(circle at 50% 40%,#3a2a6a,#120c26 75%);color:#e8c46a;font-size:2.4rem;line-height:1;box-shadow:inset 0 0 0 2px rgba(232,196,106,.55),inset 0 0 0 6px #120c26,inset 0 0 0 7px rgba(232,196,106,.35)}
+.td-mini>.tarot-card-sym{font-size:1.2rem}
+
+/* 캐릭터 상담 — 상담사 고르기 */
+#app .qna-counselors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 10px 10px;background:rgba(20,17,25,.97);border-bottom:1px solid var(--border);scrollbar-width:none}
+#app .qna-counselors::-webkit-scrollbar{display:none}
+#app .qna-counselor{min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px 9px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:#1c1922;color:var(--text);font-family:inherit;cursor:pointer;text-align:center;transition:border-color .2s,transform .2s}
+#app .qna-counselor-art{width:46px;height:46px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+#app .qna-counselor-art img{width:100%;height:100%;object-fit:cover;display:block}
+#app .qna-counselor b{font-size:.82rem;font-weight:700;letter-spacing:-.01em}
+#app .qna-counselor small{font-size:.62rem;word-break:keep-all;line-height:1.35;color:var(--muted)}
+#app .qna-counselor.on{border-color:var(--accent);background:linear-gradient(180deg,rgba(240,198,116,.16),#1c1922)}
+#app .qna-counselor.on .qna-counselor-art{box-shadow:0 0 0 2px var(--accent),0 0 16px rgba(240,198,116,.35)}
+#app .qna-counselor:active{transform:scale(.97)}
+#app .qna-chat-room .chat-head::after{content:attr(data-initial)}
+#app .qna-chat-room .chat-msg-reply .chat-msg-lab{display:block;margin:0 0 4px;font-size:.7rem;font-weight:700;color:var(--accent)}
+
+/* 자미두수 12궁 판 */
+.zw-board{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,minmax(66px,auto));gap:3px;margin:14px 0 4px}
+.zw-cell{display:flex;flex-direction:column;gap:2px;padding:6px 5px;border-radius:8px;background:#1a1622;border:1px solid rgba(255,255,255,.06);min-width:0}
+.zw-cell small{font-size:.6rem;color:var(--muted)}
+.zw-cell b{font-size:.72rem;color:var(--text)}
+.zw-cell span{font-size:.66rem;line-height:1.3;color:#d8b4ff;word-break:keep-all}
+.zw-cell.ming{border-color:#d8b4ff;background:linear-gradient(180deg,rgba(216,180,255,.16),#1a1622)}
+.zw-cell.now{box-shadow:inset 0 0 0 1px var(--accent)}
+.zw-cell.now b::after{content:' · 지금';color:var(--accent);font-weight:600}
+.zw-center{grid-row:2/4;grid-column:2/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;background:radial-gradient(circle,#3a1a6a,#140a26);text-align:center;padding:8px}
+.zw-center b{font-family:var(--font-display);font-size:1.25rem;color:#f3e6ff}
+.zw-center span{font-size:.68rem;color:#cdb8ee}
+/* 베딕·마하보테 무료 결과 머리 */
+.vd-hero{display:flex;flex-direction:column;align-items:center;gap:4px;margin:6px 0 14px;padding:26px 16px;border-radius:22px;text-align:center;background:radial-gradient(circle at 50% 30%,#5a3a1a,#1a0f08 75%);border:1px solid rgba(240,198,116,.3)}
+.vd-hero small{font-size:.72rem;color:var(--muted)}
+.vd-hero b{font-family:var(--font-display);font-size:2rem;color:#ffe2a8}
+.vd-hero span{font-size:.82rem;color:var(--sub)}
+.vd-hero.mb{background:radial-gradient(circle at 50% 30%,#1a4a3a,#08160f 75%);border-color:rgba(159,240,208,.3)}
+.vd-hero.mb b{color:#c8ffe8}
+
+/* 보관함 */
+#view-vault{padding:0 20px 48px}
+#app .nh-tabbar button{position:relative}
+.nh-tab-count{position:absolute;top:2px;left:calc(50% + 6px);min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--brand);color:#fff;font-style:normal;font-size:.62rem;font-weight:700;line-height:16px;text-align:center}
+.vault-head{margin:8px 0 18px}
+.vault-title{margin:0 0 6px;font-family:var(--font-display);font-size:1.9rem;color:var(--text)}
+.vault-head p,.vault-fine{margin:0;font-size:.82rem;color:var(--muted);line-height:1.6}
+.vault-fine{margin-top:18px;text-align:center}
+.vault-list{display:flex;flex-direction:column;gap:10px}
+.vault-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px 10px 10px;border:1px solid var(--border);border-radius:18px;background:var(--card);color:var(--text);font-family:inherit;text-align:left;cursor:pointer}
+.vault-art{flex:none;width:52px;height:68px;border-radius:10px;overflow:hidden}
+.vault-art img{width:100%;height:100%;object-fit:cover;display:block}
+.vault-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.vault-text small{font-size:.68rem;color:var(--accent)}
+.vault-text b{font-size:.98rem}
+.vault-text span{font-size:.76rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vault-exp{flex:none;font-size:.7rem;color:var(--sub);text-align:right}
+.vault-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 16px;border:1px dashed var(--border);border-radius:22px;text-align:center}
+.vault-empty>.material-symbols-outlined{font-size:2.6rem;color:var(--accent)}
+.vault-empty b{font-size:1.05rem}
+.vault-empty p{margin:0 0 8px;font-size:.84rem;color:var(--muted);line-height:1.6}

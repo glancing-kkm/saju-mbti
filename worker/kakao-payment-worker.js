@@ -41,6 +41,16 @@ const CATEGORY_PRICE = {
   'astro-career-money': 1500,
   'astro-yearly': 1500,
   'astro-full-report': 2500,
+  // 주제별 사주 풀이
+  'topic-love': 1000,
+  'topic-money': 1000,
+  'topic-career': 1000,
+  'topic-marriage': 1000,
+  'topic-reunion': 1000,
+  'topic-study': 1000,
+  'topic-child': 1000,
+  'topic-health': 1000,
+  ziwei: 1500,
 };
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;

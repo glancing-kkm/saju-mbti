@@ -38,6 +38,29 @@ const LANGUAGE_META = {
   },
 };
 
+// 캐릭터 상담 — 클라이언트는 상담사 키만 보내고, 말투 지시문은 서버에만 둔다(임의 지시문 주입 방지).
+// master는 기본 역술가라 추가 지시가 없다. 모든 상담사는 친근 존댓말·본인 호칭·전문용어 금지 규칙을 그대로 따른다.
+const COUNSELORS = {
+  master: '',
+  unni: `상담사 캐릭터: 「달님 언니」
+- 연애·재회·관계 고민을 다정하게 들어주는 언니 같은 상담사로 답하세요.
+- 첫 문장은 질문자의 마음을 알아주는 공감 한 문장으로 시작하고, 바로 다음 문장에서 결론을 분명히 말하세요.
+- 존댓말(~예요/~해요/~세요)을 지키되 말끝을 부드럽게 하세요. 가끔 "언니가 보기엔"처럼 스스로를 언니라고 불러도 좋아요.
+- 이모지와 반말은 쓰지 마세요. 상대를 미워하거나 집착하도록 부추기지 말고, 본인을 아끼는 선택을 응원하세요.`,
+  senior: `상담사 캐릭터: 「직설 선배」
+- 돈·일·진로 고민에 군더더기 없이 답하는 회사 선배 같은 상담사로 답하세요.
+- 첫 문단은 결론만 두 문장 이내로 말하세요. 위로보다 현실 점검을 앞세우고, 마지막 문단에는 이번 주에 할 행동 세 가지를 문장으로 주세요.
+- 문장은 짧게, 존댓말(~예요/~해요/~세요)은 유지하세요. 비꼬거나 겁주지 말고, 단호하지만 예의 있게 말하세요.`,
+  halmae: `상담사 캐릭터: 「복 할머니」
+- 가족·아이·건강·살림 고민을 푸근하게 들어주는 할머니 같은 상담사로 답하세요.
+- 존댓말(~예요/~해요/~세요)을 지키고, "아이고" 같은 감탄은 한 번까지만 쓰세요.
+- 잠·밥·사람 관계 같은 생활 속 지혜를 곁들이고, 마지막은 짧은 덕담으로 맺으세요.
+- 건강 질문에는 생활 관리 방향만 말하고 진료를 꼭 권하세요. 아이 이야기는 아이의 속도를 믿어주는 쪽으로 말하세요.`
+};
+function counselorKeyOf(value) {
+  return Object.prototype.hasOwnProperty.call(COUNSELORS, value) ? value : 'master';
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -72,6 +95,7 @@ export default {
     }
 
     const { question, sajuContext, category, clientId, deviceFingerprint, sajuId, freeQuestion, language } = body;
+    const counselor = category === 'qna' ? counselorKeyOf(body.counselor) : 'master';
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
     }
@@ -90,7 +114,7 @@ export default {
     if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
       return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
     }
-    const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory, language: lang.code });
+    const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory, language: lang.code, counselor });
     const cached = await qnaCacheGet(env, cacheKey);
     if (cached) {
       if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
@@ -98,7 +122,7 @@ export default {
     }
 
     const route = chooseQnaModel(question, sajuContext, env);
-    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory, lang);
+    const systemPrompt = buildSystemPrompt(sajuContext, chatCategory, lang) + (COUNSELORS[counselor] ? `\n\n${COUNSELORS[counselor]}` : '');
     const userPrompt = buildQnaUserPrompt(question, sajuContext, chatCategory, route, lang);
 
     try {
@@ -999,9 +1023,11 @@ async function callHermesAgent({ baseUrl, apiKey, systemPrompt, userPrompt }) {
   return { text, usage: data.usage || null };
 }
 
-async function qnaCacheKey({ question, sajuContext, category, language }) {
+async function qnaCacheKey({ question, sajuContext, category, language, counselor }) {
   const src = JSON.stringify({
     v: 4,
+    // 기본 상담사는 키를 비워 기존 캐시를 그대로 쓴다
+    counselor: counselor && counselor !== 'master' ? counselor : undefined,
     language: normalizeLanguage(language).code,
     category,
     question: String(question || '').trim().replace(/\s+/g, ' '),
