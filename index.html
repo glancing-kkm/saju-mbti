@@ -4109,7 +4109,7 @@ function enrichTerms(root){
     const t=(el.textContent||'').trim();
     if(t&&TERM_DICT[t])el.setAttribute('data-term',t);
   });
-  const SKIP_SEL='.term, script, style, .mm-cell, .mm-sin-cell, .dx-col, .gg-mc, .nb-cat, .tl-age, .tl-pil, .lock-input, .chat-input';
+  const SKIP_SEL='.term, script, style, button, label, legend, .plabel, .mm-cell, .mm-sin-cell, .dx-col, .gg-mc, .nb-cat, .tl-age, .tl-pil, .lock-input, .chat-input';
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
     acceptNode(n){
       if(!n.nodeValue||!n.nodeValue.trim())return NodeFilter.FILTER_REJECT;
@@ -4126,6 +4126,8 @@ function enrichTerms(root){
     let last=0;
     TERM_RE.lastIndex=0;
     text.replace(TERM_RE,(m,offset)=>{
+      // 한 글자 용어(갑·해·오…)는 사주판 글자처럼 그 글자만 있을 때만 용어로 본다 — 문장 속 '태어난 해' 같은 말에 밑줄이 붙지 않게
+      if(m.length===1&&text.trim()!==m)return m;
       if(offset>last)frag.appendChild(document.createTextNode(text.slice(last,offset)));
       const span=document.createElement('span');
       span.className='term';
@@ -6559,6 +6561,10 @@ function _glueOrphanSegment(text){
     }
     if(lastSpaceIdx<0)break;
     // 공백 직후부터 끝까지의 가시 글자 수 (HTML 태그·엔티티 제외)
+    // 태그 사이 들여쓰기 공백은 문장 띄어쓰기가 아니다 — 앞에 보이는 글자가 없으면 붙이지 않는다
+    // (붙이면 &nbsp;가 눈에 보이는 글자로 남아 칸 안 배치가 밀린다)
+    const prefixVisible=result.substring(0,lastSpaceIdx).replace(/<[^>]*>/g,'');
+    if(!prefixVisible.trim()||/\s$/.test(prefixVisible))break;
     const suffixRaw=result.substring(lastSpaceIdx+1);
     const suffixVisible=suffixRaw.replace(/<[^>]*>/g,'').replace(/&[a-z0-9#]+;/gi,'x');
     const visibleLen=Array.from(suffixVisible).length;
@@ -7387,8 +7393,9 @@ function coreKeywordCardHTML(saju){
   const oh=ohCount(saju);
   const topOh=oh.indexOf(Math.max(...oh));
   const keyword=gk.nick||gk.name||dm.n||'본인의 기질';
-  const gkLine=gk.nick?` 격국은 <b>${(gk.name||'').replace(/격$/,'')}격</b>이라, ${((gk.desc||'').split(/[.。]/)[0]||'본인만의 흐름을 타고났어요')}.`:'';
-  const body=`일간 <b>${dm.n}</b>로 ${dm.core}을 본질로 해요.${gkLine} 사주에서 가장 두터운 기운은 <b>${OHNAME[topOh]}</b>이에요.`;
+  // 전문용어(일간·격국·○○격) 대신 일상어로 — AGENTS.md §11
+  const gkLine=gk.nick?` 본인 사주 유형은 <b>${gk.nick}</b>에 가까워요.`:'';
+  const body=`본인을 뜻하는 글자는 <b>${STEMKO[dStem]}</b>(${stemNick(dStem)})이고, ${dm.core}을 본질로 해요.${gkLine} 사주에서 가장 두터운 기운은 <b>${['나무','불','흙','금속','물'][topOh]}</b> 기운이에요.`;
   const chips=(dm.pos||[]).slice(0,4).map(p=>`<span>#${String(p).replace(/\s+/g,'')}</span>`).join('');
   return `<section class="core-keyword">
     <div class="ck-label">핵심 운명 키워드</div>
@@ -8581,7 +8588,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
     <div class="nb-title">${y}년 ${m}월 ${d}일을 사는 분위기</div>
-    <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. 본인의 ${myStemKo} 기운이 ${stemTG}${eul(stemTG)} 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
+    <div class="nb-body"><p>일진은 그날 하루 외부 기운이에요. 본인의 ${myStemKo} 기운이 ${plainTG(stemTG)}의 흐름을 만나면 「${(TG_KEYWORD[stemTG]||[]).join('·')}」 색채의 하루가 펼쳐지지만, 실제 그 흐름을 만드는 건 본인이에요. 거스르기보다 흐름을 따라 한 가지 행동만 추가해도 길이 열려요. 절대적인 길흉이 아닌 <b>흐름의 안내판</b>으로 활용하세요.</p></div>
   </div>`;
   // CHX: 4장 흐름 — 진단 → 분야 → 실행 → 마무리 (장 헤더 삽입; 카드 순서는 기존과 동일)
   h=reorderByChapters(h,[
@@ -8943,7 +8950,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
   h+=`<div class="nb-card">
     <div class="nb-cat">EPILOGUE</div>
     <div class="nb-title">${totalMonths}개월을 사는 분위기</div>
-    <div class="nb-body"><p>월별 운세는 절기 기준 월주 천간·지지가 본인 일간과 만들어내는 분위기예요. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판이에요. 때를 알면 운과 다투지 않고 그 방향을 따라 한 가지를 더 잘할 수 있어요.</p></div>
+    <div class="nb-body"><p>월별 운세는 절기로 나눈 그달의 두 글자가 본인을 뜻하는 글자와 만들어내는 분위기예요. 단순한 길흉이 아니라 <b>그달이 어떤 색으로 들어오는지</b>의 안내판이에요. 때를 알면 운과 다투지 않고 그 방향을 따라 한 가지를 더 잘할 수 있어요.</p></div>
   </div>`;
   // CA: 컨텍스트 카드는 점수 카드 다음에 (SCORE_END 마커 뒤)
   h=_ctxPromoteAfterScore(h,_primaryMoCard);
@@ -12467,6 +12474,8 @@ function lifeV3EmojiEntity(value){return _premiumReadingSigil(value);}
 function lifeV3EmojiGrid(items){return `<div class="life-v3-emoji-grid">${(items||[]).filter(Boolean).map(item=>`<div class="life-v3-emoji"><span class="life-v3-emoji-mark" aria-hidden="true">${lifeV3EmojiEntity(item.emoji)}</span><span><b>${item.label||''}</b><span>${preventOrphan(item.text||'')}</span></span></div>`).join('')}</div>`;}
 function lifeV3ProfileGrid(items){return `<div class="life-v3-profile">${(items||[]).filter(Boolean).map(item=>`<div class="life-v3-profile-item"><span aria-hidden="true">${lifeV3EmojiEntity(item.emoji)}</span><span><small>${item.label||''}</small><b>${preventOrphan(item.value||'')}</b></span></div>`).join('')}</div>`;}
 function lifeV3PillarBoard(saju){
+  // 좁은 칸에서 '·'가 줄 첫머리에 오지 않게 가운뎃점 앞을 붙인다
+  const plainTG=tg=>String(PLAIN_TG[tg]||tg).replace(/·/g,'\u2060·');
   const rows=[{label:'태어난 해',p:saju.yp},{label:'태어난 달',p:saju.mp},{label:'본인 자리',p:saju.dp,self:true},saju.hp?{label:'태어난 시간',p:saju.hp}:null].filter(Boolean);
   return `<div class="life-v3-pillar-board" aria-label="사주 원국 네 자리">${rows.map(x=>`<div class="life-v3-pillar${x.self?' self':''}">${x.self?'<span class="life-v3-self-badge">본인</span>':''}<small>${x.label}</small><div class="life-v3-pillar-glyph"><b>${STEMKO[x.p.stem]}</b><b>${BRCHKO[x.p.branch]}</b></div><span>${x.self?`${stemNick(x.p.stem)} 같은 본인 · ${plainTG(tenGod(saju.dp.stem,BR_MAIN_STEM[x.p.branch]))}`:`겉은 ${plainTG(tenGod(saju.dp.stem,x.p.stem))}<br>안은 ${plainTG(tenGod(saju.dp.stem,BR_MAIN_STEM[x.p.branch]))}`}</span></div>`).join('')}</div>`;
 }

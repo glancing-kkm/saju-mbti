@@ -7,7 +7,7 @@
   --card:#1c1922;--card-glass:rgba(28,25,34,.88);--card-elev:#26222d;
   --border:rgba(255,255,255,.09);--border-strong:rgba(240,198,116,.36);
   --text:#f4efe7;--sub:#c4bcb2;--muted:#9a929d;
-  --accent:#f0c674;--accent-bright:#ffa077;--accent-soft:rgba(240,198,116,.12);--on-accent:#1d1406;
+  --accent:#f0c674;--accent-bright:#ffa077;--accent-soft:rgba(240,198,116,.12);--green-soft:rgba(240,198,116,.09);--accent-bg:rgba(240,198,116,.14);--on-accent:#1d1406;
   --green:#6fd3a0;--gold:#f0c674;--gold-soft:#cba258;
   --tarot-purple:#2a2140;--tarot-blue:#162a3a;
   --wood:#6fd39a;--fire:#ff8a7a;--earth:#e9bf68;--metal:#b8c3da;--water:#86b4ff;
@@ -199,8 +199,12 @@ body{background:
 #app .hdr-back .bb{justify-self:start;min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.07);color:var(--text);font-size:.85rem;box-shadow:none}
 #app .hdr-brand{font-family:var(--font-heading);font-size:1rem;color:var(--text)}
 #app .hdr-back-meta{grid-column:1/-1;position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:136px;margin-top:14px;padding:22px 20px 20px;border-radius:22px;overflow:hidden;
-  background:linear-gradient(90deg,rgba(10,8,14,.95) 0%,rgba(10,8,14,.78) 42%,rgba(10,8,14,.1) 100%),var(--hdr-art,none) right 0 center/58% auto no-repeat,linear-gradient(135deg,#1d1926,#121016);
+  background:linear-gradient(135deg,#1d1926,#121016);
   border:1px solid var(--border);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+/* 포스터는 배너 오른쪽 58%를 위아래 끝까지 채운다(폭이 넓어져도 아래가 비지 않게) */
+#app .hdr-back-meta::before{content:'';position:absolute;top:0;right:0;bottom:0;width:58%;background:var(--hdr-art,none) center/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%);pointer-events:none}
+#app .hdr-back-meta::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,14,.95) 0%,rgba(10,8,14,.78) 42%,rgba(10,8,14,.1) 100%);pointer-events:none}
+#app .hdr-back-meta>*{position:relative;z-index:1}
 #app .hdr-back-title{font-family:var(--font-display);font-weight:400;font-size:1.95rem;line-height:1.18;color:#fff;letter-spacing:-.02em;max-width:72%}
 #app .hdr-back-sub{margin-top:8px;font-size:.84rem;line-height:1.6;color:rgba(255,255,255,.76);max-width:78%}
 #app .hdr-back-title:focus{outline:none}
@@ -379,3 +383,19 @@ body{background:
 .vault-empty>.material-symbols-outlined{font-size:2.6rem;color:var(--accent)}
 .vault-empty b{font-size:1.05rem}
 .vault-empty p{margin:0 0 8px;font-size:.84rem;color:var(--muted);line-height:1.6}
+
+/* 연도·달 흐름 카드 — 바깥 카드와 구분되게 */
+#app .life-v3-time-card{background:rgba(255,255,255,.035)!important;border:1px solid rgba(255,255,255,.07)!important}
+#app .life-v3-time-card.current,#app .ny-v3-daeun-card.current,#app .life-era.current,#app .life-month.current{background:rgba(240,198,116,.09)!important;border:1px solid rgba(240,198,116,.4)!important}
+
+/* 네 기둥 판 '본인' 배지 — 칸 안 설명 글 스타일이 배지에도 걸려 칸 이름을 덮던 문제. 위쪽 테두리에 걸친 작은 리본으로 */
+#app .life-v3-pillar-board{margin-top:20px}
+#app .life-v3-pillar .life-v3-self-badge{position:absolute;top:-9px;left:50%;right:auto;transform:translateX(-50%);display:inline-block;padding:1px 8px;border-radius:999px;font-size:.62rem;font-weight:800;line-height:1.5;white-space:nowrap}
+
+/* 풀이별 추가 입력(궁합 상대·지정일·월별·신년·이름·질문) — 제목이 카드 밖에 뜨고 밑줄만 카드 안에 남던 문제.
+   다른 입력 칸처럼 제목을 카드 안 위쪽에 두고, 옛 강조선은 지운다 */
+#app .form-body fieldset.cat-extra{border:1px solid var(--border);border-radius:18px;padding:18px}
+#app .form-body fieldset.cat-extra::before{display:none}
+#app .form-body fieldset.cat-extra>legend{float:left!important;display:block!important;width:100%!important;padding:0!important;margin:0 0 12px!important}
+#app .cat-extra-head{margin:0}
+#app .cat-extra-title{font-weight:400;font-size:.98rem;color:var(--text)}
