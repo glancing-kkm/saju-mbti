@@ -2325,13 +2325,13 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span class="pc-art pc-art--tarot"><img src="/assets/posters/tarot-bg.svg" alt="" loading="lazy"><span class="pc-fan pc-fan--one"><img src="/assets/posters/tarot-20.jpg" alt="" loading="lazy"></span></span><span class="pc-badge pc-badge--free">무료</span>
             <span class="pc-text"><strong class="pc-title">오늘의 타로</strong><span class="pc-sub">카드 한 장으로 보는 오늘</span></span>
           </button>
-          <button type="button" class="pc home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
-            <span class="pc-art"><img src="/assets/posters/natal.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
-            <span class="pc-text"><strong class="pc-title">나의 출생차트</strong><span class="pc-sub">태양·달·상승궁 계산</span></span>
-          </button>
           <button type="button" class="pc home-category" data-home-extra="astro-today" onclick="goToAstrology('today')">
             <span class="pc-art"><img src="/assets/posters/astro-today.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
             <span class="pc-text"><strong class="pc-title">오늘의 점성술</strong><span class="pc-sub">오늘 하늘의 흐름</span></span>
+          </button>
+          <button type="button" class="pc home-category" data-home-extra="astro-natal" onclick="goToAstrology('natal')">
+            <span class="pc-art"><img src="/assets/posters/natal.svg" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
+            <span class="pc-text"><strong class="pc-title">나의 출생차트</strong><span class="pc-sub">태양·달·상승궁 계산</span></span>
           </button>
         </div>
       </section>
@@ -3089,19 +3089,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </div>
       <button type="button" class="ai-copy-close" onclick="closeManseAiCopyModal()" aria-label="닫기">✕</button>
     </div>
-    <div class="ai-copy-desc">사용할 AI를 누르면 해당 AI가 잘 읽는 형식으로 만세력 전체 정보가 복사돼요. 채팅창에 그대로 붙여넣으세요.</div>
+    <div class="ai-copy-desc" id="chartAiCopyDesc">사용할 AI를 누르면 해당 AI가 잘 읽는 형식으로 만세력 전체 정보가 복사돼요. 채팅창에 그대로 붙여넣으세요.</div>
     <div class="ai-copy-grid">
-      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('chatgpt')" aria-label="ChatGPT용으로 복사">
+      <button type="button" class="ai-copy-provider" onclick="copyChartForAI('chatgpt')" aria-label="ChatGPT용으로 복사">
         <span class="ai-provider-mark chatgpt" aria-hidden="true">GPT</span>
         <span class="ai-provider-name">ChatGPT</span>
         <span class="ai-provider-format">Markdown 형식</span>
       </button>
-      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('claude')" aria-label="Claude용으로 복사">
+      <button type="button" class="ai-copy-provider" onclick="copyChartForAI('claude')" aria-label="Claude용으로 복사">
         <span class="ai-provider-mark claude" aria-hidden="true">C</span>
         <span class="ai-provider-name">Claude</span>
         <span class="ai-provider-format">XML 구조</span>
       </button>
-      <button type="button" class="ai-copy-provider" onclick="copyManseForAI('gemini')" aria-label="Gemini용으로 복사">
+      <button type="button" class="ai-copy-provider" onclick="copyChartForAI('gemini')" aria-label="Gemini용으로 복사">
         <span class="ai-provider-mark gemini" aria-hidden="true">✦</span>
         <span class="ai-provider-name">Gemini</span>
         <span class="ai-provider-format">구획 지시 형식</span>
@@ -4742,13 +4742,13 @@ const HOME_CATALOG=[
   {go:'astro-career',title:'점성술 직업·재물운',sub:'토성과 목성으로 보는 일',art:'astro-career.svg',tags:['work','star']},
   {go:'astro-yearly',title:'점성술 올해 운세',sub:'올해 하늘이 건드리는 곳',art:'astro-yearly.svg',tags:['year','star']},
   {go:'ziwei',title:'자미두수',sub:'12궁 14주성으로 보는 인생',art:'ziwei.svg',tags:['life','star']},
-  {go:'vedic',title:'베딕 점성술',sub:'나의 낙샤트라와 지금의 큰 시기',art:'vedic.svg',tags:['free','star'],free:true},
-  {go:'mahabote',title:'마하보테',sub:'태어난 요일의 동물과 행운 방향',art:'mahabote.svg',tags:['free','star'],free:true},
   {go:'manse',title:'만세력',sub:'내 사주 여덟 글자와 성향',art:'manse.svg',tags:['free','life'],free:true},
   {go:'daily',title:'오늘의 운세',sub:'오늘 하루의 흐름',art:'daily.svg',tags:['free','year'],free:true},
   {go:'tarot-today',title:'오늘의 타로',sub:'카드 한 장으로 보는 오늘',art:'tarot1',tags:['free','star'],free:true},
+  {go:'astro-today',title:'오늘의 점성술',sub:'오늘 하늘의 흐름',art:'astro-today.svg',tags:['free','year','star'],free:true},
   {go:'astro-natal',title:'나의 출생차트',sub:'태양·달·상승궁 계산',art:'natal.svg',tags:['free','star'],free:true},
-  {go:'astro-today',title:'오늘의 점성술',sub:'오늘 하늘의 흐름',art:'astro-today.svg',tags:['free','year','star'],free:true}
+  {go:'vedic',title:'베딕 점성술',sub:'나의 낙샤트라와 지금의 큰 시기',art:'vedic.svg',tags:['free','star'],free:true},
+  {go:'mahabote',title:'마하보테',sub:'태어난 요일의 동물과 행운 방향',art:'mahabote.svg',tags:['free','star'],free:true}
 ];
 const HOME_TAB_LABEL={free:'무료 풀이',love:'연애·결혼',work:'돈·일·공부',year:'운세',family:'가족·건강',life:'인생·이름',star:'타로·별자리'};
 // 주제별 타로 카드 묶음 — 가운데 장이 주제를 대표한다(연애: 연인, 재회: 심판, 결혼: 연인, 진로: 전차, 재물: 운명의 수레바퀴)
@@ -23523,19 +23523,35 @@ function generateManseAiPrompt(provider){
   return `# 역할\n본인은 동양 명리를 뼈대로 사람의 삶을 입체적으로 읽는 상담가야.\n\n# 필수 규칙\n- 아래 만세력은 이미 계산된 원본 데이터야. 사주 글자나 운 흐름을 재계산·수정하지 마.\n- 핵심 결론마다 원국·10년 흐름·1년 흐름 중 근거를 붙여줘.\n- 좋은 흐름은 살리는 법, 어려운 흐름은 대비법을 함께 말해줘.\n- 출생시간 미상 영역은 확정하지 마.\n\n# 만세력 원본 데이터\n${data}\n\n# 요청\n${commonTask}`;
 }
 
+let _aiCopyKind='manse',_aiCopyReturnFocus=null;
 function showManseAiCopyModal(){
   if(_category!=='manse'||!_saju||!_meta){alert('먼저 무료 만세력을 계산해 주세요.');return;}
+  openChartAiCopyModal('manse');
+}
+function openChartAiCopyModal(kind){
   const overlay=document.getElementById('manseAiCopyOverlay');
   if(!overlay)return;
-  const sample=generateManseAiPrompt('chatgpt');
-  const meta=document.getElementById('manseAiCopyMeta');
-  if(meta)meta.textContent=`출생일과 출생지가 포함된 약 ${sample.length.toLocaleString()}자의 문장이 복사돼요.`;
+  _aiCopyKind=kind;
+  _aiCopyReturnFocus=document.activeElement;
+  const natal=kind==='natal',label=natal?'출생차트':'만세력';
+  const sample=natal?generateNatalAiPrompt('chatgpt'):generateManseAiPrompt('chatgpt');
+  document.getElementById('manseAiCopyTitle').textContent=`AI에게 ${label} 물어보기`;
+  document.getElementById('chartAiCopyDesc').textContent=`사용할 AI를 누르면 ${label} 전체 정보와 질문 문구가 복사돼요. 채팅창에 그대로 붙여넣으세요.`;
+  document.getElementById('manseAiCopyMeta').textContent=`출생일과 출생지가 포함된 약 ${sample.length.toLocaleString()}자의 문장이 복사돼요.`;
   overlay.classList.add('vis');
-  setTimeout(()=>{const b=overlay.querySelector('.ai-copy-provider');if(b)b.focus();},0);
+  setTimeout(()=>{if(overlay.classList.contains('vis'))overlay.querySelector('.ai-copy-provider')?.focus();},0);
 }
 function closeManseAiCopyModal(){
-  const overlay=document.getElementById('manseAiCopyOverlay');
-  if(overlay)overlay.classList.remove('vis');
+  document.getElementById('manseAiCopyOverlay')?.classList.remove('vis');
+  if(_aiCopyReturnFocus?.isConnected)_aiCopyReturnFocus.focus();
+}
+function copyChartForAI(provider){
+  if(_aiCopyKind!=='natal')return copyManseForAI(provider);
+  const text=generateNatalAiPrompt(provider);
+  if(!text){alert('복사할 출생차트 정보가 없어요.');return;}
+  closeManseAiCopyModal();
+  const names={chatgpt:'ChatGPT',claude:'Claude',gemini:'Gemini'};
+  copyToClipboard(text,`📋 ${names[provider]||'AI'}용 출생차트 전체 정보가 복사됐어요!\n해당 AI 채팅창에 붙여넣으세요.`);
 }
 function copyManseForAI(provider){
   const names={chatgpt:'ChatGPT',claude:'Claude',gemini:'Gemini'};
@@ -24168,6 +24184,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=63bba1ae3bd2"></script>
+<script src="assets/astrology.js?v=093ebed3e473"></script>
 </body>
 </html>

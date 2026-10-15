@@ -42,7 +42,7 @@ const submitBirth=async()=>{
       const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
       assert.deepEqual(paid,['life','newyear','gunghap','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-health','monthly','daypick','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
       assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
-      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-natal','astro-today']);
+      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal']);
     });
     run(d.querySelector('.nh-cta').getAttribute('onclick'));
     check('홈 배너: 오늘의 무료 운세 3종 선택 팝업',()=>{
@@ -69,6 +69,7 @@ const submitBirth=async()=>{
       run("setHomeTab('free')");
       assert(d.getElementById('homeMain').hidden);
       assert.equal(d.querySelectorAll('#homeFiltered .pc').length,7);
+      assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].slice(0,5).map(c=>c.dataset.go),['manse','daily','tarot-today','astro-today','astro-natal']);
       run("setHomeTab('family')");
       assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].map(c=>c.dataset.go),['topic-marriage','topic-study','topic-child','topic-health','name','chat-halmae','tarot-marriage']);
       run("setHomeTab('all')");
@@ -308,11 +309,75 @@ const submitBirth=async()=>{
       assert.equal(run('_astroFlow.productType'),'love-marriage');
       assert(d.getElementById('payOverlay').classList.contains('vis'));
     });
-    run("closePaymentConsent();goToAstrology('natalInput');submitNatalChart()");
+    run("closePaymentConsent();goToAstrology('natalInput')");
+    d.getElementById('astroTimeUnknown').checked=false;
+    d.getElementById('astroHour').value='14';d.getElementById('astroMinute').value='30';
+    run('submitNatalChart()');
     check('무료 출생차트 카테고리: 결제 없이 기존 결과 제공',()=>{
       assert.equal(run('_astroRoute'),'natalResult');
       assert(d.querySelector('#astroApp .astro-wheel-wrap'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
+    });
+    check('출생차트: 풀이·덱·시간 여행 없이 차트와 원본 위치표만 표시',()=>{
+      assert(d.querySelector('#astroApp .natal-chart-report'));
+      assert.equal(d.querySelectorAll('#astroApp .astro-wheel').length,1);
+      assert(!d.querySelector('#astroApp .story-experience,#astroApp .journey-chapters,#astroApp #timeJourneyPanel,#astroApp .conversion-hook'));
+      assert.equal(d.querySelector('#astroApp .wheel-transit-layer').children.length,0);
+      assert(!/삶의 방향|마음의 호흡|첫인상,|커리어 이미지|간단 의미|강한 행성|전체 서고|자세히 풀이받기/.test(d.getElementById('astroApp').textContent));
+      assert(d.getElementById('natalAiCopyBtn'));
+      assert(!run('_astroFlow.transit'));
+    });
+    const knownNatal=run('JSON.stringify(_astroFlow.chart)');
+    check('출생차트 AI 데이터: 계산값·위치·각도는 원본과 동일하고 트랜짓 제외',()=>{
+      const data=JSON.parse(run('buildNatalAiDataText()'));
+      assert.deepEqual(data.chart,JSON.parse(knownNatal));
+      assert.equal(data.chart.planets.length,10);
+      assert.equal(data.chart.houses.length,12);
+      assert.equal(data.calculation.houseSystem,'whole-sign');
+      assert(!data.transit&&!data.chart.transit);
+    });
+    for(const provider of ['chatgpt','claude','gemini']){
+      const captured=[];const originalCopy=w.copyToClipboard;
+      w.copyToClipboard=(text,message)=>captured.push({text,message});
+      d.getElementById('natalAiCopyBtn').focus();run('showNatalAiCopyModal()');await wait(10);
+      check('출생차트 AI 선택창: '+provider,()=>{
+        assert(d.getElementById('manseAiCopyOverlay').classList.contains('vis'));
+        assert.match(d.getElementById('manseAiCopyTitle').textContent,/출생차트/);
+        assert.equal(d.activeElement.className,'ai-copy-provider');
+        const button=d.querySelector(`#manseAiCopyOverlay [onclick="copyChartForAI('${provider}')"]`);
+        run(button.getAttribute('onclick'));
+        assert.equal(captured.length,1);
+        const prompt=captured[0].text;
+        assert.match(prompt,provider==='claude'?/<natal_data format="json">/:provider==='gemini'?/\[NATAL DATA START\]/:/# 출생차트 원본 데이터/);
+        assert(prompt.includes(run('buildNatalAiDataText()')));
+        assert.match(captured[0].message,/출생차트/);
+        assert(!d.getElementById('manseAiCopyOverlay').classList.contains('vis'));
+        assert.equal(d.activeElement.id,'natalAiCopyBtn');
+      });
+      w.copyToClipboard=originalCopy;
+    }
+    run('showNatalAiCopyModal()');
+    d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+    check('출생차트 복사창: Escape로 닫기',()=>assert(!d.getElementById('manseAiCopyOverlay').classList.contains('vis')));
+    run("astroNavigate('natalInput')");d.getElementById('astroTimeUnknown').checked=true;run('submitNatalChart()');
+    check('출생시간 미상: 차트와 AI 복사에 가짜 시간·ASC·MC·하우스 없음',()=>{
+      const data=JSON.parse(run('buildNatalAiDataText()'));
+      assert(data.chart.birthInfo.birthTimeUnknown);
+      assert(!('hour' in data.chart.birthInfo));assert(!('minute' in data.chart.birthInfo));
+      assert(!data.chart.ascendant&&!data.chart.midheaven&&!data.chart.houses);
+      assert(data.chart.planets.every(p=>!p.house));
+      assert.match(data.calculation.unknownTimeBasis,/현지 정오/);
+      assert(!d.querySelector('#astroApp .wheel-axis-label'));
+      assert(![...d.querySelectorAll('#astroApp summary')].some(el=>/12하우스/.test(el.textContent)));
+      assert.match(d.querySelector('#astroApp .astro-warn').textContent,/정오 기준/);
+    });
+    run("goToInput('manse')");await submitBirth();run('showManseAiCopyModal()');
+    check('공유 AI 복사창: 만세력으로 돌아가면 제목과 데이터도 만세력으로 복귀',()=>{
+      assert.match(d.getElementById('manseAiCopyTitle').textContent,/만세력/);
+      const captured=[];const originalCopy=w.copyToClipboard;w.copyToClipboard=text=>captured.push(text);
+      run("copyChartForAI('chatgpt')");w.copyToClipboard=originalCopy;
+      assert.equal(captured.length,1);assert.match(captured[0],/# 만세력 원본 데이터/);
+      assert(!captured[0].includes('# 출생차트 원본 데이터'));
     });
     // jsdom has no layout; only the focusable input rectangles are supplied here.
     const astroBoxes=()=>{
