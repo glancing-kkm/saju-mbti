@@ -11293,7 +11293,8 @@ function renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo){
 }
 
 function renderManseryeokExpanded(saju,sy,sm,sd,sh,smin,lunarInfo,tailHtml=''){
-  return `<div class="manse-full-result">${journeyOverviewHTML(saju)}${journeyRecommendationHTML('manse')}<nav class="journey-toc" aria-label="무료 풀이 목차"><a href="#journeyManseBoard">사주 정보와 계산 근거 ↓</a></nav><div id="journeyManseBoard">${preventOrphan(renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo))}</div></div>`;
+  // 만세력은 계산 결과 판부터 보여주고, 이어서 볼 풀이 추천은 판 아래에 둔다(무료 성향 요약은 만세력에서 뺐다)
+  return `<div class="manse-full-result"><div id="journeyManseBoard">${preventOrphan(renderManseryeokFull(saju,sy,sm,sd,sh,smin,lunarInfo))}</div>${journeyRecommendationHTML('manse')}</div>`;
 }
 
 // ══════════════════════════════════════════════

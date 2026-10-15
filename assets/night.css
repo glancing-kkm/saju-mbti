@@ -399,3 +399,7 @@ body{background:
 #app .form-body fieldset.cat-extra>legend{float:left!important;display:block!important;width:100%!important;padding:0!important;margin:0 0 12px!important}
 #app .cat-extra-head{margin:0}
 #app .cat-extra-title{font-weight:400;font-size:.98rem;color:var(--text)}
+
+/* 만세력 흐름 칸(10년·해·달) — 설명 글이 한 줄 고정이라 글 길이만큼 칸 폭이 제각각이던 문제. 폭을 고정하고 설명은 두 줄로 */
+#app .manse-strip>.manse-cell{flex:0 0 76px;width:76px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column}
+#app .manse-strip>.manse-cell .manse-cell-sub{white-space:normal;word-break:keep-all;line-height:1.3;min-height:2.6em;margin-top:5px}
