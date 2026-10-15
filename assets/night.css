@@ -14,7 +14,7 @@
   --wood-bg:rgba(111,211,154,.13);--fire-bg:rgba(255,138,122,.13);--earth-bg:rgba(233,191,104,.11);--metal-bg:rgba(184,195,218,.12);--water-bg:rgba(134,180,255,.13);
   --good:#7ddba5;--warn:#ff9a8b;--good-bg:rgba(125,219,165,.12);--warn-bg:rgba(255,154,139,.12);
   --brand:#ff5a36;--brand-2:#ff3d6e;--cta:#ffd84a;--on-cta:#1a1405;
-  --font-display:'Song Myung','Nanum Myeongjo','AppleMyungjo',serif;
+  --font-display:var(--font-heading);
   --card-shadow:0 10px 30px rgba(0,0,0,.35);
   --app-width:520px;--reading-width:none;--site-width:var(--app-width);
   color-scheme:dark;

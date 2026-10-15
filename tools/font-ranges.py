@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
-"""assets/design-system.css 의 @font-face 두 줄을 폰트 파일에서 다시 만든다.
+"""assets/design-system.css의 한나체 Pro @font-face를 폰트 파일에서 다시 만든다.
 
-배민 한나 Air·도현에는 웹에서 그대로 쓰기 어려운 구석이 두 가지 있다.
-
-1. cmap 에 17,506자를 올려두고 실제 외곽선은 각각 2,530자 / 3,521자뿐이다.
-   빈 글자도 브라우저는 "이 서체가 담당한다"고 보기 때문에 기기 서체로
-   넘기지 않고 그대로 빈칸을 그린다. 한자 전체, 희귀 한글, 많은 기호가
-   화면에서 사라진다. → 외곽선이 있는 코드포인트만 unicode-range 로 못박는다.
-
-2. 한글 글자의 시각 중심이 줄상자 중심보다 약 9% em 위에 있다. 세로 가운데
-   정렬한 버튼·배지 안에서 글자가 위로 뜬다. → ascent/descent 를 덮어써서
-   줄상자 중심을 글자 시각 중심에 맞춘다. 둘의 합은 그대로 두므로
-   line-height:normal 의 줄 높이는 달라지지 않는다.
+외곽선이 있는 글자만 unicode-range에 넣어 빈 글자 대신 시스템 글꼴을 쓴다.
+한글의 시각 중심에 맞춰 ascent/descent를 계산해 버튼·배지의 정렬도 유지한다.
 
 사용법:  python3 tools/font-ranges.py          # 확인만
          python3 tools/font-ranges.py --write  # css 갱신
@@ -24,8 +15,7 @@ from fontTools.pens.boundsPen import BoundsPen
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSS = os.path.join(ROOT, 'assets', 'design-system.css')
 FONTS = [
-    ('BM Hanna Air', 'assets/fonts/bm-hanna-air.woff2', '/assets/fonts/bm-hanna-air.woff2'),
-    ('BM Dohyeon', 'assets/fonts/bm-dohyeon.woff2', '/assets/fonts/bm-dohyeon.woff2'),
+    ('BM HANNA Pro', 'assets/fonts/bm-hanna-pro.woff2', '/assets/fonts/bm-hanna-pro.woff2'),
 ]
 # 외곽선이 없지만 서체가 폭을 잡아야 하는 글자
 ALWAYS = {0x20, 0xA0}
@@ -63,8 +53,10 @@ def analyze(path):
             top = pen.bounds[3] if top is None else max(top, pen.bounds[3])
             bottom = pen.bounds[1] if bottom is None else min(bottom, pen.bounds[1])
 
-    hhea = font['hhea']
-    span = hhea.ascent - hhea.descent      # descent 는 음수
+    # Pro 웹폰트의 hhea는 2em을 넘어 normal 줄 높이를 과도하게 늘린다.
+    # 글꼴에 명시된 본문용 sTypo 메트릭으로 줄상자를 잡는다.
+    metrics = font['OS/2']
+    span = metrics.sTypoAscender - metrics.sTypoDescender
     center = (top + bottom) / 2.0
     ascent = center + span / 2.0
     descent = span / 2.0 - center
@@ -73,7 +65,7 @@ def analyze(path):
         'upm': upm,
         'ascent': ascent / upm * 100,
         'descent': descent / upm * 100,
-        'shift': (center - (hhea.ascent + hhea.descent) / 2.0) / upm * 100,
+        'shift': (center - (metrics.sTypoAscender + metrics.sTypoDescender) / 2.0) / upm * 100,
     }
 
 
@@ -102,7 +94,7 @@ def main():
         rule = (
             "@font-face{font-family:'%s';src:url('%s') format('woff2');"
             "font-style:normal;font-weight:400;font-display:swap;"
-            "ascent-override:%.2f%%;descent-override:%.2f%%;"
+            "ascent-override:%.2f%%;descent-override:%.2f%%;line-gap-override:0%%;"
             "unicode-range:%s}"
         ) % (family, url, info['ascent'], info['descent'], as_css(runs))
         print('%s: 실제 글자 %d자 · 구간 %d개 · 글자 %.2f%% em 내림'

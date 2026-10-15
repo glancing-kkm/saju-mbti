@@ -1,5 +1,4 @@
 @import url("/assets/design-system.css");
-@import url("https://fonts.googleapis.com/css2?family=Song+Myung&display=swap");
 /* ──────────────────────────────────────────────
  * 천지인 사주 블로그 — 공통 스타일
  * ────────────────────────────────────────────── */
@@ -130,7 +129,7 @@ body{background:radial-gradient(80vw 50vh at 50% -10%,rgba(255,90,54,.10),transp
 .blog-brand{color:var(--brand)}
 .blog-cta,.article-cta-btn{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 0 20px rgba(255,74,80,.3)}
 .blog-hero{background:radial-gradient(70% 120% at 50% 0%,rgba(240,198,116,.10),transparent 70%)}
-.blog-hero h1{color:#fff;font-family:'Song Myung',var(--font-heading);letter-spacing:.04em;font-size:2.2rem}
+.blog-hero h1{color:#fff;font-family:var(--font-heading);letter-spacing:.04em;font-size:2.2rem}
 .blog-section h2,.related h3,.related-links .rl-heading{color:var(--text)}
 .blog-card{background:linear-gradient(160deg,#221e2a,var(--card));box-shadow:0 10px 24px rgba(0,0,0,.25)}
 .blog-card:hover{box-shadow:0 12px 28px rgba(0,0,0,.4),0 0 0 1px var(--border-strong)}
