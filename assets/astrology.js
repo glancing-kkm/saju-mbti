@@ -52,10 +52,10 @@ let _astroFlow=loadAstrologyFlow();
 function astroEsc(v){return typeof tarotEsc==='function'?tarotEsc(v):String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
 function astroSetHeader(title,sub){const t=document.getElementById('astroHdrTitle'),s=document.getElementById('astroHdrSub');if(t)t.textContent=title;if(s)s.textContent=sub||'';}
 function goToAstrology(route='home'){_astroRoute=route;showView('astrology');renderAstrology();}
-function astrologyBack(){if(['home','today','input','natal','natalInput','result','history'].includes(_astroRoute))return goHome();const b={natalResult:'natal',summary:'input',products:'input',payment:'products'};_astroRoute=b[_astroRoute]||'home';renderAstrology();}
+function astrologyBack(){if(['home','today','todayResult','input','natal','natalInput','result','history'].includes(_astroRoute))return goHome();const b={natalResult:'natal',summary:'input',products:'input',payment:'products'};_astroRoute=b[_astroRoute]||'home';renderAstrology();}
 function astroNavigate(route){_astroRoute=route;renderAstrology();}
 function astroRoot(){return document.getElementById('astroApp');}
-function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,natal:renderNatalChartPage,natalInput:renderNatalChartInput,natalResult:renderNatalChartResult,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);astroApplyLanguage(document.getElementById('view-astrology'));}
+function renderAstrology(){const root=astroRoot();if(!root)return;({home:renderAstrologyHome,today:renderTodayAstrology,todayResult:renderTodayAstrologyResult,natal:renderNatalChartPage,natalInput:renderNatalChartInput,natalResult:renderNatalChartResult,input:renderAstrologyInput,summary:renderAstrologySummary,products:renderAstrologyProducts,payment:renderAstrologyPayment,result:renderAstrologyResult,history:renderAstrologyHistory}[_astroRoute]||renderAstrologyHome)(root);window.scrollTo(0,0);astroApplyLanguage(document.getElementById('view-astrology'));}
 // 점성술 화면도 선택 언어로 — 렌더/부분 갱신 직후 번역 적용 (ko면 no-op)
 function astroApplyLanguage(scope){
   try{
@@ -82,45 +82,56 @@ function renderAstrologyInput(root,todayOnly=false,natalOnly=false){
   const saved=(_astroFlow&&_astroFlow.birthInfo)||{};
   root.innerHTML=`<section class="astro-hero"><div class="astro-kicker">${todayOnly?'Today Transit':'Birth Chart'}</div><div class="astro-title">${todayOnly?'오늘의 별 흐름을 계산해요':natalOnly?'내 출생차트를 계산해요':'출생차트를 계산해요'}</div><div class="astro-desc">도시의 위도·경도와 과거 타임존/DST를 반영해 UTC로 변환한 뒤 행성 위치를 계산합니다.</div></section>
   <section class="astro-panel"><div class="astro-form">
-    <div class="astro-row"><div class="astro-field"><label>출생 연도</label><input class="astro-input" id="astroYear" inputmode="numeric" value="${astroEsc(saved.year||'')}" placeholder="1995"></div><div class="astro-field"><label>출생 월</label><input class="astro-input" id="astroMonth" inputmode="numeric" value="${astroEsc(saved.month||'')}" placeholder="7"></div></div>
-    <div class="astro-row"><div class="astro-field"><label>출생 일</label><input class="astro-input" id="astroDay" inputmode="numeric" value="${astroEsc(saved.day||'')}" placeholder="15"></div><div class="astro-field"><label>출생 국가</label><input class="astro-input" id="astroCountry" value="${astroEsc(saved.country||'대한민국')}" placeholder="대한민국" oninput="renderAstroCityOptions()"></div></div>
-    <label class="astro-check"><input type="checkbox" id="astroTimeUnknown" ${saved.birthTimeUnknown?'checked':''} onchange="toggleAstroTimeFields()"> 출생시간을 몰라요</label>
-    <div class="astro-row" id="astroTimeFields"><div class="astro-field"><label>출생 시간</label><input class="astro-input" id="astroHour" inputmode="numeric" value="${astroEsc(saved.hour??'')}" placeholder="14"></div><div class="astro-field"><label>출생 분</label><input class="astro-input" id="astroMinute" inputmode="numeric" value="${astroEsc(saved.minute??'')}" placeholder="30"></div></div>
-    <div class="astro-field"><label>출생 도시</label><input class="astro-input" id="astroCitySearch" value="${astroEsc(saved.city||'서울')}" placeholder="서울, 부산, New York..." oninput="renderAstroCityOptions()"></div>
-    <div class="astro-field"><label>도시 검색 결과</label><select class="astro-select" id="astroCitySelect"></select></div>
+    <div class="astro-row astro-birth-row">
+      <div class="astro-field"><label for="astroYear">출생 연도</label><input type="text" class="astro-input" id="astroYear" inputmode="numeric" pattern="[0-9]*" maxlength="4" enterkeyhint="next" autocomplete="bday-year" value="${astroEsc(saved.year||'')}" placeholder="1900~2050"></div>
+      <div class="astro-field"><label for="astroMonth">월</label><input type="text" class="astro-input" id="astroMonth" inputmode="numeric" pattern="[0-9]*" maxlength="2" enterkeyhint="next" autocomplete="bday-month" value="${astroEsc(saved.month||'')}" placeholder="1~12"></div>
+      <div class="astro-field"><label for="astroDay">일</label><input type="text" class="astro-input" id="astroDay" inputmode="numeric" pattern="[0-9]*" maxlength="2" enterkeyhint="next" autocomplete="bday-day" value="${astroEsc(saved.day||'')}" placeholder="1~31"></div>
+    </div>
+    <label class="astro-check"><input type="checkbox" id="astroTimeUnknown" ${saved.birthTimeUnknown?'checked':''} onchange="toggleAstroTimeFields()" aria-controls="astroTimeFields"> 출생시간을 몰라요</label>
+    <div class="astro-row" id="astroTimeFields">
+      <div class="astro-field"><label for="astroHour">출생 시간</label><input type="text" class="astro-input" id="astroHour" inputmode="numeric" pattern="[0-9]*" maxlength="2" enterkeyhint="next" autocomplete="off" value="${astroEsc(saved.hour??'')}" placeholder="0~23"></div>
+      <div class="astro-field"><label for="astroMinute">분</label><input type="text" class="astro-input" id="astroMinute" inputmode="numeric" pattern="[0-9]*" maxlength="2" enterkeyhint="next" autocomplete="off" value="${astroEsc(saved.minute??'')}" placeholder="0~59"></div>
+    </div>
+    <div class="astro-row">
+      <div class="astro-field"><label for="astroCountry">출생 국가</label><input class="astro-input" id="astroCountry" value="${astroEsc(saved.country||'대한민국')}" placeholder="대한민국" oninput="renderAstroCityOptions()"></div>
+      <div class="astro-field"><label for="astroCitySearch">출생 도시</label><input class="astro-input" id="astroCitySearch" value="${astroEsc(saved.city||'서울')}" placeholder="서울, 부산, New York..." oninput="renderAstroCityOptions()"></div>
+    </div>
+    <div class="astro-field"><label for="astroCitySelect">도시 검색 결과</label><select class="astro-select" id="astroCitySelect"></select></div>
     <div class="astro-warn">도시 목록에 없는 경우 가까운 대도시를 선택해주세요. 출생시간을 모르면 상승궁과 하우스 해석은 제외하고, 달 위치는 날짜에 따라 오차 가능성을 표시합니다.</div>
     <div class="astro-actions"><button class="astro-btn" onclick="${todayOnly?'submitTodayAstrology()':natalOnly?'submitNatalChart()':'submitAstrologyBirth()'}">${todayOnly?'오늘의 점성술 보기':natalOnly?'내 출생차트 보기':'결제할 풀이 선택하기'}</button><button class="astro-btn secondary" onclick="astroNavigate('home')">취소</button></div>
   </div></section>`;
   renderAstroCityOptions();toggleAstroTimeFields();
+  bindInputAutoAdvance(root,['astroYear','astroMonth','astroDay','astroHour','astroMinute']);
+  ['astroCountry','astroCitySearch'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener('focus',()=>{if(el.value)el.select();});
+  });
 }
-function toggleAstroTimeFields(){const on=document.getElementById('astroTimeUnknown')?.checked;const el=document.getElementById('astroTimeFields');if(el)el.style.display=on?'none':'grid';}
+function toggleAstroTimeFields(){const on=document.getElementById('astroTimeUnknown')?.checked;const el=document.getElementById('astroTimeFields');if(el){el.style.display=on?'none':'grid';el.querySelectorAll('input').forEach(input=>input.disabled=on);}}
 function renderAstroCityOptions(){const q=(document.getElementById('astroCitySearch')?.value||'').toLowerCase();const c=(document.getElementById('astroCountry')?.value||'').toLowerCase();const sel=document.getElementById('astroCitySelect');if(!sel)return;const hits=ASTRO_CITIES.filter(x=>(!q||x.city.toLowerCase().includes(q)||x.country.toLowerCase().includes(q))&&(!c||x.country.toLowerCase().includes(c)||c.includes(x.country.toLowerCase()))).slice(0,20);sel.innerHTML=(hits.length?hits:ASTRO_CITIES.slice(0,12)).map(x=>`<option value="${ASTRO_CITIES.indexOf(x)}">${astroEsc(x.country)} · ${astroEsc(x.city)} (${x.tz})</option>`).join('');}
 function readAstroBirthForm(){
   const city=ASTRO_CITIES[Number(document.getElementById('astroCitySelect')?.value||0)];
   const birthTimeUnknown=!!document.getElementById('astroTimeUnknown')?.checked;
   const year=Number(document.getElementById('astroYear')?.value),month=Number(document.getElementById('astroMonth')?.value),day=Number(document.getElementById('astroDay')?.value);
   const hour=birthTimeUnknown?12:Number(document.getElementById('astroHour')?.value||0),minute=birthTimeUnknown?0:Number(document.getElementById('astroMinute')?.value||0);
-  if(!year||!month||!day||month<1||month>12||day<1||day>31)throw new Error('출생 연월일을 확인해주세요.');
-  if(!birthTimeUnknown&&(hour<0||hour>23||minute<0||minute>59))throw new Error('출생 시간을 확인해주세요.');
+  if(![year,month,day].every(Number.isInteger)||year<1900||year>2050||month<1||month>12||day<1||day>new Date(year,month,0).getDate())throw new Error('출생 연월일을 확인해주세요.');
+  if(!birthTimeUnknown&&(!Number.isInteger(hour)||!Number.isInteger(minute)||hour<0||hour>23||minute<0||minute>59))throw new Error('출생 시간을 확인해주세요.');
   return {year,month,day,hour:birthTimeUnknown?undefined:hour,minute:birthTimeUnknown?undefined:minute,birthTimeUnknown,country:city.country,city:city.city,latitude:city.lat,longitude:city.lon,timezone:city.tz,utcDateTime:convertLocalBirthTimeToUTC({year,month,day,hour,minute,timezone:city.tz})};
 }
 function submitAstrologyBirth(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);_astroFlow={birthInfo,chart,transit:calculateTransit(new Date()),createdAt:new Date().toISOString()};saveAstrologyFlow();if(window._astroPreferProduct)selectAstrologyProduct(window._astroPreferProduct);else astroNavigate('products');}catch(e){alert(e.message||'차트 계산 중 오류가 발생했어요.');}}
-function submitTodayAstrology(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);const transit=calculateTransit(new Date());_astroFlow={birthInfo,chart,transit,todayText:generateTodayAstrology(chart,transit),createdAt:new Date().toISOString()};saveAstrologyFlow();renderTodayAstrologyResult(astroRoot());}catch(e){alert(e.message||'오늘의 점성술 계산 중 오류가 발생했어요.');}}
+function submitTodayAstrology(){try{const birthInfo=readAstroBirthForm();const chart=calculateAstrologyChart(birthInfo);const transit=calculateTransit(new Date());_astroFlow={birthInfo,chart,transit,todayText:generateTodayAstrology(chart,transit),createdAt:new Date().toISOString()};saveAstrologyFlow();astroNavigate('todayResult');}catch(e){alert(e.message||'오늘의 점성술 계산 중 오류가 발생했어요.');}}
 function renderTodayAstrologyResult(root){
+  if(!_astroFlow?.chart||!_astroFlow?.transit)return astroNavigate('today');
   astroSetHeader('오늘의 점성술','무료 결과');
   const chart=_astroFlow.chart,transit=_astroFlow.transit,text=_astroFlow.todayText||generateTodayAstrology(chart,transit);
-  const paras=String(text||'').split(/\n\s*\n/).map(readingPlainText).filter(Boolean);
-  const sun=findPlanet(chart,'sun'),moon=findPlanet(chart,'moon'),todayMoon=(transit.planets||[]).find(p=>p.planet==='moon');
-  const elementKo={fire:'불',earth:'흙',air:'바람',water:'물'},total=Math.max(1,Object.values(chart.elementBalance||{}).reduce((a,b)=>a+b,0));
-  const dominant=getDominantElement(chart.elementBalance),todaySign=todayMoon?signById(todayMoon.sign):signById(moon.sign);
-  const labels=['오늘의 큰 흐름','마음과 컨디션','사랑과 관계','일과 행동','오늘의 비책'];
-  const icons=['auto_awesome','self_improvement','favorite','business_center','task_alt'];
-  const quotes=['오늘의 별은 본인의 평소 방식에 새로운 온도를 더해요','감정을 억지로 정리하기보다 먼저 알아차리세요','상대의 뜻을 정하기 전에 편하게 물어보세요','하나를 선택해 현실의 결과로 남기세요','오늘 한 가지를 작게 실천해보세요'];
-  const fallback=[todaySign.personality,signById(moon.sign).personality,signById(findPlanet(chart,'venus').sign).loveStyle,signById(findPlanet(chart,'mars').sign).careerStyle,'오늘의 흐름은 가능성을 보여주는 지도예요. 실제 방향은 본인의 작은 선택이 만들어요.'];
-  const deck=labels.map((title,i)=>({key:`today-${i}`,icon:icons[i],title,quote:quotes[i],copy:`${paras[i]||fallback[i]} 오늘의 별 흐름은 확정된 예언이 아니에요. 본인의 현실 일정과 마음을 함께 보며 활용하세요.`,points:[{label:'오늘의 달',value:todaySign.nameKo},{label:'본인의 태양',value:signNameKo(sun.sign)}]}));
   const warning=chart.birthInfo.birthTimeUnknown?'<div class="astro-warn">출생시간을 몰라 상승궁과 하우스 풀이는 제외했어요. 달 위치는 생일 경계에 가까우면 오차가 있을 수 있어요.</div>':'';
-  const libraryHtml=`${warning}${todayAstrologyVisualHTML(chart,transit)}<section class="astro-panel"><div class="astro-section-title">오늘의 상세 풀이</div><div class="astro-markdown">${markdownToAstroHTML(typeof preventOrphan==='function'?preventOrphan(text):text)}</div></section><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('products')">상세 풀이 보기</button><button class="astro-btn secondary" onclick="astroNavigate('today')">정보 다시 입력</button></div>`;
-  root.innerHTML=buildStoryExperienceHTML({id:'free-today-astrology',kicker:'TODAY COSMOS',icon:'orbit',title:'오늘의 점성술',subtitle:`${chart.birthInfo.city} · 오늘의 달은 ${todaySign.nameKo}를 지나가요`,personalNote:paras[0]||fallback[0],stats:Object.entries(chart.elementBalance||{}).map(([key,value])=>({label:elementKo[key],value:Math.round(value/total*100),display:value})),highlights:[{icon:'nightlight',label:'오늘의 달',text:todaySign.nameKo},{icon:'light_mode',label:'본인의 태양',text:signNameKo(sun.sign)},{icon:'auto_awesome',label:'강한 원소',text:elementKo[dominant]}],deck,deckTitle:'오늘의 별 흐름 5장',libraryTitle:'오늘의 점성술 전체 서고',libraryIntro:'출생차트와 오늘의 행성 흐름을 겹쳐 계산한 근거와 상세 풀이를 모았어요.',libraryHtml:typeof preventOrphan==='function'?preventOrphan(libraryHtml):libraryHtml});
+  const html=`<section class="today-astro-report" aria-label="오늘의 점성술 전체 풀이">
+    ${warning}${todayAstrologyVisualHTML(chart,transit)}
+    <section class="astro-panel"><h2 class="astro-section-title">오늘의 상세 풀이</h2><div class="astro-markdown">${markdownToAstroHTML(text)}</div></section>
+    <section class="conversion-hook today-paid-hook" aria-label="점성술 상세 풀이 안내"><div class="conversion-hook-title">본인에게 맞는 일과 사랑의 흐름은?</div><div class="conversion-hook-body"><p>출생차트로 본인만의 관계와 진로를 더 깊게 읽어요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="astroNavigate('products')">점성술 상세 풀이 보기 · ${formatWon(basePriceFor('astro-birth-basic'))}부터</button></div></section>
+    <div class="astro-actions"><button type="button" class="astro-btn secondary" onclick="astroNavigate('today')">정보 다시 입력</button></div>
+  </section>`;
+  root.innerHTML=preventOrphan(html);
 }
 // 유료 진입 경로에서는 무료 요약 없이 상품 선택으로 이어진다.
 function renderAstrologySummary(root){renderAstrologyProducts(root);}

@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css">
+<link rel="stylesheet" href="/assets/night.css?v=09b3367e3a2f">
 </head>
 <body>
 <div id="app">
@@ -5499,7 +5499,6 @@ function tarotCardImageHTML(card,cls='tarot-face-img'){
   return `<img class="${cls||'tarot-face-img'}" src="${tarotEsc(card.imageUrl)}" alt="${tarotEsc(card.nameKo)} 카드 이미지" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tarot-card-sym',textContent:'✦'}))">`;
 }
 function renderTodayTarot(root){
-  tarotSetHeader('오늘의 타로','9장 중 한 장을 골라보세요');
   let cards=_todayTarotCardIds.map(id=>TAROT_CARDS.find(c=>c.id===id)).filter(Boolean);
   if(cards.length!==9){
     cards=getFreshTodayTarotCards();
@@ -5510,6 +5509,7 @@ function renderTodayTarot(root){
     selected='';
     _todayTarotSelectedCardId='';
   }
+  tarotSetHeader('오늘의 타로',selected?'오늘의 카드 전체 풀이':'9장 중 한 장을 골라보세요');
   const visibleCards=selected?cards.filter(c=>c.id===selected):cards;
   root.innerHTML=tarotHtml(`
     <section class="tarot-hero tarot-today-hero"><div class="tarot-kicker">Today's Card</div><div class="tarot-title">오늘의 타로</div><div class="tarot-desc">${selected?'오늘 본인이 뽑은 카드의 메시지예요. 지금 마음에 닿는 문장을 하나만 골라 오늘 하루에 담아보세요.':'오늘 본인에게 필요한 메시지를 마음속으로 떠올리며, 9장의 카드 중 한 장을 선택해보세요.'}</div></section>
@@ -5568,30 +5568,19 @@ function todayTarotResultHTML(card){
     `서두름만 조심하면 돼요. 빠른 판단보다 차분한 확인이 본인에게 더 이로운 날이에요.`
   ];
   const domain={love:pick(loves,'love'),money:pick(moneys,'money'),work:pick(works,'work')};
-  const pair=pick([['love','money'],['love','work'],['money','work']],'pair');
-  const body=[
-    `오늘 본인이 뽑은 카드는 ${card.nameKo}${_tYe(card.nameKo)}. ${card.uprightMeaning}`,
-    card.todayMessage,
-    pair.map(d=>domain[d]).join(' '),
-    pick(cautions,'caution')
-  ].filter(Boolean);
-  const libraryHtml=`<section class="tarot-panel tarot-result-card tarot-reveal">
-    <div class="tarot-mini-face" style="height:210px;max-width:156px;margin:0 auto 4px">${tarotCardImageHTML(card)}</div>
-    <div class="tarot-section-title">${tarotEsc(card.nameKo)} — ${tarotEsc(card.nameEn)}</div>
-    <div class="tarot-kw-row">${card.keywords.map(k=>`<span class="tarot-kw">${tarotEsc(k)}</span>`).join('')}</div>
-    <div class="tarot-reading-flow">
-      ${body.map(p=>`<p>${preventOrphan(tarotEsc(p))}</p>`).join('')}
-    </div>
-    <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">이 고민을 카드에게 직접 물어보기</button></div>
-  </section>`;
-  const deck=[
-    {key:'message',icon:'auto_awesome',title:'카드의 핵심',quote:card.todayMessage,copy:`본인이 오늘 뽑은 카드는 ${card.nameKo}${_tYe(card.nameKo)}. ${card.uprightMeaning} 지금 마음에 남는 단어 하나를 골라보세요. 그 단어가 오늘 선택의 기준이 돼요.`,points:card.keywords.slice(0,3).map((value,i)=>({label:`핵심 ${i+1}`,value}))},
-    {key:'love',icon:'favorite',title:'사랑과 관계',quote:'상대의 마음을 정하기 전에 짧게 물어보세요',copy:`${domain.love} 본인의 속도와 상대의 속도가 다르다면 누가 맞는지보다 어떻게 맞출지를 보세요. 오늘 한 가지—안부 한 마디를 먼저 건네보세요.`,points:[{label:'관계 키워드',value:k1},{label:'오늘 행동',value:'짧고 솔직하게'}]},
-    {key:'money',icon:'savings',title:'돈과 현실',quote:'오늘은 기분보다 조건을 먼저 보세요',copy:`${domain.money} 크게 움직이기보다 예정된 금액과 날짜를 확인하는 편이 좋아요. 오늘 한 가지—결제 전에 한 번 더 읽어보세요.`,points:[{label:'현실 키워드',value:k1},{label:'오늘 기준',value:'금액·날짜 확인'}]},
-    {key:'work',icon:'business_center',title:'일과 행동',quote:'할 일을 줄이면 마무리가 더 선명해져요',copy:`${domain.work} 오늘은 모든 일을 잘하려 하기보다 하나를 끝내는 편이 잘 맞아요. 오늘 한 가지—우선순위 세 개만 적어보세요.`,points:[{label:'일 키워드',value:k1},{label:'오늘 행동',value:'하나를 완성'}]},
-    {key:'caution',icon:'shield',title:'오늘 살펴야 할 점',quote:'서두름만 줄여도 카드의 좋은 흐름을 지켜요',copy:`${pick(cautions,'caution')} 카드는 확정된 미래를 통보하기보다 지금 놓친 마음을 비추는 거울에 가까워요. 오늘 한 가지—큰 결정은 한 번 더 확인하세요.`,points:[{label:'살펴야 할 것',value:'과한 기대'},{label:'보호 행동',value:'차분한 확인'}]}
-  ];
-  return tarotHtml(buildStoryExperienceHTML({id:`today-tarot-${card.id}`,kicker:"TODAY'S CARD",icon:'style',title:`${card.nameKo} · 오늘의 타로`,subtitle:'좋은 흐름은 살리고, 서두름은 한 박자 늦추세요',personalNote:card.todayMessage,highlights:card.keywords.slice(0,3).map((text,i)=>({icon:['auto_awesome','favorite','task_alt'][i],label:`핵심 ${i+1}`,text})),deck,deckTitle:'오늘의 타로 핵심 5장',libraryTitle:`${card.nameKo} 전체 상세 풀이`,libraryIntro:'카드의 핵심·오늘 메시지·사랑·돈·일의 흐름을 한 곳에 모았어요.',libraryHtml:preventOrphan(libraryHtml)}));
+  const sections=[
+    {title:'카드의 핵심',text:`오늘 본인이 뽑은 카드는 ${card.nameKo}${_tYe(card.nameKo)}. ${card.uprightMeaning}`},
+    {title:'오늘의 메시지',text:card.todayMessage},
+    {title:'사랑과 관계',text:domain.love},
+    {title:'돈과 현실',text:domain.money},
+    {title:'일과 행동',text:domain.work},
+    {title:'오늘 살펴볼 점',text:pick(cautions,'caution')}
+  ].filter(item=>item.text);
+  return tarotHtml(preventOrphan(`<section class="today-tarot-report" aria-label="오늘의 타로 전체 풀이">
+    <section class="tarot-panel"><h2 class="tarot-section-title">${tarotEsc(card.nameKo)} — ${tarotEsc(card.nameEn)}</h2><div class="tarot-kw-row">${card.keywords.map(k=>`<span class="tarot-kw">${tarotEsc(k)}</span>`).join('')}</div></section>
+    ${sections.map(item=>`<section class="tarot-panel"><h3 class="tarot-section-title">${item.title}</h3><div class="tarot-reading-flow"><p>${tarotEsc(item.text)}</p></div></section>`).join('')}
+    <section class="conversion-hook today-paid-hook" aria-label="질문형 타로 안내"><div class="conversion-hook-title">내 고민에는 어떤 카드가 나올까요?</div><div class="conversion-hook-body"><p>한 가지 질문으로 지금 필요한 조언을 확인해요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="goToTarot('question')">질문형 타로 보기 · ${formatWon(basePriceFor('tarot3'))}부터</button></div></section>
+  </section>`));
 }
 function renderTarotQuestion(root){
   const topic=TAROT_TOPICS[_tarotTopic];
@@ -23244,11 +23233,24 @@ function _focusNextVisible(ids){
   }
   return false;
 }
-function _autoAdvanceByValue(id,val){
+function _autoAdvanceByValue(id,val,confirmed=false){
   const raw=String(val||'').trim();
   if(!raw)return false;
   const n=parseInt(raw,10);
+  if(['astroYear','astroMonth','astroDay','astroHour','astroMinute'].includes(id)){
+    const [min,max]=({astroYear:[1900,2050],astroMonth:[1,12],astroDay:[1,31],astroHour:[0,23],astroMinute:[0,59]})[id];
+    if(!/^\d+$/.test(raw)||n<min||n>max)return false;
+    if(id==='astroDay'){
+      const y=Number(document.getElementById('astroYear')?.value),m=Number(document.getElementById('astroMonth')?.value);
+      if(y>=1900&&y<=2050&&m>=1&&m<=12&&n>new Date(y,m,0).getDate())return false;
+    }
+  }
   const rules={
+    astroYear:{done:raw.length===4,next:['astroMonth']},
+    astroMonth:{done:raw.length>=2||n>1,next:['astroDay']},
+    astroDay:{done:raw.length>=2||n>3,next:['astroHour','astroCountry']},
+    astroHour:{done:raw.length>=2||n>2,next:['astroMinute']},
+    astroMinute:{done:raw.length>=2||n>5,next:['astroCountry']},
     iY:{done:raw.length>=4,next:['iM']},
     iM:{done:raw.length>=2||n>1,next:['iD']},
     iD:{done:raw.length>=2||n>3,next:['iHourInput','iCity','iMbti']},
@@ -23271,8 +23273,28 @@ function _autoAdvanceByValue(id,val){
     nmGiven1Stroke:{done:raw.length>=1,next:['nmGiven2Sel','nmGiven2Han']},
     nmGiven2Stroke:{done:raw.length>=1,next:['iMbti']}
   }[id];
-  if(!rules||!rules.done)return false;
+  if(!rules||(!rules.done&&!confirmed))return false;
   return _focusNextVisible(rules.next);
+}
+function bindInputAutoAdvance(root,ids){
+  if(!root)return;
+  ids.forEach(id=>{
+    const el=root.querySelector('#'+id);
+    if(!el||el.dataset.autoAdvanceReady==='1')return;
+    el.dataset.autoAdvanceReady='1';
+    const selectCurrent=()=>{try{if(el.value)el.select();}catch(e){}};
+    el.addEventListener('focus',function(){setTimeout(selectCurrent,0);});
+    el.addEventListener('click',function(){setTimeout(selectCurrent,0);});
+    el.addEventListener('input',function(e){
+      if(e&&e.isComposing)return;
+      if(id.startsWith('astro')&&e?.inputType?.startsWith('delete'))return;
+      _autoAdvanceByValue(id,el.value);
+    });
+    el.addEventListener('compositionend',function(){_autoAdvanceByValue(id,el.value);});
+    if(id.startsWith('astro'))el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'&&!e.isComposing){e.preventDefault();_autoAdvanceByValue(id,el.value,true);}
+    });
+  });
 }
 function setupInputAutoAdvance(){
   const form=document.getElementById('formWrap');
@@ -23290,18 +23312,7 @@ function setupInputAutoAdvance(){
     document.addEventListener('click',selectExisting);
   }
   const ids=['iY','iM','iD','iHourInput','iMin','dpY','dpM','dpD','moStartY','moStartM','moEndY','moEndM','nyY','gnY','gnM','gnD','gnH','gnMin','nmSurnameStroke','nmGiven1Stroke','nmGiven2Stroke'];
-  ids.forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    const selectCurrent=()=>{try{if(el.value)el.select();}catch(e){}};
-    el.addEventListener('focus',function(){setTimeout(selectCurrent,0);});
-    el.addEventListener('click',function(){setTimeout(selectCurrent,0);});
-    el.addEventListener('input',function(e){
-      if(e&&e.isComposing)return;
-      _autoAdvanceByValue(id,el.value);
-    });
-    el.addEventListener('compositionend',function(){_autoAdvanceByValue(id,el.value);});
-  });
+  bindInputAutoAdvance(form,ids);
   [
     ['nmSurnameSel',['nmGiven1Sel','nmSurnameHan']],
     ['nmGiven1Sel',['nmGiven2Sel','nmGiven1Han']],
@@ -24157,6 +24168,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js"></script>
+<script src="assets/astrology.js?v=63bba1ae3bd2"></script>
 </body>
 </html>

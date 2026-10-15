@@ -433,6 +433,13 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .daily-lotto-balls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;max-width:280px;margin:12px 0}
 .daily-lotto-ball{display:grid;place-items:center;aspect-ratio:1;width:100%;max-width:36px;border:1px solid var(--border-strong);border-radius:50%;background:var(--accent-soft);color:var(--gold);font-size:.9rem;font-weight:400;line-height:1}
 .daily-luck-numbers p{font-size:.72rem;line-height:1.6;color:var(--muted);margin:0}
-.daily-paid-hook .conversion-hook-title{font-size:1.1rem;line-height:1.5}
-.daily-paid-hook .conversion-hook-body p{margin:8px 0 14px;font-size:.86rem}
-.daily-paid-hook .conversion-hook-actions{margin-top:0}
+:is(.daily-paid-hook,.today-paid-hook) .conversion-hook-title{font-size:1.1rem;line-height:1.5}
+:is(.daily-paid-hook,.today-paid-hook) .conversion-hook-body p{margin:8px 0 14px;font-size:.86rem}
+:is(.daily-paid-hook,.today-paid-hook) .conversion-hook-actions{margin-top:0}
+
+/* 출생차트도 연·월·일을 한 줄에서 입력한다. */
+.astro-birth-row{grid-template-columns:minmax(0,2.2fr) repeat(2,minmax(0,1fr))}
+#app .astro-birth-row .astro-input{padding-inline:8px}
+.today-tarot-report>.tarot-panel,.today-tarot-report>.conversion-hook,.today-astro-report>.astro-panel,.today-astro-report>.astro-warn,.today-astro-report>.conversion-hook{margin-bottom:var(--card-gap)}
+.today-tarot-report .tarot-section-title,.today-astro-report .astro-section-title{margin-bottom:12px}
+.today-tarot-report .tarot-reading-flow p:last-child{margin-bottom:0}

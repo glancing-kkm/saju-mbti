@@ -314,6 +314,79 @@ const submitBirth=async()=>{
       assert(d.querySelector('#astroApp .astro-wheel-wrap'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
     });
+    // jsdom has no layout; only the focusable input rectangles are supplied here.
+    const astroBoxes=()=>{
+      for(const id of ['astroYear','astroMonth','astroDay','astroHour','astroMinute','astroCountry']){
+        const el=d.getElementById(id);el.getBoundingClientRect=()=>({width:100,height:44});
+      }
+    };
+    const typeAstro=(id,value,inputType='insertText')=>{
+      const el=d.getElementById(id);el.focus();el.value=value;
+      el.dispatchEvent(new w.InputEvent('input',{bubbles:true,inputType}));
+      return d.activeElement.id;
+    };
+    for(const route of ['natal','today','input']){
+      run(`goToAstrology('${route}')`);astroBoxes();
+      d.getElementById('astroTimeUnknown').checked=false;run('toggleAstroTimeFields()');
+      check('출생정보 자동 이동: '+route+'의 연·월·일·시·분',()=>{
+        assert.equal(typeAstro('astroYear','199'),'astroYear');
+        assert.equal(typeAstro('astroYear','1994'),'astroMonth');
+        assert.equal(typeAstro('astroMonth','1'),'astroMonth');
+        assert.equal(typeAstro('astroMonth','12'),'astroDay');
+        assert.equal(typeAstro('astroDay','3'),'astroDay');
+        assert.equal(typeAstro('astroDay','31'),'astroHour');
+        assert.equal(typeAstro('astroHour','2'),'astroHour');
+        assert.equal(typeAstro('astroHour','23'),'astroMinute');
+        assert.equal(typeAstro('astroMinute','5'),'astroMinute');
+        assert.equal(typeAstro('astroMinute','59'),'astroCountry');
+      });
+      check('출생정보 입력: '+route+'의 잘못된 값은 다음 칸으로 이동하지 않음',()=>{
+        assert.equal(typeAstro('astroMonth','13'),'astroMonth');
+        assert.equal(typeAstro('astroHour','24'),'astroHour');
+        assert.equal(typeAstro('astroMinute','60'),'astroMinute');
+        d.getElementById('astroMonth').value='2';
+        assert.equal(typeAstro('astroDay','30'),'astroDay');
+        assert.equal(typeAstro('astroYear','20aa'),'astroYear');
+        d.getElementById('astroYear').value='2024';
+        assert.equal(typeAstro('astroDay','29'),'astroHour');
+        assert.equal(typeAstro('astroMonth','5','deleteContentBackward'),'astroMonth');
+      });
+      check('출생정보 입력: '+route+'의 Enter 확정과 시간 모름 건너뛰기',()=>{
+        typeAstro('astroMonth','1');
+        d.getElementById('astroMonth').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+        assert.equal(d.activeElement.id,'astroDay');
+        d.getElementById('astroTimeUnknown').checked=true;run('toggleAstroTimeFields()');
+        assert(d.getElementById('astroHour').disabled&&d.getElementById('astroMinute').disabled);
+        assert.equal(typeAstro('astroDay','18'),'astroCountry');
+      });
+    }
+    run("goToAstrology('today')");
+    d.getElementById('astroYear').value='1994';d.getElementById('astroMonth').value='5';d.getElementById('astroDay').value='18';
+    d.getElementById('astroTimeUnknown').checked=true;
+    run('submitTodayAstrology()');
+    check('오늘의 점성술: 출생정보 제출 후 요약·선택 바 없이 전체 풀이',()=>{
+      assert.equal(run('_astroRoute'),'todayResult');
+      assert(d.querySelector('#astroApp .today-astro-report .astro-markdown p'));
+      assert(d.querySelector('#astroApp .astro-wheel'));
+      assert(!d.querySelector('#astroApp .journey-chapters,#astroApp .story-experience,#astroApp .story-deck-layer'));
+      assert.match(d.querySelector('#astroApp .astro-warn').textContent,/출생시간을 몰라/);
+      assert(d.querySelector('#astroApp .today-paid-hook').textContent.length<200);
+    });
+    run('renderAstrology()');
+    check('오늘의 점성술: 재렌더링에도 전체 풀이 유지',()=>assert(d.querySelector('#astroApp .today-astro-report')));
+    run(d.querySelector('#astroApp .today-paid-hook button').getAttribute('onclick'));
+    check('오늘의 점성술: 짧은 안내에서 유료 상품 선택으로 연결',()=>assert.equal(d.querySelectorAll('#astroApp .astro-product').length,5));
+    run("goToTarot('today');selectTodayTarot(_todayTarotCardIds[0])");
+    check('오늘의 타로: 카드 뽑은 직후 주제 선택 없이 전체 풀이 6개 표시',()=>{
+      assert(d.querySelector('#todayTarotResult .today-tarot-report'));
+      assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,6);
+      assert(!d.querySelector('#todayTarotResult .journey-chapters,#todayTarotResult .story-experience,#todayTarotResult .story-deck-layer'));
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,1);
+      assert(!d.querySelector('#todayTarotResult .tarot-mini-face'));
+      assert(d.querySelector('#todayTarotResult .today-paid-hook').textContent.length<200);
+    });
+    run(d.querySelector('#todayTarotResult .today-paid-hook button').getAttribute('onclick'));
+    check('오늘의 타로: 유료 질문형 타로로 정상 연결',()=>assert.equal(run('_tarotRoute'),'question'));
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));
     console.log('Journey integration checks passed. Network fully mocked; no live payment.');
   }finally{w.close();}
