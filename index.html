@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=09b3367e3a2f">
+<link rel="stylesheet" href="/assets/night.css?v=e7586f7d35b3">
 </head>
 <body>
 <div id="app">
@@ -6052,10 +6052,10 @@ function renderDailyFortune(saju){
   const _pMod={
     '총운':_ax==='self'?'자기 주도의 힘이 강한 본인은 오늘도 남의 기준보다 본인 결정을 따를 때 운이 붙어요.':_ax==='out'?'표현의 힘이 강한 본인은 오늘 떠오른 생각을 묵히지 말고 꺼내놓을 때 풀려요.':_ax==='wealth'?'현실 감각이 강한 본인은 오늘도 눈에 보이는 결과 하나를 만드는 데 집중하면 좋아요.':_ax==='gwan'?'책임의 힘이 강한 본인은 오늘 맡은 일 하나를 깔끔하게 매듭지을 때 운이 살아요.':'배움의 힘이 강한 본인은 오늘 접하는 정보 속에 기회가 숨어 있어요.',
     '재물':(_pp.axisSorted[0][0]==='wealth'||_pp.axisSorted[1][0]==='wealth')?'본인 사주에는 현실과 재물을 읽는 감각이 두터운 편이라, 오늘 같은 날 기회를 남보다 빨리 알아봐요.':'본인 사주는 재물보다 다른 기운이 중심이라, 돈은 좇기보다 본업의 결과로 따라오게 하는 쪽이 유리해요.',
-    '연애':`본인 배우자 자리(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})는 ${({'비견':'친구 같은 편안함','겁재':'밀당의 긴장감','식신':'함께 먹고 즐기는 따뜻함','상관':'표현이 풍부한 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강렬한 끌림','정관':'반듯한 신뢰','편인':'깊은 대화의 교감','정인':'보살핌의 온기'})[_pp.seatTg]||'고유한 분위기'}를 원하는 자리라, 오늘 만남도 그 온도에 맞추면 자연스러워요.`,
+    '연애':`본인 배우자 자리(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})는 ${(v=>v+eul(v))(({'비견':'친구 같은 편안함','겁재':'밀당의 긴장감','식신':'함께 먹고 즐기는 따뜻함','상관':'표현이 풍부한 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강렬한 끌림','정관':'반듯한 신뢰','편인':'깊은 대화의 교감','정인':'보살핌의 온기'})[_pp.seatTg]||'고유한 분위기')} 원하는 자리라, 오늘 만남도 그 온도에 맞추면 자연스러워요.`,
     '건강':`본인은 ${OHNAME[_pp.lack]} 기운이 옅은 사주라 평소 ${_ORGAN[_pp.lack]} 쪽을 의식하면 좋고, 오늘 컨디션 관리도 거기서 시작하세요.`
   };
-  const _stars=sc=>{const n=Math.max(1,Math.min(5,Math.round((sc||0)/20)));return `<span class="daily-cat-stars" style="letter-spacing:1px;font-size:.74rem;color:var(--accent-bright)">${'★'.repeat(n)}<span style="color:rgba(255,255,255,.18)">${'☆'.repeat(5-n)}</span></span>`;};
+  const _stars=sc=>{const n=Math.max(1,Math.min(5,Math.round((sc||0)/20)));return `<span class="daily-cat-stars" style="letter-spacing:1px;font-size:.92rem;color:var(--accent-bright)">${'★'.repeat(n)}<span style="color:rgba(255,255,255,.18)">${'☆'.repeat(5-n)}</span></span>`;};
   let h=`<div class="daily-wrap">
       <div class="daily-card">
         <div class="daily-date">${f.dy}년 ${f.dm}월 ${f.dd}일 (${['일','월','화','수','목','금','토'][new Date(f.dy,f.dm-1,f.dd).getDay()]}요일)</div>
@@ -6068,8 +6068,8 @@ function renderDailyFortune(saju){
         <div class="daily-pillar">오늘 하루는 <em>${plainTG(f.tg)}</em> 기운이 들어오는 날이에요${f.rel.kind!=='평'?` · 본인 자리와는 <b>${({합:'자연스럽게 어울림',반합:'같은 방향 협력',반합약:'잔잔한 협력',동:'같은 글자 만남',충:'정면 부딪힘',원진:'이유 없는 거슬림',형:'서로 깎임',자형:'내면 갈등',파:'마무리 어긋남',해:'은근한 방해'})[f.rel.kind]||f.rel.kind}</b>`:''}</div>
       </div>
       <div class="daily-card" style="text-align:left">
-        <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 하루를 한 줄로 정리하면</div>
-        <div style="font-size:.82rem;color:var(--sub);line-height:1.95">
+        <div style="font-family:var(--font-heading);font-synthesis:none;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:10px">🪄 오늘 하루를 한 줄로 정리하면</div>
+        <div style="font-size:1rem;color:var(--text);line-height:1.95">
           <p style="margin-bottom:10px">${personaDeepHTML(saju,'line')}에게 오늘은 <b>${plainTG(f.tg)}</b>의 기운이 들어오는 날이에요. 「${(TG_KEYWORD[f.tg]||[]).slice(0,3).join('·')}」의 색채로 하루가 펼쳐져요.</p>
           <p style="margin-bottom:10px">${f.tg==='정관'||f.tg==='편관'?'책임 있는 자리·공식 절차에 흐름이 잘 맞으니, 발표·결재·면접 같은 일이 있다면 오늘 처리하세요.':f.tg==='정재'||f.tg==='편재'?'재물·거래·이동에 흐름이 좋아요. 미뤄둔 거래나 외근이 있다면 오늘이 좋은 날이에요.':f.tg==='식신'||f.tg==='상관'?'표현·창작·사람 만남에 리듬이 잘 맞아요. 미뤄둔 모임이나 작품 마무리가 자연스럽게 풀려요.':f.tg==='정인'||f.tg==='편인'?'학습·자료 정리·내면 다지기에 흐름이 잘 맞아요. 책 한 권 펼치거나 멘토에게 조언을 청해보세요.':'본인 결정과 동료 활동을 하기에 좋은 때예요. 평소 미뤄둔 모임이나 본인만의 시간을 만들어보세요.'}</p>
           <p>${f.rel.kind==='합'||f.rel.kind==='반합'||f.rel.kind==='반합약'?'특히 오늘은 본인과 오늘 기운이 자연스럽게 잘 통하는 흐름이라, 사람 만남·약속·교섭이 평소보다 부드럽게 풀려요. 미뤄둔 약속이 있다면 오늘 잡아보세요.':f.rel.kind==='충'?'다만 본인과 오늘 기운이 정면으로 부딪히는 기류라, 변동·번복이 잦은 날이에요. 큰 결정은 하루 묵히는 게 안전해요.':f.rel.kind==='원진'?'다만 오늘은 이유 없는 거슬림이 올라오기 쉬운 날이에요. 가까운 사람의 사소한 말투에 거슬리더라도 즉답을 한 박자 늦추세요.':f.rel.kind==='형'?'다만 오늘은 시비나 갈등이 잦은 날이에요. 상대의 약점을 말로 짚지 않는 자제가 필요해요.':'본인과 오늘 기운은 평이한 흐름이라 큰 변동 없는 잔잔한 날이에요. 미뤄둔 작업을 차분히 처리하기 좋아요.'}</p>
@@ -6085,11 +6085,11 @@ function renderDailyFortune(saju){
       ${_dailyLuckCard(saju, f)}
       ${_dailyActionCard(saju, f)}
       <div class="daily-card" style="text-align:left">
-        <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
-        <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
+        <div style="font-family:var(--font-heading);font-synthesis:none;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
+        <div style="font-size:1rem;color:var(--text);line-height:1.95">${dailyAdvice(saju,f)}</div>
       </div>
       ${renderDailyConversionHook(saju,f)}
-      <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요.</div>
+      <div style="text-align:center;font-size:.82rem;color:var(--muted);margin-top:8px">※ 일일운세는 매일 자정에 새로 갱신돼요.</div>
     </div>`;
   return `<section class="daily-report" aria-label="오늘의 운세 전체 풀이">${preventOrphan(h)}</section>`;
 }
@@ -6110,12 +6110,12 @@ function _dailyHourCard(saju, f){
     else{note='평이한 시간대 — 본인 페이스로 보내세요';}
     cards.push({bi,kind,accent,note});
   }
-  let body=`<p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">하루를 12개 시간대로 나눠보면 시간마다 흐름이 조금씩 달라요. 본인이 앉은 자리(<b>${BRCHKO[myBranch]}</b>)와 오늘의 자리(<b>${BRCHKO[dpBranch]}</b>)가 시간대마다 자연스럽게 잘 통하거나 부딪히거나 해서 길시·주의시가 갈려요. 중요한 일정은 길시에, 주의시엔 한 박자 쉬어가시면 흐름이 부드러워져요.</p>`;
+  let body=`<p style="font-size:1rem;color:var(--text);line-height:1.95;margin-bottom:12px">하루를 12개 시간대로 나눠보면 시간마다 흐름이 조금씩 달라요. 본인이 앉은 자리(<b>${BRCHKO[myBranch]}</b>)와 오늘의 자리(<b>${BRCHKO[dpBranch]}</b>)가 시간대마다 자연스럽게 잘 통하거나 부딪히거나 해서 길시·주의시가 갈려요. 중요한 일정은 길시에, 주의시엔 한 박자 쉬어가시면 흐름이 부드러워져요.</p>`;
   cards.forEach(g=>{
-    body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.74rem;line-height:1.55"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.7rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
+    body+=`<div style="padding:7px 10px;margin-bottom:5px;background:var(--bg-deep);border-left:3px solid ${g.accent};border-radius:6px;font-size:.95rem;line-height:1.7"><b style="color:${g.accent}">${g.kind} · ${BRCHKO[g.bi]}시</b> <span style="color:var(--muted);font-size:.84rem">(${HOUR_RANGES[g.bi]})</span><br><span style="color:var(--sub)">${g.note}</span></div>`;
   });
   return `<div class="daily-card" style="text-align:left">
-    <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 분위기 (12시진)</div>
+    <div style="font-family:var(--font-heading);font-synthesis:none;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:10px">⏰ 시간대별 분위기 (12시진)</div>
     ${body}
   </div>`;
 }
@@ -6166,15 +6166,15 @@ function _dailyActionCard(saju, f){
   if(f.rel.kind==='형')avoid.push('⚠️ 시비·과거 들춤·격한 운동');
   if(avoid.length===0)avoid.push('🤚 평소보다 한 톤 신중한 정도면 충분');
   return `<div class="daily-card" style="text-align:left">
-    <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">오늘은 잘 풀리는 활동과 잠시 미룰 활동을 나눠보면 좋아요</div>
-    <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘 일진(<b>${f.tg}</b>)이 본인 사주와 만나는 흐름을 바탕으로, 오늘 하루 잘 풀리는 활동과 잠시 미뤄두는 게 좋은 활동을 정리해드렸어요. 일정을 잡거나 결정을 미루실 때 참고하세요.</p>
+    <div style="font-family:var(--font-heading);font-synthesis:none;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:10px">오늘은 잘 풀리는 활동과 잠시 미룰 활동을 나눠보면 좋아요</div>
+    <p style="font-size:1rem;color:var(--text);line-height:1.95;margin-bottom:12px">오늘 일진(<b>${f.tg}</b>)이 본인 사주와 만나는 흐름을 바탕으로, 오늘 하루 잘 풀리는 활동과 잠시 미뤄두는 게 좋은 활동을 정리해드렸어요. 일정을 잡거나 결정을 미루실 때 참고하세요.</p>
     <div style="margin-bottom:10px">
-      <div style="font-size:.74rem;color:var(--wood);font-weight:700;margin-bottom:6px">오늘 흐름이 잘 풀리는 활동이에요.</div>
-      <div style="display:flex;flex-direction:column;gap:5px">${rec.map(r=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(108,191,126,.08);border-left:3px solid var(--wood);border-radius:5px">${r}</div>`).join('')}</div>
+      <div style="font-size:1rem;color:var(--wood);font-weight:700;margin-bottom:8px">오늘 흐름이 잘 풀리는 활동이에요.</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${rec.map(r=>`<div style="font-size:.98rem;color:var(--text);padding:8px 12px;background:rgba(108,191,126,.08);border-left:3px solid var(--wood);border-radius:5px">${r}</div>`).join('')}</div>
     </div>
     <div>
-      <div style="font-size:.74rem;color:var(--fire);font-weight:700;margin-bottom:6px">이 활동은 한 박자 미루는 편이 좋아요.</div>
-      <div style="display:flex;flex-direction:column;gap:5px">${avoid.map(a=>`<div style="font-size:.78rem;color:var(--sub);padding:6px 10px;background:rgba(229,116,98,.08);border-left:3px solid var(--fire);border-radius:5px">${a}</div>`).join('')}</div>
+      <div style="font-size:1rem;color:var(--fire);font-weight:700;margin-bottom:8px">이 활동은 한 박자 미루는 편이 좋아요.</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${avoid.map(a=>`<div style="font-size:.98rem;color:var(--text);padding:8px 12px;background:rgba(229,116,98,.08);border-left:3px solid var(--fire);border-radius:5px">${a}</div>`).join('')}</div>
     </div>
   </div>`;
 }
@@ -9477,7 +9477,7 @@ function renderNewyearFortuneLegacy(saju,y){
   const _nyLine=t=>`<p style="margin-top:10px;padding:8px 12px;background:var(--bg-deep);border-left:2px solid var(--accent);border-radius:6px;font-size:.8rem">＋ <b>본인 맞춤</b> — ${t}</p>`;
   const _nyP={
     재물:_nyLine((_nyAx==='wealth'||_nyPP.axisSorted[1][0]==='wealth')?'본인 사주에는 현실과 재물을 읽는 감각이 두터워서, 올해 들어오는 기회를 남보다 빨리 알아봐요.':`본인 사주의 중심 힘은 ${SIPSIN_AXIS_LABEL[_nyAx].n} 쪽이에요. 올해 재물은 그 강점을 살린 결과로 따라오게 하는 그림이 가장 큽니다.`),
-    연애:_nyLine(`본인 배우자 자리(${myBrKo}·${ANIMAL[saju.dp.branch]})는 ${({'비견':'친구 같은 편안함','겁재':'밀당의 긴장감','식신':'함께 즐기는 따뜻함','상관':'표현이 풍부한 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강렬한 끌림','정관':'반듯한 신뢰','편인':'깊은 대화의 교감','정인':'보살핌의 온기'})[_nyPP.seatTg]||'고유한 분위기'}를 원하는 자리예요. 올해 인연도 이 온도에서 만나야 오래갑니다.`),
+    연애:_nyLine(`본인 배우자 자리(${myBrKo}·${ANIMAL[saju.dp.branch]})는 ${(v=>v+eul(v))(({'비견':'친구 같은 편안함','겁재':'밀당의 긴장감','식신':'함께 즐기는 따뜻함','상관':'표현이 풍부한 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강렬한 끌림','정관':'반듯한 신뢰','편인':'깊은 대화의 교감','정인':'보살핌의 온기'})[_nyPP.seatTg]||'고유한 분위기')} 원하는 자리예요. 올해 인연도 이 온도에서 만나야 오래갑니다.`),
     직업:_nyLine(`본인 사주 유형(${gkX.nick||gkX.name})의 강점을 올해 직업 운에 그대로 얹으세요. 유형에 맞는 자리에서는 같은 세운도 두 배로 일해줘요.`),
     관계:_nyLine(_nyPP.yangRatio>=60?'밖으로 뻗는 양 기운이 우세한 본인은 올해도 움직이며 만나는 자리에서 인연이 늘어요.':_nyPP.yangRatio<=40?'안으로 모으는 음 기운이 우세한 본인은 넓게보다 소수와 깊게 가는 관계가 올해의 자산이에요.':'음양이 고른 본인은 모임과 혼자만의 시간을 번갈아 쓰는 리듬이 관계 운을 지켜줘요.'),
     건강:_nyLine(`본인은 ${OHNAME[_nyPP.lack]} 기운이 옅은 사주라 ${_nyORGAN[_nyPP.lack]} 쪽을 평생 꾸준히 살피는 게 좋아요. 올해 건강 계획도 여기서 시작하세요.`),

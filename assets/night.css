@@ -443,3 +443,64 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .today-tarot-report>.tarot-panel,.today-tarot-report>.conversion-hook,.today-astro-report>.astro-panel,.today-astro-report>.astro-warn,.today-astro-report>.conversion-hook{margin-bottom:var(--card-gap)}
 .today-tarot-report .tarot-section-title,.today-astro-report .astro-section-title{margin-bottom:12px}
 .today-tarot-report .tarot-reading-flow p:last-child{margin-bottom:0}
+
+/* 오늘의 운세 — 본문은 풀이 본문(16px·1.95)과 같게, 제목·항목 이름은 본문보다 살짝 크게 */
+#app #view-result .daily-date{font-size:1rem;letter-spacing:.02em;margin-bottom:16px}
+#app #view-result .daily-score-lab{font-size:.82rem}
+#app #view-result .daily-grade{font-size:.92rem}
+#app #view-result .daily-headline{font-size:1.25rem;line-height:1.5}
+#app #view-result .daily-pillar{font-family:var(--font-main);font-size:1rem;line-height:1.95;color:var(--text)}
+#app #view-result .daily-cat-name{font-size:1.1rem}
+#app #view-result .daily-cat-emoji{font-size:1.15rem}
+#app #view-result .daily-cat-score{font-size:.95rem}
+#app #view-result .daily-luck-card h3{font-size:1.1rem}
+#app #view-result .daily-luck-intro{font-size:1rem;line-height:1.95;color:var(--text)}
+#app #view-result .daily-luck-value>span{font-size:.9rem}
+#app #view-result .daily-luck-value>b{font-size:1.05rem}
+#app #view-result .daily-luck-numbers p{font-size:.88rem}
+
+/* ── 풀이 글자 크기 정리 ──
+   기준: 풀이 본문 1rem(16px)·줄간격 1.95. 제목·목차는 본문 이상, 칸 안 내용은 본문에 가깝게,
+   칸 이름 같은 보조 글자도 .82rem 아래로 내려가지 않게 한다. */
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-section-head{font-size:1.1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .journey-chapters button{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .toc-jump-btn{font-size:.95rem!important;padding:9px 11px!important}
+#app :is(#view-result,#view-tarot,#view-astrology) .ch-no{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .ch-desc{font-size:.92rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .toc-collapse-label{font-size:.9rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .nb-cat{font-size:.86rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .detail-hint{font-size:.95rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .rb-lead small,#app :is(#view-result,#view-tarot,#view-astrology) .rb-action small{font-size:.9rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v2-lead{font-size:1.05rem;line-height:1.8}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-emoji b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-emoji span span{font-size:.95rem;line-height:1.7}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-time-head b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-time-head span{font-size:.85rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-time-card p{font-size:.95rem;line-height:1.7}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-time-action{font-size:.9rem;line-height:1.6}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-evidence-head{font-size:.95rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-evidence-node b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-evidence-node span{font-size:.9rem;line-height:1.6}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-evidence-node small{font-size:.82rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-evidence-caption{font-size:.9rem;line-height:1.7}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-formula-step b{font-size:.95rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-formula-step small{font-size:.82rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-relation-link{font-size:.9rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-note{font-size:1rem;line-height:1.9}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-profile-item small{font-size:.82rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-v3-profile-item b{font-size:.95rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-era b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-era small{font-size:.85rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-era span{font-size:.9rem;line-height:1.6}
+#app :is(#view-result,#view-tarot,#view-astrology) .ny-v3-season-card b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .ny-v3-season-card small{font-size:.88rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-library-intro,#app :is(#view-result,#view-tarot,#view-astrology) .story-library-intro{font-size:.95rem}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.life-v3-golden-card,.life-v3-dual-card,.life-word-copy,.ny-v3-daeun-card,.ny-v3-overview-item) b{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.life-v3-golden-card,.life-v3-dual-card,.life-word-copy,.ny-v3-daeun-card,.ny-v3-overview-item,.life-v3-relation-point) span{font-size:.9rem;line-height:1.6}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.life-v3-golden-card,.ny-v3-daeun-card,.ny-v3-overview-item,.life-v3-relation-point) small{font-size:.82rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .ny-v3-oh-row em{font-size:.85rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .na-title{font-size:1rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .na-desc{font-size:.85rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .na-tag{font-size:.72rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .cc-stat-name,#app :is(#view-result,#view-tarot,#view-astrology) .ck-chips span,#app :is(#view-result,#view-tarot,#view-astrology) .cc-note{font-size:.88rem}
+#app :is(#view-result,#view-tarot,#view-astrology) .life-layer-bar button{font-size:.9rem}
