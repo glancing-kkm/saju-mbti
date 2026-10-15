@@ -2691,7 +2691,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
 
     <div class="nh-dock">
-      <button type="button" class="nh-cta" onclick="startJourney('self')"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>무료로 내 사주 먼저 보기<span class="nh-cta-arrow" aria-hidden="true">›</span></button>
+      <button type="button" class="nh-cta" onclick="openTodayChoice()" aria-haspopup="dialog" aria-controls="todayChoiceDialog"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>오늘의 무료 운세 골라보기<span class="nh-cta-arrow" aria-hidden="true">›</span></button>
       <nav class="nh-tabbar" aria-label="바로가기">
         <a href="/" class="on" aria-current="page" onclick="event.preventDefault();goHome();window.scrollTo(0,0)"><span class="material-symbols-outlined" aria-hidden="true">home</span>홈</a>
         <button type="button" onclick="goToInput('daily')"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span>오늘의 운세</button>
@@ -3110,6 +3110,19 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     <div class="ai-copy-note">🔒 <span id="manseAiCopyMeta">출생일과 출생지가 포함된 문장이 복사돼요.</span> 민감한 정보는 붙여넣기 전에 확인해 보세요.</div>
   </div>
 </div>
+
+<!-- ───── 오늘의 무료 운세 선택 ───── -->
+<dialog class="today-choice" id="todayChoiceDialog" aria-labelledby="todayChoiceTitle" onclick="closeTodayChoiceOnBackdrop(event)">
+  <button type="button" class="today-choice-close" onclick="closeTodayChoice()" aria-label="닫기">✕</button>
+  <p class="today-choice-kicker">매일 새롭게 · 무료</p>
+  <h2 id="todayChoiceTitle">오늘은 무엇이 궁금하세요?</h2>
+  <p class="today-choice-intro">마음이 가는 풀이를 골라보세요.</p>
+  <div class="today-choice-options">
+    <button type="button" class="today-choice-item" onclick="selectTodayReading('daily')"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span><span><b>오늘의 운세</b><small>사주로 보는 오늘의 흐름과 행운</small></span><span aria-hidden="true">›</span></button>
+    <button type="button" class="today-choice-item" onclick="selectTodayReading('tarot')"><span class="material-symbols-outlined" aria-hidden="true">style</span><span><b>오늘의 타로</b><small>직접 뽑은 카드가 건네는 조언</small></span><span aria-hidden="true">›</span></button>
+    <button type="button" class="today-choice-item" onclick="selectTodayReading('astrology')"><span class="material-symbols-outlined" aria-hidden="true">nights_stay</span><span><b>오늘의 점성술</b><small>별의 움직임으로 보는 하루</small></span><span aria-hidden="true">›</span></button>
+  </div>
+</dialog>
 
 <!-- ───── 공유 모달 ───── -->
 <div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShareModal()">
@@ -4446,6 +4459,33 @@ function journeyEvent(name,category,extra){
     params.items=[{item_id:category,item_name:CAT_LABEL[category]||(PAID_META[category]||{}).title||category,price:extra.value,quantity:1}];
   }
   try{gtag('event',name,params);}catch(e){}
+}
+function openTodayChoice(){
+  const dialog=document.getElementById('todayChoiceDialog');
+  if(dialog&&!dialog.open)dialog.showModal();
+}
+function closeTodayChoice(){
+  const dialog=document.getElementById('todayChoiceDialog');
+  if(dialog&&dialog.open)dialog.close();
+}
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&document.getElementById('todayChoiceDialog')?.open){
+    event.preventDefault();
+    closeTodayChoice();
+  }
+});
+function closeTodayChoiceOnBackdrop(event){
+  const dialog=event.currentTarget;
+  if(event.target!==dialog)return;
+  const r=dialog.getBoundingClientRect();
+  if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeTodayChoice();
+}
+function selectTodayReading(kind){
+  if(!['daily','tarot','astrology'].includes(kind))return;
+  closeTodayChoice();
+  if(kind==='daily')goToInput('daily');
+  else if(kind==='tarot')goToTarot('today');
+  else goToAstrology('today');
 }
 function startJourney(topic){
   _journeyTopic=['self','love','career','year'].includes(topic)?topic:'self';
@@ -6026,7 +6066,6 @@ function renderDailyFortune(saju){
     '연애':`본인 배우자 자리(${BRCHKO[saju.dp.branch]}·${ANIMAL[saju.dp.branch]})는 ${({'비견':'친구 같은 편안함','겁재':'밀당의 긴장감','식신':'함께 먹고 즐기는 따뜻함','상관':'표현이 풍부한 설렘','편재':'활동적인 즐거움','정재':'착실한 안정감','편관':'강렬한 끌림','정관':'반듯한 신뢰','편인':'깊은 대화의 교감','정인':'보살핌의 온기'})[_pp.seatTg]||'고유한 분위기'}를 원하는 자리라, 오늘 만남도 그 온도에 맞추면 자연스러워요.`,
     '건강':`본인은 ${OHNAME[_pp.lack]} 기운이 옅은 사주라 평소 ${_ORGAN[_pp.lack]} 쪽을 의식하면 좋고, 오늘 컨디션 관리도 거기서 시작하세요.`
   };
-  const w=document.documentElement.clientWidth||360;
   const _stars=sc=>{const n=Math.max(1,Math.min(5,Math.round((sc||0)/20)));return `<span class="daily-cat-stars" style="letter-spacing:1px;font-size:.74rem;color:var(--accent-bright)">${'★'.repeat(n)}<span style="color:rgba(255,255,255,.18)">${'☆'.repeat(5-n)}</span></span>`;};
   let h=`<div class="daily-wrap">
       <div class="daily-card">
@@ -6056,7 +6095,6 @@ function renderDailyFortune(saju){
       ${_dailyHourCard(saju, f)}
       ${_dailyLuckCard(saju, f)}
       ${_dailyActionCard(saju, f)}
-      ${_dailyDaeunStageCard(saju, f)}
       <div class="daily-card" style="text-align:left">
         <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:8px">📜 오늘의 한 줄 조언</div>
         <div style="font-size:.82rem;color:var(--sub);line-height:1.85">${dailyAdvice(saju,f)}</div>
@@ -6064,51 +6102,7 @@ function renderDailyFortune(saju){
       ${renderDailyConversionHook(saju,f)}
       <div style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px">※ 일일운세는 매일 자정에 새로 갱신돼요.</div>
     </div>`;
-  const relationLabel=({합:'자연스럽게 어울림',반합:'같은 방향으로 협력',반합약:'잔잔한 협력',동:'본인 색이 짙어짐',충:'변동을 천천히 확인',원진:'감정적인 즉답 주의',형:'말투와 갈등 주의',자형:'내면의 긴장을 풀기',파:'마무리를 한 번 더 확인',해:'말을 옮기지 않기',평:'본인 호흡을 유지'})[f.rel.kind]||'본인 호흡을 유지';
-  const todayAction=readingPlainText(dailyAdvice(saju,f));
-  const deck=[
-    {key:'flow',icon:'auto_awesome',title:'오늘의 큰 흐름',quote:`${grade.lab} · 오늘은 하나를 선택해 끝내세요`,copy:`오늘은 ${plainTG(f.tg)} 분위기가 본인 하루에 들어와요. ${readingPlainText(_dailyMsg('총운',f.tg,f.rel))} ${_pMod['총운']} 좋은 흐름은 크게 벌이기보다 가장 중요한 일 하나에 쓰면 더 잘 살아나요.`,points:[{label:'오늘 점수',value:`${f.total}점`},{label:'날짜',value:`${f.dy}.${f.dm}.${f.dd}`}]},
-    {key:'money',icon:'savings',title:'돈과 현실',quote:'들어오는 돈보다 오늘 남길 것을 보세요',copy:`${readingPlainText(_dailyMsg('재물',f.tg,f.rel))} ${_pMod['재물']} 계약과 지출은 기분보다 금액·날짜·조건을 눈으로 확인하세요. 오늘 하나만 정리해도 현실의 안정감이 커져요.`,points:[{label:'재물',value:`${f.wealth}점`},{label:'선택 기준',value:'조건 확인'}]},
-    {key:'love',icon:'favorite',title:'사랑과 관계',quote:'알아주길 기다리기보다 짧게 말해보세요',copy:`${readingPlainText(_dailyMsg('연애',f.tg,f.rel))} ${_pMod['연애']} 오늘은 상대의 뜻을 혼자 정하지 말고 짧게 물어보세요. 작은 확인 하나가 오해를 줄여줘요.`,points:[{label:'사랑',value:`${f.love}점`},{label:'관계 흐름',value:relationLabel}]},
-    {key:'health',icon:'health_and_safety',title:'건강과 리듬',quote:'몸이 보내는 작은 신호부터 챙기세요',copy:`${readingPlainText(_dailyMsg('건강',f.tg,f.rel))} ${_pMod['건강']} 오늘은 수면·식사·수분 중 하나를 제시간에 챙겨보세요. 불편함이 반복되면 운세보다 진료와 검사를 먼저 받아야 해요.`,points:[{label:'건강',value:`${f.health}점`},{label:'오늘 리듬',value:'무리하지 않기'}]},
-    {key:'action',icon:'task_alt',title:'오늘의 행동',quote:'생각을 작은 행동 하나로 바꾸세요',copy:`${todayAction} 오늘의 좋은 흐름은 본인이 직접 움직일 때 현실이 돼요. 할 일을 크게 잡지 말고 30분 안에 끝낼 크기로 줄여보세요.`,points:[{label:'오늘 한 가지',value:'30분 집중'},{label:'주의',value:relationLabel}]}
-  ];
-  return `<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>`+buildStoryExperienceHTML({id:`daily-${f.dy}-${f.dm}-${f.dd}`,kicker:'TODAY COUNSELING',icon:'today',title:`${f.dm}월 ${f.dd}일 오늘의 운세`,subtitle:`${grade.lab} · 오늘은 ${plainTG(f.tg)} 분위기를 잘 쓰는 날이에요`,personalNote:_pMod['총운'],score:f.total,stats:[{label:'돈',value:f.wealth},{label:'사랑',value:f.love},{label:'건강',value:f.health},{label:'전체',value:f.total}],highlights:[{icon:'auto_awesome',label:'오늘 분위기',text:plainTG(f.tg)},{icon:'join_inner',label:'본인과의 만남',text:relationLabel},{icon:'task_alt',label:'오늘 한 가지',text:'가장 중요한 일부터'}],deck,deckTitle:'오늘의 핵심 5장',libraryTitle:'오늘의 운세 전체 풀이',libraryIntro:'총운·돈·사랑·건강·시간대별 흐름과 실천법을 모두 모아두었어요.',libraryHtml:preventOrphan(h)});
-}
-
-// 일일운세 — 본인 대운 단계 + 핵심 시간대 통합 카드
-function _dailyDaeunStageCard(saju, f){
-  try{
-    if(!_meta||!_meta.sy)return '';
-    const _g=_meta.gender||'male';
-    const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
-    const _curY=new Date().getFullYear();
-    const _curAge=_curY-_meta.sy+1;
-    let _curD=_dq.daeuns[0];
-    for(let i=0;i<_dq.daeuns.length;i++){
-      if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];break;}
-    }
-    const _tg=plainTG(tenGod(saju.dp.stem,_curD.stem));
-    const _myBr=saju.dp.branch;
-    const _myBrKo=BRCHKO[_myBr];
-    const _dpBr=f.dp.branch;
-    // 핵심 시간대 추출 — 본인 자리와 합/충 시간
-    const _luckyHours=[], _cautionHours=[];
-    for(let bi=0;bi<12;bi++){
-      const r=brRel(_myBr,bi);
-      const sr=brRel(_dpBr,bi);
-      if(r.kind==='합'||sr.kind==='합')_luckyHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
-      else if(r.kind==='충'||sr.kind==='충')_cautionHours.push(`${BRCHKO[bi]}시(${HOUR_RANGES[bi]})`);
-    }
-    return `<div class="daily-card" style="text-align:left">
-      <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🗓 본인 10년 흐름 안에서 본 오늘</div>
-      <div style="font-size:.82rem;line-height:1.85;color:var(--sub)">본인은 지금 <b>${_curD.age}세부터 시작한 ${STEMKO[_curD.stem]}${BRCHKO[_curD.branch]} 10년 흐름</b> 안에 있어요. 이 10년의 큰 분위기는 <b>${_tg}</b>예요.<br>오늘은 그 안에서 펼쳐지는 한 페이지 — 본인 페이스를 그대로 이어가시면 돼요.</div>
-      ${_luckyHours.length||_cautionHours.length?`<div style="margin-top:10px;padding:10px 12px;background:var(--earth-bg);border-radius:8px;font-size:.78rem;line-height:1.75">
-        ${_luckyHours.length?`<div><b style="color:var(--good)">🍀 오늘의 길시</b> — ${_luckyHours.join(', ')}</div>`:''}
-        ${_cautionHours.length?`<div><b style="color:var(--warn)">⚠️ 오늘의 주의시</b> — ${_cautionHours.join(', ')}</div>`:''}
-      </div>`:''}
-    </div>`;
-  }catch(e){return '';}
+  return `<section class="daily-report" aria-label="오늘의 운세 전체 풀이">${preventOrphan(h)}</section>`;
 }
 
 // ── 일일운세 강화 카드 3장
@@ -6137,33 +6131,25 @@ function _dailyHourCard(saju, f){
   </div>`;
 }
 
+// 같은 사주·날짜에는 같은 6개 숫자를 보여준다. 당첨 예측 값은 아니다.
+function dailyLuckyNumbers(saju,f){
+  const seed=JSON.stringify([saju.yp,saju.mp,saju.dp,saju.hp])+`:${f.dy}-${f.dm}-${f.dd}:lucky-numbers`;
+  return seededShuffle(Array.from({length:45},(_,i)=>i+1),seed).slice(0,6).sort((a,b)=>a-b);
+}
 function _dailyLuckCard(saju, f){
-  // 행운 4종 — 오늘 일진 천간 오행 + 본인 용신 보강
   const luckOh=SOH[f.dp.stem];
-  const ys=getYongsin(ohCount(saju));
   const luckColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][luckOh];
-  const luckDir=['동쪽','남쪽','중앙','서쪽','북쪽'][luckOh];
-  const luckNum=['3·8','2·7','5·10','4·9','1·6'][luckOh];
-  const luckFood=['신맛·녹색 채소','쓴맛·붉은 음식','단맛·뿌리 채소','매운맛·흰 음식','짠맛·검은 음식'][luckOh];
-  // 좋은/피할 띠 — 본인 일지+용신 기준(그날 지지는 보조)
-  const _zm=userMatchZodiacs(saju, ys.main, f.dp.branch);
-  const goodZs=_zm.good.slice(0,3).map(zodiacLabel);
-  const badZs=_zm.bad.slice(0,2).map(zodiacLabel);
-  // 용신 보강 한 줄
-  const yongsinColor=['녹색·청색','적색·자주색','황색·갈색','흰색·은색','검정·남색'][ys.main];
-  return `<div class="daily-card" style="text-align:left">
-    <div style="font-family:var(--font-heading);font-synthesis:none;font-size:.92rem;font-weight:700;color:var(--accent);margin-bottom:10px">🍀 오늘의 행운 가이드</div>
-    <p style="font-size:.78rem;color:var(--sub);line-height:1.8;margin-bottom:10px">오늘의 기운을 바탕으로 오늘만의 행운 색·방향·숫자·음식을 정리해드렸어요. 옷이나 액세서리 색, 점심 메뉴 같은 일상 선택에 살짝 반영해보시면 흐름이 더 부드러워져요.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
-      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🎨 행운 색</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckColor}</div></div>
-      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🧭 행운 방향</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckDir}</div></div>
-      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🔢 행운 숫자</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${luckNum}</div></div>
-      <div style="background:var(--bg-deep);padding:9px 11px;border-radius:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:3px">🍽 도움 음식</div><div style="font-size:.78rem;color:var(--text);font-weight:600;line-height:1.4">${luckFood}</div></div>
+  const luckFood=['사과·샐러드','토마토·딸기','고구마·단호박','두부·배','검은콩·김'][luckOh];
+  const numbers=dailyLuckyNumbers(saju,f);
+  return preventOrphan(`<div class="daily-card daily-luck-card">
+    <h3>🍀 오늘의 행운 가이드</h3>
+    <p class="daily-luck-intro">오늘의 색과 음식으로 일상에 작은 재미를 더해보세요.</p>
+    <div class="daily-luck-values">
+      <div class="daily-luck-value"><span>🎨 행운의 색</span><b>${luckColor}</b></div>
+      <div class="daily-luck-value"><span>🍽 행운의 음식</span><b>${luckFood}</b></div>
+      <div class="daily-luck-value daily-luck-numbers"><span>🔢 행운의 숫자 · 로또번호</span><div class="daily-lotto-balls" aria-label="오늘의 행운 숫자 ${numbers.join(', ')}">${numbers.map(n=>`<b class="daily-lotto-ball">${n}</b>`).join('')}</div><p>재미로 보는 숫자예요. 당첨을 예측하지 않아요.</p></div>
     </div>
-    ${goodZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">🤝 본인과 잘 맞는 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${goodZs.join(' · ')}</div></div>`:''}
-    ${badZs.length?`<div style="padding:9px 11px;background:var(--bg-deep);border-radius:8px;margin-bottom:8px"><div style="font-size:.62rem;color:var(--muted);margin-bottom:4px">⚡ 본인과 부딪히기 쉬운 띠</div><div style="font-size:.82rem;color:var(--text);font-weight:600">${badZs.join(' · ')}</div></div>`:''}
-    <div style="padding:9px 11px;background:rgba(203,162,88,.08);border-left:3px solid var(--accent);border-radius:6px;font-size:.74rem;color:var(--sub);line-height:1.8">💡 본인을 평생 가장 든든히 받쳐주는 기운은 <b style="color:var(--accent)">${OHNAME[ys.main]} (${yongsinColor})</b>이에요. 일상에서 이 색·기운을 가까이 두시면 운의 흐름이 자연스럽게 풀려요.</div>
-  </div>`;
+  </div>`);
 }
 
 function _dailyActionCard(saju, f){
@@ -7280,30 +7266,12 @@ function renderManseConversionHook(saju){
 }
 
 function renderDailyConversionHook(saju,f){
-  const p=_paidHookProfile(saju);
-  const y=new Date().getFullYear();
-  const relText=f.rel&&f.rel.kind&&f.rel.kind!=='평'
-    ? `오늘은 본인 자리와 하루의 기운이 <b>${({합:'자연스럽게 어울리는',반합:'같은 방향으로 묶이는',반합약:'잔잔히 협력하는',동:'같은 글자로 겹치는',충:'정면으로 부딪히는',원진:'이유 없이 거슬리는',형:'서로 깎이는',자형:'내면 갈등이 올라오는',파:'마무리에서 어긋나는',해:'은근히 방해받는'})[f.rel.kind]||f.rel.kind}</b> 흐름이에요.`
-    : `오늘은 큰 부딪힘보다 본인 페이스를 지키는 쪽이 더 중요한 날이에요.`;
-  return `<section class="conversion-hook" aria-label="신년운세 추천">
-    <div class="conversion-hook-kicker">TODAY TO YEAR</div>
-    <div class="conversion-hook-title">오늘의 운세를 봤다면, 올해 어느 달에 이 흐름이 크게 열리는지도 같이 봐야 해요.</div>
-    <div class="conversion-hook-body">
-      <p>${relText} 하루 운세는 “오늘의 날씨”에 가까워요. 그런데 본인에게 진짜 중요한 건 이 날씨가 올해 전체 흐름에서 어디쯤에 놓여 있는지예요.</p>
-      <p>본인은 <b>${p.axisLabel}</b> 쪽이 강하게 움직이는 사주라, 좋은 달에는 기회가 한 번에 몰리고 약한 달에는 같은 일도 피로하게 느껴질 수 있어요.</p>
-      <p>특히 올해는 돈·관계·일 중 하나를 계속 끌고 갈지, 정리할지 기준이 분명해지는 흐름으로 보기 좋아요.</p>
-    </div>
-    <div class="conversion-hook-points">
-      <div class="conversion-hook-point"><b>좋은 달</b> — 계약·이직·고백·확장처럼 굵직한 행동을 올려둘 달을 확인해요.</div>
-      <div class="conversion-hook-point"><b>주의 달</b> — 말실수, 지출, 관계 피로가 커지는 달은 미리 속도를 낮춰요.</div>
-      <div class="conversion-hook-point"><b>결정적 시기</b> — 올해 본인에게 가장 강하게 방향이 바뀌는 달을 짚어드려요.</div>
-    </div>
-    <div class="conversion-hook-actions">
-      <button type="button" class="conversion-hook-btn" onclick="goToInput('newyear')">${y}년 신년운세로 이어보기</button>
-      <button type="button" class="conversion-hook-btn secondary" onclick="openPaymentConsent('life','KAKAOPAY')">평생 흐름도 같이 보기</button>
-    </div>
-    <div class="conversion-hook-foot">신년운세 ${augustPromoPriceLabel('1,500원')} · 12개월 흐름과 좋은 달/주의 달 포함</div>
-  </section>`;
+  return preventOrphan(`<section class="conversion-hook daily-paid-hook" aria-label="신년운세 추천">
+    <div class="conversion-hook-title">올해, 본인에게 기회가 몰리는 달은?</div>
+    <div class="conversion-hook-body"><p>움직일 달과 쉬어갈 달, 12개월 흐름으로 확인해요.</p></div>
+    <div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="continueJourney('newyear')">올해 기회 오는 달 보기 · ${formatWon(computePayAmount('newyear',_meta))}</button></div>
+    <div class="conversion-hook-foot">한 번 결제 · 같은 사주는 24시간 다시 보기</div>
+  </section>`);
 }
 
 // ── MBTI(후천) × 사주(선천) 통합 풀이 단락 ──
@@ -23102,7 +23070,7 @@ function analyze(){
         targetIdx=0;
       }else if(cat==='daily'){
         const _p1=document.getElementById('p1');
-        _p1.innerHTML=fixKoreanJosa(renderDailyFortune(saju)+journeyRecommendationHTML('daily'));
+        _p1.innerHTML=fixKoreanJosa(renderDailyFortune(saju));
         enrichTerms(_p1);
         targetIdx=1;
       }else if(cat==='qna'){

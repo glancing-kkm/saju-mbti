@@ -17,6 +17,9 @@ const w=dom.window,d=w.document,ctx=dom.getInternalVMContext();
 w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};
 w.matchMedia=()=>({matches:false,addEventListener(){},addListener(){}});
 w.alert=()=>{};w.confirm=()=>true;w.prompt=()=>'';
+// jsdom does not implement native dialog opening; the browser check covers its UI behavior.
+w.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};
+w.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');};
 w.fetch=async()=>({ok:true,json:async()=>({}),text:async()=>'',headers:{get:()=>null}});
 const run=code=>vm.runInContext(code,ctx,{timeout:15000});
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -41,6 +44,24 @@ const submitBirth=async()=>{
       assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
       assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-natal','astro-today']);
     });
+    run(d.querySelector('.nh-cta').getAttribute('onclick'));
+    check('홈 배너: 오늘의 무료 운세 3종 선택 팝업',()=>{
+      const dialog=d.getElementById('todayChoiceDialog');assert(dialog.open);
+      assert.deepEqual([...dialog.querySelectorAll('.today-choice-item b')].map(el=>el.textContent),['오늘의 운세','오늘의 타로','오늘의 점성술']);
+    });
+    d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+    check('무료 운세 팝업: Escape로 닫기',()=>assert(!d.getElementById('todayChoiceDialog').open));
+    for(const kind of ['daily','tarot','astrology']){
+      run('openTodayChoice()');run(`selectTodayReading('${kind}')`);
+      check('무료 운세 선택: '+kind+'에 바로 연결',()=>{
+        assert(!d.getElementById('todayChoiceDialog').open);
+        if(kind==='daily'){assert.equal(run('_category'),'daily');assert(d.getElementById('view-input').classList.contains('on'));}
+        if(kind==='tarot')assert.equal(run('_tarotRoute'),'today');
+        if(kind==='astrology')assert.equal(run('_astroRoute'),'today');
+        assert(!d.getElementById('payOverlay').classList.contains('vis'));
+      });
+      run('goHome()');
+    }
     run('openVault()');
     check('보관함: 결제 전에는 비어 있다는 안내와 무료 시작 버튼',()=>{assert(d.querySelector('#view-vault .vault-empty'));assert.equal(d.getElementById('vaultCount').hidden,true);});
     run('goHome()');
@@ -87,6 +108,39 @@ const submitBirth=async()=>{
     await submitBirth();
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(!d.querySelector('#p0 .journey-overview'));assert(d.querySelector('#journeyManseBoard .pillars'));});
     check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 1,500원/);assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
+    run("goToInput('daily');analyze()");await wait(150);
+    check('오늘의 운세: 선택 바·요약 덱 없이 전체 리포트 바로 표시',()=>{
+      assert(d.querySelector('#p1 .daily-report .daily-wrap'));
+      assert(!d.querySelector('#p1 .journey-chapters,#p1 .story-experience,#p1 .story-deck-layer,#p1 .journey-recommend'));
+      assert(!/본인 10년 흐름 안에서 본 오늘/.test(d.getElementById('p1').textContent));
+      assert.equal(d.querySelectorAll('#p1 .daily-cat').length,4);
+    });
+    check('오늘의 행운: 색·음식·중복 없는 1~45 숫자 6개',()=>{
+      const luck=d.querySelector('#p1 .daily-luck-card');assert(luck);
+      assert(!/행운 방향|맞는 띠|평생/.test(luck.textContent));
+      assert.match(luck.textContent,/행운의 색/);assert.match(luck.textContent,/행운의 음식/);
+      const numbers=[...luck.querySelectorAll('.daily-lotto-ball')].map(el=>Number(el.textContent));
+      assert.equal(numbers.length,6);assert.equal(new Set(numbers).size,6);
+      assert(numbers.every(n=>n>=1&&n<=45));
+      assert.deepEqual(numbers,numbers.slice().sort((a,b)=>a-b));
+      assert.match(luck.textContent,/당첨을 예측하지/);
+      const first=run('JSON.stringify(dailyLuckyNumbers(_saju,calcDailyFortune(_saju,new Date(2026,9,15))))');
+      assert.equal(first,run('JSON.stringify(dailyLuckyNumbers(_saju,calcDailyFortune(_saju,new Date(2026,9,15))))'));
+      assert.notEqual(first,run('JSON.stringify(dailyLuckyNumbers(_saju,calcDailyFortune(_saju,new Date(2026,9,16))))'));
+    });
+    check('유료 연결: 200자 미만의 짧은 호기심 문구와 실제 가격',()=>{
+      const hook=d.querySelector('#p1 .daily-paid-hook');assert(hook);
+      assert(hook.textContent.trim().length<200);
+      assert.equal(hook.querySelectorAll('button').length,1);
+      assert.match(hook.textContent,/1,500원/);
+    });
+    run(d.querySelector('#p1 .daily-paid-hook button').getAttribute('onclick'));await wait(150);
+    check('유료 연결 버튼: 기존 출생정보로 신년운세 결제 안내',()=>{
+      assert.equal(run('_category'),'newyear');
+      assert(d.getElementById('payOverlay').classList.contains('vis'));
+      assert.equal(run('_payCategory'),'newyear');
+    });
+    run('closePaymentConsent()');
     run("continueJourney('life')");await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
     check('유료 풀이: 미리보기 없이 바로 결제 안내 표시',()=>{
