@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=e7586f7d35b3">
+<link rel="stylesheet" href="/assets/night.css?v=1f16475d5539">
 </head>
 <body>
 <div id="app">
@@ -12560,9 +12560,203 @@ function buildLifeV2Library(saju,meta){
   return toc+h+renderLifeV2SummaryCard(m)+renderChatSection();
 }
 
+// ══════════════════════════════════════════════
+//  인생총운 V4 — 한 페이지로 이어 읽는 풀이
+//  소개 화면 '풀이에 담긴 내용' 8개 순서 그대로, 카드 넘김 없이 위에서 아래로 읽는다.
+//  사주 글자는 "사주 여덟 글자 중에 '유(닭)'라는 글자가 두 번 나와요"처럼 무엇인지·몇 번인지·무슨 뜻인지 풀어 쓴다.
+// ══════════════════════════════════════════════
+const LV4_OH=['나무','불','흙','금속','물'];
+const LV4_OH_POWER=['쭉쭉 자라는 나무처럼 새로 시작하고 뻗어 나가는 힘','환하게 타오르는 불처럼 드러내고 표현하는 힘','든든한 땅처럼 버티고 품어 주는 힘','잘 벼린 쇠처럼 기준을 세우고 끊어 내는 힘','깊은 물처럼 생각하고 흘러가며 스며드는 힘'];
+const LV4_OH_LACK=['새로 시작하고 밀어붙이는 힘이 약한 편이에요. 준비는 충분한데 첫발이 늦어지기 쉬워요.','본인을 드러내고 알리는 힘이 약한 편이에요. 실력에 비해 덜 알려지거나, 마음을 말하지 못하고 넘어가기 쉬워요.','한곳에 뿌리내리고 버티는 힘이 약한 편이에요. 생각이 많아지거나 마음이 쉽게 흔들릴 수 있어요.','끊고 정리하는 힘이 약한 편이에요. 아닌 걸 알면서도 결정을 미루거나, 부탁을 거절하지 못하기 쉬워요.','쉬어 가고 흘려보내는 힘이 약한 편이에요. 긴장이 오래 남고, 쉬는 것조차 일처럼 느껴질 수 있어요.'];
+const LV4_PLACE={년지:['태어난 해의 아래 글자','집안과 어린 시절'],월지:['태어난 달의 아래 글자','사회생활과 일터'],일지:['본인이 앉은 자리','본인과 배우자'],시지:['태어난 시간의 아래 글자','자녀와 노년']};
+const LV4_REL={
+  '자연스럽게 어울림':['자석처럼 서로 끌어당기는 사이','두 영역이 서로 도와서 함께 풀리는 편이에요. 한쪽이 잘되면 다른 쪽도 덩달아 편해져요.'],
+  '같은 방향 묶임':['같은 방향으로 힘을 모으는 사이','두 영역이 한 팀처럼 움직여서, 목표를 정하면 힘이 한곳으로 모여요.'],
+  '세 글자가 어우러짐':['세 글자가 한 팀을 이루는 사이','여러 영역이 하나의 방향으로 묶여 있어요. 한번 흐름을 타면 크게 밀고 나가는 힘이 있어요.'],
+  '정면 부딪힘':['정면으로 부딪히는 사이','두 영역의 우선순위가 자주 엇갈려요. 어느 한쪽으로 너무 기울지 않게 균형을 잡는 게 평생 숙제예요. 대신 이 부딪힘이 변화와 이동의 힘이 되기도 해요.'],
+  '서로 깎임':['서로 조금씩 깎아 내는 사이','한쪽의 스트레스가 다른 쪽으로 번지기 쉬워요. 일과 집, 남과 나 사이에 선을 분명히 그어 두면 훨씬 편해요.'],
+  '마무리 어긋남':['마무리에서 어긋나기 쉬운 사이','시작은 순조로운데 끝맺음에서 틀어지기 쉬워요. 약속과 마감을 처음부터 글로 정해 두면 좋아요.']
+};
+const LV4_YEAR_REL={합:'자석처럼 끌어당기는',반합:'같은 방향으로 힘을 모으는',반합약:'잔잔하게 어울리는',충:'정면으로 부딪히는',형:'서로 깎아 내는',자형:'같은 글자가 겹쳐 스스로를 다그치는',원진:'이유 없이 거슬리는',파:'마무리에서 어긋나는',해:'은근히 방해하는',동:'같은 글자끼리 만나는',평:'큰 부딪힘 없이 흘러가는'};
+const LV4_SIN={천을귀인:'어려울 때 손을 내밀어 주는 사람 복',천덕귀인:'베푼 덕이 도움으로 돌아오는 복',월덕귀인:'주변의 자연스러운 도움',문창귀인:'글과 문서를 정리하는 감각',역마살:'움직이며 기회를 찾는 힘',화개살:'한 분야를 깊게 파고드는 집중력',도화살:'사람을 끌어당기는 매력',장성살:'자기 영역을 지키는 주관',반안살:'시간이 갈수록 자리와 명예가 올라가는 힘'};
+const LV4_TITLES=[['basic','상담 기본 정보와 타고난 성정·내면 분석'],['talent','타고난 재능과 전문성'],['work-money','직업운과 성공 방향 · 재물운과 자산 흐름'],['love-people','연애운과 배우자운 · 인간관계와 사람 복'],['health','건강과 생활 체질'],['now','현재 10년 흐름 · 올해 총운 · 올해 월별 흐름'],['future','앞으로의 10년 흐름과 인생의 황금기'],['practice','운을 바꾸는 실천법 · 평생 조심할 7가지 · 요약본']];
+const LV4_TG_YOUNG={
+  '비견':{use:'스스로 해내는 힘이 자라는 흐름',lead:'스스로 해내려는 마음이 커지는 때예요.',good:'혼자 끝까지 해낸 경험을 하나씩 쌓게 도와주세요.',warn:'친구와 고집이 부딪힐 때 양보하는 연습도 필요해요.'},
+  '겁재':{use:'건강한 경쟁으로 의욕이 커지는 흐름',lead:'친구들과 겨루며 의욕이 커지는 때예요.',good:'운동이나 대회처럼 건강하게 겨룰 수 있는 자리를 만들어 주세요.',warn:'지면 크게 속상해할 수 있으니 결과보다 과정을 칭찬해 주세요.'},
+  '식신':{use:'좋아하는 것을 즐겁게 표현하는 흐름',lead:'좋아하는 것을 즐겁게 배우고 표현하는 때예요.',good:'그림, 글, 악기처럼 손으로 만드는 활동을 꾸준히 해 보세요.',warn:'재미있는 것만 하다 기본 공부가 밀리지 않게 하세요.'},
+  '상관':{use:'생각과 말솜씨가 톡톡 튀는 흐름',lead:'말솜씨와 아이디어가 톡톡 튀는 때예요.',good:'발표, 토론, 글쓰기로 생각을 꺼낼 기회를 자주 주세요.',warn:'선생님이나 어른에게 말투가 세게 나갈 수 있어요.'},
+  '편재':{use:'경험과 호기심이 넓어지는 흐름',lead:'호기심이 넓어지고 바깥 활동이 늘어나는 때예요.',good:'체험, 여행, 동아리처럼 직접 보고 겪는 경험을 늘려 주세요.',warn:'관심이 여기저기 흩어지지 않게 한 가지는 꾸준히 이어가세요.'},
+  '정재':{use:'성실한 공부 습관이 쌓이는 흐름',lead:'차근차근 쌓아 가는 성실함이 자라는 때예요.',good:'매일 정해진 분량을 지키는 공부 습관을 만들기 좋아요.',warn:'틀에 너무 갇히지 않게 새로운 시도도 칭찬해 주세요.'},
+  '편관':{use:'도전 속에서 버티는 힘을 기르는 흐름',lead:'규칙과 압박 속에서 버티는 힘을 배우는 때예요.',good:'운동부나 시험처럼 목표가 분명한 도전에서 크게 자라요.',warn:'스트레스를 혼자 삼키지 않게 자주 이야기를 들어 주세요.'},
+  '정관':{use:'규칙 속에서 두각을 나타내는 흐름',lead:'규칙을 잘 지키고 모범생으로 인정받기 쉬운 때예요.',good:'반장이나 학급 일처럼 책임을 맡는 경험이 자신감이 돼요.',warn:'잘해야 한다는 부담이 너무 커지지 않게 살펴 주세요.'},
+  '편인':{use:'한 분야를 깊게 파고드는 흐름',lead:'한 가지에 깊이 빠져드는 집중력이 커지는 때예요.',good:'좋아하는 분야를 깊게 파고들 수 있게 책과 자료를 챙겨 주세요.',warn:'혼자만의 세계에 오래 머물지 않게 친구와의 시간도 챙기세요.'},
+  '정인':{use:'배움과 어른의 도움이 커지는 흐름',lead:'배움을 잘 받아들이고 어른의 도움이 큰 때예요.',good:'좋은 선생님과 책을 만나게 해 주면 실력이 쑥 자라요.',warn:'도움에만 기대지 않고 스스로 해 보는 경험도 필요해요.'}
+};
+function lv4Tg(tg,age){if(age<20&&LV4_TG_YOUNG[tg])return LV4_TG_YOUNG[tg];const d=LIFE_V3_TG_DETAIL[tg]||{};return {use:LIFE_V2_TG_USE[tg]||'본인 속도를 지키는 흐름',lead:d.lead||'',good:d.good||'',warn:d.warn||''};}
+const LV4_NUM=['','한','두','세','네'];
+const LV4_LACK_CAUTION=[['시작을 너무 미루지 않기','나무 기운이 옅어서 준비가 길어지기 쉬워요. 완벽하게 준비될 때를 기다리기보다, 작게라도 먼저 시작해 보세요.'],['해낸 일은 알리기','불 기운이 옅어서 실력에 비해 덜 알려지기 쉬워요. 해낸 일은 한 줄이라도 기록하고 주변에 알리세요.'],['생활의 중심 잡기','흙 기운이 옅어서 마음이 쉽게 흔들릴 수 있어요. 잠드는 시간이나 식사 시간처럼 매일 지키는 기준을 하나 정해 두세요.'],['거절도 연습하기','금속 기운이 옅어서 아닌 걸 알면서도 끊지 못하기 쉬워요. "이번엔 어려워요" 한마디를 미리 준비해 두세요.'],['쉬는 시간을 일정에 먼저 넣기','물 기운이 옅어서 긴장이 오래 남기 쉬워요. 아무것도 하지 않는 시간을 일정표에 먼저 적어 두세요.']];
+const LV4_OH_WORD={목:'나무',화:'불',토:'흙',금:'금속',수:'물'};
+function lv4Plain(s){return String(s||'').replace(/(목|화|토|금|수) 분위기(가|를|는|이|을|은)?/g,(x,k,j)=>`${LV4_OH_WORD[k]} 기운${j?({가:'이',이:'이',를:'을',을:'을',는:'은',은:'은'})[j]:''}`);}
+function lv4Stem(s){return `'${STEMKO[s]}(${(STEM_META[s]||{}).nick||''})'`;}
+function lv4Branch(b){return `'${BRCHKO[b]}(${ANIMAL[b]})'`;}
+function lv4Ida(word){return _hasJong(word)?'이에요':'예요';}
+function lv4P(arr){return (arr||[]).filter(Boolean).map(t=>`<p>${preventOrphan(t)}</p>`).join('');}
+function lv4Sub(title,html){return `<div class="lv4-sub"><h3>${title}</h3>${html}</div>`;}
+function lv4Key(text){return `<div class="lv4-key"><b>한 줄 정리</b><p>${preventOrphan(text)}</p></div>`;}
+function lv4Section(no,lead,html){const [id,title]=LV4_TITLES[no-1];return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span><h2>${title}</h2></div>${lead?`<p class="lv4-lead">${preventOrphan(lead)}</p>`:''}${html}</section>`;}
+function lv4Rows(rows){return `<div class="lv4-rows">${rows.map(r=>`<div class="lv4-row${r.on?' on':''}"><div class="lv4-row-head"><b>${r.label}</b>${r.tag?`<span>${r.tag}</span>`:''}</div><p>${preventOrphan(r.text)}</p></div>`).join('')}</div>`;}
+function lv4Repeats(saju){
+  const ps=[saju.yp,saju.mp,saju.dp].concat(saju.hp?[saju.hp]:[]),sc={},bc={},out=[];
+  ps.forEach(p=>{sc[p.stem]=(sc[p.stem]||0)+1;bc[p.branch]=(bc[p.branch]||0)+1;});
+  Object.entries(bc).filter(([,n])=>n>1).forEach(([b,n])=>{
+    b=Number(b);const bm=BRANCH_META[b]||{},keys=(bm.keys||'').split('·'),nick=bm.nick||'';
+    out.push(`사주 글자 중에 ${lv4Branch(b)}라는 글자가 ${LV4_NUM[n]||n} 번 나와요. ${BRCHKO[b]}${eun(BRCHKO[b])} 띠로 치면 ${ANIMAL[b]}에 해당하는 글자로, 자연에서는 ${nick}${eul(nick)} 뜻해요.`);
+    out.push(`같은 글자가 겹치면 그 성질이 두 배로 짙어져요. 그래서 ${keys[0]||''}${gwa(keys[0]||'')} ${keys[1]||''}의 성향이 본인에게 유난히 또렷하게 나타나요. 물감을 한 번 더 덧칠하면 색이 진해지는 것과 같아요.`);
+    out.push('좋을 때는 한 가지를 깊고 끈기 있게 해내는 힘이 돼요. 반대로 지칠 때는 같은 생각을 여러 번 되풀이하거나, 한번 정한 방식을 좀처럼 바꾸지 않는 고집으로 나타나기도 해요.');
+  });
+  Object.entries(sc).filter(([,n])=>n>1).forEach(([s,n])=>{
+    s=Number(s);const keys=((STEM_META[s]||{}).keys||'').split('·');
+    out.push(`위쪽 글자에는 ${lv4Stem(s)}${ip(STEMKO[s])} ${LV4_NUM[n]||n} 번 나와요. ${keys[0]||''}${gwa(keys[0]||'')} ${keys[1]||''}의 기질이 겉으로 자주 드러나는 사주라, 처음 만난 사람도 그 분위기를 금방 알아채요.`);
+  });
+  return out;
+}
+function lv4Relations(saju,rels){
+  const glyph={년지:saju.yp.branch,월지:saju.mp.branch,일지:saju.dp.branch,시지:saju.hp?saju.hp.branch:null};
+  const groups=[];
+  rels.forEach(r=>{
+    const pl=(r.places||[]).filter(x=>LV4_PLACE[x]&&glyph[x]!=null);
+    if(!pl.length)return;
+    const key=pl.join('|'),rel=LV4_REL[r.type]||['서로 영향을 주고받는 사이','두 영역이 서로에게 영향을 주고받아요.'];
+    const g=groups.find(x=>x.key===key);
+    if(g){if(!g.rels.includes(rel))g.rels.push(rel);}else groups.push({key,pl,rels:[rel]});
+  });
+  return groups.slice(0,3).map(({pl,rels:rs})=>{
+    const last=BRCHKO[glyph[pl[pl.length-1]]],lastArea=LV4_PLACE[pl[pl.length-1]][1];
+    const names=pl.map(x=>`${LV4_PLACE[x][0]} ${lv4Branch(glyph[x])}`).join(', ');
+    const kind=rs.map(r=>r[0].replace(/ 사이$/,'')).join(' 동시에 ');
+    return `${names}${eun(last)} ${kind} 사이예요. 이 자리들은 각각 ${pl.map(x=>LV4_PLACE[x][1]).join(', ')}${eul(lastArea)} 보여줘요. ${rs.map(r=>r[1]).join(' ')}`;
+  });
+}
+function lv4Cautions(m){
+  const p=m.profile,low=LIFE_V2_AXIS[m.lowAxis],top=LIFE_V2_AXIS[m.axis],list=[];
+  const peer=m.pillarTgs.filter(t=>t==='비견'||t==='겁재').length;
+  list.push(['강점이 지나치지 않게',`본인의 가장 큰 무기는 ${top.label}의 힘이에요. 그런데 ${top.risk} 좋은 무기도 너무 오래 휘두르면 팔이 아픈 법이에요.`]);
+  list.push(['약한 부분을 모른 척하지 않기',`${low.label} 쪽은 덜 써 본 근육이에요. ${low.risk} 조금씩 써 보면 분명히 늘어요.`]);
+  if(m.repeatBranches.length)list.push(['같은 고민을 반복하지 않기','사주에 같은 글자가 겹쳐 있어서, 한 번 정한 일도 머릿속에서 여러 번 다시 검토하기 쉬워요. 되돌릴 수 있는 일이라면 70%만 확신해도 움직이세요.']);
+  if(peer>=2)list.push(['친한 사이의 돈거래 조심','사주에 동료와 경쟁을 뜻하는 글자가 많아요. 그래서 돈을 나누거나 빌려주는 일에서 손해가 나기 쉬워요. 금액과 기한은 꼭 글로 남기세요.']);
+  if(p.strength==='강'||p.strength==='중강')list.push(['모든 걸 혼자 떠안지 않기','버티는 힘이 강한 사주라, 힘들어도 티를 내지 않고 혼자 해결하려 해요. 도움을 청하는 것도 실력이에요.']);
+  else list.push(['남의 기대에 끌려가지 않기','주변 영향을 많이 받는 사주라, 부탁을 거절하지 못하고 무리하기 쉬워요. 하루에 한 번은 본인 일정부터 챙기세요.']);
+  if(m.relations.some(r=>r.type==='정면 부딪힘'||r.type==='서로 깎임'))list.push(['급한 결정은 하루 묵히기','사주 안에 서로 부딪히는 글자가 있어서, 감정이 올라올 때 큰 결정을 내리기 쉬워요. 하룻밤 자고 나서 다시 보세요.']);
+  list.push(LV4_LACK_CAUTION[p.lack]);
+  list.push(['잘될 때 씀씀이 키우지 않기','좋은 흐름이 올 때 고정비부터 늘리면, 흐름이 꺾일 때 선택지가 줄어요. 늘어난 수입은 먼저 비상금과 오래 묵힐 자산으로 보내세요.']);
+  list.push(['서운함을 쌓아 두지 않기','작은 불편을 말하지 않고 넘기면, 어느 날 한꺼번에 관계를 닫게 돼요. "그 말은 조금 서운했어요" 한 문장이면 충분해요.']);
+  return list.slice(0,7);
+}
+function buildLifeReadingV4(saju,meta){
+  const m=buildLifeV2Model(saju,meta),p=m.profile,s=saju,fp=Object.fromEntries(Object.entries(m.fingerprint||{}).map(([k,v])=>[k,typeof v==='string'?lv4Plain(v):v]));
+  const ageTxt=[`${m.age}세인 지금은`,`${m.stageLabel}인 지금은`,'지금 나이에 맞춰 보면,','이 시기에는'];
+  const ds=s.dp.stem,dsm=STEM_META[ds]||{},db=s.dp.branch,dbm=BRANCH_META[db]||{};
+  const c=ohCount(s),total=c.reduce((a,b)=>a+b,0),yang=Math.round(p.yangRatio*total/100),yin=total-yang;
+  const ax=LIFE_V2_AXIS[m.axis],ax2=LIFE_V2_AXIS[m.secondAxis];
+  const iljuRaw=ILJU_60[p.iljuKey]||`${dsm.nick||''} — 본인만의 분위기를 지닌 분`,[iljuImg,iljuWho]=iljuRaw.split(/\s*—\s*/);
+  const pillars=[['태어난 해',s.yp],['태어난 달',s.mp],['본인 자리',s.dp]].concat(s.hp?[['태어난 시간',s.hp]]:[]);
+  const strong=p.strength==='강'||p.strength==='중강';
+  const tgNow=lv4Tg(m.curTg,m.age),tgYear=lv4Tg(m.yearInfo.tg,m.age),young=m.age<20;
+  const cnt=list=>m.pillarTgs.filter(t=>list.includes(t)).length;
+  const gwan=cnt(['정관','편관']),out=cnt(['식신','상관']),inn=cnt(['정인','편인']),peer=cnt(['비견','겁재']);
+  const partnerN=m.partnerCount;
+  const seatShort=TOPIC_SEAT_SHORT[p.seatTg]||plainTG(p.seatTg),seatLove=TOPIC_SEAT_LOVE[p.seatTg]||'';
+  const seatRels=m.relations.filter(r=>(r.places||[]).includes('일지'));
+  const sinsPlain=m.usefulSins.map(n=>LV4_SIN[n]).filter(Boolean);
+  const support=LIFE_V3_OH_ACTION[m.ys.main],support2=LIFE_V3_OH_ACTION[m.ys.support];
+  const loveAx=TOPIC_AXIS_TEXT.love[m.axis]||[],repeats=lv4Repeats(s);
+  const eraStart=e=>Number(String(e.range).split('~')[0]);
+  const prevEra=m.eras.filter(e=>eraStart(e)<m.cur.age).pop(),nextEra=m.eras.find(e=>eraStart(e)>m.cur.age);
+  const curTxt=`${m.cur.age}~${m.cur.age+9}세`;
+  const tso=(Number(m.meta.tsoMin)||0).toFixed(2);
+  const seasonTxt={봄:'모든 게 새로 돋아나는 봄이라, 시작하고 키워 내는 힘을 타고났어요.',여름:'모든 게 무성하게 자라는 여름이라, 활기와 표현력을 타고났어요.',가을:'열매를 거두는 가을이라, 정리하고 열매를 맺는 힘을 타고났어요.',겨울:'씨앗이 땅속에서 힘을 모으는 겨울이라, 깊이 생각하고 준비하는 힘을 타고났어요.'}[p.season]||'';
+  let h='';
+
+  // 1. 상담 기본 정보와 타고난 성정·내면 분석
+  h+=lv4Section(1,`본인은 ${iljuWho||'본인만의 분위기를 지닌 분'}이에요. 자연에 비유하면 ${iljuImg}의 모습이에요. 먼저 계산한 사주를 확인하고, 본인이 어떤 사람인지 차근차근 읽어 볼게요.`,
+    lv4Sub('계산한 사주 정보',`<dl class="lv4-facts">
+      <div><dt>성별</dt><dd>${m.genderLabel}</dd></div>
+      <div><dt>양력 생일</dt><dd>${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일 ${m.originalTime}</dd></div>
+      <div><dt>태어난 곳</dt><dd>${m.city}</dd></div>
+      <div><dt>시간 보정</dt><dd>${m.hourKnown?`${m.correctedTime} (해의 실제 위치에 맞춰 ${tso}분 보정)`:'태어난 시간 미입력'}</dd></div>
+      <div><dt>올해 나이</dt><dd>${m.year}년 기준 ${m.age}세 · ${m.stageLabel}</dd></div>
+      ${pillars.map(([l,x])=>`<div><dt>${l}</dt><dd><b>${STEMKO[x.stem]}${BRCHKO[x.branch]}</b> · 위 글자 ${lv4Stem(x.stem)}, 아래 글자 ${lv4Branch(x.branch)}</dd></div>`).join('')}
+    </dl>${preventOrphan(lifeV3PillarBoard(s))}`+lv4P([s.hp?'사주는 태어난 해·달·날·시간을 각각 위아래 두 글자씩, 모두 글자 여덟 개로 적은 거예요. 본인은 태어난 시간까지 넣어서 글자 여덟 개를 모두 읽었어요.':'사주는 태어난 해·달·날·시간을 각각 위아래 두 글자씩, 모두 글자 여덟 개로 적은 거예요. 본인은 태어난 시간을 몰라서 시간 자리를 뺀 글자 여섯 개로 읽었어요. 시간 자리는 자녀와 노년을 보여주는 곳이라, 그 부분은 조금 덜 정확할 수 있어요.']))+
+    lv4Sub('본인을 뜻하는 글자',lv4P([`사주에서 본인 자신을 뜻하는 글자는 태어난 날의 위 글자예요. 본인의 글자는 ${lv4Stem(ds)}${lv4Ida(STEMKO[ds])}. ${dsm.body||''}`,`이 글자를 대표하는 말은 ${(dsm.keys||'').split('·').slice(0,3).join(', ')}${lv4Ida((dsm.keys||'').split('·')[2]||'')}. 처음 만난 사람이 본인에게서 가장 먼저 느끼는 분위기가 이쪽이에요.`,`태어난 날의 아래 글자는 본인이 앉아 있는 자리예요. 본인은 이 자리에 ${lv4Branch(db)}${ip(BRCHKO[db])} 놓여 있어요. ${dbm.body||''}`,`이 자리에는 '${seatShort}'의 분위기가 담겨 있어요. 겉으로 보이는 모습이 위 글자라면, 가까운 사람에게만 보여주는 속 모습은 이 자리에서 드러나요.`]))+
+    lv4Sub('다섯 기운의 균형',lv4P([`사주 글자 ${total}개를 나무·불·흙·금속·물 다섯 기운으로 나눠 보면 나무 ${c[0]}개, 불 ${c[1]}개, 흙 ${c[2]}개, 금속 ${c[3]}개, 물 ${c[4]}개예요.`,`가장 두터운 기운은 ${LV4_OH[p.top]}${lv4Ida(LV4_OH[p.top])}. ${LV4_OH_POWER[p.top]}이 본인의 바탕에 깔려 있어요. 집으로 치면 기둥이 되는 재료인 셈이에요.`,`반대로 ${LV4_OH[p.lack]} 기운은 ${c[p.lack]?`${c[p.lack]}개뿐이라 옅어요`:'하나도 없어요'}. ${LV4_OH_LACK[p.lack]}`,`본인은 ${p.season} 태생이에요. ${seasonTxt}`,`사주 글자에는 조용히 안으로 모으는 글자와 밖으로 뻗는 글자가 섞여 있어요. 본인은 안으로 모으는 글자가 ${yin}개, 밖으로 뻗는 글자가 ${yang}개예요. ${yin>yang?'그래서 바로 드러내기보다 안에서 충분히 정리한 뒤 움직이는 편이에요.':yin<yang?'그래서 생각보다 행동이 먼저 나오고, 밖으로 에너지를 쓰며 힘을 얻는 편이에요.':'안으로 모으는 힘과 밖으로 쓰는 힘이 고르게 섞여 있어요.'}`,strong?'또 본인을 뜻하는 글자를 돕는 기운이 많은 사주예요. 스스로 버티고 밀고 나가는 힘이 강해서, 남의 도움 없이도 일을 끝까지 끌고 가는 편이에요.':'본인을 뜻하는 글자보다 바깥으로 쓰이는 기운이 많은 사주예요. 혼자 버티기보다 좋은 사람과 좋은 환경을 만날 때 힘이 훨씬 커져요. 그래서 누구와 함께하느냐가 특히 중요해요.']))+
+    (repeats.length?lv4Sub('사주에 겹쳐 나오는 글자',lv4P(repeats)):'')+
+    lv4Sub('겉모습과 속마음',lv4P([fp.hook,`본인의 가장 큰 힘은 ${ax.label}의 힘이에요. ${ax.gift} 그 뒤를 ${ax2.label}의 힘이 받쳐 줘요. ${ax2.gift}`,`다만 이 힘이 지나치면 문제가 되기도 해요. ${ax.risk} 강점과 약점은 동전의 앞뒤라서, 지금 어느 쪽으로 쓰고 있는지만 알아차려도 훨씬 편해져요.`]))+
+    (m.relations.length?lv4Sub('글자끼리 주고받는 영향',lv4P(['사주의 아래 글자들은 각각 맡은 영역이 있어요. 이 글자들끼리 끌어당기거나 부딪히면, 그 영역들 사이에도 같은 일이 생겨요.'].concat(lv4Relations(s,m.relations)))):'')+
+    lv4Key(`${dsm.nick||''} 같은 본인은 ${ax.label}의 힘을 무기로 삼고, 옅은 ${LV4_OH[p.lack]} 기운을 생활 속에서 채울 때 가장 편안해져요.`));
+
+  // 2. 타고난 재능과 전문성
+  h+=lv4Section(2,`본인의 재능은 ${ax.label}의 힘에서 시작해요. ${fp.learning||''}`,
+    lv4Sub('가장 강한 재능',lv4P([`${ax.gift} 이 힘은 시간이 지날수록 커지는 종류예요. 처음에는 남들과 비슷해 보여도, 경험이 쌓일수록 차이가 벌어져요. 장작이 오래 탈수록 불이 깊어지는 것과 비슷해요.`].concat((m.strengths.strengths||[]).slice(0,3).map((t,i)=>`${['첫째','둘째','셋째'][i]}는 ${t}${lv4Ida(t)}.`))))+
+    lv4Sub('재능을 키우는 방식',lv4P([inn?`사주에 배우고 받아들이는 힘을 뜻하는 글자가 ${inn}개 있어요. 새 지식을 흡수하는 속도가 빠르고, 좋은 선생님이나 책을 만나면 크게 자라요.`:'사주에 배움을 뜻하는 글자가 많지 않아요. 그래서 책상 앞보다 직접 해 보면서 몸으로 익힐 때 실력이 더 빨리 붙어요.',out?`표현하고 풀어내는 힘을 뜻하는 글자도 ${out}개 있어요. 배운 것을 말이나 글, 결과물로 꺼낼 때 비로소 내 것이 되는 사주예요.`:'표현하는 힘을 뜻하는 글자는 적은 편이에요. 머릿속 생각을 일부러 글이나 말로 꺼내 보는 연습을 하면 재능이 훨씬 잘 보여요.',`${ageTxt[0]} ${_lifeStageAdvice(m.age,'study')}`]))+
+    (sinsPlain.length?lv4Sub('재능을 보태 주는 작은 별',lv4P([`사주에는 특정 글자 조합으로 생기는 작은 별들이 있어요. 본인에게는 ${sinsPlain.join(', ')}이 들어 있어요.`,'이 별들이 혼자서 운을 바꾸지는 않아요. 대신 본인의 재능이 쓰일 때 등 뒤에서 바람처럼 은근히 힘을 보태 줘요.'])):'')+
+    lv4Key('한 가지를 깊게 파고들어 다른 사람이 쓸 수 있는 결과물로 꺼낼 때, 본인의 재능이 이름값이 돼요.'));
+
+  // 3. 직업운과 성공 방향 · 재물운과 자산 흐름
+  h+=lv4Section(3,`${young?'아직 일과 돈을 이야기하기엔 이른 나이예요. 여기서는 타고난 방향을 미리 알아 두는 지도로 읽어 주세요. ':''}일하는 방식은 ${m.career.axisLabel}에 가까워요. ${fp.work||''}`,
+    lv4Sub('잘 맞는 일',lv4P([`본인에게 잘 맞는 분야는 ${m.career.careers.slice(0,5).join(', ')} 같은 쪽이에요. 공통점은 경험이 쌓일수록 몸값이 오르고, 본인의 판단이 결과로 남는 일이라는 거예요.`,gwan>=out?`사주에 책임과 규칙을 뜻하는 글자가 ${gwan}개로, 표현을 뜻하는 글자(${out}개)보다 많아요. 그래서 조직 안에서 신뢰를 쌓아 자리를 키우는 길이 잘 맞아요. 정해진 틀 안에서 맡은 일을 끝까지 해내는 모습이 인정받는 사주예요.`:`사주에 표현과 창작을 뜻하는 글자가 ${out}개로, 책임을 뜻하는 글자(${gwan}개)보다 많아요. 그래서 본인 이름으로 결과물을 내는 길이 잘 맞아요. 전문직, 프리랜서, 창업처럼요. 다만 혼자 하는 일일수록 마감과 규칙을 스스로 정해야 해요.`,`${ageTxt[1]} ${_lifeStageAdvice(m.age,'work')}`]))+
+    lv4Sub(young?'지금 배움의 흐름':'지금 일의 흐름',lv4P([`지금 ${curTxt}의 10년에는 '${plainTG(m.curTg)}'의 기운이 들어와 있어요. ${tgNow.lead||''}`,tgNow.good?`이 시기에는 이렇게 해 보세요. ${tgNow.good}`:'',tgNow.warn?`조심할 점도 있어요. ${tgNow.warn}`:'']))+
+    lv4Sub('돈이 들어오는 방식',lv4P([`사주에는 돈을 뜻하는 글자가 두 종류 있어요. 월급이나 적금처럼 꾸준히 쌓이는 돈을 뜻하는 글자, 그리고 거래나 사업처럼 흐름을 타는 돈을 뜻하는 글자예요. 본인은 앞의 것이 ${m.stableMoney}개, 뒤의 것이 ${m.activeMoney}개 있어요.`,m.moneyCount===0?'돈을 뜻하는 글자가 겉으로 드러나 있지 않은 사주예요. 돈이 없다는 뜻이 아니에요. 돈을 직접 좇기보다 본인의 전문성을 키우면, 돈이 그 뒤를 따라오는 사주라는 뜻이에요.':m.stableMoney>=m.activeMoney?'꾸준히 쌓이는 쪽이 더 많아요. 한 번에 크게 버는 것보다, 예측 가능한 수입을 차곡차곡 늘리는 방식이 마음도 편하고 결과도 좋아요. 물방울이 모여 항아리를 채우는 식이에요.':'흐름을 타는 쪽이 더 많아요. 기회를 알아보고 움직일 때 돈이 붙어요. 대신 들어오고 나가는 폭이 크니, 안전판을 먼저 만들어 둬야 해요.',fp.money,TOPIC_MONEY_OH[p.top]]))+
+    lv4Sub('돈을 지키는 법',lv4P([peer>=2?`사주에 동료와 경쟁을 뜻하는 글자가 ${peer}개 있어요. 사람이 많이 모이는 대신, 돈을 나누거나 빌려주는 일에서 새는 구멍이 생기기 쉬워요.`:'돈이 새는 구멍이 큰 편은 아니에요. 다만 기분이 좋을 때와 지쳤을 때의 씀씀이 차이를 한 번 살펴보세요.','통장을 생활비, 비상금, 오래 묵힐 자산, 도전해 볼 돈 네 칸으로 나눠 보세요. 좋은 기회가 와도 생활이 흔들리지 않아요.',`${ageTxt[3]} ${_lifeStageAdvice(m.age,'money')}`]))+
+    lv4Key('본인의 전문성을 반복해서 들어오는 수입으로 바꾸는 것, 그게 본인 사주가 가리키는 성공 공식이에요.'));
+
+  // 4. 연애운과 배우자운 · 인간관계와 사람 복
+  h+=lv4Section(4,`${m.age<16?'연애와 배우자 이야기는 아직 먼 미래예요. 지금은 친구와 가족 사이에서 마음을 나누는 방식으로 읽어 주세요. ':''}${fp.relationship||''}`,
+    lv4Sub('사랑하는 방식',lv4P([loveAx[0]?`${loveAx[0]} ${loveAx[1]||''}`:'',loveAx[2]?`다만 ${loveAx[2]}`:'',`${ageTxt[2]} ${_lifeStageAdvice(m.age,'love')}`]))+
+    lv4Sub('배우자 자리로 보는 인연',lv4P([`사주에서 배우자를 보여주는 곳은 본인이 앉은 자리, 그러니까 태어난 날의 아래 글자예요. 본인은 이 자리에 ${lv4Branch(db)}${ip(BRCHKO[db])} 있고, '${seatShort}'의 분위기가 담겨 있어요. ${seatLove}`,partnerN?`또 사주 글자 안에 배우자 인연을 뜻하는 글자가 ${partnerN}개 보여요. ${partnerN>=2?'인연을 만날 기회가 많은 편이라, 오히려 고르는 눈이 더 중요해요.':'분명한 인연의 신호가 하나 있어서, 한 사람과 깊게 가는 편이에요.'}`:'사주 겉으로는 배우자 인연을 뜻하는 글자가 보이지 않아요. 인연이 없다는 뜻이 아니에요. 서두르기보다 생활 속에서 신뢰가 쌓일 때 인연이 또렷해지는 사주라는 뜻이에요.',seatRels.length?`배우자 자리는 다른 글자와도 영향을 주고받아요. ${lv4Relations(s,seatRels.slice(0,1))[0]||''}`:'배우자 자리는 다른 글자와 크게 부딪히지 않아요. 그래서 관계가 비교적 잔잔하게 흘러가는 편이에요.']))+
+    lv4Sub('사람 복과 인간관계',lv4P([peer?`동료와 친구를 뜻하는 글자가 ${peer}개 있어요. ${peer>=2?'사람이 잘 모이고 함께하는 힘이 크지만, 경쟁도 자연스럽게 따라와요. 역할과 몫을 처음부터 분명히 해 두면 관계가 오래가요.':'마음 맞는 소수와 깊게 지내는 편이에요.'}`:'동료를 뜻하는 글자가 적어요. 그래서 넓은 인맥보다 오래 믿을 수 있는 몇 사람이 본인에게 큰 힘이 돼요.',inn?'윗사람과 스승의 도움을 뜻하는 글자도 있어요. 막힐 때 경험 많은 사람에게 먼저 물어보면 길이 빨리 보여요.':'윗사람의 도움을 기다리기보다, 본인이 먼저 필요한 사람을 찾아가는 편이 좋아요.',sinsPlain.includes(LV4_SIN.천을귀인)?'특히 사주에 어려울 때 손을 내밀어 주는 사람 복이 들어 있어요. 막다른 순간에 뜻밖의 도움이 오는 편이에요.':'',`${ageTxt[0]} ${_lifeStageAdvice(m.age,'people')}`]))+
+    lv4Key('설렘만큼 생활의 속도와 약속을 지키는 태도가 맞는 사람이 본인 곁에 오래 남아요.'));
+
+  // 5. 건강과 생활 체질
+  h+=lv4Section(5,`건강 풀이는 병을 진단하는 게 아니에요. 피로가 쌓이기 쉬운 곳과 관리 방향을 읽는 거예요. ${fp.stress||''}`,
+    lv4Sub('타고난 체질',lv4P([`${LV4_OH[p.top]} 기운이 두터워서 ${TOPIC_HEALTH_OH[p.top][0]} 쪽에 부담이 쌓이기 쉬워요. ${TOPIC_HEALTH_OH[p.top][1]}`,`${LV4_OH[p.lack]} 기운은 옅어서 ${TOPIC_HEALTH_OH[p.lack][0]} 쪽을 생활 습관으로 채워 주면 좋아요. ${TOPIC_HEALTH_OH[p.lack][1]}`,yin>yang?'안으로 에너지를 모으는 사주라, 몸을 자주 움직여야 순환이 잘 돼요. 오래 앉아 있었다면 한 시간에 한 번은 일어나세요.':'밖으로 에너지를 많이 쓰는 사주라, 회복 시간을 일부러 챙겨야 해요. 바쁜 날일수록 잠부터 지키세요.']))+
+    lv4Sub('생활 관리',lv4P([`본인에게 가장 힘이 되는 기운은 ${LV4_OH[m.ys.main]}${lv4Ida(LV4_OH[m.ys.main])}. ${support.lead}이 몸과 마음을 함께 살려 줘요.`,support.items.map(x=>`${x[1]}. ${x[2]}`).join(' '),`${ageTxt[2]} ${_lifeStageAdvice(m.age,'health')}`,'몸이 보내는 신호가 2주 넘게 이어지면, 풀이보다 진료와 검사를 먼저 받으세요.']))+
+    lv4Key('버티는 힘보다 회복하는 습관이 본인의 건강을 지켜 줘요.'));
+
+  // 6. 현재 10년 흐름 · 올해 총운 · 올해 월별 흐름
+  const yk=m.yearInfo.rel.kind;
+  h+=lv4Section(6,`사주는 10년마다 큰 흐름이 바뀌어요. 계절이 바뀌듯 삶의 배경이 달라지는 거예요. 본인은 지금 ${curTxt}의 흐름 안에 있어요.`,
+    lv4Sub(`지금 10년 (${curTxt})`,lv4P([`이 10년을 이끄는 글자는 위 글자 ${lv4Stem(m.cur.stem)}${gwa(STEMKO[m.cur.stem])} 아래 글자 ${lv4Branch(m.cur.branch)}${lv4Ida(BRCHKO[m.cur.branch])}. 본인에게는 '${plainTG(m.curTg)}'의 기운으로 다가오고, 아래에서는 '${plainTG(m.curBtg)}'의 기운이 받쳐 줘요.`,`쉽게 말하면 ${tgNow.use}이에요. ${tgNow.lead}`,prevEra?`바로 앞 10년(${prevEra.range})이 ${lv4Tg(prevEra.tg,eraStart(prevEra)).use}이었다면, 지금은 그때 쌓은 것을 실제 결과로 바꾸는 단계예요.`:'',`${m.age}세인 지금, 이 흐름을 어디에 쓰면 좋을까요? ${_lifeStageAdvice(m.age,'work')} ${_lifeStageAdvice(m.age,'money')}`,tgNow.good?`이 10년에 하면 좋은 일이에요. ${tgNow.good}`:'',tgNow.warn?`이 10년에 조심할 일이에요. ${tgNow.warn}`:'']))+
+    lv4Sub(`${m.year}년 올해의 흐름`,lv4P([`올해는 '${m.yearInfo.gz}'의 해예요. 본인에게는 '${plainTG(m.yearInfo.tg)}'의 기운이 앞에 서고, '${plainTG(m.yearInfo.btg)}'의 기운이 아래에서 받쳐 줘요. 올해 흐름 점수는 100점 만점에 ${m.yearInfo.score}점이에요.`,`올해의 아래 글자와 본인이 앉은 자리는 ${LV4_YEAR_REL[yk]||'큰 부딪힘 없이 흘러가는'} 사이예요. ${['합','반합','반합약'].includes(yk)?'사람과 일이 자연스럽게 연결되는 해예요.':yk==='충'?'변화와 이동이 많은 해예요. 큰 결정은 서두르지 말고 조건을 한 번 더 확인하세요.':['형','자형','원진','파','해'].includes(yk)?'작은 마찰이 생기기 쉬운 해예요. 말과 약속을 평소보다 한 번 더 확인하세요.':'본인 속도대로 차분히 쌓아 가기 좋은 해예요.'}`,tgYear.lead||'',tgYear.good?`올해 하면 좋은 일이에요. ${tgYear.good}`:'',tgYear.warn?`올해 조심할 일이에요. ${tgYear.warn}`:'']))+
+    lv4Sub(`${m.year}년 달마다의 흐름`,lv4Rows(m.months.map(x=>({label:`${x.month}월`,tag:`${x.current?'이번 달 · ':''}${x.score}점`,text:`'${plainTG(x.tg)}'의 기운이 들어오는 달이에요. ${young?lv4Tg(x.tg,m.age).good:`이달에 챙길 일 하나, ${LIFE_V2_MONTH_ACTION[x.tg]||'일정과 조건 다시 확인하기'}.`}`,on:x.current}))))+
+    lv4Key('점수가 높은 달에는 미뤄 둔 일을 움직이고, 낮은 달에는 멈추지 말고 규모만 줄이세요.'));
+
+  // 7. 앞으로의 10년 흐름과 인생의 황금기
+  const nextTg=nextEra&&nextEra.tg,nextD=nextEra?lv4Tg(nextTg,eraStart(nextEra)):{};
+  h+=lv4Section(7,`${m.year+1}년부터 ${m.year+10}년까지 해마다 어떤 기운이 앞에 서는지 정리했어요. 큰 결정을 어느 해에 둘지 미리 그려 보세요.`,
+    lv4Rows(m.futureYears.map(y=>{const ya=m.age+y.year-m.year,d=lv4Tg(y.tg,ya);return {label:`${y.year}년`,tag:`${ya}세 · ${y.score}점`,text:`'${plainTG(y.tg)}'의 해예요. ${d.lead} ${d.good}`};}))+
+    (nextEra?lv4Sub(`다음 10년 (${nextEra.range})`,lv4P([`${nextEra.range}에는 '${plainTG(nextTg)}'의 기운이 앞에 서요. 쉽게 말하면 ${nextD.use}이에요. ${nextD.lead}`,'지금부터 본인이 없어도 굴러가는 구조를 조금씩 만들어 두세요. 그러면 흐름이 바뀔 때 훨씬 편하게 넘어가요.'])):'')+
+    lv4Sub('인생의 황금기',lv4P(m.golden.map(g=>`${g.label}는 ${g.range}${lv4Ida(g.range)}. ${g.text}`).concat(['황금기는 저절로 오는 행운이라기보다, 미리 준비해 둔 사람에게 크게 열리는 문이에요. 그 몇 년 전부터 실력과 돈, 사람을 차곡차곡 모아 두세요.'])))+
+    lv4Key('좋은 해를 한 해만 보지 말고, 이어지는 구간으로 묶어 계획을 세우세요.'));
+
+  // 8. 운을 바꾸는 실천법 · 평생 조심할 7가지 · 요약본
+  h+=lv4Section(8,`본인에게 가장 힘이 되는 기운은 ${LV4_OH[m.ys.main]}${lv4Ida(LV4_OH[m.ys.main])}. 보조로 ${LV4_OH[m.ys.support]} 기운도 도와줘요. 직장에서 든든한 선배가 옆에 있어 주는 것과 비슷해요. 색이나 물건보다 행동으로 채울 때 훨씬 강하게 작동해요.`,
+    lv4Sub(`${LV4_OH[m.ys.main]} 기운을 채우는 실천법`,lv4P([`${support.lead}이 본인의 운을 열어 줘요.`].concat(support.items.map(x=>`<b>${x[1]}</b>. ${x[2]}`))))+
+    lv4Sub(`보조로 돕는 ${LV4_OH[m.ys.support]} 기운`,lv4P([`${support2.lead}도 함께 챙기면 좋아요.`].concat(support2.items.slice(0,2).map(x=>`<b>${x[1]}</b>. ${x[2]}`))))+
+    lv4Sub('평생 조심할 7가지',`<ol class="lv4-list">${lv4Cautions(m).map(([t,d])=>`<li><b>${t}</b><span>${preventOrphan(d)}</span></li>`).join('')}</ol>`)+
+    lv4Sub('천기의 마지막 이야기',lv4P([`${p.season}에 태어난 ${dsm.nick||''} 같은 본인은, ${ax.label}의 힘으로 한 걸음씩 자기 자리를 만들어 가는 사람이에요.`,`지금 ${curTxt}의 흐름은 ${tgNow.use}이에요. 이 시기에 쌓은 것이 다음 10년의 선택지를 넓혀 줘요.`,'사주는 정해진 운명이 아니라 본인이 타고난 지도예요. 지도를 알면 길을 잃어도 금방 돌아올 수 있어요. 오늘 한 가지만 골라 실천해 보세요.']))+
+    lv4Key(`오늘 한 가지, ${support.items[0][1]}부터 시작해 보세요.`)+
+    lv4Sub('요약본',renderLifeV2SummaryCard(m)));
+
+  const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
+  const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p></header>`;
+  return `<div class="lv4">${hero}${toc}${h}${renderChatSection()}</div>`;
+}
+function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return false;}
 function renderSajuPaidV2(saju,sy,sm,sd,sh,smin){
   const meta={...(_meta||{}),sy,sm,sd,hour:sh,min:smin,gender:(_meta&&_meta.gender)||gender};
-  return buildLifeExperienceHTML(saju,buildLifeV2Library(saju,meta));
+  const key=`${sajuIdOf(saju,_meta)}|${sy||''}`;
+  _lifeRoute={layer:'library',index:0,key};
+  return `<div class="life-experience life-v4" data-life-key="${key}">${buildLifeReadingV4(saju,meta)}${nextActionsHTML('life')}</div>`;
 }
 
 function renderSajuPaid(saju,sy,sm,sd,sh,smin){return renderSajuPaidV2(saju,sy,sm,sd,sh,smin);}

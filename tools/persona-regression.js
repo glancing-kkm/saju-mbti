@@ -119,7 +119,7 @@ const harness = `
 
     // 7) 인생총운 full 렌더 — 깨짐/누수 없음 + 두 사주 다름
     const ha = renderSajuPaid(SELF,1990,5,15,12,0), hb = renderSajuPaid(GWAN,1990,5,15,12,0);
-    ok('renderSajuPaid 렌더 정상', typeof ha === 'string' && ha.length > 30000, 'length='+ha.length);
+    ok('renderSajuPaid 렌더 정상', typeof ha === 'string' && ha.length > 18000, 'length='+ha.length);
     ok('renderSajuPaid 누수 없음(dm 미치환·undefined)', !leaky(ha) && !leaky(hb));
     ok('renderSajuPaid 비유 본질: 같은 일간이라도 다름',
        ha.includes('봄 태생') && hb.includes('가을 태생'));
@@ -133,7 +133,7 @@ const harness = `
     }
     ok('개인 지문: 120개 표본에서 60개 이상의 조합', fingerprintSet.size>=60, 'unique='+fingerprintSet.size);
     ok('인생총운: 캐릭터와 통합 풀이에 개인 지문 노출',
-       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.includes('life-v2-lead') && ha.includes(fpSelf.hook));
+       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.replace(/&nbsp;|\u00a0/g,' ').includes(fpSelf.hook));
 
     // 8) 신년운세 — 10개 심층 상담 카드 + 3층 UI
     const ny = renderNewyearFortune(SELF, 2026);
@@ -168,8 +168,8 @@ const harness = `
     const secondDeckCard=lifeDeckCardHTML(deck[1],1,deck.length);
     ok('인생총운 덱: 이전·근거·다음 버튼 제공',
        secondDeckCard.includes('lifeDeckPrev()')&&secondDeckCard.includes('lifeOpenEvidence(')&&secondDeckCard.includes('lifeDeckNext()'));
-    ok('전체 서고: 고정 목차 접기 버튼 제공',
-       ha.includes('toc-collapse-btn')&&globalThis.__SOURCE_HTML__.includes('function toggleStickyTOC('));
+    ok('인생총운 한 페이지: 목차에서 섹션으로 바로 이동',
+       (ha.match(/lv4Jump\\('/g)||[]).length===8 && globalThis.__SOURCE_HTML__.includes('function lv4Jump('));
     ok('미니 만세력: 네 기둥 명칭 확대 스타일 적용',
        globalThis.__SOURCE_HTML__.includes('.mm-lab .term{display:inline-block;font-size:var(--saju-glyph)') &&
        parseFloat((globalThis.__SOURCE_HTML__.match(/--saju-glyph:\\s*([\\d.]+)rem/)||[])[1]||0) >= 1.4);
@@ -207,24 +207,17 @@ const harness = `
     const share=buildLifeShareCardHtml(SELF);
     ok('공유 카드: 1080 정사각형 클래스 생성', /life-share-card/.test(share)&&/character-portrait/.test(share));
     const layered=renderSajuPaid(SELF,1990,5,15,12,0);
-    ok('인생총운 3층: 캐릭터·덱·서고 순서',
-       (layered.match(/data-life-layer=/g)||[]).length===3 &&
-       layered.indexOf('data-life-layer="character"')<layered.indexOf('data-life-layer="deck"') &&
-       layered.indexOf('data-life-layer="deck"')<layered.indexOf('data-life-layer="library"'));
-    const lifeV3Labels=['PROFILE','OPENING','PERSONA','TALENT','CAREER','WEALTH','LOVE','HUMAN','HEALTH','DAEUN10','SEWOON','MONTH12','YEAR10','GOLDEN','PRACTICE','CAUTION','MASTER'];
-    ok('전체 서고: 첨부 상담 흐름을 17개 심층 카드로 구성',
-       lifeV3Labels.every(label=>layered.includes('<!--CARD_START:'+label+'-->')) &&
-       lifeV3Labels.filter(label=>layered.includes('<!--CARD_START:'+label+'-->')).length===17);
-    ok('인생총운 V3: 사주판·관계도·이모티콘 도식 노출',
-       layered.includes('life-v3-pillar-board') && layered.includes('life-v3-relation') &&
-       (layered.match(/class="life-evidence"/g)||[]).length>=6 &&
-       (layered.match(/class="life-v3-emoji"/g)||[]).length>=40,
-       'evidence='+(layered.match(/class="life-evidence"/g)||[]).length+' emoji='+(layered.match(/class="life-v3-emoji"/g)||[]).length);
-    ok('인생총운 V3: 12개월과 향후 10년을 모두 제공',
-       (layered.match(/class="life-v3-time-card/g)||[]).length>=22 &&
+    const lv4Ids=['basic','talent','work-money','love-people','health','now','future','practice'];
+    ok('인생총운 한 페이지: 넘김 없이 소개 순서 8개 섹션을 이어서 노출',
+       !layered.includes('data-life-layer=') && !layered.includes('lifeDeckNext') &&
+       lv4Ids.every((id,i)=>layered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||layered.indexOf('id="lv4-'+lv4Ids[i-1]+'"')<layered.indexOf('id="lv4-'+id+'"'))) &&
+       (layered.match(/class="lv4-sec"/g)||[]).length===8);
+    ok('인생총운 한 페이지: 사주판·글자 관계를 일상어로 설명',
+       layered.includes('life-v3-pillar-board') && /끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/.test(layered) &&
+       (layered.match(/class="lv4-key"/g)||[]).length===8);
+    ok('인생총운 한 페이지: 12개월과 향후 10년을 모두 제공',
+       (layered.match(/class="lv4-row/g)||[]).length>=22 &&
        buildLifeV2Model(SELF,_meta).months.length===12 && buildLifeV2Model(SELF,_meta).futureYears.length===10);
-    ok('인생총운 V3: 기존 반복 타임라인 카드 제거',
-       !layered.includes('CARD_START:WEALTH_TIMELINE') && !layered.includes('CARD_START:CAREER_TIMELINE'));
     const lifeVisible=clean(layered);
     const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
     ok('인생총운 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
@@ -246,8 +239,11 @@ const harness = `
     ok('인생총운 V3: 진태양시 보정값은 소수 둘째 자리까지만 표시',
        examplePlain.includes('-30.46분 보정') && !examplePlain.includes('-30.461999'),
        (examplePlain.match(/-30[^분]*분 보정/)||[])[0]);
+    ok('인생총운 한 페이지: 겹친 글자를 문장으로 풀어 설명',
+       examplePlain.includes("사주 글자 중에 '유(닭)'라는 글자가 두 번 나와요") && !/유 2번|유 2개/.test(examplePlain),
+       (examplePlain.match(/사주 글자 중에[^.]*\./)||[''])[0]);
     ok('인생총운 V3: 목차 글자와 관계도 고아글자 방지',
-       exampleHtml.includes('class="toc-jump-btn"') && /태어난(?:&nbsp;|\u00a0)(?:<span[^>]*>)?해/.test(exampleHtml));
+       exampleHtml.includes('class="lv4-toc"') && /태어난(?:&nbsp;|\u00a0)(?:<span[^>]*>)?해/.test(exampleHtml));
     ok('인생총운 V3: 녹색 사주판 글자는 흰색으로 고정',
        globalThis.__SOURCE_HTML__.includes('.life-v3-pillar.self .life-v3-pillar-glyph b *{background:var(--accent);color:#fff!important}'));
     ok('인생총운 V3: 근거 노드 내용은 가로·세로 중앙 정렬',
@@ -275,7 +271,7 @@ const harness = `
        globalThis.__SOURCE_HTML__.includes('#app .life-v3-profile,#app .life-v3-emoji-grid,#app .life-v3-months') &&
        globalThis.__SOURCE_HTML__.includes('#app .toc-detail-grid{grid-template-columns:1fr}'));
     ok('인생총운 V3: 예시 사주에 12개월·향후 10년·황금기 노출',
-       (exampleHtml.match(/class="life-v3-time-card/g)||[]).length>=22 && (exampleHtml.match(/life-v3-golden-card/g)||[]).length>=3);
+       (exampleHtml.match(/class="lv4-row/g)||[]).length>=22 && (examplePlain.match(/황금기는 /g)||[]).length>=3);
     ok('인생총운 V3: 첨부 예시의 현재 10년·8월·다음 해 원본값 유지',
        STEMKO[exampleModel.cur.stem]+BRCHKO[exampleModel.cur.branch]==='을사' &&
        exampleModel.months[7].gz==='병신' && exampleModel.futureYears[0].gz==='정미',
