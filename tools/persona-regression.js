@@ -372,6 +372,23 @@ const harness = `
     ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록·한 줄 정리 변환, HTML 이스케이프',
        __md.items.length===2 && __md.items[1][1]==='카드별 해석' && __md.html.includes('<h3>현재 - 별</h3>') && __md.html.includes('lv4-md-list') && __md.html.includes('class="lv4-key"') && !__md.html.includes('<script>'));
 
+    const __savedCtx=_meta.ctx;_meta.ctx={cat:'topic-love',key:'tired',label:'권태기'};
+    const __ctxLove=renderTopicPaid('topic-love',SELF,_meta);_meta.ctx=__savedCtx;
+    ok('지금 상황 객관식: 고른 상황이 풀이 첫머리·질문형 소제목·해시태그로 반영',
+       __ctxLove.includes('lv4-ctx') && clean(__ctxLove).includes('권태기') && __ctxLove.includes('lv4-sec-label') && clean(__ctxLove).includes('우리는 왜 같은 일로 자꾸 부딪힐까?') && __ctxLove.includes('lv4-scene') && __ctxLove.includes('lv4-tags') && __ctxLove.includes('lv4-gauge') &&
+       Object.keys(CTX_Q).every(c=>CTX_Q[c].o.length>=3));
+
+    const __sceneRender={life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
+    const __sceneBad=[];
+    Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{
+      const sv=_meta.ctx;_meta.ctx={cat,key,label:'상황'};
+      let out='';try{out=(__sceneRender[cat]||(()=>renderTopicPaid(cat,SELF,_meta)))();}catch(e){out='ERR '+e.message;}
+      _meta.ctx=sv;
+      const txt=clean(out),sc=(out.match(/<div class="lv4-scene">([\\s\\S]*?)<\\/div>/)||[])[1]||'';
+      if(!out.includes('lv4-scene')||/undefined|NaN|\\$\\{|ERR /.test(txt)||!sc||/(^|\\s)결(\\s|이|을|에)|당신|상관|여덟 글자/.test(clean(sc)))__sceneBad.push(cat+':'+key);
+    }));
+    ok('상황별 본문 장면: 모든 상황 선택지가 해당 섹션에 장면 문단을 넣고, 빈 값·금지어 없음',__sceneBad.length===0,__sceneBad.join(', '));
+
     // 13) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
     const OTHER=C(6,8,7,9,3,7,6,8);
     const deterministicRenderers={

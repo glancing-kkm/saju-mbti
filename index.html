@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=2b4ffb1abecb">
+<link rel="stylesheet" href="/assets/night.css?v=bfed3b0fc9e2">
 </head>
 <body>
 <div id="app">
@@ -2784,6 +2784,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </fieldset>
 
       <!-- MBTI (선택) -->
+      <fieldset class="cat-extra ctx-q" id="catExtraCtx" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title" id="ctxQTitle">지금 상황</span></div></legend>
+        <div class="cat-extra-desc" id="ctxQDesc"></div>
+        <div class="ctx-options" id="ctxQOptions"></div>
+      </fieldset>
       <fieldset id="mbtiFieldset">
         <legend><label for="iMbti" style="all:unset;cursor:pointer">MBTI</label> <small id="mbtiLegendNote">(선택 — 사주와 비교 풀이가 추가돼요)</small></legend>
         <div class="ig">
@@ -4382,6 +4387,240 @@ function normalizeChildrenInput(v){
   const k=normalizeLooseText(v);
   return ({있음:'yes', 있다:'yes', yes:'yes', y:'yes', 없음:'no', 없다:'no', no:'no', n:'no'})[k]||'';
 }
+// ── 지금 상황(맥락) 객관식 — 사주 명식과 결합해 풀이 첫머리를 상황에 맞춘다 ──
+const CTX_Q={
+  life:{t:'요즘 가장 마음이 쓰이는 건 무엇인가요?',d:'고른 고민을 중심으로 풀이 첫머리를 맞춰 드려요.',o:[['work','일·진로'],['money','돈'],['love','연애·결혼'],['health','건강'],['family','관계·가족'],['self','나 자신']]},
+  newyear:{t:'올해 가장 이루고 싶은 건 무엇인가요?',d:'고른 목표를 중심으로 한 해의 흐름을 짚어 드려요.',o:[['work','일·진로'],['money','돈 모으기'],['love','연애·결혼'],['health','건강'],['study','공부·시험'],['move','이사·변화']]},
+  gunghap:{t:'두 사람은 지금 어떤 사이인가요?',d:'관계 단계에 맞는 말로 궁합을 풀어 드려요.',o:[['some','썸·호감'],['dating','연애 중'],['wedding','결혼 준비'],['married','부부'],['partner','동업·동료']]},
+  name:{t:'이름풀이를 보는 이유는 무엇인가요?',d:'목적에 맞춰 추천 이름과 조언을 정리해 드려요.',o:[['self','내 이름이 궁금해요'],['rename','개명을 고민 중이에요'],['baby','아이 이름을 짓고 있어요'],['brand','활동명·상호를 정해요']]},
+  ziwei:{t:'자미두수로 가장 궁금한 건 무엇인가요?',d:'고른 방을 더 자세히 짚어 드려요.',o:[['self','타고난 성향'],['love','사랑과 배우자'],['money','돈'],['work','일']]},
+  'topic-love':{t:'지금 연애 상태는 어떤가요?',d:'지금 상태에 맞는 장면으로 풀어 드려요.',o:[['some','썸 타는 중'],['crush','짝사랑 중'],['dating','연애 중'],['tired','권태기'],['single','솔로']]},
+  'topic-reunion':{t:'헤어진 지 얼마나 됐나요?',d:'지난 시간에 맞춰 다가가는 순서를 짚어 드려요.',o:[['m1','한 달 안'],['m6','1~6개월'],['long','6개월 이상'],['contact','아직 연락은 하는 사이']]},
+  'topic-marriage':{t:'지금 결혼에 대한 상황은 어떤가요?',d:'지금 단계에 맞는 결혼 흐름을 짚어 드려요.',o:[['partner','결혼을 생각하는 연인이 있어요'],['meeting','소개·만남 중이에요'],['none','아직 상대가 없어요'],['married','이미 결혼했어요']]},
+  'topic-career':{t:'지금 일의 상황은 어떤가요?',d:'지금 상황에 맞는 움직일 때와 방법을 짚어 드려요.',o:[['seek','취업 준비 중'],['move','이직 고민 중'],['grow','승진·평가가 궁금해요'],['own','사업·프리랜서']]},
+  'topic-money':{t:'돈에 대해 가장 궁금한 건 무엇인가요?',d:'고른 목표에 맞는 돈의 흐름을 짚어 드려요.',o:[['save','모으는 법'],['grow','불리기 좋은 때'],['debt','빚 정리'],['start','창업 자금']]},
+  'topic-study':{t:'어떤 공부를 하고 있나요?',d:'공부 목표에 맞는 시기와 방법을 짚어 드려요.',o:[['entrance','수능·입시'],['cert','자격증·시험'],['univ','대학·대학원'],['job','취업 공부']]},
+  'topic-child':{t:'아이는 지금 어느 시기인가요?',d:'아이 나이에 맞는 양육 조언을 짚어 드려요.',o:[['baby','영유아'],['kid','초등학생'],['teen','중고등학생']]},
+  'topic-children':{t:'지금 자녀에 대한 상황은 어떤가요?',d:'지금 상황에 맞는 자녀운을 짚어 드려요.',o:[['plan','자녀를 계획 중이에요'],['raising','아이를 키우고 있어요'],['grown','자녀가 다 컸어요'],['none','아직 생각이 없어요']]},
+  'topic-health':{t:'요즘 가장 신경 쓰이는 건 무엇인가요?',d:'고른 부분을 중심으로 관리법을 짚어 드려요.',o:[['sleep','피로·수면'],['digest','소화·식습관'],['weight','체중·운동'],['stress','스트레스·마음']]}
+};
+let _ctxSel=null;
+function renderCtxQuestion(cat){
+  const fs=document.getElementById('catExtraCtx'),q=CTX_Q[cat];if(!fs)return;
+  if(!_ctxSel||_ctxSel.cat!==cat)_ctxSel=null;
+  if(!q){fs.style.display='none';return;}
+  fs.style.display='';
+  document.getElementById('ctxQTitle').textContent=q.t;
+  document.getElementById('ctxQDesc').textContent=q.d+' 고르지 않아도 풀이는 볼 수 있어요.';
+  document.getElementById('ctxQOptions').innerHTML=q.o.map(([k,l])=>`<button type="button" class="ctx-btn${_ctxSel&&_ctxSel.key===k?' on':''}" data-tag="${k}" onclick="pickCtx('${cat}','${k}')">${l}</button>`).join('');
+}
+function pickCtx(cat,key){
+  const q=CTX_Q[cat];if(!q)return;const o=q.o.find(x=>x[0]===key);
+  _ctxSel=_ctxSel&&_ctxSel.key===key?null:{cat,key,label:o?o[1]:key};
+  document.querySelectorAll('#ctxQOptions .ctx-btn').forEach(b=>b.classList.toggle('on',!!_ctxSel&&b.dataset.tag===_ctxSel.key));
+}
+function ctxFor(cat){const c=(_meta&&_meta.ctx)||null;return c&&c.cat===cat?c:null;}
+// 고른 상황에 맞춘 풀이 첫 문장
+const CTX_OPENER={
+  life:{work:'요즘 일과 진로가 가장 마음에 걸리시죠. 그 고민의 뿌리부터 사주에서 짚어 볼게요.',money:'요즘 돈 문제가 가장 마음에 걸리시죠. 본인이 돈과 맺는 방식부터 짚어 볼게요.',love:'요즘 연애와 결혼이 가장 마음에 걸리시죠. 본인이 사랑하는 방식부터 짚어 볼게요.',health:'요즘 몸이 가장 마음에 걸리시죠. 본인 체질부터 차근차근 짚어 볼게요.',family:'요즘 가까운 사람과의 관계가 가장 마음에 걸리시죠. 본인이 사람과 맺는 방식부터 짚어 볼게요.',self:'요즘 나 자신에 대해 생각이 많으시죠. 본인이 어떤 사람인지부터 짚어 볼게요.'},
+  newyear:{work:'올해 일과 진로에서 한 걸음 나아가고 싶으시죠. 그 목표에 맞춰 한 해를 읽어 볼게요.',money:'올해는 돈을 모으고 싶으시죠. 돈이 움직이는 달부터 짚어 볼게요.',love:'올해는 연애와 결혼에 마음이 가시죠. 마음이 잘 통하는 달부터 짚어 볼게요.',health:'올해는 건강을 챙기고 싶으시죠. 몸을 아껴야 할 달부터 짚어 볼게요.',study:'올해는 공부와 시험에서 결과를 내고 싶으시죠. 힘이 붙는 달부터 짚어 볼게요.',move:'올해 이사나 큰 변화를 생각하고 계시죠. 움직이기 좋은 때부터 짚어 볼게요.'},
+  gunghap:{some:'아직 썸이나 호감 단계라면, 지금은 서로의 반응 속도를 아는 게 가장 중요해요.',dating:'연애 중인 두 분이라면, 지금 반복되는 다툼의 스위치를 아는 게 가장 중요해요.',wedding:'결혼을 준비하는 두 분이라면, 생활의 합의를 미리 맞추는 게 가장 중요해요.',married:'이미 부부인 두 분이라면, 오래 함께 가는 방법을 아는 게 가장 중요해요.',partner:'함께 일하는 사이라면, 역할과 돈의 기준을 맞추는 게 가장 중요해요.'},
+  'topic-love':{some:'지금 썸을 타는 중이라면, 상대의 속마음과 다가갈 때가 가장 궁금하시죠.',crush:'지금 짝사랑 중이라면, 마음을 전해도 될 때가 가장 궁금하시죠.',dating:'지금 연애 중이라면, 이 관계가 오래가는 방법이 가장 궁금하시죠.',tired:'지금 권태기라면, 그건 본인 탓만은 아니에요. 두 사람의 리듬이 엇갈린 이유부터 짚어 볼게요.',single:'지금 솔로라면, 다음 인연이 언제, 어떤 모습으로 올지가 가장 궁금하시죠.'},
+  'topic-reunion':{m1:'헤어진 지 한 달이 안 됐다면, 지금은 감정이 가장 뜨거운 때예요. 서두르지 않는 게 첫 번째 열쇠예요.',m6:'헤어진 지 몇 달이 지났다면, 두 사람 모두 그때를 돌아볼 여유가 생기는 때예요.',long:'헤어진 지 반년이 넘었다면, 다시 만나는 게 아니라 새로 시작한다는 마음이 필요해요.',contact:'아직 연락은 하는 사이라면, 지금의 대화가 다음을 정하는 가장 큰 열쇠예요.'},
+  'topic-marriage':{partner:'결혼을 생각하는 연인이 있다면, 언제 이야기를 꺼낼지가 가장 궁금하시죠.',meeting:'소개나 만남 중이라면, 어떤 사람과 잘 맞는지가 가장 궁금하시죠.',none:'아직 상대가 없다면, 인연이 언제 가까워지는지가 가장 궁금하시죠.',married:'이미 결혼하셨다면, 함께 사는 지혜가 가장 궁금하시죠.'},
+  'topic-career':{seek:'지금 취업을 준비 중이라면, 어떤 곳이 맞고 언제 움직일지가 가장 궁금하시죠.',move:'지금 이직을 고민 중이라면, 지금 움직일지 기다릴지가 가장 궁금하시죠.',grow:'승진과 평가가 궁금하다면, 본인이 인정받는 때와 방법부터 짚어 볼게요.',own:'사업이나 프리랜서라면, 일이 커지는 때와 조심할 때가 가장 궁금하시죠.'},
+  'topic-money':{save:'돈을 모으고 싶다면, 본인에게 맞는 모으는 방식부터 짚어 볼게요.',grow:'돈을 불리고 싶다면, 움직이기 좋은 때와 지킬 때부터 짚어 볼게요.',debt:'빚을 정리하고 싶다면, 그건 본인이 부족해서가 아니라 흐름이 엇갈렸던 거예요. 정리하기 좋은 때부터 짚어 볼게요.',start:'창업 자금을 고민 중이라면, 시작하기 좋은 때와 안전판부터 짚어 볼게요.'},
+  'topic-study':{entrance:'수능과 입시를 앞두고 있다면, 힘이 붙는 달과 공부법이 가장 궁금하시죠.',cert:'자격증과 시험을 준비 중이라면, 시험을 두기 좋은 때가 가장 궁금하시죠.',univ:'대학이나 대학원 공부라면, 깊게 파고들 분야가 가장 궁금하시죠.',job:'취업 공부 중이라면, 결과가 나오기 좋은 때가 가장 궁금하시죠.'},
+  'topic-child':{baby:'아이가 아직 어리다면, 지금은 기질을 알고 편안한 리듬을 만들어 주는 게 가장 중요해요.',kid:'아이가 초등학생이라면, 재능을 발견하고 공부 습관을 잡아 주는 게 가장 중요해요.',teen:'아이가 중고등학생이라면, 진로 방향과 마음을 함께 살펴 주는 게 가장 중요해요.'},
+  'topic-children':{plan:'자녀를 계획 중이라면, 인연이 가까워지는 때가 가장 궁금하시죠.',raising:'아이를 키우고 있다면, 본인에게 맞는 부모 역할이 가장 궁금하시죠.',grown:'자녀가 다 컸다면, 앞으로의 관계가 가장 궁금하시죠.',none:'아직 자녀 생각이 없다면, 자녀 자리는 본인이 키워 가는 일과 결실로 읽어 보세요.'},
+  'topic-health':{sleep:'요즘 피로와 잠이 신경 쓰인다면, 회복하는 방식부터 짚어 볼게요.',digest:'요즘 소화와 식습관이 신경 쓰인다면, 본인 체질에 맞는 식사 리듬부터 짚어 볼게요.',weight:'요즘 체중과 운동이 신경 쓰인다면, 본인에게 맞는 움직임부터 짚어 볼게요.',stress:'요즘 스트레스가 크다면, 그건 본인이 약해서가 아니에요. 스트레스가 몸으로 오는 길부터 짚어 볼게요.'},
+  name:{self:'내 이름이 궁금하셨다면, 이름이 본인 사주와 어떻게 어울리는지부터 짚어 볼게요.',rename:'개명을 고민 중이라면, 지금 이름의 강점과 아쉬운 점을 먼저 짚어 볼게요.',baby:'아이 이름을 짓고 있다면, 아래 추천 이름과 한자 조합을 특히 눈여겨보세요.',brand:'활동명이나 상호를 정하고 있다면, 본인 사주에 힘이 되는 소리부터 짚어 볼게요.'},
+  ziwei:{self:'타고난 성향이 궁금하셨다면, 나를 나타내는 방을 특히 눈여겨보세요.',love:'사랑과 배우자가 궁금하셨다면, 배우자의 방을 특히 눈여겨보세요.',money:'돈이 궁금하셨다면, 돈의 방을 특히 눈여겨보세요.',work:'일이 궁금하셨다면, 일의 방을 특히 눈여겨보세요.'}
+};
+function ctxOpener(cat){const c=ctxFor(cat);if(!c)return '';const m=CTX_OPENER[cat];return m&&m[c.key]?m[c.key]:'';}
+function ctxNoteHTML(cat){const t=ctxOpener(cat),c=ctxFor(cat);return t?`<div class="lv4-ctx"><b>본인이 고른 상황 · ${c.label}</b><p>${lv4Text(t)}</p></div>`:'';}
+// ── 고른 상황에 맞춘 본문 장면 — 사주 신호(타고난 힘·좋은 달·좋은 해)와 상황을 묶어 섹션 안에 넣는다 ──
+const CTX_AX={
+  love:{self:'마음이 가면 먼저 움직이는',out:'마음을 말로 표현해야 풀리는',wealth:'말보다 챙겨 주는 행동으로 마음을 보이는',gwan:'한번 마음을 주면 진지하게 지키는',in_:'마음을 오래 곱씹고 천천히 여는'},
+  work:{self:'본인 방식대로 일할 때 힘이 나는',out:'아이디어를 결과물로 보여 줄 때 빛나는',wealth:'숫자와 성과로 실력을 증명하는',gwan:'조직 안에서 믿음을 쌓아 크는',in_:'깊이 파고들어 전문성을 쌓는'},
+  money:{self:'직접 판단하고 굴려야 마음이 놓이는',out:'재능을 돈으로 바꾸는',wealth:'돈의 흐름을 빨리 읽는',gwan:'계획과 원칙대로 차곡차곡 모으는',in_:'충분히 알아본 뒤에 움직이는'},
+  meet:{self:'운동이나 취미 모임처럼 함께 몸을 움직이는 자리',out:'수업이나 모임처럼 말과 재능이 드러나는 자리',wealth:'일이나 소개처럼 현실적인 연결이 있는 자리',gwan:'믿을 만한 지인의 소개 자리',in_:'스터디나 독서 모임처럼 대화가 깊어지는 자리'}
+};
+// 달 목록을 해별로 묶는다 — 11월, 2027년 6·7월
+function ctxMonths(list,curY){const a=[...(list||[])].sort((x,y)=>(x.year*12+x.month)-(y.year*12+y.month)),g=[];a.forEach(x=>{const l=g[g.length-1];if(l&&l.y===x.year)l.m.push(x.month);else g.push({y:x.year,m:[x.month]});});return g.map(o=>`${o.y!==curY?`${o.y}년 `:''}${o.m.join('·')}월`).join(', ');}
+const ctxAx=(kind,axis)=>(CTX_AX[kind]||{})[axis]||(CTX_AX[kind]||{}).gwan||'';
+// 상황별 질문형 소제목 바꿔 끼우기 (섹션 순서 번호 → 질문)
+const CTX_QHEAD={
+  'topic-love':{some:{4:'다가오는 12개월, 마음을 전하기 좋은 달은?'},crush:{4:'다가오는 12개월, 마음을 전하기 좋은 달은?'},dating:{3:'두 사람 관계가 한 단계 깊어지는 해는?',4:'다가오는 12개월, 둘 사이가 따뜻해지는 달은?'},tired:{1:'우리는 왜 같은 일로 자꾸 부딪힐까?',3:'관계가 다시 따뜻해지는 해는?',4:'다가오는 12개월, 분위기를 바꾸기 좋은 달은?'}},
+  'topic-marriage':{married:{3:'부부 사이에 힘이 붙는 해는?',4:'다가오는 12개월, 둘만의 시간을 갖기 좋은 달은?'}},
+  'topic-career':{seek:{1:'어떤 곳에 들어가야 오래 일할 수 있을까?',4:'다가오는 12개월, 지원하기 좋은 달은?'},grow:{1:'지금 자리에서 더 올라가려면?'},own:{1:'일을 넓힐 때와 지킬 때는 언제일까?'}},
+  'topic-money':{debt:{1:'빚은 어디서부터 정리해야 할까?'},start:{1:'창업 전에 꼭 지켜야 할 돈은?'}}
+};
+function ctxQHeadFor(cat,i){const c=ctxFor(cat);return c&&CTX_QHEAD[cat]&&CTX_QHEAD[cat][c.key]?CTX_QHEAD[cat][c.key][i]:'';}
+// h: {axis,bm,bm1,cm,by,rel,el,lack,golden,good,tough,bestY,work,workBad,money,moneyBad,love,loveBad,healthBad}
+// 반환: {at:섹션 id, p:[문단], adds:[[섹션 id, 한 줄]]}
+const CTX_SCENE={
+  'topic-love':{
+    some:h=>({at:'tp-b',p:['썸에서 가장 흔한 고민은 "이 사람도 나를 좋아할까?"예요. 답장 속도나 말투 하나에 하루 기분이 오르내리기 쉬워요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 썸 단계에서도 이 모습이 그대로 드러나요.`,'상대의 마음은 말보다 반복되는 행동에서 보여요. 먼저 약속을 잡는지, 지난번 대화를 기억하는지 살펴보세요.','한 번에 크게 고백하기보다, 짧은 약속을 두세 번 이어 가는 편이 잘 맞아요.'],adds:[['tp-e',`썸이라면 ${h.bm1}에 먼저 가벼운 약속을 제안해 보세요. ${h.cm}에는 답을 재촉하지 말고 기다려 주세요.`]]}),
+    crush:h=>({at:'tp-b',p:['짝사랑은 마음은 큰데 표현할 기회가 적어서, 혼자 상상이 커지기 쉬워요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 그래서 마음을 숨기는 시간이 길어질수록 더 지치기 쉬워요.`,'마음을 한 번에 전하기보다, 상대가 편하게 대답할 수 있는 작은 질문부터 시작하세요. "이번 주말에 뭐 해요?" 같은 질문이면 충분해요.','상대 반응이 미지근해도 본인 매력이 모자라다는 뜻은 아니에요. 아직 서로를 알 시간이 부족했던 거예요.'],adds:[['tp-e',`짝사랑이라면 ${h.bm1} 무렵이 마음을 전해 보기 좋은 때예요. 고백은 메시지보다 얼굴을 보고 짧게 하세요.`]]}),
+    dating:h=>({at:'tp-b',p:['연애 중이라면 지금 가장 중요한 건 반복되는 다툼의 스위치를 아는 거예요.',h.rel==='충'?'본인 사주에는 가까운 사이에서 밀고 당기는 마음이 번갈아 나오는 배치가 있어요. 다툼은 대개 서운함을 늦게 말할 때 시작돼요.':`본인은 ${ctxAx('love',h.axis)} 사람이에요. 상대가 이 방식을 몰라줄 때 서운함이 쌓이기 쉬워요.`,'다툼이 생기면 그 자리에서 이기려 하기보다, 하루 쉬고 다시 이야기하는 규칙을 정해 보세요.','한 주에 한 번은 휴대폰을 내려놓고 서로의 일주일을 물어보세요. 작은 대화가 큰 다툼을 막아 줘요.'],adds:[['tp-d','연애 중이라면 아래 풀이의 "새 만남"이라는 말은 두 사람이 함께하는 새로운 경험으로 읽어 주세요.',1],['tp-e',`${h.bm1}에 둘만의 여행이나 새 계획을 잡아 보세요. ${h.cm}에는 큰 결정을 미루고 대화를 늘리세요.`]]}),
+    tired:h=>({at:'tp-b',p:['권태기는 사랑이 식었다는 뜻이 아니라, 설렘이 생활로 바뀌는 길목이에요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 익숙해지면 이 표현이 줄어들기 쉽고, 상대는 그걸 마음이 멀어졌다고 받아들이기 쉬워요.`,'같은 일로 자꾸 부딪힌다면 누가 잘못해서가 아니에요. 두 사람의 마음 속도가 엇갈린 거예요.','처음 가 보는 동네 산책, 함께 배우는 취미처럼 작은 처음을 만들어 보세요. 새로운 경험이 설렘을 되살려요.'],adds:[['tp-d','권태기라면 아래 풀이의 "새 만남"이라는 말은 두 사람이 함께 해 보는 새로운 일로 읽어 주세요.',1],['tp-e',`${h.bm1}이 분위기를 바꾸기 좋은 달이에요. 그달에 함께 해 보지 않은 일을 하나 계획해 보세요.`]]}),
+    single:h=>({at:'tp-a',p:['솔로라면 인연은 갑자기 오기보다, 생활 반경이 넓어질 때 들어와요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 그래서 ${ctxAx('meet',h.axis)}에서 인연이 잘 생겨요.`,`앞으로 인연이 가까워지는 해는 ${h.by}${lv4Ida(h.by)}. 그 전에는 본인 생활을 단단하게 다지는 시간이에요.`],adds:[['tp-e',`솔로라면 ${h.bm}에 새로운 모임이나 소개 자리에 한 번 나가 보세요.`]]})
+  },
+  'topic-reunion':{
+    m1:h=>({at:'tp-b',p:['헤어진 지 한 달이 안 됐다면, 지금 하는 연락은 감정을 쏟아 내는 연락이 되기 쉬워요.','지금은 다시 만날 방법보다 왜 헤어졌는지 정리하는 시간이에요. 적어도 몇 주는 연락을 멈추고, 이유를 종이에 적어 보세요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 마음이 가라앉은 뒤에야 본인다운 말이 나와요.`],adds:[['tp-e',`한 달 안이라면 서두르지 마세요. 가장 가까운 좋은 달은 ${h.bm1}${lv4Ida(h.bm1)}. 그때 짧은 안부로 시작해 보세요.`]]}),
+    m6:h=>({at:'tp-b',p:['몇 달이 지났다면 두 사람 모두 그때를 조금은 떨어져서 볼 수 있어요.','이때의 첫 연락은 사과나 고백보다 가벼운 안부가 좋아요. "잘 지내요? 문득 생각나서요." 정도면 충분해요.','답이 오면 예전 이야기보다 지금 이야기를 나누세요. 답이 없다면 한 번으로 멈추는 게 본인을 지키는 길이에요.'],adds:[['tp-e',`몇 달이 지났다면 ${h.bm1}에 짧은 안부를 보내 보세요. ${h.cm}에는 연락을 쉬어 가세요.`]]}),
+    long:h=>({at:'tp-a',p:['반년이 넘었다면 두 사람 모두 그사이 많이 달라졌을 거예요.','예전 관계로 돌아가려 하기보다, 처음 만나는 사람처럼 새로 알아 간다는 마음이 필요해요.','그리운 게 그 사람인지, 그때의 본인인지도 한 번 더 물어보세요. 어느 쪽이든 본인 마음을 아는 게 먼저예요.'],adds:[['tp-e',`오랜만의 연락이라면 ${h.bm1}처럼 흐름이 좋은 달에, 부담 없는 근황 한 줄로 시작하세요.`]]}),
+    contact:h=>({at:'tp-b',p:['아직 연락하는 사이라면, 지금의 대화 하나하나가 다음을 정해요.','연락이 이어진다고 마음이 돌아왔다는 뜻은 아니에요. 대화의 길이보다 상대가 먼저 연락하는 횟수를 보세요.','관계를 정의하자고 서두르지 말고, 좋은 달에 한 번 얼굴을 보는 약속을 잡아 보세요.'],adds:[['tp-e',`${h.bm1}에 직접 만나는 약속을 제안해 보세요. ${h.cm}에는 무거운 이야기를 꺼내지 마세요.`]]})
+  },
+  'topic-marriage':{
+    partner:h=>({at:'tp-b',p:['결혼을 생각하는 연인이 있다면, 지금 맞춰 볼 건 마음보다 생활이에요.','돈 쓰는 기준, 집안일, 양가와의 거리, 아이 계획을 한 번씩 이야기해 보세요. 결혼 전에 꺼낸 이야기는 결혼 뒤의 다툼을 줄여 줘요.',`본인은 ${ctxAx('love',h.axis)} 사람이에요. 이 방식을 상대에게 미리 알려 주면 오해가 줄어요.`],adds:[['tp-e',`${h.bm1}이 결혼 이야기를 꺼내기 좋은 달이에요. 양가 인사나 날짜는 좋은 해(${h.by}) 안에 두면 흐름을 타기 좋아요.`]]}),
+    meeting:h=>({at:'tp-a',p:['소개나 만남 중이라면, 첫 만남의 설렘보다 세 번째 만남의 편안함을 보세요.','아래 배우자 자리 풀이에 나온 모습이 본인과 오래 가는 사람이에요. 만나는 사람과 겹치는 곳이 있는지 견줘 보세요.','한 번 만나고 정하기보다, 마음이 조금이라도 간다면 세 번은 만나 보세요.'],adds:[['tp-e',`${h.bm}에 들어오는 소개는 조금 더 마음을 열고 만나 보세요.`]]}),
+    none:h=>({at:'tp-a',p:['아직 상대가 없다고 늦은 게 아니에요. 사람마다 인연이 무르익는 때가 달라요.',`본인의 결혼 흐름이 무르익는 해는 ${h.by}${lv4Ida(h.by)}. 그 전에는 본인 생활을 단단하게 만드는 시간이에요.`,`본인은 ${ctxAx('meet',h.axis)}에서 좋은 사람을 만나기 쉬워요.`],adds:[['tp-e',`${h.bm}에 새로운 모임이나 소개 자리에 나가 보세요.`]]}),
+    married:h=>({at:'tp-b',p:['이미 결혼하셨다면, 이 풀이는 함께 사는 지혜로 읽어 주세요.','배우자와 다툼이 잦다면 누가 맞는지보다 생활 리듬이 어디서 엇갈리는지 보세요.','한 달에 한 번, 돈과 일정과 서로의 기분을 묻는 시간을 정해 두세요. 짧은 대화가 오래 가는 부부를 만들어요.'],adds:[['tp-e',`${h.bm1}에 둘만의 시간을 계획해 보세요. ${h.cm}에는 큰 지출이나 이사 같은 결정을 서두르지 마세요.`]]})
+  },
+  'topic-career':{
+    seek:h=>({at:'tp-a',p:['취업 준비 중이라면, 붙는 곳보다 오래 일할 수 있는 곳을 먼저 생각해 보세요.',`본인은 ${ctxAx('work',h.axis)} 사람이에요. 지원서와 면접에서 이 모습을 보여 줄 경험을 하나씩 꼭 넣으세요.`,'떨어지는 결과가 이어져도 본인 가치가 낮다는 뜻은 아니에요. 자리와 때가 아직 맞지 않은 거예요.'],adds:[['tp-e',`${h.bm}에 지원과 면접을 몰아 두세요. ${h.cm}에는 서류를 다듬으며 쉬어 가세요.`]]}),
+    move:h=>({at:'tp-b',p:['이직을 고민 중이라면, 지금 회사가 싫은 건지 일이 싫은 건지부터 나눠 보세요.','회사가 싫다면 옮기는 게 답이 될 수 있어요. 일이 싫다면 옮겨도 같은 고민이 다시 찾아와요.',`본인은 ${ctxAx('work',h.axis)} 사람이에요. 새 자리가 이 모습을 더 쓸 수 있는 곳인지가 가장 중요한 기준이에요.`],adds:[['tp-e',`이직이라면 ${h.bm1}에 이력서를 열어 두고, 큰 결정은 좋은 해(${h.by}) 안에 두세요.`]]}),
+    grow:h=>({at:'tp-b',p:['승진과 평가가 궁금하다면, 본인이 어떤 방식으로 인정받는 사람인지부터 알아야 해요.',`본인은 ${ctxAx('work',h.axis)} 사람이에요. 평가 때는 이 모습을 숫자나 결과물로 정리해 보여 주세요.`,'열심히 하는데 인정이 늦었다면 본인 탓이 아니에요. 보여 주는 방식이 달랐던 거예요.'],adds:[['tp-e',`${h.bm}에 그동안의 성과를 정리해 윗사람과 이야기해 보세요.`]]}),
+    own:h=>({at:'tp-b',p:['사업이나 프리랜서라면, 일을 넓힐 때와 지킬 때를 나누는 게 가장 중요해요.',`본인은 ${ctxAx('work',h.axis)} 사람이에요. 본인 이름이 드러나는 일에서 힘이 나요.`,'일이 몰릴 때 단가를 올리고, 일이 줄 때는 고정비를 줄이는 원칙을 미리 정해 두세요.'],adds:[['tp-e',`${h.bm}에 새 거래나 홍보를 두고, ${h.cm}에는 계약서와 돈 흐름을 점검하세요.`]]})
+  },
+  'topic-money':{
+    save:h=>({at:'tp-a',p:['돈을 모으고 싶다면, 마음먹기보다 구조를 먼저 만드는 게 좋아요.',`본인은 ${ctxAx('money',h.axis)} 사람이에요. 그래서 남는 돈을 모으기보다, 먼저 떼어 두고 남은 돈으로 사는 방식이 잘 맞아요.`,'월급날 저축이 바로 빠져나가게 자동이체를 걸어 두세요. 석 달에 얼마처럼 손에 잡히는 목표가 오래 가요.'],adds:[['tp-e',`${h.bm}에 들어오는 돈은 쓰기 전에 절반을 먼저 떼어 두세요.`]]}),
+    grow:h=>({at:'tp-b',p:['돈을 불리고 싶다면, 버는 때보다 지키는 때를 먼저 알아야 해요.',`본인은 ${ctxAx('money',h.axis)} 사람이에요. 이 장점을 살리되, 남에게 설명할 수 없는 상품에는 들어가지 마세요.`,'잃어도 생활이 흔들리지 않을 만큼만 움직이세요. 큰 투자 결정은 사주보다 본인 판단과 전문가 상담이 먼저예요.'],adds:[['tp-e',`움직인다면 ${h.bm}이 흐름이 좋은 달이에요. ${h.cm}에는 새로 들어가기보다 점검만 하세요.`]]}),
+    debt:h=>({at:'tp-b',p:['빚을 정리하고 싶다면, 먼저 모든 빚을 종이 한 장에 적어 보는 것부터 시작하세요.','이자가 높은 것부터 갚고, 새 빚은 만들지 않는 게 첫 번째 원칙이에요.','혼자 감당하기 어렵다면 공공 채무 상담 같은 전문 창구의 도움을 받으세요. 도움을 받는 것도 정리하는 방법이에요.'],adds:[['tp-e',`${h.bm}에 들어오는 돈은 이자가 높은 빚부터 갚는 데 먼저 쓰세요.`]]}),
+    start:h=>({at:'tp-b',p:['창업 자금을 고민 중이라면, 시작할 돈보다 버틸 돈을 먼저 계산하세요.','매출이 없어도 여섯 달은 버틸 생활비를 따로 두는 게 가장 큰 안전판이에요.',`본인은 ${ctxAx('money',h.axis)} 사람이에요. 빌린 돈으로 시작한다면 갚는 계획부터 세우세요.`],adds:[['tp-e',`창업이라면 좋은 해(${h.by}) 안에 시작하고, ${h.bm1}까지 준비를 마무리해 보세요.`]]})
+  },
+  'topic-study':{
+    entrance:h=>({at:'tp-a',p:['수능과 입시를 앞두고 있다면, 공부 양보다 리듬이 더 중요해요.','자고 일어나는 시간을 시험 시간표에 맞춰 두세요. 시험 날 머리가 가장 맑은 시간이 그때가 돼요.','모의고사 점수가 오르내려도 흔들리지 마세요. 실력은 직선이 아니라 계단처럼 올라요.'],adds:[['tp-c',`입시라면 ${h.bm}에 실전 모의고사를 몰아 보고, ${h.cm}에는 오답 정리와 컨디션 관리에 집중하세요.`]]}),
+    cert:h=>({at:'tp-c',p:['자격증 시험이라면, 시험 날짜를 먼저 정하고 거꾸로 계획을 세우세요.','시험 일정을 고를 수 있다면 좋은 달에 두는 게 좋아요.','한 번에 붙지 못해도 실력이 없다는 뜻은 아니에요. 시험의 때가 맞지 않았던 것일 수 있어요.'],adds:[['tp-e',`${h.bm} 중에 시험이 있다면 그 시험에 힘을 실어 보세요.`]]}),
+    univ:h=>({at:'tp-b',p:['대학이나 대학원 공부라면, 넓게보다 깊게 파는 분야를 하나 정하는 게 중요해요.','아래 잘 맞는 분야를 전공이나 연구 주제와 겹쳐 보세요. 겹치는 곳이 본인의 무기가 돼요.'],adds:[['tp-e',`${h.bm}에 논문이나 큰 과제를 몰아서 진행해 보세요.`]]}),
+    job:h=>({at:'tp-c',p:['취업 공부라면, 공부와 지원을 함께 굴리는 게 좋아요.','공부를 다 끝내고 지원하려 하면 때를 놓치기 쉬워요. 공부하는 중에도 지원서를 조금씩 써 두세요.'],adds:[['tp-e',`${h.bm}에 필기시험과 면접 일정을 두면 흐름을 타기 좋아요.`]]})
+  },
+  'topic-child':{
+    baby:h=>({at:'tp-b',p:['아이가 아직 어리다면, 지금은 가르치기보다 편안한 리듬을 만들어 주는 때예요.','잠과 밥과 놀이 시간이 일정하면 아이의 타고난 기질이 편하게 자라요.','울음이나 떼가 많아도 부모 탓이 아니에요. 아이마다 마음을 표현하는 방식이 다를 뿐이에요.']}),
+    kid:h=>({at:'tp-c',p:['초등학생이라면, 지금은 재능을 넓게 맛보게 해 주는 때예요.','한 가지를 정해 밀어붙이기보다 두세 가지 활동을 해 보고, 아이 눈이 반짝이는 쪽을 따라가세요.','공부 습관은 짧고 꾸준하게, 하루 20분부터 시작해 보세요.']}),
+    teen:h=>({at:'tp-b',p:['중고등학생이라면, 지금은 이끄는 부모보다 들어 주는 부모가 필요한 때예요.','진로 이야기는 정답을 주기보다 아이 생각을 먼저 물어보세요.','말수가 줄어도 마음이 멀어진 게 아니에요. 스스로 서려는 시기예요.']})
+  },
+  'topic-children':{
+    plan:h=>({at:'tp-b',p:['자녀를 계획 중이라면, 이 풀이는 인연이 가까워지는 흐름을 보여 줄 뿐이에요.','실제 임신과 건강은 의료 상담이 먼저예요. 사주는 마음의 준비와 생활 계획에 참고해 주세요.','조급한 마음이 들 때는 본인과 배우자의 몸과 마음을 먼저 돌보세요.'],adds:[['tp-f',`${h.bm}에는 두 사람이 함께 쉬고 이야기하는 시간을 늘려 보세요.`]]}),
+    raising:h=>({at:'tp-c',p:['아이를 키우고 있다면, 좋은 부모의 정답은 하나가 아니에요.','아래 풀이가 본인에게 맞는 부모 역할이에요. 다른 집과 견주기보다 본인 방식에 자신을 가지세요.','지쳤다면 본인이 부족해서가 아니에요. 쉬어야 할 때가 온 거예요.'],adds:[['tp-f',`${h.bm}에 아이와 함께하는 특별한 하루를 계획해 보세요.`]]}),
+    grown:h=>({at:'tp-c',p:['자녀가 다 컸다면, 이제는 이끄는 부모에서 곁에 있는 어른으로 역할이 바뀌는 때예요.','조언은 부탁받을 때만, 응원은 언제든지 해 주세요.','자녀의 결정을 존중할수록 자녀가 먼저 찾아와요.'],adds:[['tp-f',`${h.bm}에 자녀와 식사나 여행 약속을 잡아 보세요.`]]}),
+    none:h=>({at:'tp-a',p:['아직 자녀 생각이 없다면, 사주의 자녀 자리는 본인이 키워 가는 일과 결실로도 읽어요.','정성을 쏟는 일, 가르치는 후배, 돌보는 반려동물이 모두 이 자리에 들어가요.','마음이 바뀌면 그때 이 풀이를 다시 꺼내 보세요.'],adds:[['tp-f',`${h.bm}에는 본인이 키워 온 일에 결실이 붙기 쉬워요.`]]})
+  },
+  'topic-health':{
+    sleep:h=>({at:'tp-a',p:['피로와 잠이 신경 쓰인다면, 먼저 잠드는 시간을 일정하게 맞춰 보세요.',`본인은 ${h.lack} 기운이 옅은 편이라, 이 기운을 채우는 생활이 회복을 도와요.`,'잠들기 한 시간 전에는 화면을 끄고 조명을 낮춰 보세요. 피로가 2주 넘게 이어지면 검사를 먼저 받아 보세요.'],adds:[['tp-e',`${h.cm}에는 일정을 줄이고 잠을 먼저 챙기세요.`]]}),
+    digest:h=>({at:'tp-a',p:['소화가 신경 쓰인다면, 무엇을 먹는지만큼 언제, 어떻게 먹는지가 중요해요.','같은 시간에 천천히 먹고, 늦은 밤 야식은 줄여 보세요.','속이 자주 불편하면 풀이보다 진료를 먼저 받으세요.'],adds:[['tp-e',`${h.cm}에는 자극적인 음식과 늦은 식사를 특히 줄여 보세요.`]]}),
+    weight:h=>({at:'tp-a',p:['체중과 운동이 신경 쓰인다면, 본인에게 맞는 움직임을 찾는 게 먼저예요.','처음부터 강한 운동보다, 매일 30분 걷기처럼 오래 할 수 있는 것부터 시작하세요.','체중은 숫자보다 몸이 가벼워지는 느낌을 기준으로 보세요.'],adds:[['tp-e',`${h.bm}에 새 운동을 시작하면 오래 이어 가기 좋아요.`]]}),
+    stress:h=>({at:'tp-b',p:['스트레스는 마음에만 머물지 않고 잠, 소화, 어깨 같은 몸으로 내려와요.','하루 10분, 아무것도 하지 않는 시간을 일정에 넣어 보세요.','마음이 오래 힘들면 전문 상담의 도움을 받는 것도 본인을 아끼는 방법이에요.'],adds:[['tp-e',`${h.cm}에는 약속을 줄이고 혼자 쉬는 시간을 먼저 챙기세요.`]]})
+  },
+  life:{
+    work:h=>({at:'work-money',p:[`본인은 ${ctxAx('work',h.axis)} 사람이에요. 지금 고민이 "무슨 일을 할까"라면, 이 모습을 가장 많이 쓸 수 있는 자리를 기준으로 고르세요.`,'일이 안 풀렸던 때가 있었다면, 실력보다 자리와 때가 맞지 않았던 거예요.',h.golden?(h.goldenNow?`인생의 황금기인 ${h.golden}${eun(h.golden)} 이미 시작됐어요. 지금 움직이는 선택이 오래 남아요.`:`인생의 황금기는 ${h.golden}${lv4Ida(h.golden)}. 지금의 선택은 그때를 위한 준비예요.`):'']}),
+    money:h=>({at:'work-money',p:[`본인은 ${ctxAx('money',h.axis)} 사람이에요.`,'돈 고민은 더 버는 것보다 새는 곳을 먼저 막을 때 빨리 풀려요. 아래 돈이 새는 때를 먼저 읽어 보세요.',`본인에게 힘이 되는 ${h.el} 기운을 채우는 생활이 돈의 흐름도 함께 열어 줘요.`]}),
+    love:h=>({at:'love-people',p:[`본인은 ${ctxAx('love',h.axis)} 사람이에요.`,'연애가 늘 비슷하게 끝났다면, 상대보다 본인이 끌리는 패턴을 먼저 보세요.','아래 배우자 자리 풀이가 본인과 오래 가는 사람의 모습이에요.']}),
+    health:h=>({at:'health',p:['몸이 신경 쓰인다면, 아래에 나온 약한 곳부터 생활 습관으로 챙겨 보세요.',`${h.el} 기운을 채우는 습관이 몸의 균형도 맞춰 줘요.`,'증상이 이어지면 풀이보다 진료가 먼저예요.']}),
+    family:h=>({at:'love-people',p:['가까운 사람과의 관계가 고민이라면, 누가 맞는지보다 서로의 속도가 다르다는 걸 먼저 알아 주세요.','가족에게 생긴 서운함은 쌓아 두지 말고, 작게 빨리 말하는 게 관계를 지켜요.','아래 관계 풀이에서 본인이 사람과 맺는 방식을 먼저 읽어 보세요.']}),
+    self:h=>({at:'basic',p:['나 자신에 대해 생각이 많다면, 그건 지금 한 단계 자라고 있다는 신호예요.','아래 풀이에서 "맞아, 나 이래" 싶은 문장에 표시해 두세요. 그게 본인의 진짜 강점이에요.','안 맞는 문장도 괜찮아요. 사주는 타고난 바탕이고, 지금의 본인은 그 위에 쌓아 온 사람이에요.']})
+  },
+  newyear:{
+    work:h=>({at:'ny-work',p:[`본인은 ${ctxAx('work',h.axis)} 사람이에요.`,`올해 일에 힘이 붙는 달은 ${h.work}${lv4Ida(h.work)}. 이직이나 새 프로젝트는 이 달에 두면 좋아요.`,`${h.workBad}에는 새로 벌이기보다 지금 일을 마무리하세요.`]}),
+    money:h=>({at:'ny-money',p:[`본인은 ${ctxAx('money',h.axis)} 사람이에요.`,`올해 돈을 모으고 싶다면 ${h.money}에 들어오는 돈부터 먼저 떼어 두세요.`,`${h.moneyBad}에는 큰 지출과 돈 거래를 미뤄 두세요.`]}),
+    love:h=>({at:'ny-love',p:[`올해 마음이 잘 통하는 달은 ${h.love}${lv4Ida(h.love)}.`,'솔로라면 이 달에 모임이나 소개에 나가 보고, 연애 중이라면 둘만의 계획을 잡아 보세요.',`${h.loveBad}에는 감정이 앞서기 쉬우니 말을 한 번 더 고르세요.`]}),
+    health:h=>({at:'ny-health',p:[`올해 몸을 더 아껴야 할 달은 ${h.healthBad}${lv4Ida(h.healthBad)}.`,'이 달에는 일정을 줄이고 잠을 먼저 챙기세요.','증상이 이어지면 풀이보다 진료가 먼저예요.']}),
+    study:h=>({at:'ny-work',p:[`올해 공부와 시험이라면, 집중이 잘 되는 달은 ${h.work}${lv4Ida(h.work)}.`,'큰 시험은 이 달 즈음에 두고, 나머지 달에는 기초를 다지세요.','한 번에 많이 하기보다 매일 같은 시간에 하는 게 오래 가요.']}),
+    move:h=>({at:'ny-money',p:['이사나 큰 변화는 돈의 흐름과 함께 봐야 해요.',`${h.money}처럼 돈 흐름이 좋은 달에 계약을 두고, ${h.moneyBad}에는 큰 계약을 서두르지 마세요.`,'변화는 한 번에 다 바꾸기보다, 하나씩 순서대로 바꿀 때 몸과 마음이 덜 지쳐요.']})
+  },
+  gunghap:{
+    some:h=>({at:'gh-scenes',p:['아직 썸이라면, 지금은 서로의 반응 속도를 아는 게 가장 중요해요.',h.tough?'두 사람은 끌림도 크지만 부딪힘도 분명한 사이예요. 답장이 늦거나 말투가 짧을 때 오해하기 쉬워요.':h.good?'두 사람은 자석처럼 끌어당기는 사이라, 생각보다 빨리 가까워질 수 있어요.':'두 사람은 천천히 온도가 오르는 사이라, 서두르지 않는 게 좋아요.','아래 연애할 때 장면을 먼저 읽어 보세요. 상대가 어떤 순간에 마음을 여는지 보여요.']}),
+    dating:h=>({at:'gh-scenes',p:['연애 중이라면, 반복되는 다툼의 스위치를 아는 게 가장 중요해요.',h.tough?'두 사람은 가까워질수록 부딪히는 지점도 또렷해지는 사이예요. 다툼은 대개 같은 주제에서 반복돼요.':'두 사람은 큰 부딪힘은 적지만, 작은 서운함이 쌓이면 한꺼번에 터지기 쉬워요.','다툼이 생기면 그 자리에서 이기려 하기보다, 하루 쉬고 다시 이야기하는 규칙을 정해 보세요.']}),
+    wedding:h=>({at:'gh-married',p:['결혼을 준비 중이라면, 지금 맞춰 둘 건 생활의 기준이에요.','돈 관리, 집안일, 양가 방문, 아이 계획을 결혼 전에 한 번씩 꼭 이야기하세요.',h.bestY?`두 사람이 함께 큰 결정을 하기 좋은 해는 ${h.bestY}${lv4Ida(h.bestY)}.`:'']}),
+    married:h=>({at:'gh-married',p:['이미 부부라면, 이 풀이는 오래 함께 가는 지혜로 읽어 주세요.','서운함을 쌓아 두면 같은 일로 다시 부딪혀요. 작게, 빨리 말하는 게 좋아요.','한 달에 한 번, 돈과 일정과 서로의 기분을 묻는 시간을 정해 보세요.']}),
+    partner:h=>({at:'gh-persona',p:['함께 일하는 사이라면, 아래 연애와 결혼 이야기는 일하는 방식으로 바꿔 읽어 주세요.','역할, 돈, 결정권의 기준을 처음에 글로 정해 두는 게 가장 중요해요.','두 사람의 성향 차이는 약점이 아니라 서로의 빈자리를 채우는 힘이 될 수 있어요.']})
+  }
+};
+// 섹션 id 안에 조각을 넣는다 — 기본은 안내 문장(lead) 바로 뒤, atEnd면 섹션 끝
+function lv4Inject(html,secId,piece,atEnd){
+  if(!piece)return html;
+  const start=html.indexOf(`id="lv4-${secId}"`);if(start<0)return html;
+  const end=html.indexOf('</section>',start);if(end<0)return html;
+  let at;
+  if(atEnd){const k=html.indexOf('<div class="lv4-key">',start);at=k>=0&&k<end?k:end;}
+  else{
+    const lead=html.indexOf('<p class="lv4-lead">',start);
+    if(lead>=0&&lead<end)at=html.indexOf('</p>',lead)+4;
+    else{at=html.indexOf('</h2>',start)+5;while(html.startsWith('</div>',at))at+=6;}
+  }
+  return html.slice(0,at)+piece+html.slice(at);
+}
+function ctxApplyScenes(cat,html,h){
+  const c=ctxFor(cat),f=c&&CTX_SCENE[cat]&&CTX_SCENE[cat][c.key];if(!f)return html;
+  let sc;try{sc=f(h||{});}catch(e){return html;}
+  if(!sc)return html;
+  html=lv4Inject(html,sc.at,`<div class="lv4-scene"><b>본인 상황에 맞춘 이야기 · ${c.label}</b>${lv4P(sc.p)}</div>`);
+  (sc.adds||[]).forEach(([id,t,top])=>{html=lv4Inject(html,id,`<p class="lv4-scene-line"><b>본인 상황</b>${lv4Text(t)}</p>`,!top);});
+  return html;
+}
+
+// ── 입력 화면 — 한 화면에 질문 하나씩 ──
+let _wz={steps:[],i:0};
+function inputWizardInit(){
+  const form=document.getElementById('formWrap');if(!form)return;
+  const fss=[...form.children].filter(el=>el.tagName==='FIELDSET'&&el.style.display!=='none');
+  const birthIdx=fss.findIndex(f=>f.querySelector('#iY'));
+  const steps=[];
+  if(birthIdx>=0){const head=fss.slice(0,birthIdx+1),g=head.findIndex(f=>f.querySelector('#bm'));if(g===0&&head.length>1){steps.push([head[0]]);steps.push(head.slice(1));}else steps.push(head);}
+  fss.slice(birthIdx+1).forEach(f=>{
+    const prev=steps[steps.length-1];
+    if(f.id==='mbtiFieldset'&&prev&&prev.some(x=>x.id==='catExtraCtx'))prev.push(f);else steps.push([f]);
+  });
+  _wz={steps,i:0};
+  let nav=document.getElementById('wzNav');
+  if(!nav){
+    nav=document.createElement('div');nav.id='wzNav';nav.className='wz-nav';
+    nav.innerHTML='<div class="wz-progress"><span id="wzBar"></span></div><div class="wz-row"><small id="wzCount"></small><div class="wz-btns"><button type="button" class="wz-prev" id="wzPrev" onclick="wizardGo(-1)">이전</button><button type="button" class="wz-next" id="wzNext" onclick="wizardGo(1)">다음</button></div></div>';
+    const btn=form.querySelector('.analyze-btn');form.insertBefore(nav,btn);
+  }
+  wizardShow();
+}
+function wizardShow(){
+  const form=document.getElementById('formWrap');if(!form||!_wz.steps.length)return;
+  const all=_wz.steps.flat(),cur=_wz.steps[_wz.i]||[],last=_wz.i===_wz.steps.length-1;
+  all.forEach(f=>f.classList.toggle('wz-hide',!cur.includes(f)));
+  const btn=form.querySelector('.analyze-btn');if(btn)btn.classList.toggle('wz-hide',!last);
+  const bar=document.getElementById('wzBar');if(bar)bar.style.width=`${Math.round((_wz.i+1)*100/_wz.steps.length)}%`;
+  const cnt=document.getElementById('wzCount');if(cnt)cnt.textContent=`${_wz.i+1} / ${_wz.steps.length}`;
+  const prev=document.getElementById('wzPrev');if(prev)prev.style.visibility=_wz.i>0?'visible':'hidden';
+  const next=document.getElementById('wzNext');if(next)next.style.display=last?'none':'';
+}
+function wizardGo(d){
+  if(d>0){
+    const cur=_wz.steps[_wz.i]||[];
+    if(cur.some(f=>f.querySelector('#iY'))){
+      const y=+document.getElementById('iY').value,m=+document.getElementById('iM').value,dd=+document.getElementById('iD').value;
+      const err=document.getElementById('errMsg');
+      if(!(y>=1900&&y<=2050&&m>=1&&m<=12&&dd>=1&&dd<=31)){if(err)err.textContent='생년월일을 정확히 입력해 주세요.';return;}
+      if(err)err.textContent='';
+    }
+  }
+  _wz.i=Math.max(0,Math.min(_wz.steps.length-1,_wz.i+d));
+  wizardShow();
+  const v=document.getElementById('view-input');if(v&&v.scrollIntoView)v.scrollIntoView({block:'start'});
+}
+// 결과를 열기 전 단계별 연산 연출 — 탭하면 바로 건너뛴다
+const REVEAL_STEPS={
+  life:['사주 여덟 글자를 펼치는 중','10년마다 바뀌는 큰 흐름을 대조하는 중','인생의 황금기를 찾는 중'],
+  newyear:['올해의 두 글자를 불러오는 중','본인 사주와 한 해를 겹쳐 보는 중','열두 달의 흐름을 계산하는 중'],
+  gunghap:['두 사람의 사주를 나란히 펼치는 중','배우자 자리끼리 맞춰 보는 중','앞으로 10년의 시기를 겹쳐 보는 중'],
+  name:['이름 소리의 기운을 나누는 중','한자 획수로 네 자리를 계산하는 중','사주에 맞는 이름을 고르는 중'],
+  daypick:['그날의 두 글자를 불러오는 중','열두 시간대를 하나씩 맞춰 보는 중','그날의 활동을 고르는 중'],
+  monthly:['달마다의 두 글자를 불러오는 중','본인 사주와 한 달씩 겹쳐 보는 중','결정적인 달을 찾는 중'],
+  ziwei:['음력 생일로 나의 방을 세우는 중','열네 개의 별을 열두 방에 놓는 중','10년 흐름의 방을 여는 중']
+};
+function revealStepsFor(cat){
+  if(REVEAL_STEPS[cat])return REVEAL_STEPS[cat];
+  if(isTopicCat&&isTopicCat(cat)){const lab=(TOPIC_INFO[cat]||{}).stat||'흐름';return ['사주 여덟 글자를 펼치는 중',`${lab} 기운이 들어오는 해를 찾는 중`,'다가오는 12개월을 계산하는 중'];}
+  return null;
+}
 // 옵션 C — 카테고리별 고민 태그 선택. cat: 'daypick'|'monthly', tag: 'job'|... |'custom'|''
 function setContextTag(cat,tag){
   const capCat=cat.charAt(0).toUpperCase()+cat.slice(1);
@@ -4965,12 +5204,15 @@ function playReveal(cat){
   const msg={manse:'여덟 글자를 펼치는 중',daily:'오늘의 기운을 읽는 중',life:'인생의 큰 흐름을 읽는 중',newyear:'한 해의 흐름을 읽는 중',gunghap:'두 사람의 기운을 맞춰보는 중',name:'이름의 기운을 읽는 중',daypick:'그날의 기운을 읽는 중',monthly:'달마다의 흐름을 읽는 중',ziwei:'열두 방에 별을 놓는 중',vedic:'달이 지나던 별을 찾는 중',mahabote:'태어난 요일을 찾는 중','topic-love':'인연의 흐름을 읽는 중','topic-money':'돈의 흐름을 읽는 중','topic-career':'일의 흐름을 읽는 중','topic-marriage':'결혼의 흐름을 읽는 중','topic-reunion':'다시 이어지는 흐름을 읽는 중','topic-study':'배움의 흐름을 읽는 중','topic-child':'아이의 기질을 읽는 중','topic-children':'자녀와의 인연을 읽는 중','topic-health':'몸의 흐름을 읽는 중'}[cat]||'하늘의 기운을 읽는 중';
   const el=document.createElement('div');
   el.id='revealLayer';el.className='reveal';el.setAttribute('role','status');
-  el.innerHTML=`<div><div class="reveal-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p>${msg}</p><small>다섯 기운의 균형을 맞추고 있어요</small></div>`;
+  const steps=revealStepsFor(cat);
+  if(steps)el.classList.add('staged');
+  el.innerHTML=`<div><div class="reveal-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p id="revealMsg">${steps?steps[0]:msg}</p><small>${steps?'본인 사주에 맞춰 하나씩 계산하고 있어요 · 눌러서 건너뛰기':'다섯 기운의 균형을 맞추고 있어요'}</small></div>`;
+  if(steps)steps.slice(1).forEach((s,i)=>setTimeout(()=>{const m=document.getElementById('revealMsg');if(m)m.textContent=s;},1000*(i+1)));
   const done=()=>{if(el.parentNode)el.remove();};
   el.addEventListener('click',done);
   el.addEventListener('animationend',e=>{if(e.animationName==='reveal-out')done();});
   document.body.appendChild(el);
-  setTimeout(done,2200);
+  setTimeout(done,steps?3800:2200);
 }
 // 휴대폰 뒤로 가기 — 홈을 떠날 때 한 칸만 쌓아 두고, 뒤로 가면 홈으로 돌아온다.
 // 결제 창이 열려 있으면 먼저 결제 창만 닫는다.
@@ -5138,8 +5380,10 @@ function goToInput(cat){
     // 캐시된 사주 정보 복원
     restoreLastInputs();
   }
+  renderCtxQuestion(cat);
   showView('input');
   updateJourneyForm(cat);
+  try{inputWizardInit();}catch(e){}
   journeyEvent('input_view',cat);
 }
 // 월별 운세 — 입력 중에는 값은 그대로 두고 미리보기 텍스트만 갱신
@@ -12668,7 +12912,7 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('본인을 뜻하는 글자',lv4P([`사주에서 본인 자신을 뜻하는 글자는 태어난 날의 위 글자예요. 본인의 글자는 ${lv4Stem(ds)}${lv4Ida(STEMKO[ds])}. ${dsm.body||''}`,`이 글자를 대표하는 말은 ${(dsm.keys||'').split('·').slice(0,3).join(', ')}${lv4Ida((dsm.keys||'').split('·')[2]||'')}. 처음 만난 사람이 본인에게서 가장 먼저 느끼는 분위기가 이쪽이에요.`,`태어난 날의 아래 글자는 본인이 앉아 있는 자리예요. 본인은 이 자리에 ${lv4Branch(db)}${ip(BRCHKO[db])} 놓여 있어요. ${dbm.body||''}`,`이 자리에는 '${seatShort}'의 분위기가 담겨 있어요. 겉으로 보이는 모습이 위 글자라면, 가까운 사람에게만 보여주는 속 모습은 이 자리에서 드러나요.`]))+
     lv4Sub('다섯 기운의 균형',lv4P([`사주 글자 ${total}개를 목·화·토·금·수 다섯 기운으로 나눠 보면 목 ${c[0]}개, 화 ${c[1]}개, 토 ${c[2]}개, 금 ${c[3]}개, 수 ${c[4]}개예요.`,`가장 두터운 기운은 ${LV4_OH[p.top]}${lv4Ida(LV4_OH[p.top])}. ${LV4_OH_POWER[p.top]}이 본인의 바탕에 깔려 있어요. 집으로 치면 기둥이 되는 재료인 셈이에요.`,`반대로 ${LV4_OH[p.lack]} 기운은 ${c[p.lack]?`${c[p.lack]}개뿐이라 옅어요`:'하나도 없어요'}. ${LV4_OH_LACK[p.lack]}`,`본인은 ${p.season} 태생이에요. ${seasonTxt}`,`사주 글자에는 조용히 안으로 모으는 글자와 밖으로 뻗는 글자가 섞여 있어요. 본인은 안으로 모으는 글자가 ${yin}개, 밖으로 뻗는 글자가 ${yang}개예요. ${yin>yang?'그래서 바로 드러내기보다 안에서 충분히 정리한 뒤 움직이는 편이에요.':yin<yang?'그래서 생각보다 행동이 먼저 나오고, 밖으로 에너지를 쓰며 힘을 얻는 편이에요.':'안으로 모으는 힘과 밖으로 쓰는 힘이 고르게 섞여 있어요.'}`,strong?'또 본인을 뜻하는 글자를 돕는 기운이 많은 사주예요. 스스로 버티고 밀고 나가는 힘이 강해서, 남의 도움 없이도 일을 끝까지 끌고 가는 편이에요.':'본인을 뜻하는 글자보다 바깥으로 쓰이는 기운이 많은 사주예요. 혼자 버티기보다 좋은 사람과 좋은 환경을 만날 때 힘이 훨씬 커져요. 그래서 누구와 함께하느냐가 특히 중요해요.']))+
     (repeats.length?lv4Sub('사주에 겹쳐 나오는 글자',lv4P(repeats)):'')+
-    lv4Sub('겉모습과 속마음',lv4P([fp.hook,`본인의 가장 큰 힘은 ${ax.label}의 힘이에요. ${ax.gift} 그 뒤를 ${ax2.label}의 힘이 받쳐 줘요. ${ax2.gift}`,`다만 이 힘이 지나치면 문제가 되기도 해요. ${ax.risk} 강점과 약점은 동전의 앞뒤라서, 지금 어느 쪽으로 쓰고 있는지만 알아차려도 훨씬 편해져요.`]))+
+    lv4Sub('겉모습과 속마음',lv4P([fp.hook,`본인의 가장 큰 힘은 ${ax.label}의 힘이에요. ${ax.gift} 그 뒤를 ${ax2.label}의 힘이 받쳐 줘요. ${ax2.gift}`,`다만 이 힘이 지나치면 문제가 되기도 해요. ${ax.risk} 강점과 약점은 동전의 앞뒤라서, 지금 어느 쪽으로 쓰고 있는지만 알아차려도 훨씬 편해져요.`,'그래서 가끔 "나는 왜 이럴까" 싶었다면, 그건 본인이 이상해서가 아니에요. 타고난 힘이 그렇게 생겼을 뿐이에요.']))+
     (m.relations.length?lv4Sub('글자끼리 주고받는 영향',lv4P(['사주의 아래 글자들은 각각 맡은 영역이 있어요. 이 글자들끼리 끌어당기거나 부딪히면, 그 영역들 사이에도 같은 일이 생겨요.'].concat(lv4Relations(s,m.relations)))):'')+
     lv4Key(`${dsm.nick||''} 같은 본인은 ${ax.label}의 힘을 무기로 삼고, 옅은 ${LV4_OH[p.lack]} 기운을 생활 속에서 채울 때 가장 편안해져요.`));
 
@@ -12726,8 +12970,9 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('요약본',renderLifeV2SummaryCard(m)));
 
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
-  const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p></header>`;
-  return `<div class="lv4">${hero}${toc}${h}${renderChatSection()}</div>`;
+  const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
+  h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
+  return `<div class="lv4">${hero}${ctxNoteHTML('life')}${toc}${h}${renderChatSection()}</div>`;
 }
 function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return false;}
 // AI가 쓴 마크다운(# 섹션, ## 소제목, - 목록, **굵게**, "한 줄 정리: …")을 한 페이지 풀이(lv4) 섹션으로 바꾼다.
@@ -12802,7 +13047,7 @@ function buildZiweiReadingV4(saju,m){
     lv4P([`자미두수의 10년 흐름은 열두 개의 방을 하나씩 옮겨 다니며 열려요. 본인은 ${ch.forward?'시계 방향':'시계 반대 방향'}으로 옮겨 가요. 그 10년 동안은 열린 방의 일이 삶의 중심에 서요.`,cur&&cur.palace.stars.length?`지금 열린 방에는 ${list(cur.palace.stars)}이 있어요. ${ZW_STARS[cur.palace.stars[0]][1].split('. ')[0]}.`:'',`${age}세인 지금은 ${_lifeStageAdvice(age,'work')}`])+
     lv4Rows(ch.decades.slice(0,8).map(d=>({label:`${d.from}~${d.to}세`,tag:`${ZW_PALACE_PLAIN[d.palace.name]}${d===cur?' · 지금':''}`,text:`${ZW_DECADE_THEME[d.palace.name]}이에요.${d.palace.stars.length?` ${d.palace.stars.map(s=>ZW_STARS[s][0]).join('과 ')}이 이 시기를 이끌어요.`:''}`,on:d===cur})))+
     lv4Key('좋은 방이 열리는 시기에 큰 결정을 두면 흐름을 타기 좋아요.'));
-  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`)}${lvToc(ZW_TITLES,'자미두수 목차')}${h}</div>`};
+  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${ctxNoteHTML('ziwei')}${lvToc(ZW_TITLES,'자미두수 목차')}${h}</div>`};
 }
 // ══════════════════════════════════════════════
 //  주제별 풀이 V4 — 한 페이지로 이어 읽는 풀이 (소개 화면 '풀이에 담긴 내용' 순서)
@@ -12886,14 +13131,17 @@ function buildTopicReadingV4(tm){
   const overview=lvSecX('tp-overview',`${info.label} 한눈에 보기`,`${sum.headline} ${sum.lead}`,lv4P([`${ax[0]} ${!child&&tm.fingerprint&&key!=='health'?lv4Plain(tm.fingerprint.hook):''}`.trim(),`올해는 ${sum.good} 다만 ${sum.warn}`])+lv4Rows([{label:'좋은 해',tag:'',text:yl(tm.bestYears)},{label:'다가오는 좋은 달',tag:'',text:ml(tm.bestMonths)},{label:'살필 달',tag:'',text:ml(tm.careMonths)},{label:'지금 10년',tag:`${tm.curScore}점`,text:`${tm.cur.age}~${tm.cur.age+9}세`}])+preventOrphan(lifeV3PillarBoard(s)));
   const usedKeys=new Set();
   const pickKey=(html,i)=>{let k;
-    if(html.includes('이번 달 · ')||html.includes('좋은 달 · '))k=`${ml(tm.bestMonths)}을 달력에 먼저 표시해 두세요.`;
+    if(html.includes('이번 달 · ')||html.includes('좋은 달 · '))k=`${ctxMonths(tm.bestMonths,tm.year)}을 달력에 먼저 표시해 두세요.`;
     else if(html.includes('좋은 해 · ')||html.includes('살필 해 · '))k=`${yl(tm.bestYears)}을 중심으로 큰 계획을 세워 보세요.`;
     else if(html.includes('10년 흐름 안에 있어요'))k=curT[1];
     else k=[i===0?ax[1]:'',ax[2],sum.good,stageLine,ax[0]].find(x=>x&&!usedKeys.has(x))||sum.good;
     usedKeys.add(k);return k;};
-  const body=secs.map(([lead,html],i)=>lvSec(i+1,tocItems[i][0],titles[i],lead,html+lv4Key(pickKey(html,i)))).join('');
+  const guiltAt=key==='reunion'?0:1,qh=TOPIC_QHEAD[key]||[];
+  const body=ctxApplyScenes(tm.cat,secs.map(([lead,html],i)=>lvSec(i+1,tocItems[i][0],titles[i],(i===guiltAt&&TOPIC_GUILT[key]?TOPIC_GUILT[key]+' ':'')+lead,html+lv4Key(pickKey(html,i)),ctxQHeadFor(tm.cat,i)||qh[i])).join(''),
+    {axis:tm.axis,bm:ctxMonths(tm.bestMonths,tm.year),bm1:ctxMonths([...tm.bestMonths].sort((a,b)=>(a.year*12+a.month)-(b.year*12+b.month)).slice(0,1),tm.year),cm:ctxMonths(tm.careMonths,tm.year),by:yl(tm.bestYears),rel:tm.seatRel&&tm.seatRel.kind,el:O[tm.ys.main],lack:O[p.lack]});
   const closing=lvSecX('tp-practice',`${info.stat} 흐름을 살리는 실천법`,`${child?'아이를':'본인을'} 가장 도와주는 기운은 ${O[tm.ys.main]}${lv4Ida(O[tm.ys.main])}. ${support.lead}이 흐름을 열어 줘요.`,lv4List(support.items.map(x=>[x[1],x[2]]).concat([['한 줄 기록','좋았던 날과 힘들었던 날의 이유를 적어 보세요.']]))+lv4Key(child?'아이의 사주는 정해진 운명이 아니라 잘 자라도록 돕는 지도예요. 아이의 속도를 믿어 주세요.':key==='health'?'건강운은 관리의 방향을 보여 줄 뿐이에요. 몸이 보내는 신호와 전문가의 판단을 가장 먼저 믿으세요.':key==='reunion'?'재회는 두 사람의 선택이에요. 어떤 결론이든 본인을 아끼는 쪽을 고르세요.':'좋은 흐름은 준비된 사람에게 크게 작동해요. 오늘 한 가지부터 시작해 보세요.'));
-  return `<div class="lv4">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`)}${lvToc(tocItems,`${info.label} 목차`)}${overview}${body}${closing}</div>`;
+  const axTag=(LV4_AXIS_TAG_TOPIC[key]||LV4_AXIS_TAG)[tm.axis];
+  return `<div class="lv4">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`,lvTagsHTML([axTag,tm.bestMonths[0]?`${tm.bestMonths[0].month}월_${info.stat}_흐름_상승`:'',tm.bestYears[0]?`${tm.bestYears[0].year}년이_좋은_해`:''])+lvGaugeHTML(tm.yearNow.score,`올해 ${info.stat} 흐름`))}${ctxNoteHTML(tm.cat)}${lvToc(tocItems,`${info.label} 목차`)}${overview}${body}${closing}</div>`;
 }
 // ══════════════════════════════════════════════
 //  월별 운세 V4 — 한 페이지로 이어 읽는 기간 풀이
@@ -12959,7 +13207,7 @@ function buildMonthlyReadingV4(saju,sy,sm,ey,em,extra){
     lv4P(['월별 운세는 정해진 판결이 아니라 달마다의 날씨 예보예요. 비 소식을 알면 우산을 챙기고, 맑은 날을 알면 나들이를 계획하면 돼요.'])+
     lv4Key('좋은 달을 놓치지 않고, 쉬어 갈 달을 잘 쉬는 것. 그게 이 기간을 잘 보내는 방법이에요.'));
 
-  return {html:`<div class="lv4">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`${total}개월 평균 ${avgT}점 · ${g.lab}`,`가장 결정적인 달 ${decisive.lab}`)}${lvToc(MO_TITLES,'월별 운세 목차')}${h}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
+  return {html:`<div class="lv4">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`가장 결정적인 달 ${decisive.lab}`,`${total}개월 풀이 · ${g.lab}`,lvTagsHTML([`${decisive.mm}월이_결정적`,`${topField[0]}에_힘이_붙는_시기`,`${tough[0].mm}월은_쉬어가기`])+lvGaugeHTML(avgT,`${total}개월 평균`))}${lvToc(MO_TITLES,'월별 운세 목차')}${h}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
 }
 // ══════════════════════════════════════════════
 //  지정일 운세 V4 — 한 페이지로 이어 읽는 하루 풀이
@@ -13067,7 +13315,8 @@ function buildDaypickReadingV4(saju,y,m,d,extra){
     lv4Sub('천기의 행동 처방',lv4P([TD[1],TD[2],(()=>{const kw=(TG_KEYWORD[tg]||['흐름']).slice(0,2);return `이 날을 두 단어로 말하면 '${kw[0]}${kw[1]?gwa(kw[0])+' '+kw[1]:''}'${lv4Ida(kw[kw.length-1])}.`;})(),'하루의 운은 정해진 판결이 아니라 길 안내판이에요. 안내판을 보고 한 가지 행동만 더해도 길이 열려요.']))+
     lv4Key(`오늘 한 가지, ${recs[0][0]}부터 해 보세요.`));
 
-  return `<div class="lv4">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],`${grade.lab} · ${f.total}점`,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`)}${lvToc(DP_TITLES,'지정일 운세 목차')}${h}`;
+  const dl=hours.filter(x=>x.kind==='좋은 시간'&&x.bi>=3&&x.bi<=10)[0];
+  return `<div class="lv4">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],grade.lab,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`,lvTagsHTML([`${(TG_KEYWORD[tg]||['평온'])[0]}의_날`,dl?`${BRCHKO[dl.bi]}시가_좋은_날`:'오전이_좋은_날',`${colors[0]}이_행운의_색`])+lvGaugeHTML(f.total,'이 날 점수'))}${lvToc(DP_TITLES,'지정일 운세 목차')}${h}`;
 }
 // ══════════════════════════════════════════════
 //  이름풀이·작명 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -13201,7 +13450,7 @@ function buildNameReadingV4(saju,nmExtra){
     lv4P(['실제 출생 신고나 개명 전에는 법원에서 쓸 수 있는 인명용 한자인지, 가족 이름과 겹치지 않는지, 소리 내어 불렀을 때 자연스러운지를 꼭 함께 확인하세요.'])+
     lv4Key('추천 이름은 점수보다 오래 불러도 좋은 이름인지가 먼저예요. 소리 내어 여러 번 불러 보세요.'));
 
-  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,`${grade} · ${score}점`,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`)}${lvToc(NM_TITLES,'이름풀이 목차')}${h}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
+  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${ctxNoteHTML('name')}${lvToc(NM_TITLES,'이름풀이 목차')}${h}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
 }
 // ══════════════════════════════════════════════
 //  궁합 V4 — 한 페이지로 이어 읽는 두 사람 풀이 (인생총운 V4와 같은 틀)
@@ -13311,7 +13560,7 @@ function buildGunghapReadingV4(s1,s2,ctx){
     lv4Sub('두 자리가 만나면',lv4P([`두 자리의 글자는 ${relWord} 사이예요. ${good?'서로가 바라는 관계의 모습이 비슷해서, 함께 있을 때 마음이 편해요.':tough?'서로가 바라는 관계의 모습이 조금 달라요. 상대가 원하는 관계가 무엇인지 직접 물어보는 게 가장 빠른 길이에요.':'서로 크게 부딪히지 않아서, 두 사람이 원하는 관계를 함께 만들어 갈 수 있어요.'}`,`본인은 상대에게서 '${TOPIC_SEAT_SHORT[p1.seatTg]||plainTG(p1.seatTg)}'${eul(TOPIC_SEAT_SHORT[p1.seatTg]||plainTG(p1.seatTg))} 바라고, 상대는 본인에게서 '${TOPIC_SEAT_SHORT[p2.seatTg]||plainTG(p2.seatTg)}'${eul(TOPIC_SEAT_SHORT[p2.seatTg]||plainTG(p2.seatTg))} 바라요. 서로가 바라는 것을 하나씩 채워 주는 게 이 관계를 오래가게 하는 비결이에요.`]))+
     lv4Key('상대가 바라는 한 가지를 오늘 먼저 채워 주세요. 그게 가장 확실한 궁합 처방이에요.'));
 
-  return `<div class="lv4">${lvHero('궁합',relationLabel,`${r.grade} · ${r.score}점`,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`)}${lvToc(GH_TITLES,'궁합 목차')}${h}${ctx.tail||''}</div>`;
+  return `<div class="lv4">${lvHero('궁합',relationLabel,r.grade,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`,lvTagsHTML([relationLabel,best[0]?`${best[0].y}년_함께_상승`:'',`${scoresSorted[0][0]}이_강한_사이`])+lvGaugeHTML(r.score,'궁합 점수'))}${ctxNoteHTML('gunghap')}${lvToc(GH_TITLES,'궁합 목차')}${ctxApplyScenes('gunghap',h,{good,tough,bestY:best[0]?`${best[0].y}년`:''})}${ctx.tail||''}</div>`;
 }
 // ══════════════════════════════════════════════
 //  신년운세 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -13352,9 +13601,50 @@ const LV4_BOTTOM_FIELD_YOUNG={
 };
 function lv4BottomLine(field,bg,young){return `바닥에는 ${LV4_BOTTOM[bg]}이 깔려 있어요. ${(young?LV4_BOTTOM_FIELD_YOUNG:LV4_BOTTOM_FIELD)[field][bg]}`;}
 const LV4_SEASON_HEALTH={봄:'몸이 깨어나는 때라 무리하게 시작하기 쉬워요. 운동 강도는 천천히 올리세요.',초여름:'열이 오르고 잠이 얕아지기 쉬운 때예요. 저녁 카페인을 줄이고 물을 자주 마시세요.',가을:'건조해지고 호흡기가 예민해지는 때예요. 실내 습도와 목 관리를 챙기세요.',겨울:'몸이 움츠러들고 순환이 느려지는 때예요. 몸을 따뜻하게 하고 실내에서라도 꾸준히 움직이세요.'};
-function lvSec(no,id,title,lead,html){return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span><h2>${title}</h2></div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
+// ── 결과 상단 요약(해시태그·게이지) + 질문형 소제목 ──
+const LV4_QHEAD={
+  basic:'사람들이 모르는 본인의 진짜 속마음은?',talent:'본인이 남들보다 잘하는 건 뭘까?','work-money':'어떤 일을 해야 돈이 붙을까?','love-people':'왜 비슷한 연애가 반복될까?',health:'몸이 먼저 보내는 신호는 어디서 올까?',now:'지금 10년, 그리고 올해는 어떤 때일까?',future:'인생이 활짝 피는 때는 언제일까?',practice:'운을 바꾸려면 오늘 뭘 하면 될까?',
+  'ny-basic':'올해는 본인에게 어떤 해일까?','ny-money':'올해 돈은 언제 들어오고 언제 샐까?','ny-love':'올해 마음이 통하는 때는 언제일까?','ny-health':'올해 몸이 가장 지치는 때는?','ny-work':'올해 일은 언제 풀릴까?','ny-luck':'올해 운을 여는 열쇠는?','ny-daeun':'올해는 10년 중 어떤 자리일까?',
+  'gh-core':'두 사람은 왜 서로에게 끌렸을까?','gh-persona':'두 사람은 왜 이렇게 다를까?','gh-star':'두 사람의 계절은 지금 같을까?','gh-scenes':'연애할 때와 함께 살 때 무엇이 달라질까?','gh-married':'결혼하면 두 사람의 일상은 어떨까?','gh-timing':'둘이 함께 큰 결정을 하기 좋은 해는?','gh-score':'이 관계의 단단한 곳과 약한 곳은?','gh-seat':'상대가 마음 깊이 바라는 건 뭘까?',
+  'nm-core':'내 이름, 사주와 잘 맞을까?','nm-suri':'획수로 보면 인생 어느 때가 순탄할까?','nm-hanja':'내 이름 한자에는 어떤 뜻이 담겼을까?','nm-sound':'내 이름이 불릴 때 어떤 기운이 날까?','nm-mix':'이름이 사주의 빈자리를 채워 줄까?','nm-strength':'이 이름의 무기와 약점은?','nm-recommend':'사주에 더 잘 맞는 이름은?',
+  'dp-daeun':'이 날은 내 큰 흐름에서 어떤 하루일까?','dp-total':'이 날, 움직여도 될까?','dp-fields':'이 날 돈·연애·일은 어떨까?','dp-hours':'이 날 몇 시가 가장 좋을까?','dp-actions':'이 날 해도 되는 일과 미룰 일은?','dp-lucky':'이 날 행운을 부르는 색과 방향은?','dp-stars':'이 날을 잘 보내는 한 가지 방법은?',
+  'mo-daeun':'이 몇 달은 내 큰 흐름에서 어떤 구간일까?','mo-total':'이 기간, 언제 움직이고 언제 쉴까?','mo-months':'달마다 무엇을 하면 좋을까?','mo-fields':'돈·연애·일·건강은 각각 언제 좋을까?','mo-critical':'이 기간 가장 결정적인 날은?','mo-guide':'이 기간을 잘 보내는 방법은?',
+  'zw-ming':'내 인생의 방에는 어떤 별이 살까?','zw-love':'나는 어떤 사람과 사랑하게 될까?','zw-money':'돈은 어떤 길로 들어올까?','zw-work':'나는 어떤 일에서 빛날까?','zw-mind':'지쳤을 때 마음은 어디서 쉴까?','zw-decade':'지금 10년, 어느 방이 열렸을까?'
+};
+const TOPIC_QHEAD={
+  love:['그 사람에게 끌리는 진짜 이유는?','우리 연애가 늘 비슷하게 끝나는 이유는?','지금 10년, 연애는 어떤 때일까?','인연이 가까워지는 해는 언제일까?','다가오는 12개월, 마음이 통하는 달은?'],
+  money:['내 통장에 돈이 붙는 방식은?','돈이 모이지 않고 스쳐 가는 구멍은?','지금 10년, 돈은 어떤 흐름일까?','돈이 크게 움직이는 해는?','다가오는 12개월, 돈이 들어오는 달은?'],
+  career:['나는 어떤 곳에서 일해야 빛날까?','지금 회사를 옮겨도 될까?','지금 10년, 일은 어떤 흐름일까?','일이 크게 풀리는 해는?','다가오는 12개월, 움직이기 좋은 달은?'],
+  marriage:['나와 결혼할 사람은 어떤 모습일까?','결혼하면 우리는 어떻게 살까?','지금 10년, 결혼은 어떤 흐름일까?','결혼 흐름이 무르익는 해는?','다가오는 12개월, 이야기를 꺼내기 좋은 달은?'],
+  reunion:['다시 만날 가능성은 어디서 생길까?','다시 다가간다면 첫마디는 어떻게 할까?','이럴 땐 멈추는 게 맞을까?','다시 끌어당기는 해는 언제일까?','다가오는 12개월, 연락하기 좋은 달은?'],
+  study:['나한테 맞는 공부법은 따로 있을까?','나는 어떤 과목에 강할까?','시험은 언제 보는 게 좋을까?','공부가 크게 풀리는 해는?','다가오는 12개월, 집중이 잘 되는 달은?'],
+  child:['우리 아이는 어떤 기질을 타고났을까?','우리 아이, 어떻게 칭찬하고 이끌어야 할까?','우리 아이의 재능은 어디에 있을까?','아이가 자라는 시기마다 무엇이 달라질까?','앞으로 10년, 아이가 크게 자라는 해는?'],
+  children:['나와 자녀의 인연은 어떤 모습일까?','자녀 인연은 언제 가까워질까?','나는 어떤 부모가 잘 맞을까?','지금 10년, 자녀와는 어떤 때일까?','자녀 일로 힘이 붙는 해는?','다가오는 12개월, 자녀와 가까워지는 달은?'],
+  health:['내 몸에서 먼저 지치는 곳은 어디일까?','스트레스는 내 몸 어디로 올까?','지금 10년, 몸은 어떤 흐름일까?','몸을 더 챙겨야 할 해는?','다가오는 12개월, 몸을 아껴야 할 달은?']
+};
+// 타고난 주요 힘 → 공유하기 좋은 해시태그
+const LV4_AXIS_TAG={self:'내_길은_내가_정하는_사람',out:'표현해야_사는_사람',wealth:'실속파_현실주의자',gwan:'끝까지_책임지는_사람',in_:'생각이_깊은_관찰자'};
+const LV4_AXIS_TAG_TOPIC={
+  love:{self:'직진형_연애',out:'표현해야_사랑받는_타입',wealth:'행동으로_사랑하는_타입',gwan:'한번_빠지면_진지한_연애',in_:'천천히_스며드는_연애'},
+  money:{self:'직접_굴려야_안심',out:'재능이_돈이_되는_사주',wealth:'돈_냄새를_맡는_사주',gwan:'월급이_든든한_사주',in_:'공부해야_버는_사주'},
+  career:{self:'내_이름으로_일할_사람',out:'아이디어로_빛나는_사람',wealth:'숫자로_증명하는_사람',gwan:'조직에서_크는_사람',in_:'전문가로_크는_사람'},
+  marriage:{self:'가정을_이끄는_사람',out:'대화가_통해야_하는_결혼',wealth:'생활력_있는_배우자감',gwan:'약속을_지키는_결혼',in_:'서로의_시간을_존중하는_결혼'},
+  reunion:{self:'정리는_내가_하는_타입',out:'못다한_말이_남는_타입',wealth:'이유를_따지는_재회',gwan:'한번_맺은_인연을_못_놓는_타입',in_:'오래_곱씹는_타입'},
+  health:{self:'아파도_혼자_버티는_타입',out:'감정이_몸에_드러나는_타입',wealth:'바쁘면_몸을_미루는_타입',gwan:'책임감에_버티는_타입',in_:'생각이_몸을_지치게_하는_타입'}
+};
+const TOPIC_GUILT={
+  love:'연애가 늘 비슷하게 끝났다면, 그건 본인이 매력이 없어서가 아니에요. 타고난 마음의 속도가 상대와 엇갈렸던 거예요.',
+  money:'돈이 잘 모이지 않았다면, 그건 본인이 게을러서가 아니에요. 돈이 들어오는 길과 새는 길이 사주에 함께 나 있었던 거예요.',
+  career:'일이 잘 안 풀렸다면, 그건 본인 실력이 모자라서가 아니에요. 타고난 일하는 방식과 자리가 맞지 않았을 수 있어요.',
+  reunion:'헤어진 걸 본인 탓으로만 돌리지 마세요. 두 사람의 흐름이 그때 엇갈렸던 거예요.',
+  health:'자주 지쳤다면, 그건 본인이 약해서가 아니에요. 몸이 회복하는 방식이 따로 있었던 거예요.',
+  marriage:'결혼이 막막하게 느껴졌다면, 그건 본인이 부족해서가 아니에요. 아직 인연의 때가 오지 않았거나, 맞는 사람의 모습을 몰랐던 거예요.'
+};
+function lvTagsHTML(tags){return tags&&tags.length?`<div class="lv4-tags">${tags.filter(Boolean).slice(0,3).map(t=>`<span>#${String(t).replace(/\s+/g,'_')}</span>`).join('')}</div>`:'';}
+function lvGaugeHTML(score,label){const s=Math.max(0,Math.min(100,Math.round(score||0)));return `<div class="lv4-gauge"><div class="lv4-gauge-head"><span>${label}</span><b>${s}</b></div><div class="lv4-gauge-bar"><i style="width:${s}%"></i></div></div>`;}
+function lvSec(no,id,title,lead,html,q){q=q||LV4_QHEAD[id];const head=q?`<div class="lv4-sec-titles"><small class="lv4-sec-label">${title}</small><h2>${q}</h2></div>`:`<h2>${title}</h2>`;return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span>${head}</div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
 function lvToc(items,label){return `<nav class="lv4-toc" aria-label="${label}"><b>이 풀이의 순서</b>${items.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;}
-function lvHero(kicker,title,who,meta){return `<header class="lv4-hero"><p class="lv4-kicker">${kicker}</p><h1>${preventOrphan(title||'')}</h1>${who?`<p class="lv4-hero-who">${preventOrphan(who)}</p>`:''}<p class="lv4-hero-meta">${meta}</p></header>`;}
+function lvHero(kicker,title,who,meta,extra){return `<header class="lv4-hero"><p class="lv4-kicker">${kicker}</p><h1>${preventOrphan(title||'')}</h1>${who?`<p class="lv4-hero-who">${preventOrphan(who)}</p>`:''}<p class="lv4-hero-meta">${meta}</p>${extra||''}</header>`;}
 function lv4MonthLab(arr){return arr.map(v=>`${v}월`).join(', ');}
 function lv4TopMonths(months,key,n,low){return [...months].sort((a,b)=>low?(a.sc[key]-b.sc[key]||a.month-b.month):(b.sc[key]-a.sc[key]||a.month-b.month)).slice(0,n).sort((a,b)=>a.month-b.month);}
 const NY_TITLES=[['ny-basic','올해 한눈에 보기와 사주 원국 해석'],['ny-money','올해 재물운과 좋은 달·조심할 달'],['ny-love','올해 사랑과 관계'],['ny-health','올해 건강과 계절별 생활 리듬'],['ny-work','올해 직업과 학업'],['ny-luck','좋은 기운·주의할 점·운을 여는 법'],['ny-daeun','10년 단위 큰 흐름 속 올해와 종합 조언']];
@@ -13455,8 +13745,10 @@ function buildNewyearReadingV4(saju,y,meta){
     lv4Sub('요약본',renderNewyearV3SummaryCard(m))+
     lv4Key(`${y}년, 더 많이 하는 것보다 무엇을 남길지 먼저 정하세요.`));
 
-  const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세 · 흐름 ${info.score}점`);
-  return {model:m,html:`<div class="lv4">${hero}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${h}${renderChatSection('newyear')}</div>`};
+  const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세`,lvTagsHTML([`${m.decisive}월이_결정적인_해`,`돈은_${moneyGood[0].month}월에_움직여요`,LV4_AXIS_TAG[b.axis]])+lvGaugeHTML(info.score,`${y}년 흐름`));
+  const ml4=a=>lv4MonthLab(a.map(x=>x.month));
+  h=ctxApplyScenes('newyear',h,{axis:b.axis,work:ml4(workGood),workBad:ml4(workBad),money:ml4(moneyGood),moneyBad:ml4(moneyBad),love:ml4(loveGood),loveBad:ml4(loveBad),healthBad:ml4(healthBad)});
+  return {model:m,html:`<div class="lv4">${hero}${ctxNoteHTML('newyear')}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${h}${renderChatSection('newyear')}</div>`};
 }
 function renderSajuPaidV2(saju,sy,sm,sd,sh,smin){
   const meta={...(_meta||{}),sy,sm,sd,hour:sh,min:smin,gender:(_meta&&_meta.gender)||gender};
@@ -23937,7 +24229,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
+      _meta={ctx:(_ctxSel&&_ctxSel.cat===cat)?_ctxSel:null,sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.

@@ -253,6 +253,8 @@ body{background:
 
 /* 풀이를 여는 순간의 짧은 연출 — 눌러서 건너뛸 수 있다 */
 .reveal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,#221a30 0%,#0b0a10 70%);color:#fff;text-align:center;cursor:pointer;animation:reveal-out .45s ease-in 1.25s forwards}
+.reveal.staged{animation-delay:3.2s}
+.reveal.staged p{min-height:1.6em;transition:opacity .25s}
 .reveal-orbit{position:relative;width:150px;height:150px;margin:0 auto 26px}
 .reveal-orbit::before{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid rgba(240,198,116,.35);box-shadow:0 0 40px rgba(240,198,116,.18) inset}
 .reveal-orbit::after{content:'';position:absolute;inset:34%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d8,#f0c674 55%,#b07a2a);box-shadow:0 0 30px rgba(240,198,116,.6)}
@@ -574,3 +576,39 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 
 .nh-today-orb{background:#e7d8ba url('/assets/art-v2/posters/daily.webp') center 26%/cover no-repeat;border:1px solid rgba(240,198,116,.35);border-radius:18px;box-shadow:none;animation:none}
 .reveal-orbit::after{background:#f4e8d1 url('/favicon.svg?v=hanji-20261020') center/cover no-repeat;box-shadow:none}
+
+/* 입력 — 한 화면에 질문 하나씩 */
+.wz-hide{display:none!important}
+.wz-nav{margin:18px 0 6px}
+.wz-progress{height:6px;border-radius:99px;background:var(--border);overflow:hidden}
+.wz-progress span{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .3s}
+.wz-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.wz-row small{color:var(--muted);font-size:.85rem}
+.wz-btns{display:flex;gap:8px}
+.wz-prev,.wz-next{min-height:46px;padding:0 20px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--font-heading);font-size:1rem;cursor:pointer}
+.wz-next{min-width:120px;border-color:transparent;background:var(--accent);color:var(--on-accent)}
+.ctx-q .ctx-options{gap:8px;margin-top:10px}
+.ctx-q .ctx-btn{padding:11px 16px;font-size:.95rem;border-radius:12px}
+.ctx-q .ctx-btn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.lv4-ctx{padding:16px 18px;border:1px solid var(--border-strong);border-radius:16px;background:var(--accent-soft)}
+.lv4-ctx>b{display:block;margin-bottom:6px;font-family:var(--font-heading);font-weight:400;font-size:.9rem;color:var(--accent)}
+.lv4 .lv4-ctx p{font-size:1.02rem}
+
+/* 결과 상단 요약 — 해시태그·게이지, 질문형 소제목 */
+.lv4-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
+.lv4-tags span{padding:5px 11px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-family:var(--font-heading);font-size:.85rem;line-height:1.4}
+.lv4-gauge{max-width:320px;margin:16px auto 0;text-align:left}
+.lv4-gauge-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;color:var(--sub);font-size:.88rem}
+.lv4-gauge-head b{font-family:var(--font-display);font-weight:400;font-size:1.5rem;color:var(--accent)}
+.lv4-gauge-bar{height:8px;border-radius:99px;background:var(--border);overflow:hidden}
+.lv4-gauge-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.lv4-sec-titles{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lv4-sec-label{color:var(--muted);font-size:.82rem;line-height:1.4}
+
+/* 고른 상황에 맞춘 본문 장면 */
+.lv4-scene{margin:16px 0;padding:16px 18px;border-left:3px solid var(--accent);border-radius:0 14px 14px 0;background:var(--accent-soft)}
+.lv4-scene>b{display:block;margin-bottom:8px;font-family:var(--font-heading);font-weight:400;font-size:.9rem;color:var(--accent)}
+.lv4 .lv4-scene p{margin:0 0 8px}
+.lv4 .lv4-scene p:last-child{margin-bottom:0}
+.lv4 .lv4-scene-line{margin:14px 0 0;padding:12px 14px;border:1px dashed var(--border-strong);border-radius:12px}
+.lv4-scene-line>b{display:inline-block;margin-right:8px;padding:1px 8px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-family:var(--font-heading);font-weight:400;font-size:.78rem;vertical-align:1px}
