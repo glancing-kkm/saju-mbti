@@ -2448,14 +2448,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span class="pc-art"><img src="/assets/art-v2/posters/newyear.webp" alt="" loading="lazy"></span>
             <span class="pc-text"><strong class="pc-title">신년운세</strong><span class="pc-sub">열두 달 흐름과 분야별 조언</span></span>
           </button>
-          <button type="button" class="pc" data-go="monthly">
-            <span class="pc-art"><img src="/assets/art-v2/posters/monthly.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">월별 운세</strong><span class="pc-sub">최대 6개월, 달마다 흐름</span></span>
-          </button>
-          <button type="button" class="pc" data-go="daypick">
-            <span class="pc-art"><img src="/assets/art-v2/posters/daypick.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">지정일 운세</strong><span class="pc-sub">중요한 그날의 흐름</span></span>
-          </button>
           <button type="button" class="pc" data-go="daily">
             <span class="pc-art"><img src="/assets/art-v2/posters/daily.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
             <span class="pc-text"><strong class="pc-title">오늘의 운세</strong><span class="pc-sub">오늘 하루의 흐름</span></span>
@@ -2557,11 +2549,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span class="nh-row-text"><strong>신년운세</strong><span>열두 달 흐름과 분야별 조언</span></span>
             <span class="nh-row-price"><span data-journey-price="newyear">1,500원</span></span>
           </button>
-          <button type="button" class="nh-row home-category" data-home-category="gunghap" onclick="openIntro('gunghap')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/gunghap.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>궁합</strong><span>두 사람이 잘 맞는 곳과 다른 곳</span></span>
-            <span class="nh-row-price"><span data-journey-price="gunghap">1,000원</span></span>
-          </button>
           <button type="button" class="nh-row home-category" data-home-category="name" onclick="openIntro('name')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/name.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>이름풀이·작명</strong><span>이름의 기운과 추천 이름 5개</span></span>
@@ -2590,17 +2577,22 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
           <button type="button" class="nh-row home-category" data-home-extra="tarot-question" onclick="openIntro('tarot-question')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>타로</strong><span>질문하고 카드 3·5·10장</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-extra="astro-report" onclick="openIntro('astro-report')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/astro.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>점성술</strong><span>출생차트로 보는 성향·연애·일</span></span>
-            <span class="nh-row-price"><span data-journey-price="astro-birth-basic">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="astro-birth-basic">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-category="ziwei" onclick="openIntro('ziwei')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/ziwei.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>자미두수</strong><span>12궁 14주성으로 보는 인생</span></span>
             <span class="nh-row-price"><span data-journey-price="ziwei">1,500원</span></span>
+          </button>
+          <button type="button" class="nh-row home-category" data-home-category="gunghap" onclick="openIntro('gunghap')">
+            <span class="nh-row-art"><img src="/assets/art-v2/posters/gunghap.webp" alt="" loading="lazy"></span>
+            <span class="nh-row-text"><strong>궁합</strong><span>두 사람이 잘 맞는 곳과 다른 곳</span></span>
+            <span class="nh-row-price"><span data-journey-price="gunghap">1,000원</span></span>
           </button>
           <button type="button" class="nh-row home-category" data-home-category="topic-love" onclick="openIntro('topic-love')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/love.webp" alt="" loading="lazy"></span>
@@ -2647,40 +2639,30 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span class="nh-row-text"><strong>건강운</strong><span>체질과 몸을 챙길 때</span></span>
             <span class="nh-row-price"><span data-journey-price="topic-health">1,000원</span></span>
           </button>
-          <button type="button" class="nh-row home-category" data-home-category="monthly" onclick="openIntro('monthly')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/monthly.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>월별 운세</strong><span>최대 6개월, 달마다 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="monthly">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="daypick" onclick="openIntro('daypick')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/daypick.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>지정일 운세</strong><span>중요한 그날의 시간대별 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="daypick">1,000원</span></span>
-          </button>
           <button type="button" class="nh-row home-category" data-home-extra="tarot-love" onclick="openIntro('tarot-love')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>연애 타로</strong><span>그 사람의 마음과 두 사람의 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-extra="tarot-reunion" onclick="openIntro('tarot-reunion')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-21.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>재회 타로</strong><span>헤어진 이유와 다시 이어질 가능성</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-extra="tarot-marriage" onclick="openIntro('tarot-marriage')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-06.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>결혼 타로</strong><span>관계의 기반과 함께 맞출 것</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-extra="tarot-career" onclick="openIntro('tarot-career')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-08.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>진로 타로</strong><span>기회가 오는 곳과 나아갈 방향</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
           <button type="button" class="nh-row home-category" data-home-extra="tarot-money" onclick="openIntro('tarot-money')">
             <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-11.webp" alt="" loading="lazy"></span>
             <span class="nh-row-text"><strong>재물 타로</strong><span>새는 곳과 들어오는 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,500원</span>~</span>
+            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
           </button>
         </div>
       </section>
@@ -4737,8 +4719,6 @@ const HOME_CATALOG=[
   {go:'topic-child',title:'우리 아이 사주',sub:'타고난 기질과 재능',art:'child.webp',tags:['family']},
   {go:'topic-children',title:'자녀운',sub:'자녀 인연과 부모 역할',art:'children.webp',tags:['family']},
   {go:'topic-health',title:'건강운',sub:'체질과 먼저 살필 곳',art:'health.webp',tags:['family']},
-  {go:'monthly',title:'월별 운세',sub:'최대 6개월, 달마다 흐름',art:'monthly.webp',tags:['year']},
-  {go:'daypick',title:'지정일 운세',sub:'중요한 그날의 흐름',art:'daypick.webp',tags:['year']},
   {go:'name',title:'이름풀이·작명',sub:'이름과 사주의 궁합',art:'name.webp',tags:['life','family']},
   {go:'qna',title:'천기 선생',sub:'정통 명리로 깊게 짚어줘요',art:'qna.webp',tags:['year','life']},
   {go:'chat-unni',title:'달님 언니',sub:'연애·재회 고민을 다정하게',art:'counsel-unni.webp',tags:['love']},
@@ -5303,9 +5283,9 @@ const TAROT_HISTORY_KEY='tarot_history_v1';
 const TAROT_DAILY_KEY_PREFIX='tarot_daily_v1';
 const TAROT_HISTORY_TTL_MS=24*60*60*1000;
 const TAROT_PRODUCTS=[
-  {id:'tarot3',name:'3장 간단 요약',price:augustPromoPrice(1500),shortDesc:'현재의 흐름과 조언',description:'현재 상황과 가까운 흐름을 빠르게 확인합니다.',count:3},
-  {id:'tarot5',name:'5장 심층 분석',price:augustPromoPrice(2000),shortDesc:'과거·현재·미래와 깊은 통찰',description:'현재, 장애물, 숨겨진 흐름, 조언, 결과를 함께 봅니다.',count:5},
-  {id:'tarot10',name:'10장 켈틱 크로스',price:augustPromoPrice(3000),shortDesc:'전반적인 운명과 숨겨진 진실',description:'복잡한 고민의 내면, 환경, 장기 흐름까지 깊게 봅니다.',count:10}
+  {id:'tarot3',name:'3장 간단 요약',price:augustPromoPrice(1000),shortDesc:'현재의 흐름과 조언',description:'현재 상황과 가까운 흐름을 빠르게 확인합니다.',count:3},
+  {id:'tarot5',name:'5장 심층 분석',price:augustPromoPrice(1500),shortDesc:'과거·현재·미래와 깊은 통찰',description:'현재, 장애물, 숨겨진 흐름, 조언, 결과를 함께 봅니다.',count:5},
+  {id:'tarot10',name:'10장 켈틱 크로스',price:augustPromoPrice(2000),shortDesc:'전반적인 운명과 숨겨진 진실',description:'복잡한 고민의 내면, 환경, 장기 흐름까지 깊게 봅니다.',count:10}
 ];
 const TAROT_QUESTION_EXAMPLES=[
   '그 사람은 저를 어떻게 생각하나요?','재회 가능성이 있을까요?','이직해도 괜찮을까요?',
@@ -11375,15 +11355,15 @@ const PAID_META={
   chatpack5:{icon:'',title:'추가 질문 5회 패키지',desc:'현재 풀이에 대한 역술가 질문 5회 추가. 가장 인기 있는 선택.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'2,000원'},
   chatpack7:{icon:'',title:'추가 질문 7회 패키지',desc:'현재 풀이에 대한 역술가 질문 7회를 추가해요.',features:['· 현재 사주에만 적용','· 같은 풀이에서 즉시 사용 가능'],price:'3,000원'},
   // 타로점 — 질문형 타로 스프레드 (결제 후 카드 뽑기 화면으로 이동)
-  tarot3:{icon:'',title:'타로점 3장 풀이',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,500원'},
-  tarot5:{icon:'',title:'타로점 5장 풀이',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'2,000원'},
-  tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'3,000원'},
+  tarot3:{icon:'',title:'타로점 3장 풀이',desc:'질문에 대한 현재 흐름과 조언을 3장으로 빠르게 봅니다.',features:['· 직접 뽑는 카드 3장','· 결제 즉시 카드 선택'],price:'1,000원'},
+  tarot5:{icon:'',title:'타로점 5장 풀이',desc:'현재·장애물·숨은 흐름·조언·결과를 5장으로 깊게 봅니다.',features:['· 직접 뽑는 카드 5장','· 결제 즉시 카드 선택'],price:'1,500원'},
+  tarot10:{icon:'',title:'타로점 10장 켈틱크로스',desc:'복잡한 고민의 내면·환경·장기 흐름까지 10장으로 봅니다.',features:['· 직접 뽑는 카드 10장','· 결제 즉시 카드 선택'],price:'2,000원'},
   // 점성술 — 출생차트 계산 후 상세 풀이
-  'astro-birth-basic':{icon:'',title:'출생차트 성향 분석',desc:'출생차트의 태양·달·상승궁·개인행성을 중심으로 본인의 기본 성향을 풀이해요.',features:['· 계산된 출생차트 기반','· 성격·기질·감정 패턴 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
-  'astro-love-marriage':{icon:'',title:'연애/결혼운',desc:'금성·화성·달·7하우스 흐름을 바탕으로 관계 패턴과 조언을 풀이해요.',features:['· 계산된 출생차트 기반','· 연애·결혼 관계 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
-  'astro-career-money':{icon:'',title:'직업/재물운',desc:'태양·수성·목성·토성·2/10하우스를 바탕으로 현실 흐름을 풀이해요.',features:['· 계산된 출생차트 기반','· 직업·재물 선택 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
-  'astro-yearly':{icon:'',title:'올해 운세',desc:'현재 트랜짓과 출생차트의 주요 각도를 바탕으로 올해 흐름을 풀이해요.',features:['· 출생차트 + 현재 트랜짓','· 올해 흐름 중심','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
-  'astro-full-report':{icon:'',title:'종합 점성술 리포트',desc:'출생차트와 현재 운을 종합해 더 긴 리포트로 풀이해요.',features:['· 출생차트 + 트랜짓 종합','· 4,000자 이내 상세 리포트','· 결제 후 24시간 재조회 가능'],price:'2,500원'},
+  'astro-birth-basic':{icon:'',title:'출생차트 성향 분석',desc:'출생차트의 태양·달·상승궁·개인행성을 중심으로 본인의 기본 성향을 풀이해요.',features:['· 계산된 출생차트 기반','· 성격·기질·감정 패턴 중심','· 결제 후 24시간 재조회 가능'],price:'1,000원'},
+  'astro-love-marriage':{icon:'',title:'연애/결혼운',desc:'금성·화성·달·7하우스 흐름을 바탕으로 관계 패턴과 조언을 풀이해요.',features:['· 계산된 출생차트 기반','· 연애·결혼 관계 중심','· 결제 후 24시간 재조회 가능'],price:'1,000원'},
+  'astro-career-money':{icon:'',title:'직업/재물운',desc:'태양·수성·목성·토성·2/10하우스를 바탕으로 현실 흐름을 풀이해요.',features:['· 계산된 출생차트 기반','· 직업·재물 선택 중심','· 결제 후 24시간 재조회 가능'],price:'1,000원'},
+  'astro-yearly':{icon:'',title:'올해 운세',desc:'현재 트랜짓과 출생차트의 주요 각도를 바탕으로 올해 흐름을 풀이해요.',features:['· 출생차트 + 현재 트랜짓','· 올해 흐름 중심','· 결제 후 24시간 재조회 가능'],price:'1,000원'},
+  'astro-full-report':{icon:'',title:'종합 점성술 리포트',desc:'출생차트와 현재 운을 종합해 더 긴 리포트로 풀이해요.',features:['· 출생차트 + 트랜짓 종합','· 4,000자 이내 상세 리포트','· 결제 후 24시간 재조회 가능'],price:'1,500원'},
   // 주제별 풀이 — 인생총운 계산 위에 한 주제만 깊게 (결제 후 24시간 재조회)
   ziwei:{icon:'',title:'자미두수',desc:'음력 생일과 태어난 시로 12개의 방에 14개의 별을 배치해 풀어드려요.<br>성향·사랑·돈·일과 10년 단위 흐름까지 함께 짚어요.',features:['· 나를 나타내는 방의 별로 보는 타고난 성향과 12개 방','· 사랑과 배우자를 보여주는 방','· 돈이 들어오는 방식을 보여주는 방','· 일과 사회적 자리를 보여주는 방','· 마음이 쉬는 곳을 보여주는 방','· 10년 단위 흐름'],price:'1,500원'},
   'topic-love':{icon:'',title:'연애운',desc:'본인이 끌리는 사람과 잘 맞는 사람, 연애에서 반복되는 패턴을 풀어드려요.<br>인연이 가까워지는 해와 달까지 함께 짚어요.',features:['· 끌리는 사람과 오래 가는 사람','· 연애에서 반복되는 패턴과 말 습관','· 지금 10년의 연애 흐름','· 앞으로 10년 연도별 연애 점수','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'},
@@ -11441,9 +11421,9 @@ const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1
   // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
   chatpack3:1500,chatpack5:2000,chatpack7:3000,
   // 타로점 — 질문형 타로 스프레드
-  tarot3:1500,tarot5:2000,tarot10:3000,
+  tarot3:1000,tarot5:1500,tarot10:2000,
   // 점성술 — 유료 풀이
-  'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
+  'astro-birth-basic':1000,'astro-love-marriage':1000,'astro-career-money':1000,'astro-yearly':1000,'astro-full-report':1500};
 const CHAT_PACK_COUNT={chatpack3:3,chatpack5:5,chatpack7:7};
 // 지금 이 순간의 카테고리 단가 — 워커 augustPromoPriceForCategory()와 같은 규칙
 function basePriceFor(category, nowMs=Date.now()){
@@ -25119,6 +25099,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=4a3f77af9b55"></script>
+<script src="assets/astrology.js?v=9e73423070b1"></script>
 </body>
 </html>

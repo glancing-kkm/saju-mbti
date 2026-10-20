@@ -40,9 +40,47 @@ const submitBirth=async()=>{
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
     check('홈: 무료 풀이 줄과 전체 풀이 목록이 모두 보임',()=>{
       const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
-      assert.deepEqual(paid,['life','newyear','gunghap','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-children','topic-health','monthly','daypick','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
+      assert.deepEqual(paid,['life','newyear','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','gunghap','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-children','topic-health','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
       assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
       assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal']);
+    });
+    check('메뉴 숨김: 지정일·월별은 홈, 분류 탭, 다른 풀이 추천에서 제외',()=>{
+      const hidden=['monthly','daypick'];
+      assert.equal(d.querySelectorAll('#view-home [data-go="monthly"],#view-home [data-go="daypick"],#view-home [data-home-category="monthly"],#view-home [data-home-category="daypick"]').length,0);
+      assert.equal(run("HOME_CATALOG.some(x=>['monthly','daypick'].includes(x.go))"),false);
+      for(const tab of ['year','love','work','family','life','star']){
+        run(`setHomeTab('${tab}')`);
+        assert([...d.querySelectorAll('#homeFiltered [data-go]')].every(x=>!hidden.includes(x.dataset.go)));
+      }
+      run("setHomeTab('all');openIntro('newyear')");
+      assert([...d.querySelectorAll('#view-intro .ni-more [data-go]')].every(x=>!hidden.includes(x.dataset.go)));
+      run('goHome()');
+    });
+    check('결제 가격: 타로·점성술 상품 표시와 두 결제 서버의 금액 검증 일치',()=>{
+      const expected={tarot3:1000,tarot5:1500,tarot10:2000,'astro-birth-basic':1000,'astro-love-marriage':1000,'astro-career-money':1000,'astro-yearly':1000,'astro-full-report':1500};
+      const old={tarot3:1500,tarot5:2000,tarot10:3000,'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
+      const now=Date.parse('2026-10-20T00:00:00Z');
+      for(const [cat,price] of Object.entries(expected)){
+        assert.equal(run(`computePayAmount('${cat}',null,${now})`),price);
+        assert.equal(run(`PAID_META['${cat}'].price`),price.toLocaleString('ko-KR')+'원');
+        const product=cat.startsWith('tarot')?`TAROT_PRODUCTS.find(x=>x.id==='${cat}')`:`ASTRO_PRODUCTS.find(x=>x.id==='${cat.slice(6)}')`;
+        assert.equal(run(product+'.price'),price);
+      }
+      for(const file of ['worker/kakao-payment-worker.js','worker/payment-worker.js']){
+        const source=fs.readFileSync(path.join(root,file),'utf8').split('export default')[0];
+        const server=vm.createContext({});vm.runInContext(source,server);
+        assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(CATEGORY_PRICE)',server)),JSON.parse(run('JSON.stringify(PAY_BASE_PRICE)')));
+        for(const [cat,price] of Object.entries(expected)){
+          assert.equal(vm.runInContext(`isAmountValid('${cat}',${price},${now})`,server),true,file+': '+cat);
+          assert.equal(vm.runInContext(`isAmountValid('${cat}',${old[cat]},${now})`,server),false,file+': old '+cat);
+          assert.equal(vm.runInContext(`isAmountValid('${cat}',${price+1},${now})`,server),false,file+': forged '+cat);
+        }
+      }
+      for(const [key,amounts] of [['tarot-question',[1000,1500,2000]],['astro-report',[1000,1000,1000,1000,1500]]]){
+        run(`openIntro('${key}')`);
+        assert.deepEqual([...d.querySelectorAll('#view-intro .ni-options b')].map(x=>x.textContent),amounts.map(x=>x.toLocaleString('ko-KR')+'원'));
+      }
+      run('goHome()');
     });
     run(d.querySelector('.nh-cta').getAttribute('onclick'));
     check('홈 배너: 오늘의 무료 운세 3종 선택 팝업',()=>{
