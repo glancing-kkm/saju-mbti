@@ -47,6 +47,7 @@ const CATEGORY_PRICE = {
   'topic-reunion': 1000,
   'topic-study': 1000,
   'topic-child': 1000,
+  'topic-children': 1000,
   'topic-health': 1000,
   ziwei: 1500,
 };

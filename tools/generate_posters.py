@@ -677,6 +677,28 @@ def child():
     return svg(''.join(body).replace('<text x="0" y="0" font-size="0">.</text>', ''), defs)
 
 
+def children():
+    """자녀운 — 큰 별이 작은 별을 감싸 안은 새벽 언덕."""
+    vd, vr = vignette()
+    defs = (lin('sky', [(0, '#1a0f08'), (.55, '#6a4024'), (1, '#ffc890')]) +
+            rad('big', [(0, '#fffbe8'), (.6, '#ffe2a0'), (1, '#e8a850')]) +
+            rad('small', [(0, '#ffffff'), (1, '#ffd6e0')]) + vd)
+    body = ['<rect width="300" height="400" fill="url(#sky)"/>', stars(203, 70, 0, 240, '#fff4e0', 6),
+            '<circle cx="138" cy="176" r="110" fill="#ffd9a0" opacity=".28" filter="url(#blur20)"/>',
+            # 큰 별(부모)
+            '<g transform="translate(132 178)"><path d="M0 -52 L14 -16 L52 -15 L22 8 L32 46 L0 25 L-32 46 L-22 8 L-52 -15 L-14 -16Z" fill="url(#big)"/></g>',
+            # 작은 별(자녀) — 큰 별 곁에 기대어
+            '<g transform="translate(198 214) rotate(14)"><path d="M0 -24 L6 -7 L24 -7 L10 4 L15 21 L0 11 L-15 21 L-10 4 L-24 -7 L-6 -7Z" fill="url(#small)"/></g>',
+            '<circle cx="198" cy="214" r="30" fill="#ffd6e0" opacity=".25" filter="url(#blur8)"/>',
+            # 두 별을 잇는 빛의 띠
+            '<path d="M150 196 C168 214 178 220 190 216" stroke="#fff1c8" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/>',
+            sparkle(232, 150, 6, '#fff', .8), sparkle(80, 120, 5, '#fff', .7),
+            f'<path d="{ridge(17, 330, 26, 5)}" fill="#3a2414" opacity=".9"/>',
+            '<rect y="352" width="300" height="48" fill="#24160c"/>',
+            cloud(64, 300, 1.6, '#ffe8d0', .4), cloud(244, 312, 1.9, '#ffe8d0', .35), vr]
+    return svg(''.join(body), defs)
+
+
 def health():
     """건강운 — 물 위의 연꽃과 그 둘레를 도는 다섯 기운."""
     vd, vr = vignette()
@@ -974,7 +996,7 @@ POSTERS = {
     'astro': astro, 'manse': manse, 'daily': daily, 'natal': natal,
     'astro-today': astro_today, 'tarot-bg': tarot_bg,
     'love': love, 'money': money, 'career': career, 'marriage': marriage, 'reunion': reunion,
-    'study': study, 'child': child, 'health': health, 'daypick': daypick, 'monthly': monthly,
+    'study': study, 'child': child, 'children': children, 'health': health, 'daypick': daypick, 'monthly': monthly,
     'astro-love': astro_love, 'astro-career': astro_career, 'astro-yearly': astro_yearly,
 }
 

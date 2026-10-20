@@ -40,7 +40,7 @@ const submitBirth=async()=>{
     check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
     check('홈: 무료 풀이 줄과 전체 풀이 목록이 모두 보임',()=>{
       const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
-      assert.deepEqual(paid,['life','newyear','gunghap','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-health','monthly','daypick','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
+      assert.deepEqual(paid,['life','newyear','gunghap','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-children','topic-health','monthly','daypick','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
       assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
       assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal']);
     });
@@ -71,7 +71,7 @@ const submitBirth=async()=>{
       assert.equal(d.querySelectorAll('#homeFiltered .pc').length,7);
       assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].slice(0,5).map(c=>c.dataset.go),['manse','daily','tarot-today','astro-today','astro-natal']);
       run("setHomeTab('family')");
-      assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].map(c=>c.dataset.go),['topic-marriage','topic-study','topic-child','topic-health','name','chat-halmae','tarot-marriage']);
+      assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].map(c=>c.dataset.go),['topic-marriage','topic-study','topic-child','topic-children','topic-health','name','chat-halmae','tarot-marriage']);
       run("setHomeTab('all')");
       assert(!d.getElementById('homeMain').hidden&&d.getElementById('homeFiltered').hidden);
     });
@@ -227,14 +227,14 @@ const submitBirth=async()=>{
     check('주제별 풀이: 결제 안내 금액 1,000원',()=>assert.equal(d.getElementById('payProductPrice').textContent,'1,000원'));
     run("closePaymentConsent();unlockAndRender('topic-love')");
     check('주제별 풀이: 결제 후 요약·10년·12개월 풀이가 열림',()=>{
-      assert(d.querySelector('#p9 .story-experience'));
-      assert(d.getElementById('card-TOPIC_YEARS')&&d.getElementById('card-TOPIC_MONTHS'));
-      assert(d.querySelectorAll('#p9 .life-v3-time-card').length>=22);
+      assert(d.querySelector('#p9 .tp-v4'));
+      assert(d.querySelectorAll('#p9 .lv4-sec').length>=5);
+      assert(d.querySelectorAll('#p9 .lv4-row').length>=22);
     });
-    for(const cat of ['topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-health']){
+    for(const cat of ['topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-children','topic-health']){
       check('주제별 풀이: '+cat+' 렌더링에 빈 값 없음',()=>{
         const html=run(`renderTopicPaid('${cat}',_saju,_meta)`);
-        assert(/story-experience/.test(html));
+        assert(/tp-v4/.test(html)&&(html.match(/class="lv4-sec"/g)||[]).length>=5);
         assert(!/undefined|NaN|\[object/.test(html.replace(/<[^>]+>/g,'')));
       });
     }

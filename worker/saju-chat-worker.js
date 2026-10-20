@@ -433,6 +433,16 @@ async function handleTarotReading(request, env) {
   }
 }
 
+const KO_READING_STYLE = `한국어 문체 규칙 (모든 문장에 적용):
+- 친근한 존댓말로 쓴다. 문장 끝은 "~예요 / ~이에요 / ~해요 / ~돼요 / ~세요"를 기본으로 하고, "~입니다 / ~합니다"는 쓰지 않는다.
+- 사용자는 "당신" 대신 "본인"이라고 부른다.
+- 한 문장은 50자 안쪽으로 짧게 끊는다. 한 문단은 3~5문장으로 쓴다.
+- 전문 용어(하우스, 애스펙트, 트랜짓, 상승궁, 정방향·역방향, 메이저·마이너 아르카나 등)는 처음 나올 때 바로 쉬운 말로 풀어 쓴다. 예: "7하우스, 그러니까 결혼과 동반자를 보여주는 자리"
+- 추상적인 설명 뒤에는 일상의 비유를 하나씩 붙인다. 예: "직장에서 든든한 선배가 옆에 있어 주는 것과 비슷해요."
+- '결'이라는 단어를 단독 명사로 쓰지 않는다. 대신 '분위기'를 쓴다.
+- 줄표(—)와 괄호 설명은 최소로 쓴다.
+- 각 # 섹션의 마지막 줄에는 "한 줄 정리: ..." 형식으로 그 섹션을 한 문장으로 요약한다.`;
+
 function buildTarotReadingSystemPrompt(language = 'ko') {
   const lang = normalizeLanguage(language);
   return `너는 15년 경력의 전문 타로 리더다.
@@ -454,7 +464,7 @@ ${lang.code === 'ko' ? '' : `The final visible answer must be entirely in ${lang
 10. 연애/재회 문제는 희망고문하지 않고 현실적인 가능성과 조언을 함께 준다.
 11. 문체는 따뜻하지만 가볍지 않게 작성한다.
 12. 유료 리딩처럼 충분히 구체적이고 깊이 있게 작성한다.
-
+${lang.code === 'ko' ? '\n' + KO_READING_STYLE + '\n' : ''}
 응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
 }
 
@@ -664,7 +674,7 @@ ${lang.code === 'ko' ? '' : `The final visible answer must be entirely in ${lang
 7. 불안감을 과도하게 조장하지 않는다.
 8. 유료 리딩처럼 충분히 구체적으로 작성한다.
 9. 계산 오류를 보정하거나 새로운 행성 위치를 만들어내지 않는다.
-
+${lang.code === 'ko' ? '\n' + KO_READING_STYLE + '\n' : ''}
 응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
 }
 

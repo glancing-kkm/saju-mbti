@@ -133,15 +133,13 @@ const harness = `
     }
     ok('개인 지문: 120개 표본에서 60개 이상의 조합', fingerprintSet.size>=60, 'unique='+fingerprintSet.size);
     ok('인생총운: 캐릭터와 통합 풀이에 개인 지문 노출',
-       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && ha.replace(/&nbsp;|\u00a0/g,' ').includes(fpSelf.hook));
+       characterCardHTML(SELF,{compact:true}).includes('개인 지문') && clean(ha).replace(/&nbsp;|\u00a0|\u200b/g,' ').replace(/· /g,'·').includes(fpSelf.hook));
 
     // 8) 신년운세 — 10개 심층 상담 카드 + 3층 UI
     const ny = renderNewyearFortune(SELF, 2026);
-    ok('renderNewyearFortune V3 렌더 정상', typeof ny==='string' && ny.includes('NY_OVERVIEW') && !leaky(ny));
-    ok('신년운세 3층: 요약·핵심 덱·전체 서고',
-       (ny.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['newyear-2026']||[]).length===8);
-    ok('신년운세: 요약과 핵심 카드에 개인 지문 연결',
-       ny.includes('story-personal-note') && (_storyDeckStore['newyear-2026'][0].copy||'').includes(fpSelf.hook));
+    ok('renderNewyearFortune 한 페이지 렌더 정상', typeof ny==='string' && ny.includes('id="lv4-ny-basic"') && ny.length>18000 && !leaky(ny));
+    ok('신년운세: 한 페이지 본문에 개인 지문 연결',
+       clean(ny).replace(/&nbsp;|\u00a0|\u200b/g,' ').replace(/· /g,'·').includes(fpSelf.hook));
 
     // 9) MBTI 통합 — 사주 측 강점/약점이 사주별로 다름
     const ma = renderMBTI(SELF,'INTJ'), mb = renderMBTI(GWAN,'INTJ');
@@ -280,14 +278,14 @@ const harness = `
     const newyearExample=renderNewyearFortune(EXAMPLE,2027);
     const newyearModel=buildNewyearV3Model(EXAMPLE,2027,_meta);
     const newyearPlain=clean(newyearExample).replace(/&nbsp;|\u00a0/g,' ');
-    const newyearLabels=['NY_PROFILE','NY_OVERVIEW','NY_ORIGIN','NY_WEALTH','NY_LOVE','NY_HEALTH','NY_CAREER','NY_LUCK','NY_DAEUN','NY_MASTER'];
-    ok('신년운세 V3: 첨부 상담 흐름을 10개 심층 카드로 구성',
-       newyearLabels.every(label=>newyearExample.includes('<!--CARD_START:'+label+'-->')) &&
-       newyearLabels.filter(label=>newyearExample.includes('<!--CARD_START:'+label+'-->')).length===10);
-    ok('신년운세 V3: 사주판·관계도·이모티콘·기운 분포 도식 노출',
-       newyearExample.includes('life-v3-pillar-board') && newyearExample.includes('life-v3-relation') &&
-       newyearExample.includes('ny-v3-oh') && (newyearExample.match(/class="life-v3-emoji"/g)||[]).length>=45,
-       'emoji='+(newyearExample.match(/class="life-v3-emoji"/g)||[]).length);
+    const nyIds=['ny-basic','ny-money','ny-love','ny-health','ny-work','ny-luck','ny-daeun'];
+    ok('신년운세 한 페이지: 넘김 없이 소개 순서 7개 섹션을 이어서 노출',
+       !newyearExample.includes('data-story-layer=') &&
+       nyIds.every((id,i)=>newyearExample.indexOf('id="lv4-'+id+'"')>-1 && (i===0||newyearExample.indexOf('id="lv4-'+nyIds[i-1]+'"')<newyearExample.indexOf('id="lv4-'+id+'"'))) &&
+       (newyearExample.match(/class="lv4-sec"/g)||[]).length===7);
+    ok('신년운세 한 페이지: 사주판·글자 관계·12개월을 일상어로 설명',
+       newyearExample.includes('life-v3-pillar-board') && newyearPlain.includes("사주 글자 중에 '유(닭)'라는 글자가 두 번 나와요") &&
+       (newyearExample.match(/class="lv4-row/g)||[]).length>=12 && (newyearExample.match(/class="lv4-key"/g)||[]).length===7);
     const cheapReadingEmoji=['💰','💕','❤️','🌿','🧠','📦','🤝','🚀','⚠️','📅'].filter(mark=>newyearExample.includes(mark));
     ok('풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용',
        newyearExample.includes('class="reading-sigil"') && cheapReadingEmoji.length===0,
@@ -323,22 +321,55 @@ const harness = `
     // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.
     const nameExtra={surname:'김',given:'민수',han:{surname:'金',given1:'珉',given2:'秀'},strokes:{surname:8,given1:10,given2:7}};
     const nameLayered=renderNamePaid(SELF,nameExtra);
-    ok('이름풀이·작명 3층: 요약·핵심 6장·전체 서고',
-       (nameLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['name-reading']||[]).length===6 && nameLayered.includes('card-RECOMMEND'));
-    ok('이름풀이·작명: 사주 개인 지문 연결', nameLayered.includes('story-personal-note'));
+    const nmIds=['nm-core','nm-suri','nm-hanja','nm-sound','nm-mix','nm-strength','nm-recommend'];
+    const namePlain=clean(nameLayered).replace(/&nbsp;|\u00a0|\u200b/g,' ');
+    ok('이름풀이 한 페이지: 넘김 없이 소개 순서 7개 섹션을 이어서 노출',
+       !nameLayered.includes('data-story-layer=') &&
+       nmIds.every((id,i)=>nameLayered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||nameLayered.indexOf('id="lv4-'+nmIds[i-1]+'"')<nameLayered.indexOf('id="lv4-'+id+'"'))) &&
+       (nameLayered.match(/class="lv4-sec"/g)||[]).length===7);
+    ok('이름풀이: 한글 소리·한자 네 자리·81수리·추천 이름을 일상어로 풀이',
+       namePlain.includes('첫소리 ㄱ은 목 기운') && namePlain.includes('평생의 자리') && /숫자 \\d+[은는] '/.test(namePlain) && namePlain.includes('추천 이름') && !/원격|형격|이격|정격|용신|자원오행/.test(namePlain) && !leaky(nameLayered),
+       [namePlain.includes('첫소리 ㄱ은 목 기운'),namePlain.includes('평생의 자리'),/숫자 \\d+[은는] '/.test(namePlain),namePlain.includes('추천 이름'),(namePlain.match(/원격|형격|이격|정격|용신|자원오행/)||[''])[0],leaky(nameLayered)].join('|'));
     const pairExtra={gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:'ENFP'};
     _meta.gnExtra=pairExtra;
     const pairLayered=renderGunghapPaid(SELF,pairExtra);
-    ok('궁합 3층: 요약·핵심 6장·전체 서고',
-       (pairLayered.match(/data-story-layer=/g)||[]).length===3 && (_storyDeckStore['gunghap-reading']||[]).length===6 && pairLayered.includes('card-MARRIAGE'));
-    ok('궁합: 두 사람의 관계 반응을 함께 비교',
-       pairLayered.includes('story-personal-note') && (_storyDeckStore['gunghap-reading'][0].copy||'').includes('상대는'));
+    const ghIds=['gh-core','gh-persona','gh-star','gh-scenes','gh-married','gh-timing','gh-score','gh-seat'];
+    const pairPlain=clean(pairLayered).replace(/&nbsp;|\u00a0|\u200b/g,' ');
+    ok('궁합 한 페이지: 넘김 없이 소개 순서 8개 섹션을 이어서 노출',
+       !pairLayered.includes('data-story-layer=') &&
+       ghIds.every((id,i)=>pairLayered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||pairLayered.indexOf('id="lv4-'+ghIds[i-1]+'"')<pairLayered.indexOf('id="lv4-'+id+'"'))) &&
+       (pairLayered.match(/class="lv4-sec"/g)||[]).length===8 && (pairLayered.match(/class="lv4-row/g)||[]).length>=14);
+    const ghForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','공망','12운성','일지','일간'].filter(w=>pairPlain.includes(w));
+    ok('궁합: 두 사람의 반응을 비교하고 전문용어 없이 풀이',
+       pairPlain.includes('상대는') && pairPlain.includes('두 사람의 배우자 자리는') && ghForbidden.length===0 && !/상대[은을] /.test(pairPlain),ghForbidden.join(','));
+    const topicLayered=renderTopicPaid('topic-love',SELF,_meta);
     ok('공통 카드 덱: 이전·근거·다음 버튼 제공',
-       pairLayered.includes('storyDeckPrev(')&&pairLayered.includes('storyOpenEvidence(')&&pairLayered.includes('storyDeckNext('));
+       globalThis.__SOURCE_HTML__.includes('function storyDeckPrev(')&&globalThis.__SOURCE_HTML__.includes('function storyOpenEvidence(')&&globalThis.__SOURCE_HTML__.includes('function storyDeckNext('));
+    const tpCats=['topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
+    const tpBad=tpCats.filter(c=>{const h=renderTopicPaid(c,SELF,_meta),pl=clean(h);const n=((PAID_META[c]||{}).features||[]).length;return (h.match(/class="lv4-sec"/g)||[]).length!==n||h.includes('data-story-layer=')||leaky(h)||/정관|편관|정재|편재|정인|편인|식신|상관|비견|겁재|용신|일간|대운|세운/.test(pl);});
+    ok('주제별 풀이 한 페이지: 9개 주제 모두 소개 항목 수만큼 섹션, 전문용어 없음', tpBad.length===0, tpBad.join(','));
     const storyNavigateSource=globalThis.__SOURCE_HTML__.match(/function storyNavigate[\s\S]*?function storyDeckNext/)?.[0]||'';
     const lifeNavigateSource=globalThis.__SOURCE_HTML__.match(/function lifeNavigate[\s\S]*?function lifeDeckNext/)?.[0]||'';
     ok('카드 이동: 전환·이전·다음 버튼이 스크롤을 맨 위로 올리지 않음',
        !storyNavigateSource.includes('window.scrollTo')&&!lifeNavigateSource.includes('window.scrollTo'));
+
+    const dpPage=renderDaypickFortune(SELF,2026,8,20,{contextTag:'job'}),moPage=renderMonthlyFortune(SELF,2026,8,2026,10,{contextTag:'money'});
+    const dpPlain=clean(dpPage).replace(/&nbsp;|\u00a0|\u200b/g,' '),moPlain=clean(moPage).replace(/&nbsp;|\u00a0|\u200b/g,' ');
+    ok('지정일 한 페이지: 소개 순서 7개 섹션과 열두 시간대 풀이',
+       (dpPage.match(/class="lv4-sec"/g)||[]).length===7 && dpPage.indexOf('id="lv4-dp-daeun"')<dpPage.indexOf('id="lv4-dp-stars"') &&
+       (dpPlain.match(/[자축인묘진사오미신유술해]시 · /g)||[]).length===12 && !/상관|정관|편관|일지|천간|신살|길시/.test(dpPlain) && !leaky(dpPage));
+    ok('월별 한 페이지: 소개 순서 6개 섹션과 달마다 풀이',
+       (moPage.match(/class="lv4-sec"/g)||[]).length===6 && moPage.indexOf('id="lv4-mo-daeun"')<moPage.indexOf('id="lv4-mo-guide"') &&
+       ['2026년 8월 ·','2026년 9월 ·','2026년 10월 ·'].every(x=>moPlain.includes(x)) && !/상관|정관|편관|일지|천간|월주|관성/.test(moPlain) && !leaky(moPage));
+
+    const zwPage=renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),zwPlain=clean(zwPage);
+    ok('자미두수 한 페이지: 소개 순서 6개 섹션, 12개 방 판, 한자 방 이름 노출 없음',
+       (zwPage.match(/class="lv4-sec"/g)||[]).length===6 && zwPage.includes('zw-board') && !zwPage.includes('data-story-layer=') &&
+       !/명궁|부부궁|재백궁|관록궁|복덕궁|대한|오행국|[수목금토화][이삼사오육]국/.test(zwPlain) && /성\(.+의 별\)/.test(zwPlain) && !leaky(zwPage));
+
+    const __md=lv4FromMarkdown('# 1. 질문 요약\\n고민을 정리했어요.\\n\\n# 3. 카드별 해석\\n## 현재 - 별\\n- 핵심키워드: 희망, 회복\\n희망이 보여요.\\n한 줄 정리: 다시 일어설 힘이 있어요.\\n<script>x</script>','tr');
+    ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록·한 줄 정리 변환, HTML 이스케이프',
+       __md.items.length===2 && __md.items[1][1]==='카드별 해석' && __md.html.includes('<h3>현재 - 별</h3>') && __md.html.includes('lv4-md-list') && __md.html.includes('class="lv4-key"') && !__md.html.includes('<script>'));
 
     // 13) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
     const OTHER=C(6,8,7,9,3,7,6,8);
@@ -389,12 +420,12 @@ try {
       ['jupiter','sagittarius'],['saturn','capricorn'],['uranus','aquarius'],['neptune','pisces'],['pluto','scorpio']
     ].map(([planet,sign])=>({planet,sign,degree:10}));
     const __astroFlowMock={productName:'종합 리포트',birthInfo:{city:'서울'},createdAt:'2026-08-16T00:00:00.000Z',resultMarkdown:'# 상세 풀이',chart:{birthInfo:{city:'서울',birthTimeUnknown:false},planets:__astroPlanets,ascendant:{sign:'taurus',degree:4},elementBalance:{fire:3,earth:2,air:2,water:3},modalityBalance:{cardinal:4,fixed:3,mutable:3},aspects:[]}};
-    const __astroConfig=buildAstrologyStoryConfig(__astroFlowMock);
-    const __astroHtml=buildStoryExperienceHTML(__astroConfig);
-    globalThis.__ASTRO_STORY_OK__=(__astroConfig.deck.length===7&&(__astroHtml.match(/data-story-layer=/g)||[]).length===3&&__astroHtml.includes('점성술 전체 서고'));
+    __astroFlowMock.resultMarkdown='# 1. 출생차트 핵심 요약\\n본인은 밝은 사람이에요.\\n\\n- 태양: 사자자리예요\\n한 줄 정리: 빛나는 사람이에요.\\n\\n# 2. 성격과 기질\\n## 강점\\n추진력이 좋아요.';
+    const __astroHtml=buildAstrologyOnePageHTML(__astroFlowMock);
+    globalThis.__ASTRO_STORY_OK__=(!__astroHtml.includes('data-story-layer=')&&(__astroHtml.match(/class="lv4-sec"/g)||[]).length===2&&__astroHtml.includes('lv4-sec lv4-extra')&&__astroHtml.includes('class="lv4-key"')&&__astroHtml.includes('원형 차트')&&__astroHtml.includes('<h3>강점</h3>'));
   `;
   vm.runInContext(astroCode + astroHarness, ctx, { filename: 'astrology.js' });
-  console.log((sb.__ASTRO_STORY_OK__?'  ✅ ':'  ❌ ')+'점성술 3층: 요약·핵심 7장·전체 서고');
+  console.log((sb.__ASTRO_STORY_OK__?'  ✅ ':'  ❌ ')+'점성술 한 페이지: 출생차트·AI 리포트 섹션·한 줄 정리');
   if (!sb.__ASTRO_STORY_OK__) sb.__REGRESSION_FAILED__++;
 } catch (e) {
   console.error('  ❌ 점성술 3층 회귀 검사 →', e.message);
