@@ -202,6 +202,7 @@ const harness = `
       for(let stem=0;stem<10;stem++)portraitSet.add(characterPortraitSVG(C(1,3,0,monthBranch,stem,2,1,3)));
     });
     ok('캐릭터 초상: 일간 10종 × 계절 4종', portraitSet.size===40, 'unique='+portraitSet.size);
+    ok('동양화 초상: 모든 유형이 새 WebP 인물 이미지 사용', [...portraitSet].every(p=>p.includes('/assets/art-v2/posters/')&&p.includes('.webp')));
     const share=buildLifeShareCardHtml(SELF);
     ok('공유 카드: 1080 정사각형 클래스 생성', /life-share-card/.test(share)&&/character-portrait/.test(share));
     const layered=renderSajuPaid(SELF,1990,5,15,12,0);

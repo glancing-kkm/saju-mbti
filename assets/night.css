@@ -202,7 +202,7 @@ body{background:
   background:linear-gradient(135deg,#1d1926,#121016);
   border:1px solid var(--border);box-shadow:0 14px 34px rgba(0,0,0,.35)}
 /* 포스터는 배너 오른쪽 58%를 위아래 끝까지 채운다(폭이 넓어져도 아래가 비지 않게) */
-#app .hdr-back-meta::before{content:'';position:absolute;top:0;right:0;bottom:0;width:58%;background:var(--hdr-art,none) center/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%);pointer-events:none}
+#app .hdr-back-meta::before{content:'';position:absolute;top:0;right:0;bottom:0;width:58%;background:var(--hdr-art,none) center 28%/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%);pointer-events:none}
 #app .hdr-back-meta::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,14,.95) 0%,rgba(10,8,14,.78) 42%,rgba(10,8,14,.1) 100%);pointer-events:none}
 #app .hdr-back-meta>*{position:relative;z-index:1}
 #app .hdr-back-title{font-family:var(--font-display);font-weight:400;font-size:1.95rem;line-height:1.18;color:#fff;letter-spacing:-.02em;max-width:72%}
@@ -567,3 +567,10 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-md-list li b{display:block;font-family:var(--font-heading);font-weight:400;font-size:1rem;color:var(--text)}
 .lv4-md-list li span{display:block;font-size:.97rem;line-height:1.85;color:var(--sub);text-align:justify;text-align-last:left;word-break:normal;line-break:strict}
 #app .tarot-v4,#app .astro-v4,.tarot-v4,.astro-v4{margin:12px 0 20px}
+
+/* 동양화 덱의 뒷면을 스프레드 미리보기에도 동일하게 표시해요. */
+#app .ts-pv-slot,#app .ts-pv-3 .ts-pv-slot:nth-child(2),#app .ts-pv-5 .p1,#app .ts-pv-10 .c2{background:#234438 url('/assets/art-v2/tarot/back.webp') center/cover no-repeat}
+#app .ts-pv-slot::after{content:none}
+
+.nh-today-orb{background:#e7d8ba url('/assets/art-v2/posters/daily.webp') center 26%/cover no-repeat;border:1px solid rgba(240,198,116,.35);border-radius:18px;box-shadow:none;animation:none}
+.reveal-orbit::after{background:#f4e8d1 url('/favicon.svg?v=hanji-20261020') center/cover no-repeat;box-shadow:none}

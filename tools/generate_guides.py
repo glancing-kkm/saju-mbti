@@ -243,7 +243,7 @@ def page(g):
     t, d = esc(g['title']), esc(g['desc'])
     ld = json.dumps({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': g['title'], 'description': g['desc'],
                      'datePublished': DATE, 'dateModified': DATE, 'inLanguage': 'ko-KR', 'mainEntityOfPage': url,
-                     'image': f'{SITE}/assets/og-image.png',
+                     'image': f'{SITE}/assets/art-v2/og-image.jpg',
                      'author': {'@type': 'Organization', 'name': '천지인 사주', 'url': f'{SITE}/about.html'},
                      'publisher': {'@type': 'Organization', 'name': '천지인 사주', 'url': f'{SITE}/'}}, ensure_ascii=False)
     cta = f'/?go={g["go"]}&entry=guide'
@@ -257,10 +257,10 @@ def page(g):
     return f'''<!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{t} | 천지인 사주</title><meta name="description" content="{d}"><meta name="robots" content="index, follow"><link rel="canonical" href="{url}">
-<meta property="og:type" content="article"><meta property="og:site_name" content="천지인 사주"><meta property="og:title" content="{t}"><meta property="og:description" content="{d}"><meta property="og:url" content="{url}"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="{SITE}/assets/og-image.png">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{t}"><meta name="twitter:description" content="{d}"><meta name="twitter:image" content="{SITE}/assets/og-image.png"><meta name="theme-color" content="#0f0d13">
+<meta property="og:type" content="article"><meta property="og:site_name" content="천지인 사주"><meta property="og:title" content="{t}"><meta property="og:description" content="{d}"><meta property="og:url" content="{url}"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="{SITE}/assets/art-v2/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{t}"><meta name="twitter:description" content="{d}"><meta name="twitter:image" content="{SITE}/assets/art-v2/og-image.jpg"><meta name="theme-color" content="#0f0d13">
 <script type="application/ld+json">{ld}</script>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=hanji-20261020">
 <link rel="stylesheet" href="/blog/blog.css">
 </head>
 <body><nav class="blog-nav" aria-label="주요 메뉴"><div class="blog-shell"><a href="/" class="blog-brand">천지인 사주</a><a href="{cta}" class="blog-cta">{esc(g["cta"])}</a></div></nav>

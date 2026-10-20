@@ -254,7 +254,22 @@ const submitBirth=async()=>{
     check('연애 타로 10장: 켈틱크로스 자리는 그대로',()=>assert.equal(run('_tarotFlow.positions[0].label'),'현재 상황'));
     run("goToTarot('question')");
     check('자유 질문 타로: 주제 없이 원래 화면',()=>{assert.equal(run('_tarotTopic'),'');assert.match(d.querySelector('#tarotApp .tq-title').textContent,/본인의 질문/);});
-    check('타로 카드 그림: 컵 2는 새로 그린 그림, 컵 6은 컵 6 그림',()=>{assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-02').imageUrl"),'assets/tarot/card-cups-02.jpg');assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-06').imageUrl"),'assets/tarot/card-45.jpg');});
+    check('동양화 타로 덱: 컵 2·컵 6의 데이터와 그림 번호 일치',()=>{assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-02').imageUrl"),'assets/art-v2/tarot/card-38.webp');assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-06').imageUrl"),'assets/art-v2/tarot/card-42.webp');});
+    check('동양화 이미지: 타로 78장과 모든 카테고리 포스터가 실제 파일로 연결',()=>{
+      const urls=Array.from(run('TAROT_CARDS.map(c=>c.imageUrl)'));
+      assert.equal(new Set(urls).size,78);
+      for(const url of urls)assert(fs.existsSync(path.join(root,url)),url);
+      const posters=Array.from(run('Object.values(VIEW_ART)'));
+      for(const file of posters)assert(fs.existsSync(path.join(root,'assets/art-v2/posters',file)),file);
+      const holder=d.createElement('div');
+      const arts=Array.from(run('[...HOME_CATALOG.map(x=>x.art),...Object.values(PRODUCT_INTRO).map(x=>x.poster),...Object.values(QNA_COUNSELORS).map(x=>x.art)].filter(Boolean)'));
+      for(const art of arts){
+        holder.innerHTML=run(`posterArtHTML(${JSON.stringify(art)})`);
+        for(const image of holder.querySelectorAll('img'))assert(fs.existsSync(path.join(root,image.getAttribute('src').replace(/^\//,''))),image.getAttribute('src'));
+      }
+      holder.innerHTML=run('characterPortraitSVG(_saju)');
+      assert(fs.existsSync(path.join(root,holder.querySelector('img').getAttribute('src').replace(/^\//,''))));
+    });
     {
       let sent=null;const prevFetch=w.fetch;
       w.fetch=async(url,opt)=>{if(String(url).indexOf('/translate')<0&&opt&&opt.body){try{const b=JSON.parse(opt.body);if(b.question)sent=b;}catch(e){}}return {ok:true,status:200,json:async()=>({answer:'테스트 답변이에요.'}),text:async()=>'',headers:{get:()=>null}};};

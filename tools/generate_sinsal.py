@@ -518,7 +518,7 @@ TEMPLATE = """<!DOCTYPE html>
 <!-- Google AdSense -->
 <meta name="google-adsense-account" content="ca-pub-9194151925851653">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9194151925851653" crossorigin="anonymous"></script>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=hanji-20261020">
 
 <link rel="stylesheet" href="/blog/blog.css">
 
@@ -592,8 +592,8 @@ def make_post(p):
     "datePublished": "2026-05-10",
     "dateModified": "2026-05-10",
     "author": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/about.html"},
-    "publisher": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/","logo":{"@type":"ImageObject","url":"https://saju-mbti-9h1.pages.dev/assets/og-image.png","width":1200,"height":630}},
-    "image": ["https://saju-mbti-9h1.pages.dev/assets/og-image.png"],
+    "publisher": {"@type":"Organization","@id":"https://saju-mbti-9h1.pages.dev/#organization","name":"천지인 사주","url":"https://saju-mbti-9h1.pages.dev/","logo":{"@type":"ImageObject","url":"https://saju-mbti-9h1.pages.dev/assets/art-v2/og-image.jpg","width":1200,"height":630}},
+    "image": ["https://saju-mbti-9h1.pages.dev/assets/art-v2/og-image.jpg"],
     "isPartOf": {"@type":"Blog","@id":"https://saju-mbti-9h1.pages.dev/blog/#blog","name":"천지인 사주풀이 가이드","url":"https://saju-mbti-9h1.pages.dev/blog/"},
     "mainEntityOfPage": f"https://saju-mbti-9h1.pages.dev/blog/sinsal/{p['slug']}.html",
     "inLanguage": "ko",

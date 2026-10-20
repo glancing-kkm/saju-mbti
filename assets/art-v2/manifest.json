@@ -1,0 +1,941 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-10-20",
+  "artworks": [
+    {
+      "key": "life",
+      "path": "posters/life.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A beautiful Korean young adult man aged 24 in elegant deep vermilion and dark brown traditional hanbok, hair in a neat sangtu with headband, calm thoughtful expression, half-length portrait. Behind him: graceful pine branches, traditional hanok roof, distant misty mountains and a flowing stream suggesting life's journey.",
+      "bytes": 192514,
+      "sha256": "f62c745149831a17648c2af56806172d751c8534f86edde552cc475b88b64ce2"
+    },
+    {
+      "key": "love",
+      "path": "posters/love.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A gentle smiling young woman in ivory and peach hanbok, green ribbon, holding a flowering plum branch in a spring hanok garden. Soft blush peach, warm cream, pale jade.",
+      "bytes": 148854,
+      "sha256": "b7d076831900368aacd1d45149a37a24d1674742b06144af9f0992446ecd4047"
+    },
+    {
+      "key": "newyear",
+      "path": "posters/newyear.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A confident young man in vermilion embroidered hanbok beneath a round rising sun, cranes flying over a misty mountain ridge and pine trees, hopeful new beginning. Cinnabar, gold ochre, parchment.",
+      "bytes": 194860,
+      "sha256": "d376da0e12ecad038b066a816e2d282c056d405bc7228d8fd107fb25cb3e8588"
+    },
+    {
+      "key": "gunghap",
+      "path": "posters/gunghap.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young adult couple, man in sage hanbok and woman in ivory and coral hanbok, smiling gently toward one another beneath interwoven plum branches by a stone bridge. Balanced equal prominence. Rose, jade, warm cream.",
+      "bytes": 193254,
+      "sha256": "f919c9ace938096d514ea505f86ab11874ed9015ab14b0249dfb21099c84fad8"
+    },
+    {
+      "key": "money",
+      "path": "posters/money.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A poised young woman in rich moss green and gold ochre hanbok carrying a small embroidered silk fortune pouch beside an antique abacus and brass coins on a low wooden table, flourishing peonies behind. Muted emerald, ochre, cream.",
+      "bytes": 183288,
+      "sha256": "6d81673bd5ac2f1f9430ae963b29f74a7cedcb6b35134d4812973ce62d25cd07"
+    },
+    {
+      "key": "astro",
+      "path": "posters/astro.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A beautiful young woman in pale indigo hanbok looking toward a celestial sphere in a traditional open-air observatory, brush-painted stars, pine silhouettes and a luminous moon. Indigo pigment on ivory paper, quiet silver blue.",
+      "bytes": 206372,
+      "sha256": "ae225ede7d532627b31871adee7373c508e755697fa2ecb987c89b80b5dda5e2"
+    },
+    {
+      "key": "name",
+      "path": "posters/name.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A handsome young male scholar in soft blue and ivory hanbok with headband, holding a calligraphy brush over unmarked hanji paper at an antique wooden desk by lattice windows and bamboo. Muted cobalt, ink brown, cream.",
+      "bytes": 165768,
+      "sha256": "09152cc4e74374cabae2a56ae253d7c1114c07b635575e8a3055cf6a3944ace9"
+    },
+    {
+      "key": "manse",
+      "path": "posters/manse.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A thoughtful young male scholar in jade and ivory hanbok seated beside a traditional astronomical instrument and bound blank books, distant ink mountains and a circular sun. Mineral jade, muted ochre, warm paper.",
+      "bytes": 166322,
+      "sha256": "4bd5ae59483ddffd3d7c534ba5a2b7ea353e88a1d4767ddc25943357e6eb2dae"
+    },
+    {
+      "key": "daily",
+      "path": "posters/daily.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A cheerful young woman in butter yellow jeogori and sage green chima opening a hanok lattice window to morning sunlight, small plum blossom branch and distant hills. Warm cream, pale gold, sage.",
+      "bytes": 149010,
+      "sha256": "e471a315ab634ffcddf86e0c2949458078e87b3760592ad72c622c85f1281810"
+    },
+    {
+      "key": "astro-today",
+      "path": "posters/astro-today.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young man in slate blue and ivory hanbok standing under a pale daytime moon at a Korean stone observatory, delicate stars reflected on a pond and soft blue clouds. Mist blue, soft indigo, ivory.",
+      "bytes": 179656,
+      "sha256": "ca78acac70b5b874576bde87bfb5baa281a9610e8a465ae0065ddb3364e4b191"
+    },
+    {
+      "key": "natal",
+      "path": "posters/natal.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A serene young woman in ivory and muted indigo hanbok, half-length portrait beneath a large hand-painted celestial ring with tiny unlabelled stars and a crescent moon, traditional celestial observatory behind her. Indigo, muted gold, warm ivory.",
+      "bytes": 197916,
+      "sha256": "d425e4e033a0b71a37ac73851cd75783b330f3348c6da483792653f241d455df"
+    },
+    {
+      "key": "marriage",
+      "path": "posters/marriage.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young adult couple in refined Korean wedding hanbok, woman in warm coral and ivory and man in elegant dark red and ink blue, subtle ceremonial lanterns and embroidered peonies around a hanok doorway. Intimate tasteful mood.",
+      "bytes": 187328,
+      "sha256": "226952bee7398d55c39694c0979d00c9f27f9918e0db3377eadf105f2c5f7944"
+    },
+    {
+      "key": "reunion",
+      "path": "posters/reunion.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A wistful young woman in dusty rose and cream hanbok turns toward a young man in blue across a small stone bridge, drifting plum petals and willow branches, warm late-afternoon light. Muted pink, slate blue, moss.",
+      "bytes": 187800,
+      "sha256": "d56b83f2c6102ba54e0e7d687ce64fd5d4619116e024bdf98ec4aeab6d999f87"
+    },
+    {
+      "key": "counsel-unni",
+      "path": "posters/counsel-unni.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A warmly smiling young woman in soft peach and ivory hanbok, sitting beside a tea set in a cozy hanok room, plum blossom vase and lattice windows, welcoming direct eye contact. Warm peach, sage and ivory.",
+      "bytes": 133132,
+      "sha256": "cc5b6ef03712935b9c4da25df180f92f5185a8b7ea19f72875c92a63a8b872cb"
+    },
+    {
+      "key": "counsel-senior",
+      "path": "posters/counsel-senior.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A confident sharp-eyed handsome young man in deep navy and cream hanbok with headband, leaning slightly forward at a low wooden desk with an unmarked scroll, bamboo and pine outside. Ink blue, cream, ochre.",
+      "bytes": 184304,
+      "sha256": "be2aeabe9ff19a7c18501ee233515e5ca14ff5a9f8c496d2625cd74552889dbd"
+    },
+    {
+      "key": "counsel-halmae",
+      "path": "posters/counsel-halmae.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A kind smiling young woman aged 27 in warm mustard yellow and sage green hanbok, holding a silk blessing pouch in both hands, herbal tea and persimmon branches in a warm hanok room. Youthful adult face. Ochre, sage, soft cream.",
+      "bytes": 147846,
+      "sha256": "a2030e0537e1db1d416456f3b51afbe4c454f868ecd32c87f82300ce78a9a54e"
+    },
+    {
+      "key": "qna",
+      "path": "posters/qna.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A composed charismatic young male scholar in burgundy and ink brown embroidered hanbok and headband, seated in a hanok library, unmarked rolled scroll in hand, pine branches and clouds behind. Rich muted vermilion, brown, gold.",
+      "bytes": 177632,
+      "sha256": "6ee3f4c1cc8efb9a05dad95a756827ce23d72cec2cbfab3e00a75875a726d341"
+    },
+    {
+      "key": "career",
+      "path": "posters/career.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: An ambitious young man in deep teal and ivory hanbok climbing stone steps toward a sunlit hanok study, carrying neatly bound books, bamboo and tall pines suggesting steady growth. Jade teal, ochre, warm cream.",
+      "bytes": 229376,
+      "sha256": "62cd20649fba27161883e6b0178207b2d85f295215f21a99a64277f792a2d503"
+    },
+    {
+      "key": "study",
+      "path": "posters/study.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A focused young adult woman in pale blue and ivory hanbok reading an unmarked bound book by a lattice window, ink brush and ceramic lamp on her desk, bamboo leaves in soft daylight. Sky blue, ink brown, warm ivory.",
+      "bytes": 163400,
+      "sha256": "566105b930820ea68e965a10a03c3762a46564ecd4a249ca6df06a40fe281cc7"
+    },
+    {
+      "key": "astro-career",
+      "path": "posters/astro-career.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young male scholar in indigo and ivory hanbok studies an antique brass armillary sphere beside a low wooden desk, stars above a mountain pavilion. Indigo, muted gold, parchment.",
+      "bytes": 181854,
+      "sha256": "d7c0b4a07e939696e09ffa829ed3821b6984b9d45e15a1f45444a9f6e93b90bf"
+    },
+    {
+      "key": "monthly",
+      "path": "posters/monthly.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young woman in jade and ivory hanbok walking beneath a tree showing spring blossom, summer leaf, autumn maple and winter snow along a winding path, gentle cycle of seasons. Soft jade, warm ochre, dusty rose.",
+      "bytes": 219274,
+      "sha256": "b994627bc330b0cb9f9da0a49e20af28d7da83a4a7a228cf3f008f3a3c4f4cfb"
+    },
+    {
+      "key": "daypick",
+      "path": "posters/daypick.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young woman in pale gold and ivory hanbok ties a small vermilion ribbon to a flowering branch beside a traditional sundial in a hanok courtyard, thoughtful expression. Gold ochre, moss green, rose.",
+      "bytes": 176952,
+      "sha256": "7f39e702d1c517362ee7ef7969e631f11c557386a18eba5fa3aa4ef4294e0bce"
+    },
+    {
+      "key": "astro-yearly",
+      "path": "posters/astro-yearly.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young man in deep indigo and ivory hanbok looks up at a large circular procession of twelve small unlabelled luminous stars above mountains and a traditional observatory, seasons shifting subtly. Indigo, ochre, vermilion accents.",
+      "bytes": 210054,
+      "sha256": "0f18aef9da90524ba3eecc5d18448c1ada1b53a38a94622df521f505d2469796"
+    },
+    {
+      "key": "child",
+      "path": "posters/child.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A caring young adult couple in soft sage and pale yellow hanbok tend a tiny flowering seedling together in a traditional garden; symbolic hopes for family with only adult figures. Pale jade, butter yellow, cream.",
+      "bytes": 156352,
+      "sha256": "74c2b399f5221d7f0a645fcd8310c87b0e65b21b2bb0fbddd0c81b44abce31ba"
+    },
+    {
+      "key": "children",
+      "path": "posters/children.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young adult woman in warm coral and ivory hanbok holds a small embroidered blessing pouch beside a pomegranate branch and a pair of cranes in a peaceful courtyard; symbolic family blessings with no children depicted. Coral, sage, ochre.",
+      "bytes": 193680,
+      "sha256": "3c7f303aa7c149e2f21751e82d8ec052ec3be18f9f89fbf23b3707bf1c006c60"
+    },
+    {
+      "key": "health",
+      "path": "posters/health.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A healthy serene young adult man in sage and ivory hanbok walking beside a mountain stream among bamboo and medicinal herbs, clear morning light and relaxed expression. Soft green, warm ivory, muted blue.",
+      "bytes": 227400,
+      "sha256": "16340b3a7576cfa1d8b6f96a1abb755ef1ce64ce8443ea0ef42781a94e6ca847"
+    },
+    {
+      "key": "ziwei",
+      "path": "posters/ziwei.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A dignified young man in muted plum and indigo embroidered hanbok, headband and traditional hairpin, seated beneath a hand-painted celestial vault of clustered stars above a Korean palace roof. Plum, indigo, muted gold on hanji.",
+      "bytes": 192018,
+      "sha256": "ccec471ec359ada9b9b9a5ec7faacce1dce81533b21dd773baa173406fc1eb65"
+    },
+    {
+      "key": "vedic",
+      "path": "posters/vedic.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A serene young Korean woman in saffron cream and indigo hanbok beside a brass celestial globe, lotus pond and temple-style garden pavilion, fine hand-painted constellation arcs without writing. Saffron, indigo, ivory.",
+      "bytes": 206160,
+      "sha256": "b39891ac7a80ad239d82863657c36c89a9e4b74ab8d09f2e323f88a8da0c9a8d"
+    },
+    {
+      "key": "mahabote",
+      "path": "posters/mahabote.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A bright young Korean woman in warm ochre and jade hanbok holding a lotus flower beside a gentle white elephant in a lush lotus garden, subtle circular sun halo, traditional hand-painted botanical details. Jade, warm ochre, dusty pink.",
+      "bytes": 180288,
+      "sha256": "77ae9157446a086c6378335f2eb02d9624fbdfdd1794748f66a557f88aa7fd38"
+    },
+    {
+      "key": "tarot-bg",
+      "path": "posters/tarot-bg.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A still life without people: elegant dark lacquer low table with a small silk cloth, blank-backed fortune cards, porcelain tea bowl, flowering plum branch and an antique brass moon ornament, softly painted hanok lattice window behind. Korean ink watercolor, deep muted plum and parchment, tranquil mysterious atmosphere.",
+      "bytes": 164516,
+      "sha256": "97dd2a3870e79da7cb9c5efd76264146b4eb4adf9b977f2cdb906ef01714031e"
+    },
+    {
+      "key": "astro-love",
+      "path": "posters/astro-love.webp",
+      "prompt": "Use case: illustration-story. Asset: finished portrait 3:4 cover illustration for a Korean fortune website. Refined Korean ink-and-watercolor painting on warm ivory hanji paper with visible fibers, fine expressive dark ink outlines, translucent mineral pigments, flowing hanbok fabric, delicately hand-painted plants and traditional architecture, contemporary beautiful Korean illustrated storybook aesthetic like the user's reference images. All human subjects must be Korean young ADULTS aged 22–28, elegant natural faces and proportions, traditional Korean hanbok and period hairstyles, never elderly, never children. Detailed but not photorealistic. Full bleed painted paper, subtle atmospheric depth, no frames. Compose faces in upper center, scene readable at thumbnail size, keep subject within central 65% for wide header cropping. No text, lettering, numbers, modern objects, logos or watermarks. Scene: A young adult Korean couple in ivory, dusty rose and muted indigo hanbok looking gently at one another beneath a large crescent moon, tiny hand-painted stars and intertwined flowering plum branches, a moonlit hanok pavilion in the distance. Romantic mineral pink, indigo and warm ivory.",
+      "bytes": 201032,
+      "sha256": "401a07f2987d8c4cee4b89573172ccaa46ccc2592aad0e50ebfda14ca73fa979"
+    },
+    {
+      "key": "major-00-fool",
+      "index": 1,
+      "scene": "A cheerful young Korean male traveler in pale ivory and sage hanbok, small cloth bundle on a stick over his shoulder, a small white dog at his feet, stepping toward the edge of a rocky mountain path under a bright sun; lighthearted new beginning.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A cheerful young Korean male traveler in pale ivory and sage hanbok, small cloth bundle on a stick over his shoulder, a small white dog at his feet, stepping toward the edge of a rocky mountain path under a bright sun; lighthearted new beginning.",
+      "path": "tarot/card-01.webp",
+      "bytes": 157140,
+      "sha256": "df59f3ae23f90e8ce0c4303a5c7fc48bcaf3421635031312bab94bf750a3f481"
+    },
+    {
+      "key": "major-01-magician",
+      "index": 2,
+      "scene": "A young Korean male scholar-magician in vermilion and cream hanbok stands at a wooden table with EXACTLY one bamboo wand, one brass cup, one ceremonial sword and one round pierced coin. One hand raised, one pointing down, peonies and climbing vines frame him.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean male scholar-magician in vermilion and cream hanbok stands at a wooden table with EXACTLY one bamboo wand, one brass cup, one ceremonial sword and one round pierced coin. One hand raised, one pointing down, peonies and climbing vines frame him.",
+      "path": "tarot/card-02.webp",
+      "bytes": 174438,
+      "sha256": "c407c9230a3f74f1015dfbf94803ab87bd702c25aa91e292afd0a99d4710ec91"
+    },
+    {
+      "key": "major-02-high-priestess",
+      "index": 3,
+      "scene": "A serene young Korean woman in midnight blue and ivory hanbok seated between two stone pillars, holding a rolled blank scroll, crescent moon at her feet, a translucent lotus-patterned curtain and moonlit water behind her. Quiet intuition.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A serene young Korean woman in midnight blue and ivory hanbok seated between two stone pillars, holding a rolled blank scroll, crescent moon at her feet, a translucent lotus-patterned curtain and moonlit water behind her. Quiet intuition.",
+      "path": "tarot/card-03.webp",
+      "bytes": 155124,
+      "sha256": "9a46738c0c5eaa16c4a26215fc871e89fa940eaadf8a96d3c3685e9445c6e110"
+    },
+    {
+      "key": "major-03-empress",
+      "index": 4,
+      "scene": "A graceful young Korean woman in rich sage and coral embroidered hanbok sits on an ornate wooden garden seat among ripe grain, pomegranates and peonies, a gentle river behind. Warm abundant nurturing atmosphere, fully clothed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A graceful young Korean woman in rich sage and coral embroidered hanbok sits on an ornate wooden garden seat among ripe grain, pomegranates and peonies, a gentle river behind. Warm abundant nurturing atmosphere, fully clothed.",
+      "path": "tarot/card-04.webp",
+      "bytes": 183770,
+      "sha256": "8645aa53ed937de8f84685cdccd99f252ffe08a7d26c60caa6b99f6acee7e701"
+    },
+    {
+      "key": "major-04-emperor",
+      "index": 5,
+      "scene": "A commanding handsome young Korean man in deep cinnabar ceremonial hanbok sits upright on a carved stone chair with subtle ram motifs, holding a ceremonial short staff, mountains behind, composed protective authority.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A commanding handsome young Korean man in deep cinnabar ceremonial hanbok sits upright on a carved stone chair with subtle ram motifs, holding a ceremonial short staff, mountains behind, composed protective authority.",
+      "path": "tarot/card-05.webp",
+      "bytes": 161884,
+      "sha256": "4c22fb48d93d65d857ef2a0a600a29d94c464ef5adfff21f0f9df242dda13ab2"
+    },
+    {
+      "key": "major-05-hierophant",
+      "index": 6,
+      "scene": "A wise-looking but youthful Korean male teacher aged 27 in ivory and ochre ceremonial robes seated in a traditional wooden academy hall, offering an unmarked bound book to two young adult students. Dignified warm guidance.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A wise-looking but youthful Korean male teacher aged 27 in ivory and ochre ceremonial robes seated in a traditional wooden academy hall, offering an unmarked bound book to two young adult students. Dignified warm guidance.",
+      "path": "tarot/card-06.webp",
+      "bytes": 122726,
+      "sha256": "74f970cf8debeca51dd3a8e170313e836df93abd2b7632e1fdb2191315f4541a"
+    },
+    {
+      "key": "major-06-lovers",
+      "index": 7,
+      "scene": "A beautiful young adult Korean couple, man in muted jade hanbok and woman in pale coral hanbok, face one another beneath a flowering tree, two paths merge behind them, golden sunrise and mountains. Tender mutual choice, fully clothed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A beautiful young adult Korean couple, man in muted jade hanbok and woman in pale coral hanbok, face one another beneath a flowering tree, two paths merge behind them, golden sunrise and mountains. Tender mutual choice, fully clothed.",
+      "path": "tarot/card-07.webp",
+      "bytes": 178064,
+      "sha256": "0e1ca5c827bdaff77e50c0a4f35655937f5bbacd0adce405a059a0a6e93479a7"
+    },
+    {
+      "key": "major-07-chariot",
+      "index": 8,
+      "scene": "A determined young Korean male rider in rich blue and vermilion hanbok on a simple ornate traditional chariot pulled by one white horse and one black horse; two horses exactly, palace gates and mountains behind. Strong forward motion.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A determined young Korean male rider in rich blue and vermilion hanbok on a simple ornate traditional chariot pulled by one white horse and one black horse; two horses exactly, palace gates and mountains behind. Strong forward motion.",
+      "path": "tarot/card-08.webp",
+      "bytes": 169384,
+      "sha256": "68810fdc6bdf06e71f727baa03bc434b0854e04a1482a3201be5c725e6348009"
+    },
+    {
+      "key": "major-08-strength",
+      "index": 9,
+      "scene": "A calm young Korean woman in ivory and butter yellow hanbok gently rests her hand near the head of a powerful golden lion in a meadow, soft expression, no struggle, blossoms and mountains behind. Kind courage.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A calm young Korean woman in ivory and butter yellow hanbok gently rests her hand near the head of a powerful golden lion in a meadow, soft expression, no struggle, blossoms and mountains behind. Kind courage.",
+      "path": "tarot/card-09.webp",
+      "bytes": 174168,
+      "sha256": "f7bf2ea02bc2826de220ef2aaa1c717184d45f2a8e64caecfb118960755ced17"
+    },
+    {
+      "key": "major-09-hermit",
+      "index": 10,
+      "scene": "A solitary young adult Korean male seeker in simple slate-grey hanbok stands on a snowy mountain path, holding one warm glowing paper lantern and a wooden walking staff, pine silhouettes and mist. Quiet introspection, youthful face.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A solitary young adult Korean male seeker in simple slate-grey hanbok stands on a snowy mountain path, holding one warm glowing paper lantern and a wooden walking staff, pine silhouettes and mist. Quiet introspection, youthful face.",
+      "path": "tarot/card-10.webp",
+      "bytes": 153508,
+      "sha256": "c325e955f42970f1a41cb8725a07277a079ea6565b9115873e57b4ce6fe23318"
+    },
+    {
+      "key": "major-10-wheel",
+      "index": 11,
+      "scene": "A large antique wooden wheel with eight spokes at center, turning among softly painted seasonal clouds, cranes and falling maple leaves above misty mountains. No people, no letters or occult text. Cycles and changing fortune.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A large antique wooden wheel with eight spokes at center, turning among softly painted seasonal clouds, cranes and falling maple leaves above misty mountains. No people, no letters or occult text. Cycles and changing fortune.",
+      "path": "tarot/card-11.webp",
+      "bytes": 182212,
+      "sha256": "a6226a8ff30e1f544f549eb8d616b9b62a7410d55a01bf8aa7d277724497ae2e"
+    },
+    {
+      "key": "major-11-justice",
+      "index": 12,
+      "scene": "A poised young Korean woman in deep red and ivory court hanbok sits frontally between stone pillars holding one straight ceremonial sword upright and one balanced brass weighing scale, calm discerning eyes, soft cream backdrop.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A poised young Korean woman in deep red and ivory court hanbok sits frontally between stone pillars holding one straight ceremonial sword upright and one balanced brass weighing scale, calm discerning eyes, soft cream backdrop.",
+      "path": "tarot/card-12.webp",
+      "bytes": 142218,
+      "sha256": "7d888397ebc464b9c7fa7ece2bf71e6eb50ca6922d7c39a3e6f551eb7e9d3c10"
+    },
+    {
+      "key": "major-12-hanged-man",
+      "index": 13,
+      "scene": "한옥 누각에서 연못의 거꾸로 비친 모습을 바라보는 청년 — 멈춤과 관점 전환",
+      "prompt": "Use case: illustration-story. One portrait 3:4 tarot illustration about pausing and seeing a different perspective. Refined Korean dark ink outlines and light mineral watercolor on warm ivory hanji with visible fibers, same elegant traditional Korean illustrated storybook style as the website. A handsome young adult Korean man aged 24 in sage and ivory hanbok rests safely on a wooden pavilion floor beside a very still pond, calmly leaning over to look at his clear UPSIDE-DOWN REFLECTION in the water. A flowering tree branch arcs overhead, small warm halo-like sunlight behind the reflected head, distant mountains and gentle mist. His real body is comfortably seated upright and safe; the inverted reflection is the visual focus of the lower half. Symbolizes suspended action and a changed viewpoint. No injury, no ropes, no danger, no falling. Fully clothed. No text, letters, numbers, logos, borders or watermarks.",
+      "path": "tarot/card-13.webp",
+      "bytes": 155008,
+      "sha256": "1258a6bf277f70e17f88e68b6659ef766331bd87d5e1c9bb067c51b9c55d577e"
+    },
+    {
+      "key": "major-13-death",
+      "index": 14,
+      "scene": "A white crane rises from a quiet autumn field where fallen red maple leaves become tiny fresh green shoots near a stream, an old empty ceremonial helmet rests by a weathered path, pale sunrise beyond mountains. Symbolic ending and renewal, no corpse, no gore, no fear.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A white crane rises from a quiet autumn field where fallen red maple leaves become tiny fresh green shoots near a stream, an old empty ceremonial helmet rests by a weathered path, pale sunrise beyond mountains. Symbolic ending and renewal, no corpse, no gore, no fear.",
+      "path": "tarot/card-14.webp",
+      "bytes": 169640,
+      "sha256": "206633711190226fba9ca84e865633329fa365420b078eee6c27acfd5858fa5b"
+    },
+    {
+      "key": "major-14-temperance",
+      "index": 15,
+      "scene": "A serene young Korean woman in pale jade and ivory hanbok pours a graceful stream of water between EXACTLY two brass cups, one foot on a rock and the other at the edge of a stream, iris flowers and distant sunlit path. Harmonious balance.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A serene young Korean woman in pale jade and ivory hanbok pours a graceful stream of water between EXACTLY two brass cups, one foot on a rock and the other at the edge of a stream, iris flowers and distant sunlit path. Harmonious balance.",
+      "path": "tarot/card-15.webp",
+      "bytes": 173756,
+      "sha256": "7d29a181f57333dcdb4ac1702e914968411092d31cb1194297d0f4ee361e6ccd"
+    },
+    {
+      "key": "major-15-devil",
+      "index": 16,
+      "scene": "A theatrical traditional Korean dark red dokkaebi mask with small horns hangs above two young adult Korean figures in modest dark hanbok, loose ribbons around their wrists falling freely to the ground, an open gate behind showing they can leave. Symbolic attachment, tasteful, nonsexual, no harm.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A theatrical traditional Korean dark red dokkaebi mask with small horns hangs above two young adult Korean figures in modest dark hanbok, loose ribbons around their wrists falling freely to the ground, an open gate behind showing they can leave. Symbolic attachment, tasteful, nonsexual, no harm.",
+      "path": "tarot/card-16.webp",
+      "bytes": 136946,
+      "sha256": "639c57458561e10ddbd85e7193b41730570814e2fafc399a9430fd704f3e2de8"
+    },
+    {
+      "key": "major-16-tower",
+      "index": 17,
+      "scene": "Lightning strikes the top of an old Korean stone watchtower during a dramatic storm, roof tiles and small stones falling into empty space, no people, dawn light appears through the clouds. Striking but elegant ink painting of collapse and rebuilding.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: Lightning strikes the top of an old Korean stone watchtower during a dramatic storm, roof tiles and small stones falling into empty space, no people, dawn light appears through the clouds. Striking but elegant ink painting of collapse and rebuilding.",
+      "path": "tarot/card-17.webp",
+      "bytes": 180674,
+      "sha256": "b69789af1ab9a7d5de45b9c1f874a08f19b628b22852aca56a4cc7fed1aa3bcf"
+    },
+    {
+      "key": "major-17-star",
+      "index": 18,
+      "scene": "A hopeful young Korean woman in pale blue and ivory hanbok kneels beside a clear pool, pouring water from two small pottery jugs onto water and earth, one bright eight-pointed star and seven small stars above. Fully clothed, calm luminous blue.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A hopeful young Korean woman in pale blue and ivory hanbok kneels beside a clear pool, pouring water from two small pottery jugs onto water and earth, one bright eight-pointed star and seven small stars above. Fully clothed, calm luminous blue.",
+      "path": "tarot/card-18.webp",
+      "bytes": 171290,
+      "sha256": "7d0b153f56947547a65c1b53a9ea3939dee0d5170b736e84fea3f1972eaadd51"
+    },
+    {
+      "key": "major-18-moon",
+      "index": 19,
+      "scene": "A large full moon over a winding path between two old Korean stone towers, a dog and a wolf on opposite banks of a stream, a small crayfish at the water edge, reeds and mist, no humans. Dreamlike indigo and cream uncertainty.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A large full moon over a winding path between two old Korean stone towers, a dog and a wolf on opposite banks of a stream, a small crayfish at the water edge, reeds and mist, no humans. Dreamlike indigo and cream uncertainty.",
+      "path": "tarot/card-19.webp",
+      "bytes": 175532,
+      "sha256": "c0411cc4c2e584737dca8ba436344e55298570d3e34d9942f78b35e4d17617ff"
+    },
+    {
+      "key": "major-19-sun",
+      "index": 20,
+      "scene": "A joyful young adult Korean woman in butter yellow and coral hanbok rides a gentle white horse beneath one radiant sun, sunflowers and low stone wall behind, billowing vermilion ribbon. Bright warmth and success, adult rider fully clothed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A joyful young adult Korean woman in butter yellow and coral hanbok rides a gentle white horse beneath one radiant sun, sunflowers and low stone wall behind, billowing vermilion ribbon. Bright warmth and success, adult rider fully clothed.",
+      "path": "tarot/card-20.webp",
+      "bytes": 143248,
+      "sha256": "326de55b4e09f5fe0086292e9022120462f014a3b96e12a902df6f2e46f1c192"
+    },
+    {
+      "key": "major-20-judgement",
+      "index": 21,
+      "scene": "Two young adult Korean people in ivory hanbok stand on a mountain ridge looking up toward a crane carrying a small golden bell through opening clouds, old folded garments left on a rock behind them, fresh sunrise. Symbolic awakening and response, fully clothed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: Two young adult Korean people in ivory hanbok stand on a mountain ridge looking up toward a crane carrying a small golden bell through opening clouds, old folded garments left on a rock behind them, fresh sunrise. Symbolic awakening and response, fully clothed.",
+      "path": "tarot/card-21.webp",
+      "bytes": 168186,
+      "sha256": "4f1ad2704df66c05f52612c7eea20a09c2b59c4973d7a6ab6e233b6daac4ac7a"
+    },
+    {
+      "key": "major-21-world",
+      "index": 22,
+      "scene": "A graceful young adult Korean woman in jade and vermilion flowing hanbok dances within a wreath of plum blossoms and laurel, four small cloud medallions show a bird, lion, ox and human face at the corners, harmonious mountain backdrop. Completion, fully clothed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A graceful young adult Korean woman in jade and vermilion flowing hanbok dances within a wreath of plum blossoms and laurel, four small cloud medallions show a bird, lion, ox and human face at the corners, harmonious mountain backdrop. Completion, fully clothed.",
+      "path": "tarot/card-22.webp",
+      "bytes": 182420,
+      "sha256": "193929797bc3c849ae8dea5badb38b318187c1421f4f638b02d8a66a263f1990"
+    },
+    {
+      "key": "wands-01",
+      "index": 23,
+      "scene": "A single fresh bamboo staff held upright by a hand emerging from a softly painted cloud, new green leaves and mountain sunrise.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A single fresh bamboo staff held upright by a hand emerging from a softly painted cloud, new green leaves and mountain sunrise.",
+      "path": "tarot/card-23.webp",
+      "bytes": 125992,
+      "sha256": "44a77ab67c30dff5a7219787a15434fada03322c7643a8c228ab5ef29ece9c4f"
+    },
+    {
+      "key": "wands-02",
+      "index": 24,
+      "scene": "A young man on a pavilion balcony holding one bamboo staff while a second bamboo staff is fixed beside him, surveying distant mountains and river. EXACTLY TWO staffs.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young man on a pavilion balcony holding one bamboo staff while a second bamboo staff is fixed beside him, surveying distant mountains and river. EXACTLY TWO staffs.",
+      "path": "tarot/card-24.webp",
+      "bytes": 135216,
+      "sha256": "484b38b1966e48b516fe1ee9b57fb964b3562de7f6b338d0a024eca8dcabe965"
+    },
+    {
+      "key": "wands-03",
+      "index": 25,
+      "scene": "A young woman on a coastal hill looks toward three small distant sailboats, with EXACTLY THREE upright bamboo staffs beside her.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young woman on a coastal hill looks toward three small distant sailboats, with EXACTLY THREE upright bamboo staffs beside her.",
+      "path": "tarot/card-25.webp",
+      "bytes": 176032,
+      "sha256": "4508c53c5af39df0522c749d0daa85a58a7e5be269deaea4fb855f9cda39d734"
+    },
+    {
+      "key": "wands-04",
+      "index": 26,
+      "scene": "EXACTLY FOUR upright bamboo staffs support a garland of blossoms above two happy young adults in hanbok approaching a garden pavilion.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY FOUR upright bamboo staffs support a garland of blossoms above two happy young adults in hanbok approaching a garden pavilion.",
+      "path": "tarot/card-26.webp",
+      "bytes": 194006,
+      "sha256": "0e9a60c67317dc42d3c966318c8ba790422fbee01abff8abe0907d16dc20e526"
+    },
+    {
+      "key": "wands-05",
+      "index": 27,
+      "scene": "EXACTLY FIVE young adult Korean people in hanbok hold one bamboo staff each in a lively friendly practice circle, dynamic crossed staffs without injury.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY FIVE young adult Korean people in hanbok hold one bamboo staff each in a lively friendly practice circle, dynamic crossed staffs without injury.",
+      "path": "tarot/card-27.webp",
+      "bytes": 187100,
+      "sha256": "a268e4aea2599559b75bd2b7fd755436a7b065eb75a2896f9ae5dc58f58c8455"
+    },
+    {
+      "key": "wands-06",
+      "index": 28,
+      "scene": "A confident young male rider on a horse holds one upright bamboo staff crowned with a small laurel wreath, with FIVE other upright bamboo staffs held by adult companions behind, EXACTLY SIX staffs total.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A confident young male rider on a horse holds one upright bamboo staff crowned with a small laurel wreath, with FIVE other upright bamboo staffs held by adult companions behind, EXACTLY SIX staffs total.",
+      "path": "tarot/card-28.webp",
+      "bytes": 176174,
+      "sha256": "82b7a5d8f081a16244a70ba8faa956488970d54f8f770a0629f2734810e01fe9"
+    },
+    {
+      "key": "wands-07",
+      "index": 29,
+      "scene": "A young male defender stands on a high rock holding one bamboo staff, facing SIX other bamboo staffs rising from below the frame, EXACTLY SEVEN staffs, no violence or injury.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young male defender stands on a high rock holding one bamboo staff, facing SIX other bamboo staffs rising from below the frame, EXACTLY SEVEN staffs, no violence or injury.",
+      "path": "tarot/card-29.webp",
+      "bytes": 170646,
+      "sha256": "08e522669c7ab420a74aea4e6bab0f7eb0040eb15ca97e85f4a5b63362cc3fd6"
+    },
+    {
+      "key": "wands-08",
+      "index": 30,
+      "scene": "EXACTLY EIGHT long bamboo staffs fly diagonally across open sky above a calm Korean river and hills, no people.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY EIGHT long bamboo staffs fly diagonally across open sky above a calm Korean river and hills, no people.",
+      "path": "tarot/card-30.webp",
+      "bytes": 134838,
+      "sha256": "0d5db0897aadc8644e54dca34607feee6c4424afee8bba7b92a0867e8ec6f90f"
+    },
+    {
+      "key": "wands-09",
+      "index": 31,
+      "scene": "A tired but steadfast young Korean man in simple hanbok holds one bamboo staff, EIGHT other upright bamboo staffs form a fence behind him, EXACTLY NINE staffs.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A tired but steadfast young Korean man in simple hanbok holds one bamboo staff, EIGHT other upright bamboo staffs form a fence behind him, EXACTLY NINE staffs.",
+      "path": "tarot/card-31.webp",
+      "bytes": 183272,
+      "sha256": "53530566a002ce4badd5d62746ee2d34b6ec1541be4fcf0507aeee470e2ccfd7"
+    },
+    {
+      "key": "wands-10",
+      "index": 32,
+      "scene": "A young Korean man in ochre hanbok carries a tied bundle of EXACTLY TEN long bamboo staffs uphill toward a village, effort and responsibility.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean man in ochre hanbok carries a tied bundle of EXACTLY TEN long bamboo staffs uphill toward a village, effort and responsibility.",
+      "path": "tarot/card-32.webp",
+      "bytes": 202138,
+      "sha256": "c7a73ac27b8a6f4d88ba278c95b735085b90b080d717237da07420377075520e"
+    },
+    {
+      "key": "wands-11-page",
+      "index": 33,
+      "scene": "A curious young adult Korean apprentice aged 22 standing in a garden holding ONE bamboo staff with a few leaves with both hands, fresh start, attentive expression, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A curious young adult Korean apprentice aged 22 standing in a garden holding ONE bamboo staff with a few leaves with both hands, fresh start, attentive expression, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "path": "tarot/card-33.webp",
+      "bytes": 166938,
+      "sha256": "286e3fd9a22bde4e836738cb84a01f05d77eaece8e67a400b726680136728e56"
+    },
+    {
+      "key": "wands-12-knight",
+      "index": 34,
+      "scene": "A purposeful young adult Korean rider aged 25 on a horse carrying ONE bamboo staff with a few leaves, poised forward movement, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A purposeful young adult Korean rider aged 25 on a horse carrying ONE bamboo staff with a few leaves, poised forward movement, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "path": "tarot/card-34.webp",
+      "bytes": 164840,
+      "sha256": "7aaa42ad012978a5d0e99122029da167b15f4bb9c894c0c4ec20913be06e7712"
+    },
+    {
+      "key": "wands-13-queen",
+      "index": 35,
+      "scene": "A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE bamboo staff with a few leaves, intelligent calm expression, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE bamboo staff with a few leaves, intelligent calm expression, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "path": "tarot/card-35.webp",
+      "bytes": 164608,
+      "sha256": "3412b660e9a7499012294dde72fdeff9902d85673e56ef6f27382bb0b0ad6482"
+    },
+    {
+      "key": "wands-14-king",
+      "index": 36,
+      "scene": "A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE bamboo staff with a few leaves, confident calm leadership, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE bamboo staff with a few leaves, confident calm leadership, vermilion and ochre hanbok, bamboo grove and warm sun.",
+      "path": "tarot/card-36.webp",
+      "bytes": 155698,
+      "sha256": "fcbadfc0ba94f8a0378eba38c497dd69157702d484b9ecb4e24186b32f378bb1"
+    },
+    {
+      "key": "cups-01",
+      "index": 37,
+      "scene": "One large elegant brass chalice rises above a lotus pond, a hand gently supports it from a soft cloud, gentle streams overflow into the pond.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: One large elegant brass chalice rises above a lotus pond, a hand gently supports it from a soft cloud, gentle streams overflow into the pond.",
+      "path": "tarot/card-37.webp",
+      "bytes": 152808,
+      "sha256": "49307e92dd83435c4fd20ba44825bb89ffd2a9ff25754a99f4fde5255a920425"
+    },
+    {
+      "key": "cups-02",
+      "index": 38,
+      "scene": "EXACTLY TWO young adult Koreans in sage and coral hanbok face one another holding one brass cup each at chest height, TWO cups total, flowering plum branches and a gentle dawn.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY TWO young adult Koreans in sage and coral hanbok face one another holding one brass cup each at chest height, TWO cups total, flowering plum branches and a gentle dawn.",
+      "path": "tarot/card-38.webp",
+      "bytes": 145990,
+      "sha256": "3acf30fe9b8fc869baa7c9a4e284ef7869cc767c73fac6a431e17130c693e6ba"
+    },
+    {
+      "key": "cups-03",
+      "index": 39,
+      "scene": "EXACTLY THREE young adult Korean women in jade, peach and cream hanbok raise one brass cup each in a joyful garden circle, THREE cups total.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY THREE young adult Korean women in jade, peach and cream hanbok raise one brass cup each in a joyful garden circle, THREE cups total.",
+      "path": "tarot/card-39.webp",
+      "bytes": 174910,
+      "sha256": "1c671107a073ed9001bea8f756684f3cfaa3a711d166694d934e5015338b1155"
+    },
+    {
+      "key": "cups-04",
+      "index": 40,
+      "scene": "A contemplative young man seated beneath a tree with EXACTLY THREE brass cups on the ground before him, a hand from a small cloud offers a FOURTH cup, FOUR cups total.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A contemplative young man seated beneath a tree with EXACTLY THREE brass cups on the ground before him, a hand from a small cloud offers a FOURTH cup, FOUR cups total.",
+      "path": "tarot/card-40.webp",
+      "bytes": 159930,
+      "sha256": "6b26877e9419b7b0fa29050576a2ad50d9bd4a452df85e24c9563328d117f480"
+    },
+    {
+      "key": "cups-05",
+      "index": 41,
+      "scene": "A wistful young woman in slate-blue hanbok stands by a stream, THREE overturned brass cups in front of her and TWO upright brass cups behind, FIVE cups total, bridge toward a warm hanok in the distance.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A wistful young woman in slate-blue hanbok stands by a stream, THREE overturned brass cups in front of her and TWO upright brass cups behind, FIVE cups total, bridge toward a warm hanok in the distance.",
+      "path": "tarot/card-41.webp",
+      "bytes": 190554,
+      "sha256": "cfb0bf3f70f7729623d5a5e0b4c3d0b18a1f0e6d45886a0ad5cf1626a804f824"
+    },
+    {
+      "key": "cups-06",
+      "index": 42,
+      "scene": "Two young ADULT Korean friends exchange a brass cup of blossoms in a peaceful old hanok courtyard, with FIVE additional brass cups filled with flowers arranged clearly around them, SIX cups total. Both characters adults.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: Two young ADULT Korean friends exchange a brass cup of blossoms in a peaceful old hanok courtyard, with FIVE additional brass cups filled with flowers arranged clearly around them, SIX cups total. Both characters adults.",
+      "path": "tarot/card-42.webp",
+      "bytes": 179004,
+      "sha256": "00667b86871ce932d4b70750631fa8139c4f0a64db0d759346922cc0942d10d2"
+    },
+    {
+      "key": "cups-07",
+      "index": 43,
+      "scene": "EXACTLY SEVEN brass cups floating separately in mist, each contains a distinct symbolic treasure: lotus, jewel, small dragon, miniature pavilion, laurel, silk pouch and mask. A young adult watches thoughtfully from below.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY SEVEN brass cups floating separately in mist, each contains a distinct symbolic treasure: lotus, jewel, small dragon, miniature pavilion, laurel, silk pouch and mask. A young adult watches thoughtfully from below.",
+      "path": "tarot/card-43.webp",
+      "bytes": 151846,
+      "sha256": "9616489198ed2b6a20f10b8216a6478d70a87a1d45428a98bde79cb5463a58a1"
+    },
+    {
+      "key": "cups-08",
+      "index": 44,
+      "scene": "A young Korean traveler walks away up a mountain path under a crescent moon, EXACTLY EIGHT brass cups stacked in two uneven rows in the foreground, leaving familiar comfort behind.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean traveler walks away up a mountain path under a crescent moon, EXACTLY EIGHT brass cups stacked in two uneven rows in the foreground, leaving familiar comfort behind.",
+      "path": "tarot/card-44.webp",
+      "bytes": 177376,
+      "sha256": "522a54f69e43281da2702b4835bae6f6c8be7fa61966ad416ff10cf65a770752"
+    },
+    {
+      "key": "cups-09",
+      "index": 45,
+      "scene": "A satisfied young Korean man in deep jade hanbok sits calmly before a neat arcing shelf holding EXACTLY NINE brass cups, warm lantern glow and flowering branches.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A satisfied young Korean man in deep jade hanbok sits calmly before a neat arcing shelf holding EXACTLY NINE brass cups, warm lantern glow and flowering branches.",
+      "path": "tarot/card-45.webp",
+      "bytes": 148360,
+      "sha256": "b6cc1eeb7fbea402ba4dd6f1a281662c3af5436508c115b9154bcef377d5cf00"
+    },
+    {
+      "key": "cups-10",
+      "index": 46,
+      "scene": "A happy young adult Korean couple in colorful hanbok stand beside a peaceful river and home, EXACTLY TEN brass cups arranged in an arch above them in soft rainbow mist. Only adults, no children.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A happy young adult Korean couple in colorful hanbok stand beside a peaceful river and home, EXACTLY TEN brass cups arranged in an arch above them in soft rainbow mist. Only adults, no children.",
+      "path": "tarot/card-46.webp",
+      "bytes": 164242,
+      "sha256": "eb3bf9927ef939fd43680872c363a50f9a9df68d90c045a303a322ec20edd0f4"
+    },
+    {
+      "key": "cups-11-page",
+      "index": 47,
+      "scene": "A curious young adult Korean apprentice aged 22 standing in a garden holding ONE brass cup with both hands, fresh start, attentive expression, jade and ivory hanbok, lotus pond and willow.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A curious young adult Korean apprentice aged 22 standing in a garden holding ONE brass cup with both hands, fresh start, attentive expression, jade and ivory hanbok, lotus pond and willow.",
+      "path": "tarot/card-47.webp",
+      "bytes": 143812,
+      "sha256": "fda42586398fddaa86f14eab427678205c794353739fa1d91202bcffde716668"
+    },
+    {
+      "key": "cups-12-knight",
+      "index": 48,
+      "scene": "A purposeful young adult Korean rider aged 25 on a horse carrying ONE brass cup, poised forward movement, jade and ivory hanbok, lotus pond and willow.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A purposeful young adult Korean rider aged 25 on a horse carrying ONE brass cup, poised forward movement, jade and ivory hanbok, lotus pond and willow.",
+      "path": "tarot/card-48.webp",
+      "bytes": 168518,
+      "sha256": "6ab5611c876e80bbe2fde955c7f4cae5973f8825bcdd7deb109ecd6ca26d7ac4"
+    },
+    {
+      "key": "cups-13-queen",
+      "index": 49,
+      "scene": "A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE brass cup, intelligent calm expression, jade and ivory hanbok, lotus pond and willow.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE brass cup, intelligent calm expression, jade and ivory hanbok, lotus pond and willow.",
+      "path": "tarot/card-49.webp",
+      "bytes": 159558,
+      "sha256": "d2e55fddbdd5855a8ce3188dc089e07d5b2182a0cb069c5ca7266f23c1ef6eee"
+    },
+    {
+      "key": "cups-14-king",
+      "index": 50,
+      "scene": "A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE brass cup, confident calm leadership, jade and ivory hanbok, lotus pond and willow.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE brass cup, confident calm leadership, jade and ivory hanbok, lotus pond and willow.",
+      "path": "tarot/card-50.webp",
+      "bytes": 160480,
+      "sha256": "6791996972aa3661a984e48917996ca04af5b7ba7523ba2bd8b5ac363312ae54"
+    },
+    {
+      "key": "swords-01",
+      "index": 51,
+      "scene": "One straight elegant Korean ceremonial sword held upright by a hand emerging from a cloud, delicate laurel wreath around its tip, pale mountain sky.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: One straight elegant Korean ceremonial sword held upright by a hand emerging from a cloud, delicate laurel wreath around its tip, pale mountain sky.",
+      "path": "tarot/card-51.webp",
+      "bytes": 116170,
+      "sha256": "ac317ad3f4bc2b15b06a2acbd6ecfb475e6e898645b8b1e978ed4d2fd57caab4"
+    },
+    {
+      "key": "swords-02",
+      "index": 52,
+      "scene": "A young Korean woman in pale blue hanbok sits with a soft silk blindfold holding EXACTLY TWO crossed ceremonial swords at chest height, crescent moon above a still sea.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean woman in pale blue hanbok sits with a soft silk blindfold holding EXACTLY TWO crossed ceremonial swords at chest height, crescent moon above a still sea.",
+      "path": "tarot/card-52.webp",
+      "bytes": 119236,
+      "sha256": "994931c34879d5245ebc050eb9d7767a84a2c685b38f67d6c93333ae0e2ccd74"
+    },
+    {
+      "key": "swords-03",
+      "index": 53,
+      "scene": "EXACTLY THREE ceremonial swords pass through a symbolic red heart-shaped silk ornament suspended against a soft rainy sky, no people, no blood, grief represented symbolically.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY THREE ceremonial swords pass through a symbolic red heart-shaped silk ornament suspended against a soft rainy sky, no people, no blood, grief represented symbolically.",
+      "path": "tarot/card-53.webp",
+      "bytes": 153826,
+      "sha256": "3ca0fd0d34b920e5303b3b635b6148ddc781ebf0fede86f0f3da57ce41250064"
+    },
+    {
+      "key": "swords-04",
+      "index": 54,
+      "scene": "A young adult Korean man rests peacefully on a low wooden bed in a quiet pavilion, THREE ceremonial swords mounted parallel on the wall and ONE sword laid horizontally below, FOUR swords total.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young adult Korean man rests peacefully on a low wooden bed in a quiet pavilion, THREE ceremonial swords mounted parallel on the wall and ONE sword laid horizontally below, FOUR swords total.",
+      "path": "tarot/card-54.webp",
+      "bytes": 137650,
+      "sha256": "b65b2dd7f8794c6874c39ca474438b51d1b689ab482dbd7ecf5ee9b233c1bd2d"
+    },
+    {
+      "key": "swords-05",
+      "index": 55,
+      "scene": "A young Korean man holds THREE ceremonial swords together while TWO swords lie on the ground, two adult companions walk away toward a misty shore. FIVE swords total, conflict ended without injury.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean man holds THREE ceremonial swords together while TWO swords lie on the ground, two adult companions walk away toward a misty shore. FIVE swords total, conflict ended without injury.",
+      "path": "tarot/card-55.webp",
+      "bytes": 155574,
+      "sha256": "ffb356a2fba577ebc096d360e303ef96eca5578713d1e988cf2e8efbbc6adef0"
+    },
+    {
+      "key": "swords-06",
+      "index": 56,
+      "scene": "A young adult Korean pair cross a calm misty river in a small wooden boat with EXACTLY SIX ceremonial swords arranged upright near the bow, quiet transition toward distant hills.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young adult Korean pair cross a calm misty river in a small wooden boat with EXACTLY SIX ceremonial swords arranged upright near the bow, quiet transition toward distant hills.",
+      "path": "tarot/card-56.webp",
+      "bytes": 119288,
+      "sha256": "d2b78914c7f0519a7c4fda4c85df44e439e9702820b9365fda6de628e9aff1de"
+    },
+    {
+      "key": "swords-07",
+      "index": 57,
+      "scene": "A cautious young Korean man in muted ochre hanbok carries FIVE ceremonial swords away from a quiet camp, TWO remain planted upright behind him, SEVEN swords total, discreet sideways glance.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A cautious young Korean man in muted ochre hanbok carries FIVE ceremonial swords away from a quiet camp, TWO remain planted upright behind him, SEVEN swords total, discreet sideways glance.",
+      "path": "tarot/card-57.webp",
+      "bytes": 165588,
+      "sha256": "63f93f7f52ddb6235efc8cbf087e460103c546ec9f79cc239d68d8952428181a"
+    },
+    {
+      "key": "swords-08",
+      "index": 58,
+      "scene": "A young Korean woman in ivory hanbok with a loose blindfold and loosely draped silk ribbon stands inside a semicircle of EXACTLY EIGHT upright ceremonial swords, open path visible at her feet, unharmed.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A young Korean woman in ivory hanbok with a loose blindfold and loosely draped silk ribbon stands inside a semicircle of EXACTLY EIGHT upright ceremonial swords, open path visible at her feet, unharmed.",
+      "path": "tarot/card-58.webp",
+      "bytes": 181260,
+      "sha256": "a3e371821b2480fa910e849d67ccd2367667228626a6bf412299fd3d878f7d36"
+    },
+    {
+      "key": "swords-09",
+      "index": 59,
+      "scene": "A worried young adult Korean woman sits upright in bed with hands near her face, EXACTLY NINE ceremonial swords arranged horizontally on the dark wall behind, warm dawn enters a lattice window.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A worried young adult Korean woman sits upright in bed with hands near her face, EXACTLY NINE ceremonial swords arranged horizontally on the dark wall behind, warm dawn enters a lattice window.",
+      "path": "tarot/card-59.webp",
+      "bytes": 101464,
+      "sha256": "578a37986d995a5accde4741f4217f26e32b29d638c666611dac7549cf95191f"
+    },
+    {
+      "key": "swords-10",
+      "index": 60,
+      "scene": "EXACTLY TEN ceremonial swords laid in a clear fan on an abandoned dark silk cloak beside a rocky shore, dawn rises beyond storm clouds, no body, no blood, symbolic end of a difficult chapter.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY TEN ceremonial swords laid in a clear fan on an abandoned dark silk cloak beside a rocky shore, dawn rises beyond storm clouds, no body, no blood, symbolic end of a difficult chapter.",
+      "path": "tarot/card-60.webp",
+      "bytes": 166510,
+      "sha256": "1c7faab41fd492b8b99fcc0a840e326a66f5ff0fe15e4a66b33a5515ab01ddc8"
+    },
+    {
+      "key": "swords-11-page",
+      "index": 61,
+      "scene": "A curious young adult Korean apprentice aged 22 standing in a garden holding ONE straight ceremonial sword held upright with both hands, fresh start, attentive expression, indigo and ivory hanbok, cool clouds and pine.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A curious young adult Korean apprentice aged 22 standing in a garden holding ONE straight ceremonial sword held upright with both hands, fresh start, attentive expression, indigo and ivory hanbok, cool clouds and pine.",
+      "path": "tarot/card-61.webp",
+      "bytes": 164940,
+      "sha256": "b2be7e5e4753f594b769a230fc16dc73a5ae0da6f14f8a0438d230c3a7120d18"
+    },
+    {
+      "key": "swords-12-knight",
+      "index": 62,
+      "scene": "A purposeful young adult Korean rider aged 25 on a horse carrying ONE straight ceremonial sword held upright, poised forward movement, indigo and ivory hanbok, cool clouds and pine.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A purposeful young adult Korean rider aged 25 on a horse carrying ONE straight ceremonial sword held upright, poised forward movement, indigo and ivory hanbok, cool clouds and pine.",
+      "path": "tarot/card-62.webp",
+      "bytes": 177518,
+      "sha256": "9461ffc481a75964a1cf3d400f6a3c90500b35c3e19011d107628f99b684b790"
+    },
+    {
+      "key": "swords-13-queen",
+      "index": 63,
+      "scene": "A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE straight ceremonial sword held upright, intelligent calm expression, indigo and ivory hanbok, cool clouds and pine.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE straight ceremonial sword held upright, intelligent calm expression, indigo and ivory hanbok, cool clouds and pine.",
+      "path": "tarot/card-63.webp",
+      "bytes": 163446,
+      "sha256": "ca60a5bd01b7e579d64554d3489fcb9bd03b46aa868c8140e507b1d0480bf98c"
+    },
+    {
+      "key": "swords-14-king",
+      "index": 64,
+      "scene": "A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE straight ceremonial sword held upright, confident calm leadership, indigo and ivory hanbok, cool clouds and pine.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE straight ceremonial sword held upright, confident calm leadership, indigo and ivory hanbok, cool clouds and pine.",
+      "path": "tarot/card-64.webp",
+      "bytes": 153636,
+      "sha256": "3d81e55fdbb9c446be0cbf9066b765c14ff3379b1f5636d0377082734a8c9989"
+    },
+    {
+      "key": "pentacles-01",
+      "index": 65,
+      "scene": "One round gold coin with a simple five-point star and no lettering held by a hand from a cloud above a flowering Korean garden gate, a clear path toward mountains.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: One round gold coin with a simple five-point star and no lettering held by a hand from a cloud above a flowering Korean garden gate, a clear path toward mountains.",
+      "path": "tarot/card-65.webp",
+      "bytes": 155972,
+      "sha256": "f3d6fb70977bc9e0b11140c9bfa0bb6aff4f5e8a6ffb59beaebac94e6dea4685"
+    },
+    {
+      "key": "pentacles-02",
+      "index": 66,
+      "scene": "A cheerful young Korean man in jade and ochre hanbok balances EXACTLY TWO round star-marked gold coins linked by a flowing figure-eight silk ribbon, small boats on a river behind.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A cheerful young Korean man in jade and ochre hanbok balances EXACTLY TWO round star-marked gold coins linked by a flowing figure-eight silk ribbon, small boats on a river behind.",
+      "path": "tarot/card-66.webp",
+      "bytes": 147306,
+      "sha256": "57ecf87d4c024091c5d52ae58ecbf1690d060dc1687340054c6afc51596c36d5"
+    },
+    {
+      "key": "pentacles-03",
+      "index": 67,
+      "scene": "EXACTLY THREE round star-marked gold coins arranged above a carved wooden panel; a young Korean artisan demonstrates careful craft to two adult companions in a temple courtyard.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: EXACTLY THREE round star-marked gold coins arranged above a carved wooden panel; a young Korean artisan demonstrates careful craft to two adult companions in a temple courtyard.",
+      "path": "tarot/card-67.webp",
+      "bytes": 168664,
+      "sha256": "7ebf1b295e8a0a50d2f14447879f69215d43a8e82d46a4079ceabd9d5ef61c9f"
+    },
+    {
+      "key": "pentacles-04",
+      "index": 68,
+      "scene": "A cautious young man in deep green hanbok sits holding one star-marked gold coin at his chest, one above his head, and one under each foot, EXACTLY FOUR coins total, town roofs behind.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A cautious young man in deep green hanbok sits holding one star-marked gold coin at his chest, one above his head, and one under each foot, EXACTLY FOUR coins total, town roofs behind.",
+      "path": "tarot/card-68.webp",
+      "bytes": 152626,
+      "sha256": "d7b7572c0f32845753941bc66ac3ee25d0f7a73e5deb6819ac002ff0b9a0abdb"
+    },
+    {
+      "key": "pentacles-05",
+      "index": 69,
+      "scene": "Two young adult Korean travelers in worn but modest hanbok walk together in light snow past a warmly lit hanok window containing EXACTLY FIVE star-marked gold coins, help and shelter nearby.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: Two young adult Korean travelers in worn but modest hanbok walk together in light snow past a warmly lit hanok window containing EXACTLY FIVE star-marked gold coins, help and shelter nearby.",
+      "path": "tarot/card-69.webp",
+      "bytes": 173518,
+      "sha256": "166250a9badbbea5945b6b5f7e73587571894fec89c11fe92091eb2faae72795"
+    },
+    {
+      "key": "pentacles-06",
+      "index": 70,
+      "scene": "A generous young Korean woman in ochre and jade hanbok offers coins to two adult visitors while holding a small brass scale; EXACTLY SIX round star-marked gold coins clearly displayed above and beside them.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A generous young Korean woman in ochre and jade hanbok offers coins to two adult visitors while holding a small brass scale; EXACTLY SIX round star-marked gold coins clearly displayed above and beside them.",
+      "path": "tarot/card-70.webp",
+      "bytes": 155764,
+      "sha256": "96f1906454cc5e55a5e0c2dfda84301bb175a72b702dd27524947024973331de"
+    },
+    {
+      "key": "pentacles-07",
+      "index": 71,
+      "scene": "A patient young Korean gardener in sage hanbok leans on a wooden hoe beside a flourishing vine bearing EXACTLY SEVEN round star-marked gold coins, thoughtful pause before harvest.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A patient young Korean gardener in sage hanbok leans on a wooden hoe beside a flourishing vine bearing EXACTLY SEVEN round star-marked gold coins, thoughtful pause before harvest.",
+      "path": "tarot/card-71.webp",
+      "bytes": 193572,
+      "sha256": "9b1138086ba6348c5d4e6a472e9eb9f61d1c983b1df5acd396d9468bf1a9b7f2"
+    },
+    {
+      "key": "pentacles-08",
+      "index": 72,
+      "scene": "A focused young Korean artisan in blue hanbok engraves a gold coin at a low bench, EXACTLY EIGHT round star-marked gold coins displayed in a neat vertical arrangement beside the work.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A focused young Korean artisan in blue hanbok engraves a gold coin at a low bench, EXACTLY EIGHT round star-marked gold coins displayed in a neat vertical arrangement beside the work.",
+      "path": "tarot/card-72.webp",
+      "editPrompt": "Make only ONE addition to this existing watercolor image. On the vertical wooden display board at the RIGHT there are currently SIX gold star coins, with a large blank space under them. ADD ONE identical gold star coin in that blank space immediately below the existing six, continuing the vertical column. Preserve every existing coin, the coin on the workbench, artisan, hands, face, clothing, scenery, colors and paper texture without changing or removing anything. Final column: seven coins. With one on the bench: eight coins total. Do not redraw the existing six. Do not remove anything. No text.",
+      "bytes": 110496,
+      "sha256": "27217bde87cc0fae4990c91c307e07910ab5cdceec2df468270bd50f325a3369"
+    },
+    {
+      "key": "pentacles-09",
+      "index": 73,
+      "scene": "A refined young Korean woman in ivory and muted gold hanbok stands in a lush walled garden with a falcon resting on her gloved hand; EXACTLY NINE star-marked gold coins among the vines.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A refined young Korean woman in ivory and muted gold hanbok stands in a lush walled garden with a falcon resting on her gloved hand; EXACTLY NINE star-marked gold coins among the vines.",
+      "path": "tarot/card-73.webp",
+      "editPrompt": "Edit this existing Korean watercolor tarot illustration only to correct the coin count. Preserve the exact young woman's face, hanbok, falcon, garden, flowers, left grapevine, colors and hanji texture. REMOVE ONLY the TWO gold star coins at the lower RIGHT corner, to the right of her skirt beneath the falcon, replacing both with natural green leaves and stonework matching the surrounding garden. Keep ALL NINE existing coins on the left-hand grapevine completely unchanged. The final image must contain exactly NINE gold star coins, all on the left and upper-left vine, with NO coins in the lower right. No other changes, no text, no border.",
+      "bytes": 155430,
+      "sha256": "9f6c2ec402968bcb00a1d53c3ad0277f659a09f56baed355569c5d20f9106f7d"
+    },
+    {
+      "key": "pentacles-10",
+      "index": 74,
+      "scene": "Two young adult Korean people in rich jade and coral hanbok stand in a beautiful family courtyard with a calm white dog, EXACTLY TEN round star-marked gold coins woven through the composition, abundant pomegranates, no elderly figures or children.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: Two young adult Korean people in rich jade and coral hanbok stand in a beautiful family courtyard with a calm white dog, EXACTLY TEN round star-marked gold coins woven through the composition, abundant pomegranates, no elderly figures or children.",
+      "path": "tarot/card-74.webp",
+      "bytes": 193726,
+      "sha256": "bb04597db578fadcf9f59e9337ee915a46dd5cb76d956fc71a10494ff36adca1"
+    },
+    {
+      "key": "pentacles-11-page",
+      "index": 75,
+      "scene": "A curious young adult Korean apprentice aged 22 standing in a garden holding ONE round gold coin marked with a simple five-point star with both hands, fresh start, attentive expression, deep jade and gold ochre hanbok, peonies and green vines.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A curious young adult Korean apprentice aged 22 standing in a garden holding ONE round gold coin marked with a simple five-point star with both hands, fresh start, attentive expression, deep jade and gold ochre hanbok, peonies and green vines.",
+      "path": "tarot/card-75.webp",
+      "bytes": 173920,
+      "sha256": "70d50ec66130fc4bc6363f0672ea60c191664b2064f25a9df0b42bc118a930c2"
+    },
+    {
+      "key": "pentacles-12-knight",
+      "index": 76,
+      "scene": "A purposeful young adult Korean rider aged 25 on a horse carrying ONE round gold coin marked with a simple five-point star, poised forward movement, deep jade and gold ochre hanbok, peonies and green vines.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A purposeful young adult Korean rider aged 25 on a horse carrying ONE round gold coin marked with a simple five-point star, poised forward movement, deep jade and gold ochre hanbok, peonies and green vines.",
+      "path": "tarot/card-76.webp",
+      "bytes": 184086,
+      "sha256": "00d2af5c3c8b0226d164b65eb3ac0e205238311f0dd73af53d17b3dd92ebe56c"
+    },
+    {
+      "key": "pentacles-13-queen",
+      "index": 77,
+      "scene": "A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE round gold coin marked with a simple five-point star, intelligent calm expression, deep jade and gold ochre hanbok, peonies and green vines.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A composed beautiful young adult Korean woman aged 27 seated on a refined carved wooden garden chair holding ONE round gold coin marked with a simple five-point star, intelligent calm expression, deep jade and gold ochre hanbok, peonies and green vines.",
+      "path": "tarot/card-77.webp",
+      "bytes": 178960,
+      "sha256": "d2cd1670b380e65c64d2c65190a5de9c62521932b2bcd0b13dae4ac8711bf72b"
+    },
+    {
+      "key": "pentacles-14-king",
+      "index": 78,
+      "scene": "A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE round gold coin marked with a simple five-point star, confident calm leadership, deep jade and gold ochre hanbok, peonies and green vines.",
+      "prompt": "Use case: illustration-story. Asset: ONE full-bleed portrait 3:4 TAROT CARD illustration, not a website mockup. Korean ink line and light mineral watercolor on textured warm ivory hanji paper, elegant refined illustrated storybook style, delicate dark outlines, translucent washes, hand-painted traditional Korean scenery. Interpret traditional tarot symbolism in a Korean historical setting. All people are beautiful natural Korean young ADULTS aged 22–28, period hanbok and hairstyles; no elderly people or children. Keep the exact listed number of suit objects clearly separate and countable. No text, letters, numbers, labels, logos, watermarks, card frames, European clothing or photorealistic rendering. Scene: A poised handsome young adult Korean man aged 28 seated on a refined carved wooden chair holding ONE round gold coin marked with a simple five-point star, confident calm leadership, deep jade and gold ochre hanbok, peonies and green vines.",
+      "path": "tarot/card-78.webp",
+      "bytes": 178510,
+      "sha256": "e5fc2b49052e4f08737931cd8ebfbada270f94a61fa72de50332a410c3559914"
+    },
+    {
+      "key": "back",
+      "path": "tarot/back.webp",
+      "prompt": "Use case: illustration-story. Create ONE portrait 3:4 Korean fortune tarot CARD BACK. Elegant rotationally symmetric ornamental Korean ink-and-watercolor painting on textured ivory hanji, deep muted jade background with warm ivory and antique gold lines, central circular medallion containing a crane and crescent moon reflected symmetrically, graceful plum blossoms, pine needles and flowing traditional cloud motifs filling all four corners. Delicate brushwork and soft pigment, refined handcrafted traditional aesthetic. No people, no text, no letters, no numbers, no logos, no watermarks, no card mockup or table. Full bleed flat artwork.",
+      "bytes": 328270,
+      "sha256": "daa5f6db5fc644380572d599fafd3f3a6f3db0fb3faf242c9b2a771f69205cbf"
+    },
+    {
+      "key": "og-image",
+      "path": "og-image.jpg",
+      "prompt": "Use case: illustration-story. Create a wide landscape 1.91:1 website social sharing cover in refined Korean ink and light watercolor on warm ivory hanji paper. On the right half, beautiful Korean young adult man and woman aged 24 in refined jade, ivory and muted vermilion hanbok beside a flowering plum branch, thoughtful warm faces. Background: layered ink-wash mountains, elegant hanok eaves, a warm cinnabar sun, soft gold clouds. The LEFT HALF is calm warm ivory negative space with subtle paper texture, reserved for a large elegant Korean title. Render exactly this Korean title in dark ink brown in two readable lines at center-left: '천지인 사주' then smaller '나를 읽는 시간'. No other text, no watermark, no logos. Sophisticated romantic traditional illustration, fine expressive outlines, not a photograph.",
+      "bytes": 424868,
+      "sha256": "887f7b91eef48142da3045468db098d417f324539554f696d5c8790a5ab38e2b"
+    }
+  ]
+}

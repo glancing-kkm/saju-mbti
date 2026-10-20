@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 BLOG = ROOT / "blog"
 SITE = "https://saju-mbti-9h1.pages.dev"
-IMAGE = f"{SITE}/assets/og-image.png"
+IMAGE = f"{SITE}/assets/art-v2/og-image.jpg"
 JSON_LD_RE = re.compile(
     r'(<script type="application/ld\+json">\s*)(.*?)(\s*</script>)',
     re.DOTALL,
@@ -48,8 +48,8 @@ def enrich_article(data: dict) -> bool:
         "logo": {
             "@type": "ImageObject",
             "url": IMAGE,
-            "width": 1200,
-            "height": 630,
+            "width": 1400,
+            "height": 732,
         },
     }
     for key, value in publisher_values.items():

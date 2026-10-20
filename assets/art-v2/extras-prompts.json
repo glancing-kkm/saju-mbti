@@ -1,0 +1,12 @@
+[
+  {
+    "key": "back",
+    "path": "tarot/back.webp",
+    "prompt": "Use case: illustration-story. Create ONE portrait 3:4 Korean fortune tarot CARD BACK. Elegant rotationally symmetric ornamental Korean ink-and-watercolor painting on textured ivory hanji, deep muted jade background with warm ivory and antique gold lines, central circular medallion containing a crane and crescent moon reflected symmetrically, graceful plum blossoms, pine needles and flowing traditional cloud motifs filling all four corners. Delicate brushwork and soft pigment, refined handcrafted traditional aesthetic. No people, no text, no letters, no numbers, no logos, no watermarks, no card mockup or table. Full bleed flat artwork."
+  },
+  {
+    "key": "og-image",
+    "path": "og-image.jpg",
+    "prompt": "Use case: illustration-story. Create a wide landscape 1.91:1 website social sharing cover in refined Korean ink and light watercolor on warm ivory hanji paper. On the right half, beautiful Korean young adult man and woman aged 24 in refined jade, ivory and muted vermilion hanbok beside a flowering plum branch, thoughtful warm faces. Background: layered ink-wash mountains, elegant hanok eaves, a warm cinnabar sun, soft gold clouds. The LEFT HALF is calm warm ivory negative space with subtle paper texture, reserved for a large elegant Korean title. Render exactly this Korean title in dark ink brown in two readable lines at center-left: '천지인 사주' then smaller '나를 읽는 시간'. No other text, no watermark, no logos. Sophisticated romantic traditional illustration, fine expressive outlines, not a photograph."
+  }
+]
