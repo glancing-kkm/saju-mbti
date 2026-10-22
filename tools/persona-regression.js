@@ -394,6 +394,13 @@ const harness = `
        ctxInfer('topic-love','요즘 남자친구랑 자꾸 싸워요')==='tired' && ctxInfer('topic-career','회사를 그만두고 싶어요')==='move' &&
        globalThis.__SOURCE_HTML__.includes('id="ctxText"') && globalThis.__SOURCE_HTML__.includes('const hideMbti=true'));
 
+    const __frameBad=[];
+    [['life',()=>renderSajuPaid(SELF,1990,5,15,12,0)],['newyear',()=>renderNewyearFortune(SELF,2026)],['name',()=>renderNamePaid(SELF,nameExtra)],['ziwei',()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0})],
+     ['daypick',()=>renderDaypickFortune(SELF,2026,8,20,{})],['monthly',()=>renderMonthlyFortune(SELF,2026,8,2026,10,{})],['gunghap',()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})]]
+      .concat(['topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'].map(c=>[c,()=>renderTopicPaid(c,SELF,_meta)]))
+      .forEach(([c,fn])=>{let h='';try{h=fn();}catch(e){h='';}if(!h.includes('class="lc-orbs"')||!h.includes('class="lc-chapter"')||!h.includes('class="lc-tl '))__frameBad.push(c);});
+    ok('유료 풀이 장 구성: 16개 카테고리 모두 원국 구슬·3가지 순간·장 제목', __frameBad.length===0, __frameBad.join(', '));
+
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
     Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{

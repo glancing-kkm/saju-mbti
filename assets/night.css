@@ -644,7 +644,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-pin{padding:20px 18px;border:1px solid var(--accent);border-radius:18px;background:var(--card)}
 .lv4-pin h2{margin:0 0 12px;font-family:var(--font-heading);font-weight:400;font-size:1.2rem;color:var(--accent)}
 .lv4-pin dl{display:flex;flex-direction:column;gap:0;margin:0}
-.lv4-pin dl>div{display:grid;grid-template-columns:minmax(96px,34%) 1fr;gap:12px;padding:11px 0;border-top:1px solid var(--border)}
+.lv4-pin dl>div{display:grid;grid-template-columns:minmax(max-content,34%) minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid var(--border)}
 .lv4-pin dl>div:first-child{border-top:0}
 .lv4-pin dt{color:var(--muted);font-size:.88rem;line-height:1.55;word-break:keep-all}
 .lv4-pin dd{margin:0;color:var(--text);font-size:1rem;line-height:1.6;font-family:var(--font-heading)}
@@ -804,3 +804,6 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .pdf-page .lv4-pin dl>div{padding:6px 0}
 .pdf-page .lc-orb{width:52px;height:52px}
 .pdf-page .lv4-list{gap:6px}
+.lc-pair-label{margin:6px 0 -4px;text-align:center;font-family:var(--font-heading);color:var(--accent);font-size:.95rem}
+.lc-area-row{grid-template-columns:minmax(62px,auto) 1fr 30px}
+.lc-area-row span{white-space:nowrap}
