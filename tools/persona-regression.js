@@ -386,10 +386,8 @@ const harness = `
 
     const __lifePin=renderSajuPaid(SELF,1990,5,15,12,0),__topicPin=renderTopicPaid('topic-money',SELF,_meta);
     const __mainOnly=h=>clean(h.replace(/<details class="lv4-why">[\\s\\S]*?<\\/details>/g,''));
-    ok('핀셋 풀이: 맨 위 콕 집어 말하면 요약, 글자 개수 같은 이론은 접힌 사주 근거로',
-       __lifePin.includes('class="lv4-pin"') && __topicPin.includes('class="lv4-pin"') && __lifePin.includes('class="lv4-why"') &&
-       !/뜻하는 글자가 \\d+개|글자가 \\d+개예요/.test(__mainOnly(__lifePin)+__mainOnly(__topicPin)) && /연주/.test(__lifePin) && /대운\\(10년마다 바뀌는 큰 흐름\\)/.test(__lifePin),
-       [__lifePin.includes('class="lv4-pin"'),__topicPin.includes('class="lv4-pin"'),__lifePin.includes('class="lv4-why"'),(__mainOnly(__lifePin).match(/[^.]*글자가 \\d+개[^.]*\\./)||[''])[0],/연주/.test(__lifePin),/대운\\(10년마다/.test(__lifePin)].join('|'));
+    ok('핀셋 풀이: 글자 개수 같은 이론은 접힌 사주 근거로, 기본 용어는 첫 등장만 풀이',
+       __lifePin.includes('class="lv4-why"') && !/뜻하는 글자가 \\d+개|글자가 \\d+개예요/.test(__mainOnly(__lifePin)+__mainOnly(__topicPin)) && /연주/.test(__lifePin) && /대운\\(10년마다 바뀌는 큰 흐름\\)/.test(__lifePin) && !__lifePin.includes('lv4-pin') && !__topicPin.includes('lv4-pin'));
     ok('궁금한 점 직접 입력: 적은 글에서 상황을 짐작하고 MBTI 입력은 받지 않음',
        ctxInfer('topic-love','요즘 남자친구랑 자꾸 싸워요')==='tired' && ctxInfer('topic-career','회사를 그만두고 싶어요')==='move' &&
        globalThis.__SOURCE_HTML__.includes('id="ctxText"') && globalThis.__SOURCE_HTML__.includes('const hideMbti=true'));
@@ -406,6 +404,13 @@ const harness = `
        __ppLove.includes('pp-box') && /\\d{4}년생\\([가-힣]+띠\\)/.test(__ppPlain) && /첫소리가 [ㄱ-ㅎ·]+/.test(__ppPlain) && /(동쪽|서쪽|남쪽|북쪽|가까운)/.test(__ppPlain) && __ppPlain.includes('처음 만나는 곳') &&
        (__ppLife.match(/pp-box/g)||[]).length>=3 && (__ppNy.match(/pp-box/g)||[]).length>=3,
        [__ppLove.includes('pp-box'),/\\d{4}년생/.test(__ppPlain),(__ppLife.match(/pp-box/g)||[]).length,(__ppNy.match(/pp-box/g)||[]).length].join('|'));
+
+    const __ppBad=['topic-money','topic-career','topic-health','topic-study','topic-marriage','topic-reunion','topic-child','topic-children'].filter(c=>!renderTopicPaid(c,SELF,_meta).includes('pp-box'));
+    if((renderSajuPaid(SELF,1990,5,15,12,0).match(/pp-box/g)||[]).length<7)__ppBad.push('life');
+    if((renderNewyearFortune(SELF,2026).match(/pp-box/g)||[]).length<5)__ppBad.push('newyear');
+    if(!renderDaypickFortune(SELF,2026,8,20,{}).includes('pp-box'))__ppBad.push('daypick');
+    if(!buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''}).includes('pp-box'))__ppBad.push('gunghap');
+    ok('콕 찍은 풀이: 직업·재물·건강·학업·결혼·재회·아이·행운·궁합·하루까지 구체 풀이 상자', __ppBad.length===0, __ppBad.join(', '));
 
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];

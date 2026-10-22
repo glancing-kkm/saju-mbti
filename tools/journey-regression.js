@@ -188,7 +188,7 @@ const submitBirth=async()=>{
       assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
       assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta'));
       assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-line'));
-      const pinDd=[...d.querySelectorAll('#p5 .lv4-pin dd')];assert(pinDd.length && pinDd.every(x=>x.querySelector('.lk') && !/\d{4}년|\d+월/.test(x.textContent)));
+      const pp=[...d.querySelectorAll('#p5 .pp-box')];assert(pp.length && pp.every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));

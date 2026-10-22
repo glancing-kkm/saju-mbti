@@ -13149,8 +13149,6 @@ function lv4WithWhy(html){
   const k=html.lastIndexOf('<div class="lv4-key">');return k>=0?html.slice(0,k)+box+html.slice(k):html+box;
 }
 // 풀이 맨 위 '콕 집어 말하면' — 시기·숫자·장면으로 짧게
-function lvWhen(items){const rows=(items||[]).filter(x=>x&&x[1]);return rows.length?`<div class="lv4-when"><b>콕 집은 시기</b><dl>${rows.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div>`:'';}
-function lvPin(items,title){const rows=(items||[]).filter(x=>x&&x[1]);return rows.length?`<section class="lv4-pin" aria-label="핵심 요약"><h2>${title||'콕 집어 말하면'}</h2><dl>${rows.map(([k,v])=>`<div><dt>${k}</dt><dd>${lv4Text(String(v))}</dd></div>`).join('')}</dl></section>`:'';}
 function lv4Key(text){return `<div class="lv4-key"><b>한 줄 정리</b><p>${lv4Text(text)}</p></div>`;}
 function lv4Section(no,lead,html){const [id,title]=LV4_TITLES[no-1];return lvSec(no,id,title,lead,html);}
 function lv4Rows(rows){return `<div class="lv4-rows">${rows.map(r=>`<div class="lv4-row${r.on?' on':''}"><div class="lv4-row-head"><b>${r.label}</b>${r.tag?`<span>${r.tag}</span>`:''}</div><p>${lv4Text(String(r.text||'').replace(/^'[^']{2,24}'의 (기운이 들어오는 (달|해)이에요|해예요)\.\s*/,''))}</p></div>`).join('')}</div>`;}
@@ -13279,11 +13277,7 @@ function buildLifeChapters(m,s,meta,ctx){
   return {top:lcOrbs(s)+lcScene(s,`본인의 인생을<br>뒤흔들 3가지<br>순간이 보여요`)+timeline,
     ch1:lcChapter(1,'명식 분석')+`<section class="lc-card" id="lv4-lc-bars"><h3 class="lc-card-title">본인이 타고난 성향</h3>${bars}</section>`+card+lcScene(s,'보통 사주는 아니에요.<br>이제 영역별로<br>풀어 볼게요',true),
     ch2:lcChapter(2,'영역별 사주풀이')+special,
-    ch3:lcChapter(3,'인생을 뒤흔들 사람들')+people+graph,
-    whens:(()=>{const ys=t=>t?t.bestYears.slice(0,2).map(x=>x.year+'년').join(', '):'',ms=(t,k)=>t?ctxMonths(t[k],y0):'';return {
-      'work-money':[['일이 크게 움직이는 해',ys(tm.career)],['이직·승진을 움직일 달',ms(tm.career,'bestMonths')],['돈이 크게 들어오는 해',ys(tm.money)],['돈 거래를 미룰 달',ms(tm.money,'careMonths')]],
-      'love-people':[['인연이 가까워지는 해',ys(tm.love)],['마음이 통하는 달',ms(tm.love,'bestMonths')],['결혼 이야기가 무르익는 해',ys(tm.marriage)]],
-      health:[['몸을 아껴야 할 달',ms(tm.health,'careMonths')],['회복이 잘 되는 달',ms(tm.health,'bestMonths')]]};})()};
+    ch3:lcChapter(3,'인생을 뒤흔들 사람들')+people+graph};
 }
 // ── 유료 풀이 공통 장(章) 틀 — 인생총운과 같은 구성을 카테고리마다 맞춰 쓴다 ──
 function lcPersonaBars(saju){
@@ -13441,15 +13435,133 @@ function ppTopic(key,body,saju,tm){
   try{
     const P=buildPinpoint(saju,{...(_meta||{}),gender:tm.genderKey});
     if(key==='love')return lv4Inject(body,'tp-a',ppPartnerHTML(P,{noCard:true}));
-    if(key==='marriage')return lv4Inject(body,'tp-a',ppPartnerHTML(P,{who:'배우자',noCard:true}));
-    if(key==='money')return lv4Inject(body,'tp-a',ppMoneyHTML(P));
-    if(key==='career')return lv4Inject(body,'tp-a',ppHelperHTML(P,{title:'콕 찍어 보는 일터의 귀인과 조심할 사람'})+ppMoneyHTML(P,{title:'콕 찍어 보는 돈이 붙는 일터'}));
+    const meta={...(_meta||{}),gender:tm.genderKey};
+    if(key==='marriage')return lv4Inject(body,'tp-a',ppPartnerHTML(P,{who:'배우자',noCard:true})+ppMarriageHTML(saju,meta,P));
+    if(key==='money')return lv4Inject(body,'tp-a',ppMoneyHTML2(saju,meta,P));
+    if(key==='career')return lv4Inject(body,'tp-a',ppCareerHTML(saju,meta,P)+ppHelperHTML(P,{title:'콕 찍어 보는 일터의 귀인과 조심할 사람'}));
+    if(key==='health')return lv4Inject(body,'tp-a',ppHealthHTML(saju,meta,P));
+    if(key==='study')return lv4Inject(body,'tp-a',ppStudyHTML(saju,meta,P));
+    if(key==='reunion')return lv4Inject(body,'tp-a',ppReunionHTML(saju,meta,P,tm));
+    if(key==='child')return lv4Inject(body,'tp-a',ppChildHTML(saju,meta));
+    if(key==='children')return lv4Inject(body,'tp-a',ppLuckHTML(saju,meta,P,{title:'콕 찍어 보는 자녀운을 여는 방법'}));
   }catch(e){}
   return body;
 }
 function ppTurnHTML(P){
   const t=P.turn;if(!t)return '';
   return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 인생의 전환점</h3>${lv4P([`인생의 큰 전환점은 ${ppM(t.age+'세')}, 그러니까 ${ppM(t.year+'년')} 무렵이에요. 이때부터 대운이 바뀌면서 흐름이 눈에 띄게 올라가요.`,'그 2~3년 전부터 실력과 돈, 사람을 미리 모아 두면 전환점에서 훨씬 크게 도약해요.'])}</div>`;
+}
+// ── 콕 찍은 풀이 2 — 일·돈·몸·공부·결혼·행운·궁합·하루까지 구체적으로 ──
+const ppIda=x=>ppJo(String(x).replace(/\([^)]*\)\s*$/,''),'이에요','예요');
+const PP_EXERCISE=['요가·스트레칭·가벼운 등산','러닝·댄스·구기 운동','걷기·필라테스·코어 운동','웨이트·사이클·클라이밍','수영·명상·반신욕'];
+const PP_FOOD=['신맛과 초록 채소(시금치·브로콜리·레몬)','쓴맛과 붉은 음식(토마토·비트·쑥)','단맛과 노란 곡물(단호박·고구마·현미)','매운맛과 흰 음식(무·마늘·도라지)','짠맛과 검은 음식(검은콩·미역·흑미)'];
+const PP_COLOR=['초록·청록','빨강·주황','노랑·베이지','흰색·금색','검정·남색'];
+const PP_ITEM=['작은 화분이나 나무 소품','캔들이나 따뜻한 조명','도자기나 흙빛 가죽 소품','금속 시계나 은 액세서리','물병이나 남색 지갑'];
+const PP_TIME=['아침 6~9시','오전 11시~오후 2시','오후 2~5시','오후 5~8시','밤 9~11시'];
+const PP_TRIP=['일본·캐나다처럼 동쪽 나라','베트남·태국·호주처럼 남쪽 나라','국내 내륙의 산과 들','중국·유럽처럼 서쪽 나라','북유럽·몽골처럼 북쪽 나라'];
+const PP_DATE=['숲길·식물원·서점','공연·전시·야경 명소','맛집·시장·동네 산책길','조용한 카페·박물관·드라이브 코스','바다·강변·온천'];
+const PP_WORKPLACE={gwan:'대기업·공공기관처럼 체계가 분명한 조직',out:'프리랜서·스타트업처럼 결과물로 평가받는 곳',wealth:'영업·사업처럼 성과가 바로 돈이 되는 곳',in_:'연구소·학교·전문 기관',self:'내 이름을 걸고 일하는 전문직이나 1인 사업'};
+const PP_EXAM={in_:'암기와 필기 위주의 시험',out:'논술·면접·실기처럼 표현하는 시험',gwan:'공채·자격증처럼 기준이 분명한 시험',wealth:'실무에 바로 쓰는 자격증',self:'단기간에 몰아서 준비하는 시험'};
+const PP_ASSET=['꾸준히 쌓는 적립식 저축','소액으로 나눠 굴리는 분산','부동산·적금처럼 오래 묵히는 자산','원칙을 정한 장기 투자와 안전 자산','해외·유통처럼 흐름을 타는 분산'];
+const PP_FIGHT={'중심 기운의 어울림':'삶의 목표와 앞으로의 방향','서로를 바라보는 방식':'말투와 표현 방식','배우자 자리의 만남':'생활 습관과 집안일','다섯 기운의 균형':'돈 쓰는 기준과 쉬는 방식'};
+function ppMore(saju,meta,P){
+  if(P._more)return P._more;
+  const p=buildPersonaProfile(saju),axis=p.axisSorted[0][0],ys=getYongsin(ohCount(saju)),tm={};
+  ['career','money','health','study','marriage'].forEach(k=>{try{tm[k]=buildTopicModel('topic-'+k,saju,meta);}catch(e){tm[k]=null;}});
+  const top=l=>[...(l||[])].sort((a,b)=>b.score-a.score)[0];
+  let careers=[];try{careers=careerProfile(saju).careers.slice(0,3);}catch(e){}
+  const ds=saju.dp.stem,tgs=[saju.yp.stem,saju.mp.stem].map(x=>tenGod(ds,x)).concat([saju.yp.branch,saju.mp.branch,saju.dp.branch].map(b=>tenGod(ds,BR_MAIN_STEM[b])));
+  const cnt=l=>tgs.filter(t=>l.includes(t)).length;
+  const leak=cnt(['비견','겁재'])>=2?'지인과의 돈 거래나 모임 비용':cnt(['식신','상관'])>=2?'기분 따라 사는 물건과 자기계발 결제':cnt(['정인','편인'])>=2?'강의·자격증 같은 배움에 쓰는 돈':cnt(['정재','편재'])>=2?'수익을 쫓는 무리한 투자':'구독·자동결제처럼 새는 줄 모르는 돈';
+  const route=cnt(['편재'])>cnt(['정재'])?'거래·부업·성과급처럼 움직여서 버는 돈':'월급 인상·고정 계약처럼 쌓이는 돈';
+  return P._more={p,axis,ys,tm,top,careers,leak,route,yEl:ys.main};
+}
+function ppCareerHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),c=X.tm.career,bm=c&&X.top(c.bestMonths),by=c&&c.bestYears[0];
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 일과 일터'}</h3>${lv4P([
+    X.careers.length?`가장 잘 맞는 직무는 ${ppM(X.careers.join(', '))}${ppIda(X.careers.join(', '))}. 이 중 하나를 본업이나 부업으로 두면 실력이 돈으로 바뀌어요.`:'',
+    `일하는 곳은 ${ppM(PP_WORKPLACE[X.axis]||PP_WORKPLACE.gwan)}이 잘 맞아요. 일터는 ${ppWhere(ppRegions((meta&&meta.cityKey)||'seoul',X.yEl),P.city)}${ppJo(ppWhere(ppRegions((meta&&meta.cityKey)||'seoul',X.yEl),P.city),'이면','면')} 흐름을 타기 쉬워요.`,
+    bm?`이직이나 승진 이야기는 ${bm.year}년 ${ppM(bm.month+'월')}에 꺼내는 게 좋아요.${by?` 일이 크게 움직이는 해는 ${ppM(by.year+'년')}이에요.`:''}`:'',
+    `집중이 가장 잘 되는 시간은 ${ppM(PP_TIME[X.yEl])}예요. 중요한 보고나 면접은 이 시간대에 잡아 보세요.`
+  ])}</div>`;
+}
+function ppMoneyHTML2(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),mt=X.tm.money,bm=mt&&X.top(mt.bestMonths),cm=mt&&(mt.careMonths||[])[0],m=P.money;
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 돈이 들어오는 길'}</h3>${lv4P([
+    bm?`목돈은 ${bm.year}년 ${ppM(bm.month+'월')}에 들어오기 쉬워요. 들어오는 길은 ${ppM(X.route)}이에요.`:'',
+    `돈은 ${ppWhere(m.reg,P.city)}에서 들어오기 쉬워요. 돈이 붙는 업종은 ${ppM(m.job)} 쪽이에요.`,
+    `돈이 새는 길은 ${ppM(X.leak)}${ppIda(X.leak)}.${cm?` 특히 ${cm.year}년 ${ppM(cm.month+'월')}에는 큰 결제를 하루 미뤄 보세요.`:''}`,
+    `잘 맞는 돈 관리 방식은 ${ppM(PP_ASSET[X.yEl])}이에요. 행운의 숫자는 ${ppM(`${m.num[0]}${ppNumJong(m.num[0])?'과':'와'} ${m.num[1]}`)}${ppNumJong(m.num[1])?'이에요':'예요'}. 투자 결정은 사주보다 본인 판단과 전문가 상담이 먼저예요.`
+  ])}</div>`;
+}
+function ppHealthHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),h=X.tm.health,cm=h&&(h.careMonths||[])[0],weak=(TOPIC_HEALTH_OH[X.p.lack]||[''])[0],tired=(TOPIC_HEALTH_OH[X.p.top]||[''])[0];
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 몸 관리법'}</h3>${lv4P([
+    `가장 먼저 지치는 곳은 ${ppM(tired)}, 생활 습관으로 채워야 할 곳은 ${ppM(weak)}${ppIda(weak)}.`,
+    cm?`몸을 특히 아껴야 할 때는 ${cm.year}년 ${ppM(cm.month+'월')}이에요. 건강검진도 이 달 전에 받아 두면 좋아요.`:'',
+    `잘 맞는 운동은 ${ppM(PP_EXERCISE[X.yEl])}${ppIda(PP_EXERCISE[X.yEl])}. 몸에 좋은 음식은 ${ppM(PP_FOOD[X.yEl])}${ppIda(PP_FOOD[X.yEl])}.`,
+    `잠자리에 드는 시간은 ${ppM(X.p.lack===4||X.yEl===4?'밤 11시 전':'자정 전')}을 지켜 보세요. 회복이 가장 빨라져요. 증상이 이어지면 풀이보다 진료가 먼저예요.`
+  ])}</div>`;
+}
+function ppStudyHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),st=X.tm.study,bm=st&&X.top(st.bestMonths),subj=(TOPIC_STUDY_OH[X.p.top]||[''])[0],dir=PP_DIR[X.yEl][0];
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 공부와 시험'}</h3>${lv4P([
+    `가장 강한 분야는 ${ppM(subj)} 쪽이에요. 잘 맞는 시험은 ${ppM(PP_EXAM[X.axis]||PP_EXAM.gwan)}이에요.`,
+    `집중이 가장 잘 되는 시간은 ${ppM(PP_TIME[X.yEl])}예요. 책상은 ${ppM(dir==='가까운 곳'?'방 가운데':dir)}${eul(dir==='가까운 곳'?'방 가운데':dir)} 보게 두면 마음이 차분해져요.`,
+    bm?`합격운이 가장 강한 때는 ${bm.year}년 ${ppM(bm.month+'월')}이에요. 시험을 고를 수 있다면 이 달 근처로 잡아 보세요.`:'',
+    `필기구나 노트는 ${ppM(PP_COLOR[X.yEl])} 계열을 쓰면 기운을 보태 줘요.`
+  ])}</div>`;
+}
+function ppMarriageHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),mt=X.tm.marriage,by=mt&&mt.bestYears[0],bm=mt&&X.top(mt.bestMonths);
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 결혼'}</h3>${lv4P([
+    by?`결혼 흐름이 가장 무르익는 때는 ${ppM(by.year+'년')}, 본인 ${ppM((by.year-P.by+1)+'세')} 무렵이에요.`:'',
+    `신혼집은 ${ppWhere(ppRegions((meta&&meta.cityKey)||'seoul',X.yEl),P.city)}${ppJo(ppWhere(ppRegions((meta&&meta.cityKey)||'seoul',X.yEl),P.city),'이면','면')} 집안에 힘이 붙어요.`,
+    bm?`상견례나 예식은 ${bm.year}년 ${ppM(bm.month+'월')}처럼 흐름이 좋은 달에 두면 좋아요.`:''
+  ])}</div>`;
+}
+function ppLuckHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),reg=ppRegions((meta&&meta.cityKey)||'seoul',X.yEl);
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 운을 여는 방법'}</h3>${lv4P([
+    `행운의 색은 ${ppM(PP_COLOR[X.yEl])}, 행운의 숫자는 ${ppM(P.money.num.join('·'))}${ppNumJong(P.money.num[1])?'이에요':'예요'}. 가방이나 휴대폰 배경처럼 매일 보는 곳에 써 보세요.`,
+    `곁에 두면 좋은 물건은 ${ppM(PP_ITEM[X.yEl])}${ppIda(PP_ITEM[X.yEl])}. 책상이나 침대 머리맡에 두면 기운이 채워져요.`,
+    `이사나 이동을 한다면 ${ppWhere(reg,P.city)}${ppJo(ppWhere(reg,P.city),'이','가')} 좋아요. 여행은 ${ppM(PP_TRIP[X.yEl])}${ppJo(PP_TRIP[X.yEl],'이','가')} 기운을 채워 줘요.`
+  ])}</div>`;
+}
+function ppReunionHTML(saju,meta,P,tm){
+  const bm=tm&&[...(tm.bestMonths||[])].sort((a,b)=>b.score-a.score)[0];
+  return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 다시 닿는 순간</h3>${lv4P([
+    bm?`다시 연락이 닿기 쉬운 때는 ${bm.year}년 ${ppM(bm.month+'월')}이에요.`:'',
+    `다시 마주치기 쉬운 곳은 ${ppM(PP_PLACE[P.spEl])}${ppIda(PP_PLACE[P.spEl])}. 첫 연락은 ${ppM(PP_TIME[P.spEl])}에 짧게 보내는 게 좋아요.`,
+    '상대가 분명히 거절했다면 그 결정을 존중하는 게 본인을 지키는 길이에요.'
+  ])}</div>`;
+}
+function ppChildHTML(saju,meta){
+  let careers=[];try{careers=careerProfile(saju).careers.slice(0,3);}catch(e){}
+  const ys=getYongsin(ohCount(saju)).main,p=buildPersonaProfile(saju);
+  return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 아이의 길</h3>${lv4P([
+    careers.length?`아이가 커서 빛날 수 있는 일은 ${ppM(careers.join(', '))} 쪽이에요.`:'',
+    `잘 맞는 활동은 ${ppM(PP_EXERCISE[ys])}, 강한 분야는 ${ppM((TOPIC_STUDY_OH[p.top]||[''])[0])}${ppIda((TOPIC_STUDY_OH[p.top]||[''])[0])}.`,
+    `아이 집중이 가장 잘 되는 시간은 ${ppM(PP_TIME[ys])}예요. 공부방은 ${ppM(PP_COLOR[ys])} 계열로 꾸며 주면 마음이 편해져요.`
+  ])}</div>`;
+}
+function ppCoupleHTML(s1,s2,meta2,o){
+  const y1=getYongsin(ohCount(s1)).main,y2=getYongsin(ohCount(s2)).main,city=cityLabelOf((meta2&&meta2.cityKey)||'seoul').split('·')[0].replace(/(특별자치시|특별자치도|특별시|광역시)$/,'');
+  const places=y1===y2?PP_DATE[y1]:`${PP_DATE[y1].split('·')[0]}·${PP_DATE[y2].split('·')[0]}`;
+  const reg=ppRegions((meta2&&meta2.cityKey)||'seoul',y1);
+  return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 두 사람</h3>${lv4P([
+    `두 사람에게 잘 맞는 데이트 장소는 ${ppM(places)}${ppIda(places)}. 이런 곳에서 나눈 대화가 오래 기억에 남아요.`,
+    `가장 다투기 쉬운 주제는 ${ppM(PP_FIGHT[o.weak]||'돈 쓰는 기준과 쉬는 방식')}이에요. 이 이야기는 기분 좋은 날 미리 맞춰 두세요.`,
+    `함께 살 집은 ${ppWhere(reg,city)}${ppJo(ppWhere(reg,city),'이면','면')} 두 사람 모두 편안해요.${o.bestY?` 큰 약속은 ${ppM(o.bestY+'년')}에 두면 흐름을 타요.`:''}`
+  ])}</div>`;
+}
+function ppDayHTML(saju,meta,dpB,P){
+  const ys=getYongsin(ohCount(saju)).main,hb=PP_LIUHE[dpB],by=P.by,yrs=ppYearsFor(hb,by-12,by+12).filter(y=>y!==by).sort((a,b)=>Math.abs(a-by)-Math.abs(b-by)).slice(0,2).sort((a,b)=>a-b);
+  return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 이 날</h3>${lv4P([
+    `이 날 가면 좋은 곳은 ${ppWhere(ppRegions((meta&&meta.cityKey)||'seoul',ys),P.city)}, 그중에서도 ${ppM(PP_DATE[ys])} 같은 곳이에요.`,
+    yrs.length?`이 날 만나면 좋은 사람은 ${ppM(yrs.map(ppYearLab).join(', '))}예요. 부탁이나 제안은 이런 사람에게 먼저 해 보세요.`:'',
+    `챙겨 나가면 좋은 물건은 ${ppM(PP_ITEM[ys])}, 입으면 좋은 색은 ${ppM(PP_COLOR[ys])}${ppIda(PP_COLOR[ys])}.`
+  ])}</div>`;
 }
 function buildLifeReadingV4(saju,meta){
   const m=buildLifeV2Model(saju,meta),p=m.profile,s=saju,fp=Object.fromEntries(Object.entries(m.fingerprint||{}).map(([k,v])=>[k,typeof v==='string'?lv4Plain(v):v]));
@@ -13548,24 +13660,10 @@ function buildLifeReadingV4(saju,meta){
 
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
   const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
-  const _mo=m.months.filter((x,i,a)=>i>=Math.max(0,a.findIndex(y=>y.current))),_mm=_mo.length>=2?_mo:m.months;
-  const _best=[..._mm].sort((a,b)=>b.score-a.score)[0],_low=[..._mm].sort((a,b)=>a.score-b.score)[0],_g0=m.golden[0],_caut=((lv4Cautions(m).slice(2)[0])||[])[0];
-  const pin=lvPin([
-    ['한 줄로 말하면',(w=>`${w}${lv4Ida(w)}.`)(iljuWho||ax.label+'의 힘을 타고난 분')],
-    ['타고난 무기',`${ax.label}의 힘. ${String(ax.gift||'').split(/(?<=[.])\s/)[0]}`],
-    _g0?['인생이 가장 크게 피는 때',`${_g0.range}`]:null,
-    _best?[`${m.year}년 가장 힘이 붙는 달`,`${_best.month}월 (${_best.score}점)`]:null,
-    _low?[`${m.year}년 한 박자 쉬어 갈 달`,`${_low.month}월`]:null,
-    ['돈이 붙는 방식',m.moneyCount===0?'돈을 좇기보다 전문성을 키울 때 돈이 따라와요':m.stableMoney>=m.activeMoney?'월급·적금처럼 차곡차곡 쌓을 때 돈이 남아요':'기회를 잡아 크게 움직일 때 돈이 붙어요'],
-    ['잘 맞는 일',m.career.careers.slice(0,3).join(' · ')],
-    ['오래 가는 사람',`'${seatShort}'이 느껴지는 사람`],
-    _caut?['평생 조심할 한 가지',_caut]:null
-  ]);
   h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
   let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatShort,seatLove});}catch(e){}
-  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'love-people',ppPartnerHTML(P,{noCard:true})+ppHelperHTML(P));h=lv4Inject(h,'work-money',ppMoneyHTML(P));h=lv4Inject(h,'future',ppTurnHTML(P));}catch(e){}
-  Object.entries(ch.whens||{}).forEach(([id,items])=>{h=lv4Inject(h,id,lvWhen(items));});
-  return `<div class="lv4">${hero}${ch.top}${ctxNoteHTML('life')}${pin}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
+  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'talent',ppCareerHTML(s,meta,P,{title:'콕 찍어 보는 재능이 돈이 되는 일'}));h=lv4Inject(h,'work-money',ppMoneyHTML2(s,meta,P));h=lv4Inject(h,'love-people',ppPartnerHTML(P,{noCard:true})+ppHelperHTML(P));h=lv4Inject(h,'health',ppHealthHTML(s,meta,P));h=lv4Inject(h,'future',ppTurnHTML(P)+ppMarriageHTML(s,meta,P));h=lv4Inject(h,'practice',ppLuckHTML(s,meta,P));}catch(e){}
+  return `<div class="lv4">${hero}${ch.top}${ctxNoteHTML('life')}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
 }
 function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return false;}
 // AI가 쓴 마크다운(# 섹션, ## 소제목, - 목록, **굵게**, "한 줄 정리: …")을 한 페이지 풀이(lv4) 섹션으로 바꾼다.
@@ -13646,7 +13744,7 @@ function buildZiweiReadingV4(saju,m){
       ch2:lcChapter(2,'방마다 깊이 보기'),
       ch3:lcChapter(3,'인생을 흔들 사람들')+lcPeople(saju,{genderKey:m.gender,partner:true})};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${fr.top}${ctxNoteHTML('ziwei')}${lvPin([['나를 지키는 별',nick(me.stars[0])],['배우자의 방',nick(love.stars[0])],['돈의 방',nick(money.stars[0])],['일의 방',nick(work.stars[0])],cur?['지금 10년 열린 방',`${ZW_SHORT[cur.palace.name]}의 방`]:null])}${fr.ch1}${lvToc(ZW_TITLES,'자미두수 목차')}${fr.ch2}${ctxApplyScenes('ziwei',h,{})}${fr.ch3}</div>`};
+  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${fr.top}${ctxNoteHTML('ziwei')}${fr.ch1}${lvToc(ZW_TITLES,'자미두수 목차')}${fr.ch2}${ctxApplyScenes('ziwei',h,{})}${fr.ch3}</div>`};
 }
 // ══════════════════════════════════════════════
 //  주제별 풀이 V4 — 한 페이지로 이어 읽는 풀이 (소개 화면 '풀이에 담긴 내용' 순서)
@@ -13740,25 +13838,8 @@ function buildTopicReadingV4(tm){
     {axis:tm.axis,bm:ctxMonths(tm.bestMonths,tm.year),bm1:ctxMonths([...tm.bestMonths].sort((a,b)=>(a.year*12+a.month)-(b.year*12+b.month)).slice(0,1),tm.year),cm:ctxMonths(tm.careMonths,tm.year),by:yl(tm.bestYears),rel:tm.seatRel&&tm.seatRel.kind,el:O[tm.ys.main],lack:O[p.lack]});
   const closing=lvSecX('tp-practice',`${info.stat} 흐름을 살리는 실천법`,`${child?'아이를':'본인을'} 가장 도와주는 기운은 ${O[tm.ys.main]}${lv4Ida(O[tm.ys.main])}. ${support.lead}이 흐름을 열어 줘요.`,lv4List(support.items.map(x=>[x[1],x[2]]).concat([['한 줄 기록','좋았던 날과 힘들었던 날의 이유를 적어 보세요.']]))+lv4Key(child?'아이의 사주는 정해진 운명이 아니라 잘 자라도록 돕는 지도예요. 아이의 속도를 믿어 주세요.':key==='health'?'건강운은 관리의 방향을 보여 줄 뿐이에요. 몸이 보내는 신호와 전문가의 판단을 가장 먼저 믿으세요.':key==='reunion'?'재회는 두 사람의 선택이에요. 어떤 결론이든 본인을 아끼는 쪽을 고르세요.':'좋은 흐름은 준비된 사람에게 크게 작동해요. 오늘 한 가지부터 시작해 보세요.'));
   const axTag=(LV4_AXIS_TAG_TOPIC[key]||LV4_AXIS_TAG)[tm.axis];
-  const _keyPin={
-    love:[['끌리는 사람',`'${seatShort}'이 느껴지는 사람`],tm.hasDohwa?['매력 포인트','사주에 도화살이 있어서 본인도 모르게 눈길을 끌어요']:['매력 포인트','첫인상보다 알수록 매력이 커지는 사람이에요']],
-    marriage:[['배우자 모습',`'${seatShort}'이 느껴지는 사람`]],
-    reunion:[['다시 끌어당기는 해',(tm.years.filter(y=>['합','반합','반합약'].includes(y.rel.kind)).slice(0,2).map(y=>`${y.year}년`).join(', '))||'달 단위로 열려요']],
-    money:[['돈 버는 방식',tm.stableMoney>=tm.activeMoney?'월급·적금처럼 차곡차곡 쌓는 쪽':'기회를 잡아 크게 움직이는 쪽']],
-    career:[['잘 맞는 일',(tm.career&&tm.career.careers||[]).slice(0,3).join(' · ')]],
-    study:[['강한 분야',(TOPIC_STUDY_OH[p.top]||[''])[0]]],
-    health:[['먼저 살필 곳',(TOPIC_HEALTH_OH[p.top]||[''])[0]],['채워야 할 곳',(TOPIC_HEALTH_OH[p.lack]||[''])[0]]],
-    child:[['아이의 타고난 힘',`${(LIFE_V2_AXIS[tm.axis]||{}).label||''}의 힘`],['재능이 보이는 분야',(TOPIC_STUDY_OH[p.top]||[''])[0]]],
-    children:[]
-  }[key]||[];
-  const pin=lvPin([['올해를 한 줄로',sum.lead||sum.headline]].concat(_keyPin,[
-    tm.bestYears[0]?[`${info.stat} 흐름이 가장 좋은 해`,yl(tm.bestYears.slice(0,2))]:null,
-    tm.bestMonths.length&&key!=='child'?['다가오는 좋은 달',ctxMonths(tm.bestMonths,tm.year)]:null,
-    tm.careMonths.length&&key!=='child'?['한 박자 쉬어 갈 달',ctxMonths(tm.careMonths,tm.year)]:null,
-    [`지금 대운 (${tm.cur.age}~${tm.cur.age+9}세)`,`${info.stat} 점수 ${tm.curScore}점`]
-  ]));
   const fr=(()=>{try{return topicFrame(tm,{seatShort,seatLove,sum,ax,axTag});}catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`,lvTagsHTML([axTag,tm.bestMonths[0]?`${tm.bestMonths[0].month}월_${info.stat}_흐름_상승`:'',tm.bestYears[0]?`${tm.bestYears[0].year}년이_좋은_해`:''])+lvGaugeHTML(tm.yearNow.score,`올해 ${info.stat} 흐름`))}${fr.top}${ctxNoteHTML(tm.cat)}${pin}${fr.ch1}${lvToc(tocItems,`${info.label} 목차`)}${fr.ch2}${overview}${ppTopic(key,body,s,tm)}${fr.ch3}${closing}</div>`;
+  return `<div class="lv4">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`,lvTagsHTML([axTag,tm.bestMonths[0]?`${tm.bestMonths[0].month}월_${info.stat}_흐름_상승`:'',tm.bestYears[0]?`${tm.bestYears[0].year}년이_좋은_해`:''])+lvGaugeHTML(tm.yearNow.score,`올해 ${info.stat} 흐름`))}${fr.top}${ctxNoteHTML(tm.cat)}${fr.ch1}${lvToc(tocItems,`${info.label} 목차`)}${fr.ch2}${overview}${ppTopic(key,body,s,tm)}${fr.ch3}${closing}</div>`;
 }
 // ══════════════════════════════════════════════
 //  월별 운세 V4 — 한 페이지로 이어 읽는 기간 풀이
@@ -13832,7 +13913,7 @@ function buildMonthlyReadingV4(saju,sy,sm,ey,em,extra){
     return {top:lcOrbs(saju)+lcScene(saju,'고른 기간에<br>3가지 순간이<br>보여요')+lcMoments(mo.map(e=>({when:wl(e.x.lab),what:e.what,dot:e.dot}))),
       ch3:lcChapter(3,'기간 전체의 흐름')+lcBox('lc-graph','달마다의 흐름 그래프','달마다의 종합 점수예요.',lcLineChart(months.map(x=>({l:`${x.mm}월`,v:x.sc.total})),-1)+'<h4>분야별 평균</h4>'+lcAreaBars([['재물',avgF('wealth')],['연애·관계',avgF('love')],['직업',avgF('career')],['건강',avgF('health')]]))};
   }catch(e){return {top:'',ch3:''};}})();
-  return {html:`<div class="lv4">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`가장 결정적인 달 ${decisive.lab}`,`${total}개월 풀이 · ${g.lab}`,lvTagsHTML([`${decisive.mm}월이_결정적`,`${topField[0]}에_힘이_붙는_시기`,`${tough[0].mm}월은_쉬어가기`])+lvGaugeHTML(avgT,`${total}개월 평균`))}${fr.top}${lvPin([['가장 결정적인 달',decisive.lab],['힘이 붙는 달',lucky.map(x=>x.lab).join(', ')],['쉬어 갈 달',tough.map(x=>x.lab).join(', ')],['돈이 좋은 달',best('wealth').map(x=>x.lab).join(', ')],['마음이 통하는 달',best('love').map(x=>x.lab).join(', ')],['일이 풀리는 달',best('career').map(x=>x.lab).join(', ')],['기간 평균 점수',`${avgT}점`]])}${lvToc(MO_TITLES,'월별 운세 목차')}${lcChapter(2,'달마다 깊이 보기')}${h}${fr.ch3}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
+  return {html:`<div class="lv4">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`가장 결정적인 달 ${decisive.lab}`,`${total}개월 풀이 · ${g.lab}`,lvTagsHTML([`${decisive.mm}월이_결정적`,`${topField[0]}에_힘이_붙는_시기`,`${tough[0].mm}월은_쉬어가기`])+lvGaugeHTML(avgT,`${total}개월 평균`))}${fr.top}${lvToc(MO_TITLES,'월별 운세 목차')}${lcChapter(2,'달마다 깊이 보기')}${(()=>{try{const P=buildPinpoint(saju,_meta);return lv4Inject(h,'mo-guide',ppLuckHTML(saju,_meta,P,{title:'콕 찍어 보는 이 기간 운을 여는 방법'}));}catch(e){return h;}})()}${fr.ch3}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
 }
 // ══════════════════════════════════════════════
 //  지정일 운세 V4 — 한 페이지로 이어 읽는 하루 풀이
@@ -13946,7 +14027,7 @@ function buildDaypickReadingV4(saju,y,m,d,extra){
     return {top:lcOrbs(saju)+lcScene(saju,'이 날의 흐름을<br>시간마다<br>짚어 볼게요')+lcMoments([bestH?{when:hl(bestH),what:'가장 힘이 붙는 시간이에요',dot:'g'}:null,rec0?{when:'이 날 꼭 할 일',what:`<span class="lk-m">${rec0}</span>`,dot:'y'}:null,badH[0]?{when:hl(badH[0]),what:'말과 계약을 조심할 시간이에요',dot:'r'}:null]),
       ch3:lcChapter(3,'시간마다의 흐름')+lcBox('lc-graph','열두 시간대 흐름 그래프','좋은 시간은 높게, 조심할 시간은 낮게 표시했어요.',lcLineChart(hours.map(x=>({l:BRCHKO[x.bi],v:x.kind==='좋은 시간'?85:x.kind==='조심할 시간'?40:62})),-1))};
   }catch(e){return {top:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],grade.lab,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`,lvTagsHTML([`${(TG_KEYWORD[tg]||['평온'])[0]}의_날`,dl?`${BRCHKO[dl.bi]}시가_좋은_날`:'오전이_좋은_날',`${colors[0]}이_행운의_색`])+lvGaugeHTML(f.total,'이 날 점수'))}${fr.top}${lvPin([['이 날 점수',`${f.total}점 · ${grade.lab}`],['한 줄로',TD[0]],(dayLucky[0]||luckyH[0])?['가장 좋은 시간',hl(dayLucky[0]||luckyH[0])]:null,badH[0]?['피할 시간',hl(badH[0])]:null,recs&&recs.length?['하면 좋은 일',recs.slice(0,2).map(x=>Array.isArray(x)?x[0]:x).join(' · ')]:null,(typeof avoids!=='undefined'&&avoids.length)?['미룰 일',avoids.slice(0,2).map(x=>Array.isArray(x)?x[0]:x).join(' · ')]:null,['행운의 색·방향',`${colors[0]} · ${dirs[0]}`]])}${lvToc(DP_TITLES,'지정일 운세 목차')}${lcChapter(2,'이 날 깊이 보기')}${h}${fr.ch3}`;
+  return `<div class="lv4">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],grade.lab,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`,lvTagsHTML([`${(TG_KEYWORD[tg]||['평온'])[0]}의_날`,dl?`${BRCHKO[dl.bi]}시가_좋은_날`:'오전이_좋은_날',`${colors[0]}이_행운의_색`])+lvGaugeHTML(f.total,'이 날 점수'))}${fr.top}${lvToc(DP_TITLES,'지정일 운세 목차')}${lcChapter(2,'이 날 깊이 보기')}${(()=>{try{return lv4Inject(h,'dp-lucky',ppDayHTML(saju,_meta,dpB,buildPinpoint(saju,_meta)));}catch(e){return h;}})()}${fr.ch3}`;
 }
 // ══════════════════════════════════════════════
 //  이름풀이·작명 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -14087,7 +14168,7 @@ function buildNameReadingV4(saju,nmExtra){
       ch1:lcChapter(1,'이름 명식 분석')+lcBox('lc-bars','이름의 오행 분포',lcAreaBars(pct(nameOh.oh)),'이름 소리에 담긴 다섯 기운의 비율이에요.')+lcBox('lc-bars2','사주의 오행 분포',lcAreaBars(pct(sajuOh)),'사주팔자에 담긴 다섯 기운의 비율이에요. 옅은 기운을 이름이 채워 주면 좋아요.'),
       ch2:lcChapter(2,'이름 깊이 보기'),ch3:''};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${fr.top}${ctxNoteHTML('name')}${lvPin([['이름 점수',`${score}점 · ${grade}`],['사주에 필요한 오행',`${O[ys.main]} 기운`],['이 이름이 채우는 기운',(o=>`${O[o]} 기운이 가장 두터워요`)(nameOh.oh.indexOf(Math.max(...nameOh.oh)))],nameOh.oh[ys.main]?['궁합 한 줄',`이름이 사주에 필요한 ${O[ys.main]} 기운을 채워 줘요`]:['궁합 한 줄',`이름에 ${O[ys.main]} 기운이 없어 보완하면 좋아요`],(typeof rec!=='undefined'&&rec[0])?['추천 이름 1순위',`${surname}${rec[0].name}`]:null])}${fr.ch1}${lvToc(NM_TITLES,'이름풀이 목차')}${fr.ch2}${ctxApplyScenes('name',h,{})}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
+  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${fr.top}${ctxNoteHTML('name')}${fr.ch1}${lvToc(NM_TITLES,'이름풀이 목차')}${fr.ch2}${ctxApplyScenes('name',h,{})}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
 }
 // ══════════════════════════════════════════════
 //  궁합 V4 — 한 페이지로 이어 읽는 두 사람 풀이 (인생총운 V4와 같은 틀)
@@ -14205,7 +14286,7 @@ function buildGunghapReadingV4(s1,s2,ctx){
       ch2:lcChapter(2,'장면별 궁합 풀이'),
       ch3:lcChapter(3,'두 사람의 앞으로 10년')+lcBox('lc-graph','함께 가는 흐름 그래프','해마다 두 사람의 흐름을 합친 점수예요. 높은 해에 큰 결정을 두세요.',lcLineChart(years.map(x=>({l:`${String(x.y).slice(2)}년`,v:Math.round(x.joint)})),-1))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero('궁합',relationLabel,r.grade,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`,lvTagsHTML([relationLabel,best[0]?`${best[0].y}년_함께_상승`:'',`${scoresSorted[0][0]}이_강한_사이`])+lvGaugeHTML(r.score,'궁합 점수'))}${fr.top}${ctxNoteHTML('gunghap')}${lvPin([['궁합 점수',`${r.score}점 · ${r.grade}`],['두 사람을 한 줄로',relationLabel],['가장 잘 맞는 부분',scoresSorted[0]&&scoresSorted[0][0]],['부딪히기 쉬운 부분',scoresSorted.length?scoresSorted[scoresSorted.length-1][0]:''],['일지끼리',relWord+' 사이'],best[0]?['함께 큰 결정을 하기 좋은 해',best.slice(0,2).map(x=>`${x.y}년`).join(', ')]:null])}${fr.ch1}${lvToc(GH_TITLES,'궁합 목차')}${fr.ch2}${ctxApplyScenes('gunghap',h,{good,tough,bestY:best[0]?`${best[0].y}년`:''})}${fr.ch3}${ctx.tail||''}</div>`;
+  return `<div class="lv4">${lvHero('궁합',relationLabel,r.grade,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`,lvTagsHTML([relationLabel,best[0]?`${best[0].y}년_함께_상승`:'',`${scoresSorted[0][0]}이_강한_사이`])+lvGaugeHTML(r.score,'궁합 점수'))}${fr.top}${ctxNoteHTML('gunghap')}${fr.ch1}${lvToc(GH_TITLES,'궁합 목차')}${fr.ch2}${(()=>{let hh=ctxApplyScenes('gunghap',h,{good,tough,bestY:best[0]?`${best[0].y}년`:''});try{hh=lv4Inject(hh,'gh-scenes',ppCoupleHTML(s1,s2,_meta,{weak:scoresSorted[scoresSorted.length-1][0],bestY:best[0]&&best[0].y}));}catch(e){}return hh;})()}${fr.ch3}${ctx.tail||''}</div>`;
 }
 // ══════════════════════════════════════════════
 //  신년운세 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -14391,16 +14472,9 @@ function buildNewyearReadingV4(saju,y,meta){
     lv4Key(`${y}년, 더 많이 하는 것보다 무엇을 남길지 먼저 정하세요.`));
 
   const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세`,lvTagsHTML([`${m.decisive}월이_결정적인_해`,`돈은_${moneyGood[0].month}월에_움직여요`,LV4_AXIS_TAG[b.axis]])+lvGaugeHTML(info.score,`${y}년 흐름`));
-  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'ny-love',ppPartnerHTML(P,{title:`${y}년에 만날 수 있는 인연`,noCard:true}));h=lv4Inject(h,'ny-money',ppMoneyHTML(P,{title:`${y}년 돈이 들어오는 길`}));h=lv4Inject(h,'ny-luck',ppHelperHTML(P,{title:`${y}년의 귀인과 조심할 사람`}));}catch(e){}
+  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'ny-love',ppPartnerHTML(P,{title:`${y}년에 만날 수 있는 인연`,noCard:true}));h=lv4Inject(h,'ny-money',ppMoneyHTML2(s,meta,P,{title:`${y}년 돈이 들어오는 길`}));h=lv4Inject(h,'ny-health',ppHealthHTML(s,meta,P,{title:`${y}년 몸 관리법`}));h=lv4Inject(h,'ny-work',ppCareerHTML(s,meta,P,{title:`${y}년 일과 일터`}));h=lv4Inject(h,'ny-luck',ppHelperHTML(P,{title:`${y}년의 귀인과 조심할 사람`})+ppLuckHTML(s,meta,P,{title:`${y}년 운을 여는 방법`}));}catch(e){}
   const ml4=a=>lv4MonthLab(a.map(x=>x.month));
   h=ctxApplyScenes('newyear',h,{axis:b.axis,work:ml4(workGood),workBad:ml4(workBad),money:ml4(moneyGood),moneyBad:ml4(moneyBad),love:ml4(loveGood),loveBad:ml4(loveBad),healthBad:ml4(healthBad)});
-  const pin=lvPin([
-    ['올해를 한 줄로',`${front.use}의 해예요.`],
-    ['가장 결정적인 달',`${m.decisive}월`],
-    ['돈이 들어오는 달',ml4(moneyGood)],['마음이 통하는 달',ml4(loveGood)],['일이 풀리는 달',ml4(workGood)],
-    ['몸을 아껴야 할 달',ml4(healthBad)],['돈 거래를 미룰 달',ml4(moneyBad)],
-    ['올해 세운 점수',`${info.score}점 · ${y}년 ${info.gz}`]
-  ]);
   const fr=(()=>{try{
     const mo=[{x:{month:m.decisive},what:'올해 가장 결정적인 선택이 오는 달이에요',dot:'g'},moneyGood[0]&&{x:moneyGood[0],what:'돈이 크게 움직이는 달이에요',dot:'y'},healthBad[0]&&{x:healthBad[0],what:'몸과 마음을 아껴야 할 달이에요',dot:'r'}].filter(Boolean).sort((a,b)=>a.x.month-b.x.month);
     const avgF=k=>Math.round(m.months.reduce((n,x)=>n+(x.sc[k]||0),0)/m.months.length);
@@ -14409,7 +14483,7 @@ function buildNewyearReadingV4(saju,y,meta){
       ch2:lcChapter(2,'영역별 올해 풀이'),
       ch3:lcChapter(3,'올해의 흐름과 사람들')+lcPeople(s,{genderKey:b.genderKey})+lcBox('lc-graph',`${y}년 달마다의 흐름`,'달마다의 흐름 점수예요. 가장 높은 달에 중요한 일을 두세요.',lcLineChart(m.months.map(x=>({l:`${x.month}월`,v:x.score})),-1)+`<h4>${y}년 영역별 평균</h4>`+lcAreaBars([['재물운',avgF('wealth')],['연애운',avgF('love')],['직업운',avgF('career')],['건강운',avgF('health')]]))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {model:m,html:`<div class="lv4">${hero}${fr.top}${ctxNoteHTML('newyear')}${pin}${fr.ch1}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${fr.ch2}${h}${fr.ch3}${renderChatSection('newyear')}</div>`};
+  return {model:m,html:`<div class="lv4">${hero}${fr.top}${ctxNoteHTML('newyear')}${fr.ch1}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${fr.ch2}${h}${fr.ch3}${renderChatSection('newyear')}</div>`};
 }
 function renderSajuPaidV2(saju,sy,sm,sd,sh,smin){
   const meta={...(_meta||{}),sy,sm,sd,hour:sh,min:smin,gender:(_meta&&_meta.gender)||gender};
