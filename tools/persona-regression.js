@@ -401,6 +401,12 @@ const harness = `
       .forEach(([c,fn])=>{let h='';try{h=fn();}catch(e){h='';}if(!h.includes('class="lc-orbs"')||!h.includes('class="lc-chapter"')||!h.includes('class="lc-tl '))__frameBad.push(c);});
     ok('유료 풀이 장 구성: 16개 카테고리 모두 원국 구슬·3가지 순간·장 제목', __frameBad.length===0, __frameBad.join(', '));
 
+    const __ppLove=renderTopicPaid('topic-love',SELF,_meta),__ppLife=renderSajuPaid(SELF,1990,5,15,12,0),__ppNy=renderNewyearFortune(SELF,2026),__ppPlain=clean(__ppLove).replace(/&nbsp;|\\u00a0|\\u200b|\\u2060/g,'');
+    ok('콕 찍은 풀이: 연애운·인생총운·신년운세 본문에 출생년도·띠·이름 첫소리·지역·직업·만나는 곳',
+       __ppLove.includes('pp-box') && /\\d{4}년생\\([가-힣]+띠\\)/.test(__ppPlain) && /첫소리가 [ㄱ-ㅎ·]+/.test(__ppPlain) && /(동쪽|서쪽|남쪽|북쪽|가까운)/.test(__ppPlain) && __ppPlain.includes('처음 만나는 곳') &&
+       (__ppLife.match(/pp-box/g)||[]).length>=3 && (__ppNy.match(/pp-box/g)||[]).length>=3,
+       [__ppLove.includes('pp-box'),/\\d{4}년생/.test(__ppPlain),(__ppLife.match(/pp-box/g)||[]).length,(__ppNy.match(/pp-box/g)||[]).length].join('|'));
+
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
     Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{
