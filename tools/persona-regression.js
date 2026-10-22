@@ -412,6 +412,13 @@ const harness = `
     if(!buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''}).includes('pp-box'))__ppBad.push('gunghap');
     ok('콕 찍은 풀이: 직업·재물·건강·학업·결혼·재회·아이·행운·궁합·하루까지 구체 풀이 상자', __ppBad.length===0, __ppBad.join(', '));
 
+    const __svMeta=_meta;_meta={..._meta,userName:'김하늘',marital:'married'};
+    const __lifeM=renderSajuPaid(SELF,1990,5,15,12,0),__nyM=renderNewyearFortune(SELF,2026);let __ctxJson='';try{__ctxJson=JSON.stringify(buildSajuContextForChat('paid-life')||{});}catch(e){}
+    _meta=__svMeta;
+    ok('이름·결혼 상태: 이름은 제목·말풍선에만 쓰고 AI로 보내지 않음, 기혼이면 운명의 상대 대신 배우자와의 관계',
+       __lifeM.includes('김하늘님') && !__ctxJson.includes('김하늘') && __lifeM.includes('배우자와의 관계') && !__lifeM.includes('콕 찍어 보는 운명의 상대') && __nyM.includes('배우자와의 흐름'),
+       [__lifeM.includes('김하늘님'),!__ctxJson.includes('김하늘'),__lifeM.includes('배우자와의 관계'),!__lifeM.includes('콕 찍어 보는 운명의 상대'),__nyM.includes('배우자와의 흐름')].join('|'));
+
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
     Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{

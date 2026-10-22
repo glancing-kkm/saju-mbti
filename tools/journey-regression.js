@@ -352,6 +352,7 @@ const submitBirth=async()=>{
       assert(!/무료 요약/.test(d.getElementById('astroApp').textContent));
       assert(!d.querySelector('#astroApp .astro-chart-grid'));
     });
+    let aiCalls=0;const fetchBeforeAstro=w.fetch;w.fetch=async(u,o)=>{if(/-reading/.test(String(u)))aiCalls++;return fetchBeforeAstro(u,o);};
     for(const product of ['birth-basic','love-marriage','career-money','yearly','full-report']){
       run(`selectAstrologyProduct('${product}')`);await wait(80);
       check('점성술: '+product+' 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼',()=>{
@@ -368,7 +369,10 @@ const submitBirth=async()=>{
       assert.equal(run('_astroFlow.productType'),'love-marriage');
       assert(d.querySelector('#astroApp .lk-preview'));
     });
-    run("completeAstrologyPayment()");await wait(30);
+    check('점성술 미리보기: 결제 전에는 AI 풀이 요청을 보내지 않음(비용 0원)',()=>assert.equal(aiCalls,0));
+    run("completeAstrologyPayment()");await wait(80);
+    check('점성술 결제 완료: 이때 처음 AI 풀이를 요청',()=>assert(aiCalls>=1));
+    w.fetch=fetchBeforeAstro;
     check('점성술 결제 완료: 다시 만들지 않고 저장해 둔 풀이를 바로 열기',()=>{
       assert(!d.querySelector('#astroApp .lk-preview') && d.querySelector('#astroApp .astro-v4'));
       assert.equal(run("loadAstrologyHistory().length"),1);

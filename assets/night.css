@@ -813,3 +813,18 @@ html[data-read-lang]:not([data-read-lang="ko"]) .lv4 p,html[data-read-lang]:not(
 .lv4-answer>b{display:block;margin-bottom:6px;font-family:var(--font-heading);font-weight:400;font-size:.92rem;color:var(--accent)}
 .lv4 .lv4-answer p{margin:0 0 6px}
 .pdf-ready-close{margin-top:4px;background:none;border:0;color:var(--muted);font-size:.9rem;cursor:pointer}
+
+/* 입력 중 사주팔자 구슬이 하나씩 생겨나는 연출 */
+.wz-live{display:none}
+#formWrap.wz-on .wz-live.on{display:block;order:-950;margin:-6px 0 24px;padding:14px 6px 16px;border-radius:18px;background:var(--card);border:1px solid var(--border);animation:wz-rise .5s cubic-bezier(.2,.8,.2,1) both}
+.wz-live-title{margin:0 0 4px;text-align:center;font-family:var(--font-heading);font-size:.95rem;color:var(--accent);animation:wz-fade .4s ease both}
+.wz-live .lc-orbs{padding:6px 0 0;background:none;border:0;gap:6px}
+.wz-live .lc-orb{width:54px;height:54px}
+.wz-live .lc-orb b{font-size:1.2rem}
+.wz-pop .lc-orb{animation:orb-flip .75s cubic-bezier(.3,1.35,.5,1) both}
+.wz-pop .lc-orb:last-child{animation-delay:.14s}
+.wz-pop em{animation:wz-fade .4s ease both}
+.wz-wait{animation:wz-breathe 1.6s ease-in-out infinite}
+@keyframes orb-flip{0%{opacity:0;transform:perspective(420px) rotateY(95deg) scale(.35);box-shadow:0 0 0 rgba(240,198,116,0)}55%{opacity:1;transform:perspective(420px) rotateY(-14deg) scale(1.14);box-shadow:0 0 26px rgba(240,198,116,.75)}100%{transform:none}}
+@keyframes wz-breathe{0%,100%{opacity:.85}50%{opacity:.4}}
+@media(prefers-reduced-motion:reduce){.wz-pop .lc-orb,.wz-wait,#formWrap.wz-on .wz-live.on{animation:none}}

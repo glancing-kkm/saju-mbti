@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=8826ae5c07d5">
+<link rel="stylesheet" href="/assets/night.css?v=b13cab5e71d9">
 </head>
 <body>
 <div id="app">
@@ -2714,6 +2714,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
     </div>
     <form class="form-body" id="formWrap" data-clarity-mask="true" onsubmit="event.preventDefault();analyze();" novalidate>
       <div class="journey-form-note" id="journeyFormNote"><b>먼저 무료로 본인의 성향을 읽어봐요.</b>생년월일은 필수예요. 태어난 시간은 몰라도 돼요.</div>
+      <fieldset id="nameFieldset">
+        <legend><label for="iName" style="all:unset;cursor:pointer">이름</label> <small>(선택 · 제목과 리포트 표지에만 쓰여요)</small></legend>
+        <div class="ig"><input type="text" id="iName" name="userName" placeholder="예: 김하늘" maxlength="10" autocomplete="off"></div>
+      </fieldset>
       <fieldset>
         <legend id="lgGender">성별</legend>
         <div class="tog-row" role="radiogroup" aria-label="성별 선택">
@@ -3007,6 +3011,15 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <option value="있음"><option value="없음">
       </datalist>
 
+      <fieldset class="cat-extra" id="catExtraMarital" style="display:none">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">연애·결혼 상태 (선택)</span></div></legend>
+        <div class="cat-extra-desc">고르면 연애·결혼 풀이를 지금 상황에 맞춰 드려요.</div>
+        <div class="tog-row" role="radiogroup" aria-label="연애·결혼 상태">
+          <button type="button" class="tog" id="mrSingle" onclick="setMarital('single')" role="radio" aria-checked="false">미혼</button>
+          <button type="button" class="tog" id="mrDating" onclick="setMarital('dating')" role="radio" aria-checked="false">연애 중</button>
+          <button type="button" class="tog" id="mrMarried" onclick="setMarital('married')" role="radio" aria-checked="false">기혼</button>
+        </div>
+      </fieldset>
       <fieldset class="cat-extra ctx-q" id="catExtraCtx" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><label class="cat-extra-title" id="ctxQTitle" for="ctxText">궁금한 점</label></div></legend>
         <div class="cat-extra-desc" id="ctxQDesc"></div>
@@ -4659,6 +4672,8 @@ function ctxApplyScenes(cat,html,h){
 // ── 입력 화면 — 값을 채우면 다음 항목이 아래로 이어서 열린다 (PASS 방식) ──
 let _wz={steps:[],open:0};
 function wzStepKind(step){
+  if(step.some(f=>f.querySelector('#iName')))return 'name';
+  if(step.some(f=>f.id==='catExtraMarital'))return 'marital';
   if(step.some(f=>f.querySelector('#bm')))return 'gender';
   if(step.some(f=>f.querySelector('#iY')))return 'birth';
   if(step.some(f=>f.querySelector('#iHourInput')))return 'time';
@@ -4666,7 +4681,7 @@ function wzStepKind(step){
   if(step.some(f=>f.id==='catExtraCtx'))return 'ctx';
   return 'extra';
 }
-const WZ_PROMPT={gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
+const WZ_PROMPT={name:'이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
 function wzPromptFor(step){
   const k=wzStepKind(step);if(WZ_PROMPT[k])return WZ_PROMPT[k];
   const t=step[0]&&(step[0].querySelector('.cat-extra-title')||step[0].querySelector('legend'));
@@ -4680,7 +4695,7 @@ function wzStepDone(step){
   if(k==='birth')return wzBirthOk();
   if(k==='time'){const u=document.getElementById('iTimeUnknown'),h=document.getElementById('iHourInput').value,mi=document.getElementById('iMin').value;return (u&&u.checked)||(h!==''&&(mi!==''||!step.some(f=>f.contains(document.activeElement))));}
   if(k==='city')return !!document.getElementById('iCity').value.trim();
-  if(k==='ctx')return true;
+  if(k==='ctx'||k==='name'||k==='marital')return true;
   const nums=step.flatMap(f=>[...f.querySelectorAll('input[type="number"]')]).filter(el=>el.offsetParent!==null);
   return step.some(f=>f.dataset.wzTouched==='1')&&nums.every(el=>el.value!=='');
 }
@@ -4690,10 +4705,11 @@ function inputWizardInit(){
   const fss=[...form.children].filter(el=>el.tagName==='FIELDSET'&&el.style.display!=='none'&&el.id!=='mbtiFieldset');
   const birthIdx=fss.findIndex(f=>f.querySelector('#iY'));
   const steps=[];
-  if(birthIdx>=0){const head=fss.slice(0,birthIdx+1),g=head.findIndex(f=>f.querySelector('#bm'));if(g===0&&head.length>1){steps.push([head[0]]);steps.push(head.slice(1));}else steps.push(head);}
+  if(birthIdx>=0){const head=fss.slice(0,birthIdx+1),ci=head.findIndex(f=>f.querySelector('#bs'));head.forEach((f,i)=>{if(ci>=0&&i>ci)steps[steps.length-1].push(f);else steps.push([f]);});}
   fss.slice(birthIdx+1).forEach(f=>steps.push([f]));
   if(_lastInputs)form.dataset.genderPicked='1';
   fss.forEach(f=>{f.classList.remove('wz-in','wz-done','wz-cur');delete f.dataset.wzTouched;});
+  _wzLiveKey={};
   let open=0;while(open<steps.length-1&&wzStepDone(steps[open]))open++;
   _wz={steps,open};
   let pr=document.getElementById('wzPrompt');
@@ -4732,6 +4748,39 @@ function wzAdvance(focusNext){
     }
   }else wizardShow(null);
 }
+// 입력하는 동안 사주팔자 구슬이 하나씩 생겨난다 — 최종 계산은 분석할 때 다시 한다
+let _wzLiveKey={};
+function wzLiveRender(){
+  const form=document.getElementById('formWrap'),yEl=document.getElementById('iY');
+  if(!form||!yEl||!form.classList.contains('wz-on')||typeof LC_STEM_HAN==='undefined')return;
+  let box=document.getElementById('wzLive');
+  if(!box){box=document.createElement('div');box.id='wzLive';box.className='wz-live';box.setAttribute('aria-hidden','true');form.insertBefore(box,form.firstChild);}
+  const Y=+yEl.value,M=+document.getElementById('iM').value,D=+document.getElementById('iD').value;
+  const hv=document.getElementById('iHourInput').value,unk=document.getElementById('iTimeUnknown').checked;
+  let H=hv===''||unk?-1:+hv,MI=+document.getElementById('iMin').value||0;
+  const cols={yp:null,mp:null,dp:null,hp:null};
+  try{
+    if(Y>=1900&&Y<=2050){
+      if(M>=1&&M<=12&&D>=1&&D<=31){
+        let sy=Y,sm=M,sd=D;
+        if(calType==='lunar'&&typeof l2s==='function'){const s=l2s(Y,M,D,!!isLeap);sy=s.y;sm=s.m;sd=s.d;}
+        if(H>=0&&H<=23){const off=getTrueSolarOffsetMin(normalizeCityInput(document.getElementById('iCity').value));let tot=H*60+MI+Math.round(off||0);tot=((tot%1440)+1440)%1440;H=Math.floor(tot/60);MI=tot%60;}else H=-1;
+        const s=calcSaju(sy,sm,sd,H,MI);cols.yp=s.yp;cols.mp=s.mp;cols.dp=s.dp;cols.hp=H>=0?s.hp:null;
+      }else cols.yp=yearPillar(Y,6,1,12,0);
+    }
+  }catch(e){}
+  box.classList.toggle('on',!!cols.yp);
+  if(!cols.yp){box.innerHTML='';_wzLiveKey={};return;}
+  const orb=(han,ko,oh)=>`<span class="lc-orb oh${oh}"><small>${LC_OH_HAN[oh]}·${LC_OH_WORD[oh]}</small><b>${han}</b><i>${ko}</i></span>`;
+  const wait=t=>`<span class="lc-orb none${t?'':' wz-wait'}"><b>?</b><i>${t||''}</i></span>`;
+  const title=!cols.dp?'연주가 나타났어요':cols.hp?'사주팔자 여덟 글자가 모두 세워졌어요':unk?'시간을 몰라 여섯 글자로 세웠어요':'사주팔자가 세워지고 있어요';
+  const nk={};
+  box.innerHTML=`<p class="wz-live-title">${title}</p><div class="lc-orbs">${[['시주','hp'],['일주','dp'],['월주','mp'],['연주','yp']].map(([lab,k])=>{
+    const x=cols[k],key=x?`${x.stem}-${x.branch}`:'';nk[k]=key;
+    const body=x?orb(LC_STEM_HAN[x.stem],STEMKO[x.stem],SOH[x.stem])+orb(LC_BR_HAN[x.branch],BRCHKO[x.branch],BOH[x.branch]):(k==='hp'&&unk?wait('모름')+wait('모름'):wait()+wait());
+    return `<div class="lc-orb-col${k==='dp'?' self':''}${key&&_wzLiveKey[k]!==key?' wz-pop':''}"><em>${lab}</em>${body}</div>`;}).join('')}</div>`;
+  _wzLiveKey=nk;
+}
 // prevOpen: 새로 열린 항목에만 등장 애니메이션을 준다 (-1이면 처음 그리기, null이면 상태만 갱신)
 function wizardShow(prevOpen){
   const form=document.getElementById('formWrap');if(!form||!_wz.steps.length)return;
@@ -4748,6 +4797,7 @@ function wizardShow(prevOpen){
   if(btn){const show=_wz.open===last;if(show&&btn.classList.contains('wz-hide')){btn.classList.remove('wz-hide');btn.classList.remove('wz-in');void btn.offsetWidth;btn.classList.add('wz-in');}else if(!show)btn.classList.add('wz-hide');}
   const pr=document.getElementById('wzPrompt');
   if(pr){const t=_wz.open===last&&wzStepKind(s[last])!=='ctx'?'모두 입력했어요. 아래 버튼을 눌러 주세요':wzPromptFor(s[_wz.open]);if(pr.textContent!==t){pr.textContent=t;pr.classList.remove('wz-in');void pr.offsetWidth;pr.classList.add('wz-in');try{scheduleLanguageApply(pr,[0]);}catch(e){}}}
+  try{wzLiveRender();}catch(e){}
 }
 // 결과를 열기 전 단계별 연산 연출 — 탭하면 바로 건너뛴다
 const REVEAL_STEPS={
@@ -4799,6 +4849,8 @@ function setCal(t){
   _setTog('bl',t==='lunar');
   document.getElementById('leapSec').className='leap-sec'+(t==='lunar'?' vis':'');
 }
+let _marital='';
+function setMarital(v){_marital=_marital===v?'':v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
 function setLeap(b){
   isLeap=b;
   _setTog('breg',!b);
@@ -5510,6 +5562,8 @@ function goToInput(cat){
       ?'만세력 원국 계산은 생년월일·시간·지역 기준으로 진행돼요. MBTI를 선택해두면 다른 통합 풀이로 이동할 때 이어서 사용할 수 있어요.'
       :'선택하시면 일주와 MBTI의 흐름을 비교한 한 줄 풀이가 결과에 함께 노출돼요.';
   }
+  const nmFs=document.getElementById('nameFieldset');if(nmFs)nmFs.style.display=cat==='name'?'none':'';
+  const mrFs=document.getElementById('catExtraMarital');if(mrFs)mrFs.style.display=(cat==='life'||cat==='newyear')?'':'none';
   // 아이 사주는 보호자의 출생정보를 채우지 않는다 — 다른 풀이로 돌아가면 보호자 정보가 다시 채워진다
   const isChild=cat==='topic-child';
   const lgG=document.getElementById('lgGender'),lgB=document.getElementById('lgBirth');
@@ -6078,6 +6132,14 @@ function startTarotPayment(){
   }
 }
 // 스프레드별 슬롯 배치 (col,row[,회전]) — 화면 상단 카드 배열
+// 결제 완료 뒤 — AI 풀이가 이미 있으면 열고, 미리보기만 있으면 이제 AI 풀이를 만든다
+function tarotAfterPayment(){
+  const f=_tarotFlow,full=f&&f.positions&&(f.selectedCards||[]).length>=f.positions.length;
+  showView('tarot');
+  if(f&&f.resultMarkdown&&!f.previewTemplate){saveTarotReadingFromFlow(f);_tarotRoute='result';renderTarot();return;}
+  if(full){_tarotRoute='result';finishTarotDraw();return;}
+  _tarotRoute='draw';renderTarot();
+}
 function tarotDrawLayout(id){
   if(id==='tarot3')return {sw:56,sh:84,cw:66,ch:94,cells:[[0,0],[1,0],[2,0]]};
   if(id==='tarot10')return {sw:38,sh:57,cw:46,ch:66,cells:[[1,1],[1,1,90],[0,1],[2,1],[1,0],[1,2],[3,3],[3,2],[3,1],[3,0]]};
@@ -6145,6 +6207,12 @@ function selectDeckCard(cardId){
 function resetTarotDraw(){if(confirm('선택한 카드를 모두 지우고 다시 뽑을까요?')){_tarotFlow.selectedCards=[];_tarotFlow.resultMarkdown='';_tarotFlow.resultLoading=false;saveTarotFlow();renderTarot();}}
 async function finishTarotDraw(){
   const input=buildAIReadingInput(_tarotFlow);
+  if(_tarotFlow.paymentStatus!=='paid'){
+    // 결제 전 미리보기는 AI를 부르지 않는다 — 뽑은 카드의 정해진 의미로 만든 기본 풀이만 쓴다
+    _tarotFlow.resultMarkdown=generateTemplateReading(input);_tarotFlow.previewTemplate=true;_tarotFlow.resultLoading=false;
+    saveTarotFlow();tarotNavigate('result');return;
+  }
+  _tarotFlow.previewTemplate=false;
   _tarotFlow.resultMarkdown='';
   _tarotFlow.resultLoading=true;
   saveTarotFlow();
@@ -7664,7 +7732,7 @@ async function downloadReportPdf(cat){
     }
     // 표지
     const cover=pdfPageShell(host,title,dateStr);cover.classList.add('pdf-cover');
-    cover.querySelector('.pdf-body').innerHTML=`<div class="pdf-cover-inner"><small>天地人 · 천지인 사주</small><h1>${title}</h1><p>${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일생 · ${((_meta&&_meta.gender)||gender)==='female'?'여성':'남성'}</p>${typeof lcOrbs==='function'?lcOrbs(_saju):''}<p class="pdf-cover-date">${dateStr} 발행</p></div>`;
+    cover.querySelector('.pdf-body').innerHTML=`<div class="pdf-cover-inner"><small>天地人 · 천지인 사주</small><h1>${title}</h1><p>${ppName()?ppName()+' · ':''}${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일생 · ${((_meta&&_meta.gender)||gender)==='female'?'여성':'남성'}</p>${typeof lcOrbs==='function'?lcOrbs(_saju):''}<p class="pdf-cover-date">${dateStr} 발행</p></div>`;
     // 목차 자리
     const toc=pdfPageShell(host,title,dateStr);
     await new Promise(r=>setTimeout(r,60));
@@ -12225,10 +12293,7 @@ function _adminUnlockPaidCategory(category){
       _tarotFlow.paidAt=now;
       _tarotFlow.expiresAt=now+24*60*60*1000;
       if(typeof saveTarotFlow==='function')saveTarotFlow();
-      if(_tarotFlow.resultMarkdown&&typeof saveTarotReadingFromFlow==='function')saveTarotReadingFromFlow(_tarotFlow);
-      _tarotRoute=_tarotFlow.resultMarkdown?'result':'draw';
-      showView('tarot');
-      if(typeof renderTarot==='function')renderTarot();
+      tarotAfterPayment();
     }catch(e){alert('타로 잠금 해제 중 문제가 있었어요.');}
     return;
   }
@@ -12540,10 +12605,7 @@ async function _handlePaymentReturn(){
         if(_tarotFlow){const now=Date.now();_tarotFlow.paymentStatus='paid';_tarotFlow.paidAt=now;_tarotFlow.expiresAt=now+24*60*60*1000;if(typeof saveTarotFlow==='function')saveTarotFlow();}
       }catch(e){}
       try{if(typeof closePaymentConsent==='function')closePaymentConsent();}catch(e){}
-      try{if(_tarotFlow&&_tarotFlow.resultMarkdown&&typeof saveTarotReadingFromFlow==='function')saveTarotReadingFromFlow(_tarotFlow);}catch(e){}
-      _tarotRoute=_tarotFlow&&_tarotFlow.resultMarkdown?'result':'draw';
-      showView('tarot');
-      if(typeof renderTarot==='function')renderTarot();
+      if(_tarotFlow)tarotAfterPayment();else{_tarotRoute='draw';showView('tarot');if(typeof renderTarot==='function')renderTarot();}
       return;
     }
     // 점성술 결제 완료 → 리딩 생성 화면으로 복귀
@@ -13268,6 +13330,7 @@ const LC_TITLE={
   gwan:['맡은 일은 끝까지 해내지만','남의 짐까지 떠안기 쉬운 사주'],
   in_:['흐름을 읽는 눈은 깊지만','결단의 순간에 망설이는 사주']
 };
+function ppName(){const n=_meta&&_meta.userName;return n?`${storyEsc(n)}님`:'';}
 function lcChapter(no,title){return `<div class="lc-chapter"><small>CHAPTER ${no}</small><h2>${title}</h2></div>`;}
 function lcScene(saju,text,right){return `<figure class="lc-scene${right?' right':''}">${characterPortraitSVG(saju)}<figcaption class="lc-bubble">${text}</figcaption></figure>`;}
 function lcOrbs(s){
@@ -13323,11 +13386,11 @@ function buildLifeChapters(m,s,meta,ctx){
   const clashYear=m.futureYears.find(y=>y.yp.branch===clashB);
   const peer=cnt(['비견','겁재']),gwanN=cnt(['정관','편관']);
   const person=(title,rows)=>`<div class="lk-person"><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div>`;
-  const people=lcPeople(s,{genderKey:m.genderKey,partner:true,seatShort,seatLove,when:lv?(lv1&&lv1.year!==lv.year?`${lv1.year}년 · `:'')+`${lv.year}년 <span class="lk-m">${lv.month}월</span>`:lv1?`${lv1.year}년`:''});
+  const people=lcPeople(s,{genderKey:m.genderKey,partner:!(meta&&meta.marital==='married'),seatShort,seatLove,when:lv?(lv1&&lv1.year!==lv.year?`${lv1.year}년 · `:'')+`${lv.year}년 <span class="lk-m">${lv.month}월</span>`:lv1?`${lv1.year}년`:''});
   // 5) 흐름 그래프
   const das=(m.dq.daeuns||[]).filter(du=>du.age<=85),pts=das.map(du=>({l:`${du.age}세`,v:lcEraScore(s,du)})),curI=das.indexOf(m.cur);
   const graph=`<section class="lc-card lc-graph" id="lv4-lc-graph"><h3 class="lc-card-title">인생 흐름 그래프</h3><p class="lc-sub">대운(10년 단위)별 흐름 점수예요. 가장 높은 점이 인생의 상승 구간이에요.</p>${lcLineChart(pts,curI)}<h4>${y0}년 영역별 흐름</h4>${lcAreaBars(areas.map(([,l,v])=>[l,v]))}</section>`;
-  return {top:lcOrbs(s)+lcScene(s,`본인의 인생을<br>뒤흔들 3가지<br>순간이 보여요`)+timeline,
+  return {top:lcOrbs(s)+lcScene(s,`${ppName()?ppName()+'의':'본인의'} 인생을<br>뒤흔들 3가지<br>순간이 보여요`)+timeline,
     ch1:lcChapter(1,'명식 분석')+`<section class="lc-card" id="lv4-lc-bars"><h3 class="lc-card-title">본인이 타고난 성향</h3>${bars}</section>`+card+lcScene(s,'보통 사주는 아니에요.<br>이제 영역별로<br>풀어 볼게요',true),
     ch2:lcChapter(2,'영역별 사주풀이')+special,
     ch3:lcChapter(3,'인생을 뒤흔들 사람들')+people+graph};
@@ -13397,7 +13460,7 @@ function topicFrame(tm,o){
   const graph=lcBox('lc-graph',`앞으로의 ${info.stat} 흐름`,`해마다의 ${info.stat} 점수예요. 가장 높은 점이 흐름이 활짝 피는 해예요.`,lcLineChart(yearPts,-1)+(child?'':`<h4>다가오는 12개월</h4>${lcAreaBars(tm.months.slice(0,12).map(x=>[`${x.year!==y0?String(x.year).slice(2)+'.':''}${x.month}월`,x.score]))}`));
   const partnerKeys=['love','marriage','reunion'];
   const people=child?'':lcPeople(s,{genderKey:tm.genderKey,partner:partnerKeys.includes(key),partnerTitle:key==='reunion'?'다시 만날 인연의 모습':'본인의 운명의 상대',seatShort:o.seatShort,seatLove:o.seatLove,when:bm?(by&&by.year!==bm.year?`${by.year}년 · `:'')+`${bm.year}년 <span class="lk-m">${bm.month}월</span>`:by?`${by.year}년`:'',helper:!partnerKeys.includes(key)||key==='marriage',avoid:key!=='health'&&key!=='study'});
-  return {top:lcOrbs(s)+lcScene(s,`본인의 ${info.label}${eul(info.label)}<br>뒤흔들 3가지<br>순간이 보여요`)+lcMoments(mom),
+  return {top:lcOrbs(s)+lcScene(s,`${ppName()?ppName()+'의':'본인의'} ${info.label}${eul(info.label)}<br>뒤흔들 3가지<br>순간이 보여요`)+lcMoments(mom),
     ch1:lcChapter(1,`${info.label} 명식 분석`)+(child?'':lcBox('lc-bars',`본인이 타고난 성향`,lcPersonaBars(s)))+card+lcScene(s,`이제 ${info.label}${eul(info.label)}<br>하나씩<br>풀어 볼게요`,true),
     ch2:lcChapter(2,`${info.label} 깊이 보기`),
     ch3:lcChapter(3,people?'흐름과 사람들':'앞으로의 흐름')+people+graph};
@@ -13604,6 +13667,16 @@ function ppLuckHTML(saju,meta,P,o){
     `이사나 이동을 한다면 ${ppWhere(reg,P.city)}${ppJo(ppWhere(reg,P.city),'이','가')} 좋아요. 여행은 ${ppM(PP_TRIP[X.yEl])}${ppJo(PP_TRIP[X.yEl],'이','가')} 기운을 채워 줘요.`
   ])}</div>`;
 }
+const PP_COUPLE_FIGHT={self:'결정권과 주도권',out:'말투와 표현 방식',wealth:'돈 쓰는 기준',gwan:'책임 분담과 집안일',in_:'혼자만의 시간과 연락 빈도'};
+function ppSpouseHTML(saju,meta,P,o){
+  o=o||{};const X=ppMore(saju,meta,P),mt=X.tm.marriage,bm=mt&&X.top(mt.bestMonths),cm=mt&&(mt.careMonths||[])[0],fight=PP_COUPLE_FIGHT[X.axis]||PP_COUPLE_FIGHT.gwan;
+  return `<div class="lv4-sub pp-box"><h3>${o.title||'콕 찍어 보는 배우자와의 관계'}</h3>${lv4P([
+    bm?`배우자와 관계가 가장 따뜻해지는 때는 ${bm.year}년 ${ppM(bm.month+'월')}이에요. 이때 둘만의 여행이나 기념일을 챙겨 보세요.`:'',
+    cm?`서로 예민해지기 쉬운 때는 ${cm.year}년 ${ppM(cm.month+'월')}이에요. 이 달에는 큰 지출이나 이사 같은 결정을 미루세요.`:'',
+    `부부가 가장 자주 부딪히는 주제는 ${ppM(fight)}이에요. 기분 좋은 날 미리 기준을 정해 두면 다툼이 크게 줄어요.`,
+    `둘이 함께 가면 좋은 곳은 ${ppM(PP_DATE[X.yEl])}${ppIda(PP_DATE[X.yEl])}.`
+  ])}</div>`;
+}
 function ppReunionHTML(saju,meta,P,tm){
   const bm=tm&&[...(tm.bestMonths||[])].sort((a,b)=>b.score-a.score)[0];
   return `<div class="lv4-sub pp-box"><h3>콕 찍어 보는 다시 닿는 순간</h3>${lv4P([
@@ -13735,10 +13808,10 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('요약본',renderLifeV2SummaryCard(m)));
 
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
-  const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
+  const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${ppName()?ppName()+' · ':''}${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
   h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
   let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatShort,seatLove});}catch(e){}
-  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'talent',ppCareerHTML(s,meta,P,{title:'콕 찍어 보는 재능이 돈이 되는 일'}));h=lv4Inject(h,'work-money',ppMoneyHTML2(s,meta,P));h=lv4Inject(h,'love-people',ppPartnerHTML(P,{noCard:true})+ppHelperHTML(P));h=lv4Inject(h,'health',ppHealthHTML(s,meta,P));h=lv4Inject(h,'future',ppTurnHTML(P)+ppMarriageHTML(s,meta,P));h=lv4Inject(h,'practice',ppLuckHTML(s,meta,P));}catch(e){}
+  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'talent',ppCareerHTML(s,meta,P,{title:'콕 찍어 보는 재능이 돈이 되는 일'}));h=lv4Inject(h,'work-money',ppMoneyHTML2(s,meta,P));h=lv4Inject(h,'love-people',(meta.marital==='married'?ppSpouseHTML(s,meta,P):ppPartnerHTML(P,{noCard:true,title:meta.marital==='dating'?'콕 찍어 보는 오래 함께할 인연':''}))+ppHelperHTML(P));h=lv4Inject(h,'health',ppHealthHTML(s,meta,P));h=lv4Inject(h,'future',ppTurnHTML(P)+(meta.marital==='married'?'':ppMarriageHTML(s,meta,P)));h=lv4Inject(h,'practice',ppLuckHTML(s,meta,P));}catch(e){}
   return `<div class="lv4">${hero}${ch.top}${ctxNoteHTML('life')}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
 }
 function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return false;}
@@ -14446,7 +14519,7 @@ function lvTagsHTML(tags){return tags&&tags.length?`<div class="lv4-tags">${tags
 function lvGaugeHTML(score,label){const s=Math.max(0,Math.min(100,Math.round(score||0)));return `<div class="lv4-gauge"><div class="lv4-gauge-head"><span>${label}</span><b>${s}</b></div><div class="lv4-gauge-bar"><i style="width:${s}%"></i></div></div>`;}
 function lvSec(no,id,title,lead,html,q){q=q||LV4_QHEAD[id];html=lv4WithWhy(html);const head=q?`<div class="lv4-sec-titles"><small class="lv4-sec-label">${title}</small><h2>${q}</h2></div>`:`<h2>${title}</h2>`;return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span>${head}</div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
 function lvToc(items,label){return `<nav class="lv4-toc" aria-label="${label}"><b>이 풀이의 순서</b>${items.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;}
-function lvHero(kicker,title,who,meta,extra){return `<header class="lv4-hero"><p class="lv4-kicker">${kicker}</p><h1>${preventOrphan(title||'')}</h1>${who?`<p class="lv4-hero-who">${preventOrphan(who)}</p>`:''}<p class="lv4-hero-meta">${meta}</p>${extra||''}</header>`;}
+function lvHero(kicker,title,who,meta,extra){if(typeof ppName==='function'&&ppName())meta=`${ppName()} · ${meta}`;return `<header class="lv4-hero"><p class="lv4-kicker">${kicker}</p><h1>${preventOrphan(title||'')}</h1>${who?`<p class="lv4-hero-who">${preventOrphan(who)}</p>`:''}<p class="lv4-hero-meta">${meta}</p>${extra||''}</header>`;}
 function lv4MonthLab(arr){return arr.map(v=>`${v}월`).join(', ');}
 function lv4TopMonths(months,key,n,low){return [...months].sort((a,b)=>low?(a.sc[key]-b.sc[key]||a.month-b.month):(b.sc[key]-a.sc[key]||a.month-b.month)).slice(0,n).sort((a,b)=>a.month-b.month);}
 const NY_TITLES=[['ny-basic','올해 한눈에 보기와 사주 원국 해석'],['ny-money','올해 재물운과 좋은 달·조심할 달'],['ny-love','올해 사랑과 관계'],['ny-health','올해 건강과 계절별 생활 리듬'],['ny-work','올해 직업과 학업'],['ny-luck','좋은 기운·주의할 점·운을 여는 법'],['ny-daeun','10년 단위 큰 흐름 속 올해와 종합 조언']];
@@ -14548,13 +14621,13 @@ function buildNewyearReadingV4(saju,y,meta){
     lv4Key(`${y}년, 더 많이 하는 것보다 무엇을 남길지 먼저 정하세요.`));
 
   const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세`,lvTagsHTML([`${m.decisive}월이_결정적인_해`,`돈은_${moneyGood[0].month}월에_움직여요`,LV4_AXIS_TAG[b.axis]])+lvGaugeHTML(info.score,`${y}년 흐름`));
-  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'ny-love',ppPartnerHTML(P,{title:`${y}년에 만날 수 있는 인연`,noCard:true}));h=lv4Inject(h,'ny-money',ppMoneyHTML2(s,meta,P,{title:`${y}년 돈이 들어오는 길`}));h=lv4Inject(h,'ny-health',ppHealthHTML(s,meta,P,{title:`${y}년 몸 관리법`}));h=lv4Inject(h,'ny-work',ppCareerHTML(s,meta,P,{title:`${y}년 일과 일터`}));h=lv4Inject(h,'ny-luck',ppHelperHTML(P,{title:`${y}년의 귀인과 조심할 사람`})+ppLuckHTML(s,meta,P,{title:`${y}년 운을 여는 방법`}));}catch(e){}
+  try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'ny-love',meta.marital==='married'?ppSpouseHTML(s,meta,P,{title:`${y}년 배우자와의 흐름`}):ppPartnerHTML(P,{title:meta.marital==='dating'?`${y}년 지금 인연과 오래 가는 법`:`${y}년에 만날 수 있는 인연`,noCard:true}));h=lv4Inject(h,'ny-money',ppMoneyHTML2(s,meta,P,{title:`${y}년 돈이 들어오는 길`}));h=lv4Inject(h,'ny-health',ppHealthHTML(s,meta,P,{title:`${y}년 몸 관리법`}));h=lv4Inject(h,'ny-work',ppCareerHTML(s,meta,P,{title:`${y}년 일과 일터`}));h=lv4Inject(h,'ny-luck',ppHelperHTML(P,{title:`${y}년의 귀인과 조심할 사람`})+ppLuckHTML(s,meta,P,{title:`${y}년 운을 여는 방법`}));}catch(e){}
   const ml4=a=>lv4MonthLab(a.map(x=>x.month));
   h=ctxApplyScenes('newyear',h,{axis:b.axis,work:ml4(workGood),workBad:ml4(workBad),money:ml4(moneyGood),moneyBad:ml4(moneyBad),love:ml4(loveGood),loveBad:ml4(loveBad),healthBad:ml4(healthBad)});
   const fr=(()=>{try{
     const mo=[{x:{month:m.decisive},what:'올해 가장 결정적인 선택이 오는 달이에요',dot:'g'},moneyGood[0]&&{x:moneyGood[0],what:'돈이 크게 움직이는 달이에요',dot:'y'},healthBad[0]&&{x:healthBad[0],what:'몸과 마음을 아껴야 할 달이에요',dot:'r'}].filter(Boolean).sort((a,b)=>a.x.month-b.x.month);
     const avgF=k=>Math.round(m.months.reduce((n,x)=>n+(x.sc[k]||0),0)/m.months.length);
-    return {top:lcOrbs(s)+lcScene(s,`${y}년,<br>본인을 흔들 3가지<br>순간이 보여요`)+lcMoments(mo.map(e=>({when:lcWhenYM(y,e.x.month),what:e.what,dot:e.dot}))),
+    return {top:lcOrbs(s)+lcScene(s,`${y}년,<br>${ppName()||'본인'}을 흔들 3가지<br>순간이 보여요`)+lcMoments(mo.map(e=>({when:lcWhenYM(y,e.x.month),what:e.what,dot:e.dot}))),
       ch1:lcChapter(1,`${y}년 명식 분석`)+lcBox('lc-bars','본인이 타고난 성향',lcPersonaBars(s))+lcCard('lc-core',`${y}년, ${info.gz}의 해<br>${front.use}`,[front.lead||'',front.good?`올해 이렇게 하면 흐름을 타요. ${front.good}`:'',front.warn?`가장 조심할 점은 이거예요. ${front.warn}`:'',loveGood[0]?`특히 ${loveGood[0].month}월에는 마음이 잘 통해요. 중요한 만남과 약속을 이 달에 두어 보세요.`:''],'* 아래 영역별 풀이에서 더 깊이 다뤄요.')+lcScene(s,'이제 올해를<br>영역별로<br>풀어 볼게요',true),
       ch2:lcChapter(2,'영역별 올해 풀이'),
       ch3:lcChapter(3,'올해의 흐름과 사람들')+lcPeople(s,{genderKey:b.genderKey})+lcBox('lc-graph',`${y}년 달마다의 흐름`,'달마다의 흐름 점수예요. 가장 높은 달에 중요한 일을 두세요.',lcLineChart(m.months.map(x=>({l:`${x.month}월`,v:x.score})),-1)+`<h4>${y}년 영역별 평균</h4>`+lcAreaBars([['재물운',avgF('wealth')],['연애운',avgF('love')],['직업운',avgF('career')],['건강운',avgF('health')]]))};
@@ -25043,7 +25116,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={ctx:ctxCollect(cat),sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
+      _meta={ctx:ctxCollect(cat),userName:cat==='name'?'':String((document.getElementById('iName')||{}).value||'').replace(/[<>&"'`]/g,'').trim().slice(0,10),marital:(cat==='life'||cat==='newyear')?_marital:'',sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.
@@ -26204,6 +26277,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=6a5cb6f51cfb"></script>
+<script src="assets/astrology.js?v=c88baba1e3d4"></script>
 </body>
 </html>
