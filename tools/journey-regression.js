@@ -287,6 +287,7 @@ const submitBirth=async()=>{
     check('연애 타로: 주제가 흐름에 저장되고 5장을 추천',()=>{assert.equal(run('_tarotFlow.topic'),'love');assert.equal(run('_tarotFlow.recommendedSpreadId'),'tarot5');});
     run("selectTarotProduct('tarot3')");
     check('연애 타로 3장: 나의 마음 · 그 사람의 마음 · 두 사람의 흐름',()=>assert.equal(run('JSON.stringify(_tarotFlow.positions.map(p=>p.label))'),JSON.stringify(['나의 마음','그 사람의 마음','두 사람의 흐름'])));
+    check('타로: 스프레드를 고르면 결제 전에 카드부터 뽑기',()=>assert.equal(run('_tarotRoute'),'draw'));
     run("tarotNavigate('payment')");
     check('타로: 결제 화면에 무료·블러 미리보기 없이 상품 안내만 표시',()=>{
       assert(d.querySelector('#tarotApp .paid-access-heading'));
@@ -352,20 +353,25 @@ const submitBirth=async()=>{
       assert(!d.querySelector('#astroApp .astro-chart-grid'));
     });
     for(const product of ['birth-basic','love-marriage','career-money','yearly','full-report']){
-      run(`selectAstrologyProduct('${product}')`);
-      check('점성술 결제: '+product+'에 미리보기 없이 결제창 표시',()=>{
-        assert(d.querySelector('#astroApp .paid-access-heading'));
-        assert(!d.querySelector('#astroApp .paid-preview'));
-        assert(d.getElementById('payOverlay').classList.contains('vis'));
-        assert.equal(run('_payCategory'),'astro-'+product);
+      run(`selectAstrologyProduct('${product}')`);await wait(80);
+      check('점성술: '+product+' 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼',()=>{
+        assert.equal(run('_astroRoute'),'result');
+        assert(d.querySelector('#astroApp .lk-preview'));
+        assert.match(d.querySelector('#astroApp .lk-bar-btn').getAttribute('onclick'),new RegExp("openPaymentConsent\\('astro-"+product+"'"));
+        assert(!d.getElementById('payOverlay').classList.contains('vis'));
+        assert.equal(run("loadAstrologyHistory().length"),0);
       });
-      run('closePaymentConsent()');
     }
-    run("window._astroPreferProduct='love-marriage';goToAstrology('input');submitAstrologyBirth()");
-    check('점성술 연애 카테고리: 무료 요약·상품 재선택 없이 해당 풀이 결제로 연결',()=>{
-      assert.equal(run('_astroRoute'),'payment');
+    run("window._astroPreferProduct='love-marriage';goToAstrology('input');submitAstrologyBirth()");await wait(80);
+    check('점성술 연애 카테고리: 상품 재선택 없이 해당 풀이 미리보기로 연결',()=>{
+      assert.equal(run('_astroRoute'),'result');
       assert.equal(run('_astroFlow.productType'),'love-marriage');
-      assert(d.getElementById('payOverlay').classList.contains('vis'));
+      assert(d.querySelector('#astroApp .lk-preview'));
+    });
+    run("completeAstrologyPayment()");await wait(30);
+    check('점성술 결제 완료: 다시 만들지 않고 저장해 둔 풀이를 바로 열기',()=>{
+      assert(!d.querySelector('#astroApp .lk-preview') && d.querySelector('#astroApp .astro-v4'));
+      assert.equal(run("loadAstrologyHistory().length"),1);
     });
     run("closePaymentConsent();goToAstrology('natalInput')");
     d.getElementById('astroTimeUnknown').checked=false;

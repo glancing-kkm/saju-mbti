@@ -247,7 +247,7 @@ async function handleReading(request, env) {
   }
 
   const { category, sajuContext, meta, language } = body || {};
-  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap']);
+  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap', 'report-life', 'report-love', 'report-money', 'report-career', 'report-health']);
   if (!allowed.has(category)) {
     return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
   }
@@ -822,7 +822,7 @@ Rules:
 }
 
 function isCoreReadingCategory(category) {
-  return category === 'life-core' || category === 'newyear-core';
+  return category === 'life-core' || category === 'newyear-core' || /^report-/.test(String(category || ''));
 }
 
 function normalizeLanguage(input) {
@@ -1195,6 +1195,18 @@ function buildReadingSystemPrompt(category, meta) {
     'newyear-core': `${meta.targetYear || '올해'} 신년운세의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·연애·인간관계·건강·12개월 흐름·기회 시기·주의 시기·올해 행동 가이드를 본인 맞춤으로 재작성하세요. 점수 링, 월별 점수표, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.`,
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
+    'report-life': 'PDF 평생 사주 리포트에 들어갈 심층 장(章)입니다. 인생 전체를 관통하는 그릇, 인생에서 크게 열리는 기회의 시기, 평생 조심할 함정, 나이대별 전략을 시기와 장면으로 콕 집어 쓰세요.',
+    'report-love': 'PDF 리포트의 연애·결혼 심층 장입니다. 사랑하는 방식, 운명의 상대 모습, 만나는 때와 장소, 반복되는 실수, 결혼과 가정을 구체적인 연·월과 장면으로 콕 집어 쓰세요.',
+    'report-money': 'PDF 리포트의 재물 심층 장입니다. 돈의 그릇, 돈이 들어오는 길, 돈이 새는 길, 잘 맞는 자산 관리 성향, 재물이 크게 움직이는 시기를 구체적으로 콕 집어 쓰세요. 특정 상품 추천이나 확정적인 투자 판단은 하지 마세요.',
+    'report-career': 'PDF 리포트의 일·커리어 심층 장입니다. 타고난 적성, 잘 맞는 일터, 이직·승진의 때, 일에서 만나는 귀인과 조심할 사람, 10년 커리어 전략을 구체적으로 콕 집어 쓰세요.',
+    'report-health': 'PDF 리포트의 건강 심층 장입니다. 타고난 체질, 약한 곳과 관리법, 조심할 시기, 생활 처방, 마음 건강을 관리와 예방 관점으로 쓰세요. 진단이나 병명 단정은 하지 마세요.',
+  };
+  const reportSections = {
+    'report-life': '[타고난 그릇], [인생에서 크게 열리는 기회], [평생 조심할 함정], [나이대별 전략], [천기의 마지막 조언]',
+    'report-love': '[사랑하는 방식], [운명의 상대], [만나는 때와 장소], [연애에서 반복되는 실수], [결혼과 가정]',
+    'report-money': '[돈의 그릇], [돈이 들어오는 길], [돈이 새는 길], [잘 맞는 자산 관리], [재물이 크게 움직이는 시기]',
+    'report-career': '[타고난 적성], [잘 맞는 일터], [이직·승진의 때], [일터의 귀인과 조심할 사람], [10년 커리어 전략]',
+    'report-health': '[타고난 체질], [약한 곳과 관리법], [조심할 시기], [생활 처방], [마음 건강]',
   };
   const coreSections = category === 'life-core'
     ? (lang.code === 'ko'
@@ -1203,7 +1215,14 @@ function buildReadingSystemPrompt(category, meta) {
     : (lang.code === 'ko'
       ? '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'
       : 'Use natural translated equivalents of: Overall year, Wealth, Career and business, Love and relationships, Social relationships, Health, 12-month flow, Opportunity timing, Caution timing, Action guide for the year. Put each translated section title in square brackets.');
-  const outputGuide = isCoreReadingCategory(category)
+  const outputGuide = reportSections[category]
+    ? `출력 형식:
+- 섹션 제목은 대괄호로 감싸서 사용하세요: ${reportSections[category]}
+- 각 섹션은 3~5문단, 문단당 2~4문장으로 작성하세요.
+- 전체는 공백 포함 2,500~3,200자 정도로 작성하세요.
+- 핵심 시기(계산값)가 있으면 연·월을 그대로 인용해 언제 무엇을 하면 좋은지 콕 집어 쓰세요.
+- 마크다운 제목, 번호, 불릿은 쓰지 마세요.`
+    : isCoreReadingCategory(category)
     ? `출력 형식:
 - 섹션 제목은 대괄호로 감싸서 사용하세요.
 - ${coreSections}
@@ -1271,7 +1290,7 @@ function buildReadingUserPrompt(category, ctx, meta) {
 비어 있는 자리: ${ctx.gongmang || '미상'}
 현재 10년 흐름: ${ctx.daeun || '미상'}
 올해 흐름: ${ctx.sewoon || '미상'}
-핵심 시기(계산값): ${timingText(ctx) || '없음'}${timingText(ctx) ? '\n→ 시기를 말할 때는 이 계산값의 연·월만 쓰고, 새로운 날짜를 지어내지 마세요.' : ''}
+핵심 시기(계산값): ${timingText(ctx) || '없음'}${timingText(ctx) ? '\n→ 본문에서 이 계산값의 연·월을 최소 두 번 이상 그대로 인용해 "언제 무엇을 하면 좋은지" 콕 집어 말하세요. 계산값에 없는 날짜는 지어내지 마세요.' : ''}
 지금 상황: ${situationText(ctx) || '선택 안 함'}${situationText(ctx) ? '\n→ 상담자가 직접 고른 지금 상황이에요. 일반론 대신 이 상황에서 실제로 겪는 장면과 바로 할 수 있는 행동으로 풀어 주세요.' : ''}
 
 화면에 이미 계산되어 표시된 풀이 요약:
@@ -1304,7 +1323,7 @@ function buildSystemPrompt(ctx, category = 'life', language = 'ko') {
 【다섯 기운 분포】 ${ctx.ohaeng || '미상'}
 【힘의 균형】 ${ctx.strength || '미상'}
 【즉문즉답 카테고리】 ${category}
-【핵심 시기(계산값)】 ${timingText(ctx) ? `${timingText(ctx)} — 시기를 말할 때는 이 연·월만 쓰고 새 날짜를 지어내지 마세요.` : '없음'}
+【핵심 시기(계산값)】 ${timingText(ctx) ? `${timingText(ctx)} — 시기를 묻는 질문에는 이 연·월을 그대로 인용해 답하고, 계산값에 없는 날짜는 지어내지 마세요.` : '없음'}
 【지금 상황】 ${situationText(ctx) ? `${situationText(ctx)} — 상담자가 직접 고른 상황이에요. 이 상황에서 실제로 겪는 장면에 맞춰 답하세요.` : '선택 안 함'}
 【상담 참고 정보】 ${ctx.qaExtra ? `직업 ${ctx.qaExtra.job || '미입력'} · 결혼 여부 ${ctx.qaExtra.marriage || '미입력'} · 자녀 유무 ${ctx.qaExtra.children || '미입력'}` : '없음'}
 【기질 시그널 (여덟 글자 종합)】 ${ctx.persona || '미상'} — 답변할 때 일간 하나가 아니라 이 종합 기질을 근거로 개인화해서 말하세요.

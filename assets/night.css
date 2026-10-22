@@ -807,3 +807,9 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lc-pair-label{margin:6px 0 -4px;text-align:center;font-family:var(--font-heading);color:var(--accent);font-size:.95rem}
 .lc-area-row{grid-template-columns:minmax(62px,auto) 1fr 30px}
 .lc-area-row span{white-space:nowrap}
+/* 번역 화면(영어·중국어·일본어)에서는 양쪽 정렬 대신 왼쪽 정렬 */
+html[data-read-lang]:not([data-read-lang="ko"]) .lv4 p,html[data-read-lang]:not([data-read-lang="ko"]) .lv4-list span{text-align:left}
+.lv4-answer{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--accent)}
+.lv4-answer>b{display:block;margin-bottom:6px;font-family:var(--font-heading);font-weight:400;font-size:.92rem;color:var(--accent)}
+.lv4 .lv4-answer p{margin:0 0 6px}
+.pdf-ready-close{margin-top:4px;background:none;border:0;color:var(--muted);font-size:.9rem;cursor:pointer}
