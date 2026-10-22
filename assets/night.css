@@ -612,3 +612,49 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4 .lv4-scene p:last-child{margin-bottom:0}
 .lv4 .lv4-scene-line{margin:14px 0 0;padding:12px 14px;border:1px dashed var(--border-strong);border-radius:12px}
 .lv4-scene-line>b{display:inline-block;margin-right:8px;padding:1px 8px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-family:var(--font-heading);font-weight:400;font-size:.78rem;vertical-align:1px}
+
+/* 풀이 본문 양쪽 정렬 — 낱말 사이를 벌리지 않고 글자 단위로 줄을 바꿔 양 끝을 맞춘다 */
+.lv4 p,.lv4-list span,.lv4-md-list li span{text-align:justify;text-justify:auto;text-align-last:left;word-break:normal;line-break:strict;overflow-wrap:break-word;word-spacing:normal}
+.lv4 h1,.lv4 h2,.lv4 h3,.lv4 b,.lv4-row-head,.lv4-tags span{word-break:keep-all}
+
+/* 입력 — 값을 채우면 다음 항목이 아래로 이어서 열린다 */
+.wz-prompt{margin:4px 0 14px;font-family:var(--font-heading);font-size:1.28rem;line-height:1.45;color:var(--text);letter-spacing:-.01em}
+.wz-prompt.wz-in{animation:wz-fade .4s ease both}
+#formWrap>fieldset{transition:border-color .3s,box-shadow .3s,opacity .3s}
+#formWrap>fieldset.wz-in,#formWrap .analyze-btn.wz-in{animation:wz-rise .5s cubic-bezier(.2,.8,.2,1) both}
+#formWrap>fieldset.wz-cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+#formWrap>fieldset.wz-done:not(.wz-cur){opacity:.82}
+#formWrap>fieldset.wz-done>legend::after{content:'✓';display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:.7rem;line-height:1;vertical-align:1px;animation:wz-pop .35s cubic-bezier(.3,1.6,.5,1) both}
+#formWrap .tog{transition:transform .15s,background-color .2s,border-color .2s,color .2s}
+#formWrap .tog:active{transform:scale(.95)}
+#formWrap .tog.on{animation:wz-pop .3s ease both}
+#formWrap .ig input,#formWrap .ctx-text{transition:border-color .2s,box-shadow .2s}
+#formWrap .ig input:focus,#formWrap .ctx-text:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);outline:none}
+@keyframes wz-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes wz-fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes wz-pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.wz-prompt.wz-in,#formWrap>fieldset.wz-in,#formWrap .analyze-btn.wz-in,#formWrap .tog.on,#formWrap>fieldset.wz-done>legend::after{animation:none}}
+
+/* 궁금한 점 — 직접 입력 */
+.ctx-q .ctx-text{display:block;width:100%;box-sizing:border-box;margin-top:10px;padding:12px 14px;border:1px solid var(--border-strong);border-radius:12px;background:var(--card);color:var(--text);font:inherit;font-size:1rem;line-height:1.6;resize:vertical;min-height:84px}
+.ctx-q .ctx-ask{margin-top:14px;color:var(--muted);font-size:.86rem;line-height:1.5}
+.lv4 .lv4-ctx .lv4-ctx-q{margin-bottom:8px;font-family:var(--font-heading);font-size:1.05rem;color:var(--text)}
+
+/* 콕 집어 말하면 — 시기·숫자·장면 요약 */
+.lv4-pin{padding:20px 18px;border:1px solid var(--accent);border-radius:18px;background:var(--card)}
+.lv4-pin h2{margin:0 0 12px;font-family:var(--font-heading);font-weight:400;font-size:1.2rem;color:var(--accent)}
+.lv4-pin dl{display:flex;flex-direction:column;gap:0;margin:0}
+.lv4-pin dl>div{display:grid;grid-template-columns:minmax(96px,34%) 1fr;gap:12px;padding:11px 0;border-top:1px solid var(--border)}
+.lv4-pin dl>div:first-child{border-top:0}
+.lv4-pin dt{color:var(--muted);font-size:.88rem;line-height:1.55;word-break:keep-all}
+.lv4-pin dd{margin:0;color:var(--text);font-size:1rem;line-height:1.6;font-family:var(--font-heading)}
+@media(max-width:380px){.lv4-pin dl>div{grid-template-columns:1fr;gap:2px}}
+/* 사주 근거 보기 — 이론 설명은 접어 둔다 */
+.lv4-why{margin-top:14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-deep,transparent)}
+.lv4-why summary{padding:12px 14px;cursor:pointer;color:var(--sub);font-size:.9rem;list-style:none}
+.lv4-why summary::-webkit-details-marker{display:none}
+.lv4-why summary::before{content:'＋';display:inline-block;width:1.2em;color:var(--accent)}
+.lv4-why[open] summary::before{content:'－'}
+.lv4-why-body{padding:0 14px 14px}
+.lv4-why-body h4{margin:12px 0 6px;font-size:.92rem;color:var(--accent);font-weight:400;font-family:var(--font-heading)}
+.lv4 .lv4-why-body p{font-size:.93rem;line-height:1.8;color:var(--sub)}

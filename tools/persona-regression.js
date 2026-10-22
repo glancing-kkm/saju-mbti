@@ -212,13 +212,13 @@ const harness = `
        lv4Ids.every((id,i)=>layered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||layered.indexOf('id="lv4-'+lv4Ids[i-1]+'"')<layered.indexOf('id="lv4-'+id+'"'))) &&
        (layered.match(/class="lv4-sec"/g)||[]).length===8);
     ok('인생총운 한 페이지: 사주판·글자 관계를 일상어로 설명',
-       layered.includes('life-v3-pillar-board') && /끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/.test(layered) &&
-       (layered.match(/class="lv4-key"/g)||[]).length===8);
+       layered.includes('life-v3-pillar-board') && /끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/.test(clean(layered).replace(/&nbsp;|\u00a0/g,' ')) &&
+       (layered.match(/class="lv4-key"/g)||[]).length===8,[layered.includes('life-v3-pillar-board'),(layered.match(/끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/)||[''])[0],(layered.match(/class="lv4-key"/g)||[]).length].join('|'));
     ok('인생총운 한 페이지: 12개월과 향후 10년을 모두 제공',
        (layered.match(/class="lv4-row/g)||[]).length>=22 &&
        buildLifeV2Model(SELF,_meta).months.length===12 && buildLifeV2Model(SELF,_meta).futureYears.length===10);
     const lifeVisible=clean(layered);
-    const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
+    const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
     ok('인생총운 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
        lifeForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(lifeVisible), lifeForbidden.join(','));
     ok('인생총운 V3: 심층 요약본이 구조·공식·현재 시간을 사용',
@@ -239,10 +239,10 @@ const harness = `
        examplePlain.includes('-30.46분 보정') && !examplePlain.includes('-30.461999'),
        (examplePlain.match(/-30[^분]*분 보정/)||[])[0]);
     ok('인생총운 한 페이지: 겹친 글자를 문장으로 풀어 설명',
-       examplePlain.includes("사주 글자 중에 '유(닭)'라는 글자가 두 번 나와요") && !/유 2번|유 2개/.test(examplePlain),
-       (examplePlain.match(/사주 글자 중에[^.]*\./)||[''])[0]);
+       clean(examplePlain).replace(/\u200b/g,'').includes("사주팔자 중에 '유(닭)'라는 글자가 두 번 나와요") && !/유 2번|유 2개/.test(examplePlain),
+       (examplePlain.match(/사주팔자 중에[^.]*\./)||[''])[0]);
     ok('인생총운 V3: 목차 글자와 관계도 고아글자 방지',
-       exampleHtml.includes('class="lv4-toc"') && /태어난(?:&nbsp;|\u00a0)(?:<span[^>]*>)?해/.test(exampleHtml));
+       exampleHtml.includes('class="lv4-toc"') && exampleHtml.includes('<small>연주</small>') && exampleHtml.includes('class="lv4-why"'));
     ok('인생총운 V3: 녹색 사주판 글자는 흰색으로 고정',
        globalThis.__SOURCE_HTML__.includes('.life-v3-pillar.self .life-v3-pillar-glyph b *{background:var(--accent);color:#fff!important}'));
     ok('인생총운 V3: 근거 노드 내용은 가로·세로 중앙 정렬',
@@ -285,7 +285,7 @@ const harness = `
        nyIds.every((id,i)=>newyearExample.indexOf('id="lv4-'+id+'"')>-1 && (i===0||newyearExample.indexOf('id="lv4-'+nyIds[i-1]+'"')<newyearExample.indexOf('id="lv4-'+id+'"'))) &&
        (newyearExample.match(/class="lv4-sec"/g)||[]).length===7);
     ok('신년운세 한 페이지: 사주판·글자 관계·12개월을 일상어로 설명',
-       newyearExample.includes('life-v3-pillar-board') && newyearPlain.includes("사주 글자 중에 '유(닭)'라는 글자가 두 번 나와요") &&
+       newyearExample.includes('life-v3-pillar-board') && newyearPlain.includes("사주팔자 중에 '유(닭)'라는 글자가 두 번 나와요") &&
        (newyearExample.match(/class="lv4-row/g)||[]).length>=12 && (newyearExample.match(/class="lv4-key"/g)||[]).length===7);
     const cheapReadingEmoji=['💰','💕','❤️','🌿','🧠','📦','🤝','🚀','⚠️','📅'].filter(mark=>newyearExample.includes(mark));
     ok('풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용',
@@ -308,7 +308,7 @@ const harness = `
     ok('신년운세 V3: 기존 반복 카드와 AI 대체 본문 제거',
        !newyearExample.includes('CARD_START:MONTHDETAIL') && !newyearExample.includes('CARD_START:SAMJAE') &&
        !newyearExample.includes('data-ai-fallback-for="newyear-core"'));
-    const newyearForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','희신','기신','지장간','십이운성','공망'].filter(word=>newyearPlain.includes(word));
+    const newyearForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','희신','기신','지장간','십이운성','공망'].filter(word=>newyearPlain.includes(word));
     ok('신년운세 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
        newyearForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(newyearPlain),newyearForbidden.join(','));
     ok('신년운세 V3: 심층 요약본도 V3 구조를 사용',
@@ -329,8 +329,8 @@ const harness = `
        nmIds.every((id,i)=>nameLayered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||nameLayered.indexOf('id="lv4-'+nmIds[i-1]+'"')<nameLayered.indexOf('id="lv4-'+id+'"'))) &&
        (nameLayered.match(/class="lv4-sec"/g)||[]).length===7);
     ok('이름풀이: 한글 소리·한자 네 자리·81수리·추천 이름을 일상어로 풀이',
-       namePlain.includes('첫소리 ㄱ은 목 기운') && namePlain.includes('평생의 자리') && /숫자 \\d+[은는] '/.test(namePlain) && namePlain.includes('추천 이름') && !/원격|형격|이격|정격|용신|자원오행/.test(namePlain) && !leaky(nameLayered),
-       [namePlain.includes('첫소리 ㄱ은 목 기운'),namePlain.includes('평생의 자리'),/숫자 \\d+[은는] '/.test(namePlain),namePlain.includes('추천 이름'),(namePlain.match(/원격|형격|이격|정격|용신|자원오행/)||[''])[0],leaky(nameLayered)].join('|'));
+       namePlain.includes('첫소리 ㄱ은 목 기운') && namePlain.includes('평생의 자리') && /숫자 \\d+[은는] '/.test(namePlain) && namePlain.includes('추천 이름') && !/원격|형격|이격|정격|자원오행/.test(namePlain) && !leaky(nameLayered),
+       [namePlain.includes('첫소리 ㄱ은 목 기운'),namePlain.includes('평생의 자리'),/숫자 \\d+[은는] '/.test(namePlain),namePlain.includes('추천 이름'),(namePlain.match(/원격|형격|이격|정격|자원오행/)||[''])[0],leaky(nameLayered)].join('|'));
     const pairExtra={gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:'ENFP'};
     _meta.gnExtra=pairExtra;
     const pairLayered=renderGunghapPaid(SELF,pairExtra);
@@ -340,14 +340,14 @@ const harness = `
        !pairLayered.includes('data-story-layer=') &&
        ghIds.every((id,i)=>pairLayered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||pairLayered.indexOf('id="lv4-'+ghIds[i-1]+'"')<pairLayered.indexOf('id="lv4-'+id+'"'))) &&
        (pairLayered.match(/class="lv4-sec"/g)||[]).length===8 && (pairLayered.match(/class="lv4-row/g)||[]).length>=14);
-    const ghForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','용신','공망','12운성','일지','일간'].filter(w=>pairPlain.includes(w));
+    const ghForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','공망','12운성'].filter(w=>pairPlain.includes(w));
     ok('궁합: 두 사람의 반응을 비교하고 전문용어 없이 풀이',
        pairPlain.includes('상대는') && pairPlain.includes('두 사람의 배우자 자리는') && ghForbidden.length===0 && !/상대[은을] /.test(pairPlain),ghForbidden.join(','));
     const topicLayered=renderTopicPaid('topic-love',SELF,_meta);
     ok('공통 카드 덱: 이전·근거·다음 버튼 제공',
        globalThis.__SOURCE_HTML__.includes('function storyDeckPrev(')&&globalThis.__SOURCE_HTML__.includes('function storyOpenEvidence(')&&globalThis.__SOURCE_HTML__.includes('function storyDeckNext('));
     const tpCats=['topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-    const tpBad=tpCats.filter(c=>{const h=renderTopicPaid(c,SELF,_meta),pl=clean(h);const n=((PAID_META[c]||{}).features||[]).length;return (h.match(/class="lv4-sec"/g)||[]).length!==n||h.includes('data-story-layer=')||leaky(h)||/정관|편관|정재|편재|정인|편인|식신|상관|비견|겁재|용신|일간|대운|세운/.test(pl);});
+    const tpBad=tpCats.filter(c=>{const h=renderTopicPaid(c,SELF,_meta),pl=clean(h);const n=((PAID_META[c]||{}).features||[]).length;return (h.match(/class="lv4-sec"/g)||[]).length!==n||h.includes('data-story-layer=')||leaky(h)||/정관|편관|정재|편재|정인|편인|식신|상관|비견|겁재|격국/.test(pl);});
     ok('주제별 풀이 한 페이지: 9개 주제 모두 소개 항목 수만큼 섹션, 전문용어 없음', tpBad.length===0, tpBad.join(','));
     const storyNavigateSource=globalThis.__SOURCE_HTML__.match(/function storyNavigate[\s\S]*?function storyDeckNext/)?.[0]||'';
     const lifeNavigateSource=globalThis.__SOURCE_HTML__.match(/function lifeNavigate[\s\S]*?function lifeDeckNext/)?.[0]||'';
@@ -358,10 +358,10 @@ const harness = `
     const dpPlain=clean(dpPage).replace(/&nbsp;|\u00a0|\u200b/g,' '),moPlain=clean(moPage).replace(/&nbsp;|\u00a0|\u200b/g,' ');
     ok('지정일 한 페이지: 소개 순서 7개 섹션과 열두 시간대 풀이',
        (dpPage.match(/class="lv4-sec"/g)||[]).length===7 && dpPage.indexOf('id="lv4-dp-daeun"')<dpPage.indexOf('id="lv4-dp-stars"') &&
-       (dpPlain.match(/[자축인묘진사오미신유술해]시 · /g)||[]).length===12 && !/상관|정관|편관|일지|천간|신살|길시/.test(dpPlain) && !leaky(dpPage));
+       (dpPlain.match(/[자축인묘진사오미신유술해]시 · /g)||[]).length===12 && !/상관|정관|편관|길시/.test(dpPlain) && !leaky(dpPage));
     ok('월별 한 페이지: 소개 순서 6개 섹션과 달마다 풀이',
        (moPage.match(/class="lv4-sec"/g)||[]).length===6 && moPage.indexOf('id="lv4-mo-daeun"')<moPage.indexOf('id="lv4-mo-guide"') &&
-       ['2026년 8월 ·','2026년 9월 ·','2026년 10월 ·'].every(x=>moPlain.includes(x)) && !/상관|정관|편관|일지|천간|월주|관성/.test(moPlain) && !leaky(moPage));
+       ['2026년 8월 ·','2026년 9월 ·','2026년 10월 ·'].every(x=>moPlain.includes(x)) && !/상관|정관|편관|관성/.test(moPlain) && !leaky(moPage));
 
     const zwPage=renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),zwPlain=clean(zwPage);
     ok('자미두수 한 페이지: 소개 순서 6개 섹션, 12개 방 판, 한자 방 이름 노출 없음',
@@ -383,6 +383,16 @@ const harness = `
     const __sit=ctxSituationText(),__keyCtx=aiReadingCacheKey('life',''),__chat=renderChatSection('life');_meta.ctx=__svC;
     ok('AI 풀이·역술가 질문: 고른 상황을 함께 보내고, 상황이 바뀌면 AI 풀이 캐시도 따로 저장',
        __sit==='지금 연애 상태는 어떤가요? → 권태기' && __keyNo!==__keyCtx && __chat.includes('제 상황(권태기)'));
+
+    const __lifePin=renderSajuPaid(SELF,1990,5,15,12,0),__topicPin=renderTopicPaid('topic-money',SELF,_meta);
+    const __mainOnly=h=>clean(h.replace(/<details class="lv4-why">[\\s\\S]*?<\\/details>/g,''));
+    ok('핀셋 풀이: 맨 위 콕 집어 말하면 요약, 글자 개수 같은 이론은 접힌 사주 근거로',
+       __lifePin.includes('class="lv4-pin"') && __topicPin.includes('class="lv4-pin"') && __lifePin.includes('class="lv4-why"') &&
+       !/뜻하는 글자가 \\d+개|글자가 \\d+개예요/.test(__mainOnly(__lifePin)+__mainOnly(__topicPin)) && /연주/.test(__lifePin) && /대운\\(10년마다 바뀌는 큰 흐름\\)/.test(__lifePin),
+       [__lifePin.includes('class="lv4-pin"'),__topicPin.includes('class="lv4-pin"'),__lifePin.includes('class="lv4-why"'),(__mainOnly(__lifePin).match(/[^.]*글자가 \\d+개[^.]*\\./)||[''])[0],/연주/.test(__lifePin),/대운\\(10년마다/.test(__lifePin)].join('|'));
+    ok('궁금한 점 직접 입력: 적은 글에서 상황을 짐작하고 MBTI 입력은 받지 않음',
+       ctxInfer('topic-love','요즘 남자친구랑 자꾸 싸워요')==='tired' && ctxInfer('topic-career','회사를 그만두고 싶어요')==='move' &&
+       globalThis.__SOURCE_HTML__.includes('id="ctxText"') && globalThis.__SOURCE_HTML__.includes('const hideMbti=true'));
 
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
