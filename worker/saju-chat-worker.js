@@ -1235,6 +1235,11 @@ ${toneRule}
 ${outputGuide}`;
 }
 
+// 클라이언트가 계산해 보낸 핵심 시기
+function timingText(ctx) {
+  return String((ctx && ctx.timing) || '').replace(/[\r\n]+/g, ' ').replace(/[<>]/g, '').trim().slice(0, 600);
+}
+
 // 클라이언트가 보낸 지금 상황 — 짧은 한 줄만 받는다
 function situationText(ctx) {
   return String((ctx && ctx.situation) || '').replace(/[\r\n]+/g, ' ').replace(/[<>]/g, '').trim().slice(0, 200);
@@ -1266,6 +1271,7 @@ function buildReadingUserPrompt(category, ctx, meta) {
 비어 있는 자리: ${ctx.gongmang || '미상'}
 현재 10년 흐름: ${ctx.daeun || '미상'}
 올해 흐름: ${ctx.sewoon || '미상'}
+핵심 시기(계산값): ${timingText(ctx) || '없음'}${timingText(ctx) ? '\n→ 시기를 말할 때는 이 계산값의 연·월만 쓰고, 새로운 날짜를 지어내지 마세요.' : ''}
 지금 상황: ${situationText(ctx) || '선택 안 함'}${situationText(ctx) ? '\n→ 상담자가 직접 고른 지금 상황이에요. 일반론 대신 이 상황에서 실제로 겪는 장면과 바로 할 수 있는 행동으로 풀어 주세요.' : ''}
 
 화면에 이미 계산되어 표시된 풀이 요약:
@@ -1298,6 +1304,7 @@ function buildSystemPrompt(ctx, category = 'life', language = 'ko') {
 【다섯 기운 분포】 ${ctx.ohaeng || '미상'}
 【힘의 균형】 ${ctx.strength || '미상'}
 【즉문즉답 카테고리】 ${category}
+【핵심 시기(계산값)】 ${timingText(ctx) ? `${timingText(ctx)} — 시기를 말할 때는 이 연·월만 쓰고 새 날짜를 지어내지 마세요.` : '없음'}
 【지금 상황】 ${situationText(ctx) ? `${situationText(ctx)} — 상담자가 직접 고른 상황이에요. 이 상황에서 실제로 겪는 장면에 맞춰 답하세요.` : '선택 안 함'}
 【상담 참고 정보】 ${ctx.qaExtra ? `직업 ${ctx.qaExtra.job || '미입력'} · 결혼 여부 ${ctx.qaExtra.marriage || '미입력'} · 자녀 유무 ${ctx.qaExtra.children || '미입력'}` : '없음'}
 【기질 시그널 (여덟 글자 종합)】 ${ctx.persona || '미상'} — 답변할 때 일간 하나가 아니라 이 종합 기질을 근거로 개인화해서 말하세요.

@@ -174,18 +174,22 @@ const submitBirth=async()=>{
       assert.match(hook.textContent,/1,500원/);
     });
     run(d.querySelector('#p1 .daily-paid-hook button').getAttribute('onclick'));await wait(150);
-    check('유료 연결 버튼: 기존 출생정보로 신년운세 결제 안내',()=>{
+    check('유료 연결 버튼: 기존 출생정보로 신년운세 가린 미리보기와 결제 버튼',()=>{
       assert.equal(run('_category'),'newyear');
-      assert(d.getElementById('payOverlay').classList.contains('vis'));
-      assert.equal(run('_payCategory'),'newyear');
+      assert(d.querySelector('#p4 .lk-preview'));
+      assert.match(d.querySelector('#p4 .lk-bar-btn').getAttribute('onclick'),/openPaymentConsent\('newyear'/);
+      assert(!d.getElementById('payOverlay').classList.contains('vis'));
     });
     run('closePaymentConsent()');
     run("continueJourney('life')");await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
-    check('유료 풀이: 미리보기 없이 바로 결제 안내 표시',()=>{
+    check('유료 풀이: 분석 뒤 핵심을 가린 전체 풀이와 결제 안내 표시',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
-      assert(!d.querySelector('#p5 .paid-preview,#p5 .journey-overview,#p5 .life-experience'));
-      assert(d.getElementById('payOverlay').classList.contains('vis'));
+      assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
+      assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta'));
+      assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-line'));
+      const pinDd=[...d.querySelectorAll('#p5 .lv4-pin dd')];assert(pinDd.length && pinDd.every(x=>x.querySelector('.lk') && !/\d{4}년|\d+월/.test(x.textContent)));
+      assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));
     });
@@ -253,10 +257,10 @@ const submitBirth=async()=>{
       w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');
-    check('주제별 풀이: 연애운은 미리보기 없이 1,000원 결제 버튼',()=>{
+    check('주제별 풀이: 연애운은 가린 미리보기와 1,000원 결제 버튼',()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
-      assert(!d.querySelector('#p9 .paid-preview'));
-      assert(d.getElementById('payOverlay').classList.contains('vis'));
+      assert(d.querySelector('#p9 .lk-preview .lv4-sec'));
+      assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
       assert.equal(run("isUnlockedFor('topic-love')"),false);
       assert(!/역술가 질문/.test(d.querySelector('#p9 .usage-guide').textContent));
@@ -266,6 +270,7 @@ const submitBirth=async()=>{
     run("closePaymentConsent();unlockAndRender('topic-love')");
     check('주제별 풀이: 결제 후 요약·10년·12개월 풀이가 열림',()=>{
       assert(d.querySelector('#p9 .tp-v4'));
+      assert(d.querySelector('#p9 .pdf-cta') && !d.querySelector('#p9 .lk-preview'));
       assert(d.querySelectorAll('#p9 .lv4-sec').length>=5);
       assert(d.querySelectorAll('#p9 .lv4-row').length>=22);
     });
