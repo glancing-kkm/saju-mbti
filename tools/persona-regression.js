@@ -378,7 +378,13 @@ const harness = `
        __ctxLove.includes('lv4-ctx') && clean(__ctxLove).includes('권태기') && __ctxLove.includes('lv4-sec-label') && clean(__ctxLove).includes('우리는 왜 같은 일로 자꾸 부딪힐까?') && __ctxLove.includes('lv4-scene') && __ctxLove.includes('lv4-tags') && __ctxLove.includes('lv4-gauge') &&
        Object.keys(CTX_Q).every(c=>CTX_Q[c].o.length>=3));
 
-    const __sceneRender={life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
+    const __svC=_meta.ctx;_meta.ctx=null;const __keyNo=aiReadingCacheKey('life','');
+    _meta.ctx={cat:'topic-love',key:'tired',label:'권태기'};
+    const __sit=ctxSituationText(),__keyCtx=aiReadingCacheKey('life',''),__chat=renderChatSection('life');_meta.ctx=__svC;
+    ok('AI 풀이·역술가 질문: 고른 상황을 함께 보내고, 상황이 바뀌면 AI 풀이 캐시도 따로 저장',
+       __sit==='지금 연애 상태는 어떤가요? → 권태기' && __keyNo!==__keyCtx && __chat.includes('제 상황(권태기)'));
+
+    const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
     Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{
       const sv=_meta.ctx;_meta.ctx={cat,key,label:'상황'};

@@ -4438,6 +4438,8 @@ const CTX_OPENER={
   ziwei:{self:'타고난 성향이 궁금하셨다면, 나를 나타내는 방을 특히 눈여겨보세요.',love:'사랑과 배우자가 궁금하셨다면, 배우자의 방을 특히 눈여겨보세요.',money:'돈이 궁금하셨다면, 돈의 방을 특히 눈여겨보세요.',work:'일이 궁금하셨다면, 일의 방을 특히 눈여겨보세요.'}
 };
 function ctxOpener(cat){const c=ctxFor(cat);if(!c)return '';const m=CTX_OPENER[cat];return m&&m[c.key]?m[c.key]:'';}
+// AI 풀이·역술가 질문에 넘길 지금 상황 한 줄 — 예: 지금 연애 상태는 어떤가요? → 권태기
+function ctxSituationText(){const c=_meta&&_meta.ctx,q=c&&CTX_Q[c.cat];return c&&q?`${q.t} → ${c.label}`:'';}
 function ctxNoteHTML(cat){const t=ctxOpener(cat),c=ctxFor(cat);return t?`<div class="lv4-ctx"><b>본인이 고른 상황 · ${c.label}</b><p>${lv4Text(t)}</p></div>`:'';}
 // ── 고른 상황에 맞춘 본문 장면 — 사주 신호(타고난 힘·좋은 달·좋은 해)와 상황을 묶어 섹션 안에 넣는다 ──
 const CTX_AX={
@@ -4529,6 +4531,18 @@ const CTX_SCENE={
     health:h=>({at:'ny-health',p:[`올해 몸을 더 아껴야 할 달은 ${h.healthBad}${lv4Ida(h.healthBad)}.`,'이 달에는 일정을 줄이고 잠을 먼저 챙기세요.','증상이 이어지면 풀이보다 진료가 먼저예요.']}),
     study:h=>({at:'ny-work',p:[`올해 공부와 시험이라면, 집중이 잘 되는 달은 ${h.work}${lv4Ida(h.work)}.`,'큰 시험은 이 달 즈음에 두고, 나머지 달에는 기초를 다지세요.','한 번에 많이 하기보다 매일 같은 시간에 하는 게 오래 가요.']}),
     move:h=>({at:'ny-money',p:['이사나 큰 변화는 돈의 흐름과 함께 봐야 해요.',`${h.money}처럼 돈 흐름이 좋은 달에 계약을 두고, ${h.moneyBad}에는 큰 계약을 서두르지 마세요.`,'변화는 한 번에 다 바꾸기보다, 하나씩 순서대로 바꿀 때 몸과 마음이 덜 지쳐요.']})
+  },
+  name:{
+    self:h=>({at:'nm-core',p:['내 이름이 궁금했다면, 점수보다 이름이 사주의 어떤 빈자리를 채우는지를 먼저 보세요.','점수가 기대보다 낮아도 나쁜 이름이라는 뜻은 아니에요. 이름의 힘은 불려 온 시간과 본인이 쌓아 온 모습이 함께 만들어요.']}),
+    rename:h=>({at:'nm-strength',p:['개명을 고민 중이라면, 지금 이름의 강점부터 먼저 적어 보세요.','강점이 분명하다면 이름을 바꾸기보다 활동명을 따로 두는 방법도 있어요. 바꾼다면 아래 추천 이름처럼 사주의 옅은 기운을 채우는 소리와 한자를 고르세요.','개명은 법적 절차가 필요한 일이라, 가족과 충분히 이야기한 뒤 정하세요.']}),
+    baby:h=>({at:'nm-recommend',p:['아이 이름이라면, 부르기 쉬운 소리와 놀림받기 어려운 뜻을 함께 보세요.','아래 추천 이름 중 마음에 드는 두세 개를 성과 함께 소리 내어 불러 보세요. 입에 잘 붙는 이름이 오래 사랑받아요.']}),
+    brand:h=>({at:'nm-sound',p:['활동명이나 상호라면, 뜻보다 불리는 소리의 기운이 더 크게 작동해요.','짧고 또렷하게 기억되는지, 검색했을 때 겹치는 이름이 없는지도 함께 확인하세요.']})
+  },
+  ziwei:{
+    self:h=>({at:'zw-ming',p:['타고난 성향이 궁금했다면, 아래 나를 나타내는 방의 별을 먼저 읽어 보세요.','별이 둘 이상 앉아 있다면 두 모습이 상황에 따라 번갈아 나타나요. 어느 쪽이 더 자주 나오는지 떠올려 보세요.']}),
+    love:h=>({at:'zw-love',p:['사랑과 배우자가 궁금했다면, 이 방의 별이 본인이 사랑에서 바라는 모습이에요.','지금 만나는 사람이나 끌리는 사람과 견줘 보세요. 닮은 곳이 많을수록 오래 편한 사이가 되기 쉬워요.']}),
+    money:h=>({at:'zw-money',p:['돈이 궁금했다면, 이 방의 별이 본인에게 돈이 들어오는 길이에요.','지금 돈을 버는 방식이 이 별의 모습과 닮았는지 살펴보세요. 닮을수록 덜 지치고 오래 벌 수 있어요.']}),
+    work:h=>({at:'zw-work',p:['일이 궁금했다면, 이 방의 별이 본인이 빛나는 일터의 모습이에요.','지금 하는 일과 이 별의 모습이 다르다면, 일의 한 부분이라도 별에 가까운 쪽으로 옮겨 보세요.']})
   },
   gunghap:{
     some:h=>({at:'gh-scenes',p:['아직 썸이라면, 지금은 서로의 반응 속도를 아는 게 가장 중요해요.',h.tough?'두 사람은 끌림도 크지만 부딪힘도 분명한 사이예요. 답장이 늦거나 말투가 짧을 때 오해하기 쉬워요.':h.good?'두 사람은 자석처럼 끌어당기는 사이라, 생각보다 빨리 가까워질 수 있어요.':'두 사람은 천천히 온도가 오르는 사이라, 서두르지 않는 게 좋아요.','아래 연애할 때 장면을 먼저 읽어 보세요. 상대가 어떤 순간에 마음을 여는지 보여요.']}),
@@ -13047,7 +13061,7 @@ function buildZiweiReadingV4(saju,m){
     lv4P([`자미두수의 10년 흐름은 열두 개의 방을 하나씩 옮겨 다니며 열려요. 본인은 ${ch.forward?'시계 방향':'시계 반대 방향'}으로 옮겨 가요. 그 10년 동안은 열린 방의 일이 삶의 중심에 서요.`,cur&&cur.palace.stars.length?`지금 열린 방에는 ${list(cur.palace.stars)}이 있어요. ${ZW_STARS[cur.palace.stars[0]][1].split('. ')[0]}.`:'',`${age}세인 지금은 ${_lifeStageAdvice(age,'work')}`])+
     lv4Rows(ch.decades.slice(0,8).map(d=>({label:`${d.from}~${d.to}세`,tag:`${ZW_PALACE_PLAIN[d.palace.name]}${d===cur?' · 지금':''}`,text:`${ZW_DECADE_THEME[d.palace.name]}이에요.${d.palace.stars.length?` ${d.palace.stars.map(s=>ZW_STARS[s][0]).join('과 ')}이 이 시기를 이끌어요.`:''}`,on:d===cur})))+
     lv4Key('좋은 방이 열리는 시기에 큰 결정을 두면 흐름을 타기 좋아요.'));
-  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${ctxNoteHTML('ziwei')}${lvToc(ZW_TITLES,'자미두수 목차')}${h}</div>`};
+  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${ctxNoteHTML('ziwei')}${lvToc(ZW_TITLES,'자미두수 목차')}${ctxApplyScenes('ziwei',h,{})}</div>`};
 }
 // ══════════════════════════════════════════════
 //  주제별 풀이 V4 — 한 페이지로 이어 읽는 풀이 (소개 화면 '풀이에 담긴 내용' 순서)
@@ -13450,7 +13464,7 @@ function buildNameReadingV4(saju,nmExtra){
     lv4P(['실제 출생 신고나 개명 전에는 법원에서 쓸 수 있는 인명용 한자인지, 가족 이름과 겹치지 않는지, 소리 내어 불렀을 때 자연스러운지를 꼭 함께 확인하세요.'])+
     lv4Key('추천 이름은 점수보다 오래 불러도 좋은 이름인지가 먼저예요. 소리 내어 여러 번 불러 보세요.'));
 
-  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${ctxNoteHTML('name')}${lvToc(NM_TITLES,'이름풀이 목차')}${h}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
+  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${ctxNoteHTML('name')}${lvToc(NM_TITLES,'이름풀이 목차')}${ctxApplyScenes('name',h,{})}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
 }
 // ══════════════════════════════════════════════
 //  궁합 V4 — 한 페이지로 이어 읽는 두 사람 풀이 (인생총운 V4와 같은 틀)
@@ -19182,6 +19196,7 @@ function buildSajuContextForChat(source){
     daeun:`${curD.age}세부터 ${STEMKO[curD.stem]}${BRCHKO[curD.branch]} 대운`,
     year:cy,
     sewoon:`${STEMKO[swStem]}${BRCHKO[swBranch]}년`,
+    situation:ctxSituationText(),
     qaExtra:qaExtra?{
       job:qaExtra.job||'',
       marriage:qaExtra.marriage||'',
@@ -19207,7 +19222,8 @@ function aiReadingDomId(category, extraKey){
 function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
-  return 'saju_ai_reading_v4:'+(lang||currentLanguage())+':'+category+':'+birth+':'+(extraKey||'main');
+  const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key:'';
+  return 'saju_ai_reading_v4:'+(lang||currentLanguage())+':'+category+':'+birth+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
@@ -19667,7 +19683,7 @@ function renderChatSection(catOpt){
   const exhaustedLabel=isQna?'보내기':'소진';
   const initialLog=isQna
     ? `<div class="chat-msg chat-msg-reply"><div class="chat-msg-lab">✦ ${qnaCounselorLabel()}</div><div class="chat-msg-body">${preventOrphan(langText({ko:qnaCounselor().greet,en:'What would you like to ask?',zh:'您想问什么？',ja:'何が気になりますか？'}))}</div></div>`
-    : `<div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>`;
+    : `<div class="chat-empty">아직 질문이 없어요. 사주에 대해 궁금한 점을 자유롭게 물어보세요.<br>예) ${_meta&&_meta.ctx?`제 상황(${chatEscape(_meta.ctx.label)})에서 지금 무엇부터 하면 좋을까요? / `:''}${cat==='daypick'?'이 날 면접 가도 될까요? / 이 날 계약하면 어떤 흐름이 들어오나요?':cat==='monthly'?'이 기간 중 가장 좋은 달은? / 어느 달에 이직 결정을 내릴까요?':cat==='newyear'?'올해 이직해도 될까요? / 결혼 시기는?':'올해 이직해도 될까요? / 결혼 시기는? / 건강 주의점은?'}</div>`;
   return `<div class="chat-card${isQna?' qna-chat-room':''}">
     <div class="chat-head"${isQna?` data-initial="${qnaCounselor().name.charAt(0)}"`:''}>
       <div class="chat-title">${isQna?qnaCounselor().name+' 상담':'역술가에게 직접 물어보기'}</div>
