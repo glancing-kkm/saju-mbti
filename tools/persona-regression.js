@@ -213,7 +213,7 @@ const harness = `
        (layered.match(/class="lv4-sec"/g)||[]).length===8);
     ok('인생총운 한 페이지: 사주판·글자 관계를 일상어로 설명',
        layered.includes('life-v3-pillar-board') && /끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/.test(clean(layered).replace(/&nbsp;|\u00a0/g,' ')) &&
-       (layered.match(/class="lv4-key"/g)||[]).length===8,[layered.includes('life-v3-pillar-board'),(layered.match(/끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/)||[''])[0],(layered.match(/class="lv4-key"/g)||[]).length].join('|'));
+       (layered.match(/class="lv4-key/g)||[]).length===1,[layered.includes('life-v3-pillar-board'),(layered.match(/끌어당기는 사이|부딪히는 사이|모으는 사이|깎아 내는 사이|어긋나기 쉬운 사이|한 팀을 이루는 사이/)||[''])[0],(layered.match(/class="lv4-key"/g)||[]).length].join('|'));
     ok('인생총운 한 페이지: 12개월과 향후 10년을 모두 제공',
        (layered.match(/class="lv4-row/g)||[]).length>=22 &&
        buildLifeV2Model(SELF,_meta).months.length===12 && buildLifeV2Model(SELF,_meta).futureYears.length===10);
@@ -286,7 +286,7 @@ const harness = `
        (newyearExample.match(/class="lv4-sec"/g)||[]).length===7);
     ok('신년운세 한 페이지: 사주판·글자 관계·12개월을 일상어로 설명',
        newyearExample.includes('life-v3-pillar-board') && newyearPlain.includes("사주팔자 중에 '유(닭)'라는 글자가 두 번 나와요") &&
-       (newyearExample.match(/class="lv4-row/g)||[]).length>=12 && (newyearExample.match(/class="lv4-key"/g)||[]).length===7);
+       (newyearExample.match(/class="lv4-row/g)||[]).length>=12 && (newyearExample.match(/class="lv4-key/g)||[]).length===1);
     const cheapReadingEmoji=['💰','💕','❤️','🌿','🧠','📦','🤝','🚀','⚠️','📅'].filter(mark=>newyearExample.includes(mark));
     ok('풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용',
        newyearExample.includes('class="reading-sigil"') && cheapReadingEmoji.length===0,
@@ -369,8 +369,8 @@ const harness = `
        !/명궁|부부궁|재백궁|관록궁|복덕궁|대한|오행국|[수목금토화][이삼사오육]국/.test(zwPlain) && /성\(.+의 별\)/.test(zwPlain) && !leaky(zwPage));
 
     const __md=lv4FromMarkdown('# 1. 질문 요약\\n고민을 정리했어요.\\n\\n# 3. 카드별 해석\\n## 현재 - 별\\n- 핵심키워드: 희망, 회복\\n희망이 보여요.\\n한 줄 정리: 다시 일어설 힘이 있어요.\\n<script>x</script>','tr');
-    ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록·한 줄 정리 변환, HTML 이스케이프',
-       __md.items.length===2 && __md.items[1][1]==='카드별 해석' && __md.html.includes('<h3>현재 - 별</h3>') && __md.html.includes('lv4-md-list') && __md.html.includes('class="lv4-key"') && !__md.html.includes('<script>'));
+    ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록 변환, 한 줄 정리 줄은 빼고 HTML 이스케이프',
+       __md.items.length===2 && __md.items[1][1]==='카드별 해석' && __md.html.includes('<h3>현재 - 별</h3>') && __md.html.includes('lv4-md-list') && !__md.html.includes('한 줄 정리') && !__md.html.includes('<script>'));
 
     const __savedCtx=_meta.ctx;_meta.ctx={cat:'topic-love',key:'tired',label:'권태기'};
     const __ctxLove=renderTopicPaid('topic-love',SELF,_meta);_meta.ctx=__savedCtx;
@@ -416,8 +416,8 @@ const harness = `
     const __lifeM=renderSajuPaid(SELF,1990,5,15,12,0),__nyM=renderNewyearFortune(SELF,2026);let __ctxJson='';try{__ctxJson=JSON.stringify(buildSajuContextForChat('paid-life')||{});}catch(e){}
     _meta=__svMeta;
     ok('이름·결혼 상태: 이름은 제목·말풍선에만 쓰고 AI로 보내지 않음, 기혼이면 운명의 상대 대신 배우자와의 관계',
-       __lifeM.includes('김하늘님') && !__ctxJson.includes('김하늘') && __lifeM.includes('배우자와의 관계') && !__lifeM.includes('콕 찍어 보는 운명의 상대') && __nyM.includes('배우자와의 흐름'),
-       [__lifeM.includes('김하늘님'),!__ctxJson.includes('김하늘'),__lifeM.includes('배우자와의 관계'),!__lifeM.includes('콕 찍어 보는 운명의 상대'),__nyM.includes('배우자와의 흐름')].join('|'));
+       __lifeM.includes('김하늘님') && !__ctxJson.includes('김하늘') && __lifeM.includes('부부 사이를 지키는 법') && !__lifeM.includes('운명의 상대는 이런 사람이에요') && __nyM.includes('배우자와의 흐름'),
+       [__lifeM.includes('김하늘님'),!__ctxJson.includes('김하늘'),__lifeM.includes('부부 사이를 지키는 법'),!__lifeM.includes('운명의 상대는 이런 사람이에요'),__nyM.includes('배우자와의 흐름')].join('|'));
 
     const __svC2=_meta.ctx;_meta.ctx={cat:'topic-love',key:'tired',label:'권태기',text:'남자친구가 해외 발령이 났는데 따라가야 할까요?'};
     const __tpAns=renderTopicPaid('topic-love',SELF,_meta);_meta.ctx=__svC2;
@@ -487,7 +487,7 @@ try {
     const __astroFlowMock={productName:'종합 리포트',birthInfo:{city:'서울'},createdAt:'2026-08-16T00:00:00.000Z',resultMarkdown:'# 상세 풀이',chart:{birthInfo:{city:'서울',birthTimeUnknown:false},planets:__astroPlanets,ascendant:{sign:'taurus',degree:4},elementBalance:{fire:3,earth:2,air:2,water:3},modalityBalance:{cardinal:4,fixed:3,mutable:3},aspects:[]}};
     __astroFlowMock.resultMarkdown='# 1. 출생차트 핵심 요약\\n본인은 밝은 사람이에요.\\n\\n- 태양: 사자자리예요\\n한 줄 정리: 빛나는 사람이에요.\\n\\n# 2. 성격과 기질\\n## 강점\\n추진력이 좋아요.';
     const __astroHtml=buildAstrologyOnePageHTML(__astroFlowMock);
-    globalThis.__ASTRO_STORY_OK__=(!__astroHtml.includes('data-story-layer=')&&(__astroHtml.match(/class="lv4-sec"/g)||[]).length===2&&__astroHtml.includes('lv4-sec lv4-extra')&&__astroHtml.includes('class="lv4-key"')&&__astroHtml.includes('원형 차트')&&__astroHtml.includes('<h3>강점</h3>'));
+    globalThis.__ASTRO_STORY_OK__=(!__astroHtml.includes('data-story-layer=')&&(__astroHtml.match(/class="lv4-sec"/g)||[]).length===2&&__astroHtml.includes('lv4-sec lv4-extra')&&__astroHtml.includes('원형 차트')&&__astroHtml.includes('<h3>강점</h3>'));
   `;
   vm.runInContext(astroCode + astroHarness, ctx, { filename: 'astrology.js' });
   console.log((sb.__ASTRO_STORY_OK__?'  ✅ ':'  ❌ ')+'점성술 한 페이지: 출생차트·AI 리포트 섹션·한 줄 정리');

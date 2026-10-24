@@ -79,6 +79,9 @@ export default {
     if (url.pathname === '/astrology-reading') {
       return handleAstrologyReading(request, env);
     }
+    if (url.pathname === '/portrait') {
+      return handlePortrait(request, env);
+    }
     if (url.pathname === '/translate') {
       return handleTranslate(request, env);
     }
@@ -233,6 +236,33 @@ export default {
     }
   },
 };
+
+// 결제 후 프로필 카드용 인상 이미지 — 정해진 항목만 받아 서버에서 문장을 만든다(임의 프롬프트 차단)
+async function handlePortrait(request, env) {
+  if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);
+  let b;
+  try { b = await request.json(); } catch { return json({ error: 'JSON 본문이 필요합니다.' }, 400); }
+  const kind = ['love', 'helper', 'foe'].includes(b && b.kind) ? b.kind : 'love';
+  const who = b && b.gender === 'female' ? 'woman' : 'man';
+  const age = Math.max(20, Math.min(70, Math.round(Number(b && b.age) || 30)));
+  const LOOK = ['tall with a slender, clean-lined face', 'a bright expression and clear, vivid eyes', 'a sturdy build and a gentle, warm face', 'sharp, well-defined features and a neat style', 'soft eyes and a calm, quiet aura'];
+  const look = LOOK[Math.max(0, Math.min(4, Math.floor(Number(b && b.look) || 0)))];
+  const STYLE = {
+    love: 'warm natural smile, approachable and kind, smart casual outfit',
+    helper: 'trustworthy mature mentor, kind and confident smile, business casual blazer',
+    foe: 'guarded, cool expression, sharp gaze, dark minimal outfit',
+  };
+  const prompt = `Photorealistic portrait photograph of a fictional Korean ${who} around ${age} years old with ${look}, ${STYLE[kind]}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, natural skin texture, not a celebrity, no text, no watermark`;
+  try {
+    const out = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 4 });
+    const img = out && out.image;
+    if (!img) throw new Error('empty image');
+    return json({ ok: true, image: `data:image/jpeg;base64,${img}` });
+  } catch (e) {
+    console.warn('portrait failed:', e && e.message);
+    return json({ error: '이미지를 잠시 만들지 못했어요.', code: 'PORTRAIT_UNAVAILABLE' }, 503);
+  }
+}
 
 async function handleReading(request, env) {
   if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !env.AI) {
@@ -441,7 +471,7 @@ const KO_READING_STYLE = `한국어 문체 규칙 (모든 문장에 적용):
 - 추상적인 설명 뒤에는 일상의 비유를 하나씩 붙인다. 예: "직장에서 든든한 선배가 옆에 있어 주는 것과 비슷해요."
 - '결'이라는 단어를 단독 명사로 쓰지 않는다. 대신 '분위기'를 쓴다.
 - 줄표(—)와 괄호 설명은 최소로 쓴다.
-- 각 # 섹션의 마지막 줄에는 "한 줄 정리: ..." 형식으로 그 섹션을 한 문장으로 요약한다.`;
+- 섹션 끝에 "한 줄 정리" 같은 요약 줄은 쓰지 않는다. 마지막 섹션만 오늘 바로 할 행동 한 가지로 마무리한다.`;
 
 function buildTarotReadingSystemPrompt(language = 'ko') {
   const lang = normalizeLanguage(language);
@@ -1226,9 +1256,9 @@ function buildReadingSystemPrompt(category, meta) {
   const outputGuide = category === 'reading-deep'
     ? `출력 형식:
 - 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
-- {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단"],"key":"한 줄 정리"}]}
+- {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단"]}]}
 - 섹션 자료에 있는 모든 섹션을 같은 순서로 넣고, id는 바꾸지 마세요.
-- 섹션마다 paragraphs는 3개, 문단마다 3~4문장으로 쓰세요. facts의 구체적인 내용(직업명·시기·방법 등)을 빠뜨리지 마세요. key는 50자 안쪽 한 문장이에요.
+- 섹션마다 paragraphs는 3개, 문단마다 3~4문장으로 쓰세요. facts의 구체적인 내용(직업명·시기·방법 등)을 빠뜨리지 마세요.
 - 문단 안에 줄바꿈, 마크다운, 번호를 넣지 마세요.`
     : category === 'topic-answer'
     ? `출력 형식:

@@ -882,3 +882,12 @@ html[data-read-lang]:not([data-read-lang="ko"]) .lv4 p,html[data-read-lang]:not(
 .lc-area-card b{display:block;margin-bottom:6px;font-family:var(--font-heading);font-weight:400;color:var(--accent)}
 .lc-area-card ul{margin:0;padding-left:16px;color:var(--sub);font-size:.82rem;line-height:1.6}
 .lk-preview .lc-pcard.foe .lc-pcard-img img{filter:blur(12px) saturate(.6)}
+
+/* 미리보기 한 화면 폭 — 주변 카드와 같은 여백 */
+html[data-flow-theme] #app .report-preview-layout>:is(.lc-areas,.lc-people2){margin:20px}
+html[data-flow-theme] #app :is(#view-result,#view-tarot,#view-astrology) .lk-preview:has(.report-preview-layout)>:is(.paid-access-notice,.journey-contents,.paywall-compact){margin:24px 20px;width:auto;max-width:none}
+.lv4-act{margin-top:16px}
+.lc-pcard-role{display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-size:.74rem;font-weight:600;letter-spacing:-.01em}
+.lc-pcard.love .lc-pcard-role{color:#ffb4c8}.lc-pcard.helper .lc-pcard-role{color:#ffe08a}.lc-pcard.foe .lc-pcard-role{color:#ff9f8f}
+.lc-pcard-note{display:block;margin-top:10px;opacity:.6;font-size:.72rem}
+.lc-pcard.ai-photo .lc-pcard-img img{object-position:50% 25%}

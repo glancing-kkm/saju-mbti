@@ -224,6 +224,7 @@ const submitBirth=async()=>{
       assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta,#p5 [data-deep]'));
       assert(preview.querySelector('.lc-orbs') && preview.querySelector('.lc-people') && preview.querySelector('.lc-curve'));
       assert([...preview.querySelectorAll('.lc-pcard')].every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
+      assert(!preview.querySelector('[data-portrait]'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));
@@ -277,7 +278,7 @@ const submitBirth=async()=>{
     run("_savePendingPayment({tid:'TEST_APPROVE',partnerOrderId:'TEST-ORDER-1',category:'life',amount:1500,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=life&pg_token=TEST_TOKEN');");
     w.fetch=async()=>({ok:true,json:async()=>({ok:true}),text:async()=>'',headers:{get:()=>null}});
     await run('_handlePaymentReturn()');await wait(30);
-    check('승인 성공: 축약 없이 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(d.querySelectorAll('#p5 .lv4-sec').length>=8);assert(d.querySelector('#p5 .lc-radar'));assert(!d.querySelector('#p5 .preview-compact'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
+    check('승인 성공: 축약 없이 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(d.querySelectorAll('#p5 .lv4-sec').length>=8);assert(d.querySelector('#p5 .lc-radar'));assert(d.querySelector('#p5 .lc-pcard[data-portrait]'));assert(!d.querySelector('#p5 .preview-compact'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
     run("goHome();continueJourney('life')");await wait(150);
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("goHome();openVault()");
