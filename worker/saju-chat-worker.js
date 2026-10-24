@@ -239,6 +239,26 @@ export default {
 
 // 결제 후 프로필 카드용 인상 이미지 — 정해진 항목만 받아 서버에서 문장을 만든다(임의 프롬프트 차단)
 const PORTRAIT_DAILY_LIMIT = 20;
+const PORTRAIT_ORDER_LIMIT = 9; // 결제 1건에 카드 2~3장 · 여러 기기에서 다시 열어도 넉넉하게
+// 결제 워커가 서명한 결제 확인 토큰을 검사한다(같은 PAID_TOKEN_SECRET). 맞으면 {o:주문번호,c,e}를 돌려준다.
+function b64urlDecode(s) {
+  const t = String(s || '').replace(/-/g, '+').replace(/_/g, '/');
+  const bin = atob(t + '='.repeat((4 - (t.length % 4)) % 4));
+  return Uint8Array.from(bin, (ch) => ch.charCodeAt(0));
+}
+async function verifyPaidToken(env, token) {
+  try {
+    const [body, sig] = String(token || '').split('.');
+    if (!body || !sig) return null;
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(env.PAID_TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
+    if (!(await crypto.subtle.verify('HMAC', key, b64urlDecode(sig), enc.encode(body)))) return null;
+    const p = JSON.parse(new TextDecoder().decode(b64urlDecode(body)));
+    return p && p.o && Number(p.e) > Date.now() ? p : null;
+  } catch {
+    return null;
+  }
+}
 async function handlePortrait(request, env) {
   if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);
   let b;
@@ -253,6 +273,17 @@ async function handlePortrait(request, env) {
     helper: 'trustworthy mature mentor, kind and confident smile, business casual blazer',
     foe: 'guarded, cool expression, sharp gaze, dark minimal outfit',
   };
+  // 결제한 사람만 — 비밀키가 설정돼 있으면 결제 확인 토큰이 있어야 하고, 주문 1건당 장수도 제한한다
+  let orderKey = '', orderUsed = 0;
+  if (env.PAID_TOKEN_SECRET) {
+    const paid = await verifyPaidToken(env, b && b.paidToken);
+    if (!paid) return json({ error: '결제한 풀이에서만 이미지를 만들 수 있어요.', code: 'PORTRAIT_NEED_PAYMENT' }, 403);
+    if (env.SAJU_QNA_CACHE) {
+      orderKey = `portrait-order:${String(paid.o).slice(0, 80)}`;
+      try { orderUsed = Number(await env.SAJU_QNA_CACHE.get(orderKey)) || 0; } catch {}
+      if (orderUsed >= PORTRAIT_ORDER_LIMIT) return json({ error: '이 결제로 만들 수 있는 이미지를 모두 썼어요.', code: 'PORTRAIT_LIMIT' }, 429);
+    }
+  }
   // 같은 접속 주소에서 하루에 만들 수 있는 장수를 제한한다(결제 1건에 2~3장, 여러 풀이를 봐도 넉넉하게)
   const ip = request.headers.get('CF-Connecting-IP') || '';
   const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
@@ -268,6 +299,7 @@ async function handlePortrait(request, env) {
     const img = out && out.image;
     if (!img) throw new Error('empty image');
     if (limitKey) { try { await env.SAJU_QNA_CACHE.put(limitKey, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} }
+    if (orderKey) { try { await env.SAJU_QNA_CACHE.put(orderKey, String(orderUsed + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} }
     return json({ ok: true, image: `data:image/jpeg;base64,${img}` });
   } catch (e) {
     console.warn('portrait failed:', e && e.message);

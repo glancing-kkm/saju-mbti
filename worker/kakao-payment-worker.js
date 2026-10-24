@@ -257,8 +257,10 @@ async function handleApprove(request, env, cid, corsHeaders) {
   }
 
   // 카카오페이 승인 응답: aid, tid, cid, sid?, partner_order_id, partner_user_id, payment_method_type, amount, item_name, ...
+  const paidToken = await signPaidToken(env, data.partner_order_id, category);
   return json({
     ok: true,
+    ...(paidToken ? { paidToken } : {}),
     payment: {
       aid: data.aid,
       tid: data.tid,
@@ -270,6 +272,27 @@ async function handleApprove(request, env, cid, corsHeaders) {
       approvedAt: data.approved_at,
     },
   }, 200, corsHeaders);
+}
+
+// 결제 확인 토큰 — 결제한 사람만 쓸 수 있는 기능(인상 이미지 등)을 다른 워커가 확인할 수 있게 서명한다.
+// 형식: base64url({o:주문번호,c:카테고리,e:만료시각}).base64url(HMAC-SHA256). 비밀키는 saju-chat 워커와 같은 PAID_TOKEN_SECRET.
+const PAID_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+function b64url(bytes) {
+  let s = '';
+  bytes.forEach((b) => { s += String.fromCharCode(b); });
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+async function signPaidToken(env, orderId, category) {
+  if (!env.PAID_TOKEN_SECRET || !orderId) return '';
+  try {
+    const enc = new TextEncoder();
+    const body = b64url(enc.encode(JSON.stringify({ o: String(orderId), c: String(category || ''), e: Date.now() + PAID_TOKEN_TTL_MS })));
+    const key = await crypto.subtle.importKey('raw', enc.encode(env.PAID_TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(body)));
+    return `${body}.${b64url(sig)}`;
+  } catch {
+    return '';
+  }
 }
 
 function buildCorsHeaders(request, env) {

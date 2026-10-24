@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=8b5b4d62d7a7">
+<link rel="stylesheet" href="/assets/night.css?v=10627918fac6">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=a4db38c4633f">
 </head>
 <body>
@@ -3547,7 +3547,8 @@ const LANG_META={
   zh:{label:'中文',worker:'zh',flag:'🇨🇳',short:'中文',note:'菜单、分类和命理解读会尽量以中文显示。'},
   ja:{label:'日本語',worker:'ja',flag:'🇯🇵',short:'日本語',note:'メニュー、カテゴリ、鑑定文をできるだけ日本語で表示します。'}
 };
-let _readingLang=(function(){try{return localStorage.getItem(LANG_LS_KEY)||'ko';}catch(e){return 'ko';}})();
+// 언어 선택 메뉴가 화면에서 빠져 있어서, 예전에 저장된 언어(예: 영어)에 갇히지 않도록 한국어로 시작하고 저장값은 지운다
+let _readingLang=(function(){try{localStorage.removeItem(LANG_LS_KEY);}catch(e){}return 'ko';})();
 const _translatedTextNodes=new Set();
 const _translatedAttrElements=new Set();
 if(!LANG_META[_readingLang])_readingLang='ko';
@@ -12611,6 +12612,7 @@ async function _handlePaymentReturn(){
     if(!(data&&data.ok)){
       throw new Error('payment-approval-unavailable');
     }
+    savePaidToken(data.paidToken);
     journeyEvent('purchase',pending.category,{value:pending.amount,transaction_id:pending.partnerOrderId});
     const pack=CHAT_PACKS.find(p=>p.cat===pending.category);
     const targetCat=pack?(pending.targetChatCat||'qna'):(pending.category||cat);
@@ -20379,6 +20381,12 @@ function mdMerge(keep,aiMd){
 }
 // AI 답이 준비되면 같은 자리의 규칙 답을 숨긴다 (실패하면 규칙 답이 그대로 남는다)
 function aiHideRule(id){try{document.querySelectorAll(`[data-ai-rule="${id}"]`).forEach(el=>{el.hidden=true;});}catch(e){}}
+// 결제 확인 토큰 — 결제 워커가 서명해 준 값. 인상 이미지처럼 결제한 사람만 쓰는 기능에 함께 보낸다(최근 10개, 만료 지난 건 버림)
+const PAID_TOKEN_LS='lc_paid_tokens_v1';
+function paidTokenExp(t){try{const b=String(t).split('.')[0].replace(/-/g,'+').replace(/_/g,'/');return Number(JSON.parse(atob(b+'='.repeat((4-b.length%4)%4))).e)||0;}catch(e){return 0;}}
+function loadPaidTokens(){try{const l=JSON.parse(localStorage.getItem(PAID_TOKEN_LS)||'[]');return Array.isArray(l)?l.filter(t=>paidTokenExp(t)>Date.now()):[];}catch(e){return [];}}
+function savePaidToken(t){if(!t||typeof t!=='string')return;try{localStorage.setItem(PAID_TOKEN_LS,JSON.stringify([t,...loadPaidTokens().filter(x=>x!==t)].slice(0,10)));}catch(e){}}
+function latestPaidToken(){return loadPaidTokens()[0]||'';}
 // 프로필 카드 인상 이미지 — 결제 후에만, 같은 정보면 저장해 둔 이미지를 다시 쓴다
 function lcPortraitKey(info){return 'lc_portrait_v2:'+JSON.stringify(info);}
 function lcPortraitCached(info){try{return localStorage.getItem(lcPortraitKey(info))||'';}catch(e){return '';}}
@@ -20390,7 +20398,7 @@ async function hydratePortrait(card){
   let info;try{info=JSON.parse(decodeURIComponent(card.getAttribute('data-portrait')||''));}catch(e){return;}
   const cached=lcPortraitCached(info);if(cached){lcPortraitSet(card,cached);return;}
   try{
-    const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/portrait',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(info)},1);
+    const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/portrait',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...info,paidToken:latestPaidToken()})},1);
     const raw=resp&&resp.ok&&data&&/^data:image\//.test(String(data.image||''))?data.image:'';
     const src=raw?await lcPortraitShrink(raw):'';
     if(src){lcPortraitSet(card,src);try{localStorage.setItem(lcPortraitKey(info),src);}catch(e){}}
