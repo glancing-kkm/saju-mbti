@@ -2241,6 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=c996a3687b48input-compact-required-20261024">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=category-20261024">
 </head>
 <body>
 <div id="app">
@@ -4718,7 +4719,7 @@ function wizardShow(prevOpen){
   const help=document.getElementById('journeyFormHelp');
   if(help)help.style.order=String(s.length*10+2);
   const pr=document.getElementById('wzPrompt');
-  if(pr){const t=_wz.open===last&&wzStepKind(s[last])!=='ctx'?'모두 입력했어요. 아래 버튼을 눌러 주세요':wzPromptFor(s[_wz.open]);if(pr.textContent!==t){pr.textContent=t;pr.classList.remove('wz-in');void pr.offsetWidth;pr.classList.add('wz-in');try{scheduleLanguageApply(pr,[0]);}catch(e){}}}
+  if(pr){const t=_wz.open===last&&wzStepKind(s[last])!=='ctx'&&wzStepDone(s[last])?'모두 입력했어요. 아래 버튼을 눌러 주세요':wzPromptFor(s[_wz.open]);if(pr.textContent!==t){pr.textContent=t;pr.classList.remove('wz-in');void pr.offsetWidth;pr.classList.add('wz-in');try{scheduleLanguageApply(pr,[0]);}catch(e){}}}
 }
 // 결과를 열기 전 단계별 연산 연출 — 탭하면 바로 건너뛴다
 const REVEAL_STEPS={
@@ -5295,7 +5296,24 @@ document.addEventListener('DOMContentLoaded',initHome);
 
 // 읽기 화면 머리 배너에 풀이 포스터를 깐다
 const VIEW_ART={ziwei:'ziwei.webp',vedic:'vedic.webp',mahabote:'mahabote.webp','topic-love':'love.webp','topic-money':'money.webp','topic-career':'career.webp','topic-marriage':'marriage.webp','topic-reunion':'reunion.webp','topic-study':'study.webp','topic-child':'child.webp','topic-children':'children.webp','topic-health':'health.webp',manse:'manse.webp',daily:'daily.webp',daypick:'daypick.webp',monthly:'monthly.webp',newyear:'newyear.webp',life:'life.webp',gunghap:'gunghap.webp',name:'name.webp',qna:'qna.webp',tarot:'tarot-bg.webp',astrology:'astro.webp'};
+function flowThemeFor(name){
+  if(['home','vault'].includes(name))return null;
+  let key=name==='intro'?_introKey:(_category||'manse');
+  if(name==='tarot')key='tarot-question';
+  if(name==='astrology')key='astro-report';
+  if(key==='qna'&&typeof _qnaCounselor!=='undefined')key=({unni:'chat-unni',senior:'chat-senior',halmae:'chat-halmae'})[_qnaCounselor]||key;
+  const cfg=PRODUCT_INTRO[key]||PRODUCT_INTRO.life;
+  return {key,tone:cfg.tone};
+}
+function applyCategoryTheme(name){
+  const root=document.documentElement,theme=flowThemeFor(name);
+  const vars=['--flow-bg','--flow-depth','--flow-accent'];
+  if(!theme){delete root.dataset.flowTheme;vars.forEach(k=>root.style.removeProperty(k));return;}
+  root.dataset.flowTheme=theme.key;
+  vars.forEach((k,i)=>root.style.setProperty(k,theme.tone[i]));
+}
 function applyViewTheme(name){
+  applyCategoryTheme(name);
   const view=document.getElementById('view-'+name);
   if(!view||name==='home'||name==='intro'||name==='vault')return;
   const key=(name==='tarot'||name==='astrology')?name:(_category||'manse');
@@ -12017,6 +12035,31 @@ function lkTokens(el){
   });
 }
 function lkNote(cat){return `<div class="lk-note"><b>결제 이후 볼 수 있어요</b><small>결제하면 가려진 부분이 모두 열려요.</small><button type="button" class="lk-note-btn" onclick="openPaymentConsent('${cat}','KAKAOPAY')">전체 풀이 보기</button></div>`;}
+function reportProfileHTML(cat){
+  if(!_saju||!_meta)return '';
+  const s=_saju,m=_meta,stem=s.dp.stem,oh=SOH[stem];
+  const full=m.userName||(m.nmExtra?m.nmExtra.surname+m.nmExtra.given:'')||'본인';
+  const date=[m.sy,String(m.sm).padStart(2,'0'),String(m.sd).padStart(2,'0')].join('.');
+  const clock=((m.hour*60+(m.min||0)-Math.round(m.tsoMin||0))%1440+1440)%1440;
+  const time=m.hour>=0?`${String(Math.floor(clock/60)).padStart(2,'0')}:${String(clock%60).padStart(2,'0')}`:'시간 모름';
+  return `<header class="report-profile"><button type="button" class="report-profile-back" onclick="goToInput('${cat}')" aria-label="출생정보 다시 입력">←</button><span class="lc-orb oh${oh}" aria-hidden="true"><small>${LC_OH_HAN[oh]}·${LC_OH_WORD[oh]}</small><b>${LC_STEM_HAN[stem]}</b><i>${STEMKO[stem]}</i></span><div><h1>${storyEsc(full)}</h1><p class="report-profile-birth">${storyEsc(date)} · 양력 · ${time} · ${m.gender==='female'?'여성':'남성'}</p><p class="report-profile-day">${STEMKO[stem]}${BRCHKO[s.dp.branch]} 일주</p></div></header>`;
+}
+function arrangeReportPreview(cat,box){
+  const root=box.querySelector('.lv4'),orbs=root&&root.querySelector(':scope > .lc-orbs');
+  if(!orbs||!_saju||!_meta)return;
+  root.classList.add('report-preview-layout');
+  const oldHero=root.querySelector(':scope > .lv4-hero');if(oldHero)oldHero.remove();
+  const holder=document.createElement('div');holder.innerHTML=reportProfileHTML(cat);
+  root.insertBefore(holder.firstChild,root.firstChild);
+  const scene=root.querySelector(':scope > .lc-scene');
+  if(scene){
+    scene.classList.add('report-opening-scene');
+    const bubble=scene.querySelector('.lc-bubble');
+    if(bubble){const lines=bubble.innerHTML.split(/<br\s*\/?>/i);if(lines.length>1){bubble.innerHTML=lines.shift();const reply=document.createElement('div');reply.className='lc-bubble lc-bubble-reply';reply.innerHTML=lines.join('<br>');scene.insertBefore(reply,bubble);}}
+  }
+  const toc=root.querySelector(':scope > .lv4-toc');
+  if(toc){toc.classList.add('report-preview-toc');root.appendChild(toc);}
+}
 function previewLockHTML(cat,html,opts){
   opts=opts||{};let secNo=0;
   const box=document.createElement('div');box.innerHTML=html;
@@ -12046,11 +12089,12 @@ function previewLockHTML(cat,html,opts){
   });
   // 한 페이지 섹션 밖의 옛 카드형 풀이(지정일·월별 일부)도 같은 규칙
   if(!box.querySelector('.lv4-sec'))q('p').forEach((p,i)=>{if(i<2)lkTokens(p);else p.innerHTML=lkPara(p.textContent);});
+  arrangeReportPreview(cat,box);
   return box.innerHTML;
 }
 function lkBarHTML(cat){
   const title=(PAID_META[cat]||PAID_META.life).title;
-  return `<div class="lk-bar" role="region" aria-label="결제 안내"><div class="lk-bar-text"><small>가려진 풀이가 모두 열려요</small><b>${storyEsc(title)}</b></div><button type="button" class="lk-bar-btn" onclick="openPaymentConsent('${cat}','KAKAOPAY')">${formatWon(computePayAmount(cat,_meta))} · 전체 풀이 보기</button></div>`;
+  return `<div class="lk-bar" data-lk-category="${cat}" role="region" aria-label="결제 안내"><div class="lk-bar-text"><small>가려진 풀이가 모두 열려요</small><b>${storyEsc(title)}</b></div><button type="button" class="lk-bar-btn" onclick="openPaymentConsent('${cat}','KAKAOPAY')">${formatWon(computePayAmount(cat,_meta))} · 전체 풀이 보기</button></div>`;
 }
 function paidPreviewHTML(cat,renderFn){
   let html='';try{html=renderFn()||'';}catch(e){html='';}
@@ -12108,6 +12152,7 @@ function unlockAndRender(category){
   setUnlockedFor(category);
   _paidUnlocked=true;
   _category=category;
+  applyViewTheme('result');
   const back='<button class="menu-back" onclick="gotoMenu()"><span class="mb-arrow">‹</span> 처음으로</button>';
   const mbti=(_meta&&_meta.mbti)||'';
   const heroHTML=resultHeroHTML(_saju, mbti, category);

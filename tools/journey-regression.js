@@ -201,6 +201,17 @@ const submitBirth=async()=>{
     run("continueJourney('life')");await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
     check('궁금한 점: 인생총운 입력에는 없음',()=>assert.equal(d.getElementById('catExtraCtx').style.display,'none'));
+    check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
+      const root=d.querySelector('#p5 .report-preview-layout');assert(root);
+      const children=[...root.children];assert(children[0].classList.contains('report-profile'));assert(children[1].classList.contains('lc-orbs'));assert(children[2].classList.contains('report-opening-scene'));
+      assert(root.querySelector('.lc-bubble-reply'));assert(!root.querySelector(':scope>.lv4-hero'));assert(root.querySelector(':scope>.report-preview-toc'));
+      assert.match(d.querySelector('#p5 .report-profile-back').getAttribute('onclick'),/goToInput/);
+      assert.equal(d.documentElement.dataset.flowTheme,'life');
+      assert.equal(d.documentElement.style.getPropertyValue('--flow-bg'),run('PRODUCT_INTRO.life.tone[0]'));
+      assert.equal(d.querySelector('#p5 .lk-bar').dataset.lkCategory,'life');
+      assert.match(d.querySelector('#p5 .report-profile-birth').textContent,/시간 모름/);
+      const clock=run("(()=>{const saved=_meta;_meta={..._meta,hour:8,min:58,tsoMin:-32};const out=reportProfileHTML('life');_meta=saved;return out;})()");assert.match(clock,/09:30/);
+    });
     check('유료 풀이: 분석 뒤 핵심을 가린 전체 풀이와 결제 안내 표시',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
       assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
@@ -240,7 +251,7 @@ const submitBirth=async()=>{
     run("_savePendingPayment({tid:'TEST_APPROVE',partnerOrderId:'TEST-ORDER-1',category:'life',amount:1500,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=life&pg_token=TEST_TOKEN');");
     w.fetch=async()=>({ok:true,json:async()=>({ok:true}),text:async()=>'',headers:{get:()=>null}});
     await run('_handlePaymentReturn()');await wait(30);
-    check('승인 성공: 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert(d.querySelector('#p5 .life-experience'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
+    check('승인 성공: 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
     run("goHome();continueJourney('life')");await wait(150);
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("goHome();openVault()");
@@ -559,6 +570,18 @@ const submitBirth=async()=>{
         assert.equal(run('_marital'),'married');
         assert.equal(run("wzStepDone([document.getElementById('catExtraMarital')])"),true);
       }
+    });
+    check('카테고리 테마: 입력·결과·전체 해제에 같은 색을 쓰고 홈에서는 초기화',()=>{
+      for(const cat of ['life','newyear','gunghap','name','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health','ziwei']){
+        run(`goToInput('${cat}')`);
+        const expected=run(`PRODUCT_INTRO['${cat}'].tone`);
+        assert.equal(d.documentElement.dataset.flowTheme,cat);
+        assert.equal(d.documentElement.style.getPropertyValue('--flow-bg'),expected[0]);
+        assert.equal(d.documentElement.style.getPropertyValue('--flow-accent'),expected[2]);
+        run("showView('result')");assert.equal(d.documentElement.dataset.flowTheme,cat);
+      }
+      run("goHome()");assert.equal(d.documentElement.dataset.flowTheme,undefined);assert.equal(d.documentElement.style.getPropertyValue('--flow-bg'),'');
+      assert(d.querySelector('link[href*="reading-flow.css"]'));
     });
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));
     console.log('Journey integration checks passed. Network fully mocked; no live payment.');

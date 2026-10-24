@@ -1,0 +1,87 @@
+/* 소개에 쓰인 카테고리 색을 입력·미리보기·결제·전체 풀이가 함께 쓴다. */
+html[data-flow-theme]{
+  --bg:var(--flow-bg);--bg-deep:color-mix(in srgb,var(--flow-bg) 90%,#000);
+  --bg-mid:color-mix(in srgb,var(--flow-bg) 80%,var(--flow-depth));
+  --card:color-mix(in srgb,var(--flow-bg) 72%,var(--flow-depth));--card-elev:var(--flow-depth);
+  --card-glass:color-mix(in srgb,var(--card) 94%,transparent);
+  --text:#f7f7f2;--sub:color-mix(in srgb,var(--flow-accent) 22%,#e9ece9);
+  --muted:color-mix(in srgb,var(--flow-accent) 27%,#98a39f);
+  --accent:var(--flow-accent);--accent-bright:var(--flow-accent);--gold:var(--flow-accent);--gold-soft:var(--flow-accent);
+  --accent-soft:color-mix(in srgb,var(--flow-accent) 10%,transparent);--accent-bg:var(--accent-soft);
+  --border:color-mix(in srgb,var(--flow-accent) 13%,transparent);
+  --border-strong:color-mix(in srgb,var(--flow-accent) 32%,transparent);
+  --on-accent:var(--flow-bg);--brand:var(--flow-accent);--brand-2:var(--flow-depth);
+  --app-width:448px;--card-shadow:0 10px 30px #0002;color-scheme:dark;
+  background:color-mix(in srgb,var(--flow-bg) 35%,#1c1c1c);
+}
+html[data-flow-theme] body{background:color-mix(in srgb,var(--flow-bg) 35%,#1c1c1c)}
+html[data-flow-theme] #app{background:var(--bg);box-shadow:none}
+html[data-flow-theme] #app .hdr-back{background-color:var(--bg)}
+html[data-flow-theme] #app .hdr-back::before{background:linear-gradient(0deg,var(--bg),transparent 85%)}
+html[data-flow-theme] #app .journey-form-note{background:var(--accent-soft);border-color:var(--border-strong)}
+html[data-flow-theme] #app .form-body :is(.ig input,.ig select,textarea,input[type=text]){background-color:var(--bg-deep)}
+html[data-flow-theme] #app #formWrap.wz-on .ig input,html[data-flow-theme] #app #formWrap .birth-date-row :is(input,select){background-color:transparent}
+html[data-flow-theme] #app :is(.analyze-btn,.journey-primary){background:var(--accent);color:var(--on-accent);box-shadow:0 8px 24px #0002}
+html[data-flow-theme] #app :is(.analyze-btn,.journey-primary)::after{display:none}
+html[data-flow-theme] #app :is(.menu-back,.share-bar-btn,.lv4-why,.story-layer-bar,.life-layer-bar){background-color:var(--bg-mid)}
+html[data-flow-theme] #app :is(.lv4-sec,.lc-card,.lv4-pin,.pdf-cta,.nb-card){background-color:var(--card);border-color:var(--border)}
+html[data-flow-theme] #app .lc-scene{background:var(--bg)}
+html[data-flow-theme] #app .lv4-hero{background:transparent;border:0}
+html[data-flow-theme] .pay-sheet{background:var(--bg-mid);border-color:var(--border-strong)}
+html[data-flow-theme] .reveal{background:radial-gradient(ellipse at 50% 45%,var(--flow-depth),var(--flow-bg) 75%)}
+/* 참고 레이아웃: 프로필과 원국, 인물 장면, 장별 풀이를 한 화면 폭으로 잇는다. */
+html[data-flow-theme] #app>#view-result:has(.panel.on .report-preview-layout){padding:0 0 104px!important}
+#view-result:has(.panel.on .report-preview-layout)>.hdr-back{display:none}
+#view-result:has(.panel.on .report-preview-layout)>.hdr-back::before,#view-result:has(.panel.on .report-preview-layout)>.hdr-back::after{display:none}
+#view-result:has(.panel.on .report-preview-layout) .hdr-back-meta,#view-result:has(.panel.on .report-preview-layout)>.share-bar{display:none}
+#view-result:has(.panel.on .report-preview-layout) .panel:has(.lk-preview)>.menu-back{display:none}
+#app .lk-preview:has(.report-preview-layout) .lv4-wrap{margin:0}
+.report-preview-layout{gap:0}
+#app .report-profile{position:relative;display:flex;align-items:center;gap:12px;padding:40px 20px 24px}
+.report-profile>.lc-orb{flex:none;width:70px;height:70px}
+.report-profile>div{min-width:0}
+#app .report-profile h1{margin:0 0 3px;font-size:20px;line-height:1.4;font-weight:700;color:var(--text)}
+.report-profile p{margin:0;text-align:left;word-break:keep-all}
+#app .report-profile .report-profile-birth{margin:0;font-size:14px;line-height:1.7;color:var(--muted)}
+#app .report-profile .report-profile-day{margin:0;font-size:13px;line-height:1.7;color:var(--accent)}
+.report-preview-layout>.lc-orbs{gap:10px;padding:0 20px 42px;border:0;border-radius:0;background:none}
+.report-preview-layout>.lc-orbs .lc-orb{width:clamp(54px,16vw,72px);height:clamp(54px,16vw,72px)}
+.report-preview-layout>.lc-orbs .lc-orb b{font-size:22px}
+.report-preview-layout>.lc-orbs .lc-orb-col{gap:10px}
+.report-preview-layout>.lc-orbs .lc-orb-col em{font-size:14px;color:var(--text);margin-bottom:4px}
+.report-preview-layout>.lc-scene{margin:36px 0;border-radius:0;aspect-ratio:4/5;isolation:isolate}
+.report-preview-layout>.lc-scene::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,var(--bg),transparent 20%,transparent 72%,var(--bg));z-index:1}
+.report-preview-layout .lc-scene .character-portrait{object-position:center 20%}
+.report-preview-layout .lc-bubble{z-index:2;left:18px;top:12%;transform:none;width:126px;height:160px;border-radius:50%;font-size:18px;line-height:1.5;background:#f0f0e9;color:#1a211d;box-shadow:0 0 0 2px #ffffff65,0 8px 24px #0003}
+.report-preview-layout .lc-scene.right .lc-bubble,.report-preview-layout .lc-bubble-reply{left:auto;right:20px;top:auto;bottom:8%}
+.report-preview-layout .report-opening-scene{margin:0 0 24px;aspect-ratio:4/5.6}
+.report-preview-layout>.lc-moments{margin:16px 24px 64px}
+.report-preview-layout .lc-scroll{padding:34px 22px;background:#f9f8f3;box-shadow:0 0 0 3px #b2996c,0 16px 32px #0003;border-radius:2px}
+.report-preview-layout .lc-scroll::before,.report-preview-layout .lc-scroll::after{content:'';position:absolute;left:-12px;right:-12px;height:16px;border-radius:99px;background:linear-gradient(#98704d,#53311f 55%,#b38c60);border:1px solid #ae8f62}
+.report-preview-layout .lc-scroll::before{top:-17px}.report-preview-layout .lc-scroll::after{bottom:-17px}
+.report-preview-layout .lc-tl{padding:6px 0 34px 26px;gap:8px}
+.report-preview-layout .lc-tl-when{font-size:16px}
+.report-preview-layout .lk-tl-what{font-size:20px;line-height:1.55;color:#202b26}
+.report-preview-layout>.lc-chapter{padding:56px 20px 32px;text-align:center;background:var(--bg-deep);border-top:1px solid var(--border)}
+.report-preview-layout>.lc-chapter small{font-size:12px;letter-spacing:.2em}
+.report-preview-layout>.lc-chapter h2{font-size:28px;letter-spacing:.03em;color:var(--text);margin-top:12px}
+.report-preview-layout>.lc-card,.report-preview-layout>.lv4-sec,.report-preview-layout>.lv4-pin,.report-preview-layout>.lv4-ctx{margin:20px;border-radius:16px}
+.report-preview-layout>.lc-chapter+.lc-card{margin-top:28px}
+.report-preview-layout .lc-card-title{font-size:24px;line-height:1.45;text-align:center;color:var(--text)}
+.report-preview-layout .lc-card p{font-size:16px;line-height:1.9;color:var(--sub)}
+.report-preview-layout .lc-bars{gap:24px}.report-preview-layout .lc-bar-track{height:12px;margin:10px 0}
+.report-preview-layout .lc-bar-head{font-size:13px}
+.report-preview-layout .lc-people .lk-person{padding:24px 0}
+.report-preview-layout .lc-people .lk-person h4{font-size:24px;line-height:1.4;text-align:center;margin-bottom:24px}
+.report-preview-layout .lk-note{margin:24px 0 0;padding:22px 12px;border:0;border-radius:12px;background:var(--accent-soft)}
+.report-preview-layout .lk-note-btn{width:100%;margin-top:10px}
+.report-preview-layout>.report-preview-toc{margin:52px 20px 32px;padding:28px 20px;border-color:var(--border-strong)}
+#app .lk-preview:has(.report-preview-layout)>.paid-access-notice,#app .lk-preview:has(.report-preview-layout)>.journey-contents,#app .lk-preview:has(.report-preview-layout)>.paywall-compact{margin:24px 20px}
+html[data-flow-theme] #app .lk-bar{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,var(--app-width));margin:0;padding:14px 20px calc(14px + env(safe-area-inset-bottom));gap:12px;z-index:60;background:color-mix(in srgb,var(--bg-mid) 93%,transparent);border-color:var(--border-strong);backdrop-filter:blur(16px);box-shadow:0 -8px 24px #0002}
+html[data-flow-theme] #app .lk-bar-text{flex:1}
+html[data-flow-theme] #app .lk-bar-text small{font-size:10px}
+html[data-flow-theme] #app .lk-bar-text b{font-size:13px;margin-top:4px}
+html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:48px;max-width:70%;white-space:normal}
+@media(max-width:360px){#app .report-profile{padding:22px 16px;gap:10px}.report-profile>.lc-orb{width:58px;height:58px}.report-profile-birth{font-size:11px}.report-preview-layout>.lc-orbs{padding-left:16px;padding-right:16px}.report-preview-layout>.lc-card,.report-preview-layout>.lv4-sec{margin:16px}.report-preview-layout .lc-bubble{width:108px;height:140px;font-size:16px}.report-preview-layout>.lc-moments{margin-right:20px;margin-left:20px}}
+
+.report-profile-back{position:absolute;top:12px;right:16px;width:32px;height:32px;border:0;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:18px;cursor:pointer}
