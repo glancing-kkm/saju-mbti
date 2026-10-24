@@ -238,6 +238,7 @@ export default {
 };
 
 // 결제 후 프로필 카드용 인상 이미지 — 정해진 항목만 받아 서버에서 문장을 만든다(임의 프롬프트 차단)
+const PORTRAIT_DAILY_LIMIT = 20;
 async function handlePortrait(request, env) {
   if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);
   let b;
@@ -252,11 +253,21 @@ async function handlePortrait(request, env) {
     helper: 'trustworthy mature mentor, kind and confident smile, business casual blazer',
     foe: 'guarded, cool expression, sharp gaze, dark minimal outfit',
   };
+  // 같은 접속 주소에서 하루에 만들 수 있는 장수를 제한한다(결제 1건에 2~3장, 여러 풀이를 봐도 넉넉하게)
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const limitKey = ip && env.SAJU_QNA_CACHE ? `portrait-limit:${day}:${ip}` : '';
+  let used = 0;
+  if (limitKey) {
+    try { used = Number(await env.SAJU_QNA_CACHE.get(limitKey)) || 0; } catch {}
+    if (used >= PORTRAIT_DAILY_LIMIT) return json({ error: '오늘 만들 수 있는 이미지를 모두 썼어요. 내일 다시 볼 수 있어요.', code: 'PORTRAIT_LIMIT' }, 429);
+  }
   const prompt = `Photorealistic portrait photograph of a fictional Korean ${who} around ${age} years old with ${look}, ${STYLE[kind]}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, natural skin texture, not a celebrity, no text, no watermark`;
   try {
     const out = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 4 });
     const img = out && out.image;
     if (!img) throw new Error('empty image');
+    if (limitKey) { try { await env.SAJU_QNA_CACHE.put(limitKey, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} }
     return json({ ok: true, image: `data:image/jpeg;base64,${img}` });
   } catch (e) {
     console.warn('portrait failed:', e && e.message);
