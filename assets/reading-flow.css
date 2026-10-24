@@ -96,3 +96,29 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app #formWrap .city-confirm{min-height:44px;padding:10px 14px;flex:none;border:1px solid var(--border-strong);border-radius:10px;background:var(--accent-soft);color:var(--accent);font:inherit;font-size:.88rem;cursor:pointer}
 #app #formWrap fieldset:not(.wz-cur) .city-confirm{display:none}
 @media(max-width:360px){#app #formWrap .birth-time-row{gap:8px}#app #formWrap .birth-time-row #timeInputs{gap:8px}#app #formWrap .birth-time-row .time-unknown-row{padding:8px;font-size:.7rem}}
+
+/* 미리보기는 핵심만: 반복 장면·전체 목차·상세 본문은 결제 후에 보여준다. */
+#app .preview-compact .report-profile{padding-top:32px;padding-bottom:18px}
+#app .preview-compact>.lc-orbs{padding-bottom:20px}
+#app .preview-compact>.report-opening-scene{height:280px;aspect-ratio:auto;margin:0 0 20px}
+#app .preview-compact .lc-scene .character-portrait{object-position:center 26%}
+#app .preview-compact .lc-bubble{width:108px;height:126px;font-size:16px;top:8%;left:16px}
+#app .preview-compact .lc-bubble-reply{left:auto;right:16px;top:auto;bottom:6%}
+#app .preview-compact>.lc-moments{margin:12px 24px 28px}
+#app .preview-compact .lc-scroll{padding:18px 20px}
+#app .preview-compact .lc-scroll-title{margin-bottom:14px;font-size:16px;color:#6e3f1f}
+#app .preview-compact .lc-tl{padding:4px 0 18px 22px;gap:4px}
+#app .preview-compact .lc-tl:last-child{padding-bottom:0}
+#app .preview-compact .lc-tl-when{font-size:13px}
+#app .preview-compact .lk-tl-what{font-size:16px;line-height:1.5}
+#app .preview-compact>.lc-card{margin:10px 20px;padding:20px}
+#app .preview-compact .lc-card-title{font-size:20px;line-height:1.45;margin-bottom:12px}
+#app .preview-compact .lc-card p{font-size:15px;line-height:1.75;margin-bottom:0}
+#app .preview-compact>.lc-people{margin:10px 20px;gap:10px}
+#app .preview-compact .lc-pcard{display:flex;aspect-ratio:auto;min-height:138px;border-radius:14px;background:var(--card);border:1px solid var(--border)}
+#app .preview-compact .lc-pcard-img{position:relative;inset:auto;width:100px;height:auto;flex:0 0 100px;align-self:stretch;overflow:hidden}
+#app .preview-compact .lc-pcard-body{position:relative;inset:auto;flex:1;min-width:0;padding:14px;background:none}
+#app .preview-compact .lc-pcard-body h4{font-size:16px;line-height:1.4;margin:3px 0 10px}
+#app .preview-compact .lc-pcard-body dl{font-size:12px;gap:4px}
+#app .preview-compact .lc-pcard-body dl>div{grid-template-columns:52px minmax(0,1fr)}
+#app .preview-compact .lc-curve{max-height:170px}

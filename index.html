@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4482ab5611eeinput-compact-required-20261024">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=inline-time-city-20261024">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=173d4d05b6a2">
 </head>
 <body>
 <div id="app">
@@ -12055,6 +12055,42 @@ function reportProfileHTML(cat){
   const time=m.hour>=0?`${String(Math.floor(clock/60)).padStart(2,'0')}:${String(clock%60).padStart(2,'0')}`:'시간 모름';
   return `<header class="report-profile"><button type="button" class="report-profile-back" onclick="goToInput('${cat}')" aria-label="출생정보 다시 입력">←</button><span class="lc-orb oh${oh}" aria-hidden="true"><small>${LC_OH_HAN[oh]}·${LC_OH_WORD[oh]}</small><b>${LC_STEM_HAN[stem]}</b><i>${STEMKO[stem]}</i></span><div><h1>${storyEsc(full)}</h1><p class="report-profile-birth">${storyEsc(date)} · 양력 · ${time} · ${m.gender==='female'?'여성':'남성'}</p><p class="report-profile-day">${STEMKO[stem]}${BRCHKO[s.dp.branch]} 일주</p></div></header>`;
 }
+// 미리보기만 압축한다. 결제 후 원본 풀이와 잠금 처리는 그대로 유지한다.
+function compactReportPreview(root){
+  const core=root.querySelector(':scope > #lv4-lc-core')||root.querySelector(':scope > .lv4-sec');if(!core)return;
+  const scene=root.querySelector(':scope > .report-opening-scene');
+  const special=root.querySelector(':scope > #lv4-lc-special');
+  const people=root.querySelector(':scope > .lc-people');
+  const graph=[...root.querySelectorAll(':scope > .lc-graph')].find(e=>e.querySelector('.lc-curve'));
+  const keep=new Set([core,special,people,graph,scene,root.querySelector(':scope > .report-profile'),root.querySelector(':scope > .lc-orbs'),root.querySelector(':scope > .lc-moments')]);
+  [...root.children].forEach(e=>{if(!keep.has(e))e.remove();});
+  root.classList.add('preview-compact');
+  // 기존 마스크와 고아글자 방지 태그를 보존하면서 앞의 두 문장만 남긴다.
+  const summarize=p=>{
+    const text=p.textContent,sentences=text.match(/[\s\S]+?(?:[.!?。](?=\s|$)|$)/g)||[text];
+    let brief=sentences.slice(0,2).join('').trimEnd();
+    if(brief.length>150)brief=sentences[0].trimEnd();
+    let left=brief.length;
+    const walker=document.createTreeWalker(p,4),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(n=>{const count=Math.min(left,n.nodeValue.length);n.nodeValue=n.nodeValue.slice(0,count);left-=count;});
+  };
+  [core,special].filter(Boolean).forEach(card=>{
+    const title=card.querySelector('.lc-card-title,h2');
+    if(title)title.classList.add('lc-card-title');
+    card.classList.remove('lv4-sec');card.classList.add('lc-card');
+    const paras=[...card.querySelectorAll(':scope > p')].filter(p=>!p.classList.contains('lc-foot')&&!p.querySelector('.lk-block')).slice(0,1);
+    paras.forEach(summarize);card.replaceChildren(...[title,...paras].filter(Boolean));
+  });
+  if(people){
+    const cards=[...people.querySelectorAll('.lc-pcard')].slice(0,2);
+    cards.forEach(card=>[...card.querySelectorAll('dl > div')].slice(2).forEach(e=>e.remove()));
+    people.replaceChildren(...cards);
+  }
+  if(graph){
+    const title=graph.querySelector('.lc-card-title'),curve=graph.querySelector('.lc-curve');
+    graph.replaceChildren(...[title,curve].filter(Boolean));
+  }
+}
 function arrangeReportPreview(cat,box){
   const root=box.querySelector('.lv4'),orbs=root&&root.querySelector(':scope > .lc-orbs');
   if(!orbs||!_saju||!_meta)return;
@@ -12068,8 +12104,7 @@ function arrangeReportPreview(cat,box){
     const bubble=scene.querySelector('.lc-bubble');
     if(bubble){const lines=bubble.innerHTML.split(/<br\s*\/?>/i);if(lines.length>1){bubble.innerHTML=lines.shift();const reply=document.createElement('div');reply.className='lc-bubble lc-bubble-reply';reply.innerHTML=lines.join('<br>');scene.insertBefore(reply,bubble);}}
   }
-  const toc=root.querySelector(':scope > .lv4-toc');
-  if(toc){toc.classList.add('report-preview-toc');root.appendChild(toc);}
+  compactReportPreview(root);
 }
 function previewLockHTML(cat,html,opts){
   opts=opts||{};let secNo=0;

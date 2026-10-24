@@ -204,7 +204,7 @@ const submitBirth=async()=>{
     check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
       const root=d.querySelector('#p5 .report-preview-layout');assert(root);
       const children=[...root.children];assert(children[0].classList.contains('report-profile'));assert(children[1].classList.contains('lc-orbs'));assert(children[2].classList.contains('report-opening-scene'));
-      assert(root.querySelector('.lc-bubble-reply'));assert(!root.querySelector(':scope>.lv4-hero'));assert(root.querySelector(':scope>.report-preview-toc'));
+      assert(root.querySelector('.lc-bubble-reply'));assert(!root.querySelector(':scope>.lv4-hero,.report-preview-toc'));
       assert.match(d.querySelector('#p5 .report-profile-back').getAttribute('onclick'),/goToInput/);
       assert.equal(d.documentElement.dataset.flowTheme,'life');
       assert.equal(d.documentElement.style.getPropertyValue('--flow-bg'),run('PRODUCT_INTRO.life.tone[0]'));
@@ -212,12 +212,18 @@ const submitBirth=async()=>{
       assert.match(d.querySelector('#p5 .report-profile-birth').textContent,/시간 모름/);
       const clock=run("(()=>{const saved=_meta;_meta={..._meta,hour:8,min:58,tsoMin:-32};const out=reportProfileHTML('life');_meta=saved;return out;})()");assert.match(clock,/09:30/);
     });
-    check('유료 풀이: 분석 뒤 핵심을 가린 전체 풀이와 결제 안내 표시',()=>{
+    check('유료 풀이: 핵심 미리보기만 짧게 표시하고 상세 풀이 비공개',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
-      assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
+      const preview=d.querySelector('#p5 .lk-preview');assert(preview.querySelector('.preview-compact') && preview.querySelector('.lk'));
+      assert(preview.textContent.length<1800);
+      assert.equal(preview.querySelectorAll('.lc-scene').length,1);
+      assert(preview.querySelectorAll('.lc-tl').length<=3);
+      assert(!preview.querySelector('.lv4-sec,.lk-block,.lk-note,.lc-areas,.lv4-toc,.pp-box'));
+      assert(preview.querySelectorAll('.lc-pcard').length<=2);
+      assert([...preview.querySelectorAll('.lc-card:not(.lc-graph)')].every(e=>e.querySelectorAll('p').length===1));
       assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta,#p5 [data-deep]'));
-      assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-curve') && d.querySelector('#p5 .lc-pcard') && d.querySelector('#p5 .lc-radar'));
-      const pp=[...d.querySelectorAll('#p5 .pp-box')];assert(pp.length && pp.every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
+      assert(preview.querySelector('.lc-orbs') && preview.querySelector('.lc-people') && preview.querySelector('.lc-curve'));
+      assert([...preview.querySelectorAll('.lc-pcard')].every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));
@@ -230,6 +236,26 @@ const submitBirth=async()=>{
         assert.match(lock,new RegExp("openPaymentConsent\\('"+cat+"'"));
       });
     }
+    check('월별·지정일·이름·자미두수도 미리보기만 축약하고 전체 본문 보존',()=>{
+      for(const [cat,expr] of [
+        ['monthly','renderMonthlyFortune(_saju,2026,10,2026,12,{})'],
+        ['daypick','renderDaypickFortune(_saju,2026,11,1,{})'],
+        ['name',"renderNamePaid(_saju,{surname:'김',given:'하늘'})"],
+        ['ziwei','renderZiweiPaid(_saju,_meta)']
+      ]){
+        const full=run(expr),box=d.createElement('div');box.innerHTML=full;
+        const sectionCount=box.querySelectorAll('.lv4-sec').length,fullText=box.textContent;
+        assert(sectionCount>=5,cat);
+        box.innerHTML=run(`previewLockHTML('${cat}',${JSON.stringify(full)})`);
+        assert(box.querySelector('.preview-compact'),cat);
+        assert(box.textContent.length<1600,cat);
+        assert(!box.querySelector('.lv4-sec,.lv4-toc,.lk-block'),cat);
+        assert.equal(box.querySelectorAll('.lc-scene').length,1,cat);
+        box.innerHTML=run(expr);
+        assert.equal(box.querySelectorAll('.lv4-sec').length,sectionCount,cat+' 전체 섹션 유지');
+        assert.equal(box.textContent,fullText,cat+' 전체 본문 유지');
+      }
+    });
     run("openPaymentConsent('life','KAKAOPAY')");
     check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'1,500원');assert.match(d.getElementById('payCtaGo').textContent,/1,500원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
     let readyCalls=0,resolveReady;
@@ -251,7 +277,7 @@ const submitBirth=async()=>{
     run("_savePendingPayment({tid:'TEST_APPROVE',partnerOrderId:'TEST-ORDER-1',category:'life',amount:1500,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=life&pg_token=TEST_TOKEN');");
     w.fetch=async()=>({ok:true,json:async()=>({ok:true}),text:async()=>'',headers:{get:()=>null}});
     await run('_handlePaymentReturn()');await wait(30);
-    check('승인 성공: 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
+    check('승인 성공: 축약 없이 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(d.querySelectorAll('#p5 .lv4-sec').length>=8);assert(d.querySelector('#p5 .lc-radar'));assert(!d.querySelector('#p5 .preview-compact'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
     run("goHome();continueJourney('life')");await wait(150);
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("goHome();openVault()");
@@ -288,7 +314,9 @@ const submitBirth=async()=>{
     run("goToInput('topic-love')");await birth('1994','5','18');
     check('주제별 풀이: 연애운은 가린 미리보기와 1,000원 결제 버튼',()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
-      assert(d.querySelector('#p9 .lk-preview .lv4-sec'));
+      const preview=d.querySelector('#p9 .lk-preview');assert(preview.querySelector('.preview-compact'));
+      assert(preview.textContent.length<1800);assert.equal(preview.querySelectorAll('.lc-scene').length,1);
+      assert(!preview.querySelector('.lv4-sec,.lk-block,.lv4-toc'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert(!d.querySelector('#p9 [data-ai-reading]'));
       assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
