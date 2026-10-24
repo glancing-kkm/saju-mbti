@@ -97,7 +97,7 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app #formWrap fieldset:not(.wz-cur) .city-confirm{display:none}
 @media(max-width:360px){#app #formWrap .birth-time-row{gap:8px}#app #formWrap .birth-time-row #timeInputs{gap:8px}#app #formWrap .birth-time-row .time-unknown-row{padding:8px;font-size:.7rem}}
 
-/* 미리보기는 핵심만: 반복 장면·전체 목차·상세 본문은 결제 후에 보여준다. */
+/* 미리보기는 핵심 요약과 전체 챕터 구성을 함께 보여준다. */
 #app .preview-compact .report-profile{padding-top:32px;padding-bottom:18px}
 #app .preview-compact>.lc-orbs{padding-bottom:20px}
 #app .preview-compact>.report-opening-scene{height:280px;aspect-ratio:auto;margin:0 0 20px}
@@ -122,3 +122,13 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app .preview-compact .lc-pcard-body dl{font-size:12px;gap:4px}
 #app .preview-compact .lc-pcard-body dl>div{grid-template-columns:52px minmax(0,1fr)}
 #app .preview-compact .lc-curve{max-height:170px}
+#app .preview-compact>.report-preview-contents{margin:12px 20px 18px;padding:22px 20px;border:1px solid var(--border-strong);border-radius:16px;background:var(--card)}
+#app .report-preview-contents h2{margin:0;font-size:20px;line-height:1.5;color:var(--text)}
+#app .report-preview-contents .preview-contents-note{margin:6px 0 18px;font-size:12px;line-height:1.6;color:var(--muted)}
+#app .report-preview-contents ol{display:grid;gap:0;margin:0;padding:0;list-style:none}
+#app .report-preview-contents li{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-top:1px solid var(--border)}
+#app .report-preview-contents li:last-child{padding-bottom:0}
+#app .report-preview-contents .preview-chapter-no{flex:none;padding-top:1px;color:var(--accent);font-size:13px;line-height:1.7;font-variant-numeric:tabular-nums}
+#app .report-preview-contents li>div{min-width:0}
+#app .report-preview-contents h3{margin:0;font-size:15px;line-height:1.6;color:var(--text);word-break:keep-all;overflow-wrap:anywhere}
+#app .report-preview-contents li p{margin:4px 0 0;font-size:12px;line-height:1.6;color:var(--muted);word-break:keep-all;overflow-wrap:anywhere}

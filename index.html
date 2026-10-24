@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=8b5b4d62d7a7">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=173d4d05b6a2">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=a4db38c4633f">
 </head>
 <body>
 <div id="app">
@@ -12059,12 +12059,24 @@ function reportProfileHTML(cat){
 // 미리보기만 압축한다. 결제 후 원본 풀이와 잠금 처리는 그대로 유지한다.
 function compactReportPreview(root){
   const core=root.querySelector(':scope > #lv4-lc-core')||root.querySelector(':scope > .lv4-sec');if(!core)return;
+  // 본문은 압축해도 전체 풀이의 챕터명과 다루는 주제는 빠짐없이 보여준다.
+  const chapters=[...root.querySelectorAll(':scope > .lv4-sec')].map(section=>({
+    title:section.querySelector('h2')?.textContent.trim()||'',
+    scope:section.querySelector('.lv4-sec-label')?.textContent.trim()||''
+  })).filter(chapter=>chapter.title);
+  let contents=null;
+  if(chapters.length){
+    contents=document.createElement('section');contents.className='report-preview-contents';
+    contents.setAttribute('aria-label','전체 풀이 목차');
+    contents.innerHTML=`<h2>전체 풀이 목차</h2><p class="preview-contents-note">${chapters.length}개 챕터 · 결제 후 모든 풀이가 열려요</p><ol>${chapters.map((chapter,i)=>`<li><span class="preview-chapter-no" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><h3>${lv4Text(storyEsc(chapter.title))}</h3>${chapter.scope&&chapter.scope!==chapter.title?`<p>${lv4Text(storyEsc(chapter.scope))}</p>`:''}</div></li>`).join('')}</ol>`;
+  }
   const scene=root.querySelector(':scope > .report-opening-scene');
   const special=root.querySelector(':scope > #lv4-lc-special');
   const people=root.querySelector(':scope > .lc-people');
   const graph=[...root.querySelectorAll(':scope > .lc-graph')].find(e=>e.querySelector('.lc-curve'));
   const keep=new Set([core,special,people,graph,scene,root.querySelector(':scope > .report-profile'),root.querySelector(':scope > .lc-orbs'),root.querySelector(':scope > .lc-moments')]);
   [...root.children].forEach(e=>{if(!keep.has(e))e.remove();});
+  if(contents){const moments=root.querySelector(':scope > .lc-moments');if(moments)moments.after(contents);else core.before(contents);}
   root.classList.add('preview-compact');
   // 기존 마스크와 고아글자 방지 태그를 보존하면서 앞의 두 문장만 남긴다.
   const summarize=p=>{

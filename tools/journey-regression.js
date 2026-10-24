@@ -215,7 +215,11 @@ const submitBirth=async()=>{
     check('유료 풀이: 핵심 미리보기만 짧게 표시하고 상세 풀이 비공개',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
       const preview=d.querySelector('#p5 .lk-preview');assert(preview.querySelector('.preview-compact') && preview.querySelector('.lk'));
-      assert(preview.textContent.length<1800);
+      assert(preview.textContent.length<2600);
+      const contents=preview.querySelector('.report-preview-contents');assert(contents);
+      assert.equal(contents.querySelectorAll('li').length,8);
+      assert.match(contents.textContent,/8개 챕터/);
+      assert(!contents.querySelector('a,button,.lk'));
       assert.equal(preview.querySelectorAll('.lc-scene').length,1);
       assert(preview.querySelectorAll('.lc-tl').length<=3);
       assert(!preview.querySelector('.lv4-sec,.lk-block,.lk-note,.lc-areas,.lv4-toc,.pp-box'));
@@ -246,10 +250,13 @@ const submitBirth=async()=>{
       ]){
         const full=run(expr),box=d.createElement('div');box.innerHTML=full;
         const sectionCount=box.querySelectorAll('.lv4-sec').length,fullText=box.textContent;
+        const chapterTitles=[...box.querySelectorAll('.lv4 > .lv4-sec h2')].map(e=>e.textContent);
         assert(sectionCount>=5,cat);
         box.innerHTML=run(`previewLockHTML('${cat}',${JSON.stringify(full)})`);
         assert(box.querySelector('.preview-compact'),cat);
-        assert(box.textContent.length<1600,cat);
+        assert(box.textContent.length<2600,cat);
+        const normalize=s=>s.replace(/\u200b/g,'').replace(/\u00a0/g,' ');
+        assert.deepEqual([...box.querySelectorAll('.report-preview-contents li h3')].map(e=>normalize(e.textContent)),chapterTitles.map(normalize),cat+' 전체 챕터 노출');
         assert(!box.querySelector('.lv4-sec,.lv4-toc,.lk-block'),cat);
         assert.equal(box.querySelectorAll('.lc-scene').length,1,cat);
         box.innerHTML=run(expr);
@@ -316,7 +323,8 @@ const submitBirth=async()=>{
     check('주제별 풀이: 연애운은 가린 미리보기와 1,000원 결제 버튼',()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
       const preview=d.querySelector('#p9 .lk-preview');assert(preview.querySelector('.preview-compact'));
-      assert(preview.textContent.length<1800);assert.equal(preview.querySelectorAll('.lc-scene').length,1);
+      assert(preview.textContent.length<2600);assert.equal(preview.querySelectorAll('.lc-scene').length,1);
+      assert.equal(preview.querySelectorAll('.report-preview-contents li').length,7);
       assert(!preview.querySelector('.lv4-sec,.lk-block,.lv4-toc'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert(!d.querySelector('#p9 [data-ai-reading]'));
