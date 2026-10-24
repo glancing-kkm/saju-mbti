@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=cc2248e67fab">
+<link rel="stylesheet" href="/assets/night.css?v=8b5b4d62d7a7">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=173d4d05b6a2">
 </head>
 <body>
@@ -20368,11 +20368,11 @@ function mdMerge(keep,aiMd){
 // AI 답이 준비되면 같은 자리의 규칙 답을 숨긴다 (실패하면 규칙 답이 그대로 남는다)
 function aiHideRule(id){try{document.querySelectorAll(`[data-ai-rule="${id}"]`).forEach(el=>{el.hidden=true;});}catch(e){}}
 // 프로필 카드 인상 이미지 — 결제 후에만, 같은 정보면 저장해 둔 이미지를 다시 쓴다
-function lcPortraitKey(info){return 'lc_portrait_v1:'+JSON.stringify(info);}
+function lcPortraitKey(info){return 'lc_portrait_v2:'+JSON.stringify(info);}
 function lcPortraitCached(info){try{return localStorage.getItem(lcPortraitKey(info))||'';}catch(e){return '';}}
 function lcPortraitSet(card,src){const img=card.querySelector('.lc-pcard-img img');if(!img||!src)return;img.src=src;card.classList.add('ai-photo');const note=card.querySelector('.lc-pcard-note');if(note)note.textContent='AI가 그린 인상 이미지 · 실존 인물이 아니에요';}
-// 받은 이미지(1024px)를 카드 크기(3:4, 360px)로 줄여 저장 공간을 아낀다
-function lcPortraitShrink(src){return new Promise(res=>{try{const im=new Image();im.onload=()=>{try{const W=360,H=480,c=document.createElement('canvas');c.width=W;c.height=H;const s=Math.min(im.width/W,im.height/H),sw=W*s,sh=H*s;c.getContext('2d').drawImage(im,(im.width-sw)/2,Math.max(0,(im.height-sh)*0.3),sw,sh,0,0,W,H);res(c.toDataURL('image/jpeg',0.82));}catch(e){res(src);}};im.onerror=()=>res(src);im.src=src;}catch(e){res(src);}});}
+// 받은 이미지(1024px)를 카드 크기(정사각형 420px)로 줄여 저장 공간을 아낀다
+function lcPortraitShrink(src){return new Promise(res=>{try{const im=new Image();im.onload=()=>{try{const W=420,H=420,c=document.createElement('canvas');c.width=W;c.height=H;const s=Math.min(im.width/W,im.height/H),sw=W*s,sh=H*s;c.getContext('2d').drawImage(im,(im.width-sw)/2,Math.max(0,(im.height-sh)*0.3),sw,sh,0,0,W,H);res(c.toDataURL('image/jpeg',0.82));}catch(e){res(src);}};im.onerror=()=>res(src);im.src=src;}catch(e){res(src);}});}
 async function hydratePortrait(card){
   if(card.dataset.portraitDone)return;card.dataset.portraitDone='1';
   let info;try{info=JSON.parse(decodeURIComponent(card.getAttribute('data-portrait')||''));}catch(e){return;}

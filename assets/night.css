@@ -890,4 +890,9 @@ html[data-flow-theme] #app :is(#view-result,#view-tarot,#view-astrology) .lk-pre
 .lc-pcard-role{display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-size:.74rem;font-weight:600;letter-spacing:-.01em}
 .lc-pcard.love .lc-pcard-role{color:#ffb4c8}.lc-pcard.helper .lc-pcard-role{color:#ffe08a}.lc-pcard.foe .lc-pcard-role{color:#ff9f8f}
 .lc-pcard-note{display:block;margin-top:10px;opacity:.6;font-size:.72rem}
-.lc-pcard.ai-photo .lc-pcard-img img{object-position:50% 25%}
+/* AI 인상 사진 — 정사각형 사진을 위에, 풀이는 아래에 붙여 얼굴이 가려지지 않게 */
+#app .lc-pcard.ai-photo{aspect-ratio:auto;display:block}
+#app .lc-pcard.ai-photo .lc-pcard-img{position:relative;inset:auto;height:auto;aspect-ratio:1/1}
+#app .lc-pcard.ai-photo .lc-pcard-img img{position:absolute;inset:0;object-position:50% 30%}
+#app .lc-pcard.ai-photo .lc-pcard-body{position:relative;margin-top:-96px;padding-top:72px}
+#app .preview-compact .lc-pcard.ai-photo{display:flex}#app .preview-compact .lc-pcard.ai-photo .lc-pcard-img{aspect-ratio:auto}#app .preview-compact .lc-pcard.ai-photo .lc-pcard-body{margin-top:0;padding-top:14px}
