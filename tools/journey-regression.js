@@ -28,6 +28,8 @@ const scripts=[...d.querySelectorAll('script')].filter(s=>!s.src&&!/json/.test(s
 const events=()=>Array.from(w.dataLayer||[]).filter(e=>e[0]==='event');
 const pending=()=>JSON.parse(w.sessionStorage.getItem('kakao_pay_pending_v1'));
 const submitBirth=async()=>{
+  if(!d.getElementById('iName').value)d.getElementById('iName').value='김하늘';
+  run("setMarital('single')");
   d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';
   run('setTimeUnknown(true);analyze();');await wait(150);
 };
@@ -143,7 +145,22 @@ const submitBirth=async()=>{
     run("startJourney('career')");
     check('무료 시작: 입력 화면과 결제 없는 안내',()=>{assert(d.getElementById('view-input').classList.contains('on'));assert.match(d.querySelector('.analyze-btn').textContent,/무료/);});
     run('analyze()');
-    check('빈 입력: 오류를 표시하고 결제로 넘어가지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/연도/);assert(!d.getElementById('payOverlay').classList.contains('vis'));});
+    check('빈 입력: 오류를 표시하고 결제로 넘어가지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/이름/);assert(!d.getElementById('payOverlay').classList.contains('vis'));});
+    check('이름 필수: 처음에는 이름만 보이고 성별은 입력 완료 후 표시',()=>{
+      assert.equal(run('_wz.open'),0);
+      assert(d.getElementById('bm').closest('fieldset').classList.contains('wz-hide'));
+      d.getElementById('iName').value='   ';
+      run('confirmNameStep()');assert.equal(run('_wz.open'),0);
+      d.getElementById('iName').value='김하늘';
+      run('confirmNameStep()');
+      assert(!d.getElementById('bm').closest('fieldset').classList.contains('wz-hide'));
+      assert(d.getElementById('iY').closest('fieldset').classList.contains('wz-hide'));
+    });
+    check('달력 선택: 본인과 궁합 상대방 모두 날짜와 같은 줄이며 음력 전환 유지',()=>{
+      for(const [cal,y] of [['iCalType','iY'],['gnCalType','gnY']])assert.equal(d.getElementById(cal).closest('.birth-date-row'),d.getElementById(y).closest('.birth-date-row'));
+      run("setCal('lunar');setGnCal('lunar')");assert(d.getElementById('leapSec').classList.contains('vis'));assert(d.getElementById('gnLeapSec').classList.contains('vis'));
+      run("setCal('solar');setGnCal('solar')");assert(!d.getElementById('leapSec').classList.contains('vis'));
+    });
     await submitBirth();
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(!d.querySelector('#p0 .journey-overview'));assert(d.querySelector('#journeyManseBoard .pillars'));});
     check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 1,500원/);assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
@@ -520,6 +537,26 @@ const submitBirth=async()=>{
     });
     run(d.querySelector('#todayTarotResult .today-paid-hook button').getAttribute('onclick'));
     check('오늘의 타로: 유료 질문형 타로로 정상 연결',()=>assert.equal(run('_tarotRoute'),'question'));
+    check('모든 사주 입력: 이름 완료 전 성별 숨김, 완료 후 성별 표시',()=>{
+      const rows=run(`(()=>{const saved=_lastInputs;_lastInputs=null;const out=[];
+        for(const cat of ['manse','daily','life','newyear','qna','ziwei','vedic','mahabote','gunghap','name','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-children','topic-health']){
+          document.getElementById('iName').value='';document.getElementById('nmSurname').value='';document.getElementById('nmGiven').value='';document.getElementById('formWrap').dataset.genderPicked='0';goToInput(cat);
+          const first=wzStepKind(_wz.steps[0]),hidden=document.getElementById('bm').closest('fieldset').classList.contains('wz-hide');
+          if(cat==='name'){document.getElementById('nmSurname').value='김';document.getElementById('nmGiven').value='하늘';confirmNamingStep();}else{document.getElementById('iName').value='김하늘';confirmNameStep();}
+          out.push({cat,first,hidden,genderVisible:!document.getElementById('bm').closest('fieldset').classList.contains('wz-hide')});
+        }_lastInputs=saved;return out;})()`);
+      for(const row of rows){assert.equal(row.first,row.cat==='name'?'naming':'name',row.cat);assert(row.hidden,row.cat);assert(row.genderVisible,row.cat);}
+    });
+    check('연애·결혼 상태 필수: 미선택 제출 차단, 선택 후 재클릭해도 유지',()=>{
+      for(const cat of ['life','newyear']){
+        run(`goToInput('${cat}');setMarital('');analyze()`);
+        assert.match(d.getElementById('errMsg').textContent,/연애·결혼 상태/);
+        assert.equal(d.getElementById('mrSingle').getAttribute('aria-invalid'),'true');
+        run("setMarital('married');setMarital('married')");
+        assert.equal(run('_marital'),'married');
+        assert.equal(run("wzStepDone([document.getElementById('catExtraMarital')])"),true);
+      }
+    });
     check('런타임: 입력·무료·유료 전체 흐름에서 오류 없음',()=>assert.equal(errors.length,0,errors.join('\n')));
     console.log('Journey integration checks passed. Network fully mocked; no live payment.');
   }finally{w.close();}

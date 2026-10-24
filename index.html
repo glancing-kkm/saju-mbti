@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=input-appear-20261023">
+<link rel="stylesheet" href="/assets/night.css?v=input-compact-required-20261024">
 </head>
 <body>
 <div id="app">
@@ -2713,49 +2713,40 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <span id="inputStep3">3 풀이확인</span>
     </div>
     <form class="form-body" id="formWrap" data-clarity-mask="true" onsubmit="event.preventDefault();analyze();" novalidate>
-      <div class="journey-form-note" id="journeyFormNote"><b>먼저 무료로 본인의 성향을 읽어봐요.</b>생년월일은 필수예요. 태어난 시간은 몰라도 돼요.</div>
+      <div class="journey-form-note" id="journeyFormNote"><b>먼저 무료로 본인의 성향을 읽어봐요.</b>이름과 생년월일은 필수예요. 시간은 몰라도 돼요.</div>
       <fieldset id="nameFieldset">
-        <legend><label for="iName" style="all:unset;cursor:pointer">이름</label> <small>(선택 · 제목과 리포트 표지에만 쓰여요)</small></legend>
-        <div class="ig"><input type="text" id="iName" name="userName" placeholder="예: 김하늘" maxlength="10" autocomplete="off"></div>
+        <legend><label for="iName" style="all:unset;cursor:pointer">이름</label> <small class="required-note">필수</small></legend>
+        <div class="name-entry"><div class="ig"><input type="text" id="iName" name="userName" placeholder="예: 김하늘" maxlength="10" autocomplete="off" required aria-required="true"></div><button type="button" class="name-next" onclick="confirmNameStep()">다음 <span aria-hidden="true">→</span></button></div>
       </fieldset>
       <fieldset>
         <legend id="lgGender">성별</legend>
-        <div class="tog-row" role="radiogroup" aria-label="성별 선택">
+        <div class="tog-row gender-choice" role="radiogroup" aria-label="성별 선택">
           <button type="button" class="tog on" id="bm" onclick="setGender('male')" role="radio" aria-checked="true">남성</button>
           <button type="button" class="tog" id="bf" onclick="setGender('female')" role="radio" aria-checked="false">여성</button>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>양력 / 음력</legend>
-        <div class="tog-row" role="radiogroup" aria-label="달력 종류">
-          <button type="button" class="tog on" id="bs" onclick="setCal('solar')" role="radio" aria-checked="true">양력</button>
-          <button type="button" class="tog" id="bl" onclick="setCal('lunar')" role="radio" aria-checked="false">음력</button>
-        </div>
-      </fieldset>
-
-      <fieldset class="leap-sec" id="leapSec">
-        <legend>달 종류</legend>
-        <div class="tog-row" role="radiogroup" aria-label="평달·윤달">
-          <button type="button" class="tog on" id="breg" onclick="setLeap(false)" role="radio" aria-checked="true">평달</button>
-          <button type="button" class="tog" id="blp" onclick="setLeap(true)" role="radio" aria-checked="false">윤달</button>
-        </div>
-      </fieldset>
-
-      <fieldset>
         <legend id="lgBirth">생년월일</legend>
-        <div class="row3">
-          <div class="ig" style="flex:2.2">
-            <label for="iY">연도 (예: 1990)</label>
-            <input type="number" id="iY" name="birthYear" placeholder="1900~2050" min="1900" max="2050" inputmode="numeric" autocomplete="off" aria-required="true">
+        <div class="row3 birth-date-row">
+          <div class="ig birth-calendar"><label for="iCalType">달력</label><select id="iCalType" name="calendarType" onchange="setCal(this.value)"><option value="solar">양력</option><option value="lunar">음력</option></select></div>
+          <div class="ig birth-year">
+            <label for="iY">연도</label>
+            <input type="number" id="iY" name="birthYear" aria-label="연도 (1900~2050)" placeholder="1990" min="1900" max="2050" inputmode="numeric" autocomplete="off" aria-required="true">
           </div>
           <div class="ig">
-            <label for="iM">월 (1~12)</label>
-            <input type="number" id="iM" name="birthMonth" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" aria-required="true">
+            <label for="iM">월</label>
+            <input type="number" id="iM" name="birthMonth" aria-label="월 (1~12)" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off" aria-required="true">
           </div>
           <div class="ig">
-            <label for="iD">일 (1~31)</label>
-            <input type="number" id="iD" name="birthDay" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off" aria-required="true">
+            <label for="iD">일</label>
+            <input type="number" id="iD" name="birthDay" aria-label="일 (1~31)" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off" aria-required="true">
+          </div>
+        </div>
+        <div class="leap-sec birth-leap" id="leapSec">
+          <div class="tog-row" role="radiogroup" aria-label="평달·윤달">
+            <button type="button" class="tog on" id="breg" onclick="setLeap(false)" role="radio" aria-checked="true">평달</button>
+            <button type="button" class="tog" id="blp" onclick="setLeap(true)" role="radio" aria-checked="false">윤달</button>
           </div>
         </div>
       </fieldset>
@@ -2910,8 +2901,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">이름풀이·작명 — 본인 이름</span></div></legend>
         <div class="cat-extra-desc">한글 이름을 입력하면 각 글자에 맞는 한자 후보가 자동으로 나와요. 한자를 선택하시면 획수도 자동으로 채워져요. 정통 작명학 기준 한글 자모의 다섯 기운 + 한자 자원 기운 + 4격(원형이정) + 81수리 길흉을 모두 풀어드려요.</div>
         <div class="row3">
-          <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off" oninput="_onNameHangulChange('surname')"></div>
-          <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" placeholder="민지" maxlength="4" autocomplete="off" oninput="_onNameHangulChange('given')"></div>
+          <div class="ig" style="flex:1"><label for="nmSurname">성씨 (한글)</label><input type="text" id="nmSurname" placeholder="김" maxlength="2" autocomplete="off" required aria-required="true" oninput="_onNameHangulChange('surname')"></div>
+          <div class="ig" style="flex:2"><label for="nmGiven">이름 (한글)</label><input type="text" id="nmGiven" required aria-required="true" placeholder="민지" maxlength="4" autocomplete="off" oninput="_onNameHangulChange('given')"></div>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:var(--bg-deep);border-radius:9px;border:1px dashed var(--border)">
           <div style="font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:4px">한자 선택 <small style="color:var(--muted);font-weight:400">(한글 입력하면 후보가 자동으로 채워져요)</small></div>
@@ -2944,30 +2935,28 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             </div>
           </div>
         </div>
+        <button type="button" class="name-next naming-next" onclick="confirmNamingStep()">다음 <span aria-hidden="true">→</span></button>
       </fieldset>
 
       <!-- 궁합 추가 입력 - 상대방 사주 -->
       <fieldset class="cat-extra" id="catExtraGunghap" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">궁합 — 상대방 정보</span></div></legend>
         <div class="cat-extra-desc">위에 본인 사주를 입력하고, 아래에 상대(배우자·연인)의 사주를 입력하면 두 사람의 사주팔자를 나란히 비교해서 8영역 궁합을 풀어드려요.</div>
-        <div class="tog-row" style="margin-bottom:9px">
-          <button type="button" class="tog on" id="gnGm" onclick="setGnGender('male')">남성</button>
-          <button type="button" class="tog" id="gnGf" onclick="setGnGender('female')">여성</button>
+        <div class="tog-row gender-choice" role="radiogroup" aria-label="상대방 성별 선택" style="margin-bottom:16px">
+          <button type="button" class="tog on" id="gnGm" onclick="setGnGender('male')" role="radio" aria-checked="true">남성</button>
+          <button type="button" class="tog" id="gnGf" onclick="setGnGender('female')" role="radio" aria-checked="false">여성</button>
         </div>
-        <div class="tog-row" style="margin-bottom:9px">
-          <button type="button" class="tog on" id="gnCs" onclick="setGnCal('solar')">양력</button>
-          <button type="button" class="tog" id="gnCl" onclick="setGnCal('lunar')">음력</button>
+        <div class="row3 birth-date-row" style="margin-bottom:9px">
+          <div class="ig birth-calendar"><label for="gnCalType">달력</label><select id="gnCalType" onchange="setGnCal(this.value)"><option value="solar">양력</option><option value="lunar">음력</option></select></div>
+          <div class="ig birth-year"><label for="gnY">연도</label><input type="number" id="gnY" placeholder="1990" min="1900" max="2050" inputmode="numeric" autocomplete="off"></div>
+          <div class="ig"><label for="gnM">월</label><input type="number" id="gnM" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off"></div>
+          <div class="ig"><label for="gnD">일</label><input type="number" id="gnD" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off"></div>
         </div>
         <div class="leap-sec" id="gnLeapSec">
           <div class="tog-row" style="margin-bottom:9px">
             <button type="button" class="tog on" id="gnLr" onclick="setGnLeap(false)">평달</button>
             <button type="button" class="tog" id="gnLp" onclick="setGnLeap(true)">윤달</button>
           </div>
-        </div>
-        <div class="row3" style="margin-bottom:9px">
-          <div class="ig" style="flex:2.2"><label for="gnY">연도</label><input type="number" id="gnY" placeholder="1990" min="1900" max="2050" inputmode="numeric" autocomplete="off"></div>
-          <div class="ig"><label for="gnM">월</label><input type="number" id="gnM" placeholder="월" min="1" max="12" inputmode="numeric" autocomplete="off"></div>
-          <div class="ig"><label for="gnD">일</label><input type="number" id="gnD" placeholder="일" min="1" max="31" inputmode="numeric" autocomplete="off"></div>
         </div>
         <div class="row3">
           <div class="ig">
@@ -3012,9 +3001,9 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       </datalist>
 
       <fieldset class="cat-extra" id="catExtraMarital" style="display:none">
-        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">연애·결혼 상태 (선택)</span></div></legend>
-        <div class="cat-extra-desc">고르면 연애·결혼 풀이를 지금 상황에 맞춰 드려요.</div>
-        <div class="tog-row" role="radiogroup" aria-label="연애·결혼 상태">
+        <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">연애·결혼 상태 <small class="required-note">필수</small></span></div></legend>
+        <div class="cat-extra-desc">현재 상태를 골라 주세요. 상황에 맞춰 풀이해 드려요.</div>
+        <div class="tog-row" role="radiogroup" aria-label="연애·결혼 상태" aria-required="true">
           <button type="button" class="tog" id="mrSingle" onclick="setMarital('single')" role="radio" aria-checked="false">미혼</button>
           <button type="button" class="tog" id="mrDating" onclick="setMarital('dating')" role="radio" aria-checked="false">연애 중</button>
           <button type="button" class="tog" id="mrMarried" onclick="setMarital('married')" role="radio" aria-checked="false">기혼</button>
@@ -4673,6 +4662,7 @@ function ctxApplyScenes(cat,html,h){
 let _wz={steps:[],open:0};
 function wzStepKind(step){
   if(step.some(f=>f.querySelector('#iName')))return 'name';
+  if(step.some(f=>f.id==='catExtraName'))return 'naming';
   if(step.some(f=>f.id==='catExtraMarital'))return 'marital';
   if(step.some(f=>f.querySelector('#bm')))return 'gender';
   if(step.some(f=>f.querySelector('#iY')))return 'birth';
@@ -4681,7 +4671,7 @@ function wzStepKind(step){
   if(step.some(f=>f.id==='catExtraCtx'))return 'ctx';
   return 'extra';
 }
-const WZ_PROMPT={name:'이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
+const WZ_PROMPT={name:'이름을 알려 주세요',naming:'풀이할 이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
 function wzPromptFor(step){
   const k=wzStepKind(step);if(WZ_PROMPT[k])return WZ_PROMPT[k];
   const t=step[0]&&(step[0].querySelector('.cat-extra-title')||step[0].querySelector('legend'));
@@ -4695,7 +4685,10 @@ function wzStepDone(step){
   if(k==='birth')return wzBirthOk();
   if(k==='time'){const u=document.getElementById('iTimeUnknown'),h=document.getElementById('iHourInput').value,mi=document.getElementById('iMin').value;return (u&&u.checked)||(h!==''&&(mi!==''||!step.some(f=>f.contains(document.activeElement))));}
   if(k==='city')return !!document.getElementById('iCity').value.trim();
-  if(k==='ctx'||k==='name'||k==='marital')return true;
+  if(k==='name')return !!readSajuName()&&document.getElementById('nameFieldset').dataset.wzConfirmed==='1';
+  if(k==='naming')return namingFieldsValid()&&document.getElementById('catExtraName').dataset.wzConfirmed==='1';
+  if(k==='marital')return ['single','dating','married'].includes(_marital);
+  if(k==='ctx')return true;
   const nums=step.flatMap(f=>[...f.querySelectorAll('input[type="number"]')]).filter(el=>el.offsetParent!==null);
   return step.some(f=>f.dataset.wzTouched==='1')&&nums.every(el=>el.value!=='');
 }
@@ -4703,10 +4696,11 @@ function inputWizardInit(){
   const form=document.getElementById('formWrap');if(!form)return;
   const oldNav=document.getElementById('wzNav');if(oldNav)oldNav.remove();
   const fss=[...form.children].filter(el=>el.tagName==='FIELDSET'&&el.style.display!=='none'&&el.id!=='mbtiFieldset');
-  const birthIdx=fss.findIndex(f=>f.querySelector('#iY'));
-  const steps=[];
-  if(birthIdx>=0){const head=fss.slice(0,birthIdx+1),ci=head.findIndex(f=>f.querySelector('#bs'));head.forEach((f,i)=>{if(ci>=0&&i>ci)steps[steps.length-1].push(f);else steps.push([f]);});}
-  fss.slice(birthIdx+1).forEach(f=>steps.push([f]));
+  if(_category==='name'){const idx=fss.findIndex(f=>f.id==='catExtraName');if(idx>=0)fss.unshift(fss.splice(idx,1)[0]);}
+  const steps=fss.map(f=>[f]);
+  document.getElementById('catExtraName').dataset.wzConfirmed=namingFieldsValid()?'1':'0';
+  const nameFs=document.getElementById('nameFieldset');
+  if(nameFs)nameFs.dataset.wzConfirmed=readSajuName()?'1':'0';
   if(_lastInputs)form.dataset.genderPicked='1';
   fss.forEach(f=>{f.classList.remove('wz-in','wz-done','wz-cur');delete f.dataset.wzTouched;});
   let open=0;while(open<steps.length-1&&wzStepDone(steps[open]))open++;
@@ -4722,9 +4716,22 @@ function inputWizardInit(){
       const fs=b.closest('fieldset');if(fs)fs.dataset.wzTouched='1';
       setTimeout(()=>wzAdvance(b.id==='bm'||b.id==='bf'),0);
     });
-    form.addEventListener('input',e=>{const fs=e.target.closest('fieldset');if(fs&&e.target.type!=='text'&&e.target.tagName!=='TEXTAREA')fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(wzFieldFinished(e.target)),0);});
-    form.addEventListener('change',e=>{const fs=e.target.closest('fieldset');if(fs)fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(e.target.type==='checkbox'||e.target.tagName==='SELECT'),0);});
+    form.addEventListener('input',e=>{if(e.target.id==='nmSurname'||e.target.id==='nmGiven')document.getElementById('catExtraName').dataset.wzConfirmed='0';if(e.target.id==='iName')document.getElementById('nameFieldset').dataset.wzConfirmed='0';const fs=e.target.closest('fieldset');if(fs&&e.target.type!=='text'&&e.target.tagName!=='TEXTAREA')fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(wzFieldFinished(e.target)),0);});
+    form.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){if(e.target.id==='iName'){e.preventDefault();confirmNameStep();}else if(e.target.id==='nmSurname'){e.preventDefault();document.getElementById('nmGiven').focus();}else if(e.target.id==='nmGiven'){e.preventDefault();confirmNamingStep();}}});
+    form.addEventListener('change',e=>{if((e.target.id==='nmSurname'||e.target.id==='nmGiven')&&namingFieldsValid())document.getElementById('catExtraName').dataset.wzConfirmed='1';if(e.target.id==='iName'&&readSajuName())document.getElementById('nameFieldset').dataset.wzConfirmed='1';const fs=e.target.closest('fieldset');if(fs)fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(e.target.type==='checkbox'||e.target.tagName==='SELECT'),0);});
   }
+}
+function namingFieldsValid(){return /^[가-힣]{1,2}$/.test(document.getElementById('nmSurname').value.trim())&&/^[가-힣]{1,4}$/.test(document.getElementById('nmGiven').value.trim());}
+function confirmNamingStep(){
+  if(!namingFieldsValid())return showErr('성씨와 이름을 한글로 입력해 주세요.','nmGiven');
+  clearErr();document.getElementById('catExtraName').dataset.wzConfirmed='1';wzAdvance(false);
+}
+function readSajuName(){return String((document.getElementById('iName')||{}).value||'').replace(/[<>&"'`]/g,'').trim().slice(0,10);}
+function confirmNameStep(){
+  if(!readSajuName())return showErr('이름을 입력해 주세요.','iName');
+  clearErr();document.getElementById('nameFieldset').dataset.wzConfirmed='1';wzAdvance(false);
+  const next=_wz.steps[_wz.open],button=next&&next[0].querySelector('button');
+  if(button)button.focus({preventScroll:true});
 }
 // 이 칸을 다 채웠는지 — 다 채웠을 때만 다음 항목으로 커서를 옮긴다
 function wzFieldFinished(el){
@@ -4814,12 +4821,11 @@ function setGender(g){
 }
 function setCal(t){
   calType=t;
-  _setTog('bs',t==='solar');
-  _setTog('bl',t==='lunar');
+  document.getElementById('iCalType').value=t;
   document.getElementById('leapSec').className='leap-sec'+(t==='lunar'?' vis':'');
 }
 let _marital='';
-function setMarital(v){_marital=_marital===v?'':v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
+function setMarital(v){_marital=v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
 function setLeap(b){
   isLeap=b;
   _setTog('breg',!b);
@@ -4829,7 +4835,7 @@ function setLeap(b){
 // 궁합 — 상대방 입력 상태
 let _gnGender='male', _gnCal='solar', _gnLeap=false;
 function setGnGender(g){_gnGender=g;_setTog('gnGm',g==='male');_setTog('gnGf',g==='female');}
-function setGnCal(t){_gnCal=t;_setTog('gnCs',t==='solar');_setTog('gnCl',t==='lunar');const el=document.getElementById('gnLeapSec');if(el)el.className='leap-sec'+(t==='lunar'?' vis':'');}
+function setGnCal(t){_gnCal=t;document.getElementById('gnCalType').value=t;const el=document.getElementById('gnLeapSec');if(el)el.className='leap-sec'+(t==='lunar'?' vis':'');}
 function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);}
 function ensureGnTimeSelects(){
   const h=document.getElementById('gnH'), mi=document.getElementById('gnMin');
@@ -4891,13 +4897,13 @@ function updateJourneyForm(cat){
   const note=document.getElementById('journeyFormNote');
   const help=document.getElementById('journeyFormHelp');
   const submit=document.querySelector('#formWrap .analyze-btn');
-  if(note)note.innerHTML=free?'<b>먼저 무료로 본인의 성향을 읽어봐요.</b>생년월일을 입력해 주세요. 시간은 몰라도 괜찮아요.':cat==='qna'?'<b>출생정보를 바탕으로 질문에 답해드려요.</b>질문권 가격과 제공 횟수를 확인한 뒤 선택해요.':'<b>출생정보를 넣으면 먼저 풀이를 보여 드려요.</b>핵심 내용은 결제하면 모두 열려요.';
+  if(note)note.innerHTML=free?'<b>먼저 무료로 본인의 성향을 읽어봐요.</b>이름부터 차례로 입력해 주세요. 시간은 몰라도 괜찮아요.':cat==='qna'?'<b>출생정보를 바탕으로 질문에 답해드려요.</b>질문권 가격과 제공 횟수를 확인한 뒤 선택해요.':'<b>출생정보를 넣으면 먼저 풀이를 보여 드려요.</b>핵심 내용은 결제하면 모두 열려요.';
   if(help)help.textContent=free?'회원가입 없이 확인해요. 이 단계에서는 결제되지 않아요.':'입력만으로 결제되지 않아요. 결제는 다음 화면에서 선택해요.';
   if(submit&&!submit.disabled)submit.textContent=free?'무료 풀이 확인하기':cat==='qna'?'질문 상담 안내 보기':'내 풀이 확인하기';
   const title=document.querySelector('#view-input .hdr-back-title');
   if(title)title.textContent=cat==='manse'?'본인에 대해 알려주세요':(CAT_LABEL[cat]||'사주')+' · 출생정보';
   const sub=document.getElementById('inputSub');
-  if(sub&&free)sub.textContent='쉬운 말로 풀어드릴게요. 생년월일부터 입력해 주세요.';
+  if(sub&&free)sub.textContent='쉬운 말로 풀어드릴게요. 이름부터 입력해 주세요.';
   // Honest journey progress, instead of three steps that never change.
   const labels=free?['1 출생정보','2 무료 풀이','3 상세 풀이 선택']:cat==='qna'?['1 출생정보','2 질문권 결제','3 채팅 상담']:['1 출생정보','2 풀이 미리보기','3 결제 후 전체 풀이'];
   ['inputStep1','inputStep2','inputStep3'].forEach((id,i)=>{const e=document.getElementById(id);if(e){e.textContent=labels[i];if(i===0)e.setAttribute('aria-current','step');else e.removeAttribute('aria-current');}});
@@ -24926,6 +24932,9 @@ function analyze(){
   if(isNaN(hour))hour=-1;
   if(isNaN(min))min=0;
 
+  if(cat0!=='name'&&!readSajuName())return showErr('이름을 입력해 주세요.','iName');
+  if((cat0==='life'||cat0==='newyear')&&!['single','dating','married'].includes(_marital))return showErr('연애·결혼 상태를 선택해 주세요.','mrSingle');
+
   if(!year||year<1900||year>2050)return showErr('연도는 1900~2050 사이로 입력해주세요.','iY');
   if(!month||month<1||month>12)return showErr('월은 1~12로 입력해주세요.','iM');
   if(!day||day<1||day>31)return showErr('일은 1~31로 입력해주세요.','iD');
@@ -25085,7 +25094,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={ctx:ctxCollect(cat),userName:cat==='name'?'':String((document.getElementById('iName')||{}).value||'').replace(/[<>&"'`]/g,'').trim().slice(0,10),marital:(cat==='life'||cat==='newyear')?_marital:'',sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
+      _meta={ctx:ctxCollect(cat),userName:cat==='name'?'':readSajuName(),marital:(cat==='life'||cat==='newyear')?_marital:'',sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.
@@ -25230,6 +25239,8 @@ function showErr(msg, focusFieldId){
   if(focusFieldId){
     const target=document.getElementById(focusFieldId);
     if(target){
+      const stepIndex=_wz.steps.findIndex(step=>step.some(f=>f.contains(target)));
+      if(stepIndex>_wz.open){const before=_wz.open;_wz.open=stepIndex;wizardShow(before);}
       target.setAttribute('aria-invalid','true');
       // 폼 위에 있을 때만 포커스 (다른 화면에선 무시)
       if(document.getElementById('view-input')&&document.getElementById('view-input').classList.contains('on')){
