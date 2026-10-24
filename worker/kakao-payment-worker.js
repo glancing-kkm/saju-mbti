@@ -113,6 +113,9 @@ export default {
     if (url.pathname === '/approve' && request.method === 'POST') {
       return await handleApprove(request, env, cid, corsHeaders);
     }
+    if (url.pathname === '/admin-paid-token' && request.method === 'POST') {
+      return await handleAdminPaidToken(request, env, corsHeaders);
+    }
     return json({ ok: false, code: 'NOT_FOUND', message: 'Endpoint not found' }, 404, corsHeaders);
   },
 };
@@ -293,6 +296,28 @@ async function signPaidToken(env, orderId, category) {
   } catch {
     return '';
   }
+}
+
+// 운영자 코드로 잠금을 풀 때도 AI 풀이를 볼 수 있게 결제 확인 토큰을 내준다.
+// 코드는 서버 비밀값 ADMIN_UNLOCK_CODE와 비교한다(Workers의 PBKDF2는 10만 회까지만 돼서 화면의 15만 회 해시는 쓸 수 없다).
+// 등록: wrangler secret put ADMIN_UNLOCK_CODE --config wrangler.kakao-payment.toml  (화면 운영자 코드와 같은 값, 소문자)
+// 같은 접속 주소의 시도는 1분에 한 번으로 제한한다.
+async function isAdminCode(env, input) {
+  if (!input || !env.ADMIN_UNLOCK_CODE) return false;
+  // 길이·내용에 따른 비교 시간 차이를 줄이려고 해시끼리 비교한다
+  return (await sha256Hex(input)) === (await sha256Hex(String(env.ADMIN_UNLOCK_CODE).trim().toLowerCase()));
+}
+async function handleAdminPaidToken(request, env, corsHeaders) {
+  let b;
+  try { b = await request.json(); } catch { return json({ ok: false, code: 'BAD_JSON' }, 400, corsHeaders); }
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await checkRateLimit(env, `admin_token_try:${ip}`, 60);
+  if (!rl.ok) return json({ ok: false, code: 'RATE_LIMITED' }, 429, corsHeaders);
+  const code = String((b && b.code) || '').trim().toLowerCase().slice(0, 200);
+  if (!env.ADMIN_UNLOCK_CODE) return json({ ok: false, code: 'ADMIN_NOT_CONFIGURED' }, 503, corsHeaders);
+  if (!(await isAdminCode(env, code))) return json({ ok: false, code: 'BAD_CODE' }, 403, corsHeaders);
+  const paidToken = await signPaidToken(env, `admin-${Date.now()}`, String((b && b.category) || 'admin').slice(0, 40));
+  return paidToken ? json({ ok: true, paidToken }, 200, corsHeaders) : json({ ok: false, code: 'SERVER_MISCONFIGURED' }, 500, corsHeaders);
 }
 
 function buildCorsHeaders(request, env) {

@@ -70,20 +70,23 @@ export default {
     if (request.method !== 'POST') {
       return json({ error: 'POST only' }, 405);
     }
-    if (url.pathname === '/reading') {
-      return handleReading(request, env);
-    }
-    if (url.pathname === '/tarot-reading') {
-      return handleTarotReading(request, env);
-    }
-    if (url.pathname === '/astrology-reading') {
-      return handleAstrologyReading(request, env);
+    // 결제 후 AI 풀이 — 결제 확인 토큰이 있어야 하고, 실제로 글을 돌려줬을 때만 한 번으로 센다
+    const PAID_TEXT_ROUTES = { '/reading': handleReading, '/tarot-reading': handleTarotReading, '/astrology-reading': handleAstrologyReading };
+    if (PAID_TEXT_ROUTES[url.pathname]) {
+      let peek = null;
+      try { peek = await request.clone().json(); } catch {}
+      const gate = await requirePaid(env, peek, 'text', PAID_TEXT_LIMIT);
+      if (gate.error) return gate.error;
+      const res = await PAID_TEXT_ROUTES[url.pathname](request, env);
+      if (res && res.ok) await gate.commit();
+      return res;
     }
     if (url.pathname === '/portrait') {
       return handlePortrait(request, env);
     }
     if (url.pathname === '/translate') {
-      return handleTranslate(request, env);
+      // 언어 선택 메뉴를 내린 뒤로 쓰지 않는 기능 — 남이 호출해 비용이 나가지 않게 닫아 둔다(다시 쓸 때 handleTranslate 연결)
+      return json({ error: '번역 기능은 지금 쓰지 않아요.', code: 'TRANSLATE_DISABLED' }, 410);
     }
     const hermesEnabled = env.HERMES_API_URL && (env.AI_PROVIDER || '').toLowerCase() === 'hermes';
     if (!env.OPENAI_API_KEY && !env.ANTHROPIC_API_KEY && !hermesEnabled && !env.AI) {
@@ -259,6 +262,22 @@ async function verifyPaidToken(env, token) {
     return null;
   }
 }
+// 결제한 사람만 — 비밀키가 설정돼 있으면 결제 확인 토큰을 요구하고, 주문 1건당 요청 수를 bucket별로 제한한다.
+// 통과하면 {commit} 을 돌려준다. 실제로 AI 결과를 돌려줄 때 commit()으로 한 번을 센다.
+async function requirePaid(env, body, bucket, limit) {
+  if (!env.PAID_TOKEN_SECRET) return { commit: async () => {} };
+  const paid = await verifyPaidToken(env, body && body.paidToken);
+  if (!paid) return { error: json({ error: '결제한 풀이에서만 쓸 수 있어요.', code: 'NEED_PAYMENT' }, 403) };
+  if (!env.SAJU_QNA_CACHE) return { commit: async () => {} };
+  const key = `paid-use:${bucket}:${String(paid.o).slice(0, 80)}`;
+  let used = 0;
+  try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
+  if (used >= limit) return { error: json({ error: '이 결제로 쓸 수 있는 횟수를 모두 썼어요.', code: 'PAID_LIMIT' }, 429) };
+  return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} } };
+}
+// 주문 1건당 AI 글 요청 한도 — 심층 해석·PDF 리포트 5장·질문 답·궁합 여러 번을 넉넉히 감싼다
+const PAID_TEXT_LIMIT = 40;
+
 async function handlePortrait(request, env) {
   if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);
   let b;
@@ -273,17 +292,9 @@ async function handlePortrait(request, env) {
     helper: 'trustworthy mature mentor, kind and confident smile, business casual blazer',
     foe: 'guarded, cool expression, sharp gaze, dark minimal outfit',
   };
-  // 결제한 사람만 — 비밀키가 설정돼 있으면 결제 확인 토큰이 있어야 하고, 주문 1건당 장수도 제한한다
-  let orderKey = '', orderUsed = 0;
-  if (env.PAID_TOKEN_SECRET) {
-    const paid = await verifyPaidToken(env, b && b.paidToken);
-    if (!paid) return json({ error: '결제한 풀이에서만 이미지를 만들 수 있어요.', code: 'PORTRAIT_NEED_PAYMENT' }, 403);
-    if (env.SAJU_QNA_CACHE) {
-      orderKey = `portrait-order:${String(paid.o).slice(0, 80)}`;
-      try { orderUsed = Number(await env.SAJU_QNA_CACHE.get(orderKey)) || 0; } catch {}
-      if (orderUsed >= PORTRAIT_ORDER_LIMIT) return json({ error: '이 결제로 만들 수 있는 이미지를 모두 썼어요.', code: 'PORTRAIT_LIMIT' }, 429);
-    }
-  }
+  // 결제한 사람만 — 주문 1건당 장수 제한
+  const gate = await requirePaid(env, b, 'portrait', PORTRAIT_ORDER_LIMIT);
+  if (gate.error) return gate.error;
   // 같은 접속 주소에서 하루에 만들 수 있는 장수를 제한한다(결제 1건에 2~3장, 여러 풀이를 봐도 넉넉하게)
   const ip = request.headers.get('CF-Connecting-IP') || '';
   const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
@@ -299,7 +310,7 @@ async function handlePortrait(request, env) {
     const img = out && out.image;
     if (!img) throw new Error('empty image');
     if (limitKey) { try { await env.SAJU_QNA_CACHE.put(limitKey, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} }
-    if (orderKey) { try { await env.SAJU_QNA_CACHE.put(orderKey, String(orderUsed + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} }
+    await gate.commit();
     return json({ ok: true, image: `data:image/jpeg;base64,${img}` });
   } catch (e) {
     console.warn('portrait failed:', e && e.message);

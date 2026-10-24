@@ -6199,7 +6199,7 @@ async function generateAIReading(input,opts){
   const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({input,language:currentLanguagePayload(),skipSections:(opts&&opts.skipSections)||[]})
+    body:JSON.stringify({input,language:currentLanguagePayload(),skipSections:(opts&&opts.skipSections)||[],paidToken:latestPaidToken()})
   });
   if(!resp.ok)throw new Error(`tarot-reading ${resp.status}`);
   const data=await resp.json();
@@ -12306,7 +12306,10 @@ function _secretUnlockTap(category){
   if(code===null)return;
   return _isAdminCode(code.trim().toLowerCase()).catch(()=>false).then(ok=>{
     if(!ok){alert('코드가 올바르지 않습니다.');return;}
-    _adminUnlockPaidCategory(category);
+    // 운영자 잠금 해제도 AI 풀이·인상 이미지를 볼 수 있게 서버에서 결제 확인 토큰을 받아 둔다(실패해도 잠금 해제는 진행)
+    return fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.trim().toLowerCase(),category})})
+      .then(r=>r.json()).then(d=>{if(d&&d.paidToken)savePaidToken(d.paidToken);}).catch(()=>{})
+      .then(()=>_adminUnlockPaidCategory(category));
   });
 }
 function _adminUnlockPaidCategory(category){
@@ -20271,6 +20274,7 @@ function buildAIReadingPayload(category, extra){
   return{
     category,
     sajuContext:ctx,
+    paidToken:latestPaidToken(),
     meta:{
       targetYear:extra&&extra.targetYear,
       topic:category==='topic-answer'?((TOPIC_INFO[extra&&extra.extraKey]||{}).label||''):undefined,
@@ -20408,12 +20412,16 @@ async function hydratePortrait(card){
   if(card.dataset.portraitDone)return;card.dataset.portraitDone='1';
   let info;try{info=JSON.parse(decodeURIComponent(card.getAttribute('data-portrait')||''));}catch(e){return;}
   const cached=lcPortraitCached(info);if(cached){lcPortraitSet(card,cached);return;}
+  const note=card.querySelector('.lc-pcard-note');
+  // 결제 확인 토큰이 없으면(이미지 기능 전에 결제한 풀이 등) 예시 그림이라는 걸 분명히 알려 준다
+  if(!latestPaidToken()){if(note)note.textContent='분위기를 보여 주는 예시 그림이에요 · AI 인상 사진은 새로 결제한 풀이부터 그려 드려요';return;}
   try{
     const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/portrait',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...info,paidToken:latestPaidToken()})},1);
     const raw=resp&&resp.ok&&data&&/^data:image\//.test(String(data.image||''))?data.image:'';
     const src=raw?await lcPortraitShrink(raw):'';
     if(src){lcPortraitSet(card,src);try{localStorage.setItem(lcPortraitKey(info),src);}catch(e){}}
-  }catch(e){}
+    else if(note)note.textContent='분위기를 보여 주는 예시 그림이에요';
+  }catch(e){if(note)note.textContent='분위기를 보여 주는 예시 그림이에요';}
 }
 function hydrateAIReadings(root){
   const scope=root||document;
@@ -26462,6 +26470,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=f42271748788"></script>
+<script src="assets/astrology.js?v=4cca392afaa5"></script>
 </body>
 </html>
