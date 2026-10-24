@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4482ab5611eeinput-compact-required-20261024">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=category-20261024">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=inline-time-city-20261024">
 </head>
 <body>
 <div id="app">
@@ -2756,26 +2756,29 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <legend>태어난 시각 <small>(선택 · 모르면 비워두세요)</small></legend>
         <!-- 숨김 필드: -1=미상 / 0~23=시 — 기존 analyze() 호환 -->
         <input type="hidden" id="iH" name="birthHour" value="-1">
-        <div class="row3" id="timeInputs">
-          <div class="ig">
-            <label for="iHourInput">시</label>
-            <input type="number" id="iHourInput" name="birthHourInput" placeholder="모름 / 0~23" min="0" max="23" inputmode="numeric" autocomplete="off" oninput="syncHourInput(this.value)" onchange="syncHourInput(this.value)">
+        <div class="birth-time-row">
+          <div class="row3" id="timeInputs">
+            <div class="ig">
+              <label for="iHourInput">시</label>
+              <input type="number" id="iHourInput" name="birthHourInput" placeholder="0~23" min="0" max="23" inputmode="numeric" autocomplete="off" oninput="syncHourInput(this.value)" onchange="syncHourInput(this.value)">
+            </div>
+            <div class="ig">
+              <label for="iMin">분 (0~59)</label>
+              <input type="number" id="iMin" name="birthMinute" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
+            </div>
           </div>
-          <div class="ig">
-            <label for="iMin">분 (0~59)</label>
-            <input type="number" id="iMin" name="birthMinute" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
-          </div>
+          <label class="time-unknown-row">
+            <input type="checkbox" id="iTimeUnknown" onchange="setTimeUnknown(this.checked)" aria-controls="timeInputs">
+            <span>시간을 몰라요</span>
+          </label>
         </div>
-        <label class="time-unknown-row" style="margin-top:12px">
-          <input type="checkbox" id="iTimeUnknown" onchange="setTimeUnknown(this.checked)" aria-controls="timeInputs">
-          <span>시간을 몰라요</span>
-        </label>
       </fieldset>
 
       <fieldset>
         <legend><label for="iCity" style="all:unset;cursor:pointer">태어난 곳</label> <small>(시간 보정용)</small></legend>
-        <div class="ig">
-          <input type="text" id="iCity" name="birthCity" value="서울특별시" placeholder="예: 서울, 대전, Tokyo" list="cityOptions" autocomplete="off">
+        <div class="city-entry">
+          <div class="ig"><input type="text" id="iCity" name="birthCity" value="서울특별시" placeholder="예: 서울, 대전, Tokyo" list="cityOptions" autocomplete="off"></div>
+          <button type="button" class="city-confirm" onclick="confirmCityStep()">확인 <span aria-hidden="true">→</span></button>
         </div>
       </fieldset>
 
@@ -3003,7 +3006,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
       <fieldset class="cat-extra" id="catExtraMarital" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">연애·결혼 상태 <small class="required-note">필수</small></span></div></legend>
-        <div class="cat-extra-desc">현재 상태를 골라 주세요. 상황에 맞춰 풀이해 드려요.</div>
         <div class="tog-row" role="radiogroup" aria-label="연애·결혼 상태" aria-required="true">
           <button type="button" class="tog" id="mrSingle" onclick="setMarital('single')" role="radio" aria-checked="false">미혼</button>
           <button type="button" class="tog" id="mrDating" onclick="setMarital('dating')" role="radio" aria-checked="false">연애 중</button>
@@ -4630,7 +4632,7 @@ function wzStepDone(step){
   if(k==='gender')return form&&form.dataset.genderPicked==='1';
   if(k==='birth')return wzBirthOk();
   if(k==='time'){const u=document.getElementById('iTimeUnknown'),h=document.getElementById('iHourInput').value,mi=document.getElementById('iMin').value;return (u&&u.checked)||(h!==''&&(mi!==''||!step.some(f=>f.contains(document.activeElement))));}
-  if(k==='city')return !!document.getElementById('iCity').value.trim();
+  if(k==='city'){const city=document.getElementById('iCity');return !!city.value.trim()&&city.dataset.wzConfirmed==='1';}
   if(k==='name')return !!readSajuName()&&document.getElementById('nameFieldset').dataset.wzConfirmed==='1';
   if(k==='naming')return namingFieldsValid()&&document.getElementById('catExtraName').dataset.wzConfirmed==='1';
   if(k==='marital')return ['single','dating','married'].includes(_marital);
@@ -4643,7 +4645,10 @@ function inputWizardInit(){
   const oldNav=document.getElementById('wzNav');if(oldNav)oldNav.remove();
   const fss=[...form.children].filter(el=>el.tagName==='FIELDSET'&&el.style.display!=='none'&&el.id!=='mbtiFieldset');
   if(_category==='name'){const idx=fss.findIndex(f=>f.id==='catExtraName');if(idx>=0)fss.unshift(fss.splice(idx,1)[0]);}
+  const maritalIdx=fss.findIndex(f=>f.id==='catExtraMarital');
+  if(maritalIdx>=0){const marital=fss.splice(maritalIdx,1)[0],cityIdx=fss.findIndex(f=>f.querySelector('#iCity'));fss.splice(cityIdx+1,0,marital);}
   const steps=fss.map(f=>[f]);
+  document.getElementById('iCity').dataset.wzConfirmed='0';
   document.getElementById('catExtraName').dataset.wzConfirmed=namingFieldsValid()?'1':'0';
   const nameFs=document.getElementById('nameFieldset');
   if(nameFs)nameFs.dataset.wzConfirmed=readSajuName()?'1':'0';
@@ -4662,10 +4667,16 @@ function inputWizardInit(){
       const fs=b.closest('fieldset');if(fs)fs.dataset.wzTouched='1';
       setTimeout(()=>wzAdvance(b.id==='bm'||b.id==='bf'),0);
     });
-    form.addEventListener('input',e=>{if(e.target.id==='nmSurname'||e.target.id==='nmGiven')document.getElementById('catExtraName').dataset.wzConfirmed='0';if(e.target.id==='iName')document.getElementById('nameFieldset').dataset.wzConfirmed='0';const fs=e.target.closest('fieldset');if(fs&&e.target.type!=='text'&&e.target.tagName!=='TEXTAREA')fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(wzFieldFinished(e.target)),0);});
-    form.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){if(e.target.id==='iName'){e.preventDefault();confirmNameStep();}else if(e.target.id==='nmSurname'){e.preventDefault();document.getElementById('nmGiven').focus();}else if(e.target.id==='nmGiven'){e.preventDefault();confirmNamingStep();}}});
-    form.addEventListener('change',e=>{if((e.target.id==='nmSurname'||e.target.id==='nmGiven')&&namingFieldsValid())document.getElementById('catExtraName').dataset.wzConfirmed='1';if(e.target.id==='iName'&&readSajuName())document.getElementById('nameFieldset').dataset.wzConfirmed='1';const fs=e.target.closest('fieldset');if(fs)fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(e.target.type==='checkbox'||e.target.tagName==='SELECT'),0);});
+    form.addEventListener('input',e=>{if(e.target.id==='iCity')e.target.dataset.wzConfirmed='0';if(e.target.id==='nmSurname'||e.target.id==='nmGiven')document.getElementById('catExtraName').dataset.wzConfirmed='0';if(e.target.id==='iName')document.getElementById('nameFieldset').dataset.wzConfirmed='0';const fs=e.target.closest('fieldset');if(fs&&e.target.type!=='text'&&e.target.tagName!=='TEXTAREA')fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(wzFieldFinished(e.target)),0);});
+    form.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){if(e.target.id==='iName'){e.preventDefault();confirmNameStep();}else if(e.target.id==='iCity'){e.preventDefault();confirmCityStep();}else if(e.target.id==='nmSurname'){e.preventDefault();document.getElementById('nmGiven').focus();}else if(e.target.id==='nmGiven'){e.preventDefault();confirmNamingStep();}}});
+    form.addEventListener('focusout',e=>{if(e.target.id==='iCity'&&e.target.value.trim())confirmCityStep();});
+    form.addEventListener('change',e=>{if(e.target.id==='iCity'&&e.target.value.trim())e.target.dataset.wzConfirmed='1';if((e.target.id==='nmSurname'||e.target.id==='nmGiven')&&namingFieldsValid())document.getElementById('catExtraName').dataset.wzConfirmed='1';if(e.target.id==='iName'&&readSajuName())document.getElementById('nameFieldset').dataset.wzConfirmed='1';const fs=e.target.closest('fieldset');if(fs)fs.dataset.wzTouched='1';setTimeout(()=>wzAdvance(e.target.type==='checkbox'||e.target.tagName==='SELECT'),0);});
   }
+}
+function confirmCityStep(){
+  const city=document.getElementById('iCity');
+  if(!city.value.trim())return showErr('태어난 곳을 입력하거나 선택해 주세요.','iCity');
+  clearErr();city.dataset.wzConfirmed='1';wzAdvance(true);
 }
 function namingFieldsValid(){return /^[가-힣]{1,2}$/.test(document.getElementById('nmSurname').value.trim())&&/^[가-힣]{1,4}$/.test(document.getElementById('nmGiven').value.trim());}
 function confirmNamingStep(){

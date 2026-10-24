@@ -561,6 +561,26 @@ const submitBirth=async()=>{
         }_lastInputs=saved;return out;})()`);
       for(const row of rows){assert.equal(row.first,row.cat==='name'?'naming':'name',row.cat);assert(row.hidden,row.cat);assert(row.genderVisible,row.cat);}
     });
+    for(const cat of ['life','newyear']){
+      run(`_lastInputs=null;document.getElementById('iName').value='김하늘';document.getElementById('iY').value='1994';document.getElementById('iM').value='5';document.getElementById('iD').value='18';document.getElementById('iCity').value='서울특별시';document.getElementById('iTimeUnknown').checked=true;setTimeUnknown(true);document.getElementById('formWrap').dataset.genderPicked='1';setMarital('');goToInput('${cat}')`);
+      check(cat+' 지역 선택 전: 기본 서울 값만으로 연애·결혼 상태가 열리지 않음',()=>{
+        assert.equal(run('wzStepKind(_wz.steps[_wz.open])'),'city');
+        assert(d.getElementById('catExtraMarital').classList.contains('wz-hide'));
+        assert(!d.getElementById('catExtraMarital').querySelector('.cat-extra-desc'));
+        const row=d.querySelector('.birth-time-row');assert(row.contains(d.getElementById('timeInputs'))&&row.contains(d.getElementById('iTimeUnknown')));
+        assert(d.getElementById('iHourInput').disabled&&d.getElementById('iMin').disabled);assert(!d.getElementById('iTimeUnknown').disabled);
+      });
+      d.getElementById('iCity').value='부';d.getElementById('iCity').dispatchEvent(new w.Event('input',{bubbles:true}));await wait(10);
+      check(cat+' 지역 입력 중: 다음 상태 선택은 계속 숨김',()=>assert(d.getElementById('catExtraMarital').classList.contains('wz-hide')));
+      d.getElementById('iCity').value='부산광역시';d.getElementById('iCity').dispatchEvent(new w.Event('change',{bubbles:true}));await wait(10);
+      check(cat+' 지역 선택 완료: 바로 다음에 연애·결혼 상태 표시',()=>{
+        assert.equal(run('wzStepKind(_wz.steps[_wz.open])'),'marital');assert(!d.getElementById('catExtraMarital').classList.contains('wz-hide'));
+      });
+      run(`goToInput('${cat}');document.getElementById('iCity').value='';confirmCityStep()`);
+      check(cat+' 빈 지역 확인: 다음 단계로 넘어가지 않음',()=>{assert.equal(run('wzStepKind(_wz.steps[_wz.open])'),'city');assert.match(d.getElementById('errMsg').textContent,/태어난 곳/);});
+      d.getElementById('iCity').value='서울특별시';d.getElementById('iCity').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+      check(cat+' 기본 지역도 Enter로 확인하면 다음 단계가 열림',()=>assert.equal(run('wzStepKind(_wz.steps[_wz.open])'),'marital'));
+    }
     check('연애·결혼 상태 필수: 미선택 제출 차단, 선택 후 재클릭해도 유지',()=>{
       for(const cat of ['life','newyear']){
         run(`goToInput('${cat}');setMarital('');analyze()`);

@@ -85,3 +85,14 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 @media(max-width:360px){#app .report-profile{padding:22px 16px;gap:10px}.report-profile>.lc-orb{width:58px;height:58px}.report-profile-birth{font-size:11px}.report-preview-layout>.lc-orbs{padding-left:16px;padding-right:16px}.report-preview-layout>.lc-card,.report-preview-layout>.lv4-sec{margin:16px}.report-preview-layout .lc-bubble{width:108px;height:140px;font-size:16px}.report-preview-layout>.lc-moments{margin-right:20px;margin-left:20px}}
 
 .report-profile-back{position:absolute;top:12px;right:16px;width:32px;height:32px;border:0;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:18px;cursor:pointer}
+
+/* 시·분과 시간 미상 선택을 한 줄에 두고, 출생 지역은 직접 확인한다. */
+#app #formWrap .birth-time-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;clear:both}
+#app #formWrap .birth-time-row #timeInputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}
+#app #formWrap .birth-time-row .time-unknown-row{min-height:46px;margin:0;padding:9px 10px;border-radius:10px;gap:6px;font-size:.76rem;white-space:nowrap}
+#app #formWrap .birth-time-row .time-unknown-row input{flex:none}
+#app #formWrap .city-entry{display:flex;align-items:flex-end;gap:12px;clear:both}
+#app #formWrap .city-entry .ig{min-width:0}
+#app #formWrap .city-confirm{min-height:44px;padding:10px 14px;flex:none;border:1px solid var(--border-strong);border-radius:10px;background:var(--accent-soft);color:var(--accent);font:inherit;font-size:.88rem;cursor:pointer}
+#app #formWrap fieldset:not(.wz-cur) .city-confirm{display:none}
+@media(max-width:360px){#app #formWrap .birth-time-row{gap:8px}#app #formWrap .birth-time-row #timeInputs{gap:8px}#app #formWrap .birth-time-row .time-unknown-row{padding:8px;font-size:.7rem}}
