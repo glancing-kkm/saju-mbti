@@ -619,9 +619,9 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 
 /* 입력 — 값을 채우면 다음 항목이 아래로 이어서 열린다 */
 .wz-prompt{margin:4px 0 14px;font-family:var(--font-heading);font-size:1.28rem;line-height:1.45;color:var(--text);letter-spacing:-.01em}
-.wz-prompt.wz-in{animation:wz-fade .4s ease both}
+.wz-prompt.wz-in{animation:wz-appear .25s ease-out backwards}
 #formWrap>fieldset{transition:border-color .3s,box-shadow .3s,opacity .3s}
-#formWrap>fieldset.wz-in,#formWrap .analyze-btn.wz-in{animation:wz-rise .5s cubic-bezier(.2,.8,.2,1) both}
+#formWrap>fieldset.wz-in,#formWrap .analyze-btn.wz-in{animation:wz-appear .25s ease-out backwards}
 #formWrap>fieldset.wz-cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 #formWrap>fieldset.wz-done:not(.wz-cur){opacity:.82}
 #formWrap>fieldset.wz-done>legend::after{content:'✓';display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:.7rem;line-height:1;vertical-align:1px;animation:wz-pop .35s cubic-bezier(.3,1.6,.5,1) both}
@@ -630,8 +630,8 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 #formWrap .tog.on{animation:wz-pop .3s ease both}
 #formWrap .ig input,#formWrap .ctx-text{transition:border-color .2s,box-shadow .2s}
 #formWrap .ig input:focus,#formWrap .ctx-text:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);outline:none}
-@keyframes wz-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-@keyframes wz-fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* 나타나기: 항목을 움직이지 않고 제자리에서 표시한다. */
+@keyframes wz-appear{from{opacity:0}to{opacity:1}}
 @keyframes wz-pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.wz-prompt.wz-in,#formWrap>fieldset.wz-in,#formWrap .analyze-btn.wz-in,#formWrap .tog.on,#formWrap>fieldset.wz-done>legend::after{animation:none}}
 
@@ -731,7 +731,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lc-area-row i{display:block;height:100%;background:var(--accent);border-radius:99px}
 .lc-area-row b{text-align:right;color:var(--text);font-weight:400}
 
-/* PASS식 입력 — 큰 질문 한 줄, 밑줄 입력칸, 새 항목은 맨 위에 */
+/* PASS식 입력 — 큰 질문 한 줄, 밑줄 입력칸, 새 항목은 아래로 이어서 */
 #formWrap.wz-on{display:flex;flex-direction:column}
 #formWrap.wz-on #journeyFormNote{order:-2000}
 #formWrap.wz-on .wz-prompt{order:-1000;margin:6px 0 22px;font-size:1.6rem;font-weight:700;line-height:1.4}
@@ -813,18 +813,3 @@ html[data-read-lang]:not([data-read-lang="ko"]) .lv4 p,html[data-read-lang]:not(
 .lv4-answer>b{display:block;margin-bottom:6px;font-family:var(--font-heading);font-weight:400;font-size:.92rem;color:var(--accent)}
 .lv4 .lv4-answer p{margin:0 0 6px}
 .pdf-ready-close{margin-top:4px;background:none;border:0;color:var(--muted);font-size:.9rem;cursor:pointer}
-
-/* 입력 중 사주팔자 구슬이 하나씩 생겨나는 연출 */
-.wz-live{display:none}
-#formWrap.wz-on .wz-live.on{display:block;order:-950;margin:-6px 0 24px;padding:14px 6px 16px;border-radius:18px;background:var(--card);border:1px solid var(--border);animation:wz-rise .5s cubic-bezier(.2,.8,.2,1) both}
-.wz-live-title{margin:0 0 4px;text-align:center;font-family:var(--font-heading);font-size:.95rem;color:var(--accent);animation:wz-fade .4s ease both}
-.wz-live .lc-orbs{padding:6px 0 0;background:none;border:0;gap:6px}
-.wz-live .lc-orb{width:54px;height:54px}
-.wz-live .lc-orb b{font-size:1.2rem}
-.wz-pop .lc-orb{animation:orb-flip .75s cubic-bezier(.3,1.35,.5,1) both}
-.wz-pop .lc-orb:last-child{animation-delay:.14s}
-.wz-pop em{animation:wz-fade .4s ease both}
-.wz-wait{animation:wz-breathe 1.6s ease-in-out infinite}
-@keyframes orb-flip{0%{opacity:0;transform:perspective(420px) rotateY(95deg) scale(.35);box-shadow:0 0 0 rgba(240,198,116,0)}55%{opacity:1;transform:perspective(420px) rotateY(-14deg) scale(1.14);box-shadow:0 0 26px rgba(240,198,116,.75)}100%{transform:none}}
-@keyframes wz-breathe{0%,100%{opacity:.85}50%{opacity:.4}}
-@media(prefers-reduced-motion:reduce){.wz-pop .lc-orb,.wz-wait,#formWrap.wz-on .wz-live.on{animation:none}}

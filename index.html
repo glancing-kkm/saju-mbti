@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=b13cab5e71d9">
+<link rel="stylesheet" href="/assets/night.css?v=input-appear-20261023">
 </head>
 <body>
 <div id="app">
@@ -4709,7 +4709,6 @@ function inputWizardInit(){
   fss.slice(birthIdx+1).forEach(f=>steps.push([f]));
   if(_lastInputs)form.dataset.genderPicked='1';
   fss.forEach(f=>{f.classList.remove('wz-in','wz-done','wz-cur');delete f.dataset.wzTouched;});
-  _wzLiveKey={};
   let open=0;while(open<steps.length-1&&wzStepDone(steps[open]))open++;
   _wz={steps,open};
   let pr=document.getElementById('wzPrompt');
@@ -4748,56 +4747,26 @@ function wzAdvance(focusNext){
     }
   }else wizardShow(null);
 }
-// 입력하는 동안 사주팔자 구슬이 하나씩 생겨난다 — 최종 계산은 분석할 때 다시 한다
-let _wzLiveKey={};
-function wzLiveRender(){
-  const form=document.getElementById('formWrap'),yEl=document.getElementById('iY');
-  if(!form||!yEl||!form.classList.contains('wz-on')||typeof LC_STEM_HAN==='undefined')return;
-  let box=document.getElementById('wzLive');
-  if(!box){box=document.createElement('div');box.id='wzLive';box.className='wz-live';box.setAttribute('aria-hidden','true');form.insertBefore(box,form.firstChild);}
-  const Y=+yEl.value,M=+document.getElementById('iM').value,D=+document.getElementById('iD').value;
-  const hv=document.getElementById('iHourInput').value,unk=document.getElementById('iTimeUnknown').checked;
-  let H=hv===''||unk?-1:+hv,MI=+document.getElementById('iMin').value||0;
-  const cols={yp:null,mp:null,dp:null,hp:null};
-  try{
-    if(Y>=1900&&Y<=2050){
-      if(M>=1&&M<=12&&D>=1&&D<=31){
-        let sy=Y,sm=M,sd=D;
-        if(calType==='lunar'&&typeof l2s==='function'){const s=l2s(Y,M,D,!!isLeap);sy=s.y;sm=s.m;sd=s.d;}
-        if(H>=0&&H<=23){const off=getTrueSolarOffsetMin(normalizeCityInput(document.getElementById('iCity').value));let tot=H*60+MI+Math.round(off||0);tot=((tot%1440)+1440)%1440;H=Math.floor(tot/60);MI=tot%60;}else H=-1;
-        const s=calcSaju(sy,sm,sd,H,MI);cols.yp=s.yp;cols.mp=s.mp;cols.dp=s.dp;cols.hp=H>=0?s.hp:null;
-      }else cols.yp=yearPillar(Y,6,1,12,0);
-    }
-  }catch(e){}
-  box.classList.toggle('on',!!cols.yp);
-  if(!cols.yp){box.innerHTML='';_wzLiveKey={};return;}
-  const orb=(han,ko,oh)=>`<span class="lc-orb oh${oh}"><small>${LC_OH_HAN[oh]}·${LC_OH_WORD[oh]}</small><b>${han}</b><i>${ko}</i></span>`;
-  const wait=t=>`<span class="lc-orb none${t?'':' wz-wait'}"><b>?</b><i>${t||''}</i></span>`;
-  const title=!cols.dp?'연주가 나타났어요':cols.hp?'사주팔자 여덟 글자가 모두 세워졌어요':unk?'시간을 몰라 여섯 글자로 세웠어요':'사주팔자가 세워지고 있어요';
-  const nk={};
-  box.innerHTML=`<p class="wz-live-title">${title}</p><div class="lc-orbs">${[['시주','hp'],['일주','dp'],['월주','mp'],['연주','yp']].map(([lab,k])=>{
-    const x=cols[k],key=x?`${x.stem}-${x.branch}`:'';nk[k]=key;
-    const body=x?orb(LC_STEM_HAN[x.stem],STEMKO[x.stem],SOH[x.stem])+orb(LC_BR_HAN[x.branch],BRCHKO[x.branch],BOH[x.branch]):(k==='hp'&&unk?wait('모름')+wait('모름'):wait()+wait());
-    return `<div class="lc-orb-col${k==='dp'?' self':''}${key&&_wzLiveKey[k]!==key?' wz-pop':''}"><em>${lab}</em>${body}</div>`;}).join('')}</div>`;
-  _wzLiveKey=nk;
-}
 // prevOpen: 새로 열린 항목에만 등장 애니메이션을 준다 (-1이면 처음 그리기, null이면 상태만 갱신)
 function wizardShow(prevOpen){
   const form=document.getElementById('formWrap');if(!form||!_wz.steps.length)return;
   const s=_wz.steps,last=s.length-1;
   form.classList.add('wz-on');
   s.forEach((step,i)=>step.forEach((f,j)=>{
-    f.style.order=String(-(i*10)+j-10);
+    f.style.order=String(i*10+j);
     f.classList.toggle('wz-hide',i>_wz.open);
     f.classList.toggle('wz-cur',i===_wz.open);
     f.classList.toggle('wz-done',i<_wz.open||(i===_wz.open&&wzStepKind(step)!=='ctx'&&wzStepDone(step)));
     if(prevOpen!==null&&i<=_wz.open&&i>prevOpen){f.classList.remove('wz-in');void f.offsetWidth;f.classList.add('wz-in');}
   }));
+  const err=document.getElementById('errMsg');
+  if(err)err.style.order=String(s.length*10);
   const btn=form.querySelector('.analyze-btn');
-  if(btn){const show=_wz.open===last;if(show&&btn.classList.contains('wz-hide')){btn.classList.remove('wz-hide');btn.classList.remove('wz-in');void btn.offsetWidth;btn.classList.add('wz-in');}else if(!show)btn.classList.add('wz-hide');}
+  if(btn){btn.style.order=String(s.length*10+1);const show=_wz.open===last;if(show&&btn.classList.contains('wz-hide')){btn.classList.remove('wz-hide');btn.classList.remove('wz-in');void btn.offsetWidth;btn.classList.add('wz-in');}else if(!show)btn.classList.add('wz-hide');}
+  const help=document.getElementById('journeyFormHelp');
+  if(help)help.style.order=String(s.length*10+2);
   const pr=document.getElementById('wzPrompt');
   if(pr){const t=_wz.open===last&&wzStepKind(s[last])!=='ctx'?'모두 입력했어요. 아래 버튼을 눌러 주세요':wzPromptFor(s[_wz.open]);if(pr.textContent!==t){pr.textContent=t;pr.classList.remove('wz-in');void pr.offsetWidth;pr.classList.add('wz-in');try{scheduleLanguageApply(pr,[0]);}catch(e){}}}
-  try{wzLiveRender();}catch(e){}
 }
 // 결과를 열기 전 단계별 연산 연출 — 탭하면 바로 건너뛴다
 const REVEAL_STEPS={
