@@ -247,7 +247,7 @@ async function handleReading(request, env) {
   }
 
   const { category, sajuContext, meta, language } = body || {};
-  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap', 'report-life', 'report-love', 'report-money', 'report-career', 'report-health']);
+  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap', 'report-life', 'report-love', 'report-money', 'report-career', 'report-health', 'topic-answer', 'reading-deep']);
   if (!allowed.has(category)) {
     return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
   }
@@ -265,8 +265,8 @@ async function handleReading(request, env) {
     // 핵심 리딩(life-core/newyear-core)은 3,000~4,200자 한국어를 요구한다.
     // 한국어는 토큰이 촘촘해서 이 분량만 4,000~5,000 출력 토큰이 필요하고,
     // gpt-5 계열은 추론 토큰까지 같은 예산에서 빼 쓴다. 예산이 모자라면 본문이 잘린 채 돌아온다.
-    const READING_MAX_TOKENS = coreReading ? 8000 : 2400;
-    const ANTHROPIC_READING_MAX_TOKENS = coreReading ? 6000 : 2400;
+    const READING_MAX_TOKENS = category === 'reading-deep' ? 14000 : coreReading ? 8000 : 2400;
+    const ANTHROPIC_READING_MAX_TOKENS = category === 'reading-deep' ? 9000 : coreReading ? 6000 : 2400;
     // 잘린 본문은 폴백 대상 — 클라이언트가 정적 상세 카드를 지우지 않도록 truncated 를 같이 내려준다.
     let truncatedFallback = null;
 
@@ -369,7 +369,7 @@ async function handleTarotReading(request, env) {
   const cardCount = input.cards.length;
   const maxOutputTokens = cardCount >= 10 ? 7600 : cardCount >= 5 ? 4800 : 3200;
   const systemPrompt = buildTarotReadingSystemPrompt(lang);
-  const userPrompt = buildTarotReadingUserPrompt(input, lang);
+  const userPrompt = buildTarotReadingUserPrompt(input, lang) + skipSectionsNote(body && body.skipSections);
 
   try {
     if (env.OPENAI_API_KEY) {
@@ -466,6 +466,12 @@ ${lang.code === 'ko' ? '' : `The final visible answer must be entirely in ${lang
 12. 유료 리딩처럼 충분히 구체적이고 깊이 있게 작성한다.
 ${lang.code === 'ko' ? '\n' + KO_READING_STYLE + '\n' : ''}
 응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
+}
+
+// 결제 전 미리보기에서 이미 보여 준 섹션 — 다시 쓰지 않게 알려 준다
+function skipSectionsNote(list) {
+  const items = (Array.isArray(list) ? list : []).map((s) => String(s || '').replace(/[\r\n<>]/g, ' ').trim().slice(0, 40)).filter(Boolean).slice(0, 4);
+  return items.length ? `\n\n이미 화면에 작성된 섹션: ${items.join(', ')}\n이 섹션들은 다시 쓰지 말고, 그 다음 번호의 섹션부터 같은 형식("# 번호. 제목")으로 끝까지 작성하세요.` : '';
 }
 
 function buildTarotReadingUserPrompt(input, language = 'ko') {
@@ -594,7 +600,7 @@ async function handleAstrologyReading(request, env) {
   }
   const lang = normalizeLanguage(language);
   const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
-  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, language: lang });
+  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, language: lang }) + skipSectionsNote(body && body.skipSections);
   const premium = productType === 'full-report';
   const maxOutputTokens = productType === 'full-report' ? 5200 : 2800;
 
@@ -822,7 +828,7 @@ Rules:
 }
 
 function isCoreReadingCategory(category) {
-  return category === 'life-core' || category === 'newyear-core' || /^report-/.test(String(category || ''));
+  return category === 'life-core' || category === 'newyear-core' || category === 'reading-deep' || /^report-/.test(String(category || ''));
 }
 
 function normalizeLanguage(input) {
@@ -1195,6 +1201,8 @@ function buildReadingSystemPrompt(category, meta) {
     'newyear-core': `${meta.targetYear || '올해'} 신년운세의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·연애·인간관계·건강·12개월 흐름·기회 시기·주의 시기·올해 행동 가이드를 본인 맞춤으로 재작성하세요. 점수 링, 월별 점수표, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.`,
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
+    'reading-deep': '결제 후 공개되는 심층 해석입니다. 섹션 자료의 각 섹션마다, 화면에 이미 보이는 문장(visible)에 자연스럽게 이어지는 깊은 해석 문단과 한 줄 정리를 새로 쓰세요. facts에 적힌 계산 결과(시기·숫자·성향·사람)는 빠짐없이 녹여 쓰되 문장은 새로 쓰고, facts에 없는 날짜·숫자는 지어내지 마세요. visible 문장을 그대로 반복하지 마세요. 일반론이 아니라 이 사람에게만 해당하는 장면과 행동으로 콕 집어 쓰세요.',
+    'topic-answer': `주제별 운세(${meta.topic || '주제'})에서 상담자가 직접 적은 질문에 답하는 문단입니다. 질문에 정면으로 답하세요. 첫 문장은 결론, 이어서 사주에서 그렇게 보는 이유, 언제(계산된 연·월 인용), 어떻게 하면 좋은지를 상담자의 구체적인 상황에 맞춰 쓰세요. 질문과 관계없는 일반론으로 채우지 마세요.`,
     'report-life': 'PDF 평생 사주 리포트에 들어갈 심층 장(章)입니다. 인생 전체를 관통하는 그릇, 인생에서 크게 열리는 기회의 시기, 평생 조심할 함정, 나이대별 전략을 시기와 장면으로 콕 집어 쓰세요.',
     'report-love': 'PDF 리포트의 연애·결혼 심층 장입니다. 사랑하는 방식, 운명의 상대 모습, 만나는 때와 장소, 반복되는 실수, 결혼과 가정을 구체적인 연·월과 장면으로 콕 집어 쓰세요.',
     'report-money': 'PDF 리포트의 재물 심층 장입니다. 돈의 그릇, 돈이 들어오는 길, 돈이 새는 길, 잘 맞는 자산 관리 성향, 재물이 크게 움직이는 시기를 구체적으로 콕 집어 쓰세요. 특정 상품 추천이나 확정적인 투자 판단은 하지 마세요.',
@@ -1215,7 +1223,21 @@ function buildReadingSystemPrompt(category, meta) {
     : (lang.code === 'ko'
       ? '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'
       : 'Use natural translated equivalents of: Overall year, Wealth, Career and business, Love and relationships, Social relationships, Health, 12-month flow, Opportunity timing, Caution timing, Action guide for the year. Put each translated section title in square brackets.');
-  const outputGuide = reportSections[category]
+  const outputGuide = category === 'reading-deep'
+    ? `출력 형식:
+- 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
+- {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단"],"key":"한 줄 정리"}]}
+- 섹션 자료에 있는 모든 섹션을 같은 순서로 넣고, id는 바꾸지 마세요.
+- 섹션마다 paragraphs는 3개, 문단마다 3~4문장으로 쓰세요. facts의 구체적인 내용(직업명·시기·방법 등)을 빠뜨리지 마세요. key는 50자 안쪽 한 문장이에요.
+- 문단 안에 줄바꿈, 마크다운, 번호를 넣지 마세요.`
+    : category === 'topic-answer'
+    ? `출력 형식:
+- 제목, 마크다운, 번호, 불릿 없이 문단만 출력하세요.
+- 4~6문단, 문단당 2~3문장, 전체 공백 포함 900~1,500자로 작성하세요.
+- 첫 문장은 질문에 대한 결론으로 시작하세요.
+- 핵심 시기(계산값)의 연·월을 한 번 이상 그대로 인용하고, 같은 시기를 반복하지 마세요.
+- 마지막 문단은 오늘 바로 할 수 있는 행동 한 가지로 마무리하세요.`
+    : reportSections[category]
     ? `출력 형식:
 - 섹션 제목은 대괄호로 감싸서 사용하세요: ${reportSections[category]}
 - 각 섹션은 3~5문단, 문단당 2~4문장으로 작성하세요.
@@ -1267,7 +1289,11 @@ function situationText(ctx) {
 function buildReadingUserPrompt(category, ctx, meta) {
   const lang = normalizeLanguage(meta && meta.language);
   const reading = String(ctx.detailedReading || '').slice(0, isCoreReadingCategory(category) ? 18000 : 12000);
-  const task = isCoreReadingCategory(category)
+  const task = category === 'reading-deep'
+    ? `섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 14).map((s) => ({ id: String(s.id || '').slice(0, 40), title: String(s.title || '').slice(0, 80), visible: String(s.visible || '').slice(0, 450), facts: String(s.facts || '').slice(0, 1000) })) : [])}\n\n위 섹션마다 심층 해석을 써서 JSON으로만 답하세요. 풀이 종류: ${String(meta.readingKind || '').slice(0, 20)}.`
+    : category === 'topic-answer'
+    ? `위 정보와 모순되지 않게, "지금 상황"에 적힌 상담자의 질문에 정면으로 답하세요. 상담 주제: ${meta.topic || '미상'}.`
+    : isCoreReadingCategory(category)
     ? '위 정보와 모순되지 않게, 기존 계산형 풀이를 더 전문적이고 개인화된 핵심 섹션 리딩으로 재작성하세요. 이미 화면에 있는 문장을 그대로 반복하지 말고, 같은 근거를 사용해 더 깊고 특색 있게 풀어주세요.'
     : '위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.';
   return `카테고리: ${category}

@@ -419,6 +419,12 @@ const harness = `
        __lifeM.includes('김하늘님') && !__ctxJson.includes('김하늘') && __lifeM.includes('배우자와의 관계') && !__lifeM.includes('콕 찍어 보는 운명의 상대') && __nyM.includes('배우자와의 흐름'),
        [__lifeM.includes('김하늘님'),!__ctxJson.includes('김하늘'),__lifeM.includes('배우자와의 관계'),!__lifeM.includes('콕 찍어 보는 운명의 상대'),__nyM.includes('배우자와의 흐름')].join('|'));
 
+    const __svC2=_meta.ctx;_meta.ctx={cat:'topic-love',key:'tired',label:'권태기',text:'남자친구가 해외 발령이 났는데 따라가야 할까요?'};
+    const __tpAns=renderTopicPaid('topic-love',SELF,_meta);_meta.ctx=__svC2;
+    ok('궁금한 점: 주제별에만 있고, 적은 질문에는 규칙 답 + 결제 후 AI 답 자리',
+       !CTX_Q.life && !CTX_Q.newyear && !CTX_Q.gunghap && Object.keys(CTX_Q).every(k=>/^topic-/.test(k)) &&
+       __tpAns.includes('data-ai-reading="topic-answer"') && __tpAns.includes('data-ai-rule=') && __tpAns.includes('lv4-answer'));
+
     const __sceneRender={name:()=>renderNamePaid(SELF,nameExtra),ziwei:()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),life:()=>renderSajuPaid(SELF,1990,5,15,12,0),newyear:()=>renderNewyearFortune(SELF,2026),gunghap:()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})};
     const __sceneBad=[];
     Object.keys(CTX_SCENE).forEach(cat=>Object.keys(CTX_SCENE[cat]).forEach(key=>{

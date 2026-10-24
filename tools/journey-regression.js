@@ -200,10 +200,11 @@ const submitBirth=async()=>{
     run('closePaymentConsent()');
     run("continueJourney('life')");await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
+    check('궁금한 점: 인생총운 입력에는 없음',()=>assert.equal(d.getElementById('catExtraCtx').style.display,'none'));
     check('유료 풀이: 분석 뒤 핵심을 가린 전체 풀이와 결제 안내 표시',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
       assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
-      assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta'));
+      assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta,#p5 [data-deep]'));
       assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-line'));
       const pp=[...d.querySelectorAll('#p5 .pp-box')];assert(pp.length && pp.every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
@@ -278,6 +279,7 @@ const submitBirth=async()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
       assert(d.querySelector('#p9 .lk-preview .lv4-sec'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
+      assert(!d.querySelector('#p9 [data-ai-reading]'));
       assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
       assert.equal(run("isUnlockedFor('topic-love')"),false);
       assert(!/역술가 질문/.test(d.querySelector('#p9 .usage-guide').textContent));
@@ -288,6 +290,7 @@ const submitBirth=async()=>{
     check('주제별 풀이: 결제 후 요약·10년·12개월 풀이가 열림',()=>{
       assert(d.querySelector('#p9 .tp-v4'));
       assert(d.querySelector('#p9 .pdf-cta') && !d.querySelector('#p9 .lk-preview'));
+      assert(d.querySelector('#p9 [data-deep="topic-love"]'));
       assert(d.querySelectorAll('#p9 .lv4-sec').length>=5);
       assert(d.querySelectorAll('#p9 .lv4-row').length>=22);
     });

@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=input-compact-required-20261024">
+<link rel="stylesheet" href="/assets/night.css?v=c996a3687b48input-compact-required-20261024">
 </head>
 <body>
 <div id="app">
@@ -4395,11 +4395,6 @@ function normalizeChildrenInput(v){
 }
 // ── 지금 상황(맥락) 객관식 — 사주 명식과 결합해 풀이 첫머리를 상황에 맞춘다 ──
 const CTX_Q={
-  life:{t:'요즘 가장 마음이 쓰이는 건 무엇인가요?',d:'고른 고민을 중심으로 풀이 첫머리를 맞춰 드려요.',o:[['work','일·진로'],['money','돈'],['love','연애·결혼'],['health','건강'],['family','관계·가족'],['self','나 자신']]},
-  newyear:{t:'올해 가장 이루고 싶은 건 무엇인가요?',d:'고른 목표를 중심으로 한 해의 흐름을 짚어 드려요.',o:[['work','일·진로'],['money','돈 모으기'],['love','연애·결혼'],['health','건강'],['study','공부·시험'],['move','이사·변화']]},
-  gunghap:{t:'두 사람은 지금 어떤 사이인가요?',d:'관계 단계에 맞는 말로 궁합을 풀어 드려요.',o:[['some','썸·호감'],['dating','연애 중'],['wedding','결혼 준비'],['married','부부'],['partner','동업·동료']]},
-  name:{t:'이름풀이를 보는 이유는 무엇인가요?',d:'목적에 맞춰 추천 이름과 조언을 정리해 드려요.',o:[['self','내 이름이 궁금해요'],['rename','개명을 고민 중이에요'],['baby','아이 이름을 짓고 있어요'],['brand','활동명·상호를 정해요']]},
-  ziwei:{t:'자미두수로 가장 궁금한 건 무엇인가요?',d:'고른 방을 더 자세히 짚어 드려요.',o:[['self','타고난 성향'],['love','사랑과 배우자'],['money','돈'],['work','일']]},
   'topic-love':{t:'지금 연애 상태는 어떤가요?',d:'지금 상태에 맞는 장면으로 풀어 드려요.',o:[['some','썸 타는 중'],['crush','짝사랑 중'],['dating','연애 중'],['tired','권태기'],['single','솔로']]},
   'topic-reunion':{t:'헤어진 지 얼마나 됐나요?',d:'지난 시간에 맞춰 다가가는 순서를 짚어 드려요.',o:[['m1','한 달 안'],['m6','1~6개월'],['long','6개월 이상'],['contact','아직 연락은 하는 사이']]},
   'topic-marriage':{t:'지금 결혼에 대한 상황은 어떤가요?',d:'지금 단계에 맞는 결혼 흐름을 짚어 드려요.',o:[['partner','결혼을 생각하는 연인이 있어요'],['meeting','소개·만남 중이에요'],['none','아직 상대가 없어요'],['married','이미 결혼했어요']]},
@@ -4413,11 +4408,6 @@ const CTX_Q={
 let _ctxSel=null;
 // 궁금한 점 입력칸 예시 문구
 const CTX_PH={
-  life:'예: 서른다섯인데 지금 하는 일을 계속해도 될지 모르겠어요',
-  newyear:'예: 올해 꼭 이직하고 싶은데 언제 움직이면 좋을까요?',
-  gunghap:'예: 2년 사귄 사람인데 결혼까지 가도 괜찮을까요?',
-  name:'예: 개명을 고민 중인데 지금 이름이 나쁜 걸까요?',
-  ziwei:'예: 저는 어떤 사람을 만나야 편할까요?',
   'topic-love':'예: 썸 타는 사람이 있는데 먼저 고백해도 될까요?',
   'topic-reunion':'예: 석 달 전에 헤어졌는데 다시 연락해도 될까요?',
   'topic-marriage':'예: 결혼은 언제쯤 하게 될까요?',
@@ -4430,11 +4420,6 @@ const CTX_PH={
 };
 // 직접 적은 글에서 상황을 짐작하는 낱말 — 앞에 있는 선택지부터 맞춰 본다
 const CTX_KW={
-  life:{work:['일','진로','직장','회사','이직','취업','사업'],money:['돈','재물','빚','투자','월급','부자'],love:['연애','결혼','사랑','인연','남자친구','여자친구','배우자'],health:['건강','몸','아파','병','피곤','잠'],family:['가족','부모','엄마','아빠','형제','자녀','관계','친구'],self:['나는','성격','자존감','정체성','적성']},
-  newyear:{work:['일','이직','승진','취업','회사','사업'],money:['돈','저축','투자','재물','빚'],love:['연애','결혼','인연','사랑'],health:['건강','몸','다이어트','운동'],study:['공부','시험','합격','자격증','입시'],move:['이사','이동','변화','유학','이민']},
-  gunghap:{wedding:['결혼 준비','상견례','예식','결혼할'],married:['부부','남편','아내','결혼했'],partner:['동업','동료','사업','같이 일'],some:['썸','호감','소개팅','관심'],dating:['연애','사귀','남자친구','여자친구','애인','결혼']},
-  name:{baby:['아이','아기','출산','태명','신생아'],rename:['개명','바꾸','바꿀'],brand:['상호','가게','회사 이름','활동명','브랜드','예명','닉네임'],self:['내 이름','제 이름','이름']},
-  ziwei:{love:['연애','사랑','배우자','결혼','인연'],money:['돈','재물','투자'],work:['일','직업','회사','진로'],self:['성격','성향','나는']},
   'topic-love':{tired:['권태','싸움','싸워','다툼','지겨','식었','시들'],crush:['짝사랑','고백','혼자 좋아'],some:['썸','호감','밀당','연락'],dating:['사귀','연애 중','남자친구','여자친구','애인','남친','여친'],single:['솔로','인연','소개팅','언제 생','만남']},
   'topic-reunion':{contact:['연락하는','연락은 해','아직 연락','연락 중'],m1:['일주일','이 주','2주','한 달','어제','방금'],long:['반년','1년','일 년','몇 년','오래'],m6:['두 달','석 달','세 달','몇 달','개월']},
   'topic-marriage':{married:['결혼했','남편','아내','부부','신혼'],partner:['애인','남자친구','여자친구','사귀','프러포즈','상견례'],meeting:['소개','선','만남','맞선'],none:['없','언제','혼자','솔로']},
@@ -4480,9 +4465,6 @@ function pickCtx(cat,key){
 function ctxFor(cat){const c=(_meta&&_meta.ctx)||null;return c&&c.cat===cat?c:null;}
 // 고른 상황에 맞춘 풀이 첫 문장
 const CTX_OPENER={
-  life:{work:'요즘 일과 진로가 가장 마음에 걸리시죠. 그 고민의 뿌리부터 사주에서 짚어 볼게요.',money:'요즘 돈 문제가 가장 마음에 걸리시죠. 본인이 돈과 맺는 방식부터 짚어 볼게요.',love:'요즘 연애와 결혼이 가장 마음에 걸리시죠. 본인이 사랑하는 방식부터 짚어 볼게요.',health:'요즘 몸이 가장 마음에 걸리시죠. 본인 체질부터 차근차근 짚어 볼게요.',family:'요즘 가까운 사람과의 관계가 가장 마음에 걸리시죠. 본인이 사람과 맺는 방식부터 짚어 볼게요.',self:'요즘 나 자신에 대해 생각이 많으시죠. 본인이 어떤 사람인지부터 짚어 볼게요.'},
-  newyear:{work:'올해 일과 진로에서 한 걸음 나아가고 싶으시죠. 그 목표에 맞춰 한 해를 읽어 볼게요.',money:'올해는 돈을 모으고 싶으시죠. 돈이 움직이는 달부터 짚어 볼게요.',love:'올해는 연애와 결혼에 마음이 가시죠. 마음이 잘 통하는 달부터 짚어 볼게요.',health:'올해는 건강을 챙기고 싶으시죠. 몸을 아껴야 할 달부터 짚어 볼게요.',study:'올해는 공부와 시험에서 결과를 내고 싶으시죠. 힘이 붙는 달부터 짚어 볼게요.',move:'올해 이사나 큰 변화를 생각하고 계시죠. 움직이기 좋은 때부터 짚어 볼게요.'},
-  gunghap:{some:'아직 썸이나 호감 단계라면, 지금은 서로의 반응 속도를 아는 게 가장 중요해요.',dating:'연애 중인 두 분이라면, 지금 반복되는 다툼의 스위치를 아는 게 가장 중요해요.',wedding:'결혼을 준비하는 두 분이라면, 생활의 합의를 미리 맞추는 게 가장 중요해요.',married:'이미 부부인 두 분이라면, 오래 함께 가는 방법을 아는 게 가장 중요해요.',partner:'함께 일하는 사이라면, 역할과 돈의 기준을 맞추는 게 가장 중요해요.'},
   'topic-love':{some:'지금 썸을 타는 중이라면, 상대의 속마음과 다가갈 때가 가장 궁금하시죠.',crush:'지금 짝사랑 중이라면, 마음을 전해도 될 때가 가장 궁금하시죠.',dating:'지금 연애 중이라면, 이 관계가 오래가는 방법이 가장 궁금하시죠.',tired:'지금 권태기라면, 그건 본인 탓만은 아니에요. 두 사람의 리듬이 엇갈린 이유부터 짚어 볼게요.',single:'지금 솔로라면, 다음 인연이 언제, 어떤 모습으로 올지가 가장 궁금하시죠.'},
   'topic-reunion':{m1:'헤어진 지 한 달이 안 됐다면, 지금은 감정이 가장 뜨거운 때예요. 서두르지 않는 게 첫 번째 열쇠예요.',m6:'헤어진 지 몇 달이 지났다면, 두 사람 모두 그때를 돌아볼 여유가 생기는 때예요.',long:'헤어진 지 반년이 넘었다면, 다시 만나는 게 아니라 새로 시작한다는 마음이 필요해요.',contact:'아직 연락은 하는 사이라면, 지금의 대화가 다음을 정하는 가장 큰 열쇠예요.'},
   'topic-marriage':{partner:'결혼을 생각하는 연인이 있다면, 언제 이야기를 꺼낼지가 가장 궁금하시죠.',meeting:'소개나 만남 중이라면, 어떤 사람과 잘 맞는지가 가장 궁금하시죠.',none:'아직 상대가 없다면, 인연이 언제 가까워지는지가 가장 궁금하시죠.',married:'이미 결혼하셨다면, 함께 사는 지혜가 가장 궁금하시죠.'},
@@ -4492,8 +4474,6 @@ const CTX_OPENER={
   'topic-child':{baby:'아이가 아직 어리다면, 지금은 기질을 알고 편안한 리듬을 만들어 주는 게 가장 중요해요.',kid:'아이가 초등학생이라면, 재능을 발견하고 공부 습관을 잡아 주는 게 가장 중요해요.',teen:'아이가 중고등학생이라면, 진로 방향과 마음을 함께 살펴 주는 게 가장 중요해요.'},
   'topic-children':{plan:'자녀를 계획 중이라면, 인연이 가까워지는 때가 가장 궁금하시죠.',raising:'아이를 키우고 있다면, 본인에게 맞는 부모 역할이 가장 궁금하시죠.',grown:'자녀가 다 컸다면, 앞으로의 관계가 가장 궁금하시죠.',none:'아직 자녀 생각이 없다면, 자녀 자리는 본인이 키워 가는 일과 결실로 읽어 보세요.'},
   'topic-health':{sleep:'요즘 피로와 잠이 신경 쓰인다면, 회복하는 방식부터 짚어 볼게요.',digest:'요즘 소화와 식습관이 신경 쓰인다면, 본인 체질에 맞는 식사 리듬부터 짚어 볼게요.',weight:'요즘 체중과 운동이 신경 쓰인다면, 본인에게 맞는 움직임부터 짚어 볼게요.',stress:'요즘 스트레스가 크다면, 그건 본인이 약해서가 아니에요. 스트레스가 몸으로 오는 길부터 짚어 볼게요.'},
-  name:{self:'내 이름이 궁금하셨다면, 이름이 본인 사주와 어떻게 어울리는지부터 짚어 볼게요.',rename:'개명을 고민 중이라면, 지금 이름의 강점과 아쉬운 점을 먼저 짚어 볼게요.',baby:'아이 이름을 짓고 있다면, 아래 추천 이름과 한자 조합을 특히 눈여겨보세요.',brand:'활동명이나 상호를 정하고 있다면, 본인 사주에 힘이 되는 소리부터 짚어 볼게요.'},
-  ziwei:{self:'타고난 성향이 궁금하셨다면, 나를 나타내는 방을 특히 눈여겨보세요.',love:'사랑과 배우자가 궁금하셨다면, 배우자의 방을 특히 눈여겨보세요.',money:'돈이 궁금하셨다면, 돈의 방을 특히 눈여겨보세요.',work:'일이 궁금하셨다면, 일의 방을 특히 눈여겨보세요.'}
 };
 function ctxOpener(cat){const c=ctxFor(cat);if(!c)return '';const m=CTX_OPENER[cat];return m&&m[c.key]?m[c.key]:'';}
 // AI에 넘길 핵심 시기 — 계산한 좋은 해·달과 조심할 달 (AI가 시기를 지어내지 않도록)
@@ -4588,41 +4568,6 @@ const CTX_SCENE={
     weight:h=>({at:'tp-a',p:['체중과 운동이 신경 쓰인다면, 본인에게 맞는 움직임을 찾는 게 먼저예요.','처음부터 강한 운동보다, 매일 30분 걷기처럼 오래 할 수 있는 것부터 시작하세요.','체중은 숫자보다 몸이 가벼워지는 느낌을 기준으로 보세요.'],adds:[['tp-e',`${h.bm}에 새 운동을 시작하면 오래 이어 가기 좋아요.`]]}),
     stress:h=>({at:'tp-b',p:['스트레스는 마음에만 머물지 않고 잠, 소화, 어깨 같은 몸으로 내려와요.','하루 10분, 아무것도 하지 않는 시간을 일정에 넣어 보세요.','마음이 오래 힘들면 전문 상담의 도움을 받는 것도 본인을 아끼는 방법이에요.'],adds:[['tp-e',`${h.cm}에는 약속을 줄이고 혼자 쉬는 시간을 먼저 챙기세요.`]]})
   },
-  life:{
-    work:h=>({at:'work-money',p:[`본인은 ${ctxAx('work',h.axis)} 사람이에요. 지금 고민이 "무슨 일을 할까"라면, 이 모습을 가장 많이 쓸 수 있는 자리를 기준으로 고르세요.`,'일이 안 풀렸던 때가 있었다면, 실력보다 자리와 때가 맞지 않았던 거예요.',h.golden?(h.goldenNow?`인생의 황금기인 ${h.golden}${eun(h.golden)} 이미 시작됐어요. 지금 움직이는 선택이 오래 남아요.`:`인생의 황금기는 ${h.golden}${lv4Ida(h.golden)}. 지금의 선택은 그때를 위한 준비예요.`):'']}),
-    money:h=>({at:'work-money',p:[`본인은 ${ctxAx('money',h.axis)} 사람이에요.`,'돈 고민은 더 버는 것보다 새는 곳을 먼저 막을 때 빨리 풀려요. 아래 돈이 새는 때를 먼저 읽어 보세요.',`본인에게 힘이 되는 ${h.el} 기운을 채우는 생활이 돈의 흐름도 함께 열어 줘요.`]}),
-    love:h=>({at:'love-people',p:[`본인은 ${ctxAx('love',h.axis)} 사람이에요.`,'연애가 늘 비슷하게 끝났다면, 상대보다 본인이 끌리는 패턴을 먼저 보세요.','아래 배우자 자리 풀이가 본인과 오래 가는 사람의 모습이에요.']}),
-    health:h=>({at:'health',p:['몸이 신경 쓰인다면, 아래에 나온 약한 곳부터 생활 습관으로 챙겨 보세요.',`${h.el} 기운을 채우는 습관이 몸의 균형도 맞춰 줘요.`,'증상이 이어지면 풀이보다 진료가 먼저예요.']}),
-    family:h=>({at:'love-people',p:['가까운 사람과의 관계가 고민이라면, 누가 맞는지보다 서로의 속도가 다르다는 걸 먼저 알아 주세요.','가족에게 생긴 서운함은 쌓아 두지 말고, 작게 빨리 말하는 게 관계를 지켜요.','아래 관계 풀이에서 본인이 사람과 맺는 방식을 먼저 읽어 보세요.']}),
-    self:h=>({at:'basic',p:['나 자신에 대해 생각이 많다면, 그건 지금 한 단계 자라고 있다는 신호예요.','아래 풀이에서 "맞아, 나 이래" 싶은 문장에 표시해 두세요. 그게 본인의 진짜 강점이에요.','안 맞는 문장도 괜찮아요. 사주는 타고난 바탕이고, 지금의 본인은 그 위에 쌓아 온 사람이에요.']})
-  },
-  newyear:{
-    work:h=>({at:'ny-work',p:[`본인은 ${ctxAx('work',h.axis)} 사람이에요.`,`올해 일에 힘이 붙는 달은 ${h.work}${lv4Ida(h.work)}. 이직이나 새 프로젝트는 이 달에 두면 좋아요.`,`${h.workBad}에는 새로 벌이기보다 지금 일을 마무리하세요.`]}),
-    money:h=>({at:'ny-money',p:[`본인은 ${ctxAx('money',h.axis)} 사람이에요.`,`올해 돈을 모으고 싶다면 ${h.money}에 들어오는 돈부터 먼저 떼어 두세요.`,`${h.moneyBad}에는 큰 지출과 돈 거래를 미뤄 두세요.`]}),
-    love:h=>({at:'ny-love',p:[`올해 마음이 잘 통하는 달은 ${h.love}${lv4Ida(h.love)}.`,'솔로라면 이 달에 모임이나 소개에 나가 보고, 연애 중이라면 둘만의 계획을 잡아 보세요.',`${h.loveBad}에는 감정이 앞서기 쉬우니 말을 한 번 더 고르세요.`]}),
-    health:h=>({at:'ny-health',p:[`올해 몸을 더 아껴야 할 달은 ${h.healthBad}${lv4Ida(h.healthBad)}.`,'이 달에는 일정을 줄이고 잠을 먼저 챙기세요.','증상이 이어지면 풀이보다 진료가 먼저예요.']}),
-    study:h=>({at:'ny-work',p:[`올해 공부와 시험이라면, 집중이 잘 되는 달은 ${h.work}${lv4Ida(h.work)}.`,'큰 시험은 이 달 즈음에 두고, 나머지 달에는 기초를 다지세요.','한 번에 많이 하기보다 매일 같은 시간에 하는 게 오래 가요.']}),
-    move:h=>({at:'ny-money',p:['이사나 큰 변화는 돈의 흐름과 함께 봐야 해요.',`${h.money}처럼 돈 흐름이 좋은 달에 계약을 두고, ${h.moneyBad}에는 큰 계약을 서두르지 마세요.`,'변화는 한 번에 다 바꾸기보다, 하나씩 순서대로 바꿀 때 몸과 마음이 덜 지쳐요.']})
-  },
-  name:{
-    self:h=>({at:'nm-core',p:['내 이름이 궁금했다면, 점수보다 이름이 사주의 어떤 빈자리를 채우는지를 먼저 보세요.','점수가 기대보다 낮아도 나쁜 이름이라는 뜻은 아니에요. 이름의 힘은 불려 온 시간과 본인이 쌓아 온 모습이 함께 만들어요.']}),
-    rename:h=>({at:'nm-strength',p:['개명을 고민 중이라면, 지금 이름의 강점부터 먼저 적어 보세요.','강점이 분명하다면 이름을 바꾸기보다 활동명을 따로 두는 방법도 있어요. 바꾼다면 아래 추천 이름처럼 사주의 옅은 기운을 채우는 소리와 한자를 고르세요.','개명은 법적 절차가 필요한 일이라, 가족과 충분히 이야기한 뒤 정하세요.']}),
-    baby:h=>({at:'nm-recommend',p:['아이 이름이라면, 부르기 쉬운 소리와 놀림받기 어려운 뜻을 함께 보세요.','아래 추천 이름 중 마음에 드는 두세 개를 성과 함께 소리 내어 불러 보세요. 입에 잘 붙는 이름이 오래 사랑받아요.']}),
-    brand:h=>({at:'nm-sound',p:['활동명이나 상호라면, 뜻보다 불리는 소리의 기운이 더 크게 작동해요.','짧고 또렷하게 기억되는지, 검색했을 때 겹치는 이름이 없는지도 함께 확인하세요.']})
-  },
-  ziwei:{
-    self:h=>({at:'zw-ming',p:['타고난 성향이 궁금했다면, 아래 나를 나타내는 방의 별을 먼저 읽어 보세요.','별이 둘 이상 앉아 있다면 두 모습이 상황에 따라 번갈아 나타나요. 어느 쪽이 더 자주 나오는지 떠올려 보세요.']}),
-    love:h=>({at:'zw-love',p:['사랑과 배우자가 궁금했다면, 이 방의 별이 본인이 사랑에서 바라는 모습이에요.','지금 만나는 사람이나 끌리는 사람과 견줘 보세요. 닮은 곳이 많을수록 오래 편한 사이가 되기 쉬워요.']}),
-    money:h=>({at:'zw-money',p:['돈이 궁금했다면, 이 방의 별이 본인에게 돈이 들어오는 길이에요.','지금 돈을 버는 방식이 이 별의 모습과 닮았는지 살펴보세요. 닮을수록 덜 지치고 오래 벌 수 있어요.']}),
-    work:h=>({at:'zw-work',p:['일이 궁금했다면, 이 방의 별이 본인이 빛나는 일터의 모습이에요.','지금 하는 일과 이 별의 모습이 다르다면, 일의 한 부분이라도 별에 가까운 쪽으로 옮겨 보세요.']})
-  },
-  gunghap:{
-    some:h=>({at:'gh-scenes',p:['아직 썸이라면, 지금은 서로의 반응 속도를 아는 게 가장 중요해요.',h.tough?'두 사람은 끌림도 크지만 부딪힘도 분명한 사이예요. 답장이 늦거나 말투가 짧을 때 오해하기 쉬워요.':h.good?'두 사람은 자석처럼 끌어당기는 사이라, 생각보다 빨리 가까워질 수 있어요.':'두 사람은 천천히 온도가 오르는 사이라, 서두르지 않는 게 좋아요.','아래 연애할 때 장면을 먼저 읽어 보세요. 상대가 어떤 순간에 마음을 여는지 보여요.']}),
-    dating:h=>({at:'gh-scenes',p:['연애 중이라면, 반복되는 다툼의 스위치를 아는 게 가장 중요해요.',h.tough?'두 사람은 가까워질수록 부딪히는 지점도 또렷해지는 사이예요. 다툼은 대개 같은 주제에서 반복돼요.':'두 사람은 큰 부딪힘은 적지만, 작은 서운함이 쌓이면 한꺼번에 터지기 쉬워요.','다툼이 생기면 그 자리에서 이기려 하기보다, 하루 쉬고 다시 이야기하는 규칙을 정해 보세요.']}),
-    wedding:h=>({at:'gh-married',p:['결혼을 준비 중이라면, 지금 맞춰 둘 건 생활의 기준이에요.','돈 관리, 집안일, 양가 방문, 아이 계획을 결혼 전에 한 번씩 꼭 이야기하세요.',h.bestY?`두 사람이 함께 큰 결정을 하기 좋은 해는 ${h.bestY}${lv4Ida(h.bestY)}.`:'']}),
-    married:h=>({at:'gh-married',p:['이미 부부라면, 이 풀이는 오래 함께 가는 지혜로 읽어 주세요.','서운함을 쌓아 두면 같은 일로 다시 부딪혀요. 작게, 빨리 말하는 게 좋아요.','한 달에 한 번, 돈과 일정과 서로의 기분을 묻는 시간을 정해 보세요.']}),
-    partner:h=>({at:'gh-persona',p:['함께 일하는 사이라면, 아래 연애와 결혼 이야기는 일하는 방식으로 바꿔 읽어 주세요.','역할, 돈, 결정권의 기준을 처음에 글로 정해 두는 게 가장 중요해요.','두 사람의 성향 차이는 약점이 아니라 서로의 빈자리를 채우는 힘이 될 수 있어요.']})
-  }
 };
 // 섹션 id 안에 조각을 넣는다 — 기본은 안내 문장(lead) 바로 뒤, atEnd면 섹션 끝
 function lv4Inject(html,secId,piece,atEnd){
@@ -5683,7 +5628,7 @@ function tab(n){
       p5.innerHTML=fixKoreanJosa(back+(lifeUnlocked
         ?(()=>{const prev=_paidFoldMode;_paidFoldMode='life';try{return renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);}finally{_paidFoldMode=prev;}})()
         :paidPreviewHTML('life',()=>renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min))));
-      if(lifeUnlocked)enrichTerms(p5);
+      if(lifeUnlocked){enrichTerms(p5);setTimeout(()=>{try{hydrateAIReadings(p5);}catch(e){}},0);}
       p5.dataset.rendered='1';
     }
   }
@@ -6187,23 +6132,15 @@ async function finishTarotDraw(){
     _tarotFlow.resultMarkdown=generateTemplateReading(input);_tarotFlow.previewTemplate=true;_tarotFlow.resultLoading=false;
     saveTarotFlow();tarotNavigate('result');return;
   }
-  _tarotFlow.previewTemplate=false;
-  _tarotFlow.resultMarkdown='';
-  _tarotFlow.resultLoading=true;
+  // 결제 뒤 — 앞의 두 섹션은 계산 풀이 그대로, 미리보기에서 가렸던 뒷부분만 AI가 쓴다
+  const tpl=_tarotFlow.previewTemplate&&_tarotFlow.resultMarkdown?_tarotFlow.resultMarkdown:generateTemplateReading(input),keep=mdSections(tpl).slice(0,2);
+  _tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=tpl;_tarotFlow.resultLoading=false;_tarotFlow.deepLoading=true;
+  saveTarotFlow();tarotNavigate('result');
+  try{const merged=mdMerge(keep,await generateAIReading(input,{skipSections:keep.map(s=>s.title)}));if(merged)_tarotFlow.resultMarkdown=merged;}
+  catch(e){console.warn('Tarot deep reading failed, keeping computed reading:',e&&e.message);}
+  _tarotFlow.deepLoading=false;
   saveTarotFlow();
-  tarotNavigate('result');
-  try{
-    _tarotFlow.resultMarkdown=await generateAIReading(input);
-  }catch(e){
-    console.warn('Tarot paid reading failed, using template:',e&&e.message);
-    _tarotFlow.resultMarkdown=generateTemplateReading(input);
-    if(typeof currentLanguage==='function'&&currentLanguage()!=='ko'){
-      _tarotFlow.resultMarkdown=await translateSingleText(_tarotFlow.resultMarkdown,currentLanguage());
-    }
-  }
-  _tarotFlow.resultLoading=false;
-  saveTarotFlow();
-  if(_tarotFlow.paymentStatus==='paid')saveTarotReadingFromFlow(_tarotFlow);
+  saveTarotReadingFromFlow(_tarotFlow);
   renderTarot();
 }
 function buildAIReadingInput(flow){
@@ -6228,11 +6165,11 @@ function generateTemplateReading(input){
   md+=`# 8. 다음 행동 가이드\n\n오늘은 큰 결정보다 작은 확인이 좋아요. 메시지를 보내야 한다면 짧게, 결정을 해야 한다면 조건표를 먼저 만들어보세요.`;
   return md;
 }
-async function generateAIReading(input){
+async function generateAIReading(input,opts){
   const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({input,language:currentLanguagePayload()})
+    body:JSON.stringify({input,language:currentLanguagePayload(),skipSections:(opts&&opts.skipSections)||[]})
   });
   if(!resp.ok)throw new Error(`tarot-reading ${resp.status}`);
   const data=await resp.json();
@@ -6255,6 +6192,7 @@ function renderTarotResult(root){
   root.innerHTML=tarotHtml(`<section class="tarot-panel">
     <div class="tarot-section-title">${tarotEsc(_tarotFlow.question)}</div>
     <div class="tarot-small">${tarotEsc(_tarotFlow.spreadName)} · ${(_tarotFlow.price||0).toLocaleString()}원</div>
+    ${_tarotFlow.deepLoading?'<div class="deep-status" role="status">천기가 가려졌던 해석을 쓰고 있어요. 30초쯤 걸려요.</div>':''}
     <div class="tarot-selected-strip">${input.cards.map(c=>{const card=TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);return `<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotCardImageHTML(card,'')}</div>${tarotEsc(c.positionLabel)}<br>${tarotEsc(c.cardNameKo)}</div>`;}).join('')}</div>
   </section>
   ${(()=>{const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr'),body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${lvToc(r.items,'타로 풀이 목차')}${r.html}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(_tarotFlow.selectedSpreadId,body,{visibleSections:2})}</div>${lkBarHTML(_tarotFlow.selectedSpreadId)}`;})()}
@@ -7608,6 +7546,7 @@ function pdfSources(cat){
 // 화면용 요소를 문서용으로 정리 — 버튼·채팅·목차는 빼고, 접힌 근거는 펼친다
 function pdfClean(html,idx){
   const box=document.createElement('div');box.innerHTML=html;
+  box.querySelectorAll('[data-deep]').forEach(el=>{const d=deepCached(el.getAttribute('data-deep'));if(d)deepApply(el,d);el.removeAttribute('data-deep');});
   if(idx>0)box.querySelectorAll('.lc-orbs,.lc-pair-label,#lv4-lc-bars,.lv4-gauge').forEach(e=>e.remove());
   box.querySelectorAll('.chat-card,.next-actions,.summary-card,.lv4-toc,button,script,.pdf-cta,.lk-note,.lk-bar,.lc-scene,[data-ai-reading]:not(.ai-ready),.ai-reading-status').forEach(e=>e.remove());
   box.querySelectorAll('details').forEach(d=>{const div=document.createElement('div');div.className='pdf-why';const s=d.querySelector('summary');div.innerHTML=`<h4>${s?s.textContent:'근거'}</h4>`+[...d.children].filter(x=>x.tagName!=='SUMMARY').map(x=>x.outerHTML).join('');d.replaceWith(div);});
@@ -12084,6 +12023,7 @@ function previewLockHTML(cat,html,opts){
   const q=(s,root)=>[...(root||box).querySelectorAll(s)];
   q('.chat-card,[data-ai-reading],.ai-reading-card,.lv4-why,.next-actions,.pdf-cta,.summary-card,script,.lv4-actions').forEach(e=>e.remove());
   q('.life-experience').forEach(e=>e.classList.remove('life-experience'));
+  q('[data-deep]').forEach(e=>e.removeAttribute('data-deep'));
   q('.lv4-tags span,.lv4-hero-who').forEach(lkTokens);
   q('.lv4-pin dd').forEach(dd=>{dd.innerHTML=lkSpan(dd.textContent);});
   q('.lv4-when dd').forEach(lkTokens);
@@ -13787,7 +13727,7 @@ function buildLifeReadingV4(saju,meta){
   h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
   let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatShort,seatLove});}catch(e){}
   try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'talent',ppCareerHTML(s,meta,P,{title:'콕 찍어 보는 재능이 돈이 되는 일'}));h=lv4Inject(h,'work-money',ppMoneyHTML2(s,meta,P));h=lv4Inject(h,'love-people',(meta.marital==='married'?ppSpouseHTML(s,meta,P):ppPartnerHTML(P,{noCard:true,title:meta.marital==='dating'?'콕 찍어 보는 오래 함께할 인연':''}))+ppHelperHTML(P));h=lv4Inject(h,'health',ppHealthHTML(s,meta,P));h=lv4Inject(h,'future',ppTurnHTML(P)+(meta.marital==='married'?'':ppMarriageHTML(s,meta,P)));h=lv4Inject(h,'practice',ppLuckHTML(s,meta,P));}catch(e){}
-  return `<div class="lv4">${hero}${ch.top}${ctxNoteHTML('life')}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
+  return `<div class="lv4" data-deep="life">${hero}${ch.top}${ctxNoteHTML('life')}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
 }
 function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return false;}
 // AI가 쓴 마크다운(# 섹션, ## 소제목, - 목록, **굵게**, "한 줄 정리: …")을 한 페이지 풀이(lv4) 섹션으로 바꾼다.
@@ -13868,7 +13808,7 @@ function buildZiweiReadingV4(saju,m){
       ch2:lcChapter(2,'방마다 깊이 보기'),
       ch3:lcChapter(3,'인생을 흔들 사람들')+lcPeople(saju,{genderKey:m.gender,partner:true})};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {ch,me,html:`<div class="lv4">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${fr.top}${ctxNoteHTML('ziwei')}${fr.ch1}${lvToc(ZW_TITLES,'자미두수 목차')}${fr.ch2}${ctxApplyScenes('ziwei',h,{})}${fr.ch3}</div>`};
+  return {ch,me,html:`<div class="lv4" data-deep="ziwei">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${fr.top}${ctxNoteHTML('ziwei')}${fr.ch1}${lvToc(ZW_TITLES,'자미두수 목차')}${fr.ch2}${ctxApplyScenes('ziwei',h,{})}${fr.ch3}</div>`};
 }
 // ══════════════════════════════════════════════
 //  주제별 풀이 V4 — 한 페이지로 이어 읽는 풀이 (소개 화면 '풀이에 담긴 내용' 순서)
@@ -13963,7 +13903,7 @@ function buildTopicReadingV4(tm){
   const closing=lvSecX('tp-practice',`${info.stat} 흐름을 살리는 실천법`,`${child?'아이를':'본인을'} 가장 도와주는 기운은 ${O[tm.ys.main]}${lv4Ida(O[tm.ys.main])}. ${support.lead}이 흐름을 열어 줘요.`,lv4List(support.items.map(x=>[x[1],x[2]]).concat([['한 줄 기록','좋았던 날과 힘들었던 날의 이유를 적어 보세요.']]))+lv4Key(child?'아이의 사주는 정해진 운명이 아니라 잘 자라도록 돕는 지도예요. 아이의 속도를 믿어 주세요.':key==='health'?'건강운은 관리의 방향을 보여 줄 뿐이에요. 몸이 보내는 신호와 전문가의 판단을 가장 먼저 믿으세요.':key==='reunion'?'재회는 두 사람의 선택이에요. 어떤 결론이든 본인을 아끼는 쪽을 고르세요.':'좋은 흐름은 준비된 사람에게 크게 작동해요. 오늘 한 가지부터 시작해 보세요.'));
   const axTag=(LV4_AXIS_TAG_TOPIC[key]||LV4_AXIS_TAG)[tm.axis];
   const fr=(()=>{try{return topicFrame(tm,{seatShort,seatLove,sum,ax,axTag});}catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`,lvTagsHTML([axTag,tm.bestMonths[0]?`${tm.bestMonths[0].month}월_${info.stat}_흐름_상승`:'',tm.bestYears[0]?`${tm.bestYears[0].year}년이_좋은_해`:''])+lvGaugeHTML(tm.yearNow.score,`올해 ${info.stat} 흐름`))}${fr.top}${ctxNoteHTML(tm.cat,(()=>{try{return topicAnswerHTML(tm,ctxFor(tm.cat),{ax,P:buildPinpoint(s,{...(_meta||{}),gender:tm.genderKey})});}catch(e){return '';}})())}${fr.ch1}${lvToc(tocItems,`${info.label} 목차`)}${fr.ch2}${overview}${ppTopic(key,body,s,tm)}${fr.ch3}${closing}</div>`;
+  return `<div class="lv4" data-deep="${tm.cat}">${lvHero(info.label,sum.headline,sum.lead,`${tm.year}년 ${tm.yearNow.gz}년 · ${who}의 ${info.stat} 흐름`,lvTagsHTML([axTag,tm.bestMonths[0]?`${tm.bestMonths[0].month}월_${info.stat}_흐름_상승`:'',tm.bestYears[0]?`${tm.bestYears[0].year}년이_좋은_해`:''])+lvGaugeHTML(tm.yearNow.score,`올해 ${info.stat} 흐름`))}${fr.top}${ctxNoteHTML(tm.cat,(()=>{try{const c=ctxFor(tm.cat),rule=topicAnswerHTML(tm,c,{ax,P:buildPinpoint(s,{...(_meta||{}),gender:tm.genderKey})});if(!c||!c.text)return rule;return `<div data-ai-rule="${aiReadingDomId('topic-answer',tm.cat)}">${rule}</div>`+renderAIReadingCard('topic-answer','천기의 답 · 질문 맞춤 풀이',tm.cat,{catLabel:null,loadingText:'천기가 질문을 읽고 답을 쓰고 있어요. 잠시만 기다려 주세요.'});}catch(e){return '';}})())}${fr.ch1}${lvToc(tocItems,`${info.label} 목차`)}${fr.ch2}${overview}${ppTopic(key,body,s,tm)}${fr.ch3}${closing}</div>`;
 }
 // ══════════════════════════════════════════════
 //  월별 운세 V4 — 한 페이지로 이어 읽는 기간 풀이
@@ -14037,7 +13977,7 @@ function buildMonthlyReadingV4(saju,sy,sm,ey,em,extra){
     return {top:lcOrbs(saju)+lcScene(saju,'고른 기간에<br>3가지 순간이<br>보여요')+lcMoments(mo.map(e=>({when:wl(e.x.lab),what:e.what,dot:e.dot}))),
       ch3:lcChapter(3,'기간 전체의 흐름')+lcBox('lc-graph','달마다의 흐름 그래프','달마다의 종합 점수예요.',lcLineChart(months.map(x=>({l:`${x.mm}월`,v:x.sc.total})),-1)+'<h4>분야별 평균</h4>'+lcAreaBars([['재물',avgF('wealth')],['연애·관계',avgF('love')],['직업',avgF('career')],['건강',avgF('health')]]))};
   }catch(e){return {top:'',ch3:''};}})();
-  return {html:`<div class="lv4">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`가장 결정적인 달 ${decisive.lab}`,`${total}개월 풀이 · ${g.lab}`,lvTagsHTML([`${decisive.mm}월이_결정적`,`${topField[0]}에_힘이_붙는_시기`,`${tough[0].mm}월은_쉬어가기`])+lvGaugeHTML(avgT,`${total}개월 평균`))}${fr.top}${lvToc(MO_TITLES,'월별 운세 목차')}${lcChapter(2,'달마다 깊이 보기')}${(()=>{try{const P=buildPinpoint(saju,_meta);return lv4Inject(h,'mo-guide',ppLuckHTML(saju,_meta,P,{title:'콕 찍어 보는 이 기간 운을 여는 방법'}));}catch(e){return h;}})()}${fr.ch3}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
+  return {html:`<div class="lv4" data-deep="monthly:${sy}${sm}-${ey}${em}">${lvHero('월별 운세',`${sy}년 ${sm}월 ~ ${ey}년 ${em}월`,`가장 결정적인 달 ${decisive.lab}`,`${total}개월 풀이 · ${g.lab}`,lvTagsHTML([`${decisive.mm}월이_결정적`,`${topField[0]}에_힘이_붙는_시기`,`${tough[0].mm}월은_쉬어가기`])+lvGaugeHTML(avgT,`${total}개월 평균`))}${fr.top}${lvToc(MO_TITLES,'월별 운세 목차')}${lcChapter(2,'달마다 깊이 보기')}${(()=>{try{const P=buildPinpoint(saju,_meta);return lv4Inject(h,'mo-guide',ppLuckHTML(saju,_meta,P,{title:'콕 찍어 보는 이 기간 운을 여는 방법'}));}catch(e){return h;}})()}${fr.ch3}`,data:{months,lucky,tough,decisive,avgT,g,ys,sD,avg}};
 }
 // ══════════════════════════════════════════════
 //  지정일 운세 V4 — 한 페이지로 이어 읽는 하루 풀이
@@ -14151,7 +14091,7 @@ function buildDaypickReadingV4(saju,y,m,d,extra){
     return {top:lcOrbs(saju)+lcScene(saju,'이 날의 흐름을<br>시간마다<br>짚어 볼게요')+lcMoments([bestH?{when:hl(bestH),what:'가장 힘이 붙는 시간이에요',dot:'g'}:null,rec0?{when:'이 날 꼭 할 일',what:`<span class="lk-m">${rec0}</span>`,dot:'y'}:null,badH[0]?{when:hl(badH[0]),what:'말과 계약을 조심할 시간이에요',dot:'r'}:null]),
       ch3:lcChapter(3,'시간마다의 흐름')+lcBox('lc-graph','열두 시간대 흐름 그래프','좋은 시간은 높게, 조심할 시간은 낮게 표시했어요.',lcLineChart(hours.map(x=>({l:BRCHKO[x.bi],v:x.kind==='좋은 시간'?85:x.kind==='조심할 시간'?40:62})),-1))};
   }catch(e){return {top:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],grade.lab,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`,lvTagsHTML([`${(TG_KEYWORD[tg]||['평온'])[0]}의_날`,dl?`${BRCHKO[dl.bi]}시가_좋은_날`:'오전이_좋은_날',`${colors[0]}이_행운의_색`])+lvGaugeHTML(f.total,'이 날 점수'))}${fr.top}${lvToc(DP_TITLES,'지정일 운세 목차')}${lcChapter(2,'이 날 깊이 보기')}${(()=>{try{return lv4Inject(h,'dp-lucky',ppDayHTML(saju,_meta,dpB,buildPinpoint(saju,_meta)));}catch(e){return h;}})()}${fr.ch3}`;
+  return `<div class="lv4" data-deep="daypick:${y}${m}${d}">${lvHero(`${y}년 ${m}월 ${d}일 (${wDay})`,TD[0],grade.lab,`지정일 운세 · ${STEMKO[dpS]}${BRCHKO[dpB]}의 날`,lvTagsHTML([`${(TG_KEYWORD[tg]||['평온'])[0]}의_날`,dl?`${BRCHKO[dl.bi]}시가_좋은_날`:'오전이_좋은_날',`${colors[0]}이_행운의_색`])+lvGaugeHTML(f.total,'이 날 점수'))}${fr.top}${lvToc(DP_TITLES,'지정일 운세 목차')}${lcChapter(2,'이 날 깊이 보기')}${(()=>{try{return lv4Inject(h,'dp-lucky',ppDayHTML(saju,_meta,dpB,buildPinpoint(saju,_meta)));}catch(e){return h;}})()}${fr.ch3}`;
 }
 // ══════════════════════════════════════════════
 //  이름풀이·작명 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -14292,7 +14232,7 @@ function buildNameReadingV4(saju,nmExtra){
       ch1:lcChapter(1,'이름 명식 분석')+lcBox('lc-bars','이름의 오행 분포',lcAreaBars(pct(nameOh.oh)),'이름 소리에 담긴 다섯 기운의 비율이에요.')+lcBox('lc-bars2','사주의 오행 분포',lcAreaBars(pct(sajuOh)),'사주팔자에 담긴 다섯 기운의 비율이에요. 옅은 기운을 이름이 채워 주면 좋아요.'),
       ch2:lcChapter(2,'이름 깊이 보기'),ch3:''};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {html:`<div class="lv4">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${fr.top}${ctxNoteHTML('name')}${fr.ch1}${lvToc(NM_TITLES,'이름풀이 목차')}${fr.ch2}${ctxApplyScenes('name',h,{})}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
+  return {html:`<div class="lv4" data-deep="name:${String(full).replace(/[^가-힣a-zA-Z]/g,'')}">${lvHero('이름풀이·작명',`「${full}」${hanStr?` ${hanStr}`:''}`,grade,`${surname} 성 · ${given} 이름${suri?` · 한자 ${[strokes.surname,strokes.given1,strokes.given2].filter(Boolean).join('+')}획`:''}`,lvTagsHTML([grade,suri?`좋은_숫자_${goodKeys.length}개`:'',`${O[ys.main]}_기운이_필요한_사주`])+lvGaugeHTML(score,'이름 점수'))}${fr.top}${ctxNoteHTML('name')}${fr.ch1}${lvToc(NM_TITLES,'이름풀이 목차')}${fr.ch2}${ctxApplyScenes('name',h,{})}`,data:{full,surname,given,han,strokes,hasHan,nameOh,sajuOh,ys,sajuMinIdx:sajuMin,nameScore:score,grade,gradeColor,suri,recommended:rec.map(r=>({name:r.name,reason:r.why}))}};
 }
 // ══════════════════════════════════════════════
 //  궁합 V4 — 한 페이지로 이어 읽는 두 사람 풀이 (인생총운 V4와 같은 틀)
@@ -14410,7 +14350,7 @@ function buildGunghapReadingV4(s1,s2,ctx){
       ch2:lcChapter(2,'장면별 궁합 풀이'),
       ch3:lcChapter(3,'두 사람의 앞으로 10년')+lcBox('lc-graph','함께 가는 흐름 그래프','해마다 두 사람의 흐름을 합친 점수예요. 높은 해에 큰 결정을 두세요.',lcLineChart(years.map(x=>({l:`${String(x.y).slice(2)}년`,v:Math.round(x.joint)})),-1))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return `<div class="lv4">${lvHero('궁합',relationLabel,r.grade,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`,lvTagsHTML([relationLabel,best[0]?`${best[0].y}년_함께_상승`:'',`${scoresSorted[0][0]}이_강한_사이`])+lvGaugeHTML(r.score,'궁합 점수'))}${fr.top}${ctxNoteHTML('gunghap')}${fr.ch1}${lvToc(GH_TITLES,'궁합 목차')}${fr.ch2}${(()=>{let hh=ctxApplyScenes('gunghap',h,{good,tough,bestY:best[0]?`${best[0].y}년`:''});try{hh=lv4Inject(hh,'gh-scenes',ppCoupleHTML(s1,s2,_meta,{weak:scoresSorted[scoresSorted.length-1][0],bestY:best[0]&&best[0].y}));}catch(e){}return hh;})()}${fr.ch3}${ctx.tail||''}</div>`;
+  return `<div class="lv4" data-deep="gunghap:${ctx.sy2}${ctx.sm2}${ctx.sd2}${ctx.h2}">${lvHero('궁합',relationLabel,r.grade,`본인 ${ctx.sy1}년생 · 상대 ${ctx.sy2}년생`,lvTagsHTML([relationLabel,best[0]?`${best[0].y}년_함께_상승`:'',`${scoresSorted[0][0]}이_강한_사이`])+lvGaugeHTML(r.score,'궁합 점수'))}${fr.top}${ctxNoteHTML('gunghap')}${fr.ch1}${lvToc(GH_TITLES,'궁합 목차')}${fr.ch2}${(()=>{let hh=ctxApplyScenes('gunghap',h,{good,tough,bestY:best[0]?`${best[0].y}년`:''});try{hh=lv4Inject(hh,'gh-scenes',ppCoupleHTML(s1,s2,_meta,{weak:scoresSorted[scoresSorted.length-1][0],bestY:best[0]&&best[0].y}));}catch(e){}return hh;})()}${fr.ch3}${ctx.tail||''}</div>`;
 }
 // ══════════════════════════════════════════════
 //  신년운세 V4 — 한 페이지로 이어 읽는 풀이 (인생총운 V4와 같은 틀)
@@ -14607,7 +14547,7 @@ function buildNewyearReadingV4(saju,y,meta){
       ch2:lcChapter(2,'영역별 올해 풀이'),
       ch3:lcChapter(3,'올해의 흐름과 사람들')+lcPeople(s,{genderKey:b.genderKey})+lcBox('lc-graph',`${y}년 달마다의 흐름`,'달마다의 흐름 점수예요. 가장 높은 달에 중요한 일을 두세요.',lcLineChart(m.months.map(x=>({l:`${x.month}월`,v:x.score})),-1)+`<h4>${y}년 영역별 평균</h4>`+lcAreaBars([['재물운',avgF('wealth')],['연애운',avgF('love')],['직업운',avgF('career')],['건강운',avgF('health')]]))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
-  return {model:m,html:`<div class="lv4">${hero}${fr.top}${ctxNoteHTML('newyear')}${fr.ch1}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${fr.ch2}${h}${fr.ch3}${renderChatSection('newyear')}</div>`};
+  return {model:m,html:`<div class="lv4" data-deep="newyear:${y}">${hero}${fr.top}${ctxNoteHTML('newyear')}${fr.ch1}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${fr.ch2}${h}${fr.ch3}${renderChatSection('newyear')}</div>`};
 }
 function renderSajuPaidV2(saju,sy,sm,sd,sh,smin){
   const meta={...(_meta||{}),sy,sm,sd,hour:sh,min:smin,gender:(_meta&&_meta.gender)||gender};
@@ -20161,6 +20101,7 @@ function buildAIReadingPayload(category, extra){
     sajuContext:ctx,
     meta:{
       targetYear:extra&&extra.targetYear,
+      topic:category==='topic-answer'?((TOPIC_INFO[extra&&extra.extraKey]||{}).label||''):undefined,
       compatibility:extra&&extra.compatibility,
       source:extra&&extra.source,
       language:currentLanguagePayload(),
@@ -20181,6 +20122,7 @@ async function hydrateAIReading(category, opts){
     body.innerHTML=aiReadingTextToHtml(cached.text);
     card.style.display='';
     card.classList.add('ai-ready');
+    aiHideRule(id);
     // 캐시된 풀이가 짧거나 잘린 것이면 정적 상세 카드를 계속 보여준다
     setAIReadingFallbackVisible(category,extraKey,!cached.complete);
     if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
@@ -20204,6 +20146,7 @@ async function hydrateAIReading(category, opts){
     body.innerHTML=aiReadingTextToHtml(text);
     card.style.display='';
     card.classList.add('ai-ready');
+    aiHideRule(id);
     setAIReadingFallbackVisible(category,extraKey,!canReplace);
     if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
@@ -20213,12 +20156,78 @@ async function hydrateAIReading(category, opts){
     body.innerHTML='';
   }
 }
+// ── 결제 후 심층 해석 — 미리보기에서 가렸던 해석 문단만 AI가 다시 쓴다 (풀이당 요청 한 번) ──
+// 보이던 문장·날짜·띠·점수 같은 계산값은 그대로 두고, 섹션마다 셋째 문단부터와 한 줄 정리만 바꾼다.
+function deepEligible(sec){return [...sec.querySelectorAll('p')].filter(p=>!p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lv4-why,.lv4-answer,.ai-reading-card,.lv4-scene,.lk-note,.deep-status'));}
+function deepCollect(root){
+  const clean=s=>String(s||'').replace(/[​⁠]/g,'').replace(/ /g,' ').replace(/\s+/g,' ').trim();
+  return [...root.querySelectorAll('.lv4-sec')].map(sec=>{
+    const ps=deepEligible(sec),key=sec.querySelector('.lv4-key p'),head=sec.querySelector('.lv4-sec-head h2');
+    return {id:sec.id,title:clean(head&&head.textContent),visible:clean(ps.slice(0,2).map(p=>p.textContent).join(' ')).slice(0,450),facts:clean(ps.slice(2).map(p=>p.textContent).join(' ')+' '+(key?key.textContent:'')).slice(0,1000)};
+  }).filter(s=>s.id&&s.facts);
+}
+function deepParse(text){try{const s=String(text||''),a=s.indexOf('{'),b=s.lastIndexOf('}');if(a<0||b<a)return null;const o=JSON.parse(s.slice(a,b+1));return o&&Array.isArray(o.sections)&&o.sections.length?o:null;}catch(e){return null;}}
+function deepApply(root,data){
+  const map={};(data&&data.sections||[]).forEach(s=>{if(s&&s.id)map[s.id]=s;});
+  let n=0;
+  root.querySelectorAll('.lv4-sec').forEach(sec=>{
+    const d=map[sec.id];if(!d||!Array.isArray(d.paragraphs))return;
+    const paras=d.paragraphs.map(x=>String(x||'').trim()).filter(Boolean).slice(0,4);if(!paras.length)return;
+    const ps=deepEligible(sec),anchor=ps[1]||ps[0];
+    ps.slice(2).forEach(p=>p.remove());
+    const html=paras.map(t=>`<p class="ai-deep">${lv4Text(storyEsc(t))}</p>`).join('');
+    if(anchor&&anchor.isConnected)anchor.insertAdjacentHTML('afterend',html);
+    else{const k=sec.querySelector('.lv4-key');if(k)k.insertAdjacentHTML('beforebegin',html);else sec.insertAdjacentHTML('beforeend',html);}
+    if(d.key){const kp=sec.querySelector('.lv4-key p');if(kp)kp.innerHTML=lv4Text(storyEsc(String(d.key)));}
+    sec.querySelectorAll('.lv4-sub').forEach(sub=>{if(!sub.querySelector('p,li,.lv4-row,dl,table,svg,img,.lk-person'))sub.remove();});
+    n++;
+  });
+  return n;
+}
+function deepCached(key){try{const c=aiReadingCacheGet('reading-deep',key,currentLanguage());return c&&deepParse(c.text);}catch(e){return null;}}
+async function hydrateDeepReading(el){
+  const key=el&&el.getAttribute('data-deep');if(!key||el.dataset.deepDone)return;el.dataset.deepDone='1';
+  let data=deepCached(key),chip=null;
+  if(!data){
+    const sections=deepCollect(el);if(!sections.length)return;
+    chip=document.createElement('div');chip.className='deep-status';chip.setAttribute('role','status');
+    chip.textContent='천기가 가려졌던 해석을 깊이 다듬고 있어요. 30초쯤 걸려요.';
+    const hero=el.querySelector('.lv4-hero');if(hero&&hero.nextSibling)el.insertBefore(chip,hero.nextSibling);else el.insertBefore(chip,el.firstChild);
+    try{
+      const payload=buildAIReadingPayload('reading-deep',{source:'paid-deep'});
+      if(payload){
+        payload.sajuContext.detailedReading='';payload.meta.sections=sections;payload.meta.readingKind=key.split(':')[0];
+        const {resp,data:res}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2);
+        const text=resp&&resp.ok&&res?String(res.text||'').trim():'';
+        data=deepParse(text);
+        if(data)aiReadingCacheSet('reading-deep',key,text,currentLanguage(),true);
+      }
+    }catch(e){}
+  }
+  if(data&&deepApply(el,data)){
+    if(chip){chip.textContent='천기의 심층 해석이 반영됐어요';chip.classList.add('done');setTimeout(()=>{try{chip.remove();}catch(e){}},4000);}
+    if(currentLanguage()!=='ko')try{scheduleLanguageApply(el,[0]);}catch(e){}
+  }else if(chip)chip.remove();
+}
+// 타로·점성술 — 마크다운 섹션 단위로 앞부분은 계산 풀이, 가렸던 뒷부분은 AI 풀이로 합친다
+function mdSections(md){return String(md||'').split(/^# /m).slice(1).map(c=>{const i=c.indexOf('\n');return {title:(i<0?c:c.slice(0,i)).trim(),body:(i<0?'':c.slice(i+1)).trim()};}).filter(s=>s.title);}
+function mdMerge(keep,aiMd){
+  const norm=s=>String(s).replace(/^\d+\.\s*/,'').replace(/\s+/g,'');
+  const kept=new Set(keep.map(k=>norm(k.title)));
+  const rest=mdSections(aiMd).filter(s=>!kept.has(norm(s.title)));
+  if(!rest.length)return '';
+  return keep.concat(rest).map(s=>`# ${s.title}\n\n${s.body}`).join('\n\n');
+}
+// AI 답이 준비되면 같은 자리의 규칙 답을 숨긴다 (실패하면 규칙 답이 그대로 남는다)
+function aiHideRule(id){try{document.querySelectorAll(`[data-ai-rule="${id}"]`).forEach(el=>{el.hidden=true;});}catch(e){}}
 function hydrateAIReadings(root){
   const scope=root||document;
+  scope.querySelectorAll('[data-deep]').forEach(el=>{try{hydrateDeepReading(el);}catch(e){}});
   scope.querySelectorAll('[data-ai-reading]').forEach(card=>{
     const category=card.getAttribute('data-ai-reading');
     const extraKey=card.getAttribute('data-ai-extra')||'';
     if(category==='newyear'||category==='newyear-core')hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-'+category});
+    else if(category==='topic-answer')hydrateAIReading(category,{extraKey,source:'paid-'+extraKey});
     else hydrateAIReading(category,{extraKey,source:'paid-'+category});
   });
 }
@@ -26257,6 +26266,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=c88baba1e3d4"></script>
+<script src="assets/astrology.js?v=f42271748788"></script>
 </body>
 </html>

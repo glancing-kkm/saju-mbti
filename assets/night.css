@@ -841,3 +841,8 @@ html[data-read-lang]:not([data-read-lang="ko"]) .lv4 p,html[data-read-lang]:not(
 #app #formWrap #nameFieldset>legend{display:flex;align-items:center;gap:6px}
 #app #formWrap .required-note{display:inline-block;white-space:nowrap;margin:0 0 0 4px}
 #app #formWrap .birth-date-row input[aria-invalid="true"]{border-bottom-color:var(--warn)}
+
+/* 결제 후 심층 해석 진행 안내 */
+.deep-status{margin:4px 0 6px;padding:11px 14px;border-radius:12px;border:1px dashed var(--accent);color:var(--accent);font-family:var(--font-heading);font-size:.92rem;text-align:center;animation:wz-breathe 1.8s ease-in-out infinite}
+.deep-status.done{animation:none;border-style:solid}
+.lv4 p.ai-deep{position:relative}
