@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=10627918fac6">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=a4db38c4633f">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=91fbf034ca71">
 </head>
 <body>
 <div id="app">
@@ -12060,40 +12060,51 @@ function reportProfileHTML(cat){
 // 미리보기만 압축한다. 결제 후 원본 풀이와 잠금 처리는 그대로 유지한다.
 function compactReportPreview(root){
   const core=root.querySelector(':scope > #lv4-lc-core')||root.querySelector(':scope > .lv4-sec');if(!core)return;
-  // 본문은 압축해도 전체 풀이의 챕터명과 다루는 주제는 빠짐없이 보여준다.
-  const chapters=[...root.querySelectorAll(':scope > .lv4-sec')].map(section=>({
-    title:section.querySelector('h2')?.textContent.trim()||'',
-    scope:section.querySelector('.lv4-sec-label')?.textContent.trim()||''
-  })).filter(chapter=>chapter.title);
+  // 계산식으로 만든 문장을 그대로 발췌한다. 이미 적용한 핵심 정보 마스크도 보존한다.
+  const summarize=(p,maxSentences,maxLength)=>{
+    const text=p.textContent,sentences=text.match(/[\s\S]+?(?:[.!?。](?=\s|$)|$)/g)||[text];
+    let brief=sentences.slice(0,maxSentences).join('').trimEnd();
+    if(brief.length>maxLength)brief=sentences[0].trimEnd();
+    let left=brief.length;
+    const walker=document.createTreeWalker(p,4),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(n=>{const count=Math.min(left,n.nodeValue.length);n.nodeValue=n.nodeValue.slice(0,count);left-=count;});
+    p.querySelectorAll('.lk').forEach(e=>{if(!e.textContent)e.remove();});
+    p.innerHTML=preventOrphan(p.innerHTML);
+  };
+  const chapters=[...root.querySelectorAll(':scope > .lv4-sec')].map(section=>{
+    const paragraphs=[...section.querySelectorAll('p')].filter(p=>
+      !p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lk-note')&&
+      !p.querySelector('.lk-block')&&!p.classList.contains('lc-foot')&&p.textContent.trim().length>15
+    ).slice(0,2).map((p,i)=>{const excerpt=p.cloneNode(true);summarize(excerpt,i===0?2:1,i===0?150:100);excerpt.className='preview-chapter-summary';return excerpt.outerHTML;});
+    return {
+      title:section.querySelector('h2')?.textContent.trim()||'',
+      scope:section.querySelector('.lv4-sec-label')?.textContent.trim()||'',
+      paragraphs:paragraphs.join('')
+    };
+  }).filter(chapter=>chapter.title);
   let contents=null;
   if(chapters.length){
     contents=document.createElement('section');contents.className='report-preview-contents';
-    contents.setAttribute('aria-label','전체 풀이 목차');
-    contents.innerHTML=`<h2>전체 풀이 목차</h2><p class="preview-contents-note">${chapters.length}개 챕터 · 결제 후 모든 풀이가 열려요</p><ol>${chapters.map((chapter,i)=>`<li><span class="preview-chapter-no" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><h3>${lv4Text(storyEsc(chapter.title))}</h3>${chapter.scope&&chapter.scope!==chapter.title?`<p>${lv4Text(storyEsc(chapter.scope))}</p>`:''}</div></li>`).join('')}</ol>`;
+    contents.setAttribute('aria-label','전체 챕터와 사주 풀이 미리보기');
+    contents.innerHTML=`<h2>챕터별 풀이 미리보기</h2><p class="preview-contents-note">${chapters.length}개 챕터 · 사주 풀이를 짧게 보여드려요.<br>중요한 내용은 블러 처리했어요.</p><ol>${chapters.map((chapter,i)=>`<li><span class="preview-chapter-no" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><h3>${lv4Text(storyEsc(chapter.title))}</h3>${chapter.scope&&chapter.scope!==chapter.title?`<p class="preview-chapter-scope">${lv4Text(storyEsc(chapter.scope))}</p>`:''}${chapter.paragraphs}<p class="preview-chapter-locked">${lkSpan('이 챕터의 중요한 상세 풀이')}<small>핵심 풀이</small></p></div></li>`).join('')}</ol>`;
   }
   const scene=root.querySelector(':scope > .report-opening-scene');
   const special=root.querySelector(':scope > #lv4-lc-special');
   const people=root.querySelector(':scope > .lc-people');
   const graph=[...root.querySelectorAll(':scope > .lc-graph')].find(e=>e.querySelector('.lc-curve'));
-  const keep=new Set([core,special,people,graph,scene,root.querySelector(':scope > .report-profile'),root.querySelector(':scope > .lc-orbs'),root.querySelector(':scope > .lc-moments')]);
+  const keep=new Set([people,graph,scene,root.querySelector(':scope > .report-profile'),root.querySelector(':scope > .lc-orbs'),root.querySelector(':scope > .lc-moments')]);
+  // 챕터 발췌가 있으면 겹치는 종합 요약 카드는 반복하지 않는다.
+  if(!contents){keep.add(core);keep.add(special);}
+  const contentPosition=root.querySelector(':scope > .lc-moments')||scene||root.querySelector(':scope > .lc-orbs');
   [...root.children].forEach(e=>{if(!keep.has(e))e.remove();});
-  if(contents){const moments=root.querySelector(':scope > .lc-moments');if(moments)moments.after(contents);else core.before(contents);}
+  if(contents){if(contentPosition)contentPosition.after(contents);else root.prepend(contents);}
   root.classList.add('preview-compact');
-  // 기존 마스크와 고아글자 방지 태그를 보존하면서 앞의 두 문장만 남긴다.
-  const summarize=p=>{
-    const text=p.textContent,sentences=text.match(/[\s\S]+?(?:[.!?。](?=\s|$)|$)/g)||[text];
-    let brief=sentences.slice(0,2).join('').trimEnd();
-    if(brief.length>150)brief=sentences[0].trimEnd();
-    let left=brief.length;
-    const walker=document.createTreeWalker(p,4),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
-    nodes.forEach(n=>{const count=Math.min(left,n.nodeValue.length);n.nodeValue=n.nodeValue.slice(0,count);left-=count;});
-  };
-  [core,special].filter(Boolean).forEach(card=>{
+  if(!contents)[core,special].filter(Boolean).forEach(card=>{
     const title=card.querySelector('.lc-card-title,h2');
     if(title)title.classList.add('lc-card-title');
     card.classList.remove('lv4-sec');card.classList.add('lc-card');
     const paras=[...card.querySelectorAll(':scope > p')].filter(p=>!p.classList.contains('lc-foot')&&!p.querySelector('.lk-block')).slice(0,1);
-    paras.forEach(summarize);card.replaceChildren(...[title,...paras].filter(Boolean));
+    paras.forEach(p=>summarize(p,2,150));card.replaceChildren(...[title,...paras].filter(Boolean));
   });
   if(people){
     const cards=[...people.querySelectorAll('.lc-pcard')].slice(0,2);

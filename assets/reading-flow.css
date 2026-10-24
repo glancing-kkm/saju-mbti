@@ -132,3 +132,8 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app .report-preview-contents li>div{min-width:0}
 #app .report-preview-contents h3{margin:0;font-size:15px;line-height:1.6;color:var(--text);word-break:keep-all;overflow-wrap:anywhere}
 #app .report-preview-contents li p{margin:4px 0 0;font-size:12px;line-height:1.6;color:var(--muted);word-break:keep-all;overflow-wrap:anywhere}
+#app .report-preview-contents li{padding:20px 0}
+#app .report-preview-contents li .preview-chapter-scope{margin-top:4px;margin-bottom:12px;color:var(--accent)}
+#app .report-preview-contents li .preview-chapter-summary{margin:10px 0 0;font-size:14px;line-height:1.8;color:var(--sub);text-align:left}
+#app .report-preview-contents li .preview-chapter-locked{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:13px;color:var(--muted)}
+#app .report-preview-contents .preview-chapter-locked small{font-size:11px;white-space:nowrap}

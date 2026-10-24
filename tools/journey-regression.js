@@ -212,14 +212,19 @@ const submitBirth=async()=>{
       assert.match(d.querySelector('#p5 .report-profile-birth').textContent,/시간 모름/);
       const clock=run("(()=>{const saved=_meta;_meta={..._meta,hour:8,min:58,tsoMin:-32};const out=reportProfileHTML('life');_meta=saved;return out;})()");assert.match(clock,/09:30/);
     });
-    check('유료 풀이: 핵심 미리보기만 짧게 표시하고 상세 풀이 비공개',()=>{
+    check('유료 풀이: 모든 챕터의 계산식 설명을 짧게 보여주고 핵심은 블러 처리',()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
       const preview=d.querySelector('#p5 .lk-preview');assert(preview.querySelector('.preview-compact') && preview.querySelector('.lk'));
       assert(preview.textContent.length<2600);
       const contents=preview.querySelector('.report-preview-contents');assert(contents);
       assert.equal(contents.querySelectorAll('li').length,8);
       assert.match(contents.textContent,/8개 챕터/);
-      assert(!contents.querySelector('a,button,.lk'));
+      assert(!contents.querySelector('a,button'));
+      assert([...contents.querySelectorAll('li')].every(li=>{
+        const paragraphs=li.querySelectorAll('.preview-chapter-summary');
+        const visible=li.cloneNode(true);visible.querySelectorAll('.lk,h3,.preview-chapter-scope,.preview-chapter-locked').forEach(e=>e.remove());
+        return paragraphs.length>=1&&paragraphs.length<=2&&visible.textContent.trim().length>25&&li.querySelector('.lk');
+      }));
       assert.equal(preview.querySelectorAll('.lc-scene').length,1);
       assert(preview.querySelectorAll('.lc-tl').length<=3);
       assert(!preview.querySelector('.lv4-sec,.lk-block,.lk-note,.lc-areas,.lv4-toc,.pp-box'));
@@ -232,6 +237,16 @@ const submitBirth=async()=>{
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));
+    });
+    check('챕터 발췌: 실제 계산 문장 보존, 중요한 날짜·장소 마스킹, 긴 본문 제외',()=>{
+      const full='<div class="lv4"><div class="lc-orbs"></div><section class="lv4-sec"><h2>재물 흐름</h2><p class="lv4-lead">본인은 꾸준히 자원을 쌓는 사람이에요. 작은 습관이 재물의 기반을 만들어요. 이 문장은 미리보기에서 생략돼요.</p><div class="lv4-sub"><p>거래를 움직이는 때는 2031년 9월이고, 만나는 곳은 <span class="lk-m">부산해운대매장</span>이에요.</p><p>PAID_HIDDEN_DETAILS 상세 본문은 결제 후에만 보여요.</p></div></section></div>';
+      const box=d.createElement('div');box.innerHTML=run(`previewLockHTML('life',${JSON.stringify(full)})`);
+      const paragraphs=[...box.querySelectorAll('.preview-chapter-summary')];
+      assert.equal(paragraphs.length,2);
+      assert.equal(paragraphs[0].textContent,'본인은 꾸준히 자원을 쌓는 사람이에요. 작은 습관이 재물의 기반을 만들어요.');
+      assert(paragraphs[1].querySelector('.lk'));
+      assert(!/2031|9월|부산해운대매장|PAID_HIDDEN_DETAILS|이 문장은 미리보기에서 생략/.test(box.innerHTML));
+      assert(!box.querySelector('[data-deep],[data-ai-reading],[data-portrait]'));
     });
     for(const cat of ['life','newyear','monthly','daypick','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-health']){
       check('결제 전 풀이 비공개: '+cat,()=>{
@@ -257,6 +272,7 @@ const submitBirth=async()=>{
         assert(box.textContent.length<2600,cat);
         const normalize=s=>s.replace(/\u200b/g,'').replace(/\u00a0/g,' ');
         assert.deepEqual([...box.querySelectorAll('.report-preview-contents li h3')].map(e=>normalize(e.textContent)),chapterTitles.map(normalize),cat+' 전체 챕터 노출');
+        assert([...box.querySelectorAll('.report-preview-contents li')].every(li=>li.querySelector('.preview-chapter-summary')&&li.querySelector('.lk')),cat+' 계산식 풀이와 블러 노출');
         assert(!box.querySelector('.lv4-sec,.lv4-toc,.lk-block'),cat);
         assert.equal(box.querySelectorAll('.lc-scene').length,1,cat);
         box.innerHTML=run(expr);
