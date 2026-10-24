@@ -216,7 +216,7 @@ const submitBirth=async()=>{
       assert(d.querySelector('#p5 .paid-access-notice'));
       assert(d.querySelector('#p5 .lk-preview .lv4-sec') && d.querySelector('#p5 .lk') && d.querySelector('#p5 .lk-note'));
       assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta,#p5 [data-deep]'));
-      assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-line'));
+      assert(d.querySelector('#p5 .lc-orbs') && d.querySelector('#p5 .lc-people') && d.querySelector('#p5 .lc-curve') && d.querySelector('#p5 .lc-pcard') && d.querySelector('#p5 .lc-radar'));
       const pp=[...d.querySelectorAll('#p5 .pp-box')];assert(pp.length && pp.every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);

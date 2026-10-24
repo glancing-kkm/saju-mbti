@@ -167,7 +167,7 @@ const harness = `
     ok('인생총운 덱: 이전·근거·다음 버튼 제공',
        secondDeckCard.includes('lifeDeckPrev()')&&secondDeckCard.includes('lifeOpenEvidence(')&&secondDeckCard.includes('lifeDeckNext()'));
     ok('인생총운 한 페이지: 목차에서 섹션으로 바로 이동',
-       (ha.match(/lv4Jump\\('/g)||[]).length===8 && globalThis.__SOURCE_HTML__.includes('function lv4Jump('));
+       ((ha.match(/class="lv4-toc"[\\s\\S]*?<\\/nav>/)||[''])[0].match(/lv4Jump\\('/g)||[]).length===8 && globalThis.__SOURCE_HTML__.includes('function lv4Jump('));
     ok('미니 만세력: 네 기둥 명칭 확대 스타일 적용',
        globalThis.__SOURCE_HTML__.includes('.mm-lab .term{display:inline-block;font-size:var(--saju-glyph)') &&
        parseFloat((globalThis.__SOURCE_HTML__.match(/--saju-glyph:\\s*([\\d.]+)rem/)||[])[1]||0) >= 1.4);
