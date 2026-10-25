@@ -20644,6 +20644,7 @@ async function chatAsk(){
       deviceFingerprint:qnaDeviceFingerprint(),
       sajuId:(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'',
       freeQuestion:curCat==='qna'&&qnaFreeAvailable(),
+      paidTokens:loadPaidTokens(), // 질문권·풀이 결제 확인 — 서버가 횟수가 남은 결제를 골라 쓴다
       counselor:curCat==='qna'?_qnaCounselor:'master',
     };
     const {res,data,error}=await qnaFetchWithRetry(payload,2);

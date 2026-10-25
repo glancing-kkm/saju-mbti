@@ -120,10 +120,13 @@ export default {
     if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
       return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
     }
+    // 무료 질문이 아니면 결제(질문권·풀이)를 확인한다. 답을 돌려줄 때만 한 번으로 센다.
+    const chatGate = freeGuardKeys.length ? { commit: async () => {} } : await requirePaidChat(env, request, body);
+    if (chatGate.error) return chatGate.error;
     const cacheKey = await qnaCacheKey({ question, sajuContext, category: chatCategory, language: lang.code, counselor });
     const cached = await qnaCacheGet(env, cacheKey);
     if (cached) {
-      if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+      if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys); await chatGate.commit();
       return json({ answer: normalizeQnaAnswer(cached.answer), provider: cached.provider || 'cache', cached: true });
     }
 
@@ -142,7 +145,7 @@ export default {
           });
           const answer = normalizeQnaAnswer(result.text);
           await qnaCacheSet(env, cacheKey, { answer, provider: 'hermes' });
-          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys); await chatGate.commit();
           return json({ answer: answer || '답변을 생성하지 못했습니다.', provider: 'hermes', usage: result.usage || null });
         } catch (e) {
           console.warn('Hermes QNA failed, trying other providers:', e && e.message);
@@ -162,7 +165,7 @@ export default {
           });
           const answer = normalizeQnaAnswer(result.text);
           await qnaCacheSet(env, cacheKey, { answer, provider: 'openai', model: route.model });
-          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys); await chatGate.commit();
           return json({
             answer: answer || '답변을 생성하지 못했습니다.',
             provider: 'openai',
@@ -207,7 +210,7 @@ export default {
 
           const answer = normalizeQnaAnswer(text) || '답변을 생성하지 못했습니다.';
           await qnaCacheSet(env, cacheKey, { answer, provider: 'anthropic' });
-          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys); await chatGate.commit();
           return json({
             answer,
             provider: 'anthropic',
@@ -227,7 +230,7 @@ export default {
         if (result.text) {
           const answer = normalizeQnaAnswer(result.text);
           await qnaCacheSet(env, cacheKey, { answer, provider: 'workers-ai', model: result.model });
-          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys);
+          if (freeGuardKeys.length) await qnaFreeGuardMark(env, freeGuardKeys); await chatGate.commit();
           return json({ answer, provider: 'workers-ai', model: result.model, usage: result.usage || null });
         }
       }
@@ -274,6 +277,38 @@ async function requirePaid(env, body, bucket, limit) {
   try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
   if (used >= limit) return { error: json({ error: '이 결제로 쓸 수 있는 횟수를 모두 썼어요.', code: 'PAID_LIMIT' }, 429) };
   return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} } };
+}
+// 채팅 질문 — 결제한 토큰 여러 개 중 아직 횟수가 남은 첫 토큰을 쓴다.
+// 질문권(chatpackN)은 N회+여유 1, 인생총운·신년운세 같은 풀이에 딸린 질문은 3회까지.
+// 토큰 기능 이전에 산 질문권을 위해 CHAT_TOKENLESS_UNTIL까지는 토큰 없이도 접속 주소당 하루 CHAT_TOKENLESS_DAILY회를 받아 준다.
+const CHAT_TOKENLESS_UNTIL = Date.parse('2026-11-30T15:00:00.000Z');
+const CHAT_TOKENLESS_DAILY = 5;
+function chatLimitOf(paid) {
+  const m = /^chatpack(\d+)$/.exec(String((paid && paid.c) || ''));
+  return m ? Number(m[1]) + 1 : 3;
+}
+async function requirePaidChat(env, request, body) {
+  if (!env.PAID_TOKEN_SECRET) return { commit: async () => {} };
+  const tokens = (Array.isArray(body && body.paidTokens) ? body.paidTokens : []).concat(body && body.paidToken ? [body.paidToken] : []).slice(0, 12);
+  for (const t of tokens) {
+    const paid = await verifyPaidToken(env, t);
+    if (!paid) continue;
+    if (!env.SAJU_QNA_CACHE) return { commit: async () => {} };
+    const key = `paid-use:chat:${String(paid.o).slice(0, 80)}`;
+    let used = 0;
+    try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
+    if (used >= chatLimitOf(paid)) continue;
+    return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} } };
+  }
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (Date.now() < CHAT_TOKENLESS_UNTIL && ip && env.SAJU_QNA_CACHE) {
+    const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+    const key = `chat-tokenless:${day}:${ip}`;
+    let used = 0;
+    try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
+    if (used < CHAT_TOKENLESS_DAILY) return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} } };
+  }
+  return { error: json({ error: '질문권을 확인하지 못했어요. 질문권을 충전한 뒤 다시 물어봐 주세요.', code: 'QNA_NEED_PAYMENT' }, 402) };
 }
 // 주문 1건당 AI 글 요청 한도 — 심층 해석·PDF 리포트 5장·질문 답·궁합 여러 번을 넉넉히 감싼다
 const PAID_TEXT_LIMIT = 40;
