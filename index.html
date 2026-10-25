@@ -7601,7 +7601,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=ac74e23654';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=a72e636bdb';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -7615,15 +7615,15 @@ function pdfProgress(text){
   el.innerHTML=`<div><b>PDF 리포트를 만드는 중이에요</b><span>${text}</span></div>`;
 }
 // 오래 걸린 작업 뒤에는 자동 저장이 막히는 브라우저가 많아서, 준비가 끝나면 사용자가 눌러서 저장한다
-function pdfReadyPrompt(pdf,fileName,title){
+function pdfReadyPrompt(blob,fileName,title){
   const el=document.createElement('div');el.className='pdf-progress';el.id='pdfReady';el.setAttribute('role','dialog');
   el.innerHTML=`<div><b>PDF 리포트가 준비됐어요</b><span>저장하기를 누르면 기기에 저장하거나 카카오톡·메일로 보낼 수 있어요.</span><button type="button" class="pdf-cta-btn" id="pdfReadySave">저장하기</button><button type="button" class="pdf-ready-close" id="pdfReadyClose">닫기</button></div>`;
   document.body.appendChild(el);
   document.getElementById('pdfReadyClose').onclick=()=>el.remove();
   document.getElementById('pdfReadySave').onclick=async()=>{
     const touch=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    if(touch){try{const file=new File([pdf.output('blob')],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});el.remove();return;}}catch(e){if(e&&e.name==='AbortError')return;}}
-    pdf.save(fileName);el.remove();
+    if(touch){try{const file=new File([blob],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});el.remove();return;}}catch(e){if(e&&e.name==='AbortError')return;}}
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);el.remove();
   };
 }
 let _pdfBusy=false,_reportJsLoading=null;
@@ -7642,8 +7642,8 @@ async function downloadReportPdf(cat){
     await loadReportPdfModule();
     const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress});
     pdfProgress(null);
-    pdfReadyPrompt(r.pdf,r.fileName,r.title);
-    journeyEvent('pdf_download',cat,{pages:r.pages});
+    pdfReadyPrompt(r.blob,r.fileName,r.title);
+    journeyEvent('pdf_download',cat,{pages:r.pages,mode:r.mode});
   }catch(e){
     try{console.error('[pdf]',e);}catch(_){}
     pdfProgress(null);

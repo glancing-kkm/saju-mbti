@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v1';
+const RP_VERSION='v1',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -665,7 +665,13 @@ function rpShell(host,spec,d,o){
 function rpFlow(host,spec,d,o,blocks){
   // blocks: [{html, keep}] — keep이면 다음 블록과 같은 쪽에 둔다
   const pages=[];let pg=rpShell(host,spec,d,o),body=pg.querySelector('.rp-body');pages.push(pg);
-  const fits=()=>body.scrollHeight<=body.clientHeight+1;
+  // 서버(리눅스 크롬)와 사용자 기기의 글자 폭이 조금 달라도 잘리지 않게 쪽마다 한 줄 남짓 여유를 둔다
+  const fits=()=>{
+    if(body.scrollHeight>body.clientHeight+1)return false;
+    const last=body.lastElementChild;if(!last)return true;
+    const used=last.getBoundingClientRect().bottom-body.getBoundingClientRect().top+(parseFloat(getComputedStyle(last).marginBottom)||0);
+    return used<=body.clientHeight-RP_SAFE;
+  };
   const cont=()=>{pg=rpShell(host,spec,d,{...o,ey:(o.ey||'')+' · 이어서',sub:''});body=pg.querySelector('.rp-body');pages.push(pg);};
   const make=h=>{const t=document.createElement('div');t.innerHTML=h;return t.firstElementChild?(t.childElementCount===1?t.firstElementChild:t):t;};
   for(let i=0;i<blocks.length;i++){
@@ -793,6 +799,13 @@ async function buildTemplateReport(cat,opts){
     all.forEach((p,i)=>{const b=p.querySelector('.rp-foot b');if(b)b.textContent=pad2(i+1);});
     const chars=rpCount(all);
     if(opts.dryRun)return {host,pages:all,chars,ai:ai.okGroups,groups:plan.groups.length};
+    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
+    // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
+    if(!opts.imageOnly){
+      prog('PDF 파일로 만드는 중이에요');
+      const blob=await rpServerPdf(rpStandalone(all),opts);
+      if(blob){host.remove();return {...base,blob,mode:'text'};}
+    }
     const {jsPDF}=window.jspdf,pdf=new jsPDF('portrait','mm','a4');
     // html2canvas 1.4는 color-mix()로 칠한 문서 배경을 읽지 못한다 — 그리는 동안만 일반 색으로 바꿔 둔다
     const roots=[document.documentElement,document.body],saved=roots.map(el=>[el.style.getPropertyValue('background-color'),el.style.getPropertyPriority('background-color')]);
@@ -806,10 +819,26 @@ async function buildTemplateReport(cat,opts){
       canvas.width=canvas.height=0;
     }
     }finally{roots.forEach((el,i)=>{if(saved[i][0])el.style.setProperty('background-color',saved[i][0],saved[i][1]);else el.style.removeProperty('background-color');});}
-    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`;
     host.remove();
-    return {pdf,fileName,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
+    return {...base,blob:pdf.output('blob'),mode:'image'};
   }catch(e){host.remove();throw e;}
+}
+// 서버 인쇄용 문서 — 쪽 HTML과 보고서 스타일만 담는다(스크립트 없음)
+function rpStandalone(pages){
+  const css=RP_CSS+`@page{size:${RP_W}px ${RP_H}px;margin:0}html,body{margin:0;padding:0;background:#faf8f3}.rp-page{break-after:page;page-break-after:always}.rp-page:last-child{break-after:auto;page-break-after:auto}.lv4-nb{white-space:nowrap}`;
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700&display=block"><style>${css}</style></head><body>${pages.map(p=>p.outerHTML).join('')}</body></html>`;
+}
+async function rpServerPdf(html,opts){
+  const ctl=typeof AbortController==='function'?new AbortController():null,timer=ctl?setTimeout(()=>ctl.abort(),70000):0;
+  try{
+    const token=typeof latestPaidToken==='function'?latestPaidToken():'';
+    const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html,paidToken:token}),signal:ctl?ctl.signal:undefined});
+    if(!resp.ok||!/application\/pdf/.test(resp.headers.get('Content-Type')||''))return null;
+    const blob=await resp.blob();
+    const head=new Uint8Array(await blob.slice(0,5).arrayBuffer());
+    return blob.size>2000&&String.fromCharCode(...head).startsWith('%PDF')?blob:null;
+  }catch(e){return null;}
+  finally{if(timer)clearTimeout(timer);}
 }
 window.TEMPLATE_REPORT_SPECS=SPECS;
 window.buildTemplateReport=buildTemplateReport;

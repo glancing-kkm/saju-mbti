@@ -1,0 +1,8 @@
+{
+  "name": "cheonjiin-workers",
+  "private": true,
+  "description": "Cloudflare Workers — wrangler bundles these dependencies",
+  "dependencies": {
+    "@cloudflare/puppeteer": "1.4.0"
+  }
+}

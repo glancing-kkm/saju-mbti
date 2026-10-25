@@ -3,6 +3,7 @@
 //  배포 후 받은 URL을 index.html 의 WORKER_URL 상수에 등록하세요.
 //  외부 모델 API 키는 Worker 환경변수 OPENAI_API_KEY / ANTHROPIC_API_KEY / HERMES_API_KEY 로 보관됩니다.
 // ──────────────────────────────────────────────────────────────────
+import puppeteer from '@cloudflare/puppeteer';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://saju-mbti-9h1.pages.dev',
@@ -67,6 +68,7 @@ function usageType(path, body) {
   if (path === '/tarot-reading') return 'tarot';
   if (path === '/astrology-reading') return 'astrology';
   if (path === '/portrait') return 'portrait';
+  if (path === '/report-pdf') return 'report-pdf';
   if (path === '/' || path === '') return `chat:${String((body && body.category) || 'life').slice(0, 30)}`;
   return '';
 }
@@ -116,6 +118,9 @@ async function routeRequest(request, env) {
     }
     if (url.pathname === '/portrait') {
       return handlePortrait(request, env);
+    }
+    if (url.pathname === '/report-pdf') {
+      return handleReportPdf(request, env);
     }
     if (url.pathname === '/translate') {
       // 언어 선택 메뉴를 내린 뒤로 쓰지 않는 기능 — 남이 호출해 비용이 나가지 않게 닫아 둔다(다시 쓸 때 handleTranslate 연결)
@@ -357,6 +362,51 @@ const REPORT_TPL_FORMAT = {
 };
 // 주문 1건당 AI 글 요청 한도 — 심층 해석·PDF 리포트 5장·질문 답·궁합 여러 번을 넉넉히 감싼다
 const PAID_TEXT_LIMIT = 40;
+
+// PDF 리포트 — 화면에서 짠 A4 쪽 HTML을 Cloudflare 브라우저로 인쇄해 글자가 살아 있는 PDF로 돌려준다.
+// 결제한 주문만, 주문 1건당 PDF_ORDER_LIMIT번. 무료 플랜 한도(하루 10분)를 넘거나 실패하면 화면이 예전 방식(이미지 PDF)으로 만든다.
+const PDF_ORDER_LIMIT = 8;
+const PDF_MAX_HTML = 3 * 1024 * 1024;
+const PDF_ALLOWED_HOSTS = new Set(['fonts.googleapis.com', 'fonts.gstatic.com']);
+async function handleReportPdf(request, env) {
+  if (!env.BROWSER) return json({ error: 'PDF 서비스가 아직 준비되지 않았어요.', code: 'PDF_RENDER_UNAVAILABLE' }, 503);
+  let b;
+  try { b = await request.json(); } catch { return json({ error: 'JSON 본문이 필요합니다.' }, 400); }
+  const gate = await requirePaid(env, b, 'pdf', PDF_ORDER_LIMIT);
+  if (gate.error) return gate.error;
+  let html = String((b && b.html) || '');
+  if (!/^<!doctype html>/i.test(html) || html.length > PDF_MAX_HTML) return json({ error: '보고서 내용이 올바르지 않아요.', code: 'PDF_BAD_HTML' }, 400);
+  // 보고서는 글과 그림뿐이다 — 스크립트와 이벤트 속성은 지우고, 글꼴 말고는 바깥 요청을 막는다
+  html = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+  let browser;
+  try {
+    browser = await puppeteer.launch(env.BROWSER);
+    const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      let host = '';
+      try { host = new URL(req.url()).hostname; } catch {}
+      if (req.url().startsWith('data:') || PDF_ALLOWED_HOSTS.has(host)) req.continue();
+      else req.abort();
+    });
+    await page.setViewport({ width: 794, height: 1123 });
+    // 한글 웹폰트는 조각 파일이 많아 networkidle을 기다리면 오래 걸린다 — 문서를 연 뒤 레이아웃을 한 번 잡고 글꼴만 기다린다
+    await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.evaluate(() => Promise.race([
+      (async () => { document.body.getBoundingClientRect(); await document.fonts.ready; })(),
+      new Promise((r) => setTimeout(r, 15000)),
+    ]));
+    const pdf = await page.pdf({ width: '794px', height: '1123px', printBackground: true, preferCSSPageSize: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } });
+    await gate.commit();
+    return new Response(pdf, { headers: { ...CORS_HEADERS, 'Content-Type': 'application/pdf', 'Cache-Control': 'no-store' } });
+  } catch (e) {
+    console.warn('report pdf failed:', e && e.message);
+    const quota = /limit|quota|429|rate/i.test(String(e && e.message));
+    return json({ error: 'PDF를 잠시 만들지 못했어요.', code: quota ? 'PDF_RENDER_LIMIT' : 'PDF_RENDER_FAILED' }, 503);
+  } finally {
+    if (browser) { try { await browser.close(); } catch {} }
+  }
+}
 
 async function handlePortrait(request, env) {
   if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);

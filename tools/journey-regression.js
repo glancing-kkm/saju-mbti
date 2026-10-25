@@ -91,7 +91,7 @@ const submitBirth=async()=>{
     });
     check('리딩 서버: 12개 주제·궁합·선택 연도·긴 질문을 프롬프트에 보존',()=>{
       const server=vm.createContext({});
-      vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'utf8').replace('export default {','const testWorker = {'),server);
+      vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'utf8').replace(/^import .*$/m,'').replace('export default {','const testWorker = {'),server);
       const chart={birthInfo:{year:1994,birthTimeUnknown:true},planets:[{planet:'sun',sign:'taurus'}]};
       const question='자세한 질문 '.repeat(1000)+'서버까지 마지막 질문';
       for(const topic of JSON.parse(run('JSON.stringify(READING_TOPICS)'))){
