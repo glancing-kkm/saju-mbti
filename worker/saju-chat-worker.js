@@ -60,8 +60,42 @@ function counselorKeyOf(value) {
   return Object.prototype.hasOwnProperty.call(COUNSELORS, value) ? value : 'master';
 }
 
+// 하루 사용량 — 성공한 AI 요청을 종류별로 센다(한국 날짜 기준). 보는 법: node tools/usage-report.js
+// usage:YYYY-MM-DD:종류 → 횟수. 동시에 몰리면 조금 적게 셀 수 있어 추세를 보는 용도로 쓴다.
+function usageType(path, body) {
+  if (path === '/reading') return `reading:${String((body && body.category) || '').slice(0, 30)}`;
+  if (path === '/tarot-reading') return 'tarot';
+  if (path === '/astrology-reading') return 'astrology';
+  if (path === '/portrait') return 'portrait';
+  if (path === '/' || path === '') return `chat:${String((body && body.category) || 'life').slice(0, 30)}`;
+  return '';
+}
+async function countUsage(env, type) {
+  if (!type || !env.SAJU_QNA_CACHE) return;
+  const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const key = `usage:${day}:${type}`;
+  try {
+    const n = Number(await env.SAJU_QNA_CACHE.get(key)) || 0;
+    // 목록 조회만으로 횟수를 볼 수 있게 metadata에도 같은 값을 둔다
+    await env.SAJU_QNA_CACHE.put(key, String(n + 1), { expirationTtl: 120 * 24 * 3600, metadata: { n: n + 1 } });
+  } catch {}
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
+    let peek = null;
+    if (request.method === 'POST') { try { peek = await request.clone().json(); } catch {} }
+    const res = await routeRequest(request, env);
+    if (res && res.ok && request.method === 'POST') {
+      const job = countUsage(env, usageType(new URL(request.url).pathname, peek));
+      if (ctx && ctx.waitUntil) ctx.waitUntil(job); else await job;
+    }
+    return res;
+  },
+};
+
+async function routeRequest(request, env) {
+  {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: CORS_HEADERS });
@@ -236,8 +270,8 @@ export default {
       console.error('Worker error:', e);
       return json({ error: '답변을 잠시 생성하지 못했습니다.', code: 'AI_TEMPORARY_UNAVAILABLE' }, 503);
     }
-  },
-};
+  }
+}
 
 // 결제 후 프로필 카드용 인상 이미지 — 정해진 항목만 받아 서버에서 문장을 만든다(임의 프롬프트 차단)
 const PORTRAIT_DAILY_LIMIT = 20;
@@ -306,6 +340,21 @@ async function requirePaidChat(env, request, body) {
   }
   return { error: json({ error: '질문권을 확인하지 못했어요. 질문권을 충전한 뒤 다시 물어봐 주세요.', code: 'QNA_NEED_PAYMENT' }, 402) };
 }
+// PDF 템플릿 보고서 — JSON 모양을 스키마로 고정해 끊기거나 깨진 답을 막는다
+const REPORT_TPL_FORMAT = {
+  type: 'json_schema',
+  name: 'report_sections',
+  strict: true,
+  schema: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['sections', 'fields'],
+    properties: {
+      sections: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'paragraphs'], properties: { id: { type: 'string' }, paragraphs: { type: 'array', items: { type: 'string' } } } } },
+      fields: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'text'], properties: { id: { type: 'string' }, text: { type: 'string' } } } },
+    },
+  },
+};
 // 주문 1건당 AI 글 요청 한도 — 심층 해석·PDF 리포트 5장·질문 답·궁합 여러 번을 넉넉히 감싼다
 const PAID_TEXT_LIMIT = 40;
 
@@ -362,7 +411,7 @@ async function handleReading(request, env) {
   }
 
   const { category, sajuContext, meta, language } = body || {};
-  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap', 'report-life', 'report-love', 'report-money', 'report-career', 'report-health', 'topic-answer', 'reading-deep']);
+  const allowed = new Set(['life', 'life-core', 'newyear', 'newyear-core', 'gunghap', 'life-gunghap', 'report-life', 'report-love', 'report-money', 'report-career', 'report-health', 'topic-answer', 'reading-deep', 'report-tpl']);
   if (!allowed.has(category)) {
     return json({ error: '지원하지 않는 리딩 카테고리입니다.' }, 400);
   }
@@ -380,8 +429,9 @@ async function handleReading(request, env) {
     // 핵심 리딩(life-core/newyear-core)은 3,000~4,200자 한국어를 요구한다.
     // 한국어는 토큰이 촘촘해서 이 분량만 4,000~5,000 출력 토큰이 필요하고,
     // gpt-5 계열은 추론 토큰까지 같은 예산에서 빼 쓴다. 예산이 모자라면 본문이 잘린 채 돌아온다.
-    const READING_MAX_TOKENS = category === 'reading-deep' ? 14000 : coreReading ? 8000 : 2400;
-    const ANTHROPIC_READING_MAX_TOKENS = category === 'reading-deep' ? 9000 : coreReading ? 6000 : 2400;
+    // report-tpl(PDF 템플릿 보고서)은 한 번에 소제목 10개 안팎 × 3문단을 JSON으로 받는다 — 한국어 8천~1만 자
+    const READING_MAX_TOKENS = category === 'report-tpl' ? 16000 : category === 'reading-deep' ? 14000 : coreReading ? 8000 : 2400;
+    const ANTHROPIC_READING_MAX_TOKENS = category === 'report-tpl' ? 12000 : category === 'reading-deep' ? 9000 : coreReading ? 6000 : 2400;
     // 잘린 본문은 폴백 대상 — 클라이언트가 정적 상세 카드를 지우지 않도록 truncated 를 같이 내려준다.
     let truncatedFallback = null;
 
@@ -393,8 +443,9 @@ async function handleReading(request, env) {
           systemPrompt,
           userPrompt,
           maxOutputTokens: READING_MAX_TOKENS,
-          reasoningEffort: coreReading ? 'medium' : 'low',
-          verbosity: 'medium',
+          reasoningEffort: coreReading && category !== 'report-tpl' ? 'medium' : 'low',
+          verbosity: category === 'report-tpl' ? 'high' : 'medium',
+          format: category === 'report-tpl' ? REPORT_TPL_FORMAT : null,
         });
         if (result.text && !result.truncated) {
           return json({ ok: true, provider: 'openai', text: result.text, truncated: false, usage: result.usage || null });
@@ -1151,7 +1202,7 @@ function json(obj, status = 200) {
   });
 }
 
-async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, maxOutputTokens = 1800, reasoningEffort = 'low', verbosity = 'medium' }) {
+async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, maxOutputTokens = 1800, reasoningEffort = 'low', verbosity = 'medium', format = null }) {
   const body = {
     model,
     input: [
@@ -1164,6 +1215,7 @@ async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, ma
     body.reasoning = { effort: reasoningEffort };
     body.text = { verbosity };
   }
+  if (format) body.text = { ...(body.text || {}), format };
   const resp = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
@@ -1427,6 +1479,7 @@ function buildReadingSystemPrompt(category, meta) {
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
     'reading-deep': '결제 후 공개되는 심층 해석입니다. 섹션 자료의 각 섹션마다, 화면에 이미 보이는 문장(visible)에 자연스럽게 이어지는 깊은 해석 문단과 한 줄 정리를 새로 쓰세요. facts에 적힌 계산 결과(시기·숫자·성향·사람)는 빠짐없이 녹여 쓰되 문장은 새로 쓰고, facts에 없는 날짜·숫자는 지어내지 마세요. visible 문장을 그대로 반복하지 마세요. 일반론이 아니라 이 사람에게만 해당하는 장면과 행동으로 콕 집어 쓰세요.',
     'topic-answer': `주제별 운세(${meta.topic || '주제'})에서 상담자가 직접 적은 질문에 답하는 문단입니다. 질문에 정면으로 답하세요. 첫 문장은 결론, 이어서 사주에서 그렇게 보는 이유, 언제(계산된 연·월 인용), 어떻게 하면 좋은지를 상담자의 구체적인 상황에 맞춰 쓰세요. 질문과 관계없는 일반론으로 채우지 마세요.`,
+    'report-tpl': `유료 PDF 보고서(${String((meta && meta.reportName) || '사주').slice(0, 20)})의 본문 일부를 씁니다. 보고서 목차의 소제목마다 이 사람에게만 해당하는 풀이를 쓰세요. 아래 "화면 풀이 요약"과 "계산 결과"에 있는 시기·점수·성향·사람을 근거로 삼고, 소제목이 묻는 내용에 정면으로 답하세요. 같은 문장이나 같은 시기를 소제목마다 되풀이하지 마세요.`,
     'report-life': 'PDF 평생 사주 리포트에 들어갈 심층 장(章)입니다. 인생 전체를 관통하는 그릇, 인생에서 크게 열리는 기회의 시기, 평생 조심할 함정, 나이대별 전략을 시기와 장면으로 콕 집어 쓰세요.',
     'report-love': 'PDF 리포트의 연애·결혼 심층 장입니다. 사랑하는 방식, 운명의 상대 모습, 만나는 때와 장소, 반복되는 실수, 결혼과 가정을 구체적인 연·월과 장면으로 콕 집어 쓰세요.',
     'report-money': 'PDF 리포트의 재물 심층 장입니다. 돈의 그릇, 돈이 들어오는 길, 돈이 새는 길, 잘 맞는 자산 관리 성향, 재물이 크게 움직이는 시기를 구체적으로 콕 집어 쓰세요. 특정 상품 추천이나 확정적인 투자 판단은 하지 마세요.',
@@ -1447,7 +1500,16 @@ function buildReadingSystemPrompt(category, meta) {
     : (lang.code === 'ko'
       ? '[올해 총론], [재물], [직업·사업], [연애·관계], [인간관계], [건강], [12개월 흐름], [기회 시기], [주의 시기], [올해 행동 가이드]'
       : 'Use natural translated equivalents of: Overall year, Wealth, Career and business, Love and relationships, Social relationships, Health, 12-month flow, Opportunity timing, Caution timing, Action guide for the year. Put each translated section title in square brackets.');
-  const outputGuide = category === 'reading-deep'
+  const outputGuide = category === 'report-tpl'
+    ? `출력 형식:
+- 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
+- {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단","문단"]}],"fields":[{"id":"필드 id","text":"내용"}]}
+- 섹션 자료의 모든 섹션을 같은 순서로 넣고 id는 바꾸지 마세요. 섹션마다 paragraphs는 4개, 문단마다 4~5문장으로 쓰고 문단 하나가 공백 포함 260자 이상이 되게 하세요. 한 섹션은 1,100자 안팎이에요. 짧게 줄이지 마세요.
+- 첫 문단은 소제목에 대한 결론, 둘째 문단은 사주에서 그렇게 보는 이유, 셋째 문단은 실제로 겪을 장면, 넷째 문단은 언제·어떻게 하면 좋은지로 쓰세요.
+- fields에는 필드 자료의 모든 id를 하나씩 넣고, 각 필드의 지시(ask)와 글자 수(max) 안에서 쓰세요.
+- 문단과 필드 안에 줄바꿈, 마크다운, 번호, 따옴표 장식을 넣지 마세요. 문장 안에서 무언가를 인용할 때는 작은따옴표(')를 그대로 쓰고 역슬래시를 붙이지 마세요.
+- 정관·편관·정재·편재·식신·상관·비견·겁재·정인·편인과 '~격' 같은 사주 유형 이름은 쓰지 말고 쉬운 말로 풀어 쓰세요.`
+    : category === 'reading-deep'
     ? `출력 형식:
 - 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
 - {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단"]}]}
@@ -1513,7 +1575,9 @@ function situationText(ctx) {
 function buildReadingUserPrompt(category, ctx, meta) {
   const lang = normalizeLanguage(meta && meta.language);
   const reading = String(ctx.detailedReading || '').slice(0, isCoreReadingCategory(category) ? 18000 : 12000);
-  const task = category === 'reading-deep'
+  const task = category === 'report-tpl'
+    ? `보고서: ${String(meta.reportName || '').slice(0, 20)}\n계산 결과: ${String(meta.facts || '').replace(/[<>]/g, '').slice(0, 2400)}\n\n섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 16).map((s) => ({ id: String(s.id || '').slice(0, 24), chapter: String(s.chapter || '').slice(0, 40), title: String(s.title || '').slice(0, 60), hint: String(s.hint || '').slice(0, 300) })) : [])}\n\n필드 자료(JSON): ${JSON.stringify(Array.isArray(meta.fields) ? meta.fields.slice(0, 40).map((f) => ({ id: String(f.id || '').slice(0, 24), ask: String(f.ask || '').slice(0, 120), max: Math.max(8, Math.min(240, Number(f.max) || 60)) })) : [])}\n\n위 섹션과 필드를 모두 채워 JSON으로만 답하세요.`
+    : category === 'reading-deep'
     ? `섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 14).map((s) => ({ id: String(s.id || '').slice(0, 40), title: String(s.title || '').slice(0, 80), visible: String(s.visible || '').slice(0, 450), facts: String(s.facts || '').slice(0, 1000) })) : [])}\n\n위 섹션마다 심층 해석을 써서 JSON으로만 답하세요. 풀이 종류: ${String(meta.readingKind || '').slice(0, 20)}.`
     : category === 'topic-answer'
     ? `위 정보와 모순되지 않게, "지금 상황"에 적힌 상담자의 질문에 정면으로 답하세요. 상담 주제: ${meta.topic || '미상'}.`

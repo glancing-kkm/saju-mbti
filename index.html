@@ -2240,7 +2240,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=10627918fac6">
+<link rel="stylesheet" href="/assets/night.css?v=42acc9ebf5be">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=b252cda43fa9">
 </head>
 <body>
@@ -3419,6 +3419,7 @@ function sajuIdOf(saju,meta){
 // 결제 1건이 여는 범위 — 같은 사주에 더해, 풀이를 바꾸는 추가 입력까지 같아야 한다.
 // 궁합은 상대, 이름풀이는 이름, 신년운세는 연도, 지정일·월별은 날짜가 다르면 다른 풀이다.
 function unlockScopeOf(cat,saju=_saju,meta=_meta){
+  if(/^pdf-/.test(String(cat||'')))return unlockScopeOf(String(cat).slice(4),saju,meta);
   const sid=sajuIdOf(saju,meta);
   if(!sid)return '';
   const m=meta||{};
@@ -7596,94 +7597,16 @@ function sinsalMiniHTML(activeSins, contextDesc){
   return h;
 }
 
-// ── 후속 행동 CTA — 결과 페이지 끝, 다음 카테고리·공유 유도 ──
-// ── PDF 리포트 — 결제한 풀이를 A4 여러 장으로 나눠 내려받는다 ──
-// 인생총운은 인생총운 + 올해 신년운세 + 주제별 7가지를 묶어 약 5~6만 자 리포트로 만든다.
-const PDF_LIFE_TOPICS=['topic-love','topic-money','topic-career','topic-marriage','topic-children','topic-health','topic-study'];
+// ── 프리미엄 PDF 리포트 — 풀이 결제와 별도 상품(pdf-<카테고리>, 5,000원) ──
+// 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
+// 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
+const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
+const PDF_REPORT_JS='/assets/report-pdf.js?v=ac74e23654';
+function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
-  if(!PAID_META[cat]||/^(tarot|astro|chatpack)/.test(cat))return '';
-  const life=cat==='life';
-  return `<section class="pdf-cta"><div><b>${life?'평생 사주 리포트 PDF':'풀이 PDF로 저장'}</b><small>${life?'인생총운·올해 운세·연애·재물·직업·결혼·자녀·건강·학업까지 한 권으로 묶었어요.':'지금 보는 풀이를 A4 문서로 저장해요.'}</small></div><button type="button" class="pdf-cta-btn" onclick="downloadReportPdf('${cat}')">PDF 받기</button></section>`;
-}
-function pdfSources(cat){
-  const meta={...(_meta||{}),gender:(_meta&&_meta.gender)||gender},out=[];
-  const safe=(title,fn)=>{try{const h=fn();if(h)out.push([title,h]);}catch(e){}};
-  if(cat==='life'){
-    safe('인생총운',()=>renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min));
-    safe(`${new Date().getFullYear()}년 신년운세`,()=>renderNewyearFortune(_saju,new Date().getFullYear()));
-    PDF_LIFE_TOPICS.forEach(c=>safe(TOPIC_INFO[c].label,()=>renderTopicPaid(c,_saju,meta)));
-  }else{
-    const panel=document.getElementById('p'+CAT_IDX[cat]),lv=panel&&panel.querySelector('.lv4');
-    if(lv)out.push([CAT_LABEL[cat]||'풀이',lv.outerHTML]);
-  }
-  return out;
-}
-// 화면용 요소를 문서용으로 정리 — 버튼·채팅·목차는 빼고, 접힌 근거는 펼친다
-function pdfClean(html,idx){
-  const box=document.createElement('div');box.innerHTML=html;
-  box.querySelectorAll('[data-deep]').forEach(el=>{const d=deepCached(el.getAttribute('data-deep'));if(d)deepApply(el,d);el.removeAttribute('data-deep');});
-  box.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>{try{const src=lcPortraitCached(JSON.parse(decodeURIComponent(card.getAttribute('data-portrait'))));if(src)lcPortraitSet(card,src);}catch(e){}});
-  if(idx>0)box.querySelectorAll('.lc-orbs,.lc-pair-label,#lv4-lc-bars,.lv4-gauge').forEach(e=>e.remove());
-  box.querySelectorAll('.chat-card,.next-actions,.summary-card,.lv4-toc,button,script,.pdf-cta,.lk-note,.lk-bar,.lc-scene,[data-ai-reading]:not(.ai-ready),.ai-reading-status').forEach(e=>e.remove());
-  box.querySelectorAll('details').forEach(d=>{const div=document.createElement('div');div.className='pdf-why';const s=d.querySelector('summary');div.innerHTML=`<h4>${s?s.textContent:'근거'}</h4>`+[...d.children].filter(x=>x.tagName!=='SUMMARY').map(x=>x.outerHTML).join('');d.replaceWith(div);});
-  const lv=box.querySelector('.lv4')||box;
-  return [...lv.children];
-}
-// AI 심층 리포트 장 — 인생총운 PDF에만 붙인다. 실패한 장은 건너뛰고, 한 번 쓴 글은 캐시를 다시 쓴다.
-const PDF_AI_REPORTS=[['report-life','천기의 심층 리포트 · 인생 총론'],['report-love','천기의 심층 리포트 · 연애와 결혼'],['report-money','천기의 심층 리포트 · 재물'],['report-career','천기의 심층 리포트 · 일과 커리어'],['report-health','천기의 심층 리포트 · 건강']];
-function pdfAIToBlocks(text){
-  const parts=String(text||'').split(/\n?\s*\[([^\]\n]{1,30})\]\s*\n?/),blocks=[];
-  const mk=(title,body)=>{const d=document.createElement('section');d.className='lv4-sec';d.innerHTML=(title?`<div class="lv4-sec-head"><h2>${storyEsc(title)}</h2></div>`:'')+String(body||'').split(/\n+/).map(s=>s.trim()).filter(Boolean).map(s=>`<p>${lv4Text(storyEsc(s))}</p>`).join('');return d;};
-  if(parts[0]&&parts[0].trim())blocks.push(mk('',parts[0]));
-  for(let i=1;i<parts.length;i+=2)if(String(parts[i+1]||'').trim())blocks.push(mk(parts[i],parts[i+1]));
-  return blocks;
-}
-async function pdfAIChapters(onProgress){
-  let done=0;const lang=currentLanguage();
-  const one=async([cat,title])=>{
-    try{
-      const cached=aiReadingCacheGet(cat,'pdf',lang);let text=cached&&cached.text;
-      if(!text){
-        const payload=buildAIReadingPayload(cat,{source:'paid-life'});if(!payload)return null;
-        const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2);
-        text=resp&&resp.ok&&data?String(data.text||data.answer||'').trim():'';
-        if(text)aiReadingCacheSet(cat,'pdf',text,lang,true);
-      }
-      return text?[title,pdfAIToBlocks(text)]:null;
-    }catch(e){return null;}finally{done++;if(onProgress)onProgress(done);}
-  };
-  return (await Promise.all(PDF_AI_REPORTS.map(one))).filter(Boolean);
-}
-function pdfPageShell(host,title,dateStr){
-  const page=document.createElement('div');page.className='pdf-page lv4';
-  page.innerHTML=`<div class="pdf-head"><span>천지인 사주 · ${storyEsc(title)}</span><span>${dateStr}</span></div><div class="pdf-body"></div><div class="pdf-foot"></div>`;
-  host.appendChild(page);return page;
-}
-const PDF_ATOMIC='p,h1,h2,h3,h4,li,dt,dd,.lv4-row,.lc-orbs,.lv4-key,.lv4-gauge,.lv4-tags,svg,figure,img,.lc-bar,.lc-tl,.lc-area-row,.lv4-sec-head,.lc-card-title,.pdf-chapter,.lc-chapter,table';
-function pdfPaginate(host,chapters,title,dateStr){
-  const pages=[],starts=[];let page,body,cur;
-  const mark=el=>{el.setAttribute('data-pdfshell','1');return el;};
-  const newPage=chain=>{page=pdfPageShell(host,title,dateStr);body=page.querySelector('.pdf-body');pages.push(page);cur=body;chain.forEach(anc=>{const sh=mark(anc.cloneNode(false));cur.appendChild(sh);cur=sh;});};
-  const fits=()=>body.scrollHeight<=body.clientHeight+1;
-  const empty=()=>!body.textContent.trim()&&!body.querySelector('img,svg');
-  const place=(el,chain)=>{
-    cur.appendChild(el);if(fits())return;cur.removeChild(el);
-    const kids=[...el.childNodes].filter(k=>k.nodeType===1||String(k.textContent).trim());
-    if(kids.length<2||(el.matches&&el.matches(PDF_ATOMIC))){
-      if(!empty()){newPage(chain);cur.appendChild(el);if(fits())return;cur.removeChild(el);}
-      cur.appendChild(el);return;
-    }
-    const sh=mark(el.cloneNode(false));cur.appendChild(sh);cur=sh;
-    const c2=chain.concat([el]);kids.forEach(k=>place(k,c2));
-    cur=cur.parentNode;
-  };
-  chapters.forEach(([chTitle,blocks],ci)=>{
-    newPage([]);starts.push(pages.length);
-    const h=document.createElement('div');h.className='pdf-chapter';h.innerHTML=`<small>CHAPTER ${ci+1}</small><h1>${storyEsc(chTitle)}</h1>`;body.appendChild(h);
-    blocks.forEach(b=>place(b,[]));
-  });
-  host.querySelectorAll('[data-pdfshell]').forEach(el=>{if(!el.textContent.trim()&&!el.querySelector('img,svg'))el.remove();});
-  return {pages,starts};
+  if(!PDF_REPORT_CATS.includes(cat))return '';
+  const paid=isUnlockedFor('pdf-'+cat),price=formatWon(PAY_BASE_PRICE['pdf-'+cat]||5000);
+  return `<section class="pdf-cta"><div><b>프리미엄 PDF 리포트</b><small>표지·차례·도표와 장별 상세 풀이를 담은 A4 보고서예요. ${paid?'결제가 확인됐어요. 24시간 동안 다시 받을 수 있어요.':`풀이 결제와 별도인 ${price} 상품이에요.`}</small></div><button type="button" class="pdf-cta-btn" onclick="downloadReportPdf('${cat}')">${paid?'PDF 받기':`${price} · PDF 받기`}</button></section>`;
 }
 function pdfProgress(text){
   let el=document.getElementById('pdfProgress');
@@ -7691,64 +7614,45 @@ function pdfProgress(text){
   if(text===null){el.remove();return;}
   el.innerHTML=`<div><b>PDF 리포트를 만드는 중이에요</b><span>${text}</span></div>`;
 }
+// 오래 걸린 작업 뒤에는 자동 저장이 막히는 브라우저가 많아서, 준비가 끝나면 사용자가 눌러서 저장한다
 function pdfReadyPrompt(pdf,fileName,title){
   const el=document.createElement('div');el.className='pdf-progress';el.id='pdfReady';el.setAttribute('role','dialog');
-  el.innerHTML=`<div><b>PDF 리포트가 준비됐어요</b><span>저장하기를 누르면 파일 앱·카카오톡·메일로 보낼 수 있어요.</span><button type="button" class="pdf-cta-btn" id="pdfReadySave">저장하기</button><button type="button" class="pdf-ready-close" id="pdfReadyClose">닫기</button></div>`;
+  el.innerHTML=`<div><b>PDF 리포트가 준비됐어요</b><span>저장하기를 누르면 기기에 저장하거나 카카오톡·메일로 보낼 수 있어요.</span><button type="button" class="pdf-cta-btn" id="pdfReadySave">저장하기</button><button type="button" class="pdf-ready-close" id="pdfReadyClose">닫기</button></div>`;
   document.body.appendChild(el);
   document.getElementById('pdfReadyClose').onclick=()=>el.remove();
   document.getElementById('pdfReadySave').onclick=async()=>{
-    const blob=pdf.output('blob');
-    try{const file=new File([blob],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});el.remove();return;}}catch(e){if(e&&e.name==='AbortError')return;}
-    const url=URL.createObjectURL(blob);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),60000);el.remove();
+    const touch=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    if(touch){try{const file=new File([pdf.output('blob')],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});el.remove();return;}}catch(e){if(e&&e.name==='AbortError')return;}}
+    pdf.save(fileName);el.remove();
   };
 }
-let _pdfBusy=false;
+let _pdfBusy=false,_reportJsLoading=null;
+function loadReportPdfModule(){
+  if(typeof window.buildTemplateReport==='function')return Promise.resolve();
+  if(!_reportJsLoading)_reportJsLoading=new Promise((ok,fail)=>{const s=document.createElement('script');s.src=PDF_REPORT_JS;s.onload=ok;s.onerror=()=>{_reportJsLoading=null;fail(new Error('report-js'));};document.head.appendChild(s);});
+  return _reportJsLoading;
+}
 async function downloadReportPdf(cat){
-  if(_pdfBusy)return;
-  if(!isUnlockedFor(cat)){openPaymentConsent(cat,'KAKAOPAY');return;}
+  if(_pdfBusy||!PDF_REPORT_CATS.includes(cat))return;
+  if(!isUnlockedFor('pdf-'+cat)){openPaymentConsent('pdf-'+cat,'KAKAOPAY');return;}
   if(typeof html2canvas==='undefined'||typeof window.jspdf==='undefined'){alert('PDF 기능을 불러오는 중이에요. 잠시 후 다시 눌러 주세요.');return;}
   _pdfBusy=true;
-  const host=document.createElement('div');host.className='pdf-host';document.body.appendChild(host);
   try{
-    pdfProgress('풀이를 모으는 중');
-    const title=cat==='life'?'평생 사주 리포트':`${CAT_LABEL[cat]||'풀이'} 리포트`;
-    const d=new Date(),dateStr=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
-    const chapters=pdfSources(cat).map(([t,h],i)=>[t,pdfClean(h,i)]);
-    if(!chapters.length)throw new Error('풀이를 찾지 못했어요.');
-    if(cat==='life'){
-      pdfProgress(`천기가 심층 리포트를 쓰는 중이에요 (0/${PDF_AI_REPORTS.length}) · 1~2분 걸려요`);
-      const ai=await pdfAIChapters(n=>pdfProgress(`천기가 심층 리포트를 쓰는 중이에요 (${n}/${PDF_AI_REPORTS.length}) · 1~2분 걸려요`));
-      chapters.splice(1,0,...ai);
-    }
-    // 표지
-    const cover=pdfPageShell(host,title,dateStr);cover.classList.add('pdf-cover');
-    cover.querySelector('.pdf-body').innerHTML=`<div class="pdf-cover-inner"><small>天地人 · 천지인 사주</small><h1>${title}</h1><p>${ppName()?ppName()+' · ':''}${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일생 · ${((_meta&&_meta.gender)||gender)==='female'?'여성':'남성'}</p>${typeof lcOrbs==='function'?lcOrbs(_saju):''}<p class="pdf-cover-date">${dateStr} 발행</p></div>`;
-    // 목차 자리
-    const toc=pdfPageShell(host,title,dateStr);
-    await new Promise(r=>setTimeout(r,60));
-    const {pages,starts}=pdfPaginate(host,chapters,title,dateStr);
-    toc.querySelector('.pdf-body').innerHTML=`<div class="pdf-chapter"><small>CONTENTS</small><h1>목차</h1></div><ol class="pdf-toc">${chapters.map(([t],i)=>`<li><span>${storyEsc(t)}</span><b>${starts[i]+2}</b></li>`).join('')}</ol><p class="pdf-note">사주는 정해진 운명이 아니라 흐름을 보여 주는 참고 자료예요. 중요한 결정은 본인의 판단과 전문가의 도움을 함께 받으세요.</p>`;
-    const all=[cover,toc,...pages];
-    all.forEach((p,i)=>{const f=p.querySelector('.pdf-foot');if(f)f.textContent=i?String(i+1):'';});
-    const {jsPDF}=window.jspdf,pdf=new jsPDF('portrait','mm','a4');
-    for(let i=0;i<all.length;i++){
-      pdfProgress(`${i+1} / ${all.length}쪽`);
-      const canvas=await html2canvas(all[i],{scale:1.5,backgroundColor:'#fbf7ef',useCORS:true,logging:false,width:794,height:1123,windowWidth:794});
-      if(i)pdf.addPage();
-      pdf.addImage(canvas.toDataURL('image/jpeg',0.82),'JPEG',0,0,210,297);
-    }
-    const fileName=`천지인사주_${title.replace(/\s/g,'')}_${_meta.sy}${String(_meta.sm).padStart(2,'0')}${String(_meta.sd).padStart(2,'0')}.pdf`;
-    // 아이폰·아이패드는 오래 걸린 작업 뒤 자동 저장이 막히므로, 준비가 끝나면 사용자가 눌러서 공유·저장한다
-    if(/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))pdfReadyPrompt(pdf,fileName,title);
-    else pdf.save(fileName);
-    journeyEvent('pdf_download',cat);
+    pdfProgress('보고서를 준비하는 중이에요');
+    await loadReportPdfModule();
+    const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress});
+    pdfProgress(null);
+    pdfReadyPrompt(r.pdf,r.fileName,r.title);
+    journeyEvent('pdf_download',cat,{pages:r.pages});
   }catch(e){
     try{console.error('[pdf]',e);}catch(_){}
-    alert('PDF를 만들지 못했어요. 잠시 후 다시 시도해 주세요.');
+    pdfProgress(null);
+    alert('PDF를 만들지 못했어요. 잠시 후 다시 눌러 주세요. 결제한 리포트는 24시간 동안 다시 받을 수 있어요.');
   }finally{
-    host.remove();pdfProgress(null);_pdfBusy=false;
+    pdfProgress(null);_pdfBusy=false;
   }
 }
+// ── 후속 행동 CTA — 결과 페이지 끝, 다음 카테고리·공유 유도 ──
 function nextActionsHTML(currentCat){
   // 홈 화면에 실제 노출 중인 카테고리만 추천
   const allCats=[
@@ -8758,7 +8662,7 @@ function renderDaypickFortune(saju,y,m,d,extra){
       const hourCards=Array.from({length:12},(_,bi)=>{const r=brRel(saju.dp.branch,bi).kind,r2=brRel(f.dp.branch,bi).kind;const kind=r==='합'||r2==='합'?'길시':r==='충'||r2==='충'?'주의':'평시';return {bi,kind,accent:kind==='길시'?'var(--good)':kind==='주의'?'var(--warn)':'var(--sub)',hourTG:tenGod(saju.dp.stem,BR_MAIN_STEM[bi]),note:HOUR_GENERAL[bi]};});
       let sins=[];try{sins=findSinsal(saju);}catch(e){}
       _daypickSummaryData={saju,y,m,d,wDay:['일','월','화','수','목','금','토'][test.getDay()],f,grade:dailyGrade(f.total),stemTG:f.tg,rel:f.rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo:BRCHKO[saju.dp.branch],curDaeun:cd,zod:getZodiac12(_meta.sm,_meta.sd),hourCards,activeSins:sins.filter(s=>s.b===f.dp.branch),dm:DM[saju.dp.stem],gender:g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
-      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${y}.${m}.${d} 지정일 운세 요약본 다운로드</div><div class="nb-body"><p>이 날의 점수와 분야별 흐름, 10년 흐름 안에서의 의미, 좋은 시간과 조심할 시간을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button><button class="summary-btn dp-summary-btn secondary" onclick="downloadDaypickSummary('pdf')">PDF 다운로드</button></div></div></div>`);
+      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${y}.${m}.${d} 지정일 운세 요약본 다운로드</div><div class="nb-body"><p>이 날의 점수와 분야별 흐름, 10년 흐름 안에서의 의미, 좋은 시간과 조심할 시간을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button></div></div></div>`);
     }
   }catch(e){}
   return `<div class="lv4-wrap dp-v4">${buildDaypickReadingV4(saju,y,m,d,extra)}${summary}</div></div>`;
@@ -9103,7 +9007,6 @@ function renderDaypickFortuneLegacy(saju,y,m,d,extra){
           </div>
           <div class="summary-actions">
             <button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button>
-            <button class="summary-btn dp-summary-btn secondary" onclick="downloadDaypickSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -9178,7 +9081,7 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     if(_meta&&_meta.sy){
       const fmt=o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`;
       _monthlySummaryData={saju,sy,sm,ey,em,totalMonths:D.months.length,monthsData:D.months,luckyMonths:D.lucky.map(fmt),toughMonths:D.tough.map(fmt),decisive:D.decisive,avgTotal:D.avgT,avgGrade:D.g,gk:getGyeokguk(saju),ys:D.ys,curDaeun:D.sD,zod:getZodiac12(_meta.sm,_meta.sd),dm:DM[saju.dp.stem],gender:_meta.gender||'male',wealthAvg:D.avg('wealth'),loveAvg:D.avg('love'),careerAvg:D.avg('career'),healthAvg:D.avg('health'),metaSy:_meta.sy};
-      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div><div class="nb-body"><p>기간 평균 점수, 10년 흐름 안에서의 의미, 달마다의 점수와 좋은 달·쉬어 갈 달, 분야별 평균을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button><button class="summary-btn mo-summary-btn secondary" onclick="downloadMonthlySummary('pdf')">PDF 다운로드</button></div></div></div>`);
+      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div><div class="nb-body"><p>기간 평균 점수, 10년 흐름 안에서의 의미, 달마다의 점수와 좋은 달·쉬어 갈 달, 분야별 평균을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button></div></div></div>`);
     }
   }catch(e){}
   return `<div class="lv4-wrap mo-v4">${built.html}${summary}</div></div>`;
@@ -9477,7 +9380,6 @@ function renderMonthlyFortuneLegacy(saju,sy,sm,ey,em,extra){
           </div>
           <div class="summary-actions">
             <button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button>
-            <button class="summary-btn mo-summary-btn secondary" onclick="downloadMonthlySummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -10203,7 +10105,6 @@ function renderNewyearFortuneLegacy(saju,y){
           </div>
           <div class="summary-actions">
             <button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button>
-            <button class="summary-btn ny-summary-btn secondary" onclick="downloadNewyearSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -10290,7 +10191,7 @@ function newyearV3DaeunBoard(m){return `<div class="ny-v3-daeun">${m.eras.map(x=
 function newyearV3SeasonBoard(m){return `<div class="ny-v3-season">${m.seasons.map(x=>`<div class="ny-v3-season-card"><span>${lifeV3EmojiEntity(x.emoji)}</span><b>${x.name} · ${x.score}점</b><small>${preventOrphan(x.text)}</small></div>`).join('')}</div>`;}
 function renderNewyearV3SummaryCard(m){
   _newyearSummaryData={version:3,model:m,y:m.y};
-  return `<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${m.y}년 신년운세 요약본 다운로드</div><div class="nb-body">${lifeV3EmojiGrid([{emoji:'🧭',label:'한 해의 큰 방향',text:'현재 10년과 선택한 해의 흐름을 연결해 보여줘요.'},{emoji:'📊',label:'분야와 계절',text:'돈·사랑·일·건강 점수와 계절별 활용법을 담아요.'},{emoji:'🧩',label:'계산 근거',text:'네 자리 사주판과 올해 두 글자를 함께 보여줘요.'}])}<div class="summary-actions"><button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button><button class="summary-btn ny-summary-btn secondary" onclick="downloadNewyearSummary('pdf')">PDF 다운로드</button></div></div></div>`;
+  return `<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${m.y}년 신년운세 요약본 다운로드</div><div class="nb-body">${lifeV3EmojiGrid([{emoji:'🧭',label:'한 해의 큰 방향',text:'현재 10년과 선택한 해의 흐름을 연결해 보여줘요.'},{emoji:'📊',label:'분야와 계절',text:'돈·사랑·일·건강 점수와 계절별 활용법을 담아요.'},{emoji:'🧩',label:'계산 근거',text:'네 자리 사주판과 올해 두 글자를 함께 보여줘요.'}])}<div class="summary-actions"><button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button></div></div></div>`;
 }
 function buildNewyearV3Library(saju,y,meta){
   const m=buildNewyearV3Model(saju,y,meta),fp=m.fingerprint,dm=STEMKO[saju.dp.stem],support=m.support,support2=m.support2;
@@ -12055,7 +11956,21 @@ const PAY_BASE_PRICE={
   "astro-love-marriage": 1500,
   "astro-career-money": 1500,
   "astro-yearly": 2000,
-  "astro-full-report": 2000
+  "astro-full-report": 2000,
+  "pdf-life": 5000,
+  "pdf-newyear": 5000,
+  "pdf-gunghap": 5000,
+  "pdf-name": 5000,
+  "pdf-ziwei": 5000,
+  "pdf-topic-love": 5000,
+  "pdf-topic-money": 5000,
+  "pdf-topic-career": 5000,
+  "pdf-topic-marriage": 5000,
+  "pdf-topic-reunion": 5000,
+  "pdf-topic-study": 5000,
+  "pdf-topic-child": 5000,
+  "pdf-topic-children": 5000,
+  "pdf-topic-health": 5000
 };
 
 // 기존 상품 ID는 구매 이력 복원용으로 유지하고, 새 상품은 공통 주제로 구성한다.
@@ -12070,6 +11985,12 @@ for(const n of [3,5,10]){
   PAID_META[key]={...PAID_META['tarot'+n],title:CAT_LABEL[key],price:PAY_BASE_PRICE[key].toLocaleString('ko-KR')+'원'};
 }
 for(const key of Object.keys(PAY_BASE_PRICE))if(PAID_META[key])PAID_META[key].price=PAY_BASE_PRICE[key].toLocaleString('ko-KR')+'원';
+// 프리미엄 PDF 리포트 — 풀이 결제와 별도 상품
+for(const c of PDF_REPORT_CATS){
+  const key='pdf-'+c,label=(CAT_LABEL[c]||(PAID_META[c]&&PAID_META[c].title)||c);
+  CAT_LABEL[key]=`${label} PDF 리포트`;
+  PAID_META[key]={icon:'',title:CAT_LABEL[key],desc:`${label} 풀이를 전용 템플릿 보고서로 정리해 PDF로 드려요.<br>표지·차례·도표와 장별 상세 풀이를 담은 A4 보고서예요.`,features:['· 주제별 전용 템플릿 표지와 차례','· 사주 원국표·흐름 그래프·성향 도표','· 장마다 소제목별 맞춤 풀이','· 화면 풀이 전문을 담은 상세 풀이','· 같은 사주로 24시간 동안 다시 받기'],price:(PAY_BASE_PRICE[key]||5000).toLocaleString('ko-KR')+'원'};
+}
 const CHAT_PACK_COUNT={chatpack3:3,chatpack5:5,chatpack7:7};
 // 지금 이 순간의 카테고리 단가 — 워커 augustPromoPriceForCategory()와 같은 규칙
 function basePriceFor(category, nowMs=Date.now()){
@@ -12106,7 +12027,7 @@ function getUsageGuide(category){
     `<b>다시 보는 방법</b> — 결제 후 같은 사주는 <b>24시간 동안 무제한 재조회</b>가 가능해요. 단, 다른 사주를 조회하시려면 다시 결제가 필요해요.`,
   ];
   if(category==='life'){
-    items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 PNG·PDF로 다운로드하실 수 있어요.`);
+    items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 이미지(PNG)로 저장하실 수 있어요.`);
   }
   if(chatCount>0){
     const packPriceGuide=isAugust990Promo()?'8월에는 추가 질문 3회 990원, 5회 1,490원, 7회 1,990원으로 충전할 수 있어요.':'한도 초과 시 1,500원부터의 추가 패키지(3·5·7회)로 즉시 충전돼요.';
@@ -12437,6 +12358,13 @@ function _adminUnlockPaidCategory(category){
     }catch(e){alert('점성술 잠금 해제 중 문제가 있었어요.');}
     return;
   }
+  if(isPdfReportCat(cat)){
+    setUnlockedFor(cat);
+    try{closePaymentConsent();}catch(e){}
+    if(_saju&&_meta)downloadReportPdf(cat.slice(4));
+    else alert('잠금이 해제되었습니다. 사주 정보를 입력한 뒤 PDF 받기를 눌러 주세요.');
+    return;
+  }
   const pack=CHAT_PACKS.find(p=>p.cat===cat);
   if(pack){
     const target=_category||'qna';
@@ -12724,7 +12652,8 @@ async function _handlePaymentReturn(){
     journeyEvent('purchase',pending.category,{value:pending.amount,transaction_id:pending.partnerOrderId});
     const pack=CHAT_PACKS.find(p=>p.cat===pending.category);
     const targetCat=pack?(pending.targetChatCat||'qna'):(pending.category||cat);
-    restorePaymentStateFromPending(pending,targetCat);
+    const pdfBase=isPdfReportCat(targetCat)?targetCat.slice(4):'';
+    restorePaymentStateFromPending(pending,pdfBase||targetCat);
     _clearPendingPayment();
     history.replaceState({},'',location.pathname);
     const orderId=pending.partnerOrderId;
@@ -12763,6 +12692,14 @@ async function _handlePaymentReturn(){
         if(btn&&chatRemaining(targetCat)>0){btn.disabled=false;btn.textContent=targetCat==='qna'?'보내기':'질문하기';}
       }catch(e){}
       openPayDoneModal({orderId, cat:targetCat, isChatpack:true, chatpackCount:pack.count, rendered});
+      return;
+    }
+    // PDF 리포트 — 리포트 잠금만 풀고, 보던 풀이로 돌아가 바로 보고서를 만든다
+    if(pdfBase){
+      setUnlockedFor(targetCat);
+      try{closePaymentConsent();}catch(e){}
+      if(isUnlockedFor(pdfBase))renderPaymentReturnTarget(pdfBase);
+      setTimeout(()=>downloadReportPdf(pdfBase),300);
       return;
     }
     // 일반 카테고리 — 잠금 해제 + 풀이 노출
@@ -13119,7 +13056,6 @@ function renderLifeV2SummaryCard(m){
       ])}
       <div class="summary-actions">
         <button class="summary-btn" onclick="downloadLifeSummary('png')">이미지(PNG)</button>
-        <button class="summary-btn secondary" onclick="downloadLifeSummary('pdf')">PDF 다운로드</button>
       </div>
     </div>
   </div>`;
@@ -18253,7 +18189,6 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
       </div>
       <div class="summary-actions">
         <button class="summary-btn" onclick="downloadLifeSummary('png')">이미지(PNG)</button>
-        <button class="summary-btn secondary" onclick="downloadLifeSummary('pdf')">PDF 다운로드</button>
       </div>
     </div>
   </div>`;
@@ -20533,6 +20468,14 @@ function hydrateAIReadings(root){
 function chatEscape(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+// 결제 확인 토큰 이전에 충전한 질문권 — 서버 유예(11월 30일)까지 쓰도록 미리 알리고, 막히면 문의로 복구한다
+const CHAT_LEGACY_UNTIL=Date.parse('2026-11-30T15:00:00.000Z');
+const CHAT_RESTORE_MSG='남은 질문권을 서버에서 확인하지 못했어요. 질문권은 차감하지 않았어요. 결제 영수증(주문번호)과 함께 na37zzang@gmail.com으로 알려 주시면 질문권을 바로 다시 넣어 드려요.';
+function chatLegacyCredit(cat){return getChatBonus(cat)>0&&chatRemaining(cat)>0&&!loadPaidTokens().length;}
+function chatLegacyNoticeHTML(cat){
+  if(!chatLegacyCredit(cat)||Date.now()>=CHAT_LEGACY_UNTIL)return '';
+  return `<div class="chat-legacy-note">예전에 충전한 질문권은 <b>11월 30일까지</b> 써 주세요. 그 뒤에 질문권이 확인되지 않으면 결제 영수증과 함께 <a href="mailto:na37zzang@gmail.com">na37zzang@gmail.com</a>으로 알려 주세요. 바로 다시 넣어&nbsp;드려요.</div>`;
+}
 function chatAppend(role,text){
   const log=document.getElementById('chatLog');
   if(!log)return null;
@@ -20745,7 +20688,10 @@ async function chatAsk(){
     const safeData=data||{};
     const status=res?res.status:0;
     if(!res||!res.ok||safeData.error){
-      if(curCat==='qna'&&(safeData.code==='QNA_FREE_USED'||status===402)){
+      if(safeData.code==='QNA_NEED_PAYMENT'&&chatRemaining(curCat)>0){
+        // 화면에는 질문권이 남아 있는데 서버가 결제를 확인하지 못함(토큰 이전 질문권 등) — 결제 유도 대신 복구 안내
+        chatAppendError(CHAT_RESTORE_MSG,question);
+      }else if(safeData.code==='QNA_NEED_PAYMENT'||(curCat==='qna'&&(safeData.code==='QNA_FREE_USED'||status===402))){
         chatAppendError(safeData.error||`오류 (${status})`,question);
         qnaMarkFreeUsed();
         const r=document.getElementById('chatRemaining');
@@ -20851,6 +20797,7 @@ function renderChatSection(catOpt){
       <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 자유롭게 입력하세요')}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'✦ 질문하기')}</button>
     </div>
+    ${chatLegacyNoticeHTML(cat)}
     <div class="chat-tip">질문은 길이 제한 없이 적을 수 있어요 · 답변은 1,300자 이내로 정리해요.<br>${isQna?'질문권을 충전해 필요한 만큼 상담할 수 있어요.':`이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.`}</div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;
@@ -23337,7 +23284,7 @@ function renderNamePaid(saju, nmExtra){
   }
   const built=buildNameReadingV4(saju,nmExtra);
   _nameSummaryData=built.data;
-  const summary=`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">이름풀이 요약본 다운로드</div><div class="nb-body"><p>종합 점수와 사주와의 궁합, 한글 소리의 기운${built.data.hasHan?', 한자 획수의 네 자리':''}, 사주와 합친 균형, 추천 이름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button><button class="summary-btn nm-summary-btn secondary" onclick="downloadNameSummary('pdf')">PDF 다운로드</button></div></div></div>`;
+  const summary=`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">이름풀이 요약본 다운로드</div><div class="nb-body"><p>종합 점수와 사주와의 궁합, 한글 소리의 기운${built.data.hasHan?', 한자 획수의 네 자리':''}, 사주와 합친 균형, 추천 이름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button></div></div></div>`;
   return `<div class="lv4-wrap nm-v4" data-story-id="name-reading">${built.html}${lv4Sub('요약본',summary)}</div></div>`;
 }
 function renderNamePaidLegacy(saju, nmExtra){
@@ -23907,7 +23854,6 @@ function renderNamePaidLegacy(saju, nmExtra){
         </div>
         <div class="summary-actions">
           <button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button>
-          <button class="summary-btn nm-summary-btn secondary" onclick="downloadNameSummary('pdf')">PDF 다운로드</button>
         </div>
       </div>
     </div>`;
@@ -24376,7 +24322,6 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
           </div>
           <div class="summary-actions">
             <button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button>
-            <button class="summary-btn gh-summary-btn secondary" onclick="downloadGunghapSummary('pdf')">PDF 다운로드</button>
           </div>
         </div>
       </div>`;
@@ -24783,7 +24728,7 @@ function renderGunghapPaid(saju1, gnExtra){
     const pick=(dq,age)=>{let c=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){c=dq.daeuns[i];break;}return c;};
     _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1:myMbti,mbti2:gnExtra.mbti||'',result,z1,z2,pair,cd1:pick(dq1,age1),cd2:pick(dq2,age2),age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
   }catch(e){}
-  const summary=_gunghapSummaryData?`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">궁합 요약본 다운로드</div><div class="nb-body"><p>두 사람의 사주 비교, 종합 점수와 네 가지 세부 점수, 배우자 자리, 별자리 궁합, 지금 10년 흐름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button><button class="summary-btn gh-summary-btn secondary" onclick="downloadGunghapSummary('pdf')">PDF 다운로드</button></div></div></div>`:'';
+  const summary=_gunghapSummaryData?`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">궁합 요약본 다운로드</div><div class="nb-body"><p>두 사람의 사주 비교, 종합 점수와 네 가지 세부 점수, 배우자 자리, 별자리 궁합, 지금 10년 흐름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button></div></div></div>`:'';
   ctx.tail=lv4Sub('천기의 맞춤 한마디',renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey))+lv4Sub('요약본',summary);
   return `<div class="lv4-wrap gh-v4" data-story-id="gunghap-reading">${buildGunghapReadingV4(saju1,saju2,ctx)}</div>`;
 }

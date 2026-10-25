@@ -312,6 +312,26 @@ const submitBirth=async()=>{
         assert.equal(box.textContent,fullText,cat+' 전체 본문 유지');
       }
     });
+    check('PDF 리포트: 14개 주제 5천원 별도 상품, 요약본 PDF 버튼 제거',()=>{
+      const cats=JSON.parse(run('JSON.stringify(PDF_REPORT_CATS)'));assert.equal(cats.length,14);
+      for(const c of cats){assert.equal(run(`computePayAmount('pdf-${c}',null)`),5000,c);assert.match(run(`PAID_META['pdf-${c}'].price`),/^5,000원$/,c);assert.equal(run(`unlockScopeOf('pdf-${c}')`),run(`unlockScopeOf('${c}')`),c);}
+      assert.equal(run("pdfReportCtaHTML('daypick')"),'');
+      assert.match(run("pdfReportCtaHTML('life')"),/5,000원 · PDF 받기/);
+      assert(!/Summary\('pdf'\)|PDF 다운로드/.test(html),'요약본 PDF 버튼이 남아 있음');
+      run("downloadReportPdf('topic-love')");
+      assert.equal(d.getElementById('payProductName').textContent,'연애운 PDF 리포트');assert.equal(d.getElementById('payProductPrice').textContent,'5,000원');
+      run('closePaymentConsent()');
+    });
+    run(fs.readFileSync(path.join(root,'assets/report-pdf.js'),'utf8'));
+    for(const cat of ['life','gunghap','ziwei']){
+      const r=await run(`(async()=>{const m=_meta;m.gnExtra=m.gnExtra||{gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:''};const r=await buildTemplateReport('${cat}',{skipAI:true,dryRun:true});const t=r.pages.map(p=>p.textContent).join(' ');r.host.remove();return {n:r.pages.length,t};})()`);
+      check(`PDF 리포트 ${cat}: 템플릿 장을 모두 채우고 빈 칸·누락 값이 없음`,()=>{
+        const spec=JSON.parse(run(`JSON.stringify(TEMPLATE_REPORT_SPECS['${cat}'].pages.map(p=>p.t))`));
+        for(const t of spec)assert(r.t.includes(t),t);
+        assert(!/undefined|NaN|\[object|\[(?:간|지|십성|고객명|핵심 주제|확인|행동)\]/.test(r.t),r.t.match(/undefined|NaN|\[object|\[[^\]]{1,8}\]/));
+        for(const t of ['기본 정보와 풀이 기준','풀이 한눈에 보기','종합 정리와 실천','상세 풀이'])assert(r.t.includes(t),t);
+      });
+    }
     run("openPaymentConsent('life','KAKAOPAY')");
     check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'2,000원');assert.match(d.getElementById('payCtaGo').textContent,/2,000원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
     let readyCalls=0,resolveReady;
@@ -334,6 +354,9 @@ const submitBirth=async()=>{
     w.fetch=async()=>({ok:true,json:async()=>({ok:true}),text:async()=>'',headers:{get:()=>null}});
     await run('_handlePaymentReturn()');await wait(30);
     check('승인 성공: 축약 없이 전체 풀이를 열고 구매 완료 이벤트 전송',()=>{assert.equal(run("isUnlockedFor('life')"),true);assert.equal(d.documentElement.dataset.flowTheme,'life');assert(d.querySelector('#p5 .life-experience'));assert(d.querySelectorAll('#p5 .lv4-sec').length>=8);assert(d.querySelector('#p5 .lc-radar'));assert(d.querySelector('#p5 .lc-pcard[data-portrait]'));assert(!d.querySelector('#p5 .preview-compact'));assert(events().some(e=>e[1]==='purchase'&&e[2].transaction_id==='TEST-ORDER-1'));});
+    run("_savePendingPayment({tid:'TEST_APPROVE_PDF',partnerOrderId:'TEST-ORDER-PDF',category:'pdf-life',amount:5000,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=pdf-life&pg_token=TEST_TOKEN');");
+    await run('_handlePaymentReturn()');await wait(400);
+    check('PDF 리포트 승인: 리포트만 열고 보던 인생총운으로 돌아와 PDF 받기 버튼 표시',()=>{assert.equal(run("isUnlockedFor('pdf-life')"),true);assert.equal(run("isUnlockedFor('life')"),true);assert.equal(run('_category'),'life');assert.match(d.querySelector('#p5 .pdf-cta').textContent,/결제가 확인됐어요/);assert.equal(d.querySelector('#p5 .pdf-cta-btn').textContent,'PDF 받기');});
     run("goHome();continueJourney('life')");await wait(150);
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("goHome();openVault()");

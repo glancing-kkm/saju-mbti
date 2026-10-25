@@ -63,7 +63,21 @@ const CATEGORY_PRICE = {
   "astro-love-marriage": 1500,
   "astro-career-money": 1500,
   "astro-yearly": 2000,
-  "astro-full-report": 2000
+  "astro-full-report": 2000,
+  "pdf-life": 5000,
+  "pdf-newyear": 5000,
+  "pdf-gunghap": 5000,
+  "pdf-name": 5000,
+  "pdf-ziwei": 5000,
+  "pdf-topic-love": 5000,
+  "pdf-topic-money": 5000,
+  "pdf-topic-career": 5000,
+  "pdf-topic-marriage": 5000,
+  "pdf-topic-reunion": 5000,
+  "pdf-topic-study": 5000,
+  "pdf-topic-child": 5000,
+  "pdf-topic-children": 5000,
+  "pdf-topic-health": 5000
 };
 const PREVIOUS_CATEGORY_PRICE = {
   "daypick": 1500,
