@@ -160,7 +160,8 @@ function renderTodayAstrologyResult(root){
   const html=`<section class="today-astro-report" aria-label="오늘의 점성술 전체 풀이">
     ${warning}${todayAstrologyVisualHTML(chart,transit)}
     <section class="astro-panel"><h2 class="astro-section-title">오늘의 상세 풀이</h2><div class="astro-markdown">${markdownToAstroHTML(text)}</div></section>
-    <section class="conversion-hook today-paid-hook" aria-label="점성술 상세 풀이 안내"><div class="conversion-hook-title">본인에게 맞는 일과 사랑의 흐름은?</div><div class="conversion-hook-body"><p>출생차트로 본인만의 관계와 진로를 더 깊게 읽어요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="astroNavigate('products')">점성술 상세 풀이 보기 · ${formatWon(basePriceFor('astro-birth-basic'))}부터</button></div></section>
+    <section class="conversion-hook today-paid-hook" aria-label="점성술 상세 풀이 안내"><div class="conversion-hook-title">본인에게 맞는 일과 사랑의 흐름은?</div><div class="conversion-hook-body"><p>출생차트로 본인만의 관계와 진로를 더 깊게 읽어요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="astroNavigate('products')">점성술 상세 풀이 보기 · ${formatWon(basePriceFor('astro-love'))}부터</button></div></section>
+    ${freePaidRecommendationsHTML('astro')}
     <div class="astro-actions"><button type="button" class="astro-btn secondary" onclick="astroNavigate('today')">정보 다시 입력</button></div>
   </section>`;
   root.innerHTML=preventOrphan(html);
@@ -251,6 +252,7 @@ function renderNatalChartResult(root){
     <details class="astro-details"><summary>행성 위치표</summary>${planetPositionTable(chart,true)}</details>
     ${unknown?'':`<details class="astro-details"><summary>ASC · MC와 12하우스</summary><div class="astro-two-col">${ascMcCards(chart,true)}</div>${houseTable(chart,true)}</details>`}
     <details class="astro-details"><summary>주요 애스펙트</summary>${aspectTable(chart,true)}</details>
+    ${freePaidRecommendationsHTML('astro')}
   </section>`;
   root.innerHTML=typeof preventOrphan==='function'?preventOrphan(html):html;
 }

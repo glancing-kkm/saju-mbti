@@ -105,6 +105,21 @@ const submitBirth=async()=>{
       const tarotPrompt=vm.runInContext('buildTarotReadingUserPrompt(testInput)',server);
       assert(tarotPrompt.includes(question));assert(tarotPrompt.includes('2028년'));
     });
+    check('무료 풀이 추천: 분야별 추천 6개가 같은 분야에 속하고 소개의 다른 풀이도 섞이지 않음',()=>{
+      const holder=d.createElement('div');
+      for(const kind of ['saju','tarot','astro']){
+        holder.innerHTML=run(`freePaidRecommendationsHTML('${kind}')`);
+        assert.equal(holder.querySelectorAll('[data-go]').length,6);
+        for(const card of holder.querySelectorAll('[data-go]')){
+          assert.equal(run(`readingKindForProduct('${card.dataset.go}')`),kind);
+          run(card.getAttribute('onclick'));
+          assert.equal(run('_introKey'),card.dataset.go);
+          for(const related of d.querySelectorAll('#view-intro .ni-more [data-go]'))assert.equal(run(`readingKindForProduct('${related.dataset.go}')`),kind);
+        }
+      }
+      for(const key of ['vedic','mahabote']){holder.innerHTML=run(`journeyRecommendationHTML('${key}')`);assert.equal(holder.querySelector('.same-kind-recommend').dataset.readingKind,'astro');}
+      run('goHome()');
+    });
     run(d.querySelector('.nh-cta').getAttribute('onclick'));
     check('홈 배너: 오늘의 무료 운세 3종 선택 팝업',()=>{
       const dialog=d.getElementById('todayChoiceDialog');assert(dialog.open);
@@ -182,7 +197,7 @@ const submitBirth=async()=>{
     });
     await submitBirth();
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(!d.querySelector('#p0 .journey-overview'));assert(d.querySelector('#journeyManseBoard .pillars'));});
-    check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 2,000원/);assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
+    check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 2,000원/);assert.equal(d.querySelector('#p0 .same-kind-recommend').dataset.readingKind,'saju');assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
     run("goToInput('daily');analyze()");await wait(150);
     check('오늘의 운세: 선택 바·요약 덱 없이 전체 리포트 바로 표시',()=>{
       assert(d.querySelector('#p1 .daily-report .daily-wrap'));
@@ -645,6 +660,7 @@ const submitBirth=async()=>{
     check('오늘의 점성술: 출생정보 제출 후 요약·선택 바 없이 전체 풀이',()=>{
       assert.equal(run('_astroRoute'),'todayResult');
       assert(d.querySelector('#astroApp .today-astro-report .astro-markdown p'));
+      assert.equal(d.querySelector('#astroApp .same-kind-recommend').dataset.readingKind,'astro');
       assert(d.querySelector('#astroApp .astro-wheel'));
       assert(!d.querySelector('#astroApp .journey-chapters,#astroApp .story-experience,#astroApp .story-deck-layer'));
       assert.match(d.querySelector('#astroApp .astro-warn').textContent,/출생시간을 몰라/);
@@ -657,6 +673,7 @@ const submitBirth=async()=>{
     run("goToTarot('today');selectTodayTarot(_todayTarotCardIds[0])");
     check('오늘의 타로: 카드 뽑은 직후 주제 선택 없이 전체 풀이 6개 표시',()=>{
       assert(d.querySelector('#todayTarotResult .today-tarot-report'));
+      assert.equal(d.querySelector('#todayTarotResult .same-kind-recommend').dataset.readingKind,'tarot');
       assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,6);
       assert(!d.querySelector('#todayTarotResult .journey-chapters,#todayTarotResult .story-experience,#todayTarotResult .story-deck-layer'));
       assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,1);

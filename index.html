@@ -4891,11 +4891,23 @@ function journeyOverviewHTML(saju){
     <p class="journey-fine">${txt(m.knownTime?'태어난 시간까지 반영했어요.':'시간은 모르는 상태로, 시간에 해당하는 자리는 제외했어요.')} ${txt('사주는 본인의 선택을 돌아보는 참고 정보예요.')}</p>
   </section>`;
 }
+function readingKindForProduct(key){
+  if(/^tarot-/.test(key))return 'tarot';
+  if(/^astro-/.test(key))return 'astro';
+  return (HOME_CATALOG.find(x=>x.go===key)||{}).kind||'saju';
+}
+function freePaidRecommendationsHTML(kind){
+  const label={saju:'사주',tarot:'타로',astro:'점성술'}[kind];if(!label)return '';
+  const keys=['life','newyear','love','money','career','gunghap'].map(k=>kind==='saju'?(READING_TOPICS.find(t=>t.key===k)||{}).saju:kind+'-'+k);
+  const items=keys.map(key=>HOME_CATALOG.find(x=>x.go===key&&x.kind===kind&&!x.free)).filter(Boolean);
+  return `<section class="same-kind-recommend" data-reading-kind="${kind}" aria-label="유료 ${label} 풀이 추천"><h3 class="nh-title">이어서 볼 ${label} 풀이</h3><div class="nh-rail">${items.map(item=>posterCardHTML(item).replace('<button type="button"',`<button type="button" onclick="openIntro('${item.go}')"`)).join('')}</div></section>`;
+}
 function journeyRecommendationHTML(currentCat){
+  if(['vedic','mahabote'].includes(currentCat))return freePaidRecommendationsHTML('astro');
   const target=_journeyTopic==='love'?'gunghap':_journeyTopic==='year'?'newyear':'life';
   const title={life:'내 강점, 일과 관계에서는 어떻게 쓰일까요?',gunghap:'두 사람은 어디서 잘 맞고, 어디서 다를까요?',newyear:'올해, 어느 시기에 힘을 쓰면 좋을까요?'}[target];
   const desc={life:'직업·재물·연애와 나이대별 흐름을 함께 읽어요. 필요한 주제부터 골라볼 수 있어요.',gunghap:'상대의 출생정보를 더하면 두 사람을 비교해요. 잘 맞는 점과 대화 방법을 함께 살펴봐요.',newyear:'보고 싶은 해를 골라 월별 흐름을 확인해요. 움직일 때와 살펴볼 점을 함께 읽어요.'}[target];
-  return `<section class="journey-recommend" aria-label="이어서 볼 수 있는 상세 풀이"><p class="journey-kicker">더 궁금하다면</p><h3>${preventOrphan(title)}</h3><p>${preventOrphan(desc)}</p><button type="button" class="journey-primary" onclick="continueJourney('${target}')">${CAT_LABEL[target]} 보기 · ${formatWon(computePayAmount(target,_meta))} <span aria-hidden="true">→</span></button><p class="journey-fine">결제 후 전체 풀이를 확인해요 · 단건 결제 · 같은 브라우저에서 24시간 다시 보기</p></section><div class="journey-secondary"><button type="button" onclick="continueJourney('${currentCat==='daily'?'manse':'daily'}')">${currentCat==='daily'?'내 성향·만세력':'오늘의 운세'} 무료로 보기</button><button type="button" onclick="showShareModal()">친구에게 공유하기</button></div>`;
+  return `<section class="journey-recommend" aria-label="이어서 볼 수 있는 상세 풀이"><p class="journey-kicker">더 궁금하다면</p><h3>${preventOrphan(title)}</h3><p>${preventOrphan(desc)}</p><button type="button" class="journey-primary" onclick="continueJourney('${target}')">${CAT_LABEL[target]} 보기 · ${formatWon(computePayAmount(target,_meta))} <span aria-hidden="true">→</span></button><p class="journey-fine">결제 후 전체 풀이를 확인해요 · 단건 결제 · 같은 브라우저에서 24시간 다시 보기</p></section><div class="journey-secondary"><button type="button" onclick="continueJourney('${currentCat==='daily'?'manse':'daily'}')">${currentCat==='daily'?'내 성향·만세력':'오늘의 운세'} 무료로 보기</button><button type="button" onclick="showShareModal()">친구에게 공유하기</button></div>${freePaidRecommendationsHTML('saju')}`;
 }
 function continueJourney(cat){
   journeyEvent('select_content',cat,{step:'free_result'});
@@ -5174,7 +5186,7 @@ function renderIntro(key){
   const po=s=>preventOrphan(s);
   // 같은 분류의 풀이를 먼저, 최대 6개만 보여준다
   const tagsOf=k=>(HOME_CATALOG.find(x=>x.go===k)||{tags:[]}).tags,myTags=tagsOf(key);
-  const others=Object.keys(PRODUCT_INTRO).filter(k=>k!==key).map(k=>HOME_CATALOG.find(x=>x.go===k)).filter(Boolean).sort((a,b)=>b.tags.some(t=>myTags.includes(t))-a.tags.some(t=>myTags.includes(t))).slice(0,6);
+  const others=Object.keys(PRODUCT_INTRO).filter(k=>k!==key&&readingKindForProduct(k)===readingKindForProduct(key)).map(k=>HOME_CATALOG.find(x=>x.go===k)).filter(Boolean).sort((a,b)=>b.tags.some(t=>myTags.includes(t))-a.tags.some(t=>myTags.includes(t))).slice(0,6);
   root.innerHTML=`
     <header class="ni-top"><button type="button" class="ni-back" onclick="goHome()" aria-label="홈으로 돌아가기"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span></button><span class="ni-brand">천지인 사주</span><span aria-hidden="true"></span></header>
     <section class="ni-hero">
@@ -5991,6 +6003,7 @@ function todayTarotResultHTML(card){
     <section class="tarot-panel"><h2 class="tarot-section-title">${tarotEsc(card.nameKo)} — ${tarotEsc(card.nameEn)}</h2><div class="tarot-kw-row">${card.keywords.map(k=>`<span class="tarot-kw">${tarotEsc(k)}</span>`).join('')}</div></section>
     ${sections.map(item=>`<section class="tarot-panel"><h3 class="tarot-section-title">${item.title}</h3><div class="tarot-reading-flow"><p>${tarotEsc(item.text)}</p></div></section>`).join('')}
     <section class="conversion-hook today-paid-hook" aria-label="질문형 타로 안내"><div class="conversion-hook-title">내 고민에는 어떤 카드가 나올까요?</div><div class="conversion-hook-body"><p>한 가지 질문으로 지금 필요한 조언을 확인해요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="goToTarot('question')">총운 타로 보기 · ${formatWon(basePriceFor('tarot-total3'))}부터</button></div></section>
+    ${freePaidRecommendationsHTML('tarot')}
   </section>`));
 }
 function renderTarotQuestion(root){
@@ -7822,9 +7835,9 @@ function renderManseConversionHook(saju){
     </div>
     <div class="conversion-hook-actions">
       <button type="button" class="conversion-hook-btn" onclick="openPaymentConsent('life','KAKAOPAY')">내 인생 흐름 전체 열어보기</button>
-      <button type="button" class="conversion-hook-btn secondary" onclick="goToInput('qna')">지금 궁금한 것 바로 물어보기</button>
+      <button type="button" class="conversion-hook-btn secondary" onclick="openIntro('topic-love')">연애 사주 풀이 보기</button>
     </div>
-    <div class="conversion-hook-foot">인생총운 ${augustPromoPriceLabel('1,500원')} · 같은 사주는 24시간 재조회 가능</div>
+    <div class="conversion-hook-foot">인생총운 ${formatWon(basePriceFor('life'))} · 같은 사주는 24시간 재조회 가능</div>
   </section>`;
 }
 
@@ -7834,7 +7847,7 @@ function renderDailyConversionHook(saju,f){
     <div class="conversion-hook-body"><p>움직일 달과 쉬어갈 달, 12개월 흐름으로 확인해요.</p></div>
     <div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="continueJourney('newyear')">올해 기회 오는 달 보기 · ${formatWon(computePayAmount('newyear',_meta))}</button></div>
     <div class="conversion-hook-foot">한 번 결제 · 같은 사주는 24시간 다시 보기</div>
-  </section>`);
+  </section>${freePaidRecommendationsHTML('saju')}`);
 }
 
 // ── MBTI(후천) × 사주(선천) 통합 풀이 단락 ──
@@ -26551,6 +26564,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=cf4c1bff331c"></script>
+<script src="assets/astrology.js?v=5e9b28a969a2"></script>
 </body>
 </html>
