@@ -160,3 +160,6 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 .astro-partner-form .astro-row{grid-template-columns:repeat(3,minmax(0,1fr))}
 .astro-partner-form input,.astro-partner-form select{min-width:0;width:100%;box-sizing:border-box}
 #astroQuestion{resize:vertical;line-height:1.7;min-height:100px}
+
+/* 홈 추천 화면과 대분류 목록은 한 번에 한 화면만 표시한다. */
+#homeMain[hidden],#homeFiltered[hidden]{display:none!important}

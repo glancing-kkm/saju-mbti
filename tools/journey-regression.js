@@ -41,7 +41,7 @@ const submitBirth=async()=>{
     await wait(30);
     check('초기화: 새 대분류 홈과 실제 상품 가격 표시',()=>{
       assert.equal(errors.length,0,errors.join('\n'));
-      assert.deepEqual([...d.querySelectorAll('#homeTabs button')].map(e=>e.textContent),['총운/신년','연애/결혼','돈/일/공부','가족/건강','주제별 상담','이름풀이/작명']);
+      assert.deepEqual([...d.querySelectorAll('#homeTabs button')].map(e=>e.textContent),['홈','총운/신년','연애/결혼','돈/일/공부','가족/건강','주제별 상담','이름풀이/작명']);
       run("setHomeTab('overview')");assert.match(d.querySelector('#homeCatalogGroups [data-go="life"] .pc-price').textContent,/2,000원/);
     });
     check('분류: 사주·타로·점성술 12개 주제를 맞추고 각 상품은 한 탭에만 배치',()=>{
@@ -53,10 +53,12 @@ const submitBirth=async()=>{
       }
       assert.deepEqual(catalog.find(x=>x.go==='ziwei').tags,['overview']);
       assert.match(catalog.find(x=>x.go==='topic-children').title,/자녀\(임신\)운/);
-      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal','vedic','mahabote']);
+      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal']);
       const seen=[];
       for(const tab of ['overview','love','work','family','counsel','name']){
         run(`setHomeTab('${tab}')`);
+        assert(d.getElementById('homeMain').hidden);assert(!d.getElementById('homeFiltered').hidden);
+        assert([...d.querySelectorAll('#homeCatalogGroups .nh-sec')].every(e=>e.classList.contains('in')),'동적 분류가 스크롤 애니메이션 때문에 숨겨지지 않아야 함');
         const cards=[...d.querySelectorAll('#homeCatalogGroups [data-go]')];assert(cards.length);
         seen.push(...cards.map(x=>x.dataset.go));
         if(['overview','love','work','family'].includes(tab))assert.deepEqual([...d.querySelectorAll('[data-catalog-kind]')].map(x=>x.dataset.catalogKind),['saju','tarot','astro']);
@@ -124,10 +126,13 @@ const submitBirth=async()=>{
     run('openVault()');
     check('보관함: 결제 전에는 비어 있다는 안내와 무료 시작 버튼',()=>{assert(d.querySelector('#view-vault .vault-empty'));assert.equal(d.getElementById('vaultCount').hidden,true);});
     run('goHome()');
-    check('홈 분류: 무료 메뉴는 공통 영역, 이름풀이는 전용 탭',()=>{
+    check('홈 분류: 예전 홈을 복원하고 이름풀이는 전용 화면으로 표시',()=>{
       run("setHomeTab('name')");assert.deepEqual([...d.querySelectorAll('#homeCatalogGroups [data-go]')].map(e=>e.dataset.go),['name']);
-      assert.equal(d.querySelectorAll('#freeMenu .home-category').length,7);
-      assert(!d.getElementById('homeMain').hidden);run("setHomeTab('overview')");
+      assert.equal(d.querySelectorAll('#freeMenu .home-category').length,5);
+      assert(d.getElementById('homeMain').hidden);run("setHomeTab('home')");
+      assert(!d.getElementById('homeMain').hidden);assert(d.getElementById('homeFiltered').hidden);
+      assert(d.getElementById('heroTrack'));assert(d.getElementById('homeToday'));assert(d.querySelector('#homeMain .home-foot'));
+      run("setHomeTab('overview')");
     });
     check('홈 카드: 모든 data-go가 소개 화면이나 무료 풀이로 연결',()=>{
       const gos=[...new Set([...d.querySelectorAll('#view-home [data-go]')].map(b=>b.dataset.go))];
