@@ -1,0 +1,93 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-10-25",
+  "output": "posters/astro-topic-{key}.webp",
+  "format": "720 × 960 WebP, quality 86; original PNGs retained in the image generator's default storage",
+  "sharedPrompt": "Use case: illustration-story. Single portrait 3:4 cover artwork for a Korean astrology website category '{label}'. Premium traditional Korean ink-and-color painting on textured hanji paper. Scene: {scene}. Palette: {palette}. Rich hand-painted mineral pigments, exquisite detail, atmospheric depth, celestial wonder. Make the scene distinct and recognizable at small thumbnail size, main subject in upper and middle 75 percent, lower quarter calm and darker for website HTML title overlay. Single cohesive scene, no collage, no panels, no text, no letters, no numbers, no watermark, no tarot cards, no card borders.",
+  "topics": [
+    {
+      "key": "life",
+      "prompt": "Create a single portrait 3:4 illustration for a Korean astrology website category 'Life overview astrology'. Premium traditional Korean ink-and-color painting on textured hanji paper, beautifully detailed Joseon scholar contemplating a large glowing celestial zodiac sphere above a mountain pavilion, jade green and muted antique gold, midnight teal sky, luminous stars, elegant atmospheric depth, hand-painted mineral pigments, cinematic but tasteful. Single cohesive scene, no panels, no writing, no letters, no numbers, no symbols resembling text, no watermark. Keep main celestial sphere and person in upper and middle 75 percent; lower quarter dark and calm for website title overlay. This is a unique cover artwork, not a tarot card, no card border."
+    },
+    {
+      "key": "newyear",
+      "label": "New Year astrology",
+      "scene": "A young Joseon astronomer opening an ornate astronomical calendar beside a brass astrolabe, a radiant sunrise and a grand golden orbital path above snowy palace roofs",
+      "palette": "amber, royal blue and sunrise gold"
+    },
+    {
+      "key": "gunghap",
+      "label": "Compatibility astrology",
+      "scene": "Two elegant Joseon figures standing on opposite sides of a moon bridge, two distinct glowing constellations meeting above them, paired celestial orbs and a reflecting lake",
+      "palette": "violet, moon silver and muted turquoise"
+    },
+    {
+      "key": "love",
+      "label": "Romance astrology",
+      "scene": "A young woman holding a silk ribbon beneath a peach blossom tree, brilliant Venus shining above a crescent moon, petals floating across a magical night garden",
+      "palette": "rose pink, plum and warm ivory"
+    },
+    {
+      "key": "marriage",
+      "label": "Marriage astrology",
+      "scene": "A dignified Korean wedding couple in traditional hanbok under a celestial canopy, a pair of mandarin ducks in a quiet courtyard pond, linked golden planetary rings above",
+      "palette": "deep crimson, warm gold and midnight navy"
+    },
+    {
+      "key": "reunion",
+      "label": "Reunion astrology",
+      "scene": "A lone traveler returns across a curved stone bridge toward a distant figure with a lantern, two comet trails reconnect over misty mountains, atmospheric wistful scene",
+      "palette": "indigo, lavender and glowing amber"
+    },
+    {
+      "key": "money",
+      "label": "Wealth astrology",
+      "scene": "A merchant at a carved wooden desk holding an abacus beside a treasure chest and grain bundles, radiant Jupiter as a large golden celestial sphere above a harbor",
+      "palette": "emerald, gold and dark teal"
+    },
+    {
+      "key": "career",
+      "label": "Career astrology",
+      "scene": "A confident Joseon official on palace steps holding a rolled scroll, a majestic armillary sphere behind the person and Saturn with luminous rings overhead",
+      "palette": "cobalt, bronze and charcoal"
+    },
+    {
+      "key": "study",
+      "label": "Study and exam astrology",
+      "scene": "A focused young scholar studying at a desk beside stacked books and a brush rest, a luminous Mercury tracing an orbit through an open window, bamboo courtyard",
+      "palette": "ink blue, jade and parchment cream"
+    },
+    {
+      "key": "child",
+      "label": "Child temperament astrology",
+      "scene": "A cheerful young child in colorful hanbok flying a kite on a flowered hill while a kindly adult watches, tiny sparkling constellations follow the kite",
+      "palette": "soft mint, apricot, sky blue and gold"
+    },
+    {
+      "key": "children",
+      "label": "Family planning and pregnancy astrology",
+      "scene": "A serene couple in a peaceful hanok garden caring for a tiny budding tree, a luminous crescent moon cradling a small star overhead, nurturing hopeful symbolism, no babies or pregnancy prediction imagery",
+      "palette": "peach, sage, pearl and muted gold"
+    },
+    {
+      "key": "health",
+      "label": "Health and wellbeing astrology",
+      "scene": "A calm person practicing a gentle stretching posture beside a medicinal herb garden and flowing stream, a softly glowing Sun and lunar orbit above pine trees, restful balanced composition",
+      "palette": "pine green, aqua and cream"
+    }
+  ],
+  "tarotCovers": {
+    "life": "tarot/card-22.webp — 세계",
+    "newyear": "tarot/card-11.webp — 운명의 수레바퀴",
+    "gunghap": "tarot/card-38.webp — 컵 2",
+    "love": "tarot/card-07.webp — 연인",
+    "marriage": "tarot/card-26.webp — 완드 4",
+    "reunion": "tarot/card-21.webp — 심판",
+    "money": "tarot/card-65.webp — 펜타클 에이스",
+    "career": "tarot/card-08.webp — 전차",
+    "study": "tarot/card-10.webp — 은둔자",
+    "child": "tarot/card-20.webp — 태양",
+    "children": "tarot/card-04.webp — 여황제",
+    "health": "tarot/card-15.webp — 절제"
+  }
+}

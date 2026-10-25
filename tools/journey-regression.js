@@ -410,6 +410,23 @@ const submitBirth=async()=>{
       assert(!d.getElementById('tarotQuestionInput'));
     });
     check('동양화 타로 덱: 컵 2·컵 6의 데이터와 그림 번호 일치',()=>{assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-02').imageUrl"),'assets/art-v2/tarot/card-38.webp');assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-06').imageUrl"),'assets/art-v2/tarot/card-42.webp');});
+    check('주제별 표지: 타로 12장·점성술 12장이 서로 다른 실제 이미지이고 홈·소개 화면도 같은 표지 사용',()=>{
+      const topics=JSON.parse(run('JSON.stringify(READING_TOPICS)'));
+      const urls=[];
+      for(const topic of topics)for(const kind of ['tarot','astro']){
+        const go=kind+'-'+topic.key,src=run(`productPosterSrc('${go}')`);urls.push(src);
+        const file=path.join(root,src.replace(/^\//,''));assert(fs.existsSync(file),src);
+        run(`openIntro('${go}')`);assert.equal(d.querySelector('#view-intro .ni-poster img').getAttribute('src'),src);
+      }
+      assert.equal(new Set(urls).size,24);
+      const hashes=urls.map(url=>require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,url.replace(/^\//,'')))).digest('hex'));
+      assert.equal(new Set(hashes).size,24,'파일명만 바꾸고 같은 그림을 사용하는 경우 방지');
+      for(const card of d.querySelectorAll('#homeMain [data-go],#homeMain [data-home-extra]')){
+        const go=card.dataset.go||card.dataset.homeExtra;if(!/^(tarot-|astro-)/.test(go)||!run(`!!PRODUCT_INTRO['${go}']`))continue;
+        const img=card.querySelector('.pc-art img,.nh-row-art img');if(img)assert.equal(img.getAttribute('src'),run(`productPosterSrc('${go}')`));
+      }
+      run('goHome()');
+    });
     check('동양화 이미지: 타로 78장과 모든 카테고리 포스터가 실제 파일로 연결',()=>{
       const urls=Array.from(run('TAROT_CARDS.map(c=>c.imageUrl)'));
       assert.equal(new Set(urls).size,78);
