@@ -145,3 +145,18 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app .preview-story .lc-pcard-body{padding:18px;background:var(--card)}
 #app .preview-story .lc-pcard-body h4{font-size:19px}
 #app .preview-story .lc-pcard-body dl>div{grid-template-columns:58px minmax(0,1fr);font-size:13px}
+
+/* 대분류 탭 안에서 사주·타로·점성술을 나란히 탐색한다. */
+#homeTabs{overflow-x:auto;scrollbar-width:none;gap:4px;white-space:nowrap}
+#homeTabs button{flex:none;padding:10px 12px;font-size:13px}
+.catalog-intro{padding:24px 20px 4px}
+.catalog-section{padding-top:18px}
+.catalog-section>.nh-title{font-size:21px}
+.catalog-section .pc{height:auto;min-width:0;text-align:left}
+.catalog-section .pc-text{display:flex;flex-direction:column;gap:5px}
+.catalog-section .pc-price{display:block;margin-top:6px;color:var(--accent);font-size:13px;font-weight:700}
+.astro-partner-form{margin:22px 0;padding:18px;border:1px solid var(--border-strong);border-radius:14px;min-width:0}
+.astro-partner-form legend{padding:0 8px;font-size:16px;color:var(--accent)}
+.astro-partner-form .astro-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.astro-partner-form input,.astro-partner-form select{min-width:0;width:100%;box-sizing:border-box}
+#astroQuestion{resize:vertical;line-height:1.7;min-height:100px}

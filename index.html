@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=10627918fac6">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=b68c2dcb56e9">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=2fb83aab36b3">
 </head>
 <body>
 <div id="app">
@@ -2254,62 +2254,18 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <a class="nh-icon" href="/blog/" aria-label="사주 가이드 읽기"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span></a>
     </header>
     <nav class="nh-tabs" id="homeTabs" aria-label="풀이 분류">
-      <button type="button" class="on" data-home-tab="all" aria-pressed="true">전체</button>
-      <button type="button" data-home-tab="free" aria-pressed="false">무료</button>
-      <button type="button" data-home-tab="love" aria-pressed="false">연애·결혼</button>
-      <button type="button" data-home-tab="work" aria-pressed="false">돈·일·공부</button>
-      <button type="button" data-home-tab="year" aria-pressed="false">운세</button>
-      <button type="button" data-home-tab="family" aria-pressed="false">가족·건강</button>
-      <button type="button" data-home-tab="life" aria-pressed="false">인생·이름</button>
-      <button type="button" data-home-tab="star" aria-pressed="false">타로·별자리</button>
+      <button type="button" class="on" data-home-tab="overview" aria-pressed="true">총운/신년</button>
+      <button type="button" data-home-tab="love" aria-pressed="false">연애/결혼</button>
+      <button type="button" data-home-tab="work" aria-pressed="false">돈/일/공부</button>
+      <button type="button" data-home-tab="family" aria-pressed="false">가족/건강</button>
+      <button type="button" data-home-tab="counsel" aria-pressed="false">주제별 상담</button>
+      <button type="button" data-home-tab="name" aria-pressed="false">이름풀이/작명</button>
     </nav>
 
     <div class="nh-filtered" id="homeFiltered" hidden aria-live="polite"></div>
 
     <div class="nh-main" id="homeMain">
-      <h1 class="sr-only" id="journeyTitle">천지인 사주 · 무료 사주풀이와 운세</h1>
-
-      <section class="nh-hero" aria-label="대표 풀이">
-        <div class="nh-hero-track" id="heroTrack">
-          <button type="button" class="nh-slide" data-go="life" aria-label="인생총운 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/life.webp" alt="" width="300" height="400"></span>
-            <span class="pc-badge">대표</span>
-            <span class="nh-slide-text"><span class="pc-chip">평생 사주</span><strong>인생총운</strong><span>타고난 분위기부터 10년 단위 큰 흐름까지 한&nbsp;번에</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="topic-love" aria-label="연애운 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/love.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">연애</span><strong>연애운</strong><span>인연이 가까워지는 해와 달을&nbsp;짚어요</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="newyear" aria-label="신년운세 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/newyear.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">한 해 운세</span><strong>신년운세</strong><span>열두 달 중 언제 움직이고 언제&nbsp;쉬어갈까</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="gunghap" aria-label="궁합 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/gunghap.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">두 사람</span><strong>궁합</strong><span>잘 맞는 지점과 자꾸 부딪히는&nbsp;이유까지</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="topic-money" aria-label="재물운 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/money.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">돈</span><strong>재물운</strong><span>돈 버는 방식과 새는 구멍까지 한&nbsp;번에</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="tarot-question" aria-label="타로 소개 보기">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" width="300" height="400" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-back.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-18.webp" alt="" loading="lazy"></span></span>
-            <span class="nh-slide-text"><span class="pc-chip">타로</span><strong>타로</strong><span>지금 마음에 걸리는 질문, 카드에게&nbsp;물어봐요</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="astro-report" aria-label="점성술 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/astro.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">별자리</span><strong>점성술</strong><span>태어난 순간의 하늘로 읽는 나의&nbsp;성향</span></span>
-          </button>
-          <button type="button" class="nh-slide" data-go="name" aria-label="이름풀이·작명 소개 보기">
-            <span class="pc-art"><img src="/assets/art-v2/posters/name.webp" alt="" width="300" height="400" loading="lazy"></span>
-            <span class="nh-slide-text"><span class="pc-chip">이름</span><strong>이름풀이</strong><span>이름에 담긴 다섯 기운과 어울리는 이름&nbsp;추천</span></span>
-          </button>
-        </div>
-        <div class="nh-dots" id="heroDots" aria-hidden="true"></div>
-      </section>
-
-      <section class="nh-today" id="homeToday" aria-label="오늘의 기운" hidden></section>
-
+      <h1 class="sr-only" id="journeyTitle">천지인 사주 · 사주·타로·점성술</h1>
       <section class="nh-sec" aria-labelledby="homeFreeTitle">
         <p class="nh-eyebrow">부담 없이</p>
         <h2 class="nh-title" id="homeFreeTitle">무료로 먼저 보기</h2>
@@ -2334,352 +2290,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span class="pc-art"><img src="/assets/art-v2/posters/natal.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
             <span class="pc-text"><strong class="pc-title">나의 출생차트</strong><span class="pc-sub">태양·달·상승궁 계산</span></span>
           </button>
+          <button type="button" class="pc home-category" data-home-category="vedic" onclick="goToInput('vedic')"><span class="pc-art"><img src="/assets/art-v2/posters/vedic.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span><span class="pc-text"><strong class="pc-title">베딕 점성술</strong><span class="pc-sub">무료로 확인하기</span></span></button>
+          <button type="button" class="pc home-category" data-home-category="mahabote" onclick="goToInput('mahabote')"><span class="pc-art"><img src="/assets/art-v2/posters/mahabote.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span><span class="pc-text"><strong class="pc-title">마하보테</strong><span class="pc-sub">무료로 확인하기</span></span></button>
         </div>
       </section>
-
-      <section class="nh-sec" aria-labelledby="homeLoveTitle">
-        <p class="nh-eyebrow">연애·결혼</p>
-        <h2 class="nh-title" id="homeLoveTitle">그 사람과 나, 어떻게 될까?</h2>
-        <div class="nh-rail nh-rail--lg">
-          <button type="button" class="pc pc--lg" data-go="topic-love">
-            <span class="pc-art"><img src="/assets/art-v2/posters/love.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">연애</span><strong class="pc-title">연애운</strong><span class="pc-sub">인연이 가까워지는 해와 달</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="gunghap">
-            <span class="pc-art"><img src="/assets/art-v2/posters/gunghap.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">두 사람</span><strong class="pc-title">궁합</strong><span class="pc-sub">두 사람 사주가 만나는 자리</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="topic-marriage">
-            <span class="pc-art"><img src="/assets/art-v2/posters/marriage.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">결혼</span><strong class="pc-title">결혼운</strong><span class="pc-sub">배우자 자리와 결혼 흐름</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="topic-reunion">
-            <span class="pc-art"><img src="/assets/art-v2/posters/reunion.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">재회</span><strong class="pc-title">재회운</strong><span class="pc-sub">멀어진 인연이 다시 가까워질까</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="tarot-love">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-18.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-04.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">타로</span><strong class="pc-title">연애 타로</strong><span class="pc-sub">그 사람의 마음과 두 사람의 흐름</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="astro-love">
-            <span class="pc-art"><img src="/assets/art-v2/posters/astro-love.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">점성술</span><strong class="pc-title">연애·결혼운</strong><span class="pc-sub">금성과 달로 보는 관계 패턴</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeCounselTitle">
-        <p class="nh-eyebrow">캐릭터 상담</p>
-        <h2 class="nh-title" id="homeCounselTitle">누구에게 물어볼까?</h2>
-        <div class="nh-rail nh-rail--lg">
-          <button type="button" class="pc pc--lg" data-go="chat-unni">
-            <span class="pc-art"><img src="/assets/art-v2/posters/counsel-unni.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">연애</span><strong class="pc-title">달님 언니</strong><span class="pc-sub">연애·재회 고민을 다정하게</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="chat-senior">
-            <span class="pc-art"><img src="/assets/art-v2/posters/counsel-senior.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">일·돈</span><strong class="pc-title">직설 선배</strong><span class="pc-sub">돈·일·진로, 결론부터 짧게</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="chat-halmae">
-            <span class="pc-art"><img src="/assets/art-v2/posters/counsel-halmae.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">가족</span><strong class="pc-title">복 할머니</strong><span class="pc-sub">가족·아이·건강을 푸근하게</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="qna">
-            <span class="pc-art"><img src="/assets/art-v2/posters/qna.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">정통</span><strong class="pc-title">천기 선생</strong><span class="pc-sub">정통 명리로 깊게 짚어줘요</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeTarotTitle">
-        <p class="nh-eyebrow">타로</p>
-        <h2 class="nh-title" id="homeTarotTitle">카드에게 직접 물어볼까?</h2>
-        <div class="nh-rail">
-          <button type="button" class="pc" data-go="tarot-reunion">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-19.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-21.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-45.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">재회</span><strong class="pc-title">재회 타로</strong><span class="pc-sub">다시 이어질까</span></span>
-          </button>
-          <button type="button" class="pc" data-go="tarot-marriage">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-06.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-20.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">결혼</span><strong class="pc-title">결혼 타로</strong><span class="pc-sub">결혼 전에 맞출 것</span></span>
-          </button>
-          <button type="button" class="pc" data-go="tarot-career">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-02.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-08.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-67.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">진로</span><strong class="pc-title">진로 타로</strong><span class="pc-sub">이직·취업·창업</span></span>
-          </button>
-          <button type="button" class="pc" data-go="tarot-money">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-65.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-11.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-74.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">재물</span><strong class="pc-title">재물 타로</strong><span class="pc-sub">새는 곳과 들어오는 길</span></span>
-          </button>
-          <button type="button" class="pc" data-go="tarot-question">
-            <span class="pc-art pc-art--tarot"><img src="/assets/art-v2/posters/tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan"><img src="/assets/art-v2/posters/tarot-back.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-03.webp" alt="" loading="lazy"><img src="/assets/art-v2/posters/tarot-18.webp" alt="" loading="lazy"></span></span>
-            <span class="pc-text"><span class="pc-chip">자유 질문</span><strong class="pc-title">무엇이든 타로</strong><span class="pc-sub">어떤 고민이든 물어봐요</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeWorkTitle">
-        <p class="nh-eyebrow">돈·일·공부</p>
-        <h2 class="nh-title" id="homeWorkTitle">돈과 일, 언제 크게 움직일까?</h2>
-        <div class="nh-rail">
-          <button type="button" class="pc" data-go="topic-money">
-            <span class="pc-art"><img src="/assets/art-v2/posters/money.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">재물운</strong><span class="pc-sub">돈 버는 방식과 새는 구멍</span></span>
-          </button>
-          <button type="button" class="pc" data-go="topic-career">
-            <span class="pc-art"><img src="/assets/art-v2/posters/career.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">직업운</strong><span class="pc-sub">잘 맞는 일과 움직일 때</span></span>
-          </button>
-          <button type="button" class="pc" data-go="topic-study">
-            <span class="pc-art"><img src="/assets/art-v2/posters/study.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">학업·시험운</strong><span class="pc-sub">공부법과 시험에 강한 때</span></span>
-          </button>
-          <button type="button" class="pc" data-go="astro-career">
-            <span class="pc-art"><img src="/assets/art-v2/posters/astro-career.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">점성술 직업·재물</strong><span class="pc-sub">토성과 목성으로 보는 일</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeYearTitle">
-        <p class="nh-eyebrow">운세</p>
-        <h2 class="nh-title" id="homeYearTitle">올해, 언제 움직이면 좋을까?</h2>
-        <div class="nh-rail">
-          <button type="button" class="pc" data-go="newyear">
-            <span class="pc-art"><img src="/assets/art-v2/posters/newyear.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">신년운세</strong><span class="pc-sub">열두 달 흐름과 분야별 조언</span></span>
-          </button>
-          <button type="button" class="pc" data-go="daily">
-            <span class="pc-art"><img src="/assets/art-v2/posters/daily.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
-            <span class="pc-text"><strong class="pc-title">오늘의 운세</strong><span class="pc-sub">오늘 하루의 흐름</span></span>
-          </button>
-          <button type="button" class="pc" data-go="astro-yearly">
-            <span class="pc-art"><img src="/assets/art-v2/posters/astro-yearly.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">점성술 올해 운세</strong><span class="pc-sub">올해 하늘이 건드리는 곳</span></span>
-          </button>
-          <button type="button" class="pc" data-go="qna">
-            <span class="pc-art"><img src="/assets/art-v2/posters/qna.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><strong class="pc-title">천기 선생에게 질문</strong><span class="pc-sub">궁금한 걸 채팅으로 바로</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeFamilyTitle">
-        <p class="nh-eyebrow">가족·건강</p>
-        <h2 class="nh-title" id="homeFamilyTitle">우리 가족, 잘 지내고 있을까?</h2>
-        <div class="nh-rail nh-rail--lg">
-          <button type="button" class="pc pc--lg" data-go="topic-child">
-            <span class="pc-art"><img src="/assets/art-v2/posters/child.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">아이</span><strong class="pc-title">우리 아이 사주</strong><span class="pc-sub">타고난 기질과 재능</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="topic-children">
-            <span class="pc-art"><img src="/assets/art-v2/posters/children.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">자녀</span><strong class="pc-title">자녀운</strong><span class="pc-sub">자녀 인연과 부모 역할</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="topic-health">
-            <span class="pc-art"><img src="/assets/art-v2/posters/health.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">건강</span><strong class="pc-title">건강운</strong><span class="pc-sub">체질과 먼저 살필 곳</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="name">
-            <span class="pc-art"><img src="/assets/art-v2/posters/name.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">이름</span><strong class="pc-title">이름풀이·작명</strong><span class="pc-sub">이름과 사주의 궁합</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeLifeTitle">
-        <p class="nh-eyebrow">인생</p>
-        <h2 class="nh-title" id="homeLifeTitle">내 인생, 지금 어디쯤일까?</h2>
-        <div class="nh-rail nh-rail--lg">
-          <button type="button" class="pc pc--lg" data-go="life">
-            <span class="pc-art"><img src="/assets/art-v2/posters/life.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">평생 사주</span><strong class="pc-title">인생총운</strong><span class="pc-sub">돈·일·사랑과 10년 흐름</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="astro-report">
-            <span class="pc-art"><img src="/assets/art-v2/posters/astro.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">별자리</span><strong class="pc-title">점성술</strong><span class="pc-sub">출생차트로 보는 성향·연애·일</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="manse">
-            <span class="pc-art"><img src="/assets/art-v2/posters/manse.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
-            <span class="pc-text"><span class="pc-chip">만세력</span><strong class="pc-title">내 사주 여덟 글자</strong><span class="pc-sub">무료로 성향부터 읽어요</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec" aria-labelledby="homeOtherTitle">
-        <p class="nh-eyebrow">다른 점술</p>
-        <h2 class="nh-title" id="homeOtherTitle">다른 하늘로도 읽어볼까?</h2>
-        <div class="nh-rail nh-rail--lg">
-          <button type="button" class="pc pc--lg" data-go="ziwei">
-            <span class="pc-art"><img src="/assets/art-v2/posters/ziwei.webp" alt="" loading="lazy"></span>
-            <span class="pc-text"><span class="pc-chip">동양 별점</span><strong class="pc-title">자미두수</strong><span class="pc-sub">12궁 14주성으로 보는 인생</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="vedic">
-            <span class="pc-art"><img src="/assets/art-v2/posters/vedic.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
-            <span class="pc-text"><span class="pc-chip">인도</span><strong class="pc-title">베딕 점성술</strong><span class="pc-sub">나의 낙샤트라와 큰 시기</span></span>
-          </button>
-          <button type="button" class="pc pc--lg" data-go="mahabote">
-            <span class="pc-art"><img src="/assets/art-v2/posters/mahabote.webp" alt="" loading="lazy"></span><span class="pc-badge pc-badge--free">무료</span>
-            <span class="pc-text"><span class="pc-chip">미얀마</span><strong class="pc-title">마하보테</strong><span class="pc-sub">태어난 요일의 동물</span></span>
-          </button>
-        </div>
-      </section>
-
-      <section class="nh-sec nh-how" aria-labelledby="homeHowTitle">
-        <p class="nh-eyebrow">천지인은 이렇게 풀어요</p>
-        <h2 class="nh-title" id="homeHowTitle">어려운 사주, 친구처럼 쉽게</h2>
-        <ul class="nh-how-grid">
-          <li><span class="material-symbols-outlined" aria-hidden="true">account_tree</span><b>여덟 글자의 관계부터</b><p>한 글자만 보지 않고 자리끼리 어떻게 만나는지&nbsp;읽어요.</p></li>
-          <li><span class="material-symbols-outlined" aria-hidden="true">cake</span><b>나이에 맞는 말로</b><p>같은 흐름도 학생에겐 공부로, 직장인에겐 일로&nbsp;풀어요.</p></li>
-          <li><span class="material-symbols-outlined" aria-hidden="true">translate</span><b>쉬운 일상어로</b><p>어려운 한자 용어 대신 생활 속 말로&nbsp;설명해요.</p></li>
-          <li><span class="material-symbols-outlined" aria-hidden="true">visibility</span><b>결제 후 바로 확인</b><p>필요한 풀이를 선택하고, 결제하면 바로&nbsp;볼 수 있어요.</p></li>
-        </ul>
-      </section>
-
-      <section class="nh-sec" id="readings" aria-labelledby="homeAllTitle">
-        <p class="nh-eyebrow">전체</p>
-        <h2 class="nh-title" id="homeAllTitle">모든 풀이 한눈에</h2>
-        <div class="nh-list" id="paidCoreMenu" aria-label="유료 풀이">
-          <button type="button" class="nh-row home-category" data-home-category="life" onclick="openIntro('life')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/life.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>인생총운</strong><span>타고난 분위기와 10년 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="life">1,500원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="newyear" onclick="openIntro('newyear')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/newyear.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>신년운세</strong><span>열두 달 흐름과 분야별 조언</span></span>
-            <span class="nh-row-price"><span data-journey-price="newyear">1,500원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="name" onclick="openIntro('name')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/name.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>이름풀이·작명</strong><span>이름의 기운과 추천 이름 5개</span></span>
-            <span class="nh-row-price"><span data-journey-price="name">1,500원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="qna" onclick="openIntro('qna')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/qna.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>천기 선생에게 질문하기</strong><span>정통 명리로 궁금한 걸 바로</span></span>
-            <span class="nh-row-price"><span data-journey-price="chatpack3">1,500원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="chat-unni" onclick="openIntro('chat-unni')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/counsel-unni.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>달님 언니에게 질문하기</strong><span>연애·재회 고민을 다정하게</span></span>
-            <span class="nh-row-price"><span data-journey-price="chatpack3">1,500원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="chat-senior" onclick="openIntro('chat-senior')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/counsel-senior.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>직설 선배에게 질문하기</strong><span>돈·일·진로, 결론부터 짧게</span></span>
-            <span class="nh-row-price"><span data-journey-price="chatpack3">1,500원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="chat-halmae" onclick="openIntro('chat-halmae')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/counsel-halmae.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>복 할머니에게 질문하기</strong><span>가족·아이·건강을 푸근하게</span></span>
-            <span class="nh-row-price"><span data-journey-price="chatpack3">1,500원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-question" onclick="openIntro('tarot-question')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>타로</strong><span>질문하고 카드 3·5·10장</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="astro-report" onclick="openIntro('astro-report')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/astro.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>점성술</strong><span>출생차트로 보는 성향·연애·일</span></span>
-            <span class="nh-row-price"><span data-journey-price="astro-birth-basic">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="ziwei" onclick="openIntro('ziwei')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/ziwei.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>자미두수</strong><span>12궁 14주성으로 보는 인생</span></span>
-            <span class="nh-row-price"><span data-journey-price="ziwei">1,500원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="gunghap" onclick="openIntro('gunghap')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/gunghap.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>궁합</strong><span>두 사람이 잘 맞는 곳과 다른 곳</span></span>
-            <span class="nh-row-price"><span data-journey-price="gunghap">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-love" onclick="openIntro('topic-love')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/love.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>연애운</strong><span>끌리는 사람과 인연이 오는 때</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-love">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-marriage" onclick="openIntro('topic-marriage')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/marriage.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>결혼운</strong><span>배우자 자리와 결혼 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-marriage">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-reunion" onclick="openIntro('topic-reunion')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/reunion.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>재회운</strong><span>다시 가까워지는 흐름과 순서</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-reunion">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-money" onclick="openIntro('topic-money')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/money.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>재물운</strong><span>돈 버는 방식과 새는 구멍</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-money">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-career" onclick="openIntro('topic-career')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/career.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>직업운</strong><span>잘 맞는 일과 이직·승진 시기</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-career">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-study" onclick="openIntro('topic-study')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/study.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>학업·시험운</strong><span>공부법과 시험에 강한 때</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-study">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-child" onclick="openIntro('topic-child')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/child.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>우리 아이 사주</strong><span>아이의 기질·재능·양육법</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-child">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-children" onclick="openIntro('topic-children')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/children.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>자녀운</strong><span>자녀 인연·부모 역할·좋은 시기</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-children">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-category="topic-health" onclick="openIntro('topic-health')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/health.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>건강운</strong><span>체질과 몸을 챙길 때</span></span>
-            <span class="nh-row-price"><span data-journey-price="topic-health">1,000원</span></span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-love" onclick="openIntro('tarot-love')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-07.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>연애 타로</strong><span>그 사람의 마음과 두 사람의 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-reunion" onclick="openIntro('tarot-reunion')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-21.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>재회 타로</strong><span>헤어진 이유와 다시 이어질 가능성</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-marriage" onclick="openIntro('tarot-marriage')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-06.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>결혼 타로</strong><span>관계의 기반과 함께 맞출 것</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-career" onclick="openIntro('tarot-career')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-08.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>진로 타로</strong><span>기회가 오는 곳과 나아갈 방향</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-          <button type="button" class="nh-row home-category" data-home-extra="tarot-money" onclick="openIntro('tarot-money')">
-            <span class="nh-row-art"><img src="/assets/art-v2/posters/tarot-11.webp" alt="" loading="lazy"></span>
-            <span class="nh-row-text"><strong>재물 타로</strong><span>새는 곳과 들어오는 흐름</span></span>
-            <span class="nh-row-price"><span data-journey-price="tarot3">1,000원</span>~</span>
-          </button>
-        </div>
-      </section>
-      <section class="nh-sec" id="sajuPaidHistoryHome" aria-label="최근 구매한 풀이"></section>
-
-      <footer class="home-foot">
-        <nav class="home-foot-links" aria-label="서비스 정보">
-          <a href="/about.html">서비스 소개</a><a href="/legal/editorial-policy.html">콘텐츠 작성 기준</a><a href="/legal/terms.html">이용약관</a><a href="/legal/privacy.html"><b>개인정보처리방침</b></a><a href="/legal/refund.html">결제·환불 정책</a>
-        </nav>
-        <p class="home-foot-biz">
-          상호 강림 · 사업자등록번호 740-13-02692 · 통신판매업신고 (신고 예정)<br>
-          대표 김강민 · 소재지 대전광역시 유성구 과학성장로 80, 107동 2003호(둔곡동, 우미린아파트)<br>
-          연락처 010-9487-4593 · 문의 <a href="mailto:na37zzang@gmail.com">na37zzang@gmail.com</a><br>
-          사주·운세 풀이는 참고용 정보이며 의료·법률·투자 판단을 대신하지 않아요.
-        </p>
-      </footer>
+      <div id="homeCatalogGroups"></div>
     </div>
 
     <div class="nh-dock">
@@ -2842,7 +2457,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('daypick','custom')">직접 입력</button>
           </div>
           <div class="ctx-custom-wrap" id="ctxCustomDaypickWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomDaypick" placeholder="예: 면접이 있어요 / 가족 행사가 있어요 (60자 이내)" maxlength="60" autocomplete="off">
+            <input type="text" class="ctx-custom-input" id="ctxCustomDaypick" placeholder="예: 면접이 있어요 / 가족 행사가 있어요" autocomplete="off">
           </div>
         </div>
       </fieldset>
@@ -2885,7 +2500,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <button type="button" class="ctx-btn" data-tag="custom" onclick="setContextTag('monthly','custom')">직접 입력</button>
           </div>
           <div class="ctx-custom-wrap" id="ctxCustomMonthlyWrap" style="display:none">
-            <input type="text" class="ctx-custom-input" id="ctxCustomMonthly" placeholder="예: 이직 준비 중이에요 / 결혼 준비를 시작했어요 (60자 이내)" maxlength="60" autocomplete="off">
+            <input type="text" class="ctx-custom-input" id="ctxCustomMonthly" placeholder="예: 이직 준비 중이에요 / 결혼 준비를 시작했어요" autocomplete="off">
           </div>
         </div>
       </fieldset>
@@ -3015,7 +2630,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <fieldset class="cat-extra ctx-q" id="catExtraCtx" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><label class="cat-extra-title" id="ctxQTitle" for="ctxText">궁금한 점</label></div></legend>
         <div class="cat-extra-desc" id="ctxQDesc"></div>
-        <textarea class="ctx-text" id="ctxText" name="ctxText" rows="3" maxlength="100" autocomplete="off"></textarea>
+        <textarea class="ctx-text" id="ctxText" name="ctxText" rows="3" autocomplete="off"></textarea>
         <div class="ctx-ask" id="ctxQAsk"></div>
         <div class="ctx-options" id="ctxQOptions"></div>
       </fieldset>
@@ -3492,7 +3107,7 @@ let _paidUnlocked=false;
 function refreshPaidUnlocked(){_paidUnlocked=isUnlockedFor(_category);}
 let _lastInputs=null;    // 사주 기본 입력 캐시 (재입력 없이 카테고리 전환)
 const CAT_IDX={ziwei:9,vedic:9,mahabote:9,manse:0,daily:1,daypick:2,monthly:3,newyear:4,life:5,gunghap:6,name:7,qna:8,'topic-love':9,'topic-money':9,'topic-career':9,'topic-marriage':9,'topic-reunion':9,'topic-study':9,'topic-child':9,'topic-children':9,'topic-health':9};
-const CAT_LABEL={ziwei:'자미두수',vedic:'베딕 점성술',mahabote:'마하보테','topic-love':'연애운','topic-money':'재물운','topic-career':'직업운','topic-marriage':'결혼운','topic-reunion':'재회운','topic-study':'학업·시험운','topic-child':'우리 아이 사주','topic-children':'자녀운','topic-health':'건강운',manse:'만세력',daily:'오늘의 운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장',
+const CAT_LABEL={ziwei:'자미두수',vedic:'베딕 점성술',mahabote:'마하보테','topic-love':'연애운','topic-money':'재물운','topic-career':'직업운','topic-marriage':'결혼운','topic-reunion':'재회운','topic-study':'학업·시험운','topic-child':'우리 아이 사주','topic-children':'자녀(임신)운','topic-health':'건강운',manse:'만세력',daily:'오늘의 운세',daypick:'지정일 운세',monthly:'월별 운세',newyear:'신년운세',life:'인생총운',gunghap:'궁합',name:'이름풀이·작명',qna:'즉문즉답',tarot3:'타로점 3장',tarot5:'타로점 5장',tarot10:'타로점 10장',
   'astro-birth-basic':'출생차트 성향 분석','astro-love-marriage':'연애/결혼운','astro-career-money':'직업/재물운','astro-yearly':'올해 운세','astro-full-report':'종합 점성술 리포트'};
 const SAJU_PAID_HISTORY_KEY='saju_paid_history_v1';
 function loadSajuPaidHistory(){
@@ -3538,7 +3153,6 @@ function openSajuPaidHistory(id){
 const WORKER_URL='https://saju-chat.na37zzang.workers.dev';
 const CHAT_MAX_QUESTIONS=5; // legacy default
 const CHAT_LS_KEY='saju_chat_count_v1'; // legacy
-const CHAT_QUESTION_MAX_CHARS=300;
 const QNA_FREE_TTL_MS=24*60*60*1000;
 const LANG_LS_KEY='saju_reading_language_v1';
 const LANG_META={
@@ -4406,7 +4020,7 @@ const CTX_Q={
   'topic-money':{t:'돈에 대해 가장 궁금한 건 무엇인가요?',d:'고른 목표에 맞는 돈의 흐름을 짚어 드려요.',o:[['save','모으는 법'],['grow','불리기 좋은 때'],['debt','빚 정리'],['start','창업 자금']]},
   'topic-study':{t:'어떤 공부를 하고 있나요?',d:'공부 목표에 맞는 시기와 방법을 짚어 드려요.',o:[['entrance','수능·입시'],['cert','자격증·시험'],['univ','대학·대학원'],['job','취업 공부']]},
   'topic-child':{t:'아이는 지금 어느 시기인가요?',d:'아이 나이에 맞는 양육 조언을 짚어 드려요.',o:[['baby','영유아'],['kid','초등학생'],['teen','중고등학생']]},
-  'topic-children':{t:'지금 자녀에 대한 상황은 어떤가요?',d:'지금 상황에 맞는 자녀운을 짚어 드려요.',o:[['plan','자녀를 계획 중이에요'],['raising','아이를 키우고 있어요'],['grown','자녀가 다 컸어요'],['none','아직 생각이 없어요']]},
+  'topic-children':{t:'지금 자녀에 대한 상황은 어떤가요?',d:'지금 상황에 맞는 자녀(임신)운을 짚어 드려요.',o:[['plan','자녀를 계획 중이에요'],['raising','아이를 키우고 있어요'],['grown','자녀가 다 컸어요'],['none','아직 생각이 없어요']]},
   'topic-health':{t:'요즘 가장 신경 쓰이는 건 무엇인가요?',d:'고른 부분을 중심으로 관리법을 짚어 드려요.',o:[['sleep','피로·수면'],['digest','소화·식습관'],['weight','체중·운동'],['stress','스트레스·마음']]}
 };
 let _ctxSel=null;
@@ -4442,7 +4056,7 @@ function ctxInfer(cat,text){
 // 분석할 때 화면 입력을 모아 _meta.ctx로 넘긴다 — 직접 적은 글이 있으면 그 글을 우선한다
 function ctxCollect(cat){
   if(!CTX_Q[cat])return null;
-  const ta=document.getElementById('ctxText'),text=String(ta&&ta.value||'').replace(/\s+/g,' ').trim().slice(0,100);
+  const ta=document.getElementById('ctxText'),text=String(ta&&ta.value||'').replace(/\s+/g,' ').trim();
   const sel=_ctxSel&&_ctxSel.cat===cat?_ctxSel:null;
   const key=sel?sel.key:ctxInfer(cat,text);
   if(!key&&!text)return null;
@@ -4959,6 +4573,8 @@ document.addEventListener('DOMContentLoaded',initJourney);
 // ── 홈 · 풀이 소개 화면 ─────────────────────────────
 // 홈 카드(data-go)는 유료 풀이면 소개 화면으로, 무료 풀이면 바로 시작한다.
 // 소개 문구의 가려진 칸(<i>)은 실제 풀이에 들어 있는 항목만 쓴다.
+const CATALOG_GROUPS={"overview": "총운/신년", "love": "연애/결혼", "work": "돈/일/공부", "family": "가족/건강", "counsel": "주제별 상담", "name": "이름풀이/작명"};
+const READING_TOPICS=[{"key": "life", "label": "총운", "group": "overview", "saju": "life", "art": "life.webp", "focus": "타고난 기질과 인생 전반의 흐름", "spread3": ["타고난 기질", "반복되는 인생 흐름", "앞으로의 방향"], "spread5": ["타고난 기질", "현재의 인생 과제", "숨은 강점", "조심할 패턴", "앞으로의 방향"]}, {"key": "newyear", "label": "신년", "group": "overview", "saju": "newyear", "art": "newyear.webp", "focus": "선택한 해의 기회와 주의할 흐름", "spread3": ["한 해의 전체 흐름", "기회가 열리는 분야", "조심할 부분"], "spread5": ["한 해의 출발", "성장할 분야", "주의할 흐름", "도움이 되는 태도", "한 해의 마무리"]}, {"key": "gunghap", "label": "궁합", "group": "love", "saju": "gunghap", "art": "gunghap.webp", "focus": "두 사람의 끌림과 차이, 관계의 방향", "spread3": ["나의 마음", "상대의 마음", "두 사람의 관계"], "spread5": ["나의 관계 방식", "상대의 관계 방식", "잘 맞는 부분", "함께 맞출 부분", "관계의 방향"]}, {"key": "love", "label": "연애", "group": "love", "saju": "topic-love", "art": "love.webp", "focus": "인연과 마음이 가까워지는 흐름", "spread3": ["나의 마음", "그 사람의 마음", "두 사람의 흐름"], "spread5": ["나의 마음", "그 사람의 마음", "관계를 막는 것", "숨은 감정", "앞으로의 흐름"]}, {"key": "marriage", "label": "결혼", "group": "love", "saju": "topic-marriage", "art": "marriage.webp", "focus": "결혼 준비와 함께 맞출 생활 기준", "spread3": ["관계의 기반", "결혼을 막는 것", "결혼의 흐름"], "spread5": ["나의 준비", "상대의 준비", "함께 맞출 것", "현실적인 조언", "결혼의 흐름"]}, {"key": "reunion", "label": "재회", "group": "love", "saju": "topic-reunion", "art": "reunion.webp", "focus": "멀어진 인연과 다시 다가갈 때의 태도", "spread3": ["헤어진 이유", "그 사람의 지금 마음", "다시 이어질 가능성"], "spread5": ["나의 지금 마음", "그 사람의 지금 마음", "남은 문제", "다가갈 때의 조언", "앞으로의 흐름"]}, {"key": "money", "label": "재물", "group": "work", "saju": "topic-money", "art": "money.webp", "focus": "돈을 버는 방식과 지출, 기회", "spread3": ["지금 돈의 흐름", "새는 곳", "들어오는 흐름"], "spread5": ["지금 돈의 흐름", "새는 곳", "숨은 기회", "현실적인 조언", "앞으로의 흐름"]}, {"key": "career", "label": "직업", "group": "work", "saju": "topic-career", "art": "career.webp", "focus": "적성과 일하는 방식, 취업과 이직", "spread3": ["지금 일의 상태", "기회가 오는 곳", "나아갈 방향"], "spread5": ["지금 일의 상태", "걸림돌", "숨은 강점", "직업 선택의 조언", "앞으로의 흐름"]}, {"key": "study", "label": "학업/시험", "group": "work", "saju": "topic-study", "art": "study.webp", "focus": "학습 습관과 집중력, 실전 준비", "spread3": ["현재 학습 흐름", "집중을 방해하는 것", "실전에서 살릴 강점"], "spread5": ["현재 학습 흐름", "막히는 공부 습관", "숨은 학습 강점", "시험 준비 조언", "앞으로의 방향"]}, {"key": "child", "label": "우리 아이", "group": "family", "saju": "topic-child", "art": "child.webp", "focus": "아이의 기질과 재능, 양육과 소통", "spread3": ["아이의 기질", "부모가 알아줄 마음", "성장을 돕는 방향"], "spread5": ["아이의 기질", "아이의 관심사", "소통이 막히는 지점", "부모가 도울 일", "성장의 방향"]}, {"key": "children", "label": "자녀(임신)", "group": "family", "saju": "topic-children", "art": "children.webp", "focus": "자녀와의 인연, 가족 계획과 마음의 준비", "spread3": ["현재의 마음", "함께 준비할 일", "가족을 위한 방향"], "spread5": ["가족 계획의 현재", "마음의 부담", "함께 맞출 기준", "생활 속 준비", "앞으로의 방향"]}, {"key": "health", "label": "건강", "group": "family", "saju": "topic-health", "art": "health.webp", "focus": "생활 리듬과 휴식, 관리해야 할 습관", "spread3": ["현재 생활 리듬", "휴식이 필요한 부분", "회복을 돕는 습관"], "spread5": ["현재 생활 리듬", "쌓인 부담", "휴식이 필요한 부분", "바꿀 생활 습관", "관리의 방향"]}];
 const PRODUCT_INTRO={
   life:{title:'인생총운',kicker:'평생 사주',tagline:'타고난 분위기부터 10년 단위 큰 흐름까지',poster:'life.webp',tone:['#041a17','#0f4a40','#7fe0c4'],
     teasers:['본인 인생의 황금기는 <i>████~████년</i>이에요','본인과 잘 맞는 사람은 <i>████</i>한 사람이에요','지금 10년은 <i>█████</i>을 다지는 시기예요'],
@@ -5047,7 +4663,7 @@ const PRODUCT_INTRO={
   'topic-child':{title:'우리 아이 사주',kicker:'아이',tagline:'아이의 타고난 기질과 재능, 잘 자라는 방법',poster:'child.webp',tone:['#140c30','#4a3a8a','#ffd0b0'],
     teasers:['우리 아이는 <i>██████</i>한 기질을 타고났어요','아이 재능이 보이는 분야는 <i>████ · ████</i>예요','아이를 칭찬할 때는 <i>████████</i>를 칭찬해 주세요'],
     price:'topic-child',meta:'topic-child',steps:['아이 출생정보 입력','결제하기','전체 풀이 확인'],cta:'출생정보 입력하고 결제하기',start:()=>goToInput('topic-child')},
-  'topic-children':{title:'자녀운',kicker:'자녀',tagline:'자녀와의 인연과 부모로서 힘이 붙는 때',poster:'children.webp',tone:['#1a0f08','#5a3a20','#ffd9a0'],
+  'topic-children':{title:'자녀(임신)운',kicker:'자녀',tagline:'자녀와의 인연과 부모로서 힘이 붙는 때',poster:'children.webp',tone:['#1a0f08','#5a3a20','#ffd9a0'],
     teasers:['본인과 자녀의 인연은 <i>████</i>한 흐름이에요','본인에게 맞는 부모 역할은 <i>██████</i>이에요','자녀 일로 힘이 붙는 해는 <i>████년</i>이에요'],
     price:'topic-children',meta:'topic-children',steps:['출생정보 입력','결제하기','전체 풀이 확인'],cta:'출생정보 입력하고 결제하기',start:()=>goToInput('topic-children')},
   'topic-health':{title:'건강운',kicker:'건강',tagline:'타고난 체질과 몸을 더 챙겨야 할 때',poster:'health.webp',tone:['#04161a','#0c4a48','#9ff0d8'],
@@ -5073,44 +4689,32 @@ const PRODUCT_INTRO={
     price:'astro-yearly',steps:['출생정보 입력','올해 운세 결제','전체 풀이 확인'],cta:'출생정보 입력하고 결제하기',start:()=>{window._astroPreferProduct='yearly';goToAstrology('input');}}
 };
 const FREE_START={vedic:()=>goToInput('vedic'),mahabote:()=>goToInput('mahabote'),manse:()=>goToInput('manse'),daily:()=>goToInput('daily'),'tarot-today':()=>goToTarot('today'),'astro-natal':()=>goToAstrology('natal'),'astro-today':()=>goToAstrology('today')};
-const HOME_CATALOG=[
-  {go:'life',title:'인생총운',sub:'돈·일·사랑과 10년 흐름',art:'life.webp',tags:['life']},
-  {go:'newyear',title:'신년운세',sub:'열두 달 흐름과 분야별 조언',art:'newyear.webp',tags:['year']},
-  {go:'gunghap',title:'궁합',sub:'두 사람 사주가 만나는 자리',art:'gunghap.webp',tags:['love']},
-  {go:'topic-love',title:'연애운',sub:'인연이 가까워지는 해와 달',art:'love.webp',tags:['love']},
-  {go:'topic-marriage',title:'결혼운',sub:'배우자 자리와 결혼 흐름',art:'marriage.webp',tags:['love','family']},
-  {go:'topic-reunion',title:'재회운',sub:'멀어진 인연이 다시 가까워질까',art:'reunion.webp',tags:['love']},
-  {go:'topic-money',title:'재물운',sub:'돈 버는 방식과 새는 구멍',art:'money.webp',tags:['work']},
-  {go:'topic-career',title:'직업운',sub:'잘 맞는 일과 움직일 때',art:'career.webp',tags:['work']},
-  {go:'topic-study',title:'학업·시험운',sub:'공부법과 시험에 강한 때',art:'study.webp',tags:['work','family']},
-  {go:'topic-child',title:'우리 아이 사주',sub:'타고난 기질과 재능',art:'child.webp',tags:['family']},
-  {go:'topic-children',title:'자녀운',sub:'자녀 인연과 부모 역할',art:'children.webp',tags:['family']},
-  {go:'topic-health',title:'건강운',sub:'체질과 먼저 살필 곳',art:'health.webp',tags:['family']},
-  {go:'name',title:'이름풀이·작명',sub:'이름과 사주의 궁합',art:'name.webp',tags:['life','family']},
-  {go:'qna',title:'천기 선생',sub:'정통 명리로 깊게 짚어줘요',art:'qna.webp',tags:['year','life']},
-  {go:'chat-unni',title:'달님 언니',sub:'연애·재회 고민을 다정하게',art:'counsel-unni.webp',tags:['love']},
-  {go:'chat-senior',title:'직설 선배',sub:'돈·일·진로, 결론부터',art:'counsel-senior.webp',tags:['work']},
-  {go:'chat-halmae',title:'복 할머니',sub:'가족·아이·건강을 푸근하게',art:'counsel-halmae.webp',tags:['family']},
-  {go:'tarot-question',title:'타로',sub:'무엇이든 질문하고 카드를 뽑아요',art:'tarot',tags:['star']},
-  {go:'tarot-love',title:'연애 타로',sub:'그 사람의 마음과 두 사람의 흐름',art:'tarot:love',tags:['love','star']},
-  {go:'tarot-reunion',title:'재회 타로',sub:'멀어진 그 사람과 다시 이어질까',art:'tarot:reunion',tags:['love','star']},
-  {go:'tarot-marriage',title:'결혼 타로',sub:'결혼 전에 함께 맞출 것',art:'tarot:marriage',tags:['love','family','star']},
-  {go:'tarot-career',title:'진로 타로',sub:'이직·취업·창업의 다음 걸음',art:'tarot:career',tags:['work','star']},
-  {go:'tarot-money',title:'재물 타로',sub:'돈이 새는 곳과 들어오는 길',art:'tarot:money',tags:['work','star']},
-  {go:'astro-report',title:'점성술',sub:'출생차트로 보는 성향·연애·일',art:'astro.webp',tags:['life','star']},
-  {go:'astro-love',title:'점성술 연애·결혼운',sub:'금성과 달로 보는 관계',art:'astro-love.webp',tags:['love','star']},
-  {go:'astro-career',title:'점성술 직업·재물운',sub:'토성과 목성으로 보는 일',art:'astro-career.webp',tags:['work','star']},
-  {go:'astro-yearly',title:'점성술 올해 운세',sub:'올해 하늘이 건드리는 곳',art:'astro-yearly.webp',tags:['year','star']},
-  {go:'ziwei',title:'자미두수',sub:'12궁 14주성으로 보는 인생',art:'ziwei.webp',tags:['life','star']},
-  {go:'manse',title:'만세력',sub:'내 사주 여덟 글자와 성향',art:'manse.webp',tags:['free','life'],free:true},
-  {go:'daily',title:'오늘의 운세',sub:'오늘 하루의 흐름',art:'daily.webp',tags:['free','year'],free:true},
-  {go:'tarot-today',title:'오늘의 타로',sub:'카드 한 장으로 보는 오늘',art:'tarot1',tags:['free','star'],free:true},
-  {go:'astro-today',title:'오늘의 점성술',sub:'오늘 하늘의 흐름',art:'astro-today.webp',tags:['free','year','star'],free:true},
-  {go:'astro-natal',title:'나의 출생차트',sub:'태양·달·상승궁 계산',art:'natal.webp',tags:['free','star'],free:true},
-  {go:'vedic',title:'베딕 점성술',sub:'나의 낙샤트라와 지금의 큰 시기',art:'vedic.webp',tags:['free','star'],free:true},
-  {go:'mahabote',title:'마하보테',sub:'태어난 요일의 동물과 행운 방향',art:'mahabote.webp',tags:['free','star'],free:true}
-];
-const HOME_TAB_LABEL={free:'무료 풀이',love:'연애·결혼',work:'돈·일·공부',year:'운세',family:'가족·건강',life:'인생·이름',star:'타로·별자리'};
+
+// 한 상품은 한 대분류에만 속한다. 사주·타로·점성술은 탭 안의 화면 구획이다.
+for(const t of READING_TOPICS){
+  const overview=t.group==='overview',tone=(PRODUCT_INTRO[t.saju]||PRODUCT_INTRO.life).tone;
+  PRODUCT_INTRO['tarot-'+t.key]={title:t.label+' 타로',kicker:'타로',tagline:t.focus,poster:'tarot:'+t.key,tone,
+    features:['카드는 본인이 직접 골라요','3장 · '+t.spread3.join(' · '),'5장 · '+t.spread5.join(' · '),'10장 켈틱크로스 · 내면과 환경, 전체 흐름'],
+    options:[3,5,10].map(n=>[(overview?'tarot-total':'tarot')+n,'카드 '+n+'장']),
+    steps:['질문 적고 장수 고르기','카드 직접 선택하기','미리보기와 결제 후 전체 풀이'],cta:'카드 선택하러 가기',start:()=>goToTarotTopic(t.key)};
+  PRODUCT_INTRO['astro-'+t.key]={title:t.label+' 점성술',kicker:'점성술',tagline:t.focus,poster:overview?'astro-yearly.webp':t.group==='love'?'astro-love.webp':t.group==='work'?'astro-career.webp':'astro.webp',tone,
+    features:['계산한 출생차트를 바탕으로 풀이해요',t.focus,t.key==='gunghap'?'두 사람의 출생차트를 나란히 비교해요':'주제에 맞는 행성·별자리·관계 분석','결제 전 미리보기 · 결제 후 전체 풀이'],price:'astro-'+t.key,
+    steps:[t.key==='gunghap'?'두 사람 출생정보 입력':'출생정보 입력','미리보기 확인','결제 후 전체 풀이'],cta:'출생정보 입력하기',start:()=>{window._astroPreferProduct=t.key;goToAstrology('input');}};
+}
+PRODUCT_INTRO['tarot-question']=PRODUCT_INTRO['tarot-life'];
+PRODUCT_INTRO['astro-report']=PRODUCT_INTRO['astro-life'];
+PRODUCT_INTRO['astro-yearly']=PRODUCT_INTRO['astro-newyear'];
+const HOME_CATALOG=READING_TOPICS.flatMap(t=>[
+  {go:t.saju,title:CAT_LABEL[t.saju],sub:t.focus,art:t.art,tags:[t.group],kind:'saju'},
+  {go:'tarot-'+t.key,title:t.label+' 타로',sub:t.focus,art:'tarot:'+t.key,tags:[t.group],kind:'tarot'},
+  {go:'astro-'+t.key,title:t.label+' 점성술',sub:t.focus,art:PRODUCT_INTRO['astro-'+t.key].poster,tags:[t.group],kind:'astro'}
+]).concat([
+  {go:'ziwei',title:'자미두수',sub:'12궁 14주성으로 보는 인생',art:'ziwei.webp',tags:['overview'],kind:'saju'},
+  {go:'name',title:'이름풀이·작명',sub:'이름과 사주의 궁합',art:'name.webp',tags:['name'],kind:'saju'},
+  ...[['qna','천기 선생','qna.webp'],['chat-unni','달님 언니','counsel-unni.webp'],['chat-senior','직설 선배','counsel-senior.webp'],['chat-halmae','복 할머니','counsel-halmae.webp']].map(([go,title,art])=>({go,title,art,sub:PRODUCT_INTRO[go].tagline,tags:['counsel'],kind:'counsel'})),
+  ...[['manse','만세력','manse.webp'],['daily','오늘의 운세','daily.webp'],['tarot-today','오늘의 타로','tarot1'],['astro-today','오늘의 점성술','astro-today.webp'],['astro-natal','나의 출생차트','natal.webp'],['vedic','베딕 점성술','vedic.webp'],['mahabote','마하보테','mahabote.webp']].map(([go,title,art])=>({go,title,art,sub:'무료로 확인하기',tags:[],free:true}))
+]);
+const HOME_TAB_LABEL=CATALOG_GROUPS;
 // 주제별 타로 카드 묶음 — 가운데 장이 주제를 대표한다(연애: 연인, 재회: 심판, 결혼: 연인, 진로: 전차, 재물: 운명의 수레바퀴)
 const TAROT_TOPIC_FAN={love:['18','07','04'],reunion:['19','21','45'],marriage:['06','07','20'],career:['02','08','67'],money:['65','11','74']};
 let _introKey='';
@@ -5121,23 +4725,34 @@ function posterArtHTML(art){
   if(art==='tarot1')return `<span class="pc-art pc-art--tarot"><img src="${P}tarot-bg.webp" alt="" loading="lazy"><span class="pc-fan pc-fan--one"><img src="${P}tarot-20.webp" alt="" loading="lazy"></span></span>`;
   return `<span class="pc-art"><img src="${P}${art}" alt="" loading="lazy"></span>`;
 }
+function catalogPriceLabel(item){
+  if(item.free)return '무료';
+  const cfg=PRODUCT_INTRO[item.go];if(!cfg)return '';
+  if(item.kind==='tarot')return '3장 '+formatWon(basePriceFor(cfg.options[0][0]))+'부터';
+  if(item.kind==='counsel')return '질문 3회 '+formatWon(basePriceFor('chatpack3'))+'부터';
+  return formatWon(basePriceFor(cfg.price));
+}
 function posterCardHTML(item){
-  return `<button type="button" class="pc" data-go="${item.go}">${posterArtHTML(item.art)}${item.free?'<span class="pc-badge pc-badge--free">무료</span>':''}<span class="pc-text"><strong class="pc-title">${storyEsc(item.title)}</strong><span class="pc-sub">${storyEsc(item.sub)}</span></span></button>`;
+  return `<button type="button" class="pc" data-go="${item.go}">${posterArtHTML(item.art)}${item.free?'<span class="pc-badge pc-badge--free">무료</span>':''}<span class="pc-text"><strong class="pc-title">${storyEsc(item.title)}</strong><span class="pc-sub">${storyEsc(item.sub)}</span><span class="pc-price">${catalogPriceLabel(item)}</span></span></button>`;
 }
 function openProduct(go){
   if(PRODUCT_INTRO[go])return openIntro(go);
   if(FREE_START[go])return FREE_START[go]();
 }
 function setHomeTab(tab){
-  const main=document.getElementById('homeMain'),box=document.getElementById('homeFiltered');
+  if(!CATALOG_GROUPS[tab])tab='overview';
+  const main=document.getElementById('homeMain'),box=document.getElementById('homeFiltered'),groups=document.getElementById('homeCatalogGroups');
   document.querySelectorAll('#homeTabs [data-home-tab]').forEach(b=>{const on=b.dataset.homeTab===tab;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
-  if(!main||!box)return;
-  if(tab==='all'){box.hidden=true;box.innerHTML='';main.hidden=false;return;}
-  const items=HOME_CATALOG.filter(x=>x.tags.includes(tab));
-  box.innerHTML=`<p class="nh-eyebrow">${HOME_TAB_LABEL[tab]}</p><h2 class="nh-title">${items.length}개의 풀이</h2><div class="nh-grid">${items.map(posterCardHTML).join('')}</div>`;
-  main.hidden=true;box.hidden=false;
-  window.scrollTo(0,0);
+  if(!main||!groups)return;
+  main.hidden=false;if(box){box.hidden=true;box.innerHTML='';}
+  const items=HOME_CATALOG.filter(x=>!x.free&&x.tags[0]===tab);
+  const kinds=tab==='counsel'?[['counsel','주제별 상담']]:[['saju','사주'],['tarot','타로'],['astro','점성술']];
+  groups.innerHTML=`<div class="catalog-intro"><p class="nh-eyebrow">${CATALOG_GROUPS[tab]}</p><h2 class="nh-title">어떤 풀이로 만나볼까요?</h2></div>`+kinds.map(([kind,label])=>{
+    const list=items.filter(x=>x.kind===kind);if(!list.length)return '';
+    return `<section class="nh-sec catalog-section" data-catalog-kind="${kind}" aria-label="${label}"><h3 class="nh-title">${label}</h3><div class="nh-grid">${list.map(posterCardHTML).join('')}</div></section>`;
+  }).join('');
 }
+
 function introPriceHTML(cfg){
   if(cfg.options){
     return `<ul class="ni-options">${cfg.options.map(([k,label])=>`<li><span>${label}</span><b>${formatWon(basePriceFor(k))}</b></li>`).join('')}</ul>`;
@@ -5300,6 +4915,7 @@ function initHome(){
     const tab=e.target.closest('#homeTabs [data-home-tab]');
     if(tab)setHomeTab(tab.dataset.homeTab);
   });
+  setHomeTab('overview');
   initHeroCarousel();
   renderHomeToday();
   initHomeReveal();
@@ -5674,10 +5290,16 @@ const TAROT_HISTORY_KEY='tarot_history_v1';
 const TAROT_DAILY_KEY_PREFIX='tarot_daily_v1';
 const TAROT_HISTORY_TTL_MS=24*60*60*1000;
 const TAROT_PRODUCTS=[
-  {id:'tarot3',name:'3장 간단 요약',price:augustPromoPrice(1000),shortDesc:'현재의 흐름과 조언',description:'현재 상황과 가까운 흐름을 빠르게 확인합니다.',count:3},
-  {id:'tarot5',name:'5장 심층 분석',price:augustPromoPrice(1500),shortDesc:'과거·현재·미래와 깊은 통찰',description:'현재, 장애물, 숨겨진 흐름, 조언, 결과를 함께 봅니다.',count:5},
-  {id:'tarot10',name:'10장 켈틱 크로스',price:augustPromoPrice(2000),shortDesc:'전반적인 운명과 숨겨진 진실',description:'복잡한 고민의 내면, 환경, 장기 흐름까지 깊게 봅니다.',count:10}
+  {id:'tarot3',name:'3장 간단 요약',price:1000,shortDesc:'현재의 흐름과 조언',description:'현재 상황과 가까운 흐름을 빠르게 확인해요.',count:3},
+  {id:'tarot5',name:'5장 심층 분석',price:1500,shortDesc:'현재·장애물·숨은 흐름·조언·결과',description:'고민의 배경과 앞으로의 방향을 함께 살펴봐요.',count:5},
+  {id:'tarot10',name:'10장 켈틱크로스',price:2000,shortDesc:'내면·환경·전체 흐름',description:'복잡한 고민의 내면과 환경까지 깊게 봐요.',count:10}
 ];
+function tarotPaymentCategory(flow){const f=flow||_tarotFlow||{};return (['life','newyear'].includes(f.topic)?'tarot-total':'tarot')+String(f.selectedSpreadId||'tarot3').replace('tarot','');}
+function tarotProductsFor(topic){
+  const key=topic==null?((_tarotFlow&&_tarotFlow.topic)||_tarotTopic):topic;
+  return TAROT_PRODUCTS.map(p=>({...p,price:basePriceFor(tarotPaymentCategory({topic:key,selectedSpreadId:p.id}))}));
+}
+
 const TAROT_QUESTION_EXAMPLES=[
   '그 사람은 저를 어떻게 생각하나요?','재회 가능성이 있을까요?','이직해도 괜찮을까요?',
   '올해 재물운은 어떤가요?','지금 이 선택을 해도 될까요?','연락이 올까요?','이 관계는 앞으로 어떻게 될까요?'
@@ -5700,6 +5322,11 @@ const TAROT_TOPICS={
     examples:['올해 돈 흐름은 어떨까요?','이 투자를 해도 괜찮을까요?','돈이 자꾸 새는 이유는 뭘까요?','부업을 시작하면 수입이 늘까요?','빌려준 돈을 돌려받을 수 있을까요?'],
     spreads:{3:['지금 돈의 흐름','새는 곳','들어오는 흐름'],5:['지금 돈의 흐름','새는 곳','숨은 기회','조언','앞으로의 흐름']}}
 };
+for(const t of READING_TOPICS){
+  const previous=TAROT_TOPICS[t.key];
+  TAROT_TOPICS[t.key]={title:t.label+' 타로',sub:t.focus,cat:t.key,examples:previous?previous.examples:[t.focus+'을 알고 싶어요.',t.label+'에서 지금 가장 먼저 살필 것은 무엇인가요?'],spreads:{3:t.spread3,5:t.spread5}};
+}
+
 let _tarotTopic='';
 function goToTarotTopic(topic){goToTarot('question',TAROT_TOPICS[topic]?topic:'');}
 const TAROT_MAJOR=[
@@ -5810,7 +5437,7 @@ let _todayTarotCardIds=[];
 function tarotEsc(v){return String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
 function tarotHtml(v){return v==null?'':String(v);}
 function tarotSetHeader(title,sub){const t=document.getElementById('tarotHdrTitle'),s=document.getElementById('tarotHdrSub');if(t)t.textContent=title;if(s)s.textContent=sub||'';}
-function goToTarot(route='home',topic){if(route==='question')_tarotTopic=topic||'';if(route==='today'){_todayTarotSelectedCardId='';_todayTarotCardIds=[];}_tarotRoute=route;showView('tarot');renderTarot();}
+function goToTarot(route='home',topic){if(route==='question')_tarotTopic=topic||'life';if(route==='today'){_todayTarotSelectedCardId='';_todayTarotCardIds=[];}_tarotRoute=route;showView('tarot');renderTarot();}
 function tarotBack(){
   // 진입 화면(오늘의 타로·질문입력)과 종료 화면(결과·히스토리)에서는 메인 메뉴로
   if(['home','today','question','result','history'].includes(_tarotRoute))return goHome();
@@ -5961,7 +5588,7 @@ function todayTarotResultHTML(card){
   return tarotHtml(preventOrphan(`<section class="today-tarot-report" aria-label="오늘의 타로 전체 풀이">
     <section class="tarot-panel"><h2 class="tarot-section-title">${tarotEsc(card.nameKo)} — ${tarotEsc(card.nameEn)}</h2><div class="tarot-kw-row">${card.keywords.map(k=>`<span class="tarot-kw">${tarotEsc(k)}</span>`).join('')}</div></section>
     ${sections.map(item=>`<section class="tarot-panel"><h3 class="tarot-section-title">${item.title}</h3><div class="tarot-reading-flow"><p>${tarotEsc(item.text)}</p></div></section>`).join('')}
-    <section class="conversion-hook today-paid-hook" aria-label="질문형 타로 안내"><div class="conversion-hook-title">내 고민에는 어떤 카드가 나올까요?</div><div class="conversion-hook-body"><p>한 가지 질문으로 지금 필요한 조언을 확인해요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="goToTarot('question')">질문형 타로 보기 · ${formatWon(basePriceFor('tarot3'))}부터</button></div></section>
+    <section class="conversion-hook today-paid-hook" aria-label="질문형 타로 안내"><div class="conversion-hook-title">내 고민에는 어떤 카드가 나올까요?</div><div class="conversion-hook-body"><p>한 가지 질문으로 지금 필요한 조언을 확인해요.</p></div><div class="conversion-hook-actions"><button type="button" class="conversion-hook-btn" onclick="goToTarot('question')">총운 타로 보기 · ${formatWon(basePriceFor('tarot-total3'))}부터</button></div></section>
   </section>`));
 }
 function renderTarotQuestion(root){
@@ -5977,8 +5604,9 @@ function renderTarotQuestion(root){
       <div class="tq-sub">${topic?tarotEsc(topic.sub):'마음을 모아 보세요. 카드는 본인이 지금 들을 준비가 된 이야기를 보여줘요.'}</div>
     </div>
     <div class="tq-panel">
+      ${_tarotTopic==='newyear'?`<label class="tq-label" for="tarotTargetYear">보고 싶은 해</label><input class="astro-input" id="tarotTargetYear" type="number" min="1900" max="2100" value="${(_tarotFlow&&_tarotFlow.targetYear)||new Date().getFullYear()}">`:''}
       <label class="tq-label" for="tarotQuestionInput">질문 내용</label>
-      <textarea class="tq-textarea" id="tarotQuestionInput" maxlength="200" placeholder="카드에게 물어볼 내용을 입력해주세요..." oninput="tarotQuestionCount(this)">${tarotEsc(q)}</textarea>
+      <textarea class="tq-textarea" id="tarotQuestionInput" placeholder="카드에게 물어볼 내용을 입력해주세요..." oninput="tarotQuestionCount(this)">${tarotEsc(q)}</textarea>
       <div class="tq-foot">
         <span id="tqCount">${q.length}자</span>
         <span class="tq-privacy"><span class="material-symbols-outlined">lock</span> 질문은 이 기기에만 저장돼요</span>
@@ -5993,11 +5621,13 @@ function tarotQuestionCount(el){const c=document.getElementById('tqCount');if(c)
 function setTarotQuestionExample(q){const el=document.getElementById('tarotQuestionInput');if(el){el.value=q;tarotQuestionCount(el);el.focus();}}
 function submitTarotQuestion(){
   const el=document.getElementById('tarotQuestionInput');const q=(el&&el.value||'').trim();
-  if(q.length<10){alert('질문은 10자 이상 입력해주세요.');return;}
+  if(!q){alert('궁금한 내용을 입력해주세요.');return;}
   const analysis=analyzeTarotQuestion(q),topic=TAROT_TOPICS[_tarotTopic],qc=analysis.categories[0];
   // 주제별 타로는 주제를 그대로 쓰고, 예·아니오나 시기 질문은 3장, 그 밖에는 주제 자리가 다 보이는 5장을 추천한다
   const recommended=topic?(['yesno','timing'].includes(qc)?'tarot3':analysis.recommended==='tarot10'?'tarot10':'tarot5'):analysis.recommended;
-  _tarotFlow={question:q,topic:topic?_tarotTopic:'',questionCategory:topic?topic.cat:qc,recommendedSpreadId:recommended,paymentStatus:'none',selectedCards:[],createdAt:new Date().toISOString()};
+  const targetYear=_tarotTopic==='newyear'?Number(document.getElementById('tarotTargetYear')?.value):null;
+  if(_tarotTopic==='newyear'&&(!Number.isInteger(targetYear)||targetYear<1900||targetYear>2100)){alert('보고 싶은 해를 확인해주세요.');return;}
+  _tarotFlow={question:q,targetYear,topic:topic?_tarotTopic:'',questionCategory:topic?topic.cat:qc,recommendedSpreadId:recommended,paymentStatus:'none',selectedCards:[],createdAt:new Date().toISOString()};
   saveTarotFlow();tarotNavigate('recommend');
 }
 function analyzeTarotQuestion(question){
@@ -6014,12 +5644,12 @@ function renderTarotRecommend(root){
   if(!_tarotFlow||!_tarotFlow.question)return tarotNavigate('question');
   tarotSetHeader('스프레드 선택','질문에 맞는 카드 수를 골라보세요');
   const rec=_tarotFlow.recommendedSpreadId;
-  if(!_tarotPickSpread||!TAROT_PRODUCTS.some(p=>p.id===_tarotPickSpread))_tarotPickSpread=rec;
+  if(!_tarotPickSpread||!tarotProductsFor().some(p=>p.id===_tarotPickSpread))_tarotPickSpread=rec;
   root.innerHTML=tarotHtml(`
     <div class="ts-preview">${tarotSpreadPreviewHTML(_tarotPickSpread)}</div>
     <div class="ts-head"><h2>스프레드 선택</h2><span>운명의 카드를 고르세요</span></div>
     <div class="tarot-small" style="margin:-6px 2px 16px;color:rgba(216,192,138,.62);line-height:1.6">${tarotEsc(tarotRecommendReason(rec))}</div>
-    <div class="ts-list">${TAROT_PRODUCTS.map(p=>tarotSpreadCardHTML(p,p.id===_tarotPickSpread,p.id===rec)).join('')}</div>
+    <div class="ts-list">${tarotProductsFor().map(p=>tarotSpreadCardHTML(p,p.id===_tarotPickSpread,p.id===rec)).join('')}</div>
     <button class="ts-cta" onclick="startTarotReading()"><span class="material-symbols-outlined">visibility</span> 상담 시작하기</button>`);
 }
 function tarotSpreadPreviewHTML(id){
@@ -6039,7 +5669,7 @@ function tarotSpreadCardHTML(p,on,rec){
 function pickTarotSpread(id){_tarotPickSpread=id;renderTarot();}
 function startTarotReading(){if(_tarotPickSpread)selectTarotProduct(_tarotPickSpread);}
 function selectTarotProduct(id){
-  const p=TAROT_PRODUCTS.find(x=>x.id===id);if(!p)return;
+  const p=tarotProductsFor().find(x=>x.id===id);if(!p)return;
   _tarotFlow={..._tarotFlow,selectedSpreadId:id,spreadName:p.name,spreadDescription:p.description,price:p.price,positions:getSpreadPositions(id,_tarotFlow.questionCategory,_tarotFlow.topic),selectedCards:[],paymentStatus:'none',resultMarkdown:''};
   saveTarotFlow();tarotNavigate('draw');
 }
@@ -6055,11 +5685,11 @@ function tarotPositionMeaning(label){return ({'나':'질문자 본인의 마음�
 function renderTarotPayment(root){
   if(!_tarotFlow||!_tarotFlow.selectedSpreadId)return tarotNavigate('recommend');
   tarotSetHeader('결제','결제 후 바로 카드를 뽑아요');
-  const p=TAROT_PRODUCTS.find(x=>x.id===_tarotFlow.selectedSpreadId);
+  const p=tarotProductsFor().find(x=>x.id===_tarotFlow.selectedSpreadId);
   const currentPrice=p?p.price:(_tarotFlow.price||0);
   _tarotFlow.price=currentPrice;
   const price=currentPrice.toLocaleString();
-  const cat=_tarotFlow.selectedSpreadId;
+  const cat=tarotPaymentCategory(_tarotFlow);
   root.innerHTML=tarotHtml(`
     <div class="tq-panel" style="margin-bottom:16px">
       <div class="ts-card-title" style="font-size:1.12rem;margin-bottom:8px">${tarotEsc(_tarotFlow.spreadName)}</div>
@@ -6074,7 +5704,7 @@ function renderTarotPayment(root){
 function startTarotPayment(){
   if(!_tarotFlow||!_tarotFlow.selectedSpreadId)return;
   saveTarotFlow(); // 결제 리다이렉트 왕복 동안 플로우 보존
-  const cat=_tarotFlow.selectedSpreadId;
+  const cat=tarotPaymentCategory(_tarotFlow);
   if(typeof openPaymentConsent==='function' && typeof PAID_META!=='undefined' && PAID_META[cat]){
     openPaymentConsent(cat,'KAKAOPAY');
   }else{
@@ -6174,7 +5804,7 @@ async function finishTarotDraw(){
   renderTarot();
 }
 function buildAIReadingInput(flow){
-  return {question:flow.question,questionCategory:flow.questionCategory,topic:flow.topic||'',topicTitle:(TAROT_TOPICS[flow.topic]||{}).title||'',spreadName:flow.spreadName,spreadDescription:flow.spreadDescription,cards:flow.positions.map(pos=>{
+  return {question:flow.question,targetYear:flow.targetYear,questionCategory:flow.questionCategory,topic:flow.topic||'',topicTitle:(TAROT_TOPICS[flow.topic]||{}).title||'',spreadName:flow.spreadName,spreadDescription:flow.spreadDescription,cards:flow.positions.map(pos=>{
     const sel=flow.selectedCards.find(s=>s.positionIndex===pos.index),card=TAROT_CARDS.find(c=>c.id===sel.cardId);
     const base=sel.orientation==='reversed'?card.reversedMeaning:card.uprightMeaning;
     const cat=['love','reunion','marriage'].includes(flow.questionCategory)?card.loveMeaning:flow.questionCategory==='career'?card.careerMeaning:flow.questionCategory==='money'?card.moneyMeaning:card.relationshipMeaning;
@@ -6225,7 +5855,7 @@ function renderTarotResult(root){
     ${_tarotFlow.deepLoading?'<div class="deep-status" role="status">천기가 가려졌던 해석을 쓰고 있어요. 30초쯤 걸려요.</div>':''}
     <div class="tarot-selected-strip">${input.cards.map(c=>{const card=TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);return `<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotCardImageHTML(card,'')}</div>${tarotEsc(c.positionLabel)}<br>${tarotEsc(c.cardNameKo)}</div>`;}).join('')}</div>
   </section>
-  ${(()=>{const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr'),body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${lvToc(r.items,'타로 풀이 목차')}${r.html}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(_tarotFlow.selectedSpreadId,body,{visibleSections:2})}</div>${lkBarHTML(_tarotFlow.selectedSpreadId)}`;})()}
+  ${(()=>{const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr'),body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${lvToc(r.items,'타로 풀이 목차')}${r.html}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(tarotPaymentCategory(_tarotFlow),body,{visibleSections:2})}</div>${lkBarHTML(tarotPaymentCategory(_tarotFlow))}`;})()}
   <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">새 질문 보기</button><button class="tarot-btn secondary" onclick="tarotNavigate('history')">히스토리 보기</button></div>`);
 }
 // 풀이 속 인라인 마크다운 강조(**굵게**, __굵게__)를 실제 볼드로 변환 — 반드시 이스케이프된 텍스트에만 사용
@@ -9701,7 +9331,7 @@ function renderNewyearFortuneLegacy(saju,y){
   const fieldBody=(emoji,name,score,bodyHtml,goodWarn)=>{
     const g=dailyGrade(score);
     // CHX: 한글 이름은 카드 id 충돌(card-___)을 부르므로 안정적 ASCII 라벨로 매핑
-    const _lab={'재물운':'NY_WEALTH','연애·결혼운':'NY_LOVE','직업·사업운':'NY_CAREER','인간관계·인맥':'NY_RELATION','건강운':'NY_HEALTH','공부·시험운':'NY_STUDY','주거·이동운':'NY_HOME','가족·자녀운':'NY_FAMILY'}[name]||('NY_'+name.replace(/[^A-Za-z0-9]/g,''))||'NY_FIELD';
+    const _lab={'재물운':'NY_WEALTH','연애·결혼운':'NY_LOVE','직업·사업운':'NY_CAREER','인간관계·인맥':'NY_RELATION','건강운':'NY_HEALTH','공부·시험운':'NY_STUDY','주거·이동운':'NY_HOME','가족·자녀(임신)운':'NY_FAMILY'}[name]||('NY_'+name.replace(/[^A-Za-z0-9]/g,''))||'NY_FIELD';
     const head=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:.82rem;color:var(--muted)">올해 평균 점수</span><span style="padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;color:${g.color};background:${g.bg};border:1px solid ${g.color}55">${g.lab} · ${score}점</span></div>`;
     return paidWrapBody(_lab,emoji,`${name} — ${y}년 한 해의 분위기`,head+bodyHtml,goodWarn);
   };
@@ -10043,7 +9673,7 @@ function renderNewyearFortuneLegacy(saju,y){
   h+=fieldBody('🏠','주거·이동운',homeYr,homeBody+_nyP.주거,
     {good:`이사·이주·해외 출장은 본인 자리와 어울리는 글자가 들어오는 시기 우선. 길월에 큰 이동 결정.`,
      warn:`충 분위기의 달에는 큰 이주·계약 미루고, 잔금·서명은 한 번 더 확인 필수.`});
-  h+=fieldBody('👨‍👩‍👧','가족·자녀운',familyYr,familyBody+_nyP.가족,
+  h+=fieldBody('👨‍👩‍👧','가족·자녀(임신)운',familyYr,familyBody+_nyP.가족,
     {good:`가족 모임·자녀 진학·출산은 합 분위기인 시기에 자연스럽게 풀려요. 부모님 건강·자녀 진로에 의식적 시간 투자.`,
      warn:`충·원진 분위기인 시기엔 가족 갈등이 누적되기 쉬워요. 짧고 자주 대화로 의식적 소통.`});
 
@@ -11924,7 +11554,7 @@ const PAID_META={
   'topic-reunion':{icon:'',title:'재회운',desc:'멀어진 인연이 다시 가까워지는 흐름을 풀어드려요.<br>다가가는 순서와 멈춰야 할 때까지 함께 짚어요.',features:['· 재회의 가능성을 만드는 구조','· 다시 다가가는 순서와 첫마디','· 멈추는 게 좋은 신호','· 앞으로 10년 다시 끌어당기는 해','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'},
   'topic-study':{icon:'',title:'학업·시험운',desc:'본인에게 맞는 공부법과 잘 맞는 분야를 풀어드려요.<br>시험과 선발에 힘이 붙는 해와 달까지 함께 짚어요.',features:['· 본인에게 맞는 공부법','· 잘 맞는 과목·분야','· 시험 일정 짜는 법','· 앞으로 10년 연도별 학업 점수','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'},
   'topic-child':{icon:'',title:'우리 아이 사주',desc:'아이의 타고난 기질과 재능, 잘 자라는 양육 방법을 풀어드려요.<br>자라는 시기별 흐름과 공부 방향까지 함께 짚어요.',features:['· 아이의 타고난 기질','· 칭찬·훈육·놀이 방법','· 재능과 공부 방향','· 유년기부터 청년 초기까지 시기별 흐름','· 앞으로 10년 연도별 성장 점수'],price:'1,000원'},
-  'topic-children':{icon:'',title:'자녀운',desc:'본인 사주로 보는 자녀와의 인연, 자녀 자리, 본인에게 맞는 부모 역할을 풀어드려요.<br>자녀 일로 힘이 붙는 해와 달까지 함께 짚어요.',features:['· 자녀와의 인연과 자녀 자리','· 자녀 인연이 가까워지는 시기','· 본인에게 맞는 부모 역할과 양육 방식','· 지금 10년의 자녀 흐름','· 앞으로 10년 연도별 자녀 점수','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'},
+  'topic-children':{icon:'',title:'자녀(임신)운',desc:'본인 사주로 보는 자녀와의 인연, 자녀 자리, 본인에게 맞는 부모 역할을 풀어드려요.<br>자녀 일로 힘이 붙는 해와 달까지 함께 짚어요.',features:['· 자녀와의 인연과 자녀 자리','· 자녀 인연이 가까워지는 시기','· 본인에게 맞는 부모 역할과 양육 방식','· 지금 10년의 자녀 흐름','· 앞으로 10년 연도별 자녀 점수','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'},
   'topic-health':{icon:'',title:'건강운',desc:'타고난 체질과 피로가 쌓이기 쉬운 곳을 풀어드려요.<br>몸을 더 챙겨야 할 해와 달까지 함께 짚어요.',features:['· 타고난 체질과 살필 곳','· 스트레스가 몸으로 오는 방식','· 지금 10년의 건강 흐름','· 앞으로 10년 연도별 건강 점수','· 다가오는 12개월 좋은 달·살필 달'],price:'1,000원'}
 };
 // 정가 원본 스냅샷 — 프로모션 라벨을 적용/복원할 때 되돌릴 기준
@@ -11968,13 +11598,63 @@ function getDecisionGuide(category){
 // 주의: 이 표는 절대 덮어쓰지 않는다. 프로모션가는 항상 "계산 시점"에 판정한다.
 // (예전에는 로드 시점에 이 표를 990으로 덮어써서, 페이지를 열어둔 채 프로모션
 //  경계를 넘기면 화면 가격과 워커가 기대하는 금액이 어긋나 승인이 거부됐다.)
-const PAY_BASE_PRICE={daypick:1500,monthly:2000,newyear:1500,gunghap:1000,name:1500,life:1500,'topic-love':1000,'topic-money':1000,'topic-career':1000,'topic-marriage':1000,'topic-reunion':1000,'topic-study':1000,'topic-child':1000,'topic-children':1000,'topic-health':1000,ziwei:1500,
-  // 추가 질문 패키지 — 결제 시 현재 사주·카테고리의 chatBonus 증가
-  chatpack3:1500,chatpack5:2000,chatpack7:3000,
-  // 타로점 — 질문형 타로 스프레드
-  tarot3:1000,tarot5:1500,tarot10:2000,
-  // 점성술 — 유료 풀이
-  'astro-birth-basic':1000,'astro-love-marriage':1000,'astro-career-money':1000,'astro-yearly':1000,'astro-full-report':1500};
+const PAY_BASE_PRICE={
+  "daypick": 1500,
+  "monthly": 2000,
+  "newyear": 2000,
+  "gunghap": 1500,
+  "name": 1500,
+  "life": 2000,
+  "topic-love": 1500,
+  "topic-money": 1500,
+  "topic-career": 1500,
+  "topic-marriage": 1500,
+  "topic-reunion": 1500,
+  "topic-study": 1500,
+  "topic-child": 1500,
+  "topic-children": 1500,
+  "topic-health": 1500,
+  "ziwei": 2000,
+  "chatpack3": 1500,
+  "chatpack5": 2000,
+  "chatpack7": 3000,
+  "tarot3": 1000,
+  "tarot5": 1500,
+  "tarot10": 2000,
+  "tarot-total3": 1500,
+  "tarot-total5": 2000,
+  "tarot-total10": 3000,
+  "astro-life": 2000,
+  "astro-newyear": 2000,
+  "astro-gunghap": 1500,
+  "astro-love": 1500,
+  "astro-marriage": 1500,
+  "astro-reunion": 1500,
+  "astro-money": 1500,
+  "astro-career": 1500,
+  "astro-study": 1500,
+  "astro-child": 1500,
+  "astro-children": 1500,
+  "astro-health": 1500,
+  "astro-birth-basic": 2000,
+  "astro-love-marriage": 1500,
+  "astro-career-money": 1500,
+  "astro-yearly": 2000,
+  "astro-full-report": 2000
+};
+
+// 기존 상품 ID는 구매 이력 복원용으로 유지하고, 새 상품은 공통 주제로 구성한다.
+for(const t of READING_TOPICS){
+  const key='astro-'+t.key;
+  CAT_LABEL[key]=t.label+' 점성술';
+  PAID_META[key]={title:CAT_LABEL[key],icon:'',desc:t.focus,features:[t.focus,'출생차트와 주제별 상세 풀이','같은 브라우저에서 24시간 다시 보기'],price:PAY_BASE_PRICE[key].toLocaleString('ko-KR')+'원'};
+}
+for(const n of [3,5,10]){
+  const key='tarot-total'+n;
+  CAT_LABEL[key]='총운·신년 타로 '+n+'장';
+  PAID_META[key]={...PAID_META['tarot'+n],title:CAT_LABEL[key],price:PAY_BASE_PRICE[key].toLocaleString('ko-KR')+'원'};
+}
+for(const key of Object.keys(PAY_BASE_PRICE))if(PAID_META[key])PAID_META[key].price=PAY_BASE_PRICE[key].toLocaleString('ko-KR')+'원';
 const CHAT_PACK_COUNT={chatpack3:3,chatpack5:5,chatpack7:7};
 // 지금 이 순간의 카테고리 단가 — 워커 augustPromoPriceForCategory()와 같은 규칙
 function basePriceFor(category, nowMs=Date.now()){
@@ -12313,7 +11993,7 @@ function _secretUnlockTap(category){
 }
 function _adminUnlockPaidCategory(category){
   const cat=String(category||'life');
-  if(/^tarot(3|5|10)$/.test(cat)){
+  if(/^tarot(?:-total)?(3|5|10)$/.test(cat)){
     try{
       if(typeof closePaymentConsent==='function')closePaymentConsent();
       if(typeof loadTarotFlow==='function')_tarotFlow=loadTarotFlow();
@@ -12634,7 +12314,7 @@ async function _handlePaymentReturn(){
     history.replaceState({},'',location.pathname);
     const orderId=pending.partnerOrderId;
     // 타로점 결제 완료 → 카드 뽑기 화면으로 복귀 (사주 잠금 해제 흐름과 분리)
-    if(targetCat && /^tarot(3|5|10)$/.test(targetCat)){
+    if(targetCat && /^tarot(?:-total)?(3|5|10)$/.test(targetCat)){
       try{
         if(typeof loadTarotFlow==='function')_tarotFlow=loadTarotFlow();
         if(_tarotFlow){const now=Date.now();_tarotFlow.paymentStatus='paid';_tarotFlow.paidAt=now;_tarotFlow.expiresAt=now+24*60*60*1000;if(typeof saveTarotFlow==='function')saveTarotFlow();}
@@ -13671,7 +13351,7 @@ function ppTopic(key,body,saju,tm){
     if(key==='study')return lv4Inject(body,'tp-a',ppStudyHTML(saju,meta,P));
     if(key==='reunion')return lv4Inject(body,'tp-a',ppReunionHTML(saju,meta,P,tm));
     if(key==='child')return lv4Inject(body,'tp-a',ppChildHTML(saju,meta));
-    if(key==='children')return lv4Inject(body,'tp-a',ppLuckHTML(saju,meta,P,{title:'자녀운이 트이는 생활 습관'}));
+    if(key==='children')return lv4Inject(body,'tp-a',ppLuckHTML(saju,meta,P,{title:'자녀(임신)운이 트이는 생활 습관'}));
   }catch(e){}
   return body;
 }
@@ -14094,7 +13774,7 @@ function buildMonthlyReadingV4(saju,sy,sm,ey,em,extra){
   const helpM=months.filter(o=>SOH[o.mp.stem]===ys.main||BOH[o.mp.branch]===ys.main),hurtM=months.filter(o=>SOH[o.mp.stem]===(ys.main+2)%5||BOH[o.mp.branch]===(ys.main+2)%5);
   const labs=arr=>arr.map(o=>o.lab).join(', ');
   const ctxTag=extra&&extra.contextTag||'',ctxNote=extra&&extra.contextNote||'';
-  const ctxLabel=ctxTag==='custom'?(ctxNote||'').trim().slice(0,60):((CONTEXT_OPENER.monthly||{})[ctxTag]||{}).label;
+  const ctxLabel=ctxTag==='custom'?(ctxNote||'').trim():((CONTEXT_OPENER.monthly||{})[ctxTag]||{}).label;
   const ctxKey={job:'career',love:'love',money:'wealth',health:'health',relation:'love'}[ctxTag];
   let sD=null,eD=null;
   try{if(_meta&&_meta.sy){const dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_meta.gender||'male');const pick=a=>{let c=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(a>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||a<dq.daeuns[i+1].age)){c=dq.daeuns[i];break;}return c;};sD=pick(sy-_meta.sy);eD=pick(ey-_meta.sy);}}catch(e){}
@@ -14194,7 +13874,7 @@ function buildDaypickReadingV4(saju,y,m,d,extra){
   let curD=null;try{if(_meta&&_meta.sy){const dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_meta.gender||'male');const a=y-_meta.sy;curD=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(a>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||a<dq.daeuns[i+1].age)){curD=dq.daeuns[i];break;}}}catch(e){}
   const curTg=curD?tenGod(myStem,curD.stem):null;
   const ctxTag=extra&&extra.contextTag||'',ctxNote=extra&&extra.contextNote||'';
-  const ctxLabel=ctxTag==='custom'?(ctxNote||'').trim().slice(0,60):(CONTEXT_OPENER.daypick[ctxTag]||{}).label;
+  const ctxLabel=ctxTag==='custom'?(ctxNote||'').trim():(CONTEXT_OPENER.daypick[ctxTag]||{}).label;
   const study=Math.round((f.career+f.total)/2);
   const recs=[],avoids=[];
   if(['정관','정인'].includes(tg))recs.push(['계약, 서류, 허가 처리','공식 절차가 깔끔하게 풀리는 날이에요.']);
@@ -14753,7 +14433,7 @@ const TOPIC_INFO={
   'topic-reunion':{key:'reunion',label:'재회운',stat:'재회',icon:'favorite',mat:'replay',kicker:'REUNION READING',stage:'love'},
   'topic-study':{key:'study',label:'학업·시험운',stat:'학업',icon:'workspace_premium',mat:'school',kicker:'STUDY READING',stage:'study'},
   'topic-child':{key:'child',label:'우리 아이 사주',stat:'성장',icon:'auto_awesome',mat:'child_care',kicker:'CHILD READING',stage:'study'},
-  'topic-children':{key:'children',label:'자녀운',stat:'자녀',icon:'family_restroom',mat:'family_restroom',kicker:'CHILDREN READING',stage:'people'},
+  'topic-children':{key:'children',label:'자녀(임신)운',stat:'자녀',icon:'family_restroom',mat:'family_restroom',kicker:'CHILDREN READING',stage:'people'},
   'topic-health':{key:'health',label:'건강운',stat:'건강',icon:'health_and_safety',mat:'health_and_safety',kicker:'HEALTH READING',stage:'health'}
 };
 // 주제 × 그 시기 앞에 선 기운 → [어떤 때인지, 살리는 법, 살필 점]
@@ -15406,7 +15086,7 @@ function renderSajuPaidLegacy(saju,sy,sm,sd,sh,smin){
     { const _r=getTenGodLocReading(hTG,'시주'); if(_r)sajuBody+=`<p style="margin-top:6px;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--accent)">📍 <b>이 흐름이 시주에 있어</b> — ${_r}</p>`; }
     { const _st=twelveStage(dp.stem,hp.branch); const _r=getStageLocReading(_st,'시주'); if(_r)sajuBody+=`<p style="margin-top:6px;padding:8px 12px;background:var(--bg-deep);border-radius:6px;border-left:2px solid var(--fire)">🔄 <b>시지의 기운 단계는 「${_st}」</b> — ${_r}</p>`; }
   }else{
-    sajuBody+=`<p>시주는 태어난 시간이 확인되지 않아 정확한 풀이가 어려워요. 시간 정보를 알려주시면 자녀운과 말년운까지 더 정밀하게 풀어드릴 수 있어요.</p>`;
+    sajuBody+=`<p>시주는 태어난 시간이 확인되지 않아 정확한 풀이가 어려워요. 시간 정보를 알려주시면 자녀(임신)운과 말년운까지 더 정밀하게 풀어드릴 수 있어요.</p>`;
   }
 
   // ⑥ 한 줄 정리
@@ -16743,7 +16423,7 @@ function renderSajuPaidLegacy(saju,sy,sm,sd,sh,smin){
       },
       '정관':{
         strength:'사회적 신뢰·책임감·정직',
-        marriage:'여성은 신뢰 가는 남성 배우자 — 결혼운 가장 좋은 격국. 안정적인 가정·자녀운',
+        marriage:'여성은 신뢰 가는 남성 배우자 — 결혼운 가장 좋은 격국. 안정적인 가정·자녀(임신)운',
         challenge:'평생 다듬어야 할 점: 격식·규율을 너무 챙기다 보면 융통성 부족할 수 있음. 가까운 사람에게는 의식적으로 부드러움',
         gift:'평생 자산: 사회적 신뢰가 자연스럽게 쌓이는 분위기 — 공직·관리직·대기업·승진 라인'
       },
@@ -19577,7 +19257,7 @@ function getSinsalLocImpact(name,loc){
       '년주':'조상·뿌리에 급변·사고의 흔적이 있어요.',
       '월주':'직장·청년기에 급격한 변화나 위기를 겪기 쉬워요.',
       '일주':'본인이 급변의 중심에 서며, 부부 사이에 강한 굴곡이 있어요.',
-      '시주':'자녀운에서 변화가 잦거나 말년이 격동적일 수 있어요.'
+      '시주':'자녀(임신)운에서 변화가 잦거나 말년이 격동적일 수 있어요.'
     },
     '괴강살':{
       '년주':'조상의 카리스마와 통솔력을 물려받았어요.',
@@ -20182,7 +19862,7 @@ function aiReadingDomId(category, extraKey){
 function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
-  const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+encodeURIComponent(String(_meta.ctx.text||'').slice(0,40)):'';
+  const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+textHash(String(_meta.ctx.text||''))+'-'+String(_meta.ctx.text||'').length:'';
   return 'saju_ai_reading_v4:'+(lang||currentLanguage())+':'+category+':'+birth+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
@@ -20603,7 +20283,6 @@ async function chatAsk(){
     showChatLimitUpsell(curCat);
     return;
   }
-  if(question.length>CHAT_QUESTION_MAX_CHARS){alert(`질문은 ${CHAT_QUESTION_MAX_CHARS}자 이내로 입력해주세요.`);return;}
 
   const btn=document.getElementById('chatBtn');
   btn.disabled=true;btn.textContent='⏳';
@@ -20754,10 +20433,10 @@ function renderChatSection(catOpt){
       ${initialLog}
     </div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 300자 이내로 입력하세요')}" maxlength="${CHAT_QUESTION_MAX_CHARS}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="${inputDisabled?max+'회 한도가 소진되었어요':(isQna?'메시지 입력':'궁금한 점을 자유롭게 입력하세요')}" rows="1" oninput="chatAutoresize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatAsk();}" ${inputDisabled?'disabled':''}></textarea>
       <button class="chat-btn" id="chatBtn" onclick="chatAsk()" ${inputDisabled?'disabled':''}>${isExhausted?exhaustedLabel:(isQna?'보내기':'✦ 질문하기')}</button>
     </div>
-    <div class="chat-tip">질문 ${CHAT_QUESTION_MAX_CHARS}자 이내 · 답변은 1,300자 이내에서 완결돼요.<br>${isQna?'질문권을 충전해 필요한 만큼 상담할 수 있어요.':`이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.`}</div>
+    <div class="chat-tip">질문은 길이 제한 없이 적을 수 있어요 · 답변은 1,300자 이내로 정리해요.<br>${isQna?'질문권을 충전해 필요한 만큼 상담할 수 있어요.':`이 풀이의 무료 질문은 <b>${max}회</b>까지 가능해요.`}</div>
     <button type="button" class="chat-addbuy-btn" onclick="showChatLimitUpsell('${cat}')">＋ 질문 추가 구매</button>
   </div>`;
 }
@@ -24789,10 +24468,10 @@ function renderGunghapFamilyCard(s1,s2,r){
     body=`두 분의 오행이 합쳐졌을 때 <b>${ohNames[maxIdx]}</b> 기운이 많이 치우친 분위기예요. 자녀가 생기면 <b>${ohNames[minIdx]}</b> 기운 쪽 환경(색·음식·취미·방향)을 의식적으로 더해주는 게 양육의 핵심이 돼요.`;
   }
   const famBody=`<div class="asec"><div class="atitle">두 분이 가족을 이뤘을 때의 분위기</div><div class="abody">${body}</div></div>
-    <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 자녀운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>`;
+    <div class="asec" style="margin-top:12px;padding:11px 13px;background:var(--earth-bg);border-radius:9px;border-left:3px solid var(--accent-bright)"><div class="abody" style="font-size:.82rem;line-height:1.85">💡 자녀(임신)운은 두 분의 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이를 받아보시는 걸 권해드려요.</div></div>`;
   return paidWrapBody('FAMILY','👨‍👩‍👧','가족·자녀 분위기',famBody,
     {good:`${r.balScore>=80?'두 분 오행 합산이 균형 — 자녀가 다양한 흐름의 환경에서 자라기 좋아요':r.balScore>=65?`${ohNames[maxIdx]} 강세 — 자녀에게 약한 ${ohNames[minIdx]} 환경(색·음식·취미·방향)을 의식적으로 노출`:`${ohNames[maxIdx]} 치우침 — ${ohNames[minIdx]} 환경을 더해주는 게 양육의 핵심`}.`,
-     warn:`자녀운은 두 분 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이 권장. 부모님 건강·노후 관리도 의식적 시간 투자 필수.`});
+     warn:`자녀(임신)운은 두 분 사주뿐 아니라 자녀 본인의 사주가 더 결정적이에요. 자녀가 태어난 후 자녀의 일주로 다시 풀이 권장. 부모님 건강·노후 관리도 의식적 시간 투자 필수.`});
 }
 
 // ══════════════════════════════════════════════
@@ -25165,7 +24844,7 @@ function analyze(){
     let note='';
     if(tag==='custom'){
       const inp=document.getElementById('ctxCustom'+cap);
-      if(inp)note=(inp.value||'').trim().slice(0,60);
+      if(inp)note=(inp.value||'').trim();
     }
     return {tag,note};
   };
@@ -26470,6 +26149,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=4cca392afaa5"></script>
+<script src="assets/astrology.js?v=cf4c1bff331c"></script>
 </body>
 </html>

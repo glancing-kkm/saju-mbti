@@ -39,50 +39,69 @@ const submitBirth=async()=>{
     run(scripts);
     run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
     await wait(30);
-    check('초기화: 오류 없이 홈과 실제 상품 가격 표시',()=>{assert.equal(errors.length,0,errors.join('\n'));assert.equal(d.querySelector('[data-journey-price="life"]').textContent,'1,500원');});
-    check('홈: 무료 풀이 줄과 전체 풀이 목록이 모두 보임',()=>{
-      const paid=[...d.querySelectorAll('#paidCoreMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra);
-      assert.deepEqual(paid,['life','newyear','name','qna','chat-unni','chat-senior','chat-halmae','tarot-question','astro-report','ziwei','gunghap','topic-love','topic-marriage','topic-reunion','topic-money','topic-career','topic-study','topic-child','topic-children','topic-health','tarot-love','tarot-reunion','tarot-marriage','tarot-career','tarot-money']);
-      assert(!d.querySelector('#paidCoreMenu').closest('details,[hidden]'));
-      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal']);
+    check('초기화: 새 대분류 홈과 실제 상품 가격 표시',()=>{
+      assert.equal(errors.length,0,errors.join('\n'));
+      assert.deepEqual([...d.querySelectorAll('#homeTabs button')].map(e=>e.textContent),['총운/신년','연애/결혼','돈/일/공부','가족/건강','주제별 상담','이름풀이/작명']);
+      run("setHomeTab('overview')");assert.match(d.querySelector('#homeCatalogGroups [data-go="life"] .pc-price').textContent,/2,000원/);
     });
-    check('메뉴 숨김: 지정일·월별은 홈, 분류 탭, 다른 풀이 추천에서 제외',()=>{
-      const hidden=['monthly','daypick'];
-      assert.equal(d.querySelectorAll('#view-home [data-go="monthly"],#view-home [data-go="daypick"],#view-home [data-home-category="monthly"],#view-home [data-home-category="daypick"]').length,0);
-      assert.equal(run("HOME_CATALOG.some(x=>['monthly','daypick'].includes(x.go))"),false);
-      for(const tab of ['year','love','work','family','life','star']){
-        run(`setHomeTab('${tab}')`);
-        assert([...d.querySelectorAll('#homeFiltered [data-go]')].every(x=>!hidden.includes(x.dataset.go)));
+    check('분류: 사주·타로·점성술 12개 주제를 맞추고 각 상품은 한 탭에만 배치',()=>{
+      const catalog=JSON.parse(run('JSON.stringify(HOME_CATALOG)')),topics=JSON.parse(run('JSON.stringify(READING_TOPICS)'));
+      assert.equal(topics.length,12);assert.equal(new Set(catalog.map(x=>x.go)).size,catalog.length);
+      assert(catalog.filter(x=>!x.free).every(x=>x.tags.length===1));
+      for(const t of topics)for(const key of [t.saju,'tarot-'+t.key,'astro-'+t.key]){
+        const item=catalog.find(x=>x.go===key);assert(item,key);assert.deepEqual(item.tags,[t.group]);
       }
-      run("setHomeTab('all');openIntro('newyear')");
-      assert([...d.querySelectorAll('#view-intro .ni-more [data-go]')].every(x=>!hidden.includes(x.dataset.go)));
-      run('goHome()');
+      assert.deepEqual(catalog.find(x=>x.go==='ziwei').tags,['overview']);
+      assert.match(catalog.find(x=>x.go==='topic-children').title,/자녀\(임신\)운/);
+      assert.deepEqual([...d.querySelectorAll('#freeMenu .home-category')].map(c=>c.dataset.homeCategory||c.dataset.homeExtra),['manse','daily','tarot-today','astro-today','astro-natal','vedic','mahabote']);
+      const seen=[];
+      for(const tab of ['overview','love','work','family','counsel','name']){
+        run(`setHomeTab('${tab}')`);
+        const cards=[...d.querySelectorAll('#homeCatalogGroups [data-go]')];assert(cards.length);
+        seen.push(...cards.map(x=>x.dataset.go));
+        if(['overview','love','work','family'].includes(tab))assert.deepEqual([...d.querySelectorAll('[data-catalog-kind]')].map(x=>x.dataset.catalogKind),['saju','tarot','astro']);
+        assert(!cards.some(x=>['monthly','daypick'].includes(x.dataset.go)));
+      }
+      assert.equal(new Set(seen).size,seen.length);assert.equal(seen.length,catalog.filter(x=>!x.free).length);
+      run("setHomeTab('overview')");
     });
-    check('결제 가격: 타로·점성술 상품 표시와 두 결제 서버의 금액 검증 일치',()=>{
-      const expected={tarot3:1000,tarot5:1500,tarot10:2000,'astro-birth-basic':1000,'astro-love-marriage':1000,'astro-career-money':1000,'astro-yearly':1000,'astro-full-report':1500};
-      const old={tarot3:1500,tarot5:2000,tarot10:3000,'astro-birth-basic':1500,'astro-love-marriage':1500,'astro-career-money':1500,'astro-yearly':1500,'astro-full-report':2500};
-      const now=Date.parse('2026-10-20T00:00:00Z');
-      for(const [cat,price] of Object.entries(expected)){
-        assert.equal(run(`computePayAmount('${cat}',null,${now})`),price);
-        assert.equal(run(`PAID_META['${cat}'].price`),price.toLocaleString('ko-KR')+'원');
-        const product=cat.startsWith('tarot')?`TAROT_PRODUCTS.find(x=>x.id==='${cat}')`:`ASTRO_PRODUCTS.find(x=>x.id==='${cat.slice(6)}')`;
-        assert.equal(run(product+'.price'),price);
+    check('가격: 총운·신년·자미두수 2천원, 주제별·이름풀이 1천5백원, 타로 별도 요금',()=>{
+      for(const key of ['life','newyear','ziwei'])assert.equal(run(`computePayAmount('${key}',null)`),2000,key);
+      for(const key of ['gunghap','name',...JSON.parse(run('JSON.stringify(READING_TOPICS.filter(t=>t.group!=="overview").map(t=>t.saju))'))])assert.equal(run(`computePayAmount('${key}',null)`),1500,key);
+      const products=JSON.parse(run('JSON.stringify(ASTRO_PRODUCTS)'));assert.equal(products.length,12);
+      for(const p of products)assert.equal(p.price,['life','newyear'].includes(p.id)?2000:1500,p.id);
+      for(const topic of ['life','newyear','love','gunghap','children']){
+        const prices=JSON.parse(run(`JSON.stringify(tarotProductsFor('${topic}').map(p=>p.price))`));
+        assert.deepEqual(prices,['life','newyear'].includes(topic)?[1500,2000,3000]:[1000,1500,2000]);
+        run(`openIntro('tarot-${topic}')`);assert.deepEqual([...d.querySelectorAll('#view-intro .ni-options b')].map(x=>x.textContent),prices.map(x=>x.toLocaleString('ko-KR')+'원'));
       }
       for(const file of ['worker/kakao-payment-worker.js','worker/payment-worker.js']){
-        const source=fs.readFileSync(path.join(root,file),'utf8').split('export default')[0];
-        const server=vm.createContext({});vm.runInContext(source,server);
+        const server=vm.createContext({});vm.runInContext(fs.readFileSync(path.join(root,file),'utf8').split('export default')[0],server);
         assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(CATEGORY_PRICE)',server)),JSON.parse(run('JSON.stringify(PAY_BASE_PRICE)')));
-        for(const [cat,price] of Object.entries(expected)){
-          assert.equal(vm.runInContext(`isAmountValid('${cat}',${price},${now})`,server),true,file+': '+cat);
-          assert.equal(vm.runInContext(`isAmountValid('${cat}',${old[cat]},${now})`,server),false,file+': old '+cat);
-          assert.equal(vm.runInContext(`isAmountValid('${cat}',${price+1},${now})`,server),false,file+': forged '+cat);
+        for(const [key,price] of Object.entries(JSON.parse(run('JSON.stringify(PAY_BASE_PRICE)')))){
+          assert(vm.runInContext(`isAmountValid('${key}',${price},Date.parse('2026-10-25'))`,server),key);
+          assert(!vm.runInContext(`isAmountValid('${key}',${price+1},Date.parse('2026-10-25'))`,server),key);
         }
-      }
-      for(const [key,amounts] of [['tarot-question',[1000,1500,2000]],['astro-report',[1000,1000,1000,1000,1500]]]){
-        run(`openIntro('${key}')`);
-        assert.deepEqual([...d.querySelectorAll('#view-intro .ni-options b')].map(x=>x.textContent),amounts.map(x=>x.toLocaleString('ko-KR')+'원'));
+        assert(vm.runInContext("isAmountValidWithGrace('life',1500,CATALOG_PRICE_CHANGED_AT+1)",server));
+        assert(!vm.runInContext("isAmountValidWithGrace('life',1500,CATALOG_PRICE_CHANGED_AT+ORDER_GRACE_MS+1)",server));
       }
       run('goHome()');
+    });
+    check('리딩 서버: 12개 주제·궁합·선택 연도·긴 질문을 프롬프트에 보존',()=>{
+      const server=vm.createContext({});
+      vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'utf8').replace('export default {','const testWorker = {'),server);
+      const chart={birthInfo:{year:1994,birthTimeUnknown:true},planets:[{planet:'sun',sign:'taurus'}]};
+      const question='자세한 질문 '.repeat(1000)+'서버까지 마지막 질문';
+      for(const topic of JSON.parse(run('JSON.stringify(READING_TOPICS)'))){
+        server.testInput={chart,productType:topic.key,partnerChart:chart,synastryAspects:[],targetYear:2028,yearTransits:[{month:1}],question};
+        const prompt=vm.runInContext('buildAstrologyReadingUserPrompt(testInput)',server);
+        assert(prompt.includes(question),topic.key);assert(prompt.includes('ASC·하우스 해석 금지'));
+        if(topic.key==='gunghap')assert(prompt.includes('상대방 출생차트'));
+        if(topic.key==='newyear')assert(prompt.includes('2028년'));
+      }
+      server.testInput={topic:'newyear',topicTitle:'신년 타로',targetYear:2028,question,cards:[],positions:[]};
+      const tarotPrompt=vm.runInContext('buildTarotReadingUserPrompt(testInput)',server);
+      assert(tarotPrompt.includes(question));assert(tarotPrompt.includes('2028년'));
     });
     run(d.querySelector('.nh-cta').getAttribute('onclick'));
     check('홈 배너: 오늘의 무료 운세 3종 선택 팝업',()=>{
@@ -105,15 +124,10 @@ const submitBirth=async()=>{
     run('openVault()');
     check('보관함: 결제 전에는 비어 있다는 안내와 무료 시작 버튼',()=>{assert(d.querySelector('#view-vault .vault-empty'));assert.equal(d.getElementById('vaultCount').hidden,true);});
     run('goHome()');
-    check('홈 분류 탭: 무료만 고르면 무료 풀이 7개, 전체로 돌아오면 원래 목록',()=>{
-      run("setHomeTab('free')");
-      assert(d.getElementById('homeMain').hidden);
-      assert.equal(d.querySelectorAll('#homeFiltered .pc').length,7);
-      assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].slice(0,5).map(c=>c.dataset.go),['manse','daily','tarot-today','astro-today','astro-natal']);
-      run("setHomeTab('family')");
-      assert.deepEqual([...d.querySelectorAll('#homeFiltered .pc')].map(c=>c.dataset.go),['topic-marriage','topic-study','topic-child','topic-children','topic-health','name','chat-halmae','tarot-marriage']);
-      run("setHomeTab('all')");
-      assert(!d.getElementById('homeMain').hidden&&d.getElementById('homeFiltered').hidden);
+    check('홈 분류: 무료 메뉴는 공통 영역, 이름풀이는 전용 탭',()=>{
+      run("setHomeTab('name')");assert.deepEqual([...d.querySelectorAll('#homeCatalogGroups [data-go]')].map(e=>e.dataset.go),['name']);
+      assert.equal(d.querySelectorAll('#freeMenu .home-category').length,7);
+      assert(!d.getElementById('homeMain').hidden);run("setHomeTab('overview')");
     });
     check('홈 카드: 모든 data-go가 소개 화면이나 무료 풀이로 연결',()=>{
       const gos=[...new Set([...d.querySelectorAll('#view-home [data-go]')].map(b=>b.dataset.go))];
@@ -163,7 +177,7 @@ const submitBirth=async()=>{
     });
     await submitBirth();
     check('시간 미상: 실제 계산으로 무료 풀이 생성',()=>{assert(d.getElementById('view-result').classList.contains('on'));assert(!d.querySelector('#p0 .journey-overview'));assert(d.querySelector('#journeyManseBoard .pillars'));});
-    check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 1,500원/);assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
+    check('무료 결과: 만세력 판 아래에 유료 풀이 추천',()=>{assert.match(d.querySelector('#p0 .journey-recommend').textContent,/인생총운 보기 · 2,000원/);assert(d.querySelector('#journeyManseBoard').compareDocumentPosition(d.querySelector('#p0 .journey-recommend'))&4);assert(events().some(e=>e[1]==='free_reading_view'));});
     run("goToInput('daily');analyze()");await wait(150);
     check('오늘의 운세: 선택 바·요약 덱 없이 전체 리포트 바로 표시',()=>{
       assert(d.querySelector('#p1 .daily-report .daily-wrap'));
@@ -188,7 +202,7 @@ const submitBirth=async()=>{
       const hook=d.querySelector('#p1 .daily-paid-hook');assert(hook);
       assert(hook.textContent.trim().length<200);
       assert.equal(hook.querySelectorAll('button').length,1);
-      assert.match(hook.textContent,/1,500원/);
+      assert.match(hook.textContent,/2,000원/);
     });
     run(d.querySelector('#p1 .daily-paid-hook button').getAttribute('onclick'));await wait(150);
     check('유료 연결 버튼: 기존 출생정보로 신년운세 가린 미리보기와 결제 버튼',()=>{
@@ -199,7 +213,7 @@ const submitBirth=async()=>{
     });
     run('closePaymentConsent()');
     run("continueJourney('life')");await wait(150);
-    check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/1,500원/);});
+    check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/2,000원/);});
     check('궁금한 점: 인생총운 입력에는 없음',()=>assert.equal(d.getElementById('catExtraCtx').style.display,'none'));
     check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
       const root=d.querySelector('#p5 .report-preview-layout');assert(root);
@@ -279,7 +293,7 @@ const submitBirth=async()=>{
       }
     });
     run("openPaymentConsent('life','KAKAOPAY')");
-    check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'1,500원');assert.match(d.getElementById('payCtaGo').textContent,/1,500원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
+    check('결제 안내: 금액과 포커스, 미동의 버튼 비활성',()=>{assert.equal(d.getElementById('payProductPrice').textContent,'2,000원');assert.match(d.getElementById('payCtaGo').textContent,/2,000원/);assert(d.getElementById('payCtaGo').disabled);assert(d.activeElement.classList.contains('pay-close'));});
     let readyCalls=0,resolveReady;
     w.fetch=()=>{readyCalls++;return new Promise(r=>resolveReady=r);};
     await run('startKakaoPayment()');
@@ -292,7 +306,7 @@ const submitBirth=async()=>{
     check('결제 준비 실패: 상태 안내와 재시도 복원',()=>{assert.match(d.getElementById('payStatus').textContent,/잠시 후|문제/);assert(!d.getElementById('payCtaGo').disabled);});
     w.fetch=async()=>({ok:true,json:async()=>({ok:true,tid:'TEST_ONLY',nextRedirectPcUrl:'https://payment.example/',next_redirect_pc_url:'https://payment.example/'})});
     await run('startKakaoPayment()');
-    check('결제 이동: 입력·사주 정보를 보존',()=>{assert(pending().saju);assert(pending().meta);assert.equal(pending().amount,1500);});
+    check('결제 이동: 입력·사주 정보를 보존',()=>{assert(pending().saju);assert(pending().meta);assert.equal(pending().amount,2000);});
     run("_paymentStarting=false;closePaymentConsent();history.replaceState({},'','?kpay=cancel');");
     await run('_handlePaymentReturn()');
     check('결제 취소: 잠금을 풀지 않고 결제 안내 복원',()=>{assert(d.querySelector('#p5 .journey-return'));assert.match(d.querySelector('#p5 .journey-return').textContent,/취소/);assert.equal(run("isUnlockedFor('life')"),false);assert.equal(pending(),null);});
@@ -334,7 +348,7 @@ const submitBirth=async()=>{
       w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');
-    check('주제별 풀이: 연애운은 가린 미리보기와 1,000원 결제 버튼',()=>{
+    check('주제별 풀이: 연애운은 가린 미리보기와 1,500원 결제 버튼',()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
       const preview=d.querySelector('#p9 .lk-preview');assert(preview.querySelector('.preview-compact'));
       assert(preview.textContent.length<3800);assert(preview.querySelectorAll('.lc-scene').length>=2);
@@ -342,12 +356,12 @@ const submitBirth=async()=>{
       assert(!preview.querySelector('.lv4-rows,.lk-note,.report-preview-contents'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert(!d.querySelector('#p9 [data-ai-reading]'));
-      assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
+      assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,500원/);
       assert.equal(run("isUnlockedFor('topic-love')"),false);
       assert(!/역술가 질문/.test(d.querySelector('#p9 .usage-guide').textContent));
     });
     run("openPaymentConsent('topic-love','KAKAOPAY')");
-    check('주제별 풀이: 결제 안내 금액 1,000원',()=>assert.equal(d.getElementById('payProductPrice').textContent,'1,000원'));
+    check('주제별 풀이: 결제 안내 금액 1,500원',()=>assert.equal(d.getElementById('payProductPrice').textContent,'1,500원'));
     run("closePaymentConsent();unlockAndRender('topic-love')");
     check('주제별 풀이: 결제 후 요약·10년·12개월 풀이가 열림',()=>{
       assert(d.querySelector('#p9 .tp-v4'));
@@ -379,7 +393,17 @@ const submitBirth=async()=>{
     run("selectTarotProduct('tarot10')");
     check('연애 타로 10장: 켈틱크로스 자리는 그대로',()=>assert.equal(run('_tarotFlow.positions[0].label'),'현재 상황'));
     run("goToTarot('question')");
-    check('자유 질문 타로: 주제 없이 원래 화면',()=>{assert.equal(run('_tarotTopic'),'');assert.match(d.querySelector('#tarotApp .tq-title').textContent,/본인의 질문/);});
+    check('기본 질문 타로: 총운 주제로 연결',()=>{assert.equal(run('_tarotTopic'),'life');assert.match(d.querySelector('#tarotApp .tq-title').textContent,/총운/);});
+    check('타로: 긴 질문을 자르지 않고 총운·주제별 10장 가격을 구분',()=>{
+      const question='궁금한 상황을 자세히 적어요. '.repeat(1000)+'마지막 질문';
+      d.getElementById('tarotQuestionInput').value=question;run('submitTarotQuestion()');
+      assert.equal(run('_tarotFlow.question'),question);
+      run("selectTarotProduct('tarot10')");
+      assert.equal(run('tarotPaymentCategory(_tarotFlow)'),'tarot-total10');
+      assert.equal(run("tarotProductsFor('life').find(p=>p.id==='tarot10').price"),3000);
+      assert.equal(run("tarotProductsFor('children').find(p=>p.id==='tarot10').price"),2000);
+      assert(!d.getElementById('tarotQuestionInput'));
+    });
     check('동양화 타로 덱: 컵 2·컵 6의 데이터와 그림 번호 일치',()=>{assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-02').imageUrl"),'assets/art-v2/tarot/card-38.webp');assert.equal(run("TAROT_CARDS.find(c=>c.id==='cups-06').imageUrl"),'assets/art-v2/tarot/card-42.webp');});
     check('동양화 이미지: 타로 78장과 모든 카테고리 포스터가 실제 파일로 연결',()=>{
       const urls=Array.from(run('TAROT_CARDS.map(c=>c.imageUrl)'));
@@ -409,7 +433,7 @@ const submitBirth=async()=>{
     run("goToInput('ziwei')");d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';run('setTimeUnknown(true);analyze();');await wait(150);
     check('자미두수: 태어난 시간이 없으면 안내하고 진행하지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/태어난 시간/);assert(d.getElementById('view-input').classList.contains('on'));});
     d.getElementById('iHourInput').value='9';run("setTimeUnknown(false);document.getElementById('iTimeUnknown').checked=false;analyze()");await wait(150);
-    check('자미두수: 결제 안내와 1,500원 결제 버튼',()=>{assert(d.querySelector('#p9 .paid-access-notice'));assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,500원/);});
+    check('자미두수: 결제 안내와 2,000원 결제 버튼',()=>{assert(d.querySelector('#p9 .paid-access-notice'));assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/2,000원/);});
     run("unlockAndRender('ziwei')");
     check('자미두수: 결제 후 12궁 판과 주성 14개',()=>{assert(d.querySelector('#p9 .zw-board'));assert.equal(run("buildZiweiChart(_saju,_meta).palaces.reduce((n,p)=>n+p.stars.length,0)"),14);});
     run("goToInput('vedic')");run('analyze()');await wait(150);
@@ -430,12 +454,12 @@ const submitBirth=async()=>{
     run('submitAstrologyBirth()');
     check('점성술: 출생정보 입력 후 무료 요약 없이 유료 상품 선택',()=>{
       assert.equal(run('_astroRoute'),'products');
-      assert.equal(d.querySelectorAll('#astroApp .astro-product').length,5);
+      assert.equal(d.querySelectorAll('#astroApp .astro-product').length,12);
       assert(!/무료 요약/.test(d.getElementById('astroApp').textContent));
       assert(!d.querySelector('#astroApp .astro-chart-grid'));
     });
     let aiCalls=0;const fetchBeforeAstro=w.fetch;w.fetch=async(u,o)=>{if(/-reading/.test(String(u)))aiCalls++;return fetchBeforeAstro(u,o);};
-    for(const product of ['birth-basic','love-marriage','career-money','yearly','full-report']){
+    for(const product of ['life','love','marriage','reunion','career','money','study','child','children','health','newyear']){
       run(`selectAstrologyProduct('${product}')`);await wait(80);
       check('점성술: '+product+' 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼',()=>{
         assert.equal(run('_astroRoute'),'result');
@@ -445,10 +469,27 @@ const submitBirth=async()=>{
         assert.equal(run("loadAstrologyHistory().length"),0);
       });
     }
-    run("window._astroPreferProduct='love-marriage';goToAstrology('input');submitAstrologyBirth()");await wait(80);
+    run("window._astroPreferProduct='gunghap';goToAstrology('input')");
+    d.getElementById('astroPartnerYear').value='1992';d.getElementById('astroPartnerMonth').value='3';d.getElementById('astroPartnerDay').value='8';
+    d.getElementById('astroQuestion').value='긴 관계 질문 '.repeat(1000)+'끝까지 보존';
+    run('submitAstrologyBirth()');
+    check('점성술 궁합: 실제 상대방 차트와 유효한 각도를 계산하고 긴 질문 보존',()=>{
+      assert.equal(run('_astroRoute'),'result');assert.equal(run('_astroFlow.productType'),'gunghap');
+      assert.equal(run('_astroFlow.partnerBirthInfo.year'),1992);
+      assert(run('_astroFlow.synastryAspects.length>0'));
+      assert(run('_astroFlow.synastryAspects.every(a=>Number.isFinite(a.orb))'));
+      assert(run("_astroFlow.question.endsWith('끝까지 보존')&&_astroFlow.question.length>5000"));
+    });
+    run("window._astroPreferProduct='newyear';goToAstrology('input')");
+    d.getElementById('astroTargetYear').value='2028';run('submitAstrologyBirth()');
+    check('신년 점성술: 선택한 2028년의 12개월 행성 위치를 실제 계산',()=>{
+      assert.equal(run('_astroFlow.targetYear'),2028);assert.equal(run('_astroFlow.yearTransits.length'),12);
+      assert(run('_astroFlow.yearTransits.every(m=>m.planets.length===10&&m.planets.every(p=>Number.isFinite(p.longitude)))'));
+    });
+    run("window._astroPreferProduct='love';goToAstrology('input');submitAstrologyBirth()");await wait(80);
     check('점성술 연애 카테고리: 상품 재선택 없이 해당 풀이 미리보기로 연결',()=>{
       assert.equal(run('_astroRoute'),'result');
-      assert.equal(run('_astroFlow.productType'),'love-marriage');
+      assert.equal(run('_astroFlow.productType'),'love');
       assert(d.querySelector('#astroApp .lk-preview'));
     });
     check('점성술 미리보기: 결제 전에는 AI 풀이 요청을 보내지 않음(비용 0원)',()=>assert.equal(aiCalls,0));
@@ -590,7 +631,7 @@ const submitBirth=async()=>{
     run('renderAstrology()');
     check('오늘의 점성술: 재렌더링에도 전체 풀이 유지',()=>assert(d.querySelector('#astroApp .today-astro-report')));
     run(d.querySelector('#astroApp .today-paid-hook button').getAttribute('onclick'));
-    check('오늘의 점성술: 짧은 안내에서 유료 상품 선택으로 연결',()=>assert.equal(d.querySelectorAll('#astroApp .astro-product').length,5));
+    check('오늘의 점성술: 짧은 안내에서 유료 상품 선택으로 연결',()=>assert.equal(d.querySelectorAll('#astroApp .astro-product').length,12));
     run("goToTarot('today');selectTodayTarot(_todayTarotCardIds[0])");
     check('오늘의 타로: 카드 뽑은 직후 주제 선택 없이 전체 풀이 6개 표시',()=>{
       assert(d.querySelector('#todayTarotResult .today-tarot-report'));

@@ -11,7 +11,6 @@ const CORS_HEADERS = {
   'Access-Control-Max-Age': '86400',
   Vary: 'Origin',
 };
-const QNA_QUESTION_MAX_CHARS = 300;
 const QNA_ANSWER_MAX_CHARS = 1300;
 const QNA_STANDARD_ANSWER_LENGTH = '800~1,000자';
 const QNA_PREMIUM_ANSWER_LENGTH = '1,000~1,200자';
@@ -104,9 +103,6 @@ export default {
     const counselor = category === 'qna' ? counselorKeyOf(body.counselor) : 'master';
     if (!question || typeof question !== 'string') {
       return json({ error: '질문이 비어있습니다.' }, 400);
-    }
-    if (question.length > QNA_QUESTION_MAX_CHARS) {
-      return json({ error: `질문은 ${QNA_QUESTION_MAX_CHARS}자 이내로 입력해주세요.` }, 400);
     }
     if (!sajuContext || typeof sajuContext !== 'object') {
       return json({ error: '사주 정보가 누락되었습니다.' }, 400);
@@ -635,6 +631,9 @@ ${input.question}
 
 질문 카테고리:
 ${input.questionCategory || 'general'}
+선택한 타로 주제: ${input.topicTitle||input.topic||'자유 질문'}
+${input.topic==='newyear'?`보고 싶은 해: ${input.targetYear||new Date().getFullYear()}년`:''}
+${['child','children','health'].includes(input.topic)?'아이의 나이에 맞게 설명하고, 진단·임신 여부·태아 성별·건강 결과는 확정하지 말 것. 생활 관리와 가족의 소통을 중심으로 설명할 것.':''}
 
 선택한 스프레드:
 ${input.spreadName || `${count}장 리딩`}
@@ -713,15 +712,17 @@ async function handleAstrologyReading(request, env) {
     return json({ error: 'JSON 본문이 필요합니다.' }, 400);
   }
 
-  const { chart, transit, productType, language } = body || {};
+  const { chart, transit, productType, language, partnerChart, synastryAspects, targetYear, yearTransits, question } = body || {};
   if (!chart || typeof chart !== 'object' || !Array.isArray(chart.planets) || !chart.birthInfo) {
     return json({ error: '계산된 출생차트 데이터가 필요합니다.' }, 400);
   }
   const lang = normalizeLanguage(language);
   const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
-  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, language: lang }) + skipSectionsNote(body && body.skipSections);
-  const premium = productType === 'full-report';
-  const maxOutputTokens = productType === 'full-report' ? 5200 : 2800;
+  if (!ASTRO_READING_TOPICS[ASTRO_PRODUCT_ALIAS[productType]||productType]) return json({ error: '점성술 주제를 확인해주세요.' }, 400);
+  if (productType==='gunghap'&&(!partnerChart||!Array.isArray(partnerChart.planets)||!partnerChart.birthInfo)) return json({ error: '궁합은 상대방 출생차트도 필요해요.' }, 400);
+  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, partnerChart, synastryAspects, targetYear, yearTransits, question, language: lang }) + skipSectionsNote(body && body.skipSections);
+  const premium = ['life','newyear','full-report','yearly'].includes(productType);
+  const maxOutputTokens = premium ? 5200 : 2800;
 
   try {
     if (env.OPENAI_API_KEY) {
@@ -803,61 +804,164 @@ ${lang.code === 'ko' ? '\n' + KO_READING_STYLE + '\n' : ''}
 응답은 Markdown 본문만 반환한다. 코드블록, JSON, 부가 설명은 쓰지 않는다.`;
 }
 
-function buildAstrologyReadingUserPrompt({ chart, transit, productType, language }) {
-  const lang = normalizeLanguage(language);
-  const productMap = {
-    'birth-basic': '출생차트 성향 분석',
-    'love-marriage': '연애/결혼운',
-    'career-money': '직업/재물운',
-    yearly: '올해 운세',
-    'full-report': '종합 점성술 리포트',
-  };
-  const lengthGuide = productType === 'full-report'
-    ? '3,000~4,000자 이내'
-    : '1,500~2,000자 이내';
-  const hasBirthTime = !(chart.birthInfo && chart.birthInfo.birthTimeUnknown);
-  const focusGuide = {
-    'birth-basic': '성격, 기질, 감정 패턴, 관계를 맺는 기본 방식처럼 본인의 기본 구조에 집중한다. 연애/결혼운과 직업/재물운은 깊은 예측이 아니라 성향이 해당 영역에 드러나는 방식만 짧게 언급한다.',
-    'love-marriage': '연애, 결혼, 호감 표현, 애착 패턴, 대화 방식, 관계에서 조심할 점에 집중한다. 직업/재물 내용은 관계 해석에 필요한 경우만 짧게 언급한다.',
-    'career-money': '직업 방향, 일하는 방식, 돈을 다루는 태도, 현실적인 성장 전략에 집중한다. 연애/결혼 내용은 제외하거나 매우 짧게만 언급한다.',
-    yearly: '올해의 트랜짓 흐름, 기회와 부담, 움직이기 좋은 방향, 주의할 시기에 집중한다.',
-    'full-report': '출생차트와 현재 운을 종합하되, 각 영역을 균형 있게 다룬다.',
-  };
-  const sectionGuide = productType === 'birth-basic'
-    ? '# 1. 출생차트 핵심 요약\n# 2. 성격과 기질\n# 3. 감정 패턴\n# 4. 관계를 맺는 기본 방식\n# 5. 일과 돈을 대하는 기본 태도\n# 6. 인간관계\n# 7. 현재 운의 흐름\n# 8. 앞으로 주의할 점\n# 9. 현실적인 조언\n# 10. 종합 결론'
-    : '# 1. 출생차트 핵심 요약\n# 2. 성격과 기질\n# 3. 감정 패턴\n# 4. 연애/결혼운\n# 5. 직업/재물운\n# 6. 인간관계\n# 7. 현재 운의 흐름\n# 8. 앞으로 주의할 점\n# 9. 현실적인 조언\n# 10. 종합 결론';
-
-  return `상품 유형:
-${productMap[productType] || productType || '점성술 리딩'}
-
-출력 언어:
-${languageInstruction(lang)}
-${lang.code === 'ko' ? '' : `All headings below are structural source labels only. In the final answer, translate them naturally into ${lang.label} and do not output Korean section titles.`}
-
-계산된 출생차트 데이터:
-${JSON.stringify(chart, null, 2)}
-
-계산된 현재 Transit 데이터:
-${JSON.stringify(transit || {}, null, 2)}
-
-상품별 초점:
-${focusGuide[productType] || focusGuide['birth-basic']}
-
-아래 구조로 점성술 리딩을 작성해줘.
-
-${sectionGuide}
-
-작성 조건:
-- 전체 분량은 ${lengthGuide}
-- 지정된 분량을 넘지 말고, 마지막 문장이 중간에 잘리지 않도록 마무리할 것
-- AI가 행성 위치, 별자리, 하우스, 상승궁, 애스펙트를 새로 계산하거나 추측하지 말 것
-- 제공된 chart.planets, chart.aspects, transit.planets 데이터만 근거로 사용할 것
-- 출생시간 사용 가능 여부: ${hasBirthTime ? '출생시간 있음. 제공된 ASC/MC/하우스 데이터만 사용 가능.' : '출생시간 없음. ASC, MC, 하우스 해석 금지.'}
-- 출생시간이 없으면 달 위치 오차 가능성을 부드럽게 안내할 것
-- 건강, 투자, 법률은 확정적으로 말하지 말 것
-- 너무 공포스럽거나 단정적인 표현을 피할 것
-- 사용자가 실제로 적용할 수 있는 행동 조언을 포함할 것
-- 마지막 문장은 자연스럽게 완결할 것`;
+const ASTRO_READING_TOPICS={
+  "life": {
+    "label": "총운 점성술",
+    "focus": "타고난 기질과 인생 전반의 흐름",
+    "sections": [
+      "타고난 기질",
+      "현재의 인생 과제",
+      "숨은 강점",
+      "조심할 패턴",
+      "앞으로의 방향"
+    ]
+  },
+  "newyear": {
+    "label": "신년 점성술",
+    "focus": "선택한 해의 기회와 주의할 흐름",
+    "sections": [
+      "한 해의 출발",
+      "성장할 분야",
+      "주의할 흐름",
+      "도움이 되는 태도",
+      "한 해의 마무리"
+    ]
+  },
+  "gunghap": {
+    "label": "궁합 점성술",
+    "focus": "두 사람의 끌림과 차이, 관계의 방향",
+    "sections": [
+      "나의 관계 방식",
+      "상대의 관계 방식",
+      "잘 맞는 부분",
+      "함께 맞출 부분",
+      "관계의 방향"
+    ]
+  },
+  "love": {
+    "label": "연애 점성술",
+    "focus": "인연과 마음이 가까워지는 흐름",
+    "sections": [
+      "나의 마음",
+      "그 사람의 마음",
+      "관계를 막는 것",
+      "숨은 감정",
+      "앞으로의 흐름"
+    ]
+  },
+  "marriage": {
+    "label": "결혼 점성술",
+    "focus": "결혼 준비와 함께 맞출 생활 기준",
+    "sections": [
+      "나의 준비",
+      "상대의 준비",
+      "함께 맞출 것",
+      "현실적인 조언",
+      "결혼의 흐름"
+    ]
+  },
+  "reunion": {
+    "label": "재회 점성술",
+    "focus": "멀어진 인연과 다시 다가갈 때의 태도",
+    "sections": [
+      "나의 지금 마음",
+      "그 사람의 지금 마음",
+      "남은 문제",
+      "다가갈 때의 조언",
+      "앞으로의 흐름"
+    ]
+  },
+  "money": {
+    "label": "재물 점성술",
+    "focus": "돈을 버는 방식과 지출, 기회",
+    "sections": [
+      "지금 돈의 흐름",
+      "새는 곳",
+      "숨은 기회",
+      "현실적인 조언",
+      "앞으로의 흐름"
+    ]
+  },
+  "career": {
+    "label": "직업 점성술",
+    "focus": "적성과 일하는 방식, 취업과 이직",
+    "sections": [
+      "지금 일의 상태",
+      "걸림돌",
+      "숨은 강점",
+      "직업 선택의 조언",
+      "앞으로의 흐름"
+    ]
+  },
+  "study": {
+    "label": "학업/시험 점성술",
+    "focus": "학습 습관과 집중력, 실전 준비",
+    "sections": [
+      "현재 학습 흐름",
+      "막히는 공부 습관",
+      "숨은 학습 강점",
+      "시험 준비 조언",
+      "앞으로의 방향"
+    ]
+  },
+  "child": {
+    "label": "우리 아이 점성술",
+    "focus": "아이의 기질과 재능, 양육과 소통",
+    "sections": [
+      "아이의 기질",
+      "아이의 관심사",
+      "소통이 막히는 지점",
+      "부모가 도울 일",
+      "성장의 방향"
+    ]
+  },
+  "children": {
+    "label": "자녀(임신) 점성술",
+    "focus": "자녀와의 인연, 가족 계획과 마음의 준비",
+    "sections": [
+      "가족 계획의 현재",
+      "마음의 부담",
+      "함께 맞출 기준",
+      "생활 속 준비",
+      "앞으로의 방향"
+    ]
+  },
+  "health": {
+    "label": "건강 점성술",
+    "focus": "생활 리듬과 휴식, 관리해야 할 습관",
+    "sections": [
+      "현재 생활 리듬",
+      "쌓인 부담",
+      "휴식이 필요한 부분",
+      "바꿀 생활 습관",
+      "관리의 방향"
+    ]
+  }
+};
+const ASTRO_PRODUCT_ALIAS={'birth-basic':'life','full-report':'life','love-marriage':'love','career-money':'career',yearly:'newyear'};
+function buildAstrologyReadingUserPrompt({chart,transit,productType,language,partnerChart,synastryAspects,targetYear,yearTransits,question}){
+  const lang=normalizeLanguage(language),key=ASTRO_PRODUCT_ALIAS[productType]||productType;
+  const topic=ASTRO_READING_TOPICS[key]||ASTRO_READING_TOPICS.life;
+  const hasTime=!(chart.birthInfo&&chart.birthInfo.birthTimeUnknown);
+  const sections=key==='life'?['타고난 성향과 강점','관계와 사랑','일과 재물','인생의 성장 과제','현재 흐름과 실천']:
+    key==='newyear'?['선택한 해의 전체 흐름','상반기와 하반기','일과 돈의 기회','관계와 생활의 변화','한 해를 위한 실천']:
+    key==='gunghap'?['두 사람의 관계 방식','끌리는 부분과 차이','대화와 감정의 궁합','함께 맞출 생활 기준','관계를 위한 실천']:
+    [topic.label+'의 타고난 성향',topic.focus,'현재 흐름과 기회','조심할 패턴',topic.label+'을 위한 실천'];
+  return `상품 유형: ${topic.label}
+출력 언어: ${languageInstruction(lang)}
+집중할 주제: ${topic.focus}. 다른 주제의 일반론을 늘어놓지 말고 이 주제의 구체적인 해석에 집중하세요.
+사용자가 적은 상황과 질문: ${String(question||'별도 질문 없음')}
+계산된 출생차트: ${JSON.stringify(chart)}
+계산된 기준 트랜짓: ${JSON.stringify(transit||{})}
+${key==='gunghap'?`계산된 상대방 출생차트: ${JSON.stringify(partnerChart||{})}\n계산된 두 차트 사이 각도: ${JSON.stringify(synastryAspects||[])}\n두 사람의 실제 행성 관계를 비교하세요. 상대방 정보가 없는 관계를 지어내지 마세요. 상대방 시간을 모르면 상대방 ASC·하우스 해석은 하지 마세요.`:''}
+${key==='newyear'?`보고 싶은 해: ${targetYear||new Date().getFullYear()}년\n계산된 해당 연도 월별 행성 위치: ${JSON.stringify(yearTransits||[])}\n현재 연도가 아닌 위에서 선택한 해를 기준으로 설명하세요. 제공되지 않은 날짜나 행성 위치를 만들어내지 마세요.`:''}
+${key==='child'?'아이의 실제 나이와 발달 단계에 맞게 양육·기질·학습·또래 관계로 설명하세요. 성인의 취업·결혼 문제로 바꾸지 마세요.':''}
+${['health','children'].includes(key)?'질병 진단, 임신 가능 여부나 임신 시기, 태아 성별, 생존 여부를 예언하거나 보장하지 마세요. 생활 습관·마음의 준비·가족 소통 관점으로 설명하고, 의학적 판단은 진료를 통해 확인하도록 안내하세요.':''}
+본인 출생시간 사용 가능: ${hasTime?'제공된 ASC·하우스만 사용':'ASC·하우스 해석 금지. 달 위치 오차 가능성 안내'}
+행성 위치와 각도는 주어진 계산값만 사용하세요. 합격·투자 수익·재회·임신 등을 확정하지 마세요.
+응답은 Markdown 본문만 쓰고, 아래 제목 순서에 맞춰 ${['life','newyear'].includes(key)?'3,000~4,000':'1,500~2,000'}자 안팎으로 친근하게 설명하세요.
+# 1. 출생차트 핵심 요약
+${sections.map((h,i)=>'# '+(i+2)+'. '+h).join('\n')}`;
 }
 
 async function handleTranslate(request, env) {
@@ -945,6 +1049,7 @@ Rules:
     return json({ error: '번역 생성 중 오류가 발생했습니다.' }, 500);
   }
 }
+
 
 function isCoreReadingCategory(category) {
   return category === 'life-core' || category === 'newyear-core' || category === 'reading-deep' || /^report-/.test(String(category || ''));
@@ -1402,7 +1507,7 @@ function timingText(ctx) {
 
 // 클라이언트가 보낸 지금 상황 — 짧은 한 줄만 받는다
 function situationText(ctx) {
-  return String((ctx && ctx.situation) || '').replace(/[\r\n]+/g, ' ').replace(/[<>]/g, '').trim().slice(0, 200);
+  return String((ctx && ctx.situation) || '').replace(/[\r\n]+/g, ' ').replace(/[<>]/g, '').trim();
 }
 
 function buildReadingUserPrompt(category, ctx, meta) {

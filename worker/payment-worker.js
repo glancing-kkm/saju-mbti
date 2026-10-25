@@ -22,35 +22,79 @@
 // 카테고리당 단가 (원). monthly는 월당 단가이며 실제 결제 금액은 1~6개월 ×2000
 // chatpack* 은 AI 채팅 질문 추가 패키지 — 결제 후 클라이언트에서 현재 사주의 채팅 보너스 +N
 const CATEGORY_PRICE = {
-  daypick: 1500,
-  monthly: 2000, // 월당 — 2000/4000/6000/8000/10000/12000 중 하나여야 함
-  newyear: 1500,
-  gunghap: 1000,
-  name: 1500,
-  life: 1500,
-  chatpack3: 1500,
-  chatpack5: 2000,
-  chatpack7: 3000,
-  tarot3: 1000,
-  tarot5: 1500,
-  tarot10: 2000,
-  'astro-birth-basic': 1000,
-  'astro-love-marriage': 1000,
-  'astro-career-money': 1000,
-  'astro-yearly': 1000,
-  'astro-full-report': 1500,
-  // 주제별 사주 풀이
-  'topic-love': 1000,
-  'topic-money': 1000,
-  'topic-career': 1000,
-  'topic-marriage': 1000,
-  'topic-reunion': 1000,
-  'topic-study': 1000,
-  'topic-child': 1000,
-  'topic-children': 1000,
-  'topic-health': 1000,
-  ziwei: 1500,
+  "daypick": 1500,
+  "monthly": 2000,
+  "newyear": 2000,
+  "gunghap": 1500,
+  "name": 1500,
+  "life": 2000,
+  "topic-love": 1500,
+  "topic-money": 1500,
+  "topic-career": 1500,
+  "topic-marriage": 1500,
+  "topic-reunion": 1500,
+  "topic-study": 1500,
+  "topic-child": 1500,
+  "topic-children": 1500,
+  "topic-health": 1500,
+  "ziwei": 2000,
+  "chatpack3": 1500,
+  "chatpack5": 2000,
+  "chatpack7": 3000,
+  "tarot3": 1000,
+  "tarot5": 1500,
+  "tarot10": 2000,
+  "tarot-total3": 1500,
+  "tarot-total5": 2000,
+  "tarot-total10": 3000,
+  "astro-life": 2000,
+  "astro-newyear": 2000,
+  "astro-gunghap": 1500,
+  "astro-love": 1500,
+  "astro-marriage": 1500,
+  "astro-reunion": 1500,
+  "astro-money": 1500,
+  "astro-career": 1500,
+  "astro-study": 1500,
+  "astro-child": 1500,
+  "astro-children": 1500,
+  "astro-health": 1500,
+  "astro-birth-basic": 2000,
+  "astro-love-marriage": 1500,
+  "astro-career-money": 1500,
+  "astro-yearly": 2000,
+  "astro-full-report": 2000
 };
+const PREVIOUS_CATEGORY_PRICE = {
+  "daypick": 1500,
+  "monthly": 2000,
+  "newyear": 1500,
+  "gunghap": 1000,
+  "name": 1500,
+  "life": 1500,
+  "chatpack3": 1500,
+  "chatpack5": 2000,
+  "chatpack7": 3000,
+  "tarot3": 1000,
+  "tarot5": 1500,
+  "tarot10": 2000,
+  "astro-birth-basic": 1000,
+  "astro-love-marriage": 1000,
+  "astro-career-money": 1000,
+  "astro-yearly": 1000,
+  "astro-full-report": 1500,
+  "topic-love": 1000,
+  "topic-money": 1000,
+  "topic-career": 1000,
+  "topic-marriage": 1000,
+  "topic-reunion": 1000,
+  "topic-study": 1000,
+  "topic-child": 1000,
+  "topic-children": 1000,
+  "topic-health": 1000,
+  "ziwei": 1500
+};
+const CATALOG_PRICE_CHANGED_AT = 1792934184727;
 const MONTHLY_MAX = 6;
 const MONTHLY_UNIT = 2000;
 const AUGUST_990_PROMO_PRICE = 990;
@@ -79,7 +123,7 @@ function isAmountValid(category, amount, nowMs = Date.now()) {
 // 지금 시각과 ORDER_GRACE_MS 전 시각 두 기준을 모두 허용한다 (두 시점의 정당한 가격만 통과).
 const ORDER_GRACE_MS = 30 * 60 * 1000;
 function isAmountValidWithGrace(category, amount, nowMs = Date.now()) {
-  return isAmountValid(category, amount, nowMs) || isAmountValid(category, amount, nowMs - ORDER_GRACE_MS);
+  return isAmountValid(category, amount, nowMs) || isAmountValid(category, amount, nowMs - ORDER_GRACE_MS) || (nowMs >= CATALOG_PRICE_CHANGED_AT && nowMs < CATALOG_PRICE_CHANGED_AT + ORDER_GRACE_MS && PREVIOUS_CATEGORY_PRICE[category] === amount);
 }
 
 export default {
