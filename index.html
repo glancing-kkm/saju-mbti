@@ -2241,7 +2241,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=10627918fac6">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=91fbf034ca71">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=b68c2dcb56e9">
 </head>
 <body>
 <div id="app">
@@ -12059,62 +12059,61 @@ function reportProfileHTML(cat){
 }
 // 미리보기만 압축한다. 결제 후 원본 풀이와 잠금 처리는 그대로 유지한다.
 function compactReportPreview(root){
-  const core=root.querySelector(':scope > #lv4-lc-core')||root.querySelector(':scope > .lv4-sec');if(!core)return;
-  // 계산식으로 만든 문장을 그대로 발췌한다. 이미 적용한 핵심 정보 마스크도 보존한다.
-  const summarize=(p,maxSentences,maxLength)=>{
+  // 예전 이미지·챕터·풀이 순서를 유지하고, 각 본문의 분량만 줄인다.
+  root.classList.add('preview-compact','preview-story');
+  const summarize=(p,count)=>{
     const text=p.textContent,sentences=text.match(/[\s\S]+?(?:[.!?。](?=\s|$)|$)/g)||[text];
-    let brief=sentences.slice(0,maxSentences).join('').trimEnd();
-    if(brief.length>maxLength)brief=sentences[0].trimEnd();
+    let brief=sentences.slice(0,count).join('').trimEnd();
+    if(brief.length>150)brief=sentences[0].trimEnd();
     let left=brief.length;
     const walker=document.createTreeWalker(p,4),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
-    nodes.forEach(n=>{const count=Math.min(left,n.nodeValue.length);n.nodeValue=n.nodeValue.slice(0,count);left-=count;});
+    nodes.forEach(n=>{const nKeep=Math.min(left,n.nodeValue.length);n.nodeValue=n.nodeValue.slice(0,nKeep);left-=nKeep;});
     p.querySelectorAll('.lk').forEach(e=>{if(!e.textContent)e.remove();});
-    p.innerHTML=preventOrphan(p.innerHTML);
+    p.innerHTML=preventOrphan(p.innerHTML);p.className='preview-story-summary';
   };
-  const chapters=[...root.querySelectorAll(':scope > .lv4-sec')].map(section=>{
-    const paragraphs=[...section.querySelectorAll('p')].filter(p=>
+  [...root.children].forEach(e=>{
+    if(!e.matches('.report-profile,.lc-orbs,.lc-pair-label,.lc-scene,.lc-moments,.lc-chapter,.lc-card,.lv4-sec,.lc-people,.lv4-toc'))e.remove();
+  });
+  const opening=root.querySelector(':scope > .report-opening-scene');
+  const chapters=[...root.querySelectorAll(':scope > .lc-chapter')];
+  const children=[...root.children];
+  const domainScene=chapters[1]?children.slice(0,children.indexOf(chapters[1])).reverse().find(e=>e.matches('.lc-scene')&&e!==opening):null;
+  const people=root.querySelector(':scope > .lc-people');
+  const peopleScene=people?.querySelector('.lc-scene');
+  const keepScenes=new Set([opening,domainScene?.matches('.lc-scene')?domainScene:null,peopleScene]);
+  // 캐릭터 장면은 도입·영역별 풀이·인연 소개 사이에 배치한다.
+  root.querySelectorAll('.lc-scene').forEach(e=>{if(!keepScenes.has(e))e.remove();});
+  root.querySelectorAll(':scope > .lv4-sec,:scope > .lc-card').forEach(card=>{
+    const isSection=card.classList.contains('lv4-sec');
+    const head=card.querySelector(isSection?':scope > .lv4-sec-head':':scope > .lc-card-title');
+    // 일부 추가 챕터는 h2를 직접 갖는다.
+    const title=head||card.querySelector(':scope > h2');
+    const candidates=[...card.querySelectorAll('p')].filter(p=>
       !p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lk-note')&&
       !p.querySelector('.lk-block')&&!p.classList.contains('lc-foot')&&p.textContent.trim().length>15
-    ).slice(0,2).map((p,i)=>{const excerpt=p.cloneNode(true);summarize(excerpt,i===0?2:1,i===0?150:100);excerpt.className='preview-chapter-summary';return excerpt.outerHTML;});
-    return {
-      title:section.querySelector('h2')?.textContent.trim()||'',
-      scope:section.querySelector('.lv4-sec-label')?.textContent.trim()||'',
-      paragraphs:paragraphs.join('')
-    };
-  }).filter(chapter=>chapter.title);
-  let contents=null;
-  if(chapters.length){
-    contents=document.createElement('section');contents.className='report-preview-contents';
-    contents.setAttribute('aria-label','전체 챕터와 사주 풀이 미리보기');
-    contents.innerHTML=`<h2>챕터별 풀이 미리보기</h2><p class="preview-contents-note">${chapters.length}개 챕터 · 사주 풀이를 짧게 보여드려요.<br>중요한 내용은 블러 처리했어요.</p><ol>${chapters.map((chapter,i)=>`<li><span class="preview-chapter-no" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><h3>${lv4Text(storyEsc(chapter.title))}</h3>${chapter.scope&&chapter.scope!==chapter.title?`<p class="preview-chapter-scope">${lv4Text(storyEsc(chapter.scope))}</p>`:''}${chapter.paragraphs}<p class="preview-chapter-locked">${lkSpan('이 챕터의 중요한 상세 풀이')}<small>핵심 풀이</small></p></div></li>`).join('')}</ol>`;
-  }
-  const scene=root.querySelector(':scope > .report-opening-scene');
-  const special=root.querySelector(':scope > #lv4-lc-special');
-  const people=root.querySelector(':scope > .lc-people');
-  const graph=[...root.querySelectorAll(':scope > .lc-graph')].find(e=>e.querySelector('.lc-curve'));
-  const keep=new Set([people,graph,scene,root.querySelector(':scope > .report-profile'),root.querySelector(':scope > .lc-orbs'),root.querySelector(':scope > .lc-moments')]);
-  // 챕터 발췌가 있으면 겹치는 종합 요약 카드는 반복하지 않는다.
-  if(!contents){keep.add(core);keep.add(special);}
-  const contentPosition=root.querySelector(':scope > .lc-moments')||scene||root.querySelector(':scope > .lc-orbs');
-  [...root.children].forEach(e=>{if(!keep.has(e))e.remove();});
-  if(contents){if(contentPosition)contentPosition.after(contents);else root.prepend(contents);}
-  root.classList.add('preview-compact');
-  if(!contents)[core,special].filter(Boolean).forEach(card=>{
-    const title=card.querySelector('.lc-card-title,h2');
-    if(title)title.classList.add('lc-card-title');
-    card.classList.remove('lv4-sec');card.classList.add('lc-card');
-    const paras=[...card.querySelectorAll(':scope > p')].filter(p=>!p.classList.contains('lc-foot')&&!p.querySelector('.lk-block')).slice(0,1);
-    paras.forEach(p=>summarize(p,2,150));card.replaceChildren(...[title,...paras].filter(Boolean));
+    );
+    const chosen=candidates.slice(0,isSection?2:1);
+    const paragraphs=chosen.map((p,i)=>{const copy=p.cloneNode(true);summarize(copy,i===0?2:1);return copy;});
+    const curve=card.querySelector('.lc-curve');
+    const bars=card.querySelector('.lc-bars,.lc-area');
+    if(curve){card.replaceChildren(...[title,curve].filter(Boolean));return;}
+    if(bars){card.replaceChildren(...[title,bars].filter(Boolean));return;}
+    // 시기·인물 등 이미 마스크된 핵심 문장을 본문 사이에 남긴다.
+    let locked=null;
+    if(isSection&&!paragraphs.some(p=>p.querySelector('.lk'))){
+      const clue=[...card.querySelectorAll('.pp-box p')].find(p=>p.querySelector('.lk')&&!p.querySelector('.lk-block'));
+      locked=document.createElement('p');locked.className='preview-story-lock';
+      if(clue){locked=clue.cloneNode(true);summarize(locked,1);locked.classList.add('preview-story-lock');}
+      else locked.innerHTML=`<span class="lk lk-block" aria-label="결제 후 공개">${lkFake(12)} ${lkFake(9,3)} ${lkFake(10,6)}</span>`;
+    }
+    card.replaceChildren(...[title,paragraphs[0],locked,...paragraphs.slice(1)].filter(Boolean));
   });
   if(people){
-    const cards=[...people.querySelectorAll('.lc-pcard')].slice(0,2);
-    cards.forEach(card=>[...card.querySelectorAll('dl > div')].slice(2).forEach(e=>e.remove()));
-    people.replaceChildren(...cards);
+    people.querySelectorAll('.lc-foot').forEach(e=>e.remove());
+    people.querySelectorAll('.lc-pcard').forEach(card=>[...card.querySelectorAll('dl > div')].slice(3).forEach(e=>e.remove()));
   }
-  if(graph){
-    const title=graph.querySelector('.lc-card-title'),curve=graph.querySelector('.lc-curve');
-    graph.replaceChildren(...[title,curve].filter(Boolean));
-  }
+  const toc=root.querySelector(':scope > .lv4-toc');
+  if(toc){toc.classList.add('report-preview-toc');toc.querySelector('b').textContent='전체 풀이 목차';}
 }
 function arrangeReportPreview(cat,box){
   const root=box.querySelector('.lv4'),orbs=root&&root.querySelector(':scope > .lc-orbs');

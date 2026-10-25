@@ -204,7 +204,7 @@ const submitBirth=async()=>{
     check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
       const root=d.querySelector('#p5 .report-preview-layout');assert(root);
       const children=[...root.children];assert(children[0].classList.contains('report-profile'));assert(children[1].classList.contains('lc-orbs'));assert(children[2].classList.contains('report-opening-scene'));
-      assert(root.querySelector('.lc-bubble-reply'));assert(!root.querySelector(':scope>.lv4-hero,.report-preview-toc'));
+      assert(root.querySelector('.lc-bubble-reply'));assert(!root.querySelector(':scope>.lv4-hero'));assert(root.querySelector('.report-preview-toc'));
       assert.match(d.querySelector('#p5 .report-profile-back').getAttribute('onclick'),/goToInput/);
       assert.equal(d.documentElement.dataset.flowTheme,'life');
       assert.equal(d.documentElement.style.getPropertyValue('--flow-bg'),run('PRODUCT_INTRO.life.tone[0]'));
@@ -212,28 +212,26 @@ const submitBirth=async()=>{
       assert.match(d.querySelector('#p5 .report-profile-birth').textContent,/시간 모름/);
       const clock=run("(()=>{const saved=_meta;_meta={..._meta,hour:8,min:58,tsoMin:-32};const out=reportProfileHTML('life');_meta=saved;return out;})()");assert.match(clock,/09:30/);
     });
-    check('유료 풀이: 모든 챕터의 계산식 설명을 짧게 보여주고 핵심은 블러 처리',()=>{
-      assert(d.querySelector('#p5 .paid-access-notice'));
-      const preview=d.querySelector('#p5 .lk-preview');assert(preview.querySelector('.preview-compact') && preview.querySelector('.lk'));
-      assert(preview.textContent.length<2600);
-      const contents=preview.querySelector('.report-preview-contents');assert(contents);
-      assert.equal(contents.querySelectorAll('li').length,8);
-      assert.match(contents.textContent,/8개 챕터/);
-      assert(!contents.querySelector('a,button'));
-      assert([...contents.querySelectorAll('li')].every(li=>{
-        const paragraphs=li.querySelectorAll('.preview-chapter-summary');
-        const visible=li.cloneNode(true);visible.querySelectorAll('.lk,h3,.preview-chapter-scope,.preview-chapter-locked').forEach(e=>e.remove());
-        return paragraphs.length>=1&&paragraphs.length<=2&&visible.textContent.trim().length>25&&li.querySelector('.lk');
+    check('유료 미리보기: 이미지·챕터·짧은 풀이가 이어지고 본문 사이 핵심은 블러 처리',()=>{
+      const preview=d.querySelector('#p5 .lk-preview');assert(preview.querySelector('.preview-story'));
+      assert(preview.textContent.length<3800);
+      const sections=[...preview.querySelectorAll('.lv4-sec')];assert.equal(sections.length,8);
+      assert(!preview.querySelector('.report-preview-contents'));
+      assert(sections.every(section=>{
+        const paragraphs=section.querySelectorAll('.preview-story-summary');
+        const visible=section.cloneNode(true);visible.querySelectorAll('.lk,.lv4-sec-head').forEach(e=>e.remove());
+        return paragraphs.length>=1&&paragraphs.length<=3&&visible.textContent.trim().length>25&&section.querySelector('.lk');
       }));
-      assert.equal(preview.querySelectorAll('.lc-scene').length,1);
+      assert.equal(preview.querySelectorAll('.lc-scene').length,3);
+      assert.equal(preview.querySelectorAll('.lc-chapter').length,3);
+      assert.equal(preview.querySelectorAll('.lc-pcard').length,3);
       assert(preview.querySelectorAll('.lc-tl').length<=3);
-      assert(!preview.querySelector('.lv4-sec,.lk-block,.lk-note,.lc-areas,.lv4-toc,.pp-box'));
-      assert(preview.querySelectorAll('.lc-pcard').length<=2);
-      assert([...preview.querySelectorAll('.lc-card:not(.lc-graph)')].every(e=>e.querySelectorAll('p').length===1));
-      assert(!d.querySelector('#p5 .life-experience,#p5 .chat-card,#p5 [data-ai-reading],#p5 .pdf-cta,#p5 [data-deep]'));
-      assert(preview.querySelector('.lc-orbs') && preview.querySelector('.lc-people') && preview.querySelector('.lc-curve'));
-      assert([...preview.querySelectorAll('.lc-pcard')].every(x=>x.querySelector('.lk') && !/\d{4}년생/.test(x.textContent)));
-      assert(!preview.querySelector('[data-portrait]'));
+      assert(!preview.querySelector('.lk-note,.lc-areas,.pp-box,.lv4-rows,table'));
+      assert(preview.querySelector('.lc-orbs')&&preview.querySelector('.lc-people')&&preview.querySelector('.lc-curve'));
+      assert([...preview.querySelectorAll('.report-preview-toc a')].every(a=>preview.querySelector(a.getAttribute('href'))));
+      assert([...preview.querySelectorAll('.lc-pcard')].every(x=>x.querySelector('.lk')&&!/\d{4}년생/.test(x.textContent)));
+      assert(!preview.querySelector('.life-experience,.chat-card,[data-ai-reading],.pdf-cta,[data-deep],[data-portrait]'));
+      assert(d.querySelector('#p5 .paid-access-notice'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert.equal(run("isUnlockedFor('life')"),false);
       assert(events().some(e=>e[1]==='payment_gate_view'));
@@ -241,7 +239,7 @@ const submitBirth=async()=>{
     check('챕터 발췌: 실제 계산 문장 보존, 중요한 날짜·장소 마스킹, 긴 본문 제외',()=>{
       const full='<div class="lv4"><div class="lc-orbs"></div><section class="lv4-sec"><h2>재물 흐름</h2><p class="lv4-lead">본인은 꾸준히 자원을 쌓는 사람이에요. 작은 습관이 재물의 기반을 만들어요. 이 문장은 미리보기에서 생략돼요.</p><div class="lv4-sub"><p>거래를 움직이는 때는 2031년 9월이고, 만나는 곳은 <span class="lk-m">부산해운대매장</span>이에요.</p><p>PAID_HIDDEN_DETAILS 상세 본문은 결제 후에만 보여요.</p></div></section></div>';
       const box=d.createElement('div');box.innerHTML=run(`previewLockHTML('life',${JSON.stringify(full)})`);
-      const paragraphs=[...box.querySelectorAll('.preview-chapter-summary')];
+      const paragraphs=[...box.querySelectorAll('.lv4-sec > .preview-story-summary')];
       assert.equal(paragraphs.length,2);
       assert.equal(paragraphs[0].textContent,'본인은 꾸준히 자원을 쌓는 사람이에요. 작은 습관이 재물의 기반을 만들어요.');
       assert(paragraphs[1].querySelector('.lk'));
@@ -268,13 +266,13 @@ const submitBirth=async()=>{
         const chapterTitles=[...box.querySelectorAll('.lv4 > .lv4-sec h2')].map(e=>e.textContent);
         assert(sectionCount>=5,cat);
         box.innerHTML=run(`previewLockHTML('${cat}',${JSON.stringify(full)})`);
-        assert(box.querySelector('.preview-compact'),cat);
-        assert(box.textContent.length<2600,cat);
+        assert(box.querySelector('.preview-story'),cat);
+        assert(box.textContent.length<3800,cat);
         const normalize=s=>s.replace(/\u200b/g,'').replace(/\u00a0/g,' ');
-        assert.deepEqual([...box.querySelectorAll('.report-preview-contents li h3')].map(e=>normalize(e.textContent)),chapterTitles.map(normalize),cat+' 전체 챕터 노출');
-        assert([...box.querySelectorAll('.report-preview-contents li')].every(li=>li.querySelector('.preview-chapter-summary')&&li.querySelector('.lk')),cat+' 계산식 풀이와 블러 노출');
-        assert(!box.querySelector('.lv4-sec,.lv4-toc,.lk-block'),cat);
-        assert.equal(box.querySelectorAll('.lc-scene').length,1,cat);
+        assert.deepEqual([...box.querySelectorAll('.lv4-sec h2')].map(e=>normalize(e.textContent)),chapterTitles.map(normalize),cat+' 전체 챕터 노출');
+        assert([...box.querySelectorAll('.lv4-sec')].every(section=>section.querySelector('.preview-story-summary')&&section.querySelector('.lk')),cat+' 계산식 풀이와 블러 노출');
+        assert(!box.querySelector('.lv4-rows,table,.lk-note,.report-preview-contents'),cat);
+        assert(box.querySelectorAll('.lc-scene').length>=1&&box.querySelectorAll('.lc-scene').length<=3,cat);
         box.innerHTML=run(expr);
         assert.equal(box.querySelectorAll('.lv4-sec').length,sectionCount,cat+' 전체 섹션 유지');
         assert.equal(box.textContent,fullText,cat+' 전체 본문 유지');
@@ -339,9 +337,9 @@ const submitBirth=async()=>{
     check('주제별 풀이: 연애운은 가린 미리보기와 1,000원 결제 버튼',()=>{
       assert(d.querySelector('#p9 .paid-access-notice'));
       const preview=d.querySelector('#p9 .lk-preview');assert(preview.querySelector('.preview-compact'));
-      assert(preview.textContent.length<2600);assert.equal(preview.querySelectorAll('.lc-scene').length,1);
-      assert.equal(preview.querySelectorAll('.report-preview-contents li').length,7);
-      assert(!preview.querySelector('.lv4-sec,.lk-block,.lv4-toc'));
+      assert(preview.textContent.length<3800);assert(preview.querySelectorAll('.lc-scene').length>=2);
+      assert.equal(preview.querySelectorAll('.lv4-sec').length,7);
+      assert(!preview.querySelector('.lv4-rows,.lk-note,.report-preview-contents'));
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
       assert(!d.querySelector('#p9 [data-ai-reading]'));
       assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/1,000원/);
