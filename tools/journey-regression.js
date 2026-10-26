@@ -322,6 +322,22 @@ const submitBirth=async()=>{
       assert.equal(d.getElementById('payProductName').textContent,'연애운 PDF 리포트');assert.equal(d.getElementById('payProductPrice').textContent,'5,000원');
       run('closePaymentConsent()');
     });
+    check('질문권 복구 링크: 토큰 저장, 즉문즉답 질문권 추가, 같은 링크는 한 번만',()=>{
+      const b64=o=>Buffer.from(JSON.stringify(o)).toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+      const tok=b64({o:'restore-test-1',c:'chatpack3',e:Date.now()+86400e3})+'.sig';
+      const before=run("getChatBonus('qna')");
+      run(`history.replaceState({},'','?restore=${tok}&t=qna');_handleChatRestoreLink();`);
+      assert.equal(w.location.search,'');
+      assert(run('loadPaidTokens()').includes(tok));
+      assert.equal(run("getChatBonus('qna')"),before+3);
+      assert.match(d.querySelector('.chat-restore-toast').textContent,/3회를 다시 넣었어요/);
+      run(`history.replaceState({},'','?restore=${tok}&t=qna');_handleChatRestoreLink();`);
+      assert.equal(run("getChatBonus('qna')"),before+3);
+      assert.match([...d.querySelectorAll('.chat-restore-toast')].pop().textContent,/이미 넣었어요/);
+      run(`history.replaceState({},'','?restore=broken&t=qna');_handleChatRestoreLink();`);
+      assert.match([...d.querySelectorAll('.chat-restore-toast')].pop().textContent,/확인하지 못했어요/);
+      d.querySelectorAll('.chat-restore-toast').forEach(e=>e.remove());
+    });
     run(fs.readFileSync(path.join(root,'assets/report-pdf.js'),'utf8'));
     for(const cat of ['life','gunghap','ziwei']){
       const r=await run(`(async()=>{const m=_meta;m.gnExtra=m.gnExtra||{gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:''};const r=await buildTemplateReport('${cat}',{skipAI:true,dryRun:true});const t=r.pages.map(p=>p.textContent).join(' ');r.host.remove();return {n:r.pages.length,t};})()`);
@@ -381,13 +397,20 @@ const submitBirth=async()=>{
       if(!w.TextEncoder)w.TextEncoder=require('node:util').TextEncoder; // 브라우저에는 기본으로 있음
       const tap=d.querySelector('#p4 .paid-access-lockbtn').getAttribute('onclick');
       check('운영자 코드: 자물쇠 onclick이 해당 카테고리로 연결',()=>assert.match(tap,/_secretUnlockTap\('newyear'\)/));
-      let asked=0,answer='wrong';w.prompt=()=>{asked++;return answer;};w.alert=()=>{};
+      // 브라우저 기본 입력창 대신 페이지 안 입력창을 쓴다(PC 크롬의 대화상자 차단에도 동작)
+      let native=0;w.prompt=()=>{native++;return '';};w.alert=()=>{};
+      const box=()=>d.getElementById('adminCodeDialog');
+      const submit=async code=>{const b=box();b.querySelector('input').value=code;b.querySelector('form').dispatchEvent(new w.Event('submit',{cancelable:true}));await wait(600);};
       for(let i=0;i<4;i++)run(tap);
-      check('운영자 코드: 자물쇠 4번은 입력창 없음',()=>{assert.equal(asked,0);assert.equal(run("isUnlockedFor('newyear')"),false);});
-      await run(tap);
-      check('운영자 코드: 틀린 코드는 거절',()=>{assert.equal(asked,1);assert.equal(run("isUnlockedFor('newyear')"),false);});
-      answer=' Open ';for(let i=0;i<4;i++)run(tap);await run(tap);
-      check('운영자 코드: 5번 + open(대소문자·공백 무시)이면 결제 없이 열림',()=>{assert.equal(asked,2);assert.equal(run("isUnlockedFor('newyear')"),true);});
+      check('운영자 코드: 자물쇠 4번은 입력창 없음',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),false);});
+      let pending=run(tap);await wait(0);
+      check('운영자 코드: 5번이면 페이지 안 입력창(브라우저 prompt 미사용)',()=>{assert(box());assert.equal(native,0);});
+      await submit('wrong');
+      check('운영자 코드: 틀린 코드는 창 안에서 거절',()=>{assert(box());assert.match(box().querySelector('.admin-code-err').textContent,/올바르지/);assert.equal(run("isUnlockedFor('newyear')"),false);});
+      box().querySelector('.admin-code-cancel').click();await pending;
+      check('운영자 코드: 취소하면 창이 닫히고 잠금 유지',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),false);});
+      for(let i=0;i<4;i++)run(tap);pending=run(tap);await wait(0);await submit(' Open ');await pending;
+      check('운영자 코드: 5번 + open(대소문자·공백 무시)이면 결제 없이 열림',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),true);});
       w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');

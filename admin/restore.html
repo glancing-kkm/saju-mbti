@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>질문권 복구</title>
+<style>
+:root{--bg:#f7f7f2;--card:#fff;--text:#243b33;--sub:#526259;--accent:#245c47;--border:#dcdcd2;--err:#a8432e}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1513;--card:#17201d;--text:#e6ece8;--sub:#a6b3ac;--accent:#7fd8b5;--border:#2c3934;--err:#f0a08c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.6}
+main{max-width:520px;margin:0 auto;padding:28px 16px 48px}
+h1{font-size:1.35rem;margin:0 0 6px;color:var(--accent)}
+.lead{margin:0 0 22px;color:var(--sub);font-size:.92rem}
+form,.out{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+label{display:block;font-weight:700;font-size:.92rem;margin:0 0 6px}
+.f{margin:0 0 16px}
+input[type=password],input[type=text]{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{font-weight:400;margin:0;display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;cursor:pointer}
+.chips input{accent-color:var(--accent)}
+.hint{margin:6px 0 0;font-size:.82rem;color:var(--sub)}
+button{min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+@media (prefers-color-scheme:dark){button{color:#0f1513}}
+button:disabled{opacity:.6;cursor:default}
+.msg{min-height:1.4em;margin:12px 0 0;font-size:.9rem}
+.msg.err{color:var(--err)}
+.out{margin-top:16px}
+.out[hidden]{display:none}
+textarea{width:100%;min-height:150px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.row button{flex:1}
+.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <h1>질문권 복구</h1>
+  <p class="lead">고객이 영수증과 함께 문의하면 여기서 복구 링크를 만들어 메일로 보내 주세요. 고객이 링크를 열면 그 기기에서 질문권을 바로 쓸 수 있어요. 링크는 한 기기에서 한 번만 들어가요.</p>
+  <form id="f">
+    <div class="f"><label for="code">운영자 코드</label><input id="code" type="password" autocomplete="off" required></div>
+    <div class="f"><label>다시 넣을 질문권</label>
+      <div class="chips"><label><input type="radio" name="count" value="1">1회</label><label><input type="radio" name="count" value="3" checked>3회</label><label><input type="radio" name="count" value="5">5회</label><label><input type="radio" name="count" value="7">7회</label></div>
+    </div>
+    <div class="f"><label>쓸 곳</label>
+      <div class="chips"><label><input type="radio" name="target" value="qna" checked>즉문즉답</label><label><input type="radio" name="target" value="life">인생총운 질문</label><label><input type="radio" name="target" value="newyear">신년운세 질문</label></div>
+    </div>
+    <div class="f"><label for="order">원래 주문번호 (선택)</label><input id="order" type="text" placeholder="예: SMBT-chatpack5-20261020…" autocomplete="off"><p class="hint">발급 기록에 함께 남겨 두는 용도예요.</p></div>
+    <button id="go" type="submit">복구 링크 만들기</button>
+    <p id="msg" class="msg" role="status"></p>
+  </form>
+  <section id="out" class="out" hidden>
+    <label for="mail">고객에게 보낼 글</label>
+    <textarea id="mail" readonly></textarea>
+    <div class="row"><button id="copyMail" type="button">글 복사</button><button id="copyLink" type="button" class="sec">링크만 복사</button></div>
+    <p id="copied" class="msg" role="status"></p>
+  </section>
+</main>
+<script>
+const API='https://kakao-payment-worker.na37zzang.workers.dev/admin-restore-chat';
+const SITE='https://saju-mbti-9h1.pages.dev/';
+const LABEL={qna:'즉문즉답',life:'인생총운 풀이의 질문창',newyear:'신년운세 풀이의 질문창'};
+const ERR={BAD_CODE:'운영자 코드가 맞지 않아요.',ADMIN_NOT_CONFIGURED:'서버에 운영자 코드가 아직 등록되지 않았어요.',RATE_LIMITED:'시도가 너무 많아요. 잠시 뒤 다시 해 주세요.',BAD_INPUT:'입력값을 다시 확인해 주세요.'};
+let link='';
+const $=id=>document.getElementById(id);
+$('f').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const msg=$('msg'),go=$('go'),count=Number(document.querySelector('input[name=count]:checked').value),target=document.querySelector('input[name=target]:checked').value;
+  msg.className='msg';msg.textContent='만드는 중이에요';go.disabled=true;
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:$('code').value.trim().toLowerCase(),count,target,orderId:$('order').value.trim()})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.ok||!d.token)throw new Error(ERR[d.code]||'링크를 만들지 못했어요. 잠시 뒤 다시 해 주세요.');
+    link=`${SITE}?restore=${encodeURIComponent(d.token)}&t=${d.target}`;
+    $('mail').value=`안녕하세요, 천지인 사주예요.\n불편을 드려 죄송해요. 질문권 ${d.count}회를 다시 넣어 드렸어요.\n\n질문을 쓰시던 휴대폰이나 컴퓨터에서 아래 링크를 열어 주세요. 열면 ${LABEL[d.target]}에서 바로 쓰실 수 있어요.\n${link}\n\n링크는 30일 동안 쓸 수 있고, 한 기기에서 한 번만 들어가요.\n고맙습니다.`;
+    $('out').hidden=false;msg.textContent=`질문권 ${d.count}회 링크를 만들었어요. (발급 번호 ${d.orderId})`;
+  }catch(err){msg.className='msg err';msg.textContent=err.message;}
+  finally{go.disabled=false;}
+});
+const copy=async(t,label)=>{try{await navigator.clipboard.writeText(t);$('copied').textContent=`${label}을 복사했어요.`;}catch(e){$('mail').select();$('copied').textContent='복사하지 못했어요. 글을 길게 눌러 직접 복사해 주세요.';}};
+$('copyMail').onclick=()=>copy($('mail').value,'글');
+$('copyLink').onclick=()=>copy(link,'링크');
+</script>
+</body>
+</html>

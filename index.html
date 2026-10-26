@@ -1023,6 +1023,16 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .paid-secret-lock{width:42px;height:42px;border:0;border-radius:50%;display:inline-grid;place-items:center;background:rgba(203,162,88,.14);color:var(--accent-bright);font-size:22px;line-height:1;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(237,209,138,.26),0 8px 24px rgba(0,0,0,.22);-webkit-tap-highlight-color:transparent;transition:.18s}
 .paid-secret-lock:hover{transform:translateY(-1px);background:rgba(203,162,88,.2)}
 .paid-secret-lock:active{transform:scale(.96)}
+.chat-restore-toast{position:fixed;left:50%;bottom:24px;z-index:420;transform:translateX(-50%);width:calc(100% - 32px);max-width:420px;padding:14px 16px;border-radius:14px;background:var(--card);color:var(--text);box-shadow:0 12px 30px rgba(0,0,0,.25);font-size:.92rem;line-height:1.55}
+.admin-code{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:16px;background:rgba(8,12,10,.55)}
+.admin-code-box{width:100%;max-width:340px;padding:22px 20px 18px;border-radius:16px;background:var(--card);color:var(--text);box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.admin-code-box h3{margin:0 0 12px;font-size:1.05rem;color:var(--accent)}
+.admin-code-box input{display:block;width:100%;box-sizing:border-box;min-height:46px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.admin-code-err{min-height:1.2em;margin:8px 0 4px;font-size:.85rem;color:var(--sub)}
+.admin-code-act{display:flex;gap:10px}
+.admin-code-act button{flex:1;min-height:44px;border-radius:12px;font:inherit;cursor:pointer}
+.admin-code-cancel{border:1px solid var(--border);background:transparent;color:var(--sub)}
+.admin-code-ok{border:0;background:var(--accent);color:var(--on-accent,#fff)}
 .pay-secret-lock{position:absolute;right:14px;top:14px;width:36px;height:36px;font-size:20px;background:rgba(255,235,0,.16);color:#ffe66c}
 .tarot-secret-lock{margin:0 auto 12px;background:rgba(203,162,88,.14);color:var(--accent-bright)}
 .astro-secret-lock{margin:0 auto 12px;background:rgba(74,144,226,.12);color:#4769a8;box-shadow:inset 0 0 0 1px rgba(71,105,168,.22),0 8px 24px rgba(72,56,34,.10)}
@@ -12317,18 +12327,42 @@ let _secretTapTimer=null;
 function _secretUnlockTap(category){
   _secretTapCount++;
   if(_secretTapTimer)clearTimeout(_secretTapTimer);
-  _secretTapTimer=setTimeout(()=>{_secretTapCount=0;_secretTapTimer=null;},1500);
+  _secretTapTimer=setTimeout(()=>{_secretTapCount=0;_secretTapTimer=null;},2000);
   if(_secretTapCount<5)return;
   _secretTapCount=0;
   if(_secretTapTimer){clearTimeout(_secretTapTimer);_secretTapTimer=null;}
-  const code=window.prompt('운영자 코드를 입력하세요');
-  if(code===null)return;
-  return _isAdminCode(code.trim().toLowerCase()).catch(()=>false).then(ok=>{
-    if(!ok){alert('코드가 올바르지 않습니다.');return;}
+  return _adminCodeDialog().then(code=>{
+    if(!code)return;
     // 운영자 잠금 해제도 AI 풀이·인상 이미지를 볼 수 있게 서버에서 결제 확인 토큰을 받아 둔다(실패해도 잠금 해제는 진행)
-    return fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.trim().toLowerCase(),category})})
+    return fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,category})})
       .then(r=>r.json()).then(d=>{if(d&&d.paidToken)savePaidToken(d.paidToken);}).catch(()=>{})
       .then(()=>_adminUnlockPaidCategory(category));
+  });
+}
+// 운영자 코드 입력창 — 브라우저 기본 입력창(prompt)은 PC 크롬에서 '대화상자 차단'이 걸리면 아무 반응이 없어서 페이지 안에 직접 띄운다.
+// 맞는 코드면 소문자로 정리한 코드를, 취소하면 null을 돌려준다.
+function _adminCodeDialog(){
+  return new Promise(done=>{
+    const old=document.getElementById('adminCodeDialog');if(old)old.remove();
+    const el=document.createElement('div');el.id='adminCodeDialog';el.className='admin-code';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','adminCodeTitle');
+    el.innerHTML=`<form class="admin-code-box"><h3 id="adminCodeTitle">운영자 코드</h3><input type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="운영자 코드" required><p class="admin-code-err" role="alert"></p><div class="admin-code-act"><button type="button" class="admin-code-cancel">취소</button><button type="submit" class="admin-code-ok">확인</button></div></form>`;
+    document.body.appendChild(el);
+    const form=el.querySelector('form'),input=el.querySelector('input'),err=el.querySelector('.admin-code-err'),ok=el.querySelector('.admin-code-ok');
+    const close=v=>{document.removeEventListener('keydown',onKey,true);el.remove();done(v);};
+    const onKey=e=>{if(e.key==='Escape'){e.stopPropagation();close(null);}};
+    document.addEventListener('keydown',onKey,true);
+    el.querySelector('.admin-code-cancel').onclick=()=>close(null);
+    el.addEventListener('click',e=>{if(e.target===el)close(null);});
+    form.onsubmit=async e=>{
+      e.preventDefault();
+      const code=input.value.trim().toLowerCase();if(!code)return;
+      ok.disabled=true;err.textContent='확인하는 중이에요';
+      const valid=await _isAdminCode(code).catch(()=>false);
+      ok.disabled=false;
+      if(!valid){err.textContent='코드가 올바르지 않습니다.';input.select();return;}
+      close(code);
+    };
+    setTimeout(()=>input.focus(),0);
   });
 }
 function _adminUnlockPaidCategory(category){
@@ -12721,6 +12755,38 @@ async function _handlePaymentReturn(){
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded',_handlePaymentReturn);
 }else{_handlePaymentReturn();}
+
+// ─── 질문권 복구 링크 (?restore=토큰&t=대상) ───
+// 운영자가 admin/restore.html에서 만든 링크다. 토큰은 서버가 인정하는 질문권(chatpackN)이고,
+// 질문권 수는 그 기기에 보관해 두었다가 해당 질문창(즉문즉답·인생총운·신년운세)을 처음 열 때 넣는다. 같은 링크는 한 번만 들어간다.
+const CHAT_RESTORE_LABEL={qna:'즉문즉답',life:'인생총운',newyear:'신년운세'};
+function _chatRestoreState(){try{const v=JSON.parse(localStorage.getItem('chat_restore_v1')||'{}');return {used:Array.isArray(v.used)?v.used:[],pending:Array.isArray(v.pending)?v.pending:[]};}catch(e){return {used:[],pending:[]};}}
+function _chatRestoreSave(st){try{localStorage.setItem('chat_restore_v1',JSON.stringify({used:st.used.slice(-30),pending:st.pending}));}catch(e){}}
+function _applyChatRestore(cat){
+  const st=_chatRestoreState();if(!st.pending.length)return;
+  const key=_chatBonusKey(cat);if(!key)return;
+  const mine=st.pending.filter(x=>x.t===cat);if(!mine.length)return;
+  st.pending=st.pending.filter(x=>x.t!==cat);_chatRestoreSave(st);
+  const m=_loadChatBonusMap();m[key]=(parseInt(m[key]||0,10)||0)+mine.reduce((a,x)=>a+(Number(x.n)||0),0);_saveChatBonusMap(m);
+}
+function _chatRestoreToast(text){
+  const el=document.createElement('div');el.className='chat-restore-toast';el.setAttribute('role','status');el.textContent=text;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),7000);
+}
+function _handleChatRestoreLink(){
+  const q=new URLSearchParams(location.search),tok=q.get('restore');if(!tok)return;
+  const t=CHAT_RESTORE_LABEL[q.get('t')]?q.get('t'):'qna';
+  q.delete('restore');q.delete('t');history.replaceState({},'',location.pathname+(q.toString()?'?'+q:''));
+  let p=null;try{const b=tok.split('.')[0].replace(/-/g,'+').replace(/_/g,'/');p=JSON.parse(atob(b+'='.repeat((4-b.length%4)%4)));}catch(e){}
+  const m=p&&/^chatpack(\d+)$/.exec(String(p.c||''));
+  if(!m||!(Number(p.e)>Date.now())||!tok.includes('.')){_chatRestoreToast('복구 링크를 확인하지 못했어요. 받으신 메일에 답장으로 알려 주세요.');return;}
+  const st=_chatRestoreState();
+  if(st.used.includes(p.o)){_chatRestoreToast('이 링크의 질문권은 이미 넣었어요.');return;}
+  savePaidToken(tok);
+  st.used.push(p.o);st.pending.push({n:Number(m[1]),t});_chatRestoreSave(st);
+  _chatRestoreToast(`질문권 ${m[1]}회를 다시 넣었어요. ${CHAT_RESTORE_LABEL[t]} 질문창에서 바로 쓸 수 있어요.`);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_handleChatRestoreLink);else _handleChatRestoreLink();
 
 // ─── 결제 완료 모달 (공유 인센티브 카드 포함) ───
 let _payDoneCtx=null; // {orderId, cat, isChatpack, chatpackCount, rendered}
@@ -19800,6 +19866,7 @@ function _chatBonusKey(cat){
 }
 function getChatBonus(cat){
   const k=_chatBonusKey(cat); if(!k)return 0;
+  _applyChatRestore(cat);
   const m=_loadChatBonusMap();
   return parseInt(m[k]||0,10)||0;
 }

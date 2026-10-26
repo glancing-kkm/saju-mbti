@@ -174,6 +174,9 @@ export default {
     if (url.pathname === '/admin-paid-token' && request.method === 'POST') {
       return await handleAdminPaidToken(request, env, corsHeaders);
     }
+    if (url.pathname === '/admin-restore-chat' && request.method === 'POST') {
+      return await handleAdminRestoreChat(request, env, corsHeaders);
+    }
     return json({ ok: false, code: 'NOT_FOUND', message: 'Endpoint not found' }, 404, corsHeaders);
   },
 };
@@ -376,6 +379,37 @@ async function handleAdminPaidToken(request, env, corsHeaders) {
   if (!(await isAdminCode(env, code))) return json({ ok: false, code: 'BAD_CODE' }, 403, corsHeaders);
   const paidToken = await signPaidToken(env, `admin-${Date.now()}`, String((b && b.category) || 'admin').slice(0, 40));
   return paidToken ? json({ ok: true, paidToken }, 200, corsHeaders) : json({ ok: false, code: 'SERVER_MISCONFIGURED' }, 500, corsHeaders);
+}
+
+// 질문권 수동 복구 — 운영자가 코드를 넣고 질문권 수를 고르면, 새 주문번호로 질문권 토큰을 만들어 준다.
+// 고객은 이 토큰이 담긴 복구 링크를 열면 그 기기에서 질문권을 다시 쓴다. 발급 기록은 1년 보관한다.
+const RESTORE_COUNTS = [1, 3, 5, 7];
+const RESTORE_TARGETS = ['qna', 'life', 'newyear'];
+async function handleAdminRestoreChat(request, env, corsHeaders) {
+  let b;
+  try { b = await request.json(); } catch { return json({ ok: false, code: 'BAD_JSON' }, 400, corsHeaders); }
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  // 코드 맞히기 시도를 막는다 — 같은 주소에서 1시간에 20번까지
+  if (env.REVIEWS_KV) {
+    const key = `admin_restore_try:${ip}:${new Date().toISOString().slice(0, 13)}`;
+    const n = parseInt((await env.REVIEWS_KV.get(key)) || '0', 10) || 0;
+    if (n >= 20) return json({ ok: false, code: 'RATE_LIMITED' }, 429, corsHeaders);
+    await env.REVIEWS_KV.put(key, String(n + 1), { expirationTtl: 3700 });
+  }
+  if (!env.ADMIN_UNLOCK_CODE) return json({ ok: false, code: 'ADMIN_NOT_CONFIGURED' }, 503, corsHeaders);
+  const code = String((b && b.code) || '').trim().toLowerCase().slice(0, 200);
+  if (!(await isAdminCode(env, code))) return json({ ok: false, code: 'BAD_CODE' }, 403, corsHeaders);
+  const count = Number(b && b.count);
+  const target = String((b && b.target) || 'qna');
+  if (!RESTORE_COUNTS.includes(count) || !RESTORE_TARGETS.includes(target)) return json({ ok: false, code: 'BAD_INPUT' }, 400, corsHeaders);
+  const original = String((b && b.orderId) || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+  const orderId = `restore-${Date.now().toString(36)}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`;
+  const token = await signPaidToken(env, orderId, `chatpack${count}`);
+  if (!token) return json({ ok: false, code: 'SERVER_MISCONFIGURED' }, 500, corsHeaders);
+  if (env.REVIEWS_KV) {
+    try { await env.REVIEWS_KV.put(`restore_log:${orderId}`, JSON.stringify({ original, count, target, at: Date.now() }), { expirationTtl: 365 * 24 * 3600 }); } catch {}
+  }
+  return json({ ok: true, token, orderId, count, target }, 200, corsHeaders);
 }
 
 function buildCorsHeaders(request, env) {
