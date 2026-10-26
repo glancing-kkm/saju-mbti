@@ -341,7 +341,9 @@ async function requirePaidChat(env, request, body){
     if(!env.SAJU_QNA_CACHE)return {error:json({error:'질문권 사용량을 확인하지 못했어요. 잠시 후 다시 시도해주세요.',code:'CHAT_USAGE_UNAVAILABLE'},503)};
     const key='paid-use:chat:'+String(paid.o).slice(0,80);
     const req=String(body.requestId||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80);
-    const receipt=req?key+':request:'+req:'';
+    const requestBytes=new TextEncoder().encode(JSON.stringify({question:body.question,category,context:body.sajuContext}));
+    const requestHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',requestBytes)),x=>x.toString(16).padStart(2,'0')).join('');
+    const receipt=req?key+':request:'+req+':'+requestHash:'';
     if(receipt&&await env.SAJU_QNA_CACHE.get(receipt))return {commit:async()=>{}};
     const used=Number(await env.SAJU_QNA_CACHE.get(key))||0;if(used>=limit)continue;
     return {commit:async()=>{await env.SAJU_QNA_CACHE.put(key,String(used+1),{expirationTtl:40*24*3600});if(receipt)await env.SAJU_QNA_CACHE.put(receipt,'1',{expirationTtl:40*24*3600});}};

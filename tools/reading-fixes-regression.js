@@ -66,6 +66,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
  await g.commit();
  g=await gate({category:'life',activeReadingToken:life,paidTokens:[life],requestId:'q1'});assert(!g.error,'같은 요청 재시도는 중복 차감하지 않음');await g.commit();
  assert.equal(store.get('paid-use:chat:REAL-LIFE'),'1');
+ g=await gate({category:'life',activeReadingToken:life,paidTokens:[life],requestId:'q1',question:'다른 질문'});assert.equal(g.error.status,402,'같은 요청 ID를 다른 질문에 재사용해도 무료 횟수를 우회하지 못함');
  g=await gate({category:'life',activeReadingToken:life,paidTokens:[life],requestId:'q2'});assert.equal(g.error.status,402);
  g=await gate({category:'qna',freeQuestion:true,paidTokens:[]});assert.equal(g.error.status,402);
  g=await gate({category:'topic-love',activeReadingToken:topic,paidTokens:[topic]});assert.equal(g.error.status,402);
