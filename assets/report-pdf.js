@@ -454,6 +454,7 @@ const RP_CSS=`
 .rp-host{position:fixed;left:-20000px;top:0;width:${RP_W}px;pointer-events:none}
 .rp-page{position:relative;box-sizing:border-box;width:${RP_W}px;height:${RP_H}px;padding:76px 80px 52px;background:#faf8f3;color:#5f6a62;display:flex;flex-direction:column;overflow:hidden;font-family:'Nanum Gothic','Apple SD Gothic Neo','Malgun Gothic',sans-serif;letter-spacing:0;word-break:keep-all;overflow-wrap:break-word}
 .rp-page *{box-sizing:border-box}
+.rp-page .reading-ending{white-space:nowrap}
 .rp-serif{font-family:'Nanum Myeongjo','AppleMyungjo','Batang',serif}
 .rp-top{display:flex;justify-content:space-between;font-size:10px;color:#7d867f;margin-bottom:34px}
 .rp-tab{position:absolute;right:0;top:218px;width:10px;height:60px;background:var(--ac)}
@@ -464,7 +465,7 @@ const RP_CSS=`
 .rp-foot{display:flex;justify-content:space-between;align-items:flex-end;padding-top:12px;font-size:9.5px;color:#7d867f}
 .rp-foot b{font-family:'Nanum Myeongjo',serif;font-weight:400;font-size:16px;color:var(--ac)}
 .rp-h{font-size:16.5px;font-weight:800;color:#252c2b;margin:20px 0 9px;line-height:1.4}
-.rp-p{font-size:13.4px;line-height:1.86;color:#5f6a62;margin:0 0 9px}
+.rp-p{text-align:justify;text-align-last:left;text-justify:inter-character;word-break:normal;line-break:strict;word-spacing:0;letter-spacing:0;font-size:13.4px;line-height:1.86;color:#5f6a62;margin:0 0 9px}
 .rp-cap{font-size:10.5px;color:#7d867f;text-align:center;margin:8px 0 6px}
 .rp-tbl{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 8px}
 .rp-tbl th{background:#e9e6dc;color:#252c2b;font-weight:800;text-align:left;padding:10px 12px;font-size:12px}

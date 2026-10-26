@@ -250,14 +250,14 @@ const harness = `
        globalThis.__SOURCE_HTML__.includes('flex-direction:column;align-items:center;justify-content:center'));
     // 고아글자는 keep-all·text-wrap:pretty·preventOrphan()이 막는다. 정렬로 막지 않는다.
     ok('풀이 본문: 화면 폭과 무관하게 왼쪽 기준선으로 정렬',
-       globalThis.__SOURCE_HTML__.includes('두 줄 넘는 풀이 본문은 전부 왼쪽 기준선으로 읽는다') &&
+       globalThis.__SOURCE_HTML__.includes('풀이 본문은 양쪽 정렬하되 한글 문자 사이에 여백을 분산한다') &&
        globalThis.__SOURCE_HTML__.includes('list-style-position:outside') &&
        !/@media\\(max-width:640px\\)\\{[^}]*text-align:left/.test(globalThis.__SOURCE_HTML__));
     const alignBlock=globalThis.__SOURCE_HTML__.slice(
       globalThis.__SOURCE_HTML__.indexOf('/* 본문 읽기 품질'),
       globalThis.__SOURCE_HTML__.indexOf('/* \\u2500\\u2500 Header \\u2500\\u2500 */'));
     ok('풀이 본문: 긴 글에 가운데 정렬이 남아있지 않음',
-       /text-align:left;\\s*text-align-last:auto/.test(alignBlock) &&
+       /text-align:justify;\\s*text-align-last:left/.test(alignBlock) &&
        !/(\\.nb-body|\\.conversion-hook-body|\\.tarot-markdown)[^{]*\\{[^}]*text-align:center/.test(alignBlock),
        alignBlock.length+'자');
     ok('풀이 본문: 한 줄 표시 문구와 비교 도식은 가운데 유지',
@@ -329,8 +329,8 @@ const harness = `
        nmIds.every((id,i)=>nameLayered.indexOf('id="lv4-'+id+'"')>-1 && (i===0||nameLayered.indexOf('id="lv4-'+nmIds[i-1]+'"')<nameLayered.indexOf('id="lv4-'+id+'"'))) &&
        (nameLayered.match(/class="lv4-sec"/g)||[]).length===7);
     ok('이름풀이: 한글 소리·한자 네 자리·81수리·추천 이름을 일상어로 풀이',
-       namePlain.includes('첫소리 ㄱ은 목 기운') && namePlain.includes('평생의 자리') && /숫자 \\d+[은는] '/.test(namePlain) && namePlain.includes('추천 이름') && !/원격|형격|이격|정격|자원오행/.test(namePlain) && !leaky(nameLayered),
-       [namePlain.includes('첫소리 ㄱ은 목 기운'),namePlain.includes('평생의 자리'),/숫자 \\d+[은는] '/.test(namePlain),namePlain.includes('추천 이름'),(namePlain.match(/원격|형격|이격|정격|자원오행/)||[''])[0],leaky(nameLayered)].join('|'));
+       namePlain.includes('초성 ㄱ은 목 기운') && namePlain.includes('평생의 자리') && /숫자 \\d+[은는] '/.test(namePlain) && namePlain.includes('추천 이름') && !/원격|형격|이격|정격|자원오행/.test(namePlain) && !leaky(nameLayered),
+       [namePlain.includes('초성 ㄱ은 목 기운'),namePlain.includes('평생의 자리'),/숫자 \\d+[은는] '/.test(namePlain),namePlain.includes('추천 이름'),(namePlain.match(/원격|형격|이격|정격|자원오행/)||[''])[0],leaky(nameLayered)].join('|'));
     const pairExtra={gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'서울특별시',mbti:'ENFP'};
     _meta.gnExtra=pairExtra;
     const pairLayered=renderGunghapPaid(SELF,pairExtra);
@@ -366,7 +366,7 @@ const harness = `
     const zwPage=renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),zwPlain=clean(zwPage);
     ok('자미두수 한 페이지: 소개 순서 6개 섹션, 12개 방 판, 한자 방 이름 노출 없음',
        (zwPage.match(/class="lv4-sec"/g)||[]).length===6 && zwPage.includes('zw-board') && !zwPage.includes('data-story-layer=') &&
-       !/명궁|부부궁|재백궁|관록궁|복덕궁|대한|오행국|[수목금토화][이삼사오육]국/.test(zwPlain) && /성\(.+의 별\)/.test(zwPlain) && !leaky(zwPage));
+       !/명궁|부부궁|재백궁|관록궁|복덕궁|대한(?!민국)|오행국|[수목금토화][이삼사오육]국/.test(zwPlain) && /성\(.+의 별\)/.test(zwPlain) && !leaky(zwPage));
 
     const __md=lv4FromMarkdown('# 1. 질문 요약\\n고민을 정리했어요.\\n\\n# 3. 카드별 해석\\n## 현재 - 별\\n- 핵심키워드: 희망, 회복\\n희망이 보여요.\\n한 줄 정리: 다시 일어설 힘이 있어요.\\n<script>x</script>','tr');
     ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록 변환, 한 줄 정리 줄은 빼고 HTML 이스케이프',
@@ -400,8 +400,8 @@ const harness = `
     ok('유료 풀이 장 구성: 16개 카테고리 모두 원국 구슬·3가지 순간·장 제목', __frameBad.length===0, __frameBad.join(', '));
 
     const __ppLove=renderTopicPaid('topic-love',SELF,_meta),__ppLife=renderSajuPaid(SELF,1990,5,15,12,0),__ppNy=renderNewyearFortune(SELF,2026),__ppPlain=clean(__ppLove).replace(/&nbsp;|\\u00a0|\\u200b|\\u2060/g,'');
-    ok('콕 찍은 풀이: 연애운·인생총운·신년운세 본문에 출생년도·띠·이름 첫소리·지역·직업·만나는 곳',
-       __ppLove.includes('pp-box') && /\\d{4}년생\\([가-힣]+띠\\)/.test(__ppPlain) && /첫소리가 [ㄱ-ㅎ·]+/.test(__ppPlain) && /(동쪽|서쪽|남쪽|북쪽|가까운)/.test(__ppPlain) && __ppPlain.includes('처음 만나는 곳') &&
+    ok('콕 찍은 풀이: 연애운·인생총운·신년운세 본문에 출생년도·띠·이름 초성·지역·직업·만나는 곳',
+       __ppLove.includes('pp-box') && /\\d{4}년생\\([가-힣]+띠\\)/.test(__ppPlain) && /초성 예시는 [ㄱ-ㅎ·]+/.test(__ppPlain) && /(동쪽|서쪽|남쪽|북쪽|가까운)/.test(__ppPlain) && __ppPlain.includes('처음 만나는 곳') &&
        (__ppLife.match(/pp-box/g)||[]).length>=3 && (__ppNy.match(/pp-box/g)||[]).length>=3,
        [__ppLove.includes('pp-box'),/\\d{4}년생/.test(__ppPlain),(__ppLife.match(/pp-box/g)||[]).length,(__ppNy.match(/pp-box/g)||[]).length].join('|'));
 

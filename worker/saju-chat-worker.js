@@ -116,6 +116,7 @@ async function routeRequest(request, env) {
       if (res && res.ok) await gate.commit();
       return res;
     }
+    if (url.pathname === '/chat-usage') return handleChatUsage(request,env);
     if (url.pathname === '/portrait') {
       return handlePortrait(request, env);
     }
@@ -149,9 +150,7 @@ async function routeRequest(request, env) {
 
     const chatCategory = typeof category === 'string' ? category : 'life';
     const lang = normalizeLanguage(language);
-    const freeGuardKeys = chatCategory === 'qna' && freeQuestion
-      ? await qnaFreeGuardKeys({ request, sajuContext, clientId, deviceFingerprint, sajuId })
-      : [];
+    const freeGuardKeys = []; // 별도 상담에는 무료 질문을 제공하지 않는다.
     if (freeGuardKeys.length && await qnaFreeGuardUsed(env, freeGuardKeys)) {
       return json({ error: '무료 질문은 이미 사용했어요. 계속 질문하려면 질문권을 충전해 주세요.', code: 'QNA_FREE_USED' }, 402);
     }
@@ -314,36 +313,40 @@ async function requirePaid(env, body, bucket, limit) {
   return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} } };
 }
 // 채팅 질문 — 결제한 토큰 여러 개 중 아직 횟수가 남은 첫 토큰을 쓴다.
-// 질문권(chatpackN)은 N회+여유 1, 인생총운·신년운세 같은 풀이에 딸린 질문은 3회까지.
-// 토큰 기능 이전에 산 질문권을 위해 CHAT_TOKENLESS_UNTIL까지는 토큰 없이도 접속 주소당 하루 CHAT_TOKENLESS_DAILY회를 받아 준다.
-const CHAT_TOKENLESS_UNTIL = Date.parse('2026-11-30T15:00:00.000Z');
-const CHAT_TOKENLESS_DAILY = 5;
-function chatLimitOf(paid) {
-  const m = /^chatpack(\d+)$/.exec(String((paid && paid.c) || ''));
-  return m ? Number(m[1]) + 1 : 3;
+// 질문권은 구매한 N회, 인생총운·신년운세는 해당 주문에 포함된 1회만 제공한다.
+function chatLimitOf(paid){const m=/^chatpack(\d+)$/.exec(String(paid&&paid.c||''));return m?Number(m[1]):['life','newyear'].includes(paid&&paid.c)?1:0;}
+async function handleChatUsage(request,env){
+  let b;try{b=await request.json();}catch(e){return json({error:'JSON 본문이 필요합니다.'},400);}
+  if(!env.SAJU_QNA_CACHE)return json({error:'사용량을 확인하지 못했어요.'},503);
+  const tokens=[b.activeReadingToken,...(Array.isArray(b.paidTokens)?b.paidTokens:[])].filter(Boolean),grants=[];
+  for(const token of [...new Set(tokens)].slice(0,12)){
+    const p=await verifyPaidToken(env,token);if(!p)continue;
+    const pack=/^chatpack\d+$/.test(p.c);
+    if(!pack&&!(token===b.activeReadingToken&&p.c===b.category&&['life','newyear'].includes(p.c)))continue;
+    const used=Number(await env.SAJU_QNA_CACHE.get('paid-use:chat:'+String(p.o).slice(0,80)))||0;
+    grants.push({orderId:p.o,category:p.c,limit:chatLimitOf(p),used});
+  }
+  return json({grants});
 }
-async function requirePaidChat(env, request, body) {
-  if (!env.PAID_TOKEN_SECRET) return { commit: async () => {} };
-  const tokens = (Array.isArray(body && body.paidTokens) ? body.paidTokens : []).concat(body && body.paidToken ? [body.paidToken] : []).slice(0, 12);
-  for (const t of tokens) {
-    const paid = await verifyPaidToken(env, t);
-    if (!paid) continue;
-    if (!env.SAJU_QNA_CACHE) return { commit: async () => {} };
-    const key = `paid-use:chat:${String(paid.o).slice(0, 80)}`;
-    let used = 0;
-    try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
-    if (used >= chatLimitOf(paid)) continue;
-    return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 40 * 24 * 3600 }); } catch {} } };
+async function requirePaidChat(env, request, body){
+  if(!env.PAID_TOKEN_SECRET)return {commit:async()=>{}};
+  const category=String(body&&body.category||'life');
+  const candidates=[body&&body.activeReadingToken,...(Array.isArray(body&&body.paidTokens)?body.paidTokens:[]),body&&body.paidToken].filter(Boolean);
+  for(const token of [...new Set(candidates)].slice(0,12)){
+    const paid=await verifyPaidToken(env,token);if(!paid)continue;
+    const pack=/^chatpack\d+$/.test(paid.c);
+    // 보고서에 포함된 1회는 해당 보고서를 질문할 때만 쓴다.
+    if(!pack&&!((token===body.activeReadingToken||!Object.prototype.hasOwnProperty.call(body,'activeReadingToken'))&&paid.c===category&&['life','newyear'].includes(category)))continue;
+    const limit=chatLimitOf(paid);if(!limit)continue;
+    if(!env.SAJU_QNA_CACHE)return {error:json({error:'질문권 사용량을 확인하지 못했어요. 잠시 후 다시 시도해주세요.',code:'CHAT_USAGE_UNAVAILABLE'},503)};
+    const key='paid-use:chat:'+String(paid.o).slice(0,80);
+    const req=String(body.requestId||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80);
+    const receipt=req?key+':request:'+req:'';
+    if(receipt&&await env.SAJU_QNA_CACHE.get(receipt))return {commit:async()=>{}};
+    const used=Number(await env.SAJU_QNA_CACHE.get(key))||0;if(used>=limit)continue;
+    return {commit:async()=>{await env.SAJU_QNA_CACHE.put(key,String(used+1),{expirationTtl:40*24*3600});if(receipt)await env.SAJU_QNA_CACHE.put(receipt,'1',{expirationTtl:40*24*3600});}};
   }
-  const ip = request.headers.get('CF-Connecting-IP') || '';
-  if (Date.now() < CHAT_TOKENLESS_UNTIL && ip && env.SAJU_QNA_CACHE) {
-    const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
-    const key = `chat-tokenless:${day}:${ip}`;
-    let used = 0;
-    try { used = Number(await env.SAJU_QNA_CACHE.get(key)) || 0; } catch {}
-    if (used < CHAT_TOKENLESS_DAILY) return { commit: async () => { try { await env.SAJU_QNA_CACHE.put(key, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} } };
-  }
-  return { error: json({ error: '질문권을 확인하지 못했어요. 질문권을 충전한 뒤 다시 물어봐 주세요.', code: 'QNA_NEED_PAYMENT' }, 402) };
+  return {error:json({error:'무료 질문을 사용했거나 질문권이 없어요. 질문권을 충전하면 이어서 물어볼 수 있어요.',code:'QNA_NEED_PAYMENT'},402)};
 }
 // PDF 템플릿 보고서 — JSON 모양을 스키마로 고정해 끊기거나 깨진 답을 막는다
 const REPORT_TPL_FORMAT = {
@@ -414,13 +417,13 @@ async function handlePortrait(request, env) {
   try { b = await request.json(); } catch { return json({ error: 'JSON 본문이 필요합니다.' }, 400); }
   const kind = ['love', 'helper', 'foe'].includes(b && b.kind) ? b.kind : 'love';
   const who = b && b.gender === 'female' ? 'woman' : 'man';
-  const age = Math.max(20, Math.min(70, Math.round(Number(b && b.age) || 30)));
+  const age = Math.max(18, Math.min(85, Math.round(Number(b && b.age) || 30)));
   const LOOK = ['tall with a slender, clean-lined face', 'a bright expression and clear, vivid eyes', 'a sturdy build and a gentle, warm face', 'sharp, well-defined features and a neat style', 'soft eyes and a calm, quiet aura'];
   const look = LOOK[Math.max(0, Math.min(4, Math.floor(Number(b && b.look) || 0)))];
   const STYLE = {
     love: 'warm natural smile, approachable and kind, smart casual outfit',
     helper: 'trustworthy mature mentor, kind and confident smile, business casual blazer',
-    foe: 'guarded, cool expression, sharp gaze, dark minimal outfit',
+    foe: 'neutral natural expression, everyday professional outfit, no threatening or criminal stereotypes',
   };
   // 결제한 사람만 — 주문 1건당 장수 제한
   const gate = await requirePaid(env, b, 'portrait', PORTRAIT_ORDER_LIMIT);
@@ -434,7 +437,10 @@ async function handlePortrait(request, env) {
     try { used = Number(await env.SAJU_QNA_CACHE.get(limitKey)) || 0; } catch {}
     if (used >= PORTRAIT_DAILY_LIMIT) return json({ error: '오늘 만들 수 있는 이미지를 모두 썼어요. 내일 다시 볼 수 있어요.', code: 'PORTRAIT_LIMIT' }, 429);
   }
-  const prompt = `Photorealistic portrait photograph of a fictional Korean ${who} around ${age} years old with ${look}, ${STYLE[kind]}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, natural skin texture, not a celebrity, no text, no watermark`;
+  const countries={'대한민국':'Korean','한국':'Korean',KR:'Korean','일본':'Japanese',JP:'Japanese','중국':'Chinese',CN:'Chinese','미국':'American',US:'American','영국':'British',GB:'British','베트남':'Vietnamese',VN:'Vietnamese'};
+  const nationality=countries[b&&b.country]||'Korean';
+  const traits=String(b&&b.traits||'').replace(/[<>\n\r]/g,' ').slice(0,180);
+  const prompt = `Photorealistic portrait photograph of a fictional ${nationality} ${who} around ${age} years old with ${look}, ${traits}, ${STYLE[kind]}, unique identity variation ${Math.abs(Number(b&&b.seed)||0)}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, natural skin texture, not a celebrity, no text, no watermark`;
   try {
     const out = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 4 });
     const img = out && out.image;
@@ -1636,6 +1642,7 @@ function buildReadingUserPrompt(category, ctx, meta) {
     : '위 정보와 모순되지 않게, 이 카테고리 첫머리에 들어갈 개인화 리딩을 작성하세요.';
   return `카테고리: ${category}
 출력 언어: ${languageInstruction(lang)}
+관계 상태: ${ctx.marital||'미입력'}. 미혼이면 연인 인연, 연애 중이면 현재 연인과 배우자로 발전하는 방향, 기혼이면 새 연인이 아닌 귀인·협력자와 현재 배우자 관계를 중심으로 해석하세요.
 대상 연도: ${meta.targetYear || '해당 없음'}
 
 상담자 사주 핵심:
@@ -1689,6 +1696,7 @@ function buildSystemPrompt(ctx, category = 'life', language = 'ko') {
 【즉문즉답 카테고리】 ${category}
 【핵심 시기(계산값)】 ${timingText(ctx) ? `${timingText(ctx)} — 시기를 묻는 질문에는 이 연·월을 그대로 인용해 답하고, 계산값에 없는 날짜는 지어내지 마세요.` : '없음'}
 【지금 상황】 ${situationText(ctx) ? `${situationText(ctx)} — 상담자가 직접 고른 상황이에요. 이 상황에서 실제로 겪는 장면에 맞춰 답하세요.` : '선택 안 함'}
+【관계 상태】 ${ctx.marital||'미입력'} — 미혼은 연인 인연, 연애 중은 현재 연인과 배우자로 발전하는 방향, 기혼은 귀인·협력자와 현재 배우자 관계를 중심으로 설명하세요.
 【상담 참고 정보】 ${ctx.qaExtra ? `직업 ${ctx.qaExtra.job || '미입력'} · 결혼 여부 ${ctx.qaExtra.marriage || '미입력'} · 자녀 유무 ${ctx.qaExtra.children || '미입력'}` : '없음'}
 【기질 시그널 (여덟 글자 종합)】 ${ctx.persona || '미상'} — 답변할 때 일간 하나가 아니라 이 종합 기질을 근거로 개인화해서 말하세요.
 【작은 별자리】 ${ctx.sinsal || '특별한 별자리 없음'}

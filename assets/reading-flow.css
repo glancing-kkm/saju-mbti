@@ -163,3 +163,17 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 
 /* 홈 추천 화면과 대분류 목록은 한 번에 한 화면만 표시한다. */
 #homeMain[hidden],#homeFiltered[hidden]{display:none!important}
+
+/* 풀이의 양쪽 정렬: 큰 어절 공백 대신 한글 문자 사이에 작은 여백을 분산한다. */
+#app :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.chat-msg-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
+  text-align:justify;text-align-last:left;text-justify:inter-character;
+  word-spacing:0;letter-spacing:0;word-break:normal;line-break:strict;overflow-wrap:anywhere;
+}
+#app .lv4-nb{white-space:normal}
+#app .lc-portrait-pending{display:grid;place-items:center;min-height:240px;background:var(--card);color:var(--sub);text-align:center;padding:24px}
+#app .lc-portrait-pending img[hidden]{display:none!important}
+#app .lc-portrait-status{font-size:14px;line-height:1.7}
+#app .lc-portrait-status button{margin-top:12px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--accent);font:inherit;cursor:pointer}
+#app .lc-person-secondary{margin-top:-8px}
+
+#app .reading-ending{white-space:nowrap}
