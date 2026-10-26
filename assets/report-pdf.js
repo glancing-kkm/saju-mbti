@@ -376,13 +376,16 @@ async function rpAI(spec,d,plan,onProgress,opts){
   opts=opts||{};
   const scope=(typeof unlockScopeOf==='function'?unlockScopeOf(d.cat):'')||'';
   const readingText=d.sections.map(s=>`[${s.title}] `+s.blocks.map(b=>b.p||b.h).join(' ')).join('\n').slice(0,17000);
-  const facts=rpFacts(d);let done=0;
+  const told=Object.entries(d.info||{}).filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join(' / ');
+  const facts=(told?`상담자가 직접 알려 준 상황(최우선으로 반영): ${told}\n`:'')+rpFacts(d);let done=0;
+  const infoKey=told?'|'+rpHash(told):'';
   const one=async(g,i)=>{
-    const key=`${d.cat}|${scope}|${i}|${RP_VERSION}`;
+    const key=`${d.cat}|${scope}|${i}|${RP_VERSION}${infoKey}`;
     try{
       const c=aiReadingCacheGet('report-tpl',key,'ko');const parsed=c&&rpParse(c.text);if(parsed)return parsed;
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
       payload.sajuContext.detailedReading=readingText;
+      if(told)payload.sajuContext.situation=told.slice(0,300);
       Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
       for(let k=0;k<2&&!rpEnough(out,g);k++){
@@ -550,6 +553,22 @@ const RP_CSS=`
 .rp-cover .who span{font-size:11px;color:#707a71}
 .rp-cover .who em{display:block;font-style:normal;font-size:9.5px;color:var(--ac);margin-top:36px;letter-spacing:.05em}
 .rp-svgchart text{font-family:'Nanum Gothic',sans-serif}
+.rp-ask{position:fixed;inset:0;z-index:310;display:flex;align-items:flex-end;justify-content:center;background:rgba(8,12,10,.55);padding:16px}
+@media (min-width:640px){.rp-ask{align-items:center}}
+.rp-ask-box{position:relative;width:100%;max-width:480px;max-height:88vh;overflow:auto;background:var(--card,#fff);color:var(--text,#243b33);border-radius:18px;padding:22px 20px 18px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.rp-ask-box h3{margin:0 0 6px;font-size:1.15rem;color:var(--accent,#245c47)}
+.rp-ask-box>p{margin:0 0 16px;font-size:.88rem;line-height:1.6;color:var(--sub,#526259)}
+.rp-ask-f{margin:0 0 16px}
+.rp-ask-f b{display:block;font-size:.92rem;margin-bottom:8px}
+.rp-ask-chips{display:flex;flex-wrap:wrap;gap:8px}
+.rp-ask-chip{min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid var(--border,#dcdcd2);background:var(--bg,#f7f7f2);color:var(--text,#243b33);font:inherit;font-size:.88rem;cursor:pointer}
+.rp-ask-chip.on{background:var(--accent,#245c47);border-color:var(--accent,#245c47);color:var(--on-accent,#fff)}
+.rp-ask-input{display:block;width:100%;box-sizing:border-box;margin-top:8px;min-height:44px;padding:10px 12px;border-radius:12px;border:1px solid var(--border,#dcdcd2);background:var(--bg,#f7f7f2);color:var(--text,#243b33);font:inherit;font-size:16px}
+.rp-ask-act{display:flex;gap:10px;margin-top:6px}
+.rp-ask-act button{flex:1;min-height:48px;border-radius:12px;font:inherit;font-size:.95rem;cursor:pointer}
+.rp-ask-skip{border:1px solid var(--border,#dcdcd2);background:transparent;color:var(--sub,#526259)}
+.rp-ask-go{border:0;background:var(--accent,#245c47);color:var(--on-accent,#fff)}
+.rp-ask-x{position:absolute;top:10px;right:10px;width:40px;height:40px;border:0;background:none;font-size:1.5rem;color:var(--muted,#67756d);cursor:pointer}
 `;
 function rpStyle(){if(document.getElementById('rpStyle'))return;const st=document.createElement('style');st.id='rpStyle';st.textContent=RP_CSS;document.head.appendChild(st);}
 async function rpFonts(){
@@ -708,7 +727,8 @@ function rpInfoRows(spec,d){
     '학업 또는 시험 목표':ctx||none,'시험 및 목표 일정':none,'현재 준비 상황':none,'아이의 현재 연령':`${d.age}세 · ${typeof stageLabelOf==='function'?stageLabelOf(d.age):''}`,'보호자와 양육 환경':none,'관찰된 관심과 어려움':ctx||none,
     '현재 가족과 계획 상황':marital||none,'자녀 계획에 대한 생각':ctx||none,'함께 검토할 생활 여건':none,'현재 생활 리듬':none,'생활 관리의 관심사':ctx||none
   };
-  return spec.info.map(k=>[k,map[k]||none]);
+  const user=d.info||{};
+  return spec.info.map(k=>[k,user[k]||map[k]||none]);
 }
 function rpInfoPage(host,spec,d){
   const m=d.meta,cal=(typeof _lastInputs==='object'&&_lastInputs&&_lastInputs.calType==='lunar')?`음력${_lastInputs.isLeap?' · 윤달':''}`:'양력';
@@ -766,7 +786,7 @@ async function buildTemplateReport(cat,opts){
   if(!_saju||!_meta)throw new Error('사주 정보가 없어요.');
   rpStyle();const fontLoad=rpFonts();
   prog('풀이를 모으는 중이에요');
-  const d=rpCollect(cat);
+  const d=rpCollect(cat);d.info=rpCleanInfo(opts.info);
   if(cat==='gunghap'&&!d.partner)throw new Error('상대 정보가 없어요.');
   const plan=rpPlan(spec,d);
   prog(`천기가 보고서를 쓰는 중이에요 (0/${plan.groups.length}) · 2~3분 걸려요`);
@@ -823,6 +843,74 @@ async function buildTemplateReport(cat,opts){
     return {...base,blob:pdf.output('blob'),mode:'image'};
   }catch(e){host.remove();throw e;}
 }
+// ── 보고서에 반영할 정보 묻기 — 템플릿의 '상담 및 해석 기준' 칸. 모두 선택이고 건너뛸 수 있다 ──
+const INFO_ASK={
+  '현재 관심사':{o:['일·직업','돈','연애·결혼','가족','건강','공부'],multi:1},
+  '삶의 주요 변화':{ph:'예: 이직을 고민 중, 이사 예정'},
+  '올해의 주요 계획':{o:['이직·취업','이사','결혼','공부·시험','창업','건강 관리'],multi:1,ph:'그 밖의 계획(선택)'},
+  '관계의 형태':{o:['연인','부부','썸','동업','가족·기타']},
+  '관계 기간과 현재 상황':{ph:'예: 2년째 연애 중, 결혼 이야기 중'},
+  '요청 구분':{o:['기존 이름 풀이','아기 작명','개명 검토','활동명']},
+  '작명 선호와 조건':{ph:'예: 부르기 쉬운 두 글자, 돌림자 준'},
+  '현재 관계 상황':{o:['비연애','썸','연애 중','관계 정리 중']},
+  '연애에서 궁금한 점':{ph:'예: 언제쯤 인연이 올지'},
+  '현재 수입 및 업무 형태':{o:['직장','사업','프리랜서','학생·준비 중','기타']},
+  '재물 관련 관심사':{o:['수입 늘리기','지출 관리','저축·자산','사업','빚 관리'],multi:1},
+  '현재 직무와 경력 단계':{o:['준비 중','1~3년차','4~9년차','10년 이상','관리자']},
+  '앞으로의 관심 방향':{o:['지금 일 유지','이직','직무 전환','독립·창업'],multi:1},
+  '현재 혼인 및 관계 상황':{o:['미혼','연애 중','결혼 준비','기혼']},
+  '공동생활의 관심사':{o:['생활 습관','돈','양가 가족','주거','자녀'],multi:1},
+  '이별 또는 거리 두기 시점':{o:['1개월 이내','6개월 이내','1년 이내','1년 넘게']},
+  '현재 연락 상태':{o:['가끔 연락','연락 끊김','상대가 연락을 원하지 않음']},
+  '다시 생각하는 이유':{ph:'예: 서로 오해가 있었던 것 같아서'},
+  '학업 또는 시험 목표':{ph:'예: 공무원 9급, 수능, 자격증'},
+  '시험 및 목표 일정':{ph:'예: 2027년 4월 / 미정'},
+  '현재 준비 상황':{o:['시작 전','기초 다지는 중','문제 풀이 중','마무리 단계']},
+  '보호자와 양육 환경':{ph:'예: 맞벌이, 할머니가 함께 돌봄'},
+  '관찰된 관심과 어려움':{ph:'예: 그림을 좋아하고 낯을 가림'},
+  '현재 가족과 계획 상황':{o:['결혼 전','신혼','자녀 있음','계획을 정하지 않음']},
+  '자녀 계획에 대한 생각':{o:['생각해 보는 중','계획 중','준비 중','아직 없음']},
+  '함께 검토할 생활 여건':{o:['시간','일','돌봄','경제적 지원'],multi:1},
+  '현재 생활 리듬':{o:['규칙적','불규칙','교대 근무','밤에 활동']},
+  '생활 관리의 관심사':{o:['수면','식사','운동','스트레스'],multi:1}
+};
+const RP_INFO_LS='rp_report_info_v1';
+function rpCleanInfo(info){const o={};Object.entries(info||{}).forEach(([k,v])=>{const t=String(v||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,60);if(t&&INFO_ASK[k])o[k]=t;});return o;}
+function rpHash(t){let h=0;for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function rpInfoLoad(cat){try{const all=JSON.parse(localStorage.getItem(RP_INFO_LS)||'{}');const scope=(typeof unlockScopeOf==='function'?unlockScopeOf(cat):'')||'';const v=all[cat+'|'+scope];return v&&v.exp>Date.now()?v.info:null;}catch(e){return null;}}
+function rpInfoSave(cat,info){try{const all=JSON.parse(localStorage.getItem(RP_INFO_LS)||'{}');const now=Date.now();Object.keys(all).forEach(k=>{if(!all[k]||all[k].exp<now)delete all[k];});const scope=(typeof unlockScopeOf==='function'?unlockScopeOf(cat):'')||'';all[cat+'|'+scope]={info,exp:now+24*3600e3};localStorage.setItem(RP_INFO_LS,JSON.stringify(all));}catch(e){}}
+function rpInfoGuess(cat){
+  const m=_meta||{},g={};
+  if(cat==='topic-love')g['현재 관계 상황']={single:'비연애',dating:'연애 중'}[m.marital]||'';
+  if(cat==='topic-marriage')g['현재 혼인 및 관계 상황']={single:'미혼',dating:'연애 중',married:'기혼'}[m.marital]||'';
+  if(cat==='gunghap')g['관계의 형태']={dating:'연인',married:'부부'}[m.marital]||'';
+  return g;
+}
+function askTemplateReportInfo(cat){
+  const spec=SPECS[cat],keys=spec?spec.info.filter(k=>INFO_ASK[k]):[];
+  if(!keys.length)return Promise.resolve({});
+  rpStyle();
+  const prev={...rpInfoGuess(cat),...(rpInfoLoad(cat)||{})};
+  return new Promise(done=>{
+    const el=document.createElement('div');el.className='rp-ask';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','rpAskTitle');
+    const field=(k,i)=>{const a=INFO_ASK[k],v=String(prev[k]||''),sel=v.split(' · ');
+      const chips=a.o?`<div class="rp-ask-chips" data-multi="${a.multi?1:0}">${a.o.map(o=>`<button type="button" class="rp-ask-chip${sel.includes(o)?' on':''}" aria-pressed="${sel.includes(o)}">${esc(o)}</button>`).join('')}</div>`:'';
+      const extra=a.o?sel.filter(x=>!a.o.includes(x)).join(' · '):v;
+      const input=a.ph?`<input class="rp-ask-input" type="text" maxlength="60" placeholder="${esc(a.ph)}" value="${esc(extra)}" aria-label="${esc(k)}">`:'';
+      return `<div class="rp-ask-f" data-k="${esc(k)}"><b id="rpAskL${i}">${esc(k)}</b>${chips}${input}</div>`;};
+    el.innerHTML=`<div class="rp-ask-box"><h3 id="rpAskTitle">보고서에 반영할 정보</h3><p>지금 상황을 고르면 보고서의 기본 정보와 풀이에 함께 반영해요. 모두 선택이에요. 이름 같은 개인 정보는 적지 않아도 돼요.</p>${keys.map(field).join('')}<div class="rp-ask-act"><button type="button" class="rp-ask-skip">건너뛰고 만들기</button><button type="button" class="rp-ask-go">이 내용으로 만들기</button></div><button type="button" class="rp-ask-x" aria-label="닫기">×</button></div>`;
+    document.body.appendChild(el);
+    el.querySelectorAll('.rp-ask-chips').forEach(box=>box.addEventListener('click',e=>{const b=e.target.closest('.rp-ask-chip');if(!b)return;const multi=box.dataset.multi==='1';if(!multi)box.querySelectorAll('.rp-ask-chip').forEach(x=>{if(x!==b){x.classList.remove('on');x.setAttribute('aria-pressed','false');}});b.classList.toggle('on');b.setAttribute('aria-pressed',String(b.classList.contains('on')));}));
+    const collect=()=>{const o={};el.querySelectorAll('.rp-ask-f').forEach(f=>{const vals=[...f.querySelectorAll('.rp-ask-chip.on')].map(b=>b.textContent);const t=f.querySelector('.rp-ask-input');if(t&&t.value.trim())vals.push(t.value.trim());if(vals.length)o[f.dataset.k]=vals.join(' · ');});return rpCleanInfo(o);};
+    const close=v=>{el.remove();document.removeEventListener('keydown',onKey);done(v);};
+    const onKey=e=>{if(e.key==='Escape')close(null);};document.addEventListener('keydown',onKey);
+    el.querySelector('.rp-ask-x').onclick=()=>close(null);
+    el.querySelector('.rp-ask-skip').onclick=()=>close({});
+    el.querySelector('.rp-ask-go').onclick=()=>{const v=collect();rpInfoSave(cat,v);close(v);};
+    const first=el.querySelector('.rp-ask-chip,.rp-ask-input');if(first)first.focus();
+  });
+}
+window.askTemplateReportInfo=askTemplateReportInfo;
 // 서버 인쇄용 문서 — 쪽 HTML과 보고서 스타일만 담는다(스크립트 없음)
 function rpStandalone(pages){
   const css=RP_CSS+`@page{size:${RP_W}px ${RP_H}px;margin:0}html,body{margin:0;padding:0;background:#faf8f3}.rp-page{break-after:page;page-break-after:always}.rp-page:last-child{break-after:auto;page-break-after:auto}.lv4-nb{white-space:nowrap}`;

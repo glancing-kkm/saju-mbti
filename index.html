@@ -7601,7 +7601,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=a72e636bdb';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=8259f3d45b';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -7640,7 +7640,11 @@ async function downloadReportPdf(cat){
   try{
     pdfProgress('보고서를 준비하는 중이에요');
     await loadReportPdfModule();
-    const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress});
+    pdfProgress(null);
+    const info=await window.askTemplateReportInfo(cat);
+    if(info===null)return;
+    pdfProgress('보고서를 준비하는 중이에요');
+    const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress,info});
     pdfProgress(null);
     pdfReadyPrompt(r.blob,r.fileName,r.title);
     journeyEvent('pdf_download',cat,{pages:r.pages,mode:r.mode});
