@@ -403,6 +403,9 @@ const submitBirth=async()=>{
       check('운영자 코드: 자물쇠 onclick이 해당 카테고리로 연결',()=>assert.match(tap,/_secretUnlockTap\('newyear'\)/));
       // 브라우저 기본 입력창 대신 페이지 안 입력창을 쓴다(PC 크롬의 대화상자 차단에도 동작)
       let native=0;w.prompt=()=>{native++;return '';};w.alert=()=>{};
+      // 운영자 코드는 서버(결제 워커)만 안다 — 테스트에서는 서버 응답을 흉내 낸다
+      const prevFetch=w.fetch,adminSent=[],adminTok=Buffer.from(JSON.stringify({o:'admin-test',c:'newyear',e:Date.now()+86400e3})).toString('base64url')+'.sig';
+      w.fetch=async(url,opt)=>{if(String(url).endsWith('/admin-paid-token')){const b=JSON.parse(opt.body);adminSent.push(b.code);const ok=b.code==='test-admin';return {ok,status:ok?200:403,json:async()=>ok?{ok:true,paidToken:adminTok}:{ok:false,code:'BAD_CODE'}};}return prevFetch(url,opt);};
       const box=()=>d.getElementById('adminCodeDialog');
       const submit=async code=>{const b=box();b.querySelector('input').value=code;b.querySelector('form').dispatchEvent(new w.Event('submit',{cancelable:true}));await wait(600);};
       for(let i=0;i<4;i++)run(tap);
@@ -413,9 +416,9 @@ const submitBirth=async()=>{
       check('운영자 코드: 틀린 코드는 창 안에서 거절',()=>{assert(box());assert.match(box().querySelector('.admin-code-err').textContent,/올바르지/);assert.equal(run("isUnlockedFor('newyear')"),false);});
       box().querySelector('.admin-code-cancel').click();await pending;
       check('운영자 코드: 취소하면 창이 닫히고 잠금 유지',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),false);});
-      for(let i=0;i<4;i++)run(tap);pending=run(tap);await wait(0);await submit(' Open ');await pending;
-      check('운영자 코드: 5번 + open(대소문자·공백 무시)이면 결제 없이 열림',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),true);});
-      w.prompt=()=>'';
+      for(let i=0;i<4;i++)run(tap);pending=run(tap);await wait(0);await submit(' Test-Admin ');await pending;
+      check('운영자 코드: 서버가 확인한 코드(대소문자·공백 무시)면 토큰을 받고 결제 없이 열림',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),true);assert.equal(adminSent.pop(),'test-admin');assert(run('loadPaidTokens()').includes(adminTok));});
+      w.fetch=prevFetch;w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');
     check('주제별 풀이: 연애운은 가린 미리보기와 1,500원 결제 버튼',()=>{

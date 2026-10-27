@@ -12333,17 +12333,17 @@ function unlockAndRender(category){
   return true;
 }
 
-// 운영자용 — 잠금 자물쇠 5회 탭 시 코드 입력창을 띄워, 운영자 코드(open)가 맞으면 결제 없이 해제.
-// 입력값을 PBKDF2-SHA256(15만 회)로 바꿔 아래 hash와 비교한다. 코드를 바꿀 때는 salt·hash만 교체한다.
-const _ADMIN_CODE={salt:'b26d106e016fe285192f90101467ef08',hash:'12ffb1d535f5765b22a9929bcf44ba93d42d2d5236ef4ffc0ed636a18c53c6f1',iterations:150000};
-async function _isAdminCode(input){
-  const subtle=window.crypto&&window.crypto.subtle;
-  if(!subtle||!input)return false;
-  const salt=new Uint8Array(_ADMIN_CODE.salt.match(/../g).map(h=>parseInt(h,16)));
-  const key=await subtle.importKey('raw',new TextEncoder().encode(input),'PBKDF2',false,['deriveBits']);
-  const bits=await subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:_ADMIN_CODE.iterations},key,256);
-  const hex=[...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,'0')).join('');
-  return hex===_ADMIN_CODE.hash;
+// 운영자용 — 잠금 자물쇠 5회 탭 시 코드 입력창을 띄워, 운영자 코드가 맞으면 결제 없이 해제한다.
+// 코드는 결제 워커의 ADMIN_UNLOCK_CODE 하나뿐이다(페이지에는 코드도 확인값도 두지 않는다).
+// 서버가 코드를 확인하면 결제 확인 토큰을 내려 주고, 같은 접속 주소의 시도는 1분에 한 번으로 막는다.
+const _ADMIN_ERR={BAD_CODE:'코드가 올바르지 않습니다.',RATE_LIMITED:'잠시 후 다시 시도해 주세요. 코드 확인은 1분에 한 번만 할 수 있어요.',ADMIN_NOT_CONFIGURED:'서버에 운영자 코드가 등록되지 않았어요.'};
+async function _verifyAdminCode(code,category){
+  try{
+    const r=await fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,category})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d&&d.ok&&d.paidToken){savePaidToken(d.paidToken);return {ok:true};}
+    return {ok:false,msg:_ADMIN_ERR[d&&d.code]||'코드를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'};
+  }catch(e){return {ok:false,msg:'연결을 확인한 뒤 다시 시도해 주세요.'};}
 }
 let _secretTapCount=0;
 let _secretTapTimer=null;
@@ -12354,17 +12354,12 @@ function _secretUnlockTap(category){
   if(_secretTapCount<5)return;
   _secretTapCount=0;
   if(_secretTapTimer){clearTimeout(_secretTapTimer);_secretTapTimer=null;}
-  return _adminCodeDialog().then(code=>{
-    if(!code)return;
-    // 운영자 잠금 해제도 AI 풀이·인상 이미지를 볼 수 있게 서버에서 결제 확인 토큰을 받아 둔다(실패해도 잠금 해제는 진행)
-    return fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,category})})
-      .then(r=>r.json()).then(d=>{if(d&&d.paidToken)savePaidToken(d.paidToken);}).catch(()=>{})
-      .then(()=>_adminUnlockPaidCategory(category));
-  });
+  // 서버가 코드를 확인하고 결제 확인 토큰까지 내려 준 뒤에 잠금을 푼다
+  return _adminCodeDialog(category).then(code=>{if(code)_adminUnlockPaidCategory(category);});
 }
 // 운영자 코드 입력창 — 브라우저 기본 입력창(prompt)은 PC 크롬에서 '대화상자 차단'이 걸리면 아무 반응이 없어서 페이지 안에 직접 띄운다.
-// 맞는 코드면 소문자로 정리한 코드를, 취소하면 null을 돌려준다.
-function _adminCodeDialog(){
+// 서버가 확인한 코드면 소문자로 정리한 코드를, 취소하면 null을 돌려준다.
+function _adminCodeDialog(category){
   return new Promise(done=>{
     const old=document.getElementById('adminCodeDialog');if(old)old.remove();
     const el=document.createElement('div');el.id='adminCodeDialog';el.className='admin-code';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','adminCodeTitle');
@@ -12380,9 +12375,9 @@ function _adminCodeDialog(){
       e.preventDefault();
       const code=input.value.trim().toLowerCase();if(!code)return;
       ok.disabled=true;err.textContent='확인하는 중이에요';
-      const valid=await _isAdminCode(code).catch(()=>false);
+      const res=await _verifyAdminCode(code,category);
       ok.disabled=false;
-      if(!valid){err.textContent='코드가 올바르지 않습니다.';input.select();return;}
+      if(!res.ok){err.textContent=res.msg;input.select();return;}
       close(code);
     };
     setTimeout(()=>input.focus(),0);
