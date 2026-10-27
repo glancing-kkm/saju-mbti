@@ -12,6 +12,26 @@ run([...d.querySelectorAll('script')].filter(x=>!x.src&&!/json/.test(x.type)).ma
 const wait=()=>new Promise(r=>setTimeout(r,0));
 (async()=>{
  run("_meta={sy:1987,sm:9,sd:21,hour:7,min:0,gender:'male',cityKey:'seoul',marital:'married'};_saju=calcSaju(1987,9,21,7,0);gender='male';_category='life';");
+ // A correction changes only the calculation clock; display always keeps the entered clock distinct.
+ const time=run("birthTimeReference({hour:8,min:15,tsoMin:-30})");assert.equal(time.input,'08:45');assert.equal(time.corrected,'08:15');assert(time.applied);assert.match(time.note,/30分|30분/);
+ assert.equal(run("birthTimeReference({hour:23,min:50,tsoMin:-30}).input"),'00:20');
+ assert.equal(run("birthTimeReference({hour:0,min:15,tsoMin:30}).input"),'23:45');
+ assert.equal(run("birthTimeReference({hour:8,min:15,tsoMin:-29.6}).input"),'08:45');
+ assert.equal(run("birthTimeReference({hour:8,min:15,tsoMin:0}).applied"),false);
+ assert.equal(run("birthTimeReference({hour:-1,min:0,tsoMin:-30}).applied"),false);
+ run("window.timeSavedMeta=_meta;_meta={..._meta,hour:8,min:15,tsoMin:-30,inputHour:8,inputMin:45};_lastInputs={hour:'23',min:'59'}");
+ const birthModel=run('buildLifeV2Model(_saju,_meta)');assert.equal(birthModel.originalTime,'08시 45분');assert.equal(birthModel.correctedTime,'08시 15분');
+ const profile=run("reportProfileHTML('life')");assert(profile.includes('08:45 (입력 시각)'));assert(profile.includes('풀이 기준 08:15'));
+ const timeLife=run('renderSajuPaid(_saju,1987,9,21,8,15)');assert(timeLife.includes('시간 보정 적용'));assert(timeLife.includes('입력 시각 08:45'));
+ assert(run("pdfReportCtaHTML('life')").includes('풀이 기준 08:15'));
+ const manse=run('renderManseryeokFull(_saju,1987,9,21,8,15,s2l(1987,9,21))');assert(manse.includes('시간 보정 적용'));assert(manse.includes('08:45'));
+ run(fs.readFileSync(path.join(root,'assets/report-pdf.js'),'utf8'));
+ const timePdf=await run("buildTemplateReport('life',{skipAI:true,dryRun:true,info:{}})");
+ const timePage=timePdf.pages.map(p=>p.textContent).join(' ');assert(/입력\s*시각\s*08:45/.test(timePage));assert(/풀이\s*기준\s*시각\s*08:15/.test(timePage));assert(timePage.includes('30분'));timePdf.host.remove();
+ run("_meta.gnExtra={gy:1992,gm:8,gd:10,gh:8,gmin:45,gender:'female',cal:'solar',cityKey:'seoul'}");
+ const pairPdf=await run("buildTemplateReport('gunghap',{skipAI:true,dryRun:true,info:{}})");const pairText=pairPdf.pages.map(p=>p.textContent).join(' ').replace(/\s/g,'');assert(pairText.includes('시간보정'));assert(pairText.includes('출생지역기준으로'));assert(/입력\s*시각\s*08:45\s*08:45/.test(pairText));pairPdf.host.remove();
+ run('_meta=window.timeSavedMeta;_lastInputs=null');
+ console.log('✓ 시간 표시: 입력/보정 시각 분리, 과거 기록·자정 경계·반올림·미상, 웹·다운로드 안내·본인/궁합 PDF');
  const sample=run('buildPinpoint(_saju,_meta)');
  assert.notEqual(sample.helper.years[0],sample.avoid.years[0]);
  for(let stem=0;stem<10;stem++)for(let branch=0;branch<12;branch++){

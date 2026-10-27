@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v4-specific',RP_SAFE=26;
+const RP_VERSION='v5-time-reference',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -229,10 +229,10 @@ function rpPartner(gn){
   if(!gn)return null;
   let sy=gn.gy,sm=gn.gm,sd=gn.gd;
   if(gn.cal==='lunar'){const s=l2s(gn.gy,gn.gm,gn.gd,!!gn.leap);sy=s.y;sm=s.m;sd=s.d;}
-  let gh=gn.gh,gmin=gn.gmin||0;
+  let gh=gn.gh,gmin=gn.gmin||0;const tsoMin=gh>=0&&gn.cityKey?getTrueSolarOffsetMin(gn.cityKey):0;
   if(gh>=0&&gn.cityKey){const tso=getTrueSolarOffsetMin(gn.cityKey);if(tso){let t=gh*60+gmin+Math.round(tso);while(t<0)t+=1440;while(t>=1440)t-=1440;gh=Math.floor(t/60);gmin=t%60;}}
   const saju=calcSaju(sy,sm,sd,gh,gmin);
-  return {saju,meta:{sy,sm,sd,hour:gh,min:gmin,gender:gn.gender,cityKey:gn.cityKey,marital:''},gn};
+  return {saju,meta:{sy,sm,sd,hour:gh,min:gmin,gender:gn.gender,cityKey:gn.cityKey,marital:'',tsoMin,inputHour:gn.gh,inputMin:gn.gmin||0},gn};
 }
 function rpCollect(cat){
   const saju=_saju,meta={...(_meta||{}),gender:(_meta&&_meta.gender)||gender};
@@ -663,7 +663,7 @@ function rpVis(pg,d,spec,F){
     const z=d.zw,pos={5:[1,1],6:[1,2],7:[1,3],8:[1,4],4:[2,1],9:[2,4],3:[3,1],10:[3,4],2:[4,1],1:[4,2],0:[4,3],11:[4,4]};
     const dec=b=>(z.decades.find(x=>x.palace.branch===b)||{});
     const li=z.li||{};
-    return `<div class="rp-zw">${z.palaces.map(p=>{const [r,c]=pos[p.branch];const dd=dec(p.branch);return `<div class="zc${p.name==='명궁'?' me':''}" style="grid-row:${r};grid-column:${c}"><b>${ZW_SHOW(p.name)}${z.shenPalace.branch===p.branch?' · 신궁':''}</b><span class="st">${esc(p.stars.join(' · ')||'빈 방')}</span><br>${STEMKO[p.stem]}${BRCHKO[p.branch]}<br><span class="dc">${dd.from!=null?`대한 ${dd.from}~${dd.to}세`:''}</span></div>`;}).join('')}<div class="zct"><h4>자미두수 명반</h4><span>${esc(d.meta.userName||'')}</span><span>음력 ${li.ly||''}.${li.lm||''}.${li.ld||''}${li.leap?' (윤달)':''} · ${d.meta.hour>=0?`${pad2(d.meta.hour)}시`:'태어난 시간 모름'}</span><span>명궁 ${BRCHKO[z.palaces[0].branch]}궁 · 신궁 ${ZW_SHOW(z.shenPalace.name)} · ${ZW_BUREAU_NAME[z.bureau]||''}</span></div></div><p class="rp-cap">14개 주성 기준 명반이에요 · 별이 없는 빈 방은 마주 보는 궁의 별을 함께 읽어요</p>`;
+    return `<div class="rp-zw">${z.palaces.map(p=>{const [r,c]=pos[p.branch];const dd=dec(p.branch);return `<div class="zc${p.name==='명궁'?' me':''}" style="grid-row:${r};grid-column:${c}"><b>${ZW_SHOW(p.name)}${z.shenPalace.branch===p.branch?' · 신궁':''}</b><span class="st">${esc(p.stars.join(' · ')||'빈 방')}</span><br>${STEMKO[p.stem]}${BRCHKO[p.branch]}<br><span class="dc">${dd.from!=null?`대한 ${dd.from}~${dd.to}세`:''}</span></div>`;}).join('')}<div class="zct"><h4>자미두수 명반</h4><span>${esc(d.meta.userName||'')}</span><span>음력 ${li.ly||''}.${li.lm||''}.${li.ld||''}${li.leap?' (윤달)':''} · ${birthTimeReference(d.meta).known?`${birthTimeReference(d.meta).corrected}${birthTimeReference(d.meta).applied?' (보정 시각)':''}`:'태어난 시간 모름'}</span><span>명궁 ${BRCHKO[z.palaces[0].branch]}궁 · 신궁 ${ZW_SHOW(z.shenPalace.name)} · ${ZW_BUREAU_NAME[z.bureau]||''}</span></div></div><p class="rp-cap">14개 주성 기준 명반이에요 · 별이 없는 빈 방은 마주 보는 궁의 별을 함께 읽어요</p>`;
   }
   if(v==='zwStars'){const z=d.zw,pal=n=>z.palaces.find(p=>p.name===n),me=pal('명궁'),sh=z.shenPalace,out=pal('천이궁');const rows=[['명궁의 주성',me],['신궁의 주성',sh],['마주 보는 천이궁',out]];return rpTable(['항목','확인된 배치','해석 메모'],rows.map(([l,p],r)=>[l,`${p.stars.join('·')||'빈 방'} · ${ZW_SHOW(p.name)}`,f(`p${pi}c${r}a`)]));}
   if(v==='zwSihua'){return rpTable(['항목','확인된 배치','해석 메모'],rpSihua(d).map((r,i)=>[r[0],r[2]?`${r[1]} · ${r[2]}`:`${r[1]} · 보조성(이 명반에는 미배치)`,f(`p${pi}c${i}a`)]));}
@@ -755,12 +755,12 @@ function rpInfoRows(spec,d){
 function rpInfoPage(host,spec,d){
   const m=d.meta,cal=(typeof _lastInputs==='object'&&_lastInputs&&_lastInputs.calType==='lunar')?`음력${_lastInputs.isLeap?' · 윤달':''}`:'양력';
   const city=(()=>{try{return cityLabelOf(m.cityKey);}catch(e){return '';}})();
-  const birth=`${m.sy}.${pad2(m.sm)}.${pad2(m.sd)}`,time=m.hour>=0?`${pad2(m.hour)}:${pad2(m.min||0)}`:'모름';
+  const birth=`${m.sy}.${pad2(m.sm)}.${pad2(m.sd)}`,time=birthTimeReference(m);
   let html;
   if(spec.pair&&d.partner){
-    const p=d.partner.meta,gn=d.partner.gn;
-    html=rpTable(['구분','A','B'],[['이름',m.userName||'본인','상대'],['생년월일',birth,`${p.sy}.${pad2(p.sm)}.${pad2(p.sd)}`],['양력 / 음력',cal,gn.cal==='lunar'?`음력${gn.leap?' · 윤달':''}`:'양력'],['출생 시각',time,gn.gh>=0?`${pad2(gn.gh)}:${pad2(gn.gmin||0)}`:'모름'],['출생 지역',city,(()=>{try{return cityLabelOf(gn.cityKey);}catch(e){return '';}})()]],true);
-  }else html=rpTable(['구분','입력 정보'],[['이름',m.userName||'입력하지 않음'],['생년월일',birth],['달력 구분',cal],['출생 시각',time],['출생 지역',city]],true);
+    const p=d.partner.meta,gn=d.partner.gn,partnerTime=birthTimeReference(p);
+    html=rpTable(['구분','A','B'],[['이름',m.userName||'본인','상대'],['생년월일',birth,`${p.sy}.${pad2(p.sm)}.${pad2(p.sd)}`],['양력 / 음력',cal,gn.cal==='lunar'?`음력${gn.leap?' · 윤달':''}`:'양력'],['입력 시각',time.input,partnerTime.input],['풀이 기준 시각',time.corrected,partnerTime.corrected],['시간 보정',time.note,partnerTime.note],['출생 지역',city,(()=>{try{return cityLabelOf(gn.cityKey);}catch(e){return '';}})()]],true);
+  }else html=rpTable(['구분','입력 정보'],[['이름',m.userName||'입력하지 않음'],['생년월일',birth],['달력 구분',cal],['입력 시각',time.input],['풀이 기준 시각',time.corrected],['시간 보정',time.note],['출생 지역',city]],true);
   html+=rpTable(['상담 및 해석 기준','입력 정보'],rpInfoRows(spec,d).concat([['명식 기준',spec.pair?'두 사람 모두 만세력 기준 사주팔자':(d.cat==='ziwei'?'음력 명반 + 만세력 사주팔자':'만세력 기준 사주팔자 · 출생 지역 시차 보정')]]),true);
   html+=`<h3 class="rp-h" style="margin-top:26px">풀이를 읽는 기준</h3><p class="rp-p">${txt(spec.note||NOTE_DEFAULT)}</p>`;
   return rpFlow(host,spec,d,{tab:true,ey:'BEFORE READING',title:'기본 정보와 풀이 기준',sub:spec.sub},[{html:`<div>${html}</div>`}]);

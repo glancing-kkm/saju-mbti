@@ -233,10 +233,10 @@ const harness = `
     const exampleModel=buildLifeV2Model(EXAMPLE,_meta);
     ok('인생총운 V3: 예시 사주 네 자리·출생지·보정 시각을 그대로 반영',
        ['정묘','기유','계유','병진'].every(gz=>exampleHtml.includes(gz)) && exampleHtml.includes('life-v3-pillar-board') &&
-       examplePlain.includes('대전광역시') && examplePlain.includes('08시 45분') && examplePlain.includes('08시 15분'),
-       'missing='+['정묘','기유','계유','병진','대전광역시','08시 45분','08시 15분'].filter(x=>!examplePlain.includes(x)).join(','));
-    ok('인생총운 V3: 진태양시 보정값은 소수 둘째 자리까지만 표시',
-       examplePlain.includes('-30.46분 보정') && !examplePlain.includes('-30.461999'),
+       examplePlain.includes('대전광역시') && examplePlain.includes('08시 45분') && examplePlain.includes('08:15 (시간 보정 적용 · 입력 08:45)'),
+       'missing='+['정묘','기유','계유','병진','대전광역시','08시 45분','08:15'].filter(x=>!examplePlain.includes(x)).join(','));
+    ok('인생총운 V3: 실제 계산에 쓴 보정 분과 입력·적용 시각 구분',
+       examplePlain.includes('30분 앞당겨') && examplePlain.includes('입력 시각 08:45') && !examplePlain.includes('-30.461999'),
        (examplePlain.match(/-30[^분]*분 보정/)||[])[0]);
     ok('인생총운 한 페이지: 겹친 글자를 문장으로 풀어 설명',
        clean(examplePlain).replace(/\u200b/g,'').includes("사주팔자 중에 '유(닭)'라는 글자가 두 번 나와요") && !/유 2번|유 2개/.test(examplePlain),
@@ -296,7 +296,7 @@ const harness = `
        (premiumBody.match(/class="reading-sigil"/g)||[]).length===4 && !/[💰❤️🌿⚠]/u.test(premiumBody));
     ok('신년운세 V3: 예시의 출생·음력·보정 시각 원본값 반영',
        newyearPlain.includes('1987년 9월 21일') && newyearPlain.includes('1987년 7월 29일') &&
-       newyearPlain.includes('08시 45분') && newyearPlain.includes('08시 15분') && newyearPlain.includes('대전광역시'));
+       newyearPlain.includes('08시 45분') && newyearPlain.includes('08:15 (시간 보정 적용 · 입력 08:45)') && newyearPlain.includes('대전광역시'));
     ok('신년운세 V3: 2027 정미·현재 을사 34~43세·나이 변화를 유지',
        newyearModel.info.gz==='정미' && STEMKO[newyearModel.cur.stem]+BRCHKO[newyearModel.cur.branch]==='을사' &&
        newyearModel.cur.age===34 && newyearModel.ageText.includes('만 39세에서 40세') &&

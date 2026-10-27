@@ -223,3 +223,7 @@ html[data-flow-theme] #app .lc-scroll :is(p,.lk-tl-what){color:#202b26}
 html[data-flow-theme] #app .lc-scroll{color:#202b26}
 html[data-flow-theme] #app .lc-scroll .lc-scroll-title{color:#5b311b;opacity:1;text-align:center}
 html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26;opacity:1}
+
+#app .birth-time-reference{margin:8px 0 0;color:var(--sub);font-size:1rem;line-height:1.75;word-break:keep-all}
+#app .report-profile .birth-time-reference{font-size:14px;line-height:1.65;margin-top:8px}
+#app .pdf-cta .pdf-time-reference{margin-top:8px;color:var(--sub);font-size:14px;line-height:1.7}
