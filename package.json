@@ -2,7 +2,7 @@
   "name": "cheonjiin-saju",
   "private": true,
   "scripts": {
-    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/reading-fixes-regression.js"
+    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/reading-fixes-regression.js && node tools/reading-spacing-regression.js"
   },
   "devDependencies": {
     "jsdom": "26.1.0"

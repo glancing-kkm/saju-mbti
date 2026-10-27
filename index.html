@@ -197,7 +197,7 @@ h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacin
     line-break:strict;
     word-break:normal;
     overflow-wrap:break-word;
-    text-wrap:pretty;
+    text-wrap:wrap;
     text-align:justify;
     text-align-last:left;
     text-justify:inter-character;
@@ -2260,7 +2260,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=42acc9ebf5be">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=ce83ebf2e2d7">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=1683a1b563ff">
+<script defer src="/assets/reading-spacing.js?v=b45b80429861"></script>
 </head>
 <body>
 <div id="app">
@@ -7632,7 +7633,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=6cfcaa33f609';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=51e10b5e2c89';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -13401,7 +13402,7 @@ function lv4Plain(s){return String(s||'').replace(/(목|화|토|금|수) 분위�
 function lv4Stem(s){return `'${STEMKO[s]}(${(STEM_META[s]||{}).nick||''})'`;}
 function lv4Branch(b){return `'${BRCHKO[b]}(${ANIMAL[b]})'`;}
 function lv4Ida(word){return _hasJong(word)?'이에요':'예요';}
-function lv4Text(t){return preventOrphan(t).replace(/·(?![^<]*>)/g,'·\u200b').replace(/([가-힣]{2,7}[.!?])$/,'<span class="reading-ending">$1</span>');}
+function lv4Text(t){return preventOrphan(t).replace(/·(?![^<]*>)/g,'·\u200b').replace(/([가-힣]{2,4}[.!?])$/,'<span class="reading-ending">$1</span>');}
 // 글자 개수·자리 설명 같은 이론 문장 — 본문에서는 빼고 섹션 끝 '사주 근거 보기'에 모은다
 const LV4_THEORY_RE=/뜻하는 글자|글자가 [0-9한두세네다섯여섯]+\s?개|글자 [0-9]+개|[0-9]+\s?개(\s?있|뿐|예요|이에요|로|보여요|가 있|이고|씩)|목 [0-9]+개|위 글자|아래 글자|태어난 날의|앉은 자리|앉아 있는 자리|이 자리에|사주 글자|사주는 태어난|'[^']{2,24}'의 기운|글자 조합|글자끼리|글자들|본인의 글자는|이끄는 글자/;
 function lv4Split(t){

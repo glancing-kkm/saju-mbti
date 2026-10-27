@@ -164,11 +164,13 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 /* 홈 추천 화면과 대분류 목록은 한 번에 한 화면만 표시한다. */
 #homeMain[hidden],#homeFiltered[hidden]{display:none!important}
 
-/* 풀이의 양쪽 정렬: 큰 어절 공백 대신 한글 문자 사이에 작은 여백을 분산한다. */
+/* 양쪽 정렬에서 어절을 통째로 밀면 빈칸이 커진다. 글자 단위로 줄을 채우고
+   pretty의 짧은 줄 재배치를 끈다. 강조·끝어미도 최소 범위만 묶는다. */
 #app :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.chat-msg-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
   text-align:justify;text-align-last:left;text-justify:inter-character;
-  word-spacing:0;letter-spacing:0;word-break:normal;line-break:strict;overflow-wrap:anywhere;
+  word-spacing:0;letter-spacing:0;word-break:normal;line-break:strict;overflow-wrap:anywhere;text-wrap:wrap;
 }
+#app :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.chat-msg-body,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :is(p,li,div){word-break:normal;text-wrap:wrap;word-spacing:0;letter-spacing:0}
 #app .lv4-nb{white-space:normal}
 #app .lc-portrait-pending{display:grid;place-items:center;min-height:240px;background:var(--card);color:var(--sub);text-align:center;padding:24px}
 #app .lc-portrait-pending img[hidden]{display:none!important}
@@ -176,4 +178,10 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app .lc-portrait-status button{margin-top:12px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--accent);font:inherit;cursor:pointer}
 #app .lc-person-secondary{margin-top:-8px}
 
-#app .reading-ending{white-space:nowrap}
+#app .reading-ending.reading-ending{display:inline;margin:0;padding:0;font:inherit;white-space:nowrap}
+
+/* 줄마다 벌어지는 간격을 제한한다. 마지막 줄과 짧은 줄은 자연 간격. */
+#app .reading-measure{ text-align:left!important }
+#app .reading-line.reading-line{display:block;margin:0;padding:0;font:inherit;white-space:nowrap;text-align:justify;text-align-last:justify;word-spacing:0;letter-spacing:0}
+#app .reading-line.reading-line-natural{text-align:left;text-align-last:left}
+@media print{#app .reading-line.reading-line{display:inline;white-space:normal}}
