@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v1',RP_SAFE=26;
+const RP_VERSION='v2-scene',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -385,6 +385,7 @@ async function rpAI(spec,d,plan,onProgress,opts){
       const c=aiReadingCacheGet('report-tpl',key,'ko');const parsed=c&&rpParse(c.text);if(parsed)return parsed;
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
       payload.sajuContext.detailedReading=readingText;
+      payload.meta.narrativeStyle='생활 장면 → 짧은 사주 근거 → 본인이 선택할 행동. 장마다 다른 장면과 문장 호흡을 쓰고 날짜나 사건은 새로 만들지 않기.';
       if(told)payload.sajuContext.situation=told.slice(0,300);
       Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
@@ -437,13 +438,24 @@ function rpDetFields(d){
   if(bm)o.si3=`${bm.year}년 ${bm.month}월을 첫 실행의 달로 정하고, 그 전에 준비할 일 한 가지를 오늘 적어 두세요.`;
   return o;
 }
+// 모델 응답이 비어 있어도 웹과 같은 장면 → 근거 → 행동 순서를 유지한다.
+function rpSourceStory(pool,query,d){
+  const domain=/건강|회복|에너지/.test(query)?'health':/재물|지출|수입|돈/.test(query)?'money':/연애|가족|결혼|사랑|관계/.test(query)?'love':/직업|직무|경력|성과/.test(query)?'career':/학습|공부|학업|재능/.test(query)?'study':'core';
+  const fallback=lv4StoryLines(d.saju,d.meta,domain);
+  const take=(pattern,index)=>rpPick(pool.filter(x=>!x.used&&pattern.test(x.t)),query,1)[0]||fallback[index];
+  const scenes=pool.filter(x=>!x.used&&/시간|마음|부탁|약속|대화|지출|고민|업무|결정|회복|잠|연락/.test(x.t)&&!/(사주|일간|오행|대운|세운)/.test(x.t));
+  const scene=rpPick(scenes,query,1)[0]||fallback[0];
+  const reason=take(/사주|일간|일지|오행|대운|세운|기운|배우자 자리/,1);
+  const action=take(/보세요|하세요|정하세요|챙기세요|확인하세요|나누세요|지키세요/,2);
+  return [scene,reason,action];
+}
 // 비어 있는 칸은 화면 풀이 문장으로 채운다
 function rpFill(plan,ai,d){
   const pool=rpPool(d),sents=rpSents(pool),secs={...ai.secs},fields={};
   Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
   const det=rpDetFields(d);
   plan.groups.forEach(g=>{
-    g.heads.forEach(h=>{if(!secs[h.id]||secs[h.id].length<2){const got=rpPick(pool,`${h.chapter} ${h.title}`,3);secs[h.id]=(secs[h.id]||[]).concat(got).slice(0,3);}});
+    g.heads.forEach(h=>{if(!secs[h.id]||secs[h.id].length<2){secs[h.id]=rpSourceStory(pool,`${h.chapter} ${h.title}`,d);}});
     g.fields.forEach(([id,ask,max])=>{if(!fields[id]){const pre=det[id];const all=sents.filter(x=>x.t.length<=max&&!x.used);fields[id]=pre&&pre.length<=max*1.5?pre:rpShort(pool,ask,max,all);}else if(fields[id].length>max*1.6){fields[id]=fields[id].slice(0,Math.round(max*1.5)).replace(/\s\S*$/,'');}});
   });
   return {secs,fields};
@@ -824,7 +836,7 @@ async function buildTemplateReport(cat,opts){
     // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
     if(!opts.imageOnly){
       prog('PDF 파일로 만드는 중이에요');
-      const blob=await rpServerPdf(rpStandalone(all),opts);
+      const blob=await rpServerPdf(rpStandalone(all),{...opts,category:cat});
       if(blob){host.remove();return {...base,blob,mode:'text'};}
     }
     const {jsPDF}=window.jspdf,pdf=new jsPDF('portrait','mm','a4');
@@ -920,7 +932,7 @@ function rpStandalone(pages){
 async function rpServerPdf(html,opts){
   const ctl=typeof AbortController==='function'?new AbortController():null,timer=ctl?setTimeout(()=>ctl.abort(),70000):0;
   try{
-    const token=typeof latestPaidToken==='function'?latestPaidToken():'';
+    const token=typeof pdfPaidToken==='function'?pdfPaidToken(opts.category):'';
     const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html,paidToken:token}),signal:ctl?ctl.signal:undefined});
     if(!resp.ok||!/application\/pdf/.test(resp.headers.get('Content-Type')||''))return null;
     const blob=await resp.blob();

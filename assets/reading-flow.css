@@ -178,3 +178,33 @@ html[data-flow-theme] #app .lk-bar-btn{padding:0 16px;font-size:14px;min-height:
 #app .lc-person-secondary{margin-top:-8px}
 
 #app .reading-ending.reading-ending{display:inline;margin:0;padding:0;font:inherit;white-space:nowrap}
+
+/* width:100%와 좌우 margin을 함께 주어 넘치던 결과 열을 가운데로 맞춘다. */
+#app :is(#view-result,#view-tarot,#view-astrology) .lv4-wrap{width:100%;min-width:0;max-width:100%;margin-inline:0;box-sizing:border-box}
+#app :is(#view-result,#view-tarot,#view-astrology) .lk-preview .lv4-wrap{margin-inline:0}
+#app .lv4>*{min-width:0;max-width:100%;box-sizing:border-box}
+#app .lc-orbs{grid-template-columns:repeat(4,minmax(0,1fr));justify-items:center}
+#app .chat-msg-body{word-break:keep-all;overflow-wrap:anywhere}
+#app .chat-msg-loading .chat-msg-body{word-break:keep-all;overflow-wrap:normal}
+#app .chat-msg-loading .chat-msg-body .reading-ending{white-space:nowrap}
+.pdf-email-form{display:grid;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);text-align:left}
+.pdf-email-form label{display:block;font-size:14px}
+.pdf-email-form input{width:100%;min-width:0;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:10px;font:inherit;background:var(--bg-deep);color:var(--text)}
+.pdf-email-form small,.pdf-email-status{display:block;font-size:13px;line-height:1.65;color:var(--sub)}
+.pdf-email-form button:disabled{opacity:.5;cursor:wait}
+.pdf-progress>div{max-height:90dvh;overflow:auto}
+
+/* 입력을 마친 항목도 원래 대비를 유지한다. */
+#app #formWrap.wz-on>fieldset.wz-done:not(.wz-cur){opacity:1}
+html[data-flow-theme] #app #formWrap{--sub:#e0e9e5;--muted:#bdcec6;--border-strong:color-mix(in srgb,var(--flow-accent) 52%,#b8c9c0)}
+#app #formWrap.wz-on :is(legend,.ig label,.cat-extra-title){color:var(--sub)}
+#app #formWrap.wz-on :is(input,select,textarea){color:var(--text)}
+#app #formWrap.wz-on input::placeholder{color:var(--muted);opacity:1}
+
+/* 설명 본문은 인생총운과 같은 크기로 읽는다. 제목·점수·짧은 주석은 유지. */
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.lv4 p,.lv4-list li>span,.lv4-md-list li>span,.cc-fingerprint,.cc-note,.nb-body,.nb-gw-body,.abody,.daily-cat-body,.reading-brief,.chat-msg-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.life-v3-section-body,.story-deck-copy,.story-deck-point,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.preview-story-summary,.preview-story-lock,.teaser-leadline,.teaser-insight,.conversion-hook-body){font-size:1rem;line-height:1.95}
+#app .lc-preview-photo{position:relative;overflow:hidden;aspect-ratio:1/1;min-height:240px;background:var(--card)}
+#app .lc-preview-photo img{display:block;width:100%;height:100%;object-fit:cover;filter:blur(18px) saturate(.75);transform:scale(1.1);opacity:.8}
+#app .lc-preview-photo-label{position:absolute;inset:auto 12px 18px;padding:10px;background:#101513de;border-radius:10px;text-align:center;color:#fff;font-size:13px;line-height:1.6}
+#app .preview-story .lc-preview-photo{height:240px}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.cc-sub,.lc-pcard-body dd,.lk-person dd,.lv4-facts dd,.ck-body,.ag-block,.quick-summary-item,.ncr-reason,.ncr-use,.dp-tip,.nb-good,.nb-warn,.flow-box,.tarot-fortune-item,.astro-text){font-size:1rem;line-height:1.95}

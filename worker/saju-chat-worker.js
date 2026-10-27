@@ -116,6 +116,8 @@ async function routeRequest(request, env) {
       if (res && res.ok) await gate.commit();
       return res;
     }
+    if(url.pathname==='/report-email-status')return json({available:reportEmailAvailable(env)});
+    if(url.pathname==='/report-email')return handleReportEmail(request,env);
     if (url.pathname === '/chat-usage') return handleChatUsage(request,env);
     if (url.pathname === '/portrait') {
       return handlePortrait(request, env);
@@ -419,6 +421,51 @@ async function handleReportPdf(request, env) {
   }
 }
 
+// PDF를 보관하지 않고 사용자가 요청한 주소 한 곳에 첨부해 보낸다.
+function reportEmailAvailable(env){return !!(env.PAID_TOKEN_SECRET&&env.SAJU_QNA_CACHE&&env.REPORT_EMAIL_FROM&&((env.EMAIL&&typeof env.EMAIL.send==='function')||env.RESEND_API_KEY));}
+const REPORT_EMAIL_MAX=12*1024*1024;
+async function handleReportEmail(request,env){
+  if(!env.PAID_TOKEN_SECRET||!env.SAJU_QNA_CACHE)return json({error:'이메일 발송을 준비 중이에요.',code:'EMAIL_UNAVAILABLE'},503);
+  if(!reportEmailAvailable(env))return json({error:'이메일 발송을 준비 중이에요. PDF는 저장하기로 받을 수 있어요.',code:'EMAIL_UNAVAILABLE'},503);
+  if(Number(request.headers.get('Content-Length'))>REPORT_EMAIL_MAX+20000)return json({error:'첨부 가능한 PDF 크기를 넘었어요.'},413);
+  let data;try{
+    if(!request.body)throw new Error('empty');
+    const reader=request.body.getReader(),chunks=[];let total=0;
+    for(;;){const part=await reader.read();if(part.done)break;total+=part.value.byteLength;if(total>REPORT_EMAIL_MAX+20000){await reader.cancel();return json({error:'첨부 가능한 PDF 크기를 넘었어요.'},413);}chunks.push(part.value);}
+    const payload=new Uint8Array(total);let offset=0;for(const chunk of chunks){payload.set(chunk,offset);offset+=chunk.byteLength;}
+    data=await new Response(payload,{headers:{'Content-Type':request.headers.get('Content-Type')||''}}).formData();
+  }catch(e){return json({error:'파일과 이메일 주소를 확인해 주세요.'},400);}
+  const token=String(data.get('paidToken')||''),paid=await verifyPaidToken(env,token);
+  const allowed=new Set(['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'].map(c=>'pdf-'+c));
+  if(!paid||!allowed.has(paid.c)||await env.SAJU_QNA_CACHE.get('refunded:'+String(paid.o).slice(0,80)))return json({error:'결제한 PDF 리포트에서 보내 주세요.',code:'NEED_PAYMENT'},403);
+  const to=String(data.get('email')||'').trim(),file=data.get('pdf');
+  if(to.length>254||!/^[^\s@<>\r\n,;]+@[^\s@<>\r\n,;]+\.[^\s@<>\r\n,;]+$/.test(to))return json({error:'이메일 주소를 확인해 주세요.'},400);
+  if(!file||typeof file.arrayBuffer!=='function'||file.size<10||file.size>REPORT_EMAIL_MAX)return json({error:'12MB 이하 PDF 파일을 첨부해 주세요.'},400);
+  const bytes=await file.arrayBuffer();
+  if(new TextDecoder().decode(bytes.slice(0,5))!=='%PDF-')return json({error:'올바른 PDF 파일이 아니에요.'},400);
+  const prefix=new TextEncoder().encode(paid.o+'|'+to.toLowerCase()+'|'),hashInput=new Uint8Array(prefix.length+bytes.byteLength);hashInput.set(prefix);hashInput.set(new Uint8Array(bytes),prefix.length);
+  const digest=await crypto.subtle.digest('SHA-256',hashInput);
+  const id=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+  const receipt='report-email:'+id;
+  if(await env.SAJU_QNA_CACHE.get(receipt))return json({ok:true,alreadySent:true});
+  const gate=await requirePaid(env,{paidToken:token},'report-email',3);if(gate.error)return gate.error;
+  const filename=String(file.name||'천지인_사주_리포트.pdf').replace(/[\r\n\x00-\x1f/\\"]/g,'_').slice(0,140).replace(/(?:\.pdf)?$/i,'.pdf');
+  const message={from:{email:env.REPORT_EMAIL_FROM,name:'천지인 사주'},to,subject:'요청하신 사주 풀이 PDF 리포트예요',text:'요청하신 PDF 리포트를 첨부했어요. 생활 장면과 사주 근거, 실천할 행동을 함께 읽어 보세요. 이 메일은 입력하신 주소로 요청한 리포트를 전달하는 일회성 메일이에요.',html:'<p>요청하신 <strong>사주 풀이 PDF 리포트</strong>를 첨부했어요.</p><p>생활 장면과 사주 근거, 실천할 행동을 함께 읽어 보세요.</p><p>입력하신 주소로 요청한 리포트를 전달하는 일회성 메일이에요.</p>'};
+  try{
+    if(env.EMAIL&&typeof env.EMAIL.send==='function'){
+      await env.EMAIL.send({...message,attachments:[{content:bytes,filename,type:'application/pdf',disposition:'attachment'}]});
+    }else{
+      let binary='';const arr=new Uint8Array(bytes);for(let i=0;i<arr.length;i+=8192)binary+=String.fromCharCode(...arr.subarray(i,i+8192));
+      const resp=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json','Idempotency-Key':'saju-report-'+id},body:JSON.stringify({...message,from:'천지인 사주 <'+env.REPORT_EMAIL_FROM+'>',attachments:[{filename,content:btoa(binary)}]}),signal:AbortSignal.timeout(25000)});
+      if(!resp.ok)throw new Error('provider rejected');
+    }
+  }catch(e){return json({error:'이메일을 보내지 못했어요. 주소를 확인하고 다시 시도해 주세요.',code:'EMAIL_SEND_FAILED'},502);}
+  await gate.commit();
+  // 주소·파일·사주 정보는 저장하지 않는다. 재시도 중복 방지용 해시만 남긴다.
+  try{await env.SAJU_QNA_CACHE.put(receipt,'sent',{expirationTtl:86400});}catch(e){console.warn('report email receipt unavailable');}
+  return json({ok:true});
+}
+
 async function handlePortrait(request, env) {
   if (!env.AI) return json({ error: '이미지 생성 서비스가 아직 준비되지 않았습니다.' }, 500);
   let b;
@@ -448,9 +495,15 @@ async function handlePortrait(request, env) {
   const countries={'대한민국':'Korean','한국':'Korean',KR:'Korean','일본':'Japanese',JP:'Japanese','중국':'Chinese',CN:'Chinese','미국':'American',US:'American','영국':'British',GB:'British','베트남':'Vietnamese',VN:'Vietnamese'};
   const nationality=countries[b&&b.country]||'Korean';
   const traits=String(b&&b.traits||'').replace(/[<>\n\r]/g,' ').slice(0,180);
-  const prompt = `Photorealistic portrait photograph of a fictional ${nationality} ${who} around ${age} years old with ${look}, ${traits}, ${STYLE[kind]}, unique identity variation ${Math.abs(Number(b&&b.seed)||0)}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, natural skin texture, not a celebrity, no text, no watermark`;
+  const prompt = `Photorealistic unretouched RAW color photograph, documentary DSLR photo, NOT a painting or illustration. Portrait photograph of a fictional ${nationality} ${who} around ${age} years old with ${look}, ${traits}, ${STYLE[kind]}, unique identity variation ${Math.abs(Number(b&&b.seed)||0)}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, realistic skin pores, fine facial hair, visible age-appropriate wrinkles, asymmetrical natural facial features, ordinary real-life appearance, candid everyday person rather than a fashion model, realistic eyes and teeth, no beauty retouching, no smoothing, no CGI, no 3D render, no anime, no drawing, no painted texture, not a celebrity, no text, no watermark`;
   try {
-    const out = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt, steps: 4 });
+    let out;
+    for(let attempt=0;attempt<2;attempt++){
+      const form=new FormData();form.set('prompt',prompt);form.set('width','1024');form.set('height','1024');form.set('seed',String(Math.abs(Math.trunc(Number(b&&b.seed)||1))%2147483647));
+      const multipart=new Response(form);
+      try{out=await env.AI.run('@cf/black-forest-labs/flux-2-klein-9b',{multipart:{body:multipart.body,contentType:multipart.headers.get('content-type')}});break;}
+      catch(e){if(attempt||!/3043|internal server|temporar/i.test(String(e&&e.message)))throw e;await new Promise(r=>setTimeout(r,250));}
+    }
     const img = out && out.image;
     if (!img) throw new Error('empty image');
     if (limitKey) { try { await env.SAJU_QNA_CACHE.put(limitKey, String(used + 1), { expirationTtl: 2 * 24 * 3600 }); } catch {} }
@@ -1569,7 +1622,7 @@ function buildReadingSystemPrompt(category, meta) {
 - 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
 - {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단","문단"]}],"fields":[{"id":"필드 id","text":"내용"}]}
 - 섹션 자료의 모든 섹션을 같은 순서로 넣고 id는 바꾸지 마세요. 섹션마다 paragraphs는 4개, 문단마다 4~5문장으로 쓰고 문단 하나가 공백 포함 260자 이상이 되게 하세요. 한 섹션은 1,100자 안팎이에요. 짧게 줄이지 마세요.
-- 첫 문단은 소제목에 대한 결론, 둘째 문단은 사주에서 그렇게 보는 이유, 셋째 문단은 실제로 겪을 장면, 넷째 문단은 언제·어떻게 하면 좋은지로 쓰세요.
+- 첫 문단은 소제목에 답하는 생활 장면과 핵심 결론, 둘째 문단은 사주에서 그렇게 보는 짧은 근거, 셋째 문단은 그 장점이 부담으로 바뀌는 구체적인 상황, 넷째 문단은 본인이 선택할 수 있는 행동으로 쓰세요. 각 장면은 가능성의 예시로 쓰고 이미 일어난 일처럼 단정하지 마세요.
 - fields에는 필드 자료의 모든 id를 하나씩 넣고, 각 필드의 지시(ask)와 글자 수(max) 안에서 쓰세요.
 - 문단과 필드 안에 줄바꿈, 마크다운, 번호, 따옴표 장식을 넣지 마세요. 문장 안에서 무언가를 인용할 때는 작은따옴표(')를 그대로 쓰고 역슬래시를 붙이지 마세요.
 - 정관·편관·정재·편재·식신·상관·비견·겁재·정인·편인과 '~격' 같은 사주 유형 이름은 쓰지 말고 쉬운 말로 풀어 쓰세요.`
@@ -1621,6 +1674,8 @@ ${toneRule}
 - 글자 개수나 글자 뜻 같은 이론 설명은 근거 한두 문장으로 줄이고, 본문은 구체적인 연·월, 실제로 겪을 장면, 바로 할 행동으로 콕 집어 말하세요.
 - 단독 명사 "결"은 쓰지 마세요. "분위기", "흐름", "방식"으로 바꾸세요. 단, 결론·결정·결혼·결실 같은 복합어는 괜찮습니다.
 - 공포 조장, 사망 시기, 확정 의료·법률·투자 판단은 하지 마세요.
+- 생활 장면 → 짧은 사주 근거 → 선택할 행동의 순서로 풀어 주세요. 직업은 업무와 평가, 재물은 지출과 계약, 관계는 대화와 생활, 건강은 수면과 회복처럼 영역마다 다른 장면을 쓰세요.
+- 흐름·기운·분위기라는 추상어를 연속해서 쓰지 마세요. 짧은 핵심 문장과 두세 문장의 설명을 섞고, 모든 단락을 같은 어미나 그래서·다만으로 시작하지 마세요. 행동은 한 번에 하나만 제안하세요.
 - 두루뭉술한 위로나 일반론으로 채우지 말고, 입력된 생년월일시·사주팔자·현재 흐름·올해 흐름에서 보이는 선택 패턴을 구체적으로 말하세요.
 
 ${outputGuide}`;

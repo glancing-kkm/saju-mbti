@@ -2261,7 +2261,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4580fdebf7a1">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=8d93ddaec2dc">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=39745877d6c4">
 </head>
 <body>
 <div id="app">
@@ -4680,7 +4680,8 @@ function inputWizardInit(){
   const maritalIdx=fss.findIndex(f=>f.id==='catExtraMarital');
   if(maritalIdx>=0){const marital=fss.splice(maritalIdx,1)[0],cityIdx=fss.findIndex(f=>f.querySelector('#iCity'));fss.splice(cityIdx+1,0,marital);}
   const steps=fss.map(f=>[f]);
-  document.getElementById('iCity').dataset.wzConfirmed='0';
+  const reusedBirth=_category!=='topic-child'&&_lastInputs&&['iY','iM','iD'].every((id,i)=>document.getElementById(id).value===String([_lastInputs.year,_lastInputs.month,_lastInputs.day][i]))&&document.getElementById('iCity').value===cityLabelOf(_lastInputs.cityKey);
+  document.getElementById('iCity').dataset.wzConfirmed=reusedBirth?'1':'0';
   document.getElementById('catExtraName').dataset.wzConfirmed=namingFieldsValid()?'1':'0';
   const nameFs=document.getElementById('nameFieldset');
   if(nameFs)nameFs.dataset.wzConfirmed=readSajuName()?'1':'0';
@@ -4814,7 +4815,7 @@ function setCal(t){
   document.getElementById('leapSec').className='leap-sec'+(t==='lunar'?' vis':'');
 }
 let _marital='';
-function setMarital(v){_marital=v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
+function setMarital(v){_marital=v;if(_category!=='topic-child'&&_lastInputs&&['iY','iM','iD'].every((id,i)=>document.getElementById(id).value===String([_lastInputs.year,_lastInputs.month,_lastInputs.day][i])))_lastInputs.marital=v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
 function setLeap(b){
   isLeap=b;
   _setTog('breg',!b);
@@ -5663,6 +5664,8 @@ function restoreLastInputs(){
   if(!_lastInputs)return;
   const i=_lastInputs;
   if(i.gender)setGender(i.gender);
+  const savedMarital=i.marital||(_meta&&_meta.marital)||'';
+  if(['single','dating','married'].includes(savedMarital)){setMarital(savedMarital);i.marital=savedMarital;}
   if(i.calType)setCal(i.calType);
   if(typeof i.isLeap==='boolean')setLeap(i.isLeap);
   const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null&&v!=='')e.value=v;};
@@ -7633,7 +7636,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=c183ef35de8a';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=4ffc9a669644';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -7647,15 +7650,33 @@ function pdfProgress(text){
   el.innerHTML=`<div><b>PDF 리포트를 만드는 중이에요</b><span>${text}</span></div>`;
 }
 // 오래 걸린 작업 뒤에는 자동 저장이 막히는 브라우저가 많아서, 준비가 끝나면 사용자가 눌러서 저장한다
-function pdfReadyPrompt(blob,fileName,title){
-  const el=document.createElement('div');el.className='pdf-progress';el.id='pdfReady';el.setAttribute('role','dialog');
-  el.innerHTML=`<div><b>PDF 리포트가 준비됐어요</b><span>저장하기를 누르면 기기에 저장하거나 카카오톡·메일로 보낼 수 있어요.</span><button type="button" class="pdf-cta-btn" id="pdfReadySave">저장하기</button><button type="button" class="pdf-ready-close" id="pdfReadyClose">닫기</button></div>`;
+function pdfPaidToken(cat){return loadPaidTokens().find(t=>{const p=chatOrderClaims(t);return p&&p.c==='pdf-'+cat;})||'';}
+function pdfReadyPrompt(blob,fileName,title,cat){
+  document.getElementById('pdfReady')?.remove();
+  const token=pdfPaidToken(cat),el=document.createElement('div');el.className='pdf-progress';el.id='pdfReady';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','pdfReadyTitle');
+  el.innerHTML=`<div><b id="pdfReadyTitle">PDF 리포트가 준비됐어요</b><span>기기에 저장하거나 이메일 첨부파일로 받을 수 있어요.</span><button type="button" class="pdf-cta-btn" id="pdfReadySave">저장하기</button><form class="pdf-email-form"><label for="pdfEmailAddress">PDF를 받을 이메일 주소</label><input type="email" id="pdfEmailAddress" name="email" autocomplete="email" placeholder="name@example.com" maxlength="254" required><small>입력한 주소로 이 PDF를 보내요. 주소는 발송에만 사용해요.</small><button type="submit" class="pdf-cta-btn" disabled>이메일로 보내기</button><span class="pdf-email-status" role="status" aria-live="polite">이메일 발송을 확인하고 있어요.</span></form><button type="button" class="pdf-ready-close" id="pdfReadyClose">닫기</button></div>`;
   document.body.appendChild(el);
-  document.getElementById('pdfReadyClose').onclick=()=>el.remove();
-  document.getElementById('pdfReadySave').onclick=async()=>{
+  el.querySelector('#pdfReadyClose').onclick=()=>el.remove();
+  el.querySelector('#pdfReadySave').onclick=async()=>{
     const touch=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    if(touch){try{const file=new File([blob],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});el.remove();return;}}catch(e){if(e&&e.name==='AbortError')return;}}
-    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);el.remove();
+    if(touch){try{const file=new File([blob],fileName,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title});return;}}catch(e){if(e&&e.name==='AbortError')return;}}
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  };
+  const form=el.querySelector('form'),button=form.querySelector('button'),status=form.querySelector('[role="status"]');
+  fetch(WORKER_URL.replace(/\/$/,'')+'/report-email-status',{method:'POST'}).then(r=>r.ok?r.json():null).then(data=>{
+    const available=!!(data&&data.available&&token);button.disabled=!available;
+    status.textContent=available?'주소를 확인한 뒤 보내 주세요.':'현재 이메일 발송을 준비 중이에요. 저장하기로 PDF를 받을 수 있어요.';
+  }).catch(()=>{status.textContent='이메일 발송을 확인하지 못했어요. 잠시 후 다시 열어 주세요.';});
+  form.onsubmit=async e=>{
+    e.preventDefault();if(button.disabled||!form.reportValidity())return;
+    button.disabled=true;button.textContent='보내는 중…';status.textContent='PDF를 첨부해 보내고 있어요.';
+    try{
+      const data=new FormData();data.set('email',form.elements.email.value.trim());data.set('paidToken',token);data.set('pdf',blob,fileName);
+      const response=await fetch(WORKER_URL.replace(/\/$/,'')+'/report-email',{method:'POST',body:data,signal:AbortSignal.timeout(45000)});
+      const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'이메일을 보내지 못했어요.');
+      status.textContent=result.alreadySent?'이미 같은 주소로 발송한 PDF예요. 받은편지함과 스팸함을 확인해 주세요.':'이메일 발송을 요청했어요. 받은편지함과 스팸함을 확인해 주세요.';
+      button.textContent='이메일 발송 완료';
+    }catch(err){status.textContent=err.name==='TimeoutError'?'발송 확인이 늦어지고 있어요. 받은편지함을 확인한 뒤 다시 시도해 주세요.':err.message||'이메일을 보내지 못했어요.';button.disabled=false;button.textContent='다시 보내기';}
   };
 }
 let _pdfBusy=false,_reportJsLoading=null;
@@ -7678,7 +7699,7 @@ async function downloadReportPdf(cat){
     pdfProgress('보고서를 준비하는 중이에요');
     const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress,info});
     pdfProgress(null);
-    pdfReadyPrompt(r.blob,r.fileName,r.title);
+    pdfReadyPrompt(r.blob,r.fileName,r.title,cat);
     journeyEvent('pdf_download',cat,{pages:r.pages,mode:r.mode});
   }catch(e){
     try{console.error('[pdf]',e);}catch(_){}
@@ -12190,7 +12211,13 @@ function previewLockHTML(cat,html,opts){
   q('.chat-card,[data-ai-reading],.ai-reading-card,.lv4-why,.next-actions,.pdf-cta,.summary-card,script,.lv4-actions').forEach(e=>e.remove());
   q('.life-experience').forEach(e=>e.classList.remove('life-experience'));
   q('[data-deep]').forEach(e=>e.removeAttribute('data-deep'));
-  q('[data-portrait]').forEach(e=>e.removeAttribute('data-portrait'));
+  q('[data-portrait]').forEach(card=>{
+    let female=false;try{female=JSON.parse(decodeURIComponent(card.getAttribute('data-portrait'))).gender==='female';}catch(e){}
+    card.removeAttribute('data-portrait');card.classList.remove('ai-photo');card.classList.add('lc-preview-person');
+    const image=card.querySelector('.lc-pcard-img');
+    if(image){image.classList.remove('lc-portrait-pending');image.classList.add('lc-preview-photo');image.removeAttribute('role');image.setAttribute('aria-label','결제 후 공개되는 인물의 흐릿한 예시');image.innerHTML=`<img src="/assets/preview-people/${female?'female':'male'}.jpg" alt="${female?'여성':'남성'} 인물의 흐릿한 미리보기" width="1024" height="1024" loading="lazy"><span class="lc-preview-photo-label">결제 후 인물 이미지를 확인할 수 있어요</span>`;}
+    const note=card.querySelector('.lc-pcard-note');if(note)note.textContent='미리보기용 공용 예시 · 결제 후 본인 풀이에 맞는 새 인상 이미지를 그려요';
+  });
   q('.lv4-tags span,.lv4-hero-who').forEach(lkTokens);
   q('.lv4-pin dd').forEach(dd=>{dd.innerHTML=lkSpan(dd.textContent);});
   q('.lv4-when dd').forEach(lkTokens);
@@ -13399,6 +13426,49 @@ function lv4Split(t){
 function lv4P(arr){return (arr||[]).filter(Boolean).map(t=>{const [m,th]=lv4Split(t);return (m?`<p>${lv4Text(m)}</p>`:'')+(th?`<!--th--><p>${lv4Text(th)}</p><!--/th-->`:'');}).join('');}
 // 통째로 이론인 소제목 — 근거 상자로 옮긴다
 const LV4_THEORY_SUB=new Set(['계산한 사주 정보','본인을 뜻하는 글자','다섯 기운의 균형','사주에 겹쳐 나오는 글자','글자끼리 주고받는 영향','사주 속 돈의 신호','사주 속 일의 신호','사주 속 배움의 신호','재능을 보태 주는 작은 별']);
+// 같은 계산을 생활 장면 → 짧은 근거 → 선택할 행동으로 풀어낸다.
+// 날짜·사건·직업은 새로 만들지 않는다. 성향 예시는 실제 경험의 단정이 아니다.
+function lv4StoryLines(saju,meta,domain){
+  const p=buildPersonaProfile(saju),axis=p.axisSorted[0][0],age=new Date().getFullYear()-(Number(meta&&meta.sy)||new Date().getFullYear()-30)+1;
+  const a=LIFE_V2_AXIS[axis],young=age<20,status=meta&&meta.marital;
+  const scene={
+    core:{self:'누가 시키는 일보다 직접 고른 일을 할 때 속도가 나요. 이유를 모른 채 따라가야 하면, 쉬운 일도 답답하게 느껴질 수 있어요.',out:'생각만 할 때보다 말로 설명하는 순간 답이 보일 때가 있어요. 떠올린 것을 작은 결과물로 꺼내 놓으면 본인의 장점이 더 잘 전해져요.',wealth:'좋은 기회라는 말만으로는 마음이 움직이지 않아요. 들이는 시간과 돌아오는 보상이 보여야 결정이 편해지는 편이에요.',gwan:'맡은 일은 끝내는데, 문제는 남의 일까지 가져오는 거예요. 주변에서는 든든하다고 해도 정작 본인은 쉴 틈이 없어질 수 있어요.',in_:'다른 사람은 넘어간 말 한마디도 다시 생각할 때가 있어요. 꼼꼼하게 짚는 장점이 있지만, 확인할 것이 계속 늘면 시작이 늦어져요.'},
+    career:{self:'방법을 직접 정할 수 있는 일에서 집중력이 살아나요. 결과를 책임지더라도 과정까지 세세하게 간섭받으면 지치기 쉬워요.',out:'회의에서 낸 아이디어가 실제 결과물로 이어질 때 보람이 커요. 생각을 설명할 자리 없이 반복 작업만 하면 흥미가 떨어질 수 있어요.',wealth:'분주하게 일하는 것만으로는 만족하기 어려워요. 내가 한 일이 어떤 성과와 보상으로 돌아오는지 확인할 때 오래 집중할 수 있어요.',gwan:'급한 일이 생기면 본인에게 부탁이 모일 수 있어요. 잘 마무리하는 만큼, 다음에도 내 일이 되는 상황을 살펴야 해요.',in_:'모르는 문제를 맡으면 자료부터 찾아보고 싶어져요. 깊이 파는 능력이 강점이지만, 조사와 제출의 시간을 나누면 평가까지 이어져요.'},
+    money:{self:'돈을 쓰는 이유를 스스로 납득해야 마음이 편해요. 가까운 사람의 추천도 본인의 기준으로 다시 확인하는 편이 좋아요.',out:'새로운 취미나 하고 싶은 프로젝트에 지출이 붙을 수 있어요. 즐거움을 없애기보다, 시도해 볼 예산을 따로 정해 두세요.',wealth:'가격만 보기보다 시간과 편리함까지 따져 고르는 편이에요. 효율적인 선택도 작은 결제가 반복되면 고정비가 될 수 있어요.',gwan:'필요한 지출이라 생각해 주변 몫까지 부담할 수 있어요. 도움을 주기 전에 이번만인지, 계속 맡을 수 있는지 나눠 보세요.',in_:'돈을 쓰기 전에 비교할 항목이 많아질 수 있어요. 자료를 충분히 모았더라도 감당할 부담과 실제 조건은 따로 확인해야 해요.'},
+    love:{self:'가까워져도 혼자 결정할 시간은 필요해요. 연락이 뜸한 시간을 애정이 식었다는 뜻으로 오해하지 않도록 설명해 두세요.',out:'좋아하는 마음이 생기면 표현하고 반응을 확인하고 싶어져요. 답장이 늦는 하루보다 평소의 약속과 행동을 함께 보는 게 좋아요.',wealth:'좋아하는 마음과 함께 현실적인 조건도 눈에 들어와요. 계산적으로 보일까 숨기기보다, 중요하게 여기는 생활 기준을 말해 보세요.',gwan:'상대를 챙기는 일이 자연스럽지만, 부탁을 다 들어주는 것이 사랑의 전부는 아니에요. 서로 맡을 몫이 있어야 마음도 덜 지쳐요.',in_:'말 한마디의 뜻을 오래 생각하다 마음을 혼자 정할 수 있어요. 추측이 길어질 때는 그때 어떤 뜻이었는지 직접 물어보세요.'},
+    health:{self:'하던 일을 끝내고 쉬겠다고 미루기 쉬워요. 일의 종료와 몸의 회복을 별개의 일정으로 잡아 보세요.',out:'약속이 많고 사람을 만나는 날에는 피로를 늦게 느낄 수 있어요. 즐거웠던 날에도 쉬는 시간은 따로 필요해요.',wealth:'쉬는 시간에도 해야 할 일의 효율을 따질 수 있어요. 잠과 식사만큼은 성과를 내기 위한 과제로 만들지 않는 편이 좋아요.',gwan:'다른 사람의 일정은 챙겨도 본인 식사와 잠은 뒤로 밀릴 수 있어요. 버틸 수 있다는 느낌보다 생활 기록을 먼저 살펴보세요.',in_:'몸은 누웠는데 머릿속에서는 하루가 끝나지 않을 수 있어요. 잠들기 전에 내일 확인할 일만 적어 두고 생각을 잠시 내려놓으세요.'},
+    study:{self:'스스로 정한 목표가 있어야 책상에 앉는 이유가 선명해져요. 공부 방법까지 모두 남에게 맞추면 집중이 흐려질 수 있어요.',out:'읽기만 할 때보다 다른 사람에게 설명할 때 빈틈이 보여요. 배운 것을 자기 말로 바꾸는 시간이 도움이 돼요.',wealth:'얼마나 공부했는지보다 무엇을 풀 수 있는지가 동기가 돼요. 하루 목표를 시간 대신 작은 과제로 정해 보세요.',gwan:'계획을 지키려고 이미 아는 부분까지 오래 붙잡을 수 있어요. 분량을 채우는 것과 약점을 고치는 것을 구분해 보세요.',in_:'한 문제를 깊게 이해하는 장점이 있어요. 다만 궁금한 부분을 모두 해결하려다 복습 시간이 줄지 않게 살펴보세요.'}
+  };
+  const topic={life:'core',newyear:'core',marriage:'love',reunion:'love',children:'love',child:'study'}[domain]||domain;
+  const resolved=young&&['career','money'].includes(topic)?'study':topic;
+  let lead=(scene[resolved]||scene.core)[axis];
+  if(resolved==='love'&&status==='married')lead='함께 산 시간이 길어도 알아서 이해해 주기는 어려워요. '+lead;
+  else if(resolved==='love'&&status==='dating')lead='현재 연인과는 설렘 다음의 생활을 맞춰 볼 때예요. '+lead;
+  if(domain==='reunion')lead='다시 연락하고 싶은 마음과, 관계를 이어갈 조건은 따로 살펴야 해요. '+lead;
+  if(domain==='children')lead='자녀 계획은 마음뿐 아니라 돌봄과 생활 여건을 함께 맞추는 일이에요. 임신 가능성이나 시기는 사주로 확정할 수 없어요.';
+  if(domain==='child')lead='아이가 잘하는 일 앞에서 어떤 표정을 짓는지 먼저 보세요. '+lead.replace(/본인/g,'아이');
+  const reason={self:'일간 주변에서 자기 판단을 지키는 성향이 두드러져요. 선택할 여지가 있을수록 행동도 빨라지는 것으로 읽어요.',out:'일간 주변에서 표현하고 만들어 내는 성향이 두드러져요. 배운 것을 밖으로 꺼낼 통로가 있을 때 장점이 쓰여요.',wealth:'일간 주변에서 현실의 조건을 살피는 성향이 두드러져요. 눈에 보이는 결과가 있어야 안심하는 쪽으로 읽어요.',gwan:'일간 주변에서 약속과 책임을 챙기는 성향이 두드러져요. 잘해 내는 힘과 부담을 떠안는 습관이 함께 나타날 수 있어요.',in_:'일간 주변에서 관찰하고 받아들이는 성향이 두드러져요. 충분히 이해한 뒤 움직이려는 모습으로 이어질 수 있어요.'}[axis];
+  const action={core:{self:'이번 주에는 직접 고를 수 있는 일 한 가지를 정해 보세요.',out:'생각 중인 일을 초안 한 장으로 꺼내 보세요.',wealth:'지금 고민의 이득과 부담을 한 줄씩 적어 보세요.',gwan:'새 부탁을 받으면 맡을 범위와 마감부터 함께 정하세요.',in_:'더 알아볼 항목을 세 개만 정하고 시작 날짜를 잡아 보세요.'},career:'다음 업무를 맡기 전에 결과물과 결정 권한을 확인하세요.',money:young?'이번 주 용돈에서 쓴 돈과 남은 돈을 함께 적어 보세요.':'이번 달 고정 지출과 도와주는 지출을 따로 적어 보세요. 투자나 대출은 실제 소득과 상환 조건부터 확인하세요.',love:status==='married'?'배우자와 이번 주 집안일 하나의 담당을 정해 보세요.':status==='dating'?'현재 연인과 연락 시간이나 쉬는 날의 기준 하나를 맞춰 보세요.':'다음 만남에서는 대화가 편했던 순간과 불편했던 순간을 하나씩 떠올려 보세요.',health:'이번 주 잠든 시각과 피로한 시간을 적어 보세요. 증상이 이어지면 풀이보다 진료가 먼저예요.',study:'오늘 배운 것 중 설명이 막히는 한 가지만 골라 복습하세요.'};
+  let next=action[resolved]||action.core;
+  if(typeof next==='object')next=next[axis];
+  if(domain==='child')next='오늘 아이가 스스로 고를 수 있는 작은 선택지를 두 개만 제안해 보세요.';
+  if(domain==='children')next='돌봄 시간과 일, 비용 가운데 먼저 의논할 항목 하나를 정해 보세요.';
+  if(domain==='reunion')next='연락하기 전에 이전의 갈등에서 달라진 점이 무엇인지 적어 보세요.';
+  const ds=saju.dp.stem,stems=[saju.yp.stem,saju.mp.stem,...(saju.hp?[saju.hp.stem]:[])],branches=[saju.yp.branch,saju.mp.branch,saju.dp.branch,...(saju.hp?[saju.hp.branch]:[])];
+  const tgs=stems.map(st=>tenGod(ds,st)).concat(branches.map(br=>tenGod(ds,BR_MAIN_STEM[br]))),n=names=>tgs.filter(t=>names.includes(t)).length;
+  const stable=n(['정재']),active=n(['편재']),expression=n(['식신','상관']),responsibility=n(['정관','편관']),learning=n(['정인','편인']);
+  const counts=ohCount(saju),top=counts.indexOf(Math.max(...counts)),lack=counts.indexOf(Math.min(...counts));
+  const reasons={
+    career:responsibility>=expression?'사주의 일과 책임을 읽는 자리에서는 약속을 지키고 마무리하는 힘이 눈에 띄어요. 성실함이 실제 평가로 이어지는 환경인지 함께 살펴보세요.':'사주의 표현과 창작을 읽는 자리에서는 배운 것을 결과물로 꺼내는 힘이 눈에 띄어요. 본인의 제안을 시험해 볼 기회가 있는지가 중요해요.',
+    money:stable===active?'사주의 재물 관계에서는 꾸준히 모으는 방식과 기회를 잡는 방식을 함께 살펴야 해요. 수입의 이름보다 실제로 남는 돈을 기준으로 비교해 보세요.':stable>active?'사주의 재물 관계에서는 반복해서 쌓이는 수입을 챙기는 쪽이 더 두드러져요. 자주 판단해야 하는 거래보다 관리 기준을 정해 두면 부담이 줄어요.':'사주의 재물 관계에서는 거래와 활동으로 기회를 넓히는 쪽이 더 두드러져요. 기회를 알아보는 것과 손실을 감당하는 것은 따로 확인해야 해요.',
+    love:`가까운 관계를 읽는 일지는 ${BRCHKO[saju.dp.branch]}예요. ${TOPIC_SEAT_LOVE[tenGod(ds,BR_MAIN_STEM[saju.dp.branch])]||'상대와 편한 생활의 속도를 맞추는 것이 중요해요.'}`,
+    health:`오행의 균형에서는 ${LV4_OH[top]} 쪽이 두드러지고 ${LV4_OH[lack]} 쪽은 상대적으로 옅어요. 이를 병의 유무로 판단하지 않고, 활동과 회복의 균형을 돌아보는 참고로 읽어요.`,
+    study:learning>=expression?'사주에서는 받아들이고 이해하는 힘을 먼저 살펴볼 수 있어요. 충분히 이해한 내용을 직접 설명해 보아야 아는 것과 익숙한 것을 구분할 수 있어요.':'사주에서는 표현하고 직접 만들어 보는 힘을 먼저 살펴볼 수 있어요. 읽기와 문제 풀이를 번갈아 하며 몸으로 확인하는 방법이 도움이 돼요.'
+  };
+  return [lead,reasons[resolved]||reason,next];
+}
+function lv4StoryHTML(saju,meta,domain,extra){const [scene,reason,action]=lv4StoryLines(saju,meta,domain);return lv4P([scene,extra,reason,action]);}
+
 function lv4Sub(title,html){if(LV4_THEORY_SUB.has(title))return `<!--th--><h4>${title}</h4>${String(html).replace(/<!--\/?th-->/g,'')}<!--/th-->`;return `<div class="lv4-sub"><h3>${title}</h3>${html}</div>`;}
 function lv4WithWhy(html){
   const got=[];html=String(html||'').replace(/<!--th-->([\s\S]*?)<!--\/th-->/g,(x,c)=>{got.push(c);return '';}).replace(/<div class="lv4-sub"><h3>[^<]*<\/h3><\/div>/g,'');
@@ -13523,10 +13593,10 @@ function relationshipReadingHTML(html,meta){
 }
 const LC_ROLE={love:'운명의 상대 · 이성 인연',helper:'귀인 · 나를 끌어 주는 윗사람',foe:'주의 인물 · 관계의 기준을 살필 사람'};
 function lcProfileCard(kind,title,img,rows,portrait){
-  const photo=portrait?` data-portrait="${encodeURIComponent(JSON.stringify({...portrait,v:3,country:portrait.country||'대한민국'}))}"`:'';
+  const photo=portrait?` data-portrait="${encodeURIComponent(JSON.stringify({...portrait,v:4,country:portrait.country||'대한민국'}))}"`:'';
   const image=portrait?`<div class="lc-pcard-img lc-portrait-pending" role="status" aria-label="대표 인물 이미지 생성 중"><img alt="AI가 생성할 대표 인물의 인상 이미지" hidden width="300" height="400"><span class="lc-portrait-status">대표 인물 이미지를 준비하고 있어요</span></div>`:`<div class="lc-pcard-img"><img src="${img}" alt="" loading="lazy" width="300" height="400"></div>`;
-  if(portrait)rows=[['대표 인물 1',`${portrait.gender==='female'?'여성':'남성'} · ${portrait.age}세 · ${portrait.country||'대한민국'}`],...rows];
-  return `<div class="lc-pcard ${kind}" data-person-index="1"${photo}>${image}<div class="lc-pcard-body"><span class="lc-pcard-role">${LC_ROLE[kind]||''}</span><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><small class="lc-pcard-note">대표 인물 1의 AI 인상 이미지 · 실존 인물이 아니에요</small></div></div>`;
+  if(portrait)rows=[['대표 인물',`${portrait.gender==='female'?'여성':'남성'} · ${portrait.age}세 · ${portrait.country||'대한민국'}`],...rows];
+  return `<div class="lc-pcard ${kind}" data-person-index="1"${photo}>${image}<div class="lc-pcard-body"><span class="lc-pcard-role">${LC_ROLE[kind]||''}</span><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><small class="lc-pcard-note">대표 인물의 AI 인상 이미지 · 실존 인물이 아니에요</small></div></div>`;
 }
 
 // 상세 8대 영역 풀이 안내 (인생총운)
@@ -13564,16 +13634,16 @@ function buildLifeChapters(m,s,meta,ctx){
   const tt=LC_TITLE[m.axis]||LC_TITLE.gwan,dohwa=m.usefulSins.includes('도화살');
   const lv1=tm.love&&ppNextYears(tm.love.bestYears)[0];
   const card=`<section class="lc-card" id="lv4-lc-core"><h3 class="lc-card-title">${tt[0]}<br>${tt[1]}</h3>${lv4P([
-    `${ax.gift} ${O[p.top]} 기운이 두터운 사주라 ${LV4_OH_POWER[p.top]}이 바탕에 깔려 있어요.`,
+    lv4StoryLines(s,meta,'core')[0].split(/(?<=[.!?])\s+/)[0],
     dohwa?'이성 관계에서는 사주의 도화살 때문에 본인도 모르게 사람을 끌어당겨요. 상대에게 "이 사람은 나를 진짜 이해해 준다"는 느낌을 주거든요.':`이성 관계에서는 ${seatLove||'믿음이 쌓일수록 매력이 커지는 편이에요.'}`,
-    `본인이 가장 조심해야 할 실수는 이거예요. ${ax.risk} 같은 사주라도 이걸 어떻게 다루느냐에 따라 인생의 방향이 크게 달라져요.`,
-    lv?`특히 ${lv.year}년 ${lv.month}월에 들어오는 기운이 남달라요. 이 시기에 만나는 사람이나 기회가 이후 몇 년의 방향을 정할 수 있어요.`:'',
+    `${ax.risk} ${lv4StoryLines(s,meta,'core')[2]}`,
+    lv?`특히 ${lv.year}년 ${lv.month}월에 계획한 일의 준비 상태를 점검해 보세요. 그달에 예정된 만남이나 제안은 역할과 조건을 적어 두고 비교해 보세요.`:'',
     lv1?`인연이 가장 강하게 들어오는 해는 ${lv1.year}년이에요. 그 전후로 생활 반경을 넓혀 두면 흐름을 잡기 쉬워요.`:''
   ])}<p class="lc-foot">* 아래 영역별 풀이에서 더 깊이 다뤄요.</p></section>`;
   // 3) 기운 특화 영역
   const areas=[['love','연애운'],['money','재물운'],['career','직업운'],['marriage','결혼운'],['health','건강운']].filter(([k])=>tm[k]).map(([k,l])=>[k,l,tm[k].yearNow.score]);
   const best=[...areas].sort((a,b)=>b[2]-a[2])[0];
-  const special=best?`<section class="lc-card" id="lv4-lc-special"><small class="lc-kicker">본인의 기운 특화 영역</small><h3 class="lc-card-title">${best[1]}</h3>${lv4P([(()=>{const sm=_topicSummary(tm[best[0]]);return `${sm.headline} ${sm.lead}`;})(),`${best[1].replace('운','')} 흐름이 가장 좋은 해는 ${ppNextYears(tm[best[0]].bestYears).slice(0,2).map(x=>x.year+'년').join(', ')}이에요. 다가오는 12개월 중에는 ${tm[best[0]].bestMonths.map(x=>`${x.year!==y0?x.year+'년 ':''}${x.month}월`).join(', ')}에 힘이 붙어요.`,`반대로 ${tm[best[0]].careMonths.map(x=>`${x.year!==y0?x.year+'년 ':''}${x.month}월`).join(', ')}에는 속도를 줄이세요. 같은 노력도 때를 맞추면 결과가 달라져요.`])}</section>`:'';
+  const special=best?`<section class="lc-card" id="lv4-lc-special"><small class="lc-kicker">본인의 기운 특화 영역</small><h3 class="lc-card-title">${best[1]}</h3>${lv4P([(()=>{const sm=_topicSummary(tm[best[0]]);return `${sm.headline} ${sm.lead}`;})(),`${best[1].replace('운','')} 흐름이 가장 좋은 해는 ${ppNextYears(tm[best[0]].bestYears).slice(0,2).map(x=>x.year+'년').join(', ')}이에요. 다가오는 12개월 중에는 ${tm[best[0]].bestMonths.map(x=>`${x.year!==y0?x.year+'년 ':''}${x.month}월`).join(', ')}에 힘이 붙어요.`,`반대로 ${tm[best[0]].careMonths.map(x=>`${x.year!==y0?x.year+'년 ':''}${x.month}월`).join(', ')}에는 속도를 줄이세요. 여유가 적은 달에는 새 일을 늘리기보다 이미 맡은 일의 마감부터 확인하세요.`])}</section>`:'';
   // 4) 인생을 뒤흔들 사람들
   const me=SOH[s.dp.stem],female=m.genderKey==='female',spEl=female?(me+3)%5:(me+2)%5;
   const clashB=(s.dp.branch+6)%12,gw=LC_GWIN[s.dp.stem]||[],gwYear=m.futureYears.concat([m.yearInfo]).sort((a,b)=>a.year-b.year).find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB);
@@ -13632,22 +13702,20 @@ function lcPeople(saju,o){
       o.when?['만나는 때',o.when]:null],{kind:'love',gender:og,age:ageOf(P&&P.years,uAge),look:lk,seed});
   }
   if(o.helper!==false)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(mg,seed+3),[
-    P&&P.helper.years.length?['출생년도',ppM(ppYearLab(P.helper.years[0]))]:['띠',`<span class="lk-m">${gw.map(b=>ANIMAL[b]+'띠').join(' · ')}</span>`],
-    P?['인물 1 초성 예시',ppM(personInitials(seed+3))]:null,
+    P&&P.helper.years.length?['출생년도 예시',ppM(ppYearLab(P.helper.years[0]))]:['띠',`<span class="lk-m">${gw.map(b=>ANIMAL[b]+'띠').join(' · ')}</span>`],
+    P?['초성 예시',ppM(personInitials(seed+3))]:null,
     ['특징',`말수는 적어도 막힐 때 <span class="lk-m">결정적인 길을 알려 주는 윗사람</span>`],
     gwYear?['등장 시기',`${gwYear.year}년`]:null],{kind:'helper',gender:mg,age:Math.max(ageOf(P&&P.helper.years,uAge+12),uAge+5),look:(lk+1)%5,seed:seed+3,country:'대한민국',traits:'차분하고 따뜻한 표정, 단정한 인상'});
-  if(o.helper!==false&&P&&P.helper.years.length>1)h+=lcSecondaryPerson('helper',P.helper.years[1],personInitials(seed+3,1),'실무 경험으로 조언하고 협력을 이어주는 사람',mg);
   if(o.avoid!==false){
     h+=lcScene(saju,'관계에서 주의할<br>사람도<br>살펴보겠소',true);
     h+=lcProfileCard('foe',`${who}${eul(who)}<br>흔드는 악연`,lcArt(mg,seed+5),[
-      P&&P.avoid.years.length?['출생년도',ppM(ppYearLab(P.avoid.years[0]))]:['띠',`<span class="lk-m">${ANIMAL[clashB]}띠</span>`],
-      P?['인물 1 초성 예시',ppM(personInitials(seed+5))]:null,
+      P&&P.avoid.years.length?['출생년도 예시',ppM(ppYearLab(P.avoid.years[0]))]:['띠',`<span class="lk-m">${ANIMAL[clashB]}띠</span>`],
+      P?['초성 예시',ppM(personInitials(seed+5))]:null,
       ['성격',`<span class="lk-m">${o.avoidTrait||(peer>=2?'친해지면 돈 이야기를 먼저 꺼내는 사람':gwanN>=2?'처음부터 지나치게 몰아붙이는 사람':'말과 행동이 자주 다른 사람')}</span>`],
       ['피해 유형',`<span class="lk-m">${dmg}</span>`],
       clashYear?['주의 시기',`${clashYear.year}년 (일지와 부딪히는 해)`]:null],{kind:'foe',gender:mg,age:ageOf(P&&P.avoid.years,uAge),look:(lk+3)%5,seed:seed+5,country:'대한민국',traits:'차분하고 중립적인 표정, 단정한 인상'});
-    if(P&&P.avoid.years.length>1)h+=lcSecondaryPerson('foe',P.avoid.years[1],personInitials(seed+5,1),'중요한 약속과 거래 조건을 다시 확인할 사람',mg);
   }
-  return h?`<section class="lc-people lc-people2" id="lv4-${o.id||'lc-people'}">${h}<p class="lc-foot">* 유형별 대표 인물 1명의 특징으로 AI 인상 이미지를 그려 드려요(실존 인물이 아니에요). 초성은 가상 이름의 예시이며 띠·인상은 참고용이에요. 따라서, 사람을 판단하기보다 관계의 속도를 조절하는 참고로 보세요.</p></section>`:'';
+  return h?`<section class="lc-people lc-people2" id="lv4-${o.id||'lc-people'}">${h}<p class="lc-foot">* 유형별 대표 인물 1명의 특징으로 AI 인상 이미지를 그려 드려요(실존 인물이 아니에요). 귀인의 띠는 일간의 천을귀인, 주의할 띠는 일지와 충하는 관계를 참고해요. 둘이 겹치면 귀인은 겹치지 않는 띠를 먼저 골라요. 출생년도·초성·인상은 참고 예시이며 실제 인물을 예측하는 정보가 아니에요. 따라서, 사람을 판단하기보다 관계의 속도를 조절하는 참고로 보세요.</p></section>`:'';
 }
 // 주제별 — 3가지 순간 문구
 const LC_TOPIC_MOMENT={
@@ -13667,12 +13735,7 @@ function topicFrame(tm,o){
   const bm=child?null:top(tm.bestMonths),by=ppNextYears(tm.bestYears)[0],cm=child?null:(tm.careMonths||[])[0],cy=child?[...tm.years].sort((a,b)=>a.score-b.score)[0]:null;
   const mom=[bm&&{when:lcWhenYM(bm.year,bm.month),what:key==='love'?`'${o.seatShort}'이 느껴지는 사람과 가까워져요`:mt[0],dot:'g'},by&&{when:lcWhenYM(by.year),what:child?mt[0]:mt[1],dot:'y'},cm?{when:lcWhenYM(cm.year,cm.month),what:mt[2],dot:'r'}:cy?{when:lcWhenYM(cy.year),what:mt[2],dot:'r'}:null].filter(Boolean);
   const axTag=String(o.axTag||'').replace(/_/g,' ');
-  const card=lcCard('lc-core',`${axTag}<br>${o.sum.lead||''}`,[
-    `${o.ax[0]||''} ${o.ax[1]||''}`.trim(),
-    TOPIC_GUILT[key]||'',
-    o.ax[2]?`가장 조심할 점은 이거예요. ${o.ax[2]}`:'',
-    bm?`특히 ${bm.year}년 ${bm.month}월에 들어오는 기운이 남달라요. 이 시기의 선택이 이후 흐름을 정할 수 있어요.`:by?`특히 ${by.year}년의 기운이 남달라요. 이 해를 중심으로 계획을 세워 보세요.`:''
-  ],'* 아래 영역별 풀이에서 더 깊이 다뤄요.');
+  const card=lcCard('lc-core',`${axTag}<br>${o.sum.lead||''}`,lv4StoryLines(s,tm.meta||_meta,key).concat(bm?`${bm.year}년 ${bm.month}월은 계획한 일을 점검해 볼 때예요. ${info.stat} 점수와 함께 실제 준비 상태를 살펴보세요.`:[]),'* 아래에서 계산한 시기와 영역별 선택을 더 살펴봐요.');
   const yearPts=tm.years.map(x=>({l:`${String(x.year).slice(2)}년`,v:x.score}));
   const graph=lcBox('lc-graph',`앞으로의 ${info.stat} 흐름`,`해마다의 ${info.stat} 점수예요. 가장 높은 점이 흐름이 활짝 피는 해예요.`,lcLineChart(yearPts,-1)+(child?'':`<h4>다가오는 12개월</h4>${lcAreaBars(tm.months.slice(0,12).map(x=>[`${x.year!==y0?String(x.year).slice(2)+'.':''}${x.month}월`,x.score]))}`));
   const partnerKeys=['love','marriage','reunion'];
@@ -13724,7 +13787,7 @@ function buildPinpoint(saju,meta){
   let lv=null;try{const tm=buildTopicModel('topic-love',saju,meta),bm=[...tm.bestMonths].sort((a,b)=>b.score-a.score)[0];lv={year:ppNextYears(tm.bestYears)[0]&&ppNextYears(tm.bestYears)[0].year,bm};}catch(e){}
   // 귀인 · 부딪히는 사람
   const gw=LC_GWIN[ds]||[],clashB=(db+6)%12,yearsAhead=Array.from({length:11},(_,i)=>_lifeV2YearInfo(saju,y0+i));
-  const gwYears=gw.flatMap(b=>ppYearsFor(b,by-15,by+12)).filter(y=>y!==by).sort((a,b)=>Math.abs(a-(by-6))-Math.abs(b-(by-6))).slice(0,2).sort((a,b)=>a-b);
+  const gwYears=gw.filter(b=>b!==clashB).flatMap(b=>ppYearsFor(b,by-15,by+12)).filter(y=>y!==by).sort((a,b)=>Math.abs(a-(by-6))-Math.abs(b-(by-6))).slice(0,2).sort((a,b)=>a-b);
   const gwWhen=yearsAhead.find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB);
   const avYears=ppYearsFor(clashB,by-12,by+12).filter(y=>y!==by).sort((a,b)=>Math.abs(a-by)-Math.abs(b-by)).slice(0,2).sort((a,b)=>a-b);
   const avWhen=yearsAhead.slice(1).find(y=>y.yp.branch===clashB),avEl=(ys.main+3)%5;
@@ -13753,7 +13816,7 @@ function ppPartnerHTML(P,o){
 }
 function ppHelperHTML(P,o){
   o=o||{};const h=P.helper,a=P.avoid;
-  const profiles=(item,kind,offset)=>item.years.slice(0,2).map((year,i)=>`${kind} ${i+1}의 출생년도 예시는 ${ppM(ppYearLab(year))}예요. 이름 초성 예시는 ${ppM(personInitials(P.profileSeed+offset,i))}예요. ${kind==='귀인'?'경험과 조언을 나누는 사람과 협력을 이어가세요.':'외모가 아니라 약속과 행동을 확인하며 관계의 속도를 조절하세요.'}`);
+  const profiles=(item,kind,offset)=>item.years.slice(0,1).map((year,i)=>`${kind}의 출생년도 예시는 ${ppM(ppYearLab(year))}예요. 이름 초성 예시는 ${ppM(personInitials(P.profileSeed+offset,i))}예요. ${kind==='귀인'?'경험과 조언을 나누는 사람과 협력을 이어가세요.':'외모가 아니라 약속과 행동을 확인하며 관계의 속도를 조절하세요.'}`);
   return `<div class="lv4-sub pp-box"><h3>${o.title||'나를 돕는 사람과 관계를 살필 사람'}</h3>${lv4P([...profiles(h,'귀인',3),...profiles(a,'주의 인물',5)])}</div>`;
 }
 
@@ -13966,7 +14029,7 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('본인을 뜻하는 글자',lv4P([`사주에서 본인 자신을 뜻하는 글자는 태어난 날의 위 글자예요. 본인의 글자는 ${lv4Stem(ds)}${lv4Ida(STEMKO[ds])}. ${dsm.body||''}`,`이 글자를 대표하는 말은 ${(dsm.keys||'').split('·').slice(0,3).join(', ')}${lv4Ida((dsm.keys||'').split('·')[2]||'')}. 처음 만난 사람이 본인에게서 가장 먼저 느끼는 분위기가 이쪽이에요.`,`태어난 날의 아래 글자는 본인이 앉아 있는 자리예요. 본인은 이 자리에 ${lv4Branch(db)}${ip(BRCHKO[db])} 놓여 있어요. ${dbm.body||''}`,`이 자리에는 '${seatShort}'의 분위기가 담겨 있어요. 겉으로 보이는 모습이 위 글자라면, 가까운 사람에게만 보여주는 속 모습은 이 자리에서 드러나요.`]))+
     lv4Sub('다섯 기운의 균형',lv4P([`사주 글자 ${total}개를 목·화·토·금·수 다섯 기운으로 나눠 보면 목 ${c[0]}개, 화 ${c[1]}개, 토 ${c[2]}개, 금 ${c[3]}개, 수 ${c[4]}개예요.`,`가장 두터운 기운은 ${LV4_OH[p.top]}${lv4Ida(LV4_OH[p.top])}. ${LV4_OH_POWER[p.top]}이 본인의 바탕에 깔려 있어요. 집으로 치면 기둥이 되는 재료인 셈이에요.`,`반대로 ${LV4_OH[p.lack]} 기운은 ${c[p.lack]?`${c[p.lack]}개뿐이라 옅어요`:'하나도 없어요'}. ${LV4_OH_LACK[p.lack]}`,`본인은 ${p.season} 태생이에요. ${seasonTxt}`,`사주 글자에는 조용히 안으로 모으는 글자와 밖으로 뻗는 글자가 섞여 있어요. 본인은 안으로 모으는 글자가 ${yin}개, 밖으로 뻗는 글자가 ${yang}개예요. ${yin>yang?'그래서 바로 드러내기보다 안에서 충분히 정리한 뒤 움직이는 편이에요.':yin<yang?'그래서 생각보다 행동이 먼저 나오고, 밖으로 에너지를 쓰며 힘을 얻는 편이에요.':'안으로 모으는 힘과 밖으로 쓰는 힘이 고르게 섞여 있어요.'}`,strong?'또 본인을 뜻하는 글자를 돕는 기운이 많은 사주예요. 스스로 버티고 밀고 나가는 힘이 강해서, 남의 도움 없이도 일을 끝까지 끌고 가는 편이에요.':'본인을 뜻하는 글자보다 바깥으로 쓰이는 기운이 많은 사주예요. 혼자 버티기보다 좋은 사람과 좋은 환경을 만날 때 힘이 훨씬 커져요. 그래서 누구와 함께하느냐가 특히 중요해요.']))+
     (repeats.length?lv4Sub('사주에 겹쳐 나오는 글자',lv4P(repeats)):'')+
-    lv4Sub('겉모습과 속마음',lv4P([fp.hook,`본인의 가장 큰 힘은 ${ax.label}의 힘이에요. ${ax.gift} 그 뒤를 ${ax2.label}의 힘이 받쳐 줘요. ${ax2.gift}`,`다만 이 힘이 지나치면 문제가 되기도 해요. ${ax.risk} 강점과 약점은 동전의 앞뒤라서, 지금 어느 쪽으로 쓰고 있는지만 알아차려도 훨씬 편해져요.`,'그래서 가끔 "나는 왜 이럴까" 싶었다면, 그건 본인이 이상해서가 아니에요. 타고난 힘이 그렇게 생겼을 뿐이에요.']))+
+    lv4Sub('겉모습과 속마음',lv4StoryHTML(s,meta,'core',fp.hook))+
     (m.relations.length?lv4Sub('글자끼리 주고받는 영향',lv4P(['사주의 아래 글자들은 각각 맡은 영역이 있어요. 이 글자들끼리 끌어당기거나 부딪히면, 그 영역들 사이에도 같은 일이 생겨요.'].concat(lv4Relations(s,m.relations)))):'')+
     lv4Key(`${dsm.nick||''} 같은 본인은 ${ax.label}의 힘을 무기로 삼고, 옅은 ${LV4_OH[p.lack]} 기운을 생활 속에서 채울 때 가장 편안해져요.`));
 
@@ -13979,9 +14042,9 @@ function buildLifeReadingV4(saju,meta){
 
   // 3. 직업운과 성공 방향 · 재물운과 자산 흐름
   h+=lv4Section(3,`${young?'아직 일과 돈을 이야기하기엔 이른 나이예요. 여기서는 타고난 방향을 미리 알아 두는 지도로 읽어 주세요. ':''}일하는 방식은 ${m.career.axisLabel}에 가까워요. ${fp.work||''}`,
-    lv4Sub('잘 맞는 일',lv4P([`본인에게 잘 맞는 분야는 ${m.career.careers.slice(0,5).join(', ')} 같은 쪽이에요. 공통점은 경험이 쌓일수록 몸값이 오르고, 본인의 판단이 결과로 남는 일이라는 거예요.`,gwan>=out?`사주에 책임과 규칙을 뜻하는 글자가 ${gwan}개로, 표현을 뜻하는 글자(${out}개)보다 많아요. 그래서 조직 안에서 신뢰를 쌓아 자리를 키우는 길이 잘 맞아요. 정해진 틀 안에서 맡은 일을 끝까지 해내는 모습이 인정받는 사주예요.`:`사주에 표현과 창작을 뜻하는 글자가 ${out}개로, 책임을 뜻하는 글자(${gwan}개)보다 많아요. 그래서 본인 이름으로 결과물을 내는 길이 잘 맞아요. 전문직, 프리랜서, 창업처럼요. 다만 혼자 하는 일일수록 마감과 규칙을 스스로 정해야 해요.`,`${ageTxt[1]} ${_lifeStageAdvice(m.age,'work')}`]))+
+    lv4Sub('잘 맞는 일',lv4StoryHTML(s,meta,'career')+lv4P([young?_lifeStageAdvice(m.age,'study'):`계산한 적성으로는 ${m.career.careers.slice(0,5).join(', ')} 쪽을 살펴볼 수 있어요. 실제 직무에서는 하는 일과 결정 권한을 함께 확인하세요.`,_lifeStageAdvice(m.age,'work')]))+
     lv4Sub(young?'지금 배움의 흐름':'지금 일의 흐름',lv4P([`지금 ${curTxt} 대운에는 '${plainTG(m.curTg)}'의 기운이 들어와 있어요. ${tgNow.lead||''}`,tgNow.good?`이 시기에는 이렇게 해 보세요. ${tgNow.good}`:'',tgNow.warn?`조심할 점도 있어요. ${tgNow.warn}`:'']))+
-    lv4Sub('돈이 들어오는 방식',lv4P([`사주에는 돈을 뜻하는 글자가 두 종류 있어요. 월급이나 적금처럼 꾸준히 쌓이는 돈을 뜻하는 글자, 그리고 거래나 사업처럼 흐름을 타는 돈을 뜻하는 글자예요. 본인은 앞의 것이 ${m.stableMoney}개, 뒤의 것이 ${m.activeMoney}개 있어요.`,m.moneyCount===0?'돈을 뜻하는 글자가 겉으로 드러나 있지 않은 사주예요. 돈이 없다는 뜻이 아니에요. 돈을 직접 좇기보다 본인의 전문성을 키우면, 돈이 그 뒤를 따라오는 사주라는 뜻이에요.':m.stableMoney>=m.activeMoney?'꾸준히 쌓이는 쪽이 더 많아요. 한 번에 크게 버는 것보다, 예측 가능한 수입을 차곡차곡 늘리는 방식이 마음도 편하고 결과도 좋아요. 물방울이 모여 항아리를 채우는 식이에요.':'흐름을 타는 쪽이 더 많아요. 기회를 알아보고 움직일 때 돈이 붙어요. 대신 들어오고 나가는 폭이 크니, 안전판을 먼저 만들어 둬야 해요.',fp.money,TOPIC_MONEY_OH[p.top]]))+
+    lv4Sub('돈이 들어오는 방식',lv4StoryHTML(s,meta,'money'))+
     lv4Sub('돈을 지키는 법',lv4P([peer>=2?`사주에 동료와 경쟁을 뜻하는 글자가 ${peer}개 있어요. 사람이 많이 모이는 대신, 돈을 나누거나 빌려주는 일에서 새는 구멍이 생기기 쉬워요.`:'돈이 새는 구멍이 큰 편은 아니에요. 다만 기분이 좋을 때와 지쳤을 때의 씀씀이 차이를 한 번 살펴보세요.','통장을 생활비, 비상금, 오래 묵힐 자산, 도전해 볼 돈 네 칸으로 나눠 보세요. 좋은 기회가 와도 생활이 흔들리지 않아요.',`${ageTxt[3]} ${_lifeStageAdvice(m.age,'money')}`]))+
     lv4Key('본인의 전문성을 반복해서 들어오는 수입으로 바꾸는 것, 그게 본인 사주가 가리키는 성공 공식이에요.'));
 
@@ -13995,7 +14058,7 @@ function buildLifeReadingV4(saju,meta){
   // 5. 건강과 생활 체질
   h+=lv4Section(5,`건강 풀이는 병을 진단하는 게 아니에요. 피로가 쌓이기 쉬운 곳과 관리 방향을 읽는 거예요. ${fp.stress||''}`,
     lv4Sub('타고난 체질',lv4P([`${LV4_OH[p.top]} 기운이 두터워서 ${TOPIC_HEALTH_OH[p.top][0]} 쪽에 부담이 쌓이기 쉬워요. ${TOPIC_HEALTH_OH[p.top][1]}`,`${LV4_OH[p.lack]} 기운은 옅어서 ${TOPIC_HEALTH_OH[p.lack][0]} 쪽을 생활 습관으로 채워 주면 좋아요. ${TOPIC_HEALTH_OH[p.lack][1]}`,yin>yang?'안으로 에너지를 모으는 사주라, 몸을 자주 움직여야 순환이 잘 돼요. 오래 앉아 있었다면 한 시간에 한 번은 일어나세요.':'밖으로 에너지를 많이 쓰는 사주라, 회복 시간을 일부러 챙겨야 해요. 바쁜 날일수록 잠부터 지키세요.']))+
-    lv4Sub('생활 관리',lv4P([`본인에게 가장 힘이 되는 기운은 ${LV4_OH[m.ys.main]}${lv4Ida(LV4_OH[m.ys.main])}. ${support.lead}이 몸과 마음을 함께 살려 줘요.`,support.items.map(x=>`${x[1]}. ${x[2]}`).join(' '),`${ageTxt[2]} ${_lifeStageAdvice(m.age,'health')}`,'몸이 보내는 신호가 2주 넘게 이어지면, 풀이보다 진료와 검사를 먼저 받으세요.']))+
+    lv4Sub('생활 관리',lv4StoryHTML(s,meta,'health')+lv4P([`${ageTxt[2]} ${_lifeStageAdvice(m.age,'health')}`]))+
     lv4Key('버티는 힘보다 회복하는 습관이 본인의 건강을 지켜 줘요.'));
 
   // 6. 현재 10년 흐름 · 올해 총운 · 올해 월별 흐름
@@ -20323,7 +20386,7 @@ function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
   const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+textHash(String(_meta.ctx.text||''))+'-'+String(_meta.ctx.text||'').length:'';
-  return 'saju_ai_reading_v5:'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
+  return 'saju_ai_reading_v6:'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
@@ -20543,7 +20606,7 @@ function savePaidToken(t){if(!t||typeof t!=='string')return;try{localStorage.set
 
 function latestPaidToken(){return loadPaidTokens()[0]||'';}
 // 프로필 카드 인상 이미지 — 결제 후에만, 같은 정보면 저장해 둔 이미지를 다시 쓴다
-function lcPortraitKey(info){return 'lc_portrait_v3:'+JSON.stringify(info);}
+function lcPortraitKey(info){return 'lc_portrait_v4:'+JSON.stringify(info);}
 function lcPortraitCached(info){try{return localStorage.getItem(lcPortraitKey(info))||'';}catch(e){return '';}}
 function lcPortraitSet(card,src){const img=card.querySelector('.lc-pcard-img img');if(!img||!src)return;img.src=src;img.hidden=false;card.classList.add('ai-photo');card.querySelector('.lc-portrait-status')?.remove();card.querySelector('.lc-pcard-img')?.classList.remove('lc-portrait-pending');card.querySelector('.lc-pcard-img')?.setAttribute('aria-label','대표 인물의 AI 인상 이미지');img.alt='AI가 그린 대표 인물의 인상 이미지 · 실존 인물이 아니에요';const note=card.querySelector('.lc-pcard-note');if(note)note.textContent='AI가 그린 인상 이미지 · 실존 인물이 아니에요';}
 // 받은 이미지(1024px)를 카드 크기(정사각형 420px)로 줄여 저장 공간을 아낀다
@@ -20599,7 +20662,7 @@ function chatAppend(role,text){
     :langText({ko:'안내',en:'Notice',zh:'提示',ja:'案内'});
   const div=document.createElement('div');
   div.className='chat-msg '+cls;
-  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${mdInlineToHtml(preventOrphan(chatEscape(text)))}</div>`;
+  div.innerHTML=`<div class="chat-msg-lab">${lab}</div><div class="chat-msg-body">${mdInlineToHtml(lv4Text(chatEscape(text)))}</div>`;
   log.appendChild(div);
   log.scrollTop=log.scrollHeight;
   // 역술가 답변·안내가 한국어(로컬 폴백 등)로 온 경우 선택 언어로 번역 (사용자 입력은 원문 유지)
@@ -20732,7 +20795,7 @@ async function chatAsk(){
   btn.disabled=true;btn.textContent='⏳';
   input.value='';input.style.height='42px';
   chatAppend('user',question);
-  const loadingEl=chatAppend('loading','사주를 짚어가며 답변을 정리하고 있어요...');
+  const loadingEl=chatAppend('loading','사주를 짚어가며 답변을 정리하고 있어요.');
   let ctx=null;
 
   try{
@@ -25388,7 +25451,7 @@ function analyze(){
     day:document.getElementById('iD').value,
     hour:document.getElementById('iH').value,
     min:document.getElementById('iMin').value,
-    cityKey,mbti:rawMbti
+    cityKey,mbti:rawMbti,marital:_marital
   };
 
   const btn=document.querySelector('.analyze-btn');

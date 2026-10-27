@@ -11,7 +11,7 @@ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.matchMedia=()=
 const run=s=>vm.runInContext(s,ctx,{timeout:15000});
 run([...d.querySelectorAll('script')].filter(x=>!x.src&&!/json/.test(x.type)).map(x=>x.textContent).join('\n;\n'));
 const check=(label,fn)=>{fn();console.log('✓ '+label);};
-const server=vm.createContext({crypto:webcrypto,TextEncoder,TextDecoder,atob,btoa,Request,Response,URL,console});
+const server=vm.createContext({crypto:webcrypto,TextEncoder,TextDecoder,atob,btoa,Request,Response,URL,FormData,Blob,console});
 vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'utf8').replace(/^import .*;\s*$/gm,'').replace('export default {','const testWorker={'),server);
 (async()=>{
  run("_saju={yp:{stem:0,branch:0},mp:{stem:2,branch:2},dp:{stem:4,branch:4},hp:null};_meta={sy:1990,sm:5,sd:15,hour:null,min:0,gender:'male',cityKey:'seoul',marital:'single'};gender='male';_category='life';");
@@ -78,7 +78,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
  server.testBody={category:'life',activeReadingToken:life,paidTokens:[life,pack]};
  const usage=await vm.runInContext("handleChatUsage(new Request('https://worker.example/chat-usage',{method:'POST',body:JSON.stringify(testBody)}),testEnv)",server);const grants=(await usage.json()).grants;assert.equal(grants.find(x=>x.category==='life').used,1);assert.equal(grants.find(x=>x.category==='chatpack3').used,3);
  console.log('✓ 서버: 서명 검증·결제 건별 1회·정확한 질문권·오류 미차감·재시도·다른 카테고리 차단·사용량 동기화');
- let prompt='';server.photoEnv={AI:{run:async(model,input)=>{prompt=input.prompt;return {image:'mock-image-only'};}}};
+ let prompt='';server.photoEnv={AI:{run:async(model,input)=>{assert.equal(model,'@cf/black-forest-labs/flux-2-klein-9b');const form=await new Response(input.multipart.body,{headers:{'Content-Type':input.multipart.contentType}}).formData();prompt=form.get('prompt');return {image:'mock-image-only'};}}};
  server.photoBody={kind:'helper',gender:'female',age:58,country:'일본',look:2,seed:72,traits:'calm expression and neat appearance'};
  const photo=await vm.runInContext("handlePortrait(new Request('https://worker.example/portrait',{method:'POST',body:JSON.stringify(photoBody)}),photoEnv)",server);assert.equal(photo.status,200);assert.match(prompt,/Japanese woman around 58/);assert.match(prompt,/calm expression/);assert.match(prompt,/Photorealistic/);
  console.log('✓ 대표 인물 사진: 성별·나이·국가·특징을 실사풍 생성 요청에 전달(모델 호출은 모의 처리)');
