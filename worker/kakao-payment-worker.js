@@ -422,6 +422,8 @@ async function refundOrder(env, orderId, reason) {
 // 결제 확인 토큰 — 결제한 사람만 쓸 수 있는 기능(인상 이미지 등)을 다른 워커가 확인할 수 있게 서명한다.
 // 형식: base64url({o:주문번호,c:카테고리,e:만료시각}).base64url(HMAC-SHA256). 비밀키는 saju-chat 워커와 같은 PAID_TOKEN_SECRET.
 const PAID_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+// 질문권(chatpackN)은 결제 후 24시간 안에만 쓴다 — 지나면 서버가 토큰을 받지 않는다
+const CHATPACK_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 function b64url(bytes) {
   let s = '';
   bytes.forEach((b) => { s += String.fromCharCode(b); });
@@ -431,7 +433,7 @@ async function signPaidToken(env, orderId, category) {
   if (!env.PAID_TOKEN_SECRET || !orderId) return '';
   try {
     const enc = new TextEncoder();
-    const body = b64url(enc.encode(JSON.stringify({ o: String(orderId), c: String(category || ''), e: Date.now() + PAID_TOKEN_TTL_MS })));
+    const body = b64url(enc.encode(JSON.stringify({ o: String(orderId), c: String(category || ''), e: Date.now() + (/^chatpack\d+$/.test(String(category || '')) ? CHATPACK_TOKEN_TTL_MS : PAID_TOKEN_TTL_MS) })));
     const key = await crypto.subtle.importKey('raw', enc.encode(env.PAID_TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
     const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(body)));
     return `${body}.${b64url(sig)}`;

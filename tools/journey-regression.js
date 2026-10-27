@@ -322,21 +322,25 @@ const submitBirth=async()=>{
       assert.equal(d.getElementById('payProductName').textContent,'연애운 PDF 리포트');assert.equal(d.getElementById('payProductPrice').textContent,'5,000원');
       run('closePaymentConsent()');
     });
-    check('질문권 복구 링크: 토큰 저장, 즉문즉답 질문권 추가, 같은 링크는 한 번만',()=>{
+    check('질문권 복구 링크: 토큰만 저장해 질문권 3회로 세고, 같은 링크는 한 번만',()=>{
       const b64=o=>Buffer.from(JSON.stringify(o)).toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
       const tok=b64({o:'restore-test-1',c:'chatpack3',e:Date.now()+86400e3})+'.sig';
-      const before=run("getChatBonus('qna')");
       run(`history.replaceState({},'','?restore=${tok}&t=qna');_handleChatRestoreLink();`);
       assert.equal(w.location.search,'');
       assert(run('loadPaidTokens()').includes(tok));
-      assert.equal(run("getChatBonus('qna')"),before+3);
-      assert.match(d.querySelector('.chat-restore-toast').textContent,/3회를 다시 넣었어요/);
+      assert(JSON.parse(run('JSON.stringify(chatPackGrants().map(x=>x.limit))')).includes(3));
+      assert.match(d.querySelector('.chat-restore-toast').textContent,/3회를 다시 넣었어요.*24시간/);
       run(`history.replaceState({},'','?restore=${tok}&t=qna');_handleChatRestoreLink();`);
-      assert.equal(run("getChatBonus('qna')"),before+3);
       assert.match([...d.querySelectorAll('.chat-restore-toast')].pop().textContent,/이미 넣었어요/);
-      run(`history.replaceState({},'','?restore=broken&t=qna');_handleChatRestoreLink();`);
-      assert.match([...d.querySelectorAll('.chat-restore-toast')].pop().textContent,/확인하지 못했어요/);
+      const old=b64({o:'restore-test-2',c:'chatpack3',e:Date.now()-1000})+'.sig';
+      run(`history.replaceState({},'','?restore=${old}&t=qna');_handleChatRestoreLink();`);
+      assert.match([...d.querySelectorAll('.chat-restore-toast')].pop().textContent,/24시간이 지났을 수 있어요/);
+      run(`localStorage.setItem(PAID_TOKEN_LS,JSON.stringify(loadPaidTokens().filter(t=>t!=='${tok}')))`);
       d.querySelectorAll('.chat-restore-toast').forEach(e=>e.remove());
+    });
+    check('질문권 이용기간: 결제 동의·패키지 설명에 24시간·결제한 기기 안내',()=>{
+      for(const c of ['chatpack3','chatpack5','chatpack7'])assert.match(run(`PAID_META['${c}'].desc`),/24시간 안에.*결제한 기기/,c);
+      assert.match(run("PAID_META.qna.features.join(' ')"),/24시간/);
     });
     run(fs.readFileSync(path.join(root,'assets/report-pdf.js'),'utf8'));
     for(const cat of ['life','gunghap','ziwei']){

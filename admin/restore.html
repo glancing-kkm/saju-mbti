@@ -37,7 +37,7 @@ textarea{width:100%;min-height:150px;padding:12px;border:1px solid var(--border)
 <body>
 <main>
   <h1>질문권 복구</h1>
-  <p class="lead">고객이 영수증과 함께 문의하면 여기서 복구 링크를 만들어 메일로 보내 주세요. 고객이 링크를 열면 그 기기에서 질문권을 바로 쓸 수 있어요. 링크는 한 기기에서 한 번만 들어가요.</p>
+  <p class="lead">고객이 영수증과 함께 문의하면 여기서 복구 링크를 만들어 메일로 보내 주세요. 고객이 링크를 열면 그 기기에서 질문권을 바로 쓸 수 있어요. 질문권은 발급 후 24시간 안에만 쓸 수 있으니 문의에 답할 때 바로 만들어 보내 주세요.</p>
   <form id="f">
     <div class="f"><label for="code">운영자 코드</label><input id="code" type="password" autocomplete="off" required></div>
     <div class="f"><label>다시 넣을 질문권</label>
@@ -73,7 +73,7 @@ $('f').addEventListener('submit',async e=>{
     const d=await r.json().catch(()=>({}));
     if(!r.ok||!d.ok||!d.token)throw new Error(ERR[d.code]||'링크를 만들지 못했어요. 잠시 뒤 다시 해 주세요.');
     link=`${SITE}?restore=${encodeURIComponent(d.token)}&t=${d.target}`;
-    $('mail').value=`안녕하세요, 천지인 사주예요.\n불편을 드려 죄송해요. 질문권 ${d.count}회를 다시 넣어 드렸어요.\n\n질문을 쓰시던 휴대폰이나 컴퓨터에서 아래 링크를 열어 주세요. 열면 ${LABEL[d.target]}에서 바로 쓰실 수 있어요.\n${link}\n\n링크는 30일 동안 쓸 수 있고, 한 기기에서 한 번만 들어가요.\n고맙습니다.`;
+    $('mail').value=`안녕하세요, 천지인 사주예요.\n불편을 드려 죄송해요. 질문권 ${d.count}회를 다시 넣어 드렸어요.\n\n질문을 쓰시던 휴대폰이나 컴퓨터에서 아래 링크를 열어 주세요. 열면 ${LABEL[d.target]}에서 바로 쓰실 수 있어요.\n${link}\n\n질문권은 링크를 받은 뒤 24시간 안에 써 주세요. 링크를 연 기기(브라우저)에서만 쓸 수 있고, 한 번만 들어가요.\n고맙습니다.`;
     $('out').hidden=false;msg.textContent=`질문권 ${d.count}회 링크를 만들었어요. (발급 번호 ${d.orderId})`;
   }catch(err){msg.className='msg err';msg.textContent=err.message;}
   finally{go.disabled=false;}
