@@ -202,8 +202,8 @@ function buildAstrologyStoryConfig(flow){
     {key:'astro-talk',icon:'forum',title:'생각과 대화',quote:`수성 ${mercurySign.nameKo}, 생각을 꺼내는 리듬이에요`,copy:`본인은 생각을 정리하고 말할 때 ${mercurySign.personality} 중요한 대화는 머릿속에서만 완성하려 하지 말고 핵심을 짧게 적어보세요. 상대가 같은 속도로 이해할 거라 가정하지 않으면 오해가 줄어요. 말의 재능은 반복해서 설명할수록 본인의 힘이 돼요.`,points:[{label:'수성',value:mercurySign.nameKo},{label:'대화 단어',value:mercurySign.keywords[0]}]},
     {key:'astro-love',icon:'favorite',title:'사랑과 관계',quote:`금성 ${venusSign.nameKo}, 마음이 끌리는 방식이에요`,copy:`관계에서는 ${venusSign.loveStyle} 호감이 커질수록 상대의 생활 속도와 경계도 함께 살펴보세요. 원하는 것을 돌려 말하기보다 부드럽고 구체적으로 표현하는 편이 좋아요. 사랑은 차트가 정해주는 답이 아니라 두 사람이 계속 맞춰가는 선택이에요.`,points:[{label:'금성',value:venusSign.nameKo},{label:'관계 단어',value:venusSign.keywords[1]}]},
     {key:'astro-action',icon:'bolt',title:'행동과 추진력',quote:`화성 ${marsSign.nameKo}, 본인이 움직이는 방식이에요`,copy:`행동할 때는 ${marsSign.personality} 의욕이 올라온 날에는 시작만 많이 만들지 말고 하나를 끝내세요. 화가 나거나 조급할 때는 몸을 먼저 움직인 뒤 결정하면 실수가 줄어요. 추진력은 방향과 마감이 있을 때 가장 멋지게 살아나요.`,points:[{label:'화성',value:marsSign.nameKo},{label:'행동 단어',value:marsSign.keywords[0]}]},
-    {key:'astro-work',icon:'work',title:'일과 돈',quote:'별의 강점은 생활의 구조 안에서 현실이 돼요',copy:`일에서는 ${sunSign.careerStyle} 돈의 흐름은 ${sunSign.moneyStyle} 본인의 강한 ${elementKo[dominant]} 분위기는 익숙한 무기예요. 부족한 ${elementKo[weak]} 분위기는 일정·기록·협업처럼 구체적인 습관으로 보완하세요. 큰 결정은 차트와 함께 실제 조건을 반드시 확인해야 해요.`,points:[{label:'강한 원소',value:elementKo[dominant]},{label:'채울 원소',value:elementKo[weak]}]},
-    {key:'astro-balance',icon:'orbit',title:'차트의 균형',quote:'강한 힘은 방향이 되고, 빈 곳은 성장할 자리가 돼요',copy:`본인 차트에는 ${elementKo[dominant]} 분위기와 ${modeKo[mode]} 성향이 두드러져요. 익숙한 방식만 고집하면 장점이 과해질 수 있어요. 반대 성향을 없애려 하지 말고 작은 행동으로 빌려 쓰세요. 차트는 본인을 가두는 이름표가 아니라 선택의 폭을 넓히는 지도예요.`,points:[{label:'강한 분위기',value:elementKo[dominant]},{label:'움직임 방식',value:modeKo[mode]}]}
+    {key:'astro-work',icon:'work',title:'일과 돈',quote:'별의 강점은 생활의 구조 안에서 현실이 돼요',copy:`일에서는 ${sunSign.careerStyle} 돈의 흐름은 ${sunSign.moneyStyle} 본인의 강한 ${elementKo[dominant]} 분위기는 익숙한 무기예요. ${({fire:'결정을 미루고 있다면 가장 작은 실행 날짜부터 잡아 보세요.',earth:'계획마다 필요한 비용과 마감을 한 줄씩 붙여 보세요.',air:'본인 결론을 설명하기 전에 다른 방법 한 가지를 물어보세요.',water:'상대에게 해결책보다 지금 어떤 기분인지 먼저 물어보세요.'})[weak]} 큰 결정은 차트와 함께 실제 조건을 반드시 확인해야 해요.`,points:[{label:'강한 원소',value:elementKo[dominant]},{label:'채울 원소',value:elementKo[weak]}]},
+    {key:'astro-balance',icon:'orbit',title:'차트의 균형',quote:'강한 힘은 방향이 되고, 빈 곳은 성장할 자리가 돼요',copy:`본인 차트에는 ${elementKo[dominant]} 분위기와 ${modeKo[mode]} 성향이 두드러져요. 익숙한 방식만 고집하면 장점이 과해질 수 있어요. ${({cardinal:'새 일을 시작하기 전에 지금 하던 일 하나의 마감부터 정하세요.',fixed:'기존 방식을 유지하되 작은 부분 하나만 바꿔 결과를 비교하세요.',mutable:'선택지를 더 모으기 전에 이번에 고를 기준 두 개를 정하세요.'})[mode]} 차트는 본인을 가두는 이름표가 아니라 선택의 폭을 넓히는 지도예요.`,points:[{label:'강한 분위기',value:elementKo[dominant]},{label:'움직임 방식',value:modeKo[mode]}]}
   ];
   deck.personalNote=personalNote;
   const created=flow.createdAt?new Date(flow.createdAt).toLocaleString('ko-KR'):'';
@@ -747,11 +747,37 @@ function generateTodayAstrology(chart,transit){
 
   return paras.join('\n\n');
 }
+function astroPracticalReading(chart,productType){
+  const key=canonicalAstroProduct(productType||'life');
+  const id=({love:'venus',marriage:'venus',reunion:'venus',gunghap:'venus',money:'venus',study:'mercury',health:'moon',child:'moon',children:'moon'})[key]||'sun';
+  const planet=findPlanet(chart,id),sign=planet&&signById(planet.sign);
+  if(!sign)return '';
+  const plans={
+    life:['진로를 바꿀지 고민한다면 남에게 잘 보이는 선택과 오래 할 수 있는 선택을 나눠 보세요.','후보마다 필요한 준비·수입 공백·실제로 해볼 작은 일을 적어 보세요.'],
+    newyear:['한 해의 계획이 많다면 새로 시작할 일과 끝낼 일을 구분해 보세요.','분기마다 완료할 결과물 하나와 쓰지 않을 시간·돈의 한도를 정하세요.'],
+    love:['호감이 생겼을 때 본인이 원하는 연락과 상대가 편한 연락이 다를 수 있어요.','다음 만남을 제안하고 상대도 구체적인 시간을 제시하는지 살펴보세요.'],
+    marriage:['함께 살 준비는 마음뿐 아니라 지출과 생활의 분담에서도 확인해 보세요.','주거비·집안일·가족 연락의 기준을 따로 적은 뒤 서로 비교하세요.'],
+    reunion:['다시 만나고 싶은 마음과 같은 갈등을 줄일 준비를 구분하세요.','헤어진 이유 중 달라진 조건을 적고, 상대가 연락을 원치 않았다면 존중하세요.'],
+    gunghap:['같은 말도 조언으로 듣는 사람과 평가로 듣는 사람이 있어요.','고민을 들을 때 해결책이 필요한지 공감이 필요한지 먼저 물어보세요.'],
+    money:['갖고 싶은 물건이나 새 제안을 볼 때 결제 이후의 부담도 함께 살펴보세요.','초기 지출·반복 비용·취소 비용을 나누고 생활비를 남긴 금액으로 비교하세요.'],
+    career:['일의 내용은 좋은데 자꾸 지친다면 역할과 마감을 먼저 살펴보세요.','새 일을 맡기 전에 결정권·업무 범위·보상을 함께 확인하세요.'],
+    study:['아는 내용을 설명할 때 막힌다면 읽은 시간과 이해한 양이 다를 수 있어요.','교재를 덮고 한 개념을 설명한 뒤 막힌 부분만 다시 확인하세요.'],
+    child:['아이의 표정과 행동이 바뀔 때 직전의 환경을 함께 살펴보세요.','잠·식사·활동을 기록하고 아이가 편안했던 조건을 반복해 보세요.'],
+    children:['자녀 계획을 세울 때 원하는 시기만큼 돌봄 부담도 함께 이야기하세요.','각자 낼 수 있는 시간·생활비·가족의 도움을 구체적으로 적어 보세요.'],
+    health:['피로가 반복된다면 하루 중 언제 무너지는지부터 살펴보세요.','수면·식사·불편한 증상을 기록하세요. 증상이 이어지면 차트보다 진료가 먼저예요.']
+  };
+  const plan=plans[key]||plans.life;
+  const basis=key==='money'?sign.moneyStyle:id==='venus'?sign.loveStyle:id==='sun'&&key==='career'?sign.careerStyle:sign.personality;
+  return `${plan[0]}\n\n${planetNameKo(id)}이 ${sign.nameKo}에 놓인 점을 생활 방식으로 읽으면 이래요. ${basis}\n\n${plan[1]}`;
+}
 function generateTemplateAstrologySummary(chart){const sun=chart.planets.find(p=>p.planet==='sun'),moon=chart.planets.find(p=>p.planet==='moon'),venus=chart.planets.find(p=>p.planet==='venus');return `본인의 태양은 ${signNameKo(sun.sign)}, 달은 ${signNameKo(moon.sign)}, 금성은 ${signNameKo(venus.sign)}에 있어요. 삶의 방향은 ${signById(sun.sign).personality} 감정은 ${signById(moon.sign).personality} 관계에서는 ${signById(venus.sign).loveStyle} ${chart.ascendant?`상승궁은 ${signNameKo(chart.ascendant.sign)}라 첫인상과 외적 태도에 그 별자리의 분위기가 더해져요.`:'출생시간이 없어 상승궁과 하우스는 제외했어요.'}`;}
 // 결제 전 미리보기 — AI 리포트와 같은 목차, 첫 섹션만 계산한 차트 요약으로 채운다
-function astroPreviewTemplate(chart,productType){const t=READING_TOPICS.find(t=>t.key===canonicalAstroProduct(productType))||READING_TOPICS[0];const heads=astroTopicSections(productType);return heads.map((h,i)=>`# ${i+1}. ${h}\n\n${i===0?generateTemplateAstrologySummary(chart):`${t.focus}을 출생차트의 행성 위치와 각도로 살펴봐요. ${h}에서 본인이 살릴 강점과 조심할 패턴을 자세히 풀어드려요.`}`).join('\n\n');}
+function astroPreviewTemplate(chart,productType){const t=READING_TOPICS.find(t=>t.key===canonicalAstroProduct(productType))||READING_TOPICS[0];const heads=astroTopicSections(productType);return heads.map((h,i)=>`# ${i+1}. ${h}\n\n${i===0?generateTemplateAstrologySummary(chart)+'\n\n'+astroPracticalReading(chart,productType):`${t.focus}을 출생차트의 행성 위치와 각도로 살펴봐요. ${h}에서 본인이 살릴 강점과 조심할 패턴을 자세히 풀어드려요.`}`).join('\n\n');}
 
-function generateTemplateAstrologyReading(chart){return `# 출생차트 핵심 요약\n\n${generateTemplateAstrologySummary(chart)}\n\n# 현재 운의 흐름\n\n현재 트랜짓은 본인의 기본 성향에 새로운 자극을 더하고 있어요. 중요한 결정은 감정만으로 밀어붙이기보다 실제 조건을 함께 확인하는 편이 좋아요.\n\n# 현실적인 조언\n\n오늘부터는 본인이 반복해서 끌리는 선택과 피하고 싶은 선택을 나누어 적어보세요. 차트는 가능성을 보여주는 지도에 가깝기 때문에, 실제 방향은 작은 행동을 통해 더 선명해져요.\n\n# 종합 결론\n\n이 풀이는 계산된 차트를 바탕으로 한 기본 안내예요. 상세 풀이 연결이 잠시 원활하지 않았지만, 출생시간과 도시 정보를 다시 확인하면 더 안정적인 결과를 받을 수 있어요.`;}
+function generateTemplateAstrologyReading(chart,productType){
+  return `# 출생차트 핵심 요약\n\n${generateTemplateAstrologySummary(chart)}\n\n# 생활에서 확인할 장면\n\n${astroPracticalReading(chart,productType)}\n\n# 계산한 차트의 적용 범위\n\n위 내용은 실제 출생차트로 읽은 기본 풀이예요. 상세 AI 풀이 연결이 원활하지 않아, 계산하지 않은 사건이나 시기는 덧붙이지 않았어요.`;
+}
+
 async function generateAstrologyReading(chart,transit,productType,opts){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,productType,partnerChart:_astroFlow&&_astroFlow.partnerChart,synastryAspects:_astroFlow&&_astroFlow.synastryAspects,targetYear:_astroFlow&&_astroFlow.targetYear,yearTransits:_astroFlow&&_astroFlow.yearTransits,question:_astroFlow&&_astroFlow.question,language:currentLanguagePayload(),skipSections:(opts&&opts.skipSections)||[],paidToken:typeof latestPaidToken==='function'?latestPaidToken():''})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
 
 (function processPendingAstrologyPaymentReturn(){

@@ -218,3 +218,8 @@ html[data-flow-theme] #app :is(.lv4-row-head,.lv4-sub h3,.lv4-sec-head h2,.cc-fi
 html[data-flow-theme] #app .lc-pcard-body{color:#fff}
 html[data-flow-theme] #app .lc-pcard-body :is(p,dt,dd,small){color:#f1f4f2;opacity:1}
 html[data-flow-theme] #app .lc-scroll :is(p,.lk-tl-what){color:#202b26}
+
+/* 두루마리는 미리보기·전체 풀이 모두 밝은 종이이므로 테마 글자색을 상속하지 않는다. */
+html[data-flow-theme] #app .lc-scroll{color:#202b26}
+html[data-flow-theme] #app .lc-scroll .lc-scroll-title{color:#5b311b;opacity:1;text-align:center}
+html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26;opacity:1}

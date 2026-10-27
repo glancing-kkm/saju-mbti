@@ -2261,7 +2261,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4580fdebf7a1">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=71981a91156f">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=28a17757974a">
 </head>
 <body>
 <div id="app">
@@ -6262,20 +6262,41 @@ function buildAIReadingInput(flow){
     return {positionIndex:pos.index,positionLabel:pos.label,positionMeaning:pos.meaning,cardNameKo:card.nameKo,cardNameEn:card.nameEn,orientation:sel.orientation,keywords:card.keywords,baseMeaning:base,categoryMeaning:cat,advice:card.advice,warning:card.warning};
   })};
 }
+function tarotQuestionPlan(input){
+  const key=input.topic||input.questionCategory||'general';
+  return ({
+    life:['지금 미뤄 둔 선택 중 시간과 돈이 가장 많이 드는 것을 골라 보세요.','선택마다 얻는 것·포기할 것·되돌릴 비용을 한 줄씩 적어 보세요.'],
+    newyear:['보고 싶은 해에 바꿀 일 하나와 유지할 일 하나를 나눠 보세요.','일·돈·관계별 목표를 늘리기보다 먼저 끝낼 일부터 달력에 넣어 보세요.'],
+    love:['상대의 마음을 추측하기보다 약속을 지키는 태도를 확인하세요.','다음 만남을 제안한 뒤 상대도 시간을 정하는 데 참여하는지 보세요.'],
+    marriage:['결혼 의향과 결혼 준비가 같은 단계인지 확인하세요.','주거비·부채·집안일의 분담을 각각 적고 서로 비교해 보세요.'],
+    reunion:['다시 연락하기 전에 헤어진 이유가 지금 달라졌는지 살펴보세요.','연락을 원치 않는다는 의사가 있었다면 존중하세요. 대화가 가능할 때만 짧게 의사를 물어보세요.'],
+    gunghap:['서로 같은 행동을 다른 뜻으로 받아들이는 지점을 찾아보세요.','최근 서운했던 장면 하나를 고르고, 각자가 기대한 행동을 말해 보세요.'],
+    money:['들어올 돈보다 나가기로 확정된 돈을 먼저 확인하세요.','초기 비용·매달 비용·중단할 때 비용을 나눠 적어 보세요.'],
+    career:['현재 일에서 불만인 조건과 다음 자리에서 필요한 조건을 구분하세요.','보상·권한·업무 범위를 적고 제안받은 조건과 비교해 보세요.'],
+    study:['점수가 안 오른다면 공부 시간보다 반복해서 틀리는 유형을 먼저 보세요.','틀린 문제 세 개를 다시 풀고 공통으로 막힌 개념을 표시하세요.'],
+    child:['아이의 행동에 이름을 붙이기보다 언제 편하고 언제 힘든지 관찰하세요.','잠·식사·활동이 바뀐 날과 아이의 반응을 함께 적어 보세요.'],
+    children:['자녀 계획에서 두 사람이 원하는 시기와 부담을 따로 이야기하세요.','돌봄 시간·생활비·받을 수 있는 도움을 함께 적어 보세요.'],
+    health:['생활 리듬에서 가장 자주 무너지는 시간을 찾아보세요.','수면·식사·불편한 증상을 기록하세요. 증상이 이어지면 카드보다 진료를 먼저 받으세요.'],
+    general:['질문에서 본인이 바꿀 수 있는 조건과 상대의 선택을 구분하세요.','지금 확인할 질문 하나를 정하고 실제 답을 받은 뒤 결정하세요.']
+  })[key]||['질문에서 본인이 바꿀 수 있는 조건을 먼저 고르세요.','필요한 시간·비용·상대의 동의를 확인하고 다음 행동을 정하세요.'];
+}
 function generateTemplateReading(input){
-  const count=input.cards.length;
-  const summary=count>=10?'복잡한 고민의 여러 층이 드러나는 흐름입니다.':count>=5?'현재 상황과 장애물, 조언이 균형 있게 드러나는 흐름입니다.':'핵심만 빠르게 보여주는 흐름입니다.';
-  let md=`# 1. 질문 요약\n\n「${input.question}」 이 질문은 단순한 예측보다 지금 어떤 태도로 움직이면 좋은지 확인하는 고민이에요. 카드들은 질문자의 마음, 현실 조건, 가까운 가능성을 함께 보여줘요.\n\n`;
-  md+=`# 2. 전체 흐름 요약\n\n전체적으로 ${summary} 좋은 카드와 조심할 카드가 함께 있으니, 결론을 급하게 내리기보다 조건을 확인하며 움직이는 편이 좋아요.\n\n`;
-  md+=`# 3. 카드별 해석\n\n`;
-  input.cards.forEach(c=>{md+=`## ${c.positionLabel} - ${c.cardNameKo}\n\n- 핵심키워드: ${c.keywords.slice(0,3).join(', ')}\n\n${c.positionLabel} 자리는 ${c.positionMeaning}${_tEul(c.positionMeaning)} 보여주는 위치예요. 여기에 나온 ${c.cardNameKo} 카드는 ${c.baseMeaning} ${c.categoryMeaning} 그래서 이 카드는 질문에 대해 지금 가장 먼저 살펴야 할 부분을 조용히 짚어주고 있어요.\n\n`;});
-  md+=`# 4. 카드 조합 해석\n\n${input.cards[0].cardNameKo} 카드에서 시작한 흐름은 ${input.cards[input.cards.length-1].cardNameKo} 카드로 이어지며, 처음의 고민이 마지막에는 더 현실적인 선택 기준으로 정리되는 모습이에요. 중간 카드들은 서두르기보다 감정과 조건을 함께 맞추라고 말해요.\n\n`;
-  md+=`# 5. 질문에 대한 최종 답변\n\n답은 가능성이 열려 있지만, 조건을 확인하며 천천히 움직일 때 더 좋아지는 흐름에 가깝습니다. 지금 당장 확정하려 하기보다 상대 반응, 현실 조건, 본인의 마음을 함께 보세요.\n\n`;
-  md+=`# 6. 현실적인 조언\n\n먼저 오늘 안에 이 질문에서 가장 중요한 기준 한 가지를 적어보세요. 그다음 감정적으로 바로 행동하기보다 하루 정도 시간을 두고 다시 확인하는 편이 좋아요. 상대나 상황이 있는 문제라면 길게 설명하기보다 짧고 부담 없는 대화부터 시작해보세요.\n\n`;
-  md+=`# 7. 주의할 점\n\n${[...new Set(input.cards.map(c=>c.warning))].slice(0,2).join(' ')} 불안해서 답을 재촉하면 흐름이 더 흐려질 수 있어요.\n\n`;
-  md+=`# 8. 다음 행동 가이드\n\n오늘은 큰 결정보다 작은 확인이 좋아요. 메시지를 보내야 한다면 짧게, 결정을 해야 한다면 조건표를 먼저 만들어보세요.`;
+  const cards=input.cards||[];if(!cards.length)return '';
+  const first=cards[0],last=cards[cards.length-1],plan=tarotQuestionPlan(input);
+  const advice=cards.find(c=>/조언|방향|준비/.test(c.positionLabel))||last;
+  const obstacle=cards.find(c=>/장애|걸림|막는|두려움/.test(c.positionLabel))||cards.find(c=>c.orientation==='reversed');
+  let md=`# 1. 질문 요약\n\n「${input.question||input.topicTitle||'지금의 선택'}」에서 먼저 볼 부분이에요. ${plan[0]}\n\n`;
+  md+=`# 2. 전체 흐름 요약\n\n${first.positionLabel}에 나온 ${first.cardNameKo} 카드는 ${first.baseMeaning} ${obstacle?`${obstacle.positionLabel}의 ${obstacle.cardNameKo} 카드는 ${obstacle.warning||obstacle.baseMeaning}`:''} 지금 취할 행동은 ${advice.cardNameKo}의 조언으로 연결해 보세요. ${advice.advice}\n\n`;
+  md+='# 3. 카드별 해석\n\n';
+  cards.forEach(c=>{md+=`## ${c.positionLabel} - ${c.cardNameKo}\n\n- 핵심키워드: ${c.keywords.slice(0,3).join(', ')}\n\n${c.positionLabel}은 ${c.positionMeaning}${_tEul(c.positionMeaning)} 살펴보는 자리예요. ${c.orientation==='reversed'?'역방향, 즉 카드가 뒤집힌 상태로 나왔어요. ':''}${c.baseMeaning} ${c.categoryMeaning} ${/장애|걸림|막는|두려움/.test(c.positionLabel)?c.warning:c.advice}\n\n`;});
+  md+=`# 4. 카드 조합 해석\n\n시작점인 ${first.cardNameKo}는 ${first.baseMeaning} 도착점에 놓인 ${last.cardNameKo}는 ${last.baseMeaning} 둘을 연결할 때 실제로 확인할 조건은 이것이에요. ${plan[1]}\n\n`;
+  md+=`# 5. 질문에 대한 최종 답변\n\n${advice.positionLabel}의 ${advice.cardNameKo}가 제시하는 방향을 먼저 적용해 보세요. ${advice.advice} ${obstacle?`다만 ${obstacle.cardNameKo}가 짚는 주의점도 함께 보세요. ${obstacle.warning}`:plan[0]}\n\n`;
+  md+=`# 6. 현실적인 조언\n\n${plan[1]} ${advice.advice}\n\n`;
+  md+=`# 7. 주의할 점\n\n${[...new Set(cards.map(c=>c.warning).filter(Boolean))].slice(0,2).join(' ')} 카드만으로 상대의 속마음이나 실제 사건을 확인한 것은 아니에요.\n\n`;
+  md+=`# 8. 다음 행동 가이드\n\n${plan[1]}`;
   return md;
 }
+
 async function generateAIReading(input,opts){
   const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{
     method:'POST',
@@ -7636,7 +7657,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=5c37841d827f';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=b4bf848f104e';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -13171,6 +13192,16 @@ const LV4_MONTH_FIELDS={
     inn:['상대를 이해하려다 혼자 답을 정해 버리기 쉬워요.','속뜻을 추측하기보다 지금 마음이 어떤지 물어보세요.']
   }
 };
+function lv4FieldDecision(key,score,age,meta){
+  const cautious=score<65,young=age<20;
+  const plans={
+    wealth:young?'용돈으로 살 물건을 정했다면 가격과 남는 돈을 먼저 적어 보세요.':cautious?'새 지출은 계약금만 보지 말고 잔금·유지비까지 합쳐 비교하세요.':'수입을 늘릴 제안이 있다면 작업 범위와 실제 남는 금액을 함께 제시하세요.',
+    love:young?'친구의 뜻을 추측하기보다 같이 하고 싶은 활동을 직접 물어보세요.':meta&&meta.marital==='married'?'배우자와 집안일·지출 중 한 가지의 분담 기준을 정해 보세요.':meta&&meta.marital==='dating'?'연락이 뜸할 때 바라는 연락 빈도와 편한 시간을 서로 맞춰 보세요.':'새로 만난 사람이 시간 약속과 본인의 거절을 존중하는지 살펴보세요.',
+    career:young?'모르는 문제를 표시하고 풀이를 보지 않은 채 다시 설명해 보세요.':cautious?'추가 일을 받기 전에 마감·담당 범위·최종 승인자를 확인하세요.':'완료한 일의 전후 차이를 숫자나 견본으로 정리해 제안에 붙이세요.',
+    health:cautious?'늦은 일정부터 줄이고 취침·기상 시간을 일정하게 맞춰 보세요.':'무리하게 운동량을 늘리기보다 식사와 걷기 시간을 일정에 고정하세요.'
+  };
+  return plans[key]||'다음 약속을 잡기 전에 필요한 시간과 담당자를 확인하세요.';
+}
 function lv4MonthNarrative(x,saju,meta,age,domain='core'){
   const group=LV4_GROUP[x.tg]||'peer',key=domain==='money'?'wealth':domain;
   const score=Number(x.sc&&x.sc[key]!==undefined?x.sc[key]:x.score)||0;
@@ -14216,12 +14247,28 @@ function zwBoardPlainHTML(chart){
   return `<div class="zw-board">${cells}<div class="zw-center"><b>${ZW_BUREAU_PLAIN[chart.bureau]}</b><span>음력 ${chart.li.ly}년 ${chart.li.lm}월 ${chart.li.ld}일${chart.li.leap?'(윤달)':''}</span><span>${BRCHKO[chart.hb]}시 태생</span></div></div>`;
 }
 const ZW_TITLES=[['zw-ming','나를 나타내는 방의 별로 보는 타고난 성향과 12개 방'],['zw-love','사랑과 배우자를 보여주는 방'],['zw-money','돈이 들어오는 방식을 보여주는 방'],['zw-work','일과 사회적 자리를 보여주는 방'],['zw-mind','마음이 쉬는 곳을 보여주는 방'],['zw-decade','10년 단위 흐름']];
+const ZW_PRACTICAL={
+  자미:['상대의 선택을 정정하기 전에 어떤 도움을 원하는지 물어보세요.','체면 때문에 늘어나는 모임 지출의 한도를 정하세요.','결정할 일과 위임할 일을 나눠 담당자를 정하세요.','남을 이끌지 않아도 되는 산책 시간을 따로 두세요.'],
+  천기:['걱정되는 상황을 추측하기보다 사실인지 먼저 물어보세요.','새 정보를 볼 때마다 갈아타기보다 변경할 기준을 적으세요.','여러 대안 중 실행할 안 하나와 마감을 정하세요.','자기 전 떠오른 생각은 메모하고 검토는 다음 날로 미루세요.'],
+  태양:['챙겨 준 뒤 고마움을 기대한다면 원하는 표현을 말해 주세요.','부탁받아 쓰는 돈과 본인 생활비를 분리하세요.','설명할 자료를 한 장으로 만들고 듣는 사람의 반응을 보세요.','사람을 만나는 일정 뒤에는 혼자 쉬는 시간을 비워 두세요.'],
+  무곡:['행동으로 한 배려를 짧은 말로도 전해 주세요.','월말에 수입·고정비·남는 돈을 함께 확인하세요.','완료 기준을 숫자나 견본으로 합의하세요.','아무 성과도 내지 않아도 되는 휴식 시간을 정하세요.'],
+  천동:['괜찮다고 넘긴 부탁 중 부담스러운 것을 하나 말해 보세요.','미뤄 둔 청구서와 반복 결제를 먼저 확인하세요.','편한 일부터 하기 전에 마감이 가까운 일 하나를 끝내세요.','식사나 가벼운 산책처럼 편한 감각을 주는 시간을 두세요.'],
+  염정:['화가 났을 때 바로 결론 내리지 말고 대화할 시간을 다시 잡으세요.','기분이 상한 날의 큰 결제는 다음 날 다시 검토하세요.','성과 기준을 시작 전에 확인해 평가 다툼을 줄이세요.','승패를 따지지 않는 운동이나 취미로 긴장을 내려놓으세요.'],
+  천부:['평소와 다른 제안은 바로 거절하기보다 작은 범위로 시험해 보세요.','생활비와 비상금을 나누고 꺼내 쓸 조건을 정하세요.','반복 업무를 목록으로 남겨 다른 사람도 이어받게 하세요.','책상이나 방 한 곳을 정돈하되 쉬는 시간까지 일로 채우지 마세요.'],
+  태음:['상대가 알아주길 기다리기보다 필요한 배려를 한 문장으로 말하세요.','계약 전에 유지비와 중도 해지 조건을 적어 보세요.','세부 검토의 종료 시간을 정해 제출이 늦지 않게 하세요.','밝기와 소음을 낮추고 혼자 생각을 정리할 시간을 두세요.'],
+  탐랑:['새 만남보다 지금 한 약속을 지키는 데 시간을 먼저 쓰세요.','여러 수입 통로의 순이익을 따로 계산하세요.','새 프로젝트를 맡기 전에 진행 중인 일의 마감을 확인하세요.','새 자극을 찾는 날과 충분히 자는 날을 번갈아 배치하세요.'],
+  거문:['반박할 근거를 찾기 전에 상대 말의 뜻을 다시 확인하세요.','구두 약속은 지급일과 범위를 적은 문서로 바꾸세요.','문제 지적 뒤에는 가능한 대안 하나를 붙이세요.','대화와 정보 입력을 멈추고 조용히 걷는 시간을 두세요.'],
+  천상:['양보할 수 있는 것과 본인도 필요한 것을 따로 말하세요.','다른 사람의 부탁으로 쓰는 돈에 한도를 정하세요.','중간에서 조율할 때 최종 결정권자를 확인하세요.','남의 부탁을 받지 않는 시간을 일정에 먼저 넣으세요.'],
+  천량:['걱정해서 하는 말도 조언을 원하는지 먼저 확인하세요.','도움 줄 금액은 본인 생활에 지장 없는 범위로 정하세요.','검토 기준을 공개해 원칙이 개인 평가로 들리지 않게 하세요.','챙겨야 할 일의 목록에서 다른 사람이 맡을 것을 빼 보세요.'],
+  칠살:['각자 결정할 일과 함께 의논할 일을 나누세요.','변동 수입과 별개로 생활비를 먼저 확보하세요.','권한과 책임이 맞는지 확인한 뒤 새 일을 맡으세요.','강도 높은 활동 다음 날에는 회복 일정을 넣으세요.'],
+  파군:['관계를 바꾸고 싶다면 바꿀 행동 하나부터 서로 합의하세요.','새 시도에 쓸 돈과 중단할 손실 한도를 먼저 정하세요.','바꿀 공정 하나를 시험하고 전후 결과를 비교하세요.','일정 전체를 바꾸기보다 쉬는 습관 하나부터 유지하세요.']
+};
 function buildZiweiReadingV4(saju,m){
   const ch=buildZiweiChart(saju,m);
   const me=zwStarsOf(ch,'명궁'),love=zwStarsOf(ch,'부부궁'),money=zwStarsOf(ch,'재백궁'),work=zwStarsOf(ch,'관록궁'),mind=zwStarsOf(ch,'복덕궁'),out=zwStarsOf(ch,'천이궁');
   const nick=s=>`${s}성(${ZW_STARS[s][0]})`,list=st=>st.map(nick).join('과 ');
   const borrow=x=>x.borrowed?`이 방은 별이 없는 빈 방이라, 마주 보는 ${ZW_PALACE_PLAIN[ZW_PALACES[(ZW_PALACES.indexOf(x.p.name)+6)%12]]}의 별을 빌려 읽었어요. 빈 방은 나쁜 게 아니라, 마주 보는 방과 함께 움직인다는 뜻이에요.`:'';
-  const field=(x,i)=>x.stars.map(s=>`${nick(s)}: ${ZW_STARS[s][i]}`);
+  const field=(x,i)=>x.stars.map(s=>`${nick(s)}: ${ZW_STARS[s][i]} ${i>=2&&ZW_PRACTICAL[s]?ZW_PRACTICAL[s][i-2]:''}`);
   const cur=ch.curDecade,age=ch.age;
   let h='';
   h+=lvSec(1,ZW_TITLES[0][0],ZW_TITLES[0][1],`본인의 '나를 나타내는 방'에는 ${list(me.stars)}이 있어요.`,
@@ -14239,12 +14286,12 @@ function buildZiweiReadingV4(saju,m){
     lv4P([borrow(work)].concat(field(work,4)).concat([`바깥 활동의 방에는 ${list(out.stars)}이 있어요. ${ZW_STARS[out.stars[0]][1].split('. ')[0]}. 밖에서 일할 때 이 모습이 드러나요.`,_lifeStageAdvice(age,'work')]))+
     lv4Key(ZW_STARS[work.stars[0]][4]));
   h+=lvSec(5,ZW_TITLES[4][0],ZW_TITLES[4][1],`마음의 방에는 ${list(mind.stars)}이 있어요.`,
-    lv4P([`마음의 방은 본인이 무엇을 할 때 행복하고, 어떻게 쉬어야 회복되는지를 보여 줘요.`,`${ZW_STARS[mind.stars[0]][0]}이 마음을 지키고 있어요. ${ZW_STARS[mind.stars[0]][1]}`,borrow(mind),'이 별의 힘을 쓰는 취미나 시간을 꾸준히 두면 마음이 단단해져요. 바쁠수록 일주일에 한 번은 이 시간을 일정에 먼저 넣어 두세요.'])+
+    lv4P([`마음의 방은 본인이 무엇을 할 때 행복하고, 어떻게 쉬어야 회복되는지를 보여 줘요.`,`${ZW_STARS[mind.stars[0]][0]}이 마음을 지키고 있어요. ${ZW_STARS[mind.stars[0]][1]}`,borrow(mind),ZW_PRACTICAL[mind.stars[0]][3]])+
     lv4Key('마음이 쉬는 곳을 알면, 지쳤을 때 돌아올 길도 알 수 있어요.'));
   h+=lvSec(6,ZW_TITLES[5][0],ZW_TITLES[5][1],cur?`지금 ${cur.from}~${cur.to}세는 ${ZW_PALACE_PLAIN[cur.palace.name]}이 열리는 시기예요. ${ZW_DECADE_THEME[cur.palace.name]}이에요.`:`첫 10년 흐름은 ${ch.bureau}세부터 시작돼요.`,
     lv4P([`자미두수의 10년 흐름은 열두 개의 방을 하나씩 옮겨 다니며 열려요. 본인은 ${ch.forward?'시계 방향':'시계 반대 방향'}으로 옮겨 가요. 그 10년 동안은 열린 방의 일이 삶의 중심에 서요.`,cur&&cur.palace.stars.length?`지금 열린 방에는 ${list(cur.palace.stars)}이 있어요. ${ZW_STARS[cur.palace.stars[0]][1].split('. ')[0]}.`:'',`${age}세인 지금은 ${_lifeStageAdvice(age,'work')}`])+
     lv4Rows(ch.decades.slice(0,8).map(d=>({label:`${d.from}~${d.to}세`,tag:`${ZW_PALACE_PLAIN[d.palace.name]}${d===cur?' · 지금':''}`,text:`${ZW_DECADE_THEME[d.palace.name]}이에요.${d.palace.stars.length?` ${d.palace.stars.map(s=>ZW_STARS[s][0]).join('과 ')}이 이 시기를 이끌어요.`:''}`,on:d===cur})))+
-    lv4Key('좋은 방이 열리는 시기에 큰 결정을 두면 흐름을 타기 좋아요.'));
+    lv4Key(cur?`${ZW_PALACE_PLAIN[cur.palace.name]}에서 미뤄 둔 선택 하나를 적고, 필요한 시간·비용·도움을 확인하세요.`:'첫 흐름이 시작되기 전에는 생활 리듬과 배움의 환경부터 살펴보세요.'));
   const fr=(()=>{try{
     return {top:lcOrbs(saju)+lcScene(saju,`열두 개의 방에<br>${ppCall()}의 별이<br>보이는군`)+lcMoments([{when:'나를 지키는 별',what:nick(me.stars[0]),dot:'g'},{when:'배우자의 방',what:`<span class="lk-m">${nick(love.stars[0])}</span>이 지켜요`,dot:'y'},cur?{when:'지금 10년',what:`<span class="lk-m">${ZW_SHORT[cur.palace.name]}의 방</span>이 열린 때예요`,dot:'r'}:null]),
       ch1:lcChapter(1,'별자리 명식 분석')+lcBox('lc-bars','본인이 타고난 성향',lcPersonaBars(saju)),
@@ -14381,7 +14428,7 @@ function buildMonthlyReadingV4(saju,sy,sm,ey,em,extra){
   h+=lvSec(2,MO_TITLES[1][0],MO_TITLES[1][1],`${sy}년 ${sm}월부터 ${ey}년 ${em}월까지 ${total}개월의 평균은 100점 만점에 ${avgT}점이에요. 가장 결정적인 달은 ${decisive.lab}이에요.`,
     (ctxLabel?lv4Sub('본인이 궁금해한 것',lv4P([`본인은 이 기간에 '${ctxLabel}'에 대해 가장 궁금해했어요.${ctxKey?` 그 분야가 가장 잘 풀리는 달은 ${labs(best(ctxKey))}이에요.`:''}`])):'')+
     lv4Sub('전체 흐름',lv4P([`새로 시작하거나 크게 움직일 일은 ${labs(lucky)}에 두면 좋아요. 반대로 ${labs(tough)}에는 속도를 줄이고 정리와 점검에 쓰세요.`,`매달 들어오는 두 글자를 본인 사주와 견줘서 점수를 매겼어요. 본인에게 가장 힘이 되는 ${O[ys.main]} 기운이 들어오는 달은 ${helpM.length?labs(helpM.slice(0,4)):'이 기간에는 뚜렷하지 않아요'}${helpM.length?`이에요. ${helpM.length>1?'이 달들에는':'이달에는'} 같은 노력에도 결과가 더 잘 나와요.`:'.'}`,hurtM.length?`본인 도움 기운을 누르는 기운이 들어오는 달은 ${labs(hurtM.slice(0,4))}이에요. 이 달에는 무리하지 말고 천천히 가세요.`:'','좋은 달에는 계약, 이직, 고백, 발표처럼 밖으로 드러나는 일을, 쉬어 갈 달에는 정리, 검토, 휴식처럼 안을 다지는 일을 두세요.']))+
-    lv4Rows(fields.map(([n,k])=>({label:`${n} 평균`,tag:`${avg(k)}점`,text:avg(k)>=70?'이 기간에 힘이 붙는 분야예요.':avg(k)>=55?'무난하게 흘러가는 분야예요.':'정리하고 지키는 데 집중할 분야예요.',on:n===topField[0]})))+
+    lv4Rows(fields.map(([n,k])=>({label:`${n} 평균`,tag:`${avg(k)}점`,text:lv4FieldDecision(k,avg(k),months[0].age,_meta),on:n===topField[0]})))+
     lv4Key(`큰 결정은 ${decisive.lab}에, 정리는 ${tough[0].lab}에 두세요.`));
 
   // 3
@@ -14492,7 +14539,7 @@ function buildDaypickReadingV4(saju,y,m,d,extra){
   h+=lvSec(2,DP_TITLES[1][0],DP_TITLES[1][1],`${y}년 ${m}월 ${d}일 ${wDay}요일은 100점 만점에 ${f.total}점이에요. 한마디로 '${TD[0]}'이에요.`,
     (ctxLabel?lv4Sub('본인이 궁금해한 것',lv4P([`본인은 이 날 '${ctxLabel}'에 대해 가장 궁금해했어요. 아래 분야별 흐름과 시간대, 활동 풀이에서 그 부분을 특히 눈여겨보세요.`])):'')+
     lv4Sub('왜 이런 흐름이 나올까요',lv4P([`이 날의 두 글자는 위 글자 ${lv4Stem(dpS)}, 아래 글자 ${lv4Branch(dpB)}${lv4Ida(BRCHKO[dpB])}. 본인을 뜻하는 글자 ${lv4Stem(myStem)}에게 위 글자는 '${plainTG(tg)}'의 기운으로 다가와요.`,tg!==btg?`겉으로는 '${plainTG(tg)}'의 일이 들어오지만, 아래 글자는 '${plainTG(btg)}'의 기운이라 하루가 끝나고 마음에 남는 색깔은 조금 달라요. ${BD[0]}의 분위기도 함께 깔려 있어요.`:'위 글자와 아래 글자가 같은 기운이라, 하루 내내 한 가지 색깔이 또렷하게 이어져요.',DP_REL_DAY[rk]||DP_REL_DAY.평,helpDay?`특히 이 날은 본인에게 가장 힘이 되는 ${O[ys.main]} 기운이 들어오는 날이에요. 미뤄 둔 중요한 결정이 있다면 이 날 처리하면 결실이 커요.`:hurtDay?`이 날은 본인을 도와주는 기운과 부딪히는 기운이 들어와요. 큰 결정이나 새 도전보다 정리하고 쉬어 가기 좋은 날이에요.`:`이 날은 본인에게 특별히 돕지도 막지도 않는 기운이 들어와요. 본인이 어떻게 보내느냐가 결과를 정해요.`]))+
-    lv4Rows([{label:'재물',tag:`${f.wealth}점`,text:''},{label:'연애·관계',tag:`${f.love}점`,text:''},{label:'직업',tag:`${f.career}점`,text:''},{label:'건강',tag:`${f.health}점`,text:''}].map(r=>({...r,text:r.text||'아래 분야별 흐름에서 자세히 풀어 드려요.'})))+
+    lv4Rows([{label:'재물',tag:`${f.wealth}점`,text:''},{label:'연애·관계',tag:`${f.love}점`,text:''},{label:'직업',tag:`${f.career}점`,text:''},{label:'건강',tag:`${f.health}점`,text:''}].map(r=>({...r,text:lv4FieldDecision(({'재물':'wealth','연애·관계':'love','직업':'career','건강':'health'})[r.label],({'재물':f.wealth,'연애·관계':f.love,'직업':f.career,'건강':f.health})[r.label],age,_meta)})))+
     lv4Key(`${TD[1]}`));
 
   // 3. 분야별
@@ -14686,6 +14733,17 @@ const GH_SHENG_VERB=['불을 타오르게 하듯','흙을 따뜻하게 데우듯
 const GH_KE_VERB=['흙에 뿌리를 내리듯','쇠를 녹여 다듬듯','물길을 둑으로 잡아 주듯','나무의 가지를 쳐 주듯','불을 식혀 주듯'];
 const GH_SEEN={비견:'친구처럼 대등하고 편한 사람',겁재:'자극이 되는 라이벌 같은 사람',식신:'함께 있으면 편하고 즐거운 사람',상관:'톡톡 튀는 자극을 주는 사람',편재:'설레고 활기를 주는 사람',정재:'믿음직하고 든든한 사람',편관:'강하게 끌리지만 조금 긴장되는 사람',정관:'존중하게 되는 반듯한 사람',편인:'독특한 세계를 함께 나누는 사람',정인:'나를 보살펴 주는 따뜻한 사람'};
 const GH_STAGE_TYPE={활기:'기운이 한창 피어나는 단계',갈무리:'기운을 거두고 다지는 단계',잠재:'기운을 안에 품고 준비하는 단계'};
+// 지표명을 실제로 조율할 장면과 행동으로 번역한다.
+function ghMetricReading(metric,r,weak=false){
+  const br=r.dayBrRel&&r.dayBrRel.kind||'평';
+  if(metric==='배우자 자리의 만남'){
+    if(weak)return ['충','형','자형','원진','파','해'].includes(br)?'가까이 지낼수록 약속을 바꾸는 순간의 반응을 살펴보세요. 한쪽은 사정 설명으로 끝내도 다른 쪽은 무시당했다고 느낄 수 있어요. 늦거나 취소할 때는 이유와 다시 만날 시간을 함께 전하세요.':'함께 사는 모습을 구체적으로 맞춰 볼 필요가 있어요. 귀가 후 혼자 쉴 시간과 대화할 시간을 따로 정하세요. 침묵을 곧바로 서운함이나 무관심으로 해석하지 않는 게 좋아요.';
+    return '함께 보내는 일상의 리듬을 관계의 강점으로 쓸 수 있어요. 거창한 이벤트보다 식사나 산책처럼 반복할 약속을 정해 보세요. 편안함이 쌓여야 어려운 이야기도 꺼내기 쉬워져요.';
+  }
+  if(metric==='서로를 바라보는 방식')return weak?`본인은 상대를 '${GH_SEEN[r.tg12]||'함께 걸어가는 사람'}'으로 보고, 상대의 기대는 다를 수 있어요. 고민을 들을 때 조언을 원하는지 공감을 원하는지 먼저 물어보세요. 도와주려던 말이 평가처럼 들리는 일을 줄일 수 있어요.`:`본인은 상대를 '${GH_SEEN[r.tg12]||'함께 걸어가는 사람'}'으로 느끼기 쉬워요. 부탁할 일이 생겼을 때 필요한 도움을 구체적으로 말해 보세요. 상대의 강점을 알아보는 시선이 협력의 바탕이 돼요.`;
+  if(metric==='중심 기운의 어울림')return weak?'도와주려는 조언이 상대에게는 간섭으로 들릴 수 있는 조합이에요. 상대의 방법을 고치기 전에 도움을 원하는지 물어보세요. 각자 결정할 일과 함께 정할 일을 구분하면 주도권 다툼이 줄어요.':'한 사람이 막혔을 때 다른 관점으로 길을 보태기 좋은 조합이에요. 계획은 한 사람이, 검토는 다른 사람이 맡는 식으로 역할을 나눠 보세요. 대신 조언을 받아들일 선택권은 상대에게 남겨 주세요.';
+  return weak?'둘 다 어려워하는 일을 서로에게 미루면 불만이 쌓일 수 있어요. 돈 정리와 일정 관리 중 누가 무엇을 맡을지 써 보세요. 두 사람 모두 부담스러운 일은 도구나 외부 도움으로 나누세요.':'서로 다른 강점을 생활 속 역할로 나누기 좋은 조합이에요. 계획·실행·정리 중 각자 편한 일을 골라 맡아 보세요. 역할을 정한 뒤에도 한쪽 부담이 늘지 않는지 확인하세요.';
+}
 function ghWho(i){return i===1?'본인':'상대';}
 function buildGunghapReadingV4(s1,s2,ctx){
   const g1=ctx.gen1,g2=ctx.gen2,curY=new Date().getFullYear(),r=calcGunghap(s1,s2,g1,g2);
@@ -14730,7 +14788,7 @@ function buildGunghapReadingV4(s1,s2,ctx){
     lv4Sub('두 사람의 중심 글자',lv4P([`사주에서 그 사람 자신을 뜻하는 글자는 태어난 날의 위 글자예요. 본인은 ${lv4Stem(s1.dp.stem)}, 상대는 ${lv4Stem(s2.dp.stem)}${lv4Ida(STEMKO[s2.dp.stem])}.`,coreMeta,`그래서 이 관계의 첫인상을 한 문장으로 말하면, 본인에게 상대는 '${GH_SEEN[r.tg12]||'함께 걸어가는 사람'}'이고, 상대에게 본인은 '${GH_SEEN[r.tg21]||'함께 걸어가는 사람'}'이에요.`,stK==='합'?'특히 두 사람의 중심 글자가 서로 자석처럼 끌어당겨요. 처음 만났을 때부터 묘하게 마음이 가는 인연이에요.':stK==='충'?'다만 두 사람의 중심 글자가 정면으로 부딪혀요. 가치관이나 결정하는 방식이 달라서, 중요한 일일수록 서로의 입장을 끝까지 들어야 해요.':'']))+
     lv4Sub('궁합 점수는 이렇게 나왔어요',lv4Rows([{label:'중심 기운의 어울림',tag:`${r.ohScore}점`,text:'두 사람 자신을 뜻하는 글자끼리 서로 돕는지, 다듬는지, 닮았는지를 봤어요.'},{label:'서로를 바라보는 방식',tag:`${r.tgScore}점`,text:`본인 눈에 상대가 어떤 사람으로 보이는지, 그 반대는 어떤지를 봤어요.`},{label:'배우자 자리의 만남',tag:`${r.brScore}점`,text:`두 사람이 앉은 자리, 곧 배우자 자리가 서로 ${relWord} 사이인지와 다른 글자들의 만남까지 봤어요.`},{label:'다섯 기운의 균형',tag:`${r.balScore}점`,text:'두 사람의 다섯 기운을 합쳤을 때 한쪽으로 치우치지 않는지를 봤어요.'}])+lv4P([`점수는 좋고 나쁨의 판정이 아니에요. 높은 점수는 '자연스럽게 맞는 부분'이 많다는 뜻이고, 낮은 점수는 '말로 맞춰 가야 할 부분'이 많다는 뜻이에요. 지도에 오르막이 표시돼 있다고 못 가는 길은 아닌 것처럼요.`]))+
     lv4Sub('두 사람의 반응 속도',lv4P([fp1.relationship&&`본인은 ${pl(fp1.relationship).split(/(?<=[.!?])\s+/)[0]}`,fp2.relationship&&`상대는 ${pl(fp2.relationship).split(/(?<=[.!?])\s+/)[0]}`,'두 사람의 반응 속도를 말로 맞추는 게 이 관계의 첫 번째 열쇠예요.']))+
-    lv4Key(`${relationLabel}인 두 분에게 가장 필요한 건, 서로의 다름을 고치려 하기보다 번역해 주는 대화예요.`));
+    lv4Key('약속이 바뀌면 이유·대안·다시 확인할 시간을 한 번에 전하세요.'));
 
   // 2. 타고난 성향과 인생 단계·사주 유형 비교
   const person=(i,s,p,st,ax,fp,stage)=>{const raw=ILJU_60[p.iljuKey]||'',[img,who]=raw.split(/\s*—\s*/),W=ghWho(i),fix=x=>i===2?String(x||'').replace(/본인은/g,'상대는').replace(/본인이/g,'상대가').replace(/본인을/g,'상대를').replace(/본인/g,'상대'):x;return lv4Sub(`${W}${eun(W)} 어떤 사람일까`,lv4P([`${W}${eun(W)} ${who||'자기만의 분위기를 가진 분'}이에요. 자연에 비유하면 ${img||st.nick}의 모습이에요.`,`${W}${eul(W)} 뜻하는 글자는 ${lv4Stem(s.dp.stem)}${lv4Ida(STEMKO[s.dp.stem])}. ${fix(st.body||'')}`,`가장 큰 힘은 ${ax.label}의 힘이에요. ${fix(ax.gift)}`,`다섯 기운 중에는 ${LV4_OH[p.top]} 기운이 가장 두텁고, ${LV4_OH[p.lack]} 기운이 가장 옅어요. 에너지는 ${dir(p.yangRatio)}이에요.`,`타고난 기운의 단계로 보면 ${stage}에 있어요.`]));};
@@ -14775,7 +14833,7 @@ function buildGunghapReadingV4(s1,s2,ctx){
   // 7. 4가지 영역 세부 점수와 궁합 종합 해석
   h+=lvSec(7,GH_TITLES[6][0],GH_TITLES[6][1],`네 가지 점수를 나란히 놓으면 이 관계의 강한 곳과 약한 곳이 보여요.`,
     lv4Rows(scoresSorted.map(([l,v],i)=>({label:l,tag:`${v}점`,text:i===0?'이 관계에서 가장 자연스럽게 맞는 부분이에요. 여기서 생기는 편안함이 관계의 밑천이에요.':i===3?'가장 신경 써서 맞춰 가야 하는 부분이에요. 약점이라기보다 두 사람이 함께 키울 숙제예요.':'무난하게 맞는 부분이에요.',on:i===0})))+
-    lv4Sub('종합 해석',lv4P([`종합 궁합 ${r.score}점은 '${r.grade}'에 해당해요. ${r.score>=85?'타고난 어울림이 아주 좋은 인연이에요. 다만 좋은 궁합일수록 서로에게 익숙해져 표현을 줄이기 쉬우니, 고마움은 꼭 말로 전하세요.':r.score>=75?'자연스럽게 잘 맞는 부분이 많은 인연이에요. 작은 차이만 잘 다루면 오래 함께하기 좋아요.':r.score>=65?'잘 맞는 부분과 맞춰 가야 할 부분이 반반인 인연이에요. 대부분의 부부가 이 정도예요. 결국 관계는 두 사람이 어떻게 가꾸느냐에 달려 있어요.':'맞춰 가야 할 부분이 많은 인연이에요. 그만큼 서로에게서 배울 것도 많아요. 대화의 규칙을 정해 두면 차이가 오히려 힘이 돼요.'}`,`가장 강한 부분은 '${scoresSorted[0][0]}'이고, 가장 신경 써야 할 부분은 '${scoresSorted[3][0]}'이에요. 강한 부분은 두 사람의 기댈 언덕으로 쓰고, 약한 부분은 한 사람의 희생이 아니라 규칙으로 보완하세요.`]))+
+    lv4Sub('종합 해석',lv4P([`종합 궁합 ${r.score}점은 '${r.grade}'에 해당해요. ${r.score>=85?'타고난 어울림이 아주 좋은 인연이에요. 다만 좋은 궁합일수록 서로에게 익숙해져 표현을 줄이기 쉬우니, 고마움은 꼭 말로 전하세요.':r.score>=75?'자연스럽게 잘 맞는 부분이 많은 인연이에요. 작은 차이만 잘 다루면 오래 함께하기 좋아요.':r.score>=65?'잘 맞는 부분과 맞춰 가야 할 부분이 반반인 인연이에요. 대부분의 부부가 이 정도예요. 결국 관계는 두 사람이 어떻게 가꾸느냐에 달려 있어요.':'맞춰 가야 할 부분이 많은 인연이에요. 그만큼 서로에게서 배울 것도 많아요. 대화의 규칙을 정해 두면 차이가 오히려 힘이 돼요.'}`,`가장 강한 지표는 '${scoresSorted[0][0]}', 먼저 조율할 지표는 '${scoresSorted[3][0]}'이에요. ${ghMetricReading(scoresSorted[3][0],r,true)}`]))+
     lv4Key('궁합은 정해진 점수가 아니라 출발선이에요. 어디서 출발하든, 함께 걷는 방식이 도착지를 정해요.'));
 
   // 8. 두 사람의 본인 자리 비교
@@ -14783,13 +14841,13 @@ function buildGunghapReadingV4(s1,s2,ctx){
     lv4Sub('본인의 자리',lv4P([`본인의 자리에는 ${lv4Branch(b1)}${ip(BRCHKO[b1])} 놓여 있어요. ${bm1.body||''}`,`이 자리에는 '${TOPIC_SEAT_SHORT[p1.seatTg]||plainTG(p1.seatTg)}'의 분위기가 담겨 있어요. ${TOPIC_SEAT_LOVE[p1.seatTg]||''}`]))+
     lv4Sub('상대의 자리',lv4P([`상대의 자리에는 ${lv4Branch(b2)}${ip(BRCHKO[b2])} 놓여 있어요. ${bm2.body||''}`,`이 자리에는 '${TOPIC_SEAT_SHORT[p2.seatTg]||plainTG(p2.seatTg)}'의 분위기가 담겨 있어요. ${TOPIC_SEAT_LOVE[p2.seatTg]||''}`]))+
     lv4Sub('두 자리가 만나면',lv4P([`두 자리의 글자는 ${relWord} 사이예요. ${good?'서로가 바라는 관계의 모습이 비슷해서, 함께 있을 때 마음이 편해요.':tough?'서로가 바라는 관계의 모습이 조금 달라요. 상대가 원하는 관계가 무엇인지 직접 물어보는 게 가장 빠른 길이에요.':'서로 크게 부딪히지 않아서, 두 사람이 원하는 관계를 함께 만들어 갈 수 있어요.'}`,`본인은 상대에게서 '${TOPIC_SEAT_SHORT[p1.seatTg]||plainTG(p1.seatTg)}'${eul(TOPIC_SEAT_SHORT[p1.seatTg]||plainTG(p1.seatTg))} 바라고, 상대는 본인에게서 '${TOPIC_SEAT_SHORT[p2.seatTg]||plainTG(p2.seatTg)}'${eul(TOPIC_SEAT_SHORT[p2.seatTg]||plainTG(p2.seatTg))} 바라요. 서로가 바라는 것을 하나씩 채워 주는 게 이 관계를 오래가게 하는 비결이에요.`]))+
-    lv4Key('상대가 바라는 한 가지를 오늘 먼저 채워 주세요. 그게 가장 확실한 궁합 처방이에요.'));
+    lv4Key('이번 주에 함께 정할 일 하나와 각자 정할 일 하나를 나눠 보세요.'));
 
   const fr=(()=>{try{
     const best2=ppNextYears(best,'y'),worst=[...ppNextYears(years,'y')].sort((a,b)=>a.joint-b.joint||a.y-b.y)[0],lo=scoresSorted[scoresSorted.length-1];
-    const mo=[best2[0]&&{y:best2[0].y,what:'두 사람이 함께 큰 결정을 하기 좋은 해예요',dot:'g'},best2[1]&&{y:best2[1].y,what:'서로에게 힘이 붙는 해예요',dot:'y'},worst&&!best2.includes(worst)&&{y:worst.y,what:'서로 예민해지기 쉬운 해예요',dot:'r'}].filter(Boolean).sort((a,b)=>a.y-b.y);
+    const mo=[best2[0]&&{y:best2[0].y,what:'함께 쓸 돈과 생활 계획을 합의해 볼 해예요',dot:'g'},best2[1]&&{y:best2[1].y,what:'각자 맡을 일과 도울 일을 나눠 볼 해예요',dot:'y'},worst&&!best2.includes(worst)&&{y:worst.y,what:'약속을 바꿀 때 이유와 대안을 함께 전할 해예요',dot:'r'}].filter(Boolean).sort((a,b)=>a.y-b.y);
     return {top:`<p class="lc-pair-label">본인</p>${lcOrbs(s1)}<p class="lc-pair-label">상대</p>${lcOrbs(s2)}`+lcScene(s1,'두 사람 사이에<br>3가지 사건이<br>보이는군')+lcMoments(mo.map(e=>({when:lcWhenYM(e.y),what:e.what,dot:e.dot})),'두 사람을 뒤흔드는 3가지 사건'),
-      ch1:lcChapter(1,'두 사람 명식 분석')+lcBox('lc-bars','두 사람 궁합 지표',lcAreaBars(scoresSorted))+lcCard('lc-core',`${relationLabel}<br>${r.grade}`,[tough?'두 사람은 끌림도 크지만 부딪힘도 분명한 사이예요. 차이를 알면 오히려 오래 가요.':good?'두 사람은 자석처럼 끌어당기는 사이예요. 처음부터 편하게 가까워지기 쉬워요.':'두 사람은 천천히 온도가 오르는 사이예요. 시간이 쌓일수록 단단해져요.',`가장 잘 맞는 부분은 ${scoresSorted[0][0]}${lv4Ida(scoresSorted[0][0])}. 이 부분이 관계를 받쳐 주는 기둥이에요.`,`가장 조심할 부분은 ${lo[0]}${lv4Ida(lo[0])}. 여기서 서운함이 쌓이지 않게 자주 이야기하세요.`,best[0]?`특히 ${best[0].y}년에는 두 사람의 흐름이 함께 올라가요. 큰 약속은 이 해를 중심으로 잡아 보세요.`:''],'* 아래 영역별 풀이에서 더 깊이 다뤄요.')+lcScene(s2,'이제 두 사람을<br>장면별로<br>풀어 볼까',true),
+      ch1:lcChapter(1,'두 사람 명식 분석')+lcBox('lc-bars','두 사람 궁합 지표',lcAreaBars(scoresSorted))+lcCard('lc-core',`${relationLabel}<br>${r.grade}`,[`두 사람의 네 지표 중 ${lo[0]}을 먼저 조율해 보세요. ${lo[1]}점은 관계를 끝내라는 뜻이 아니라, 확인할 생활 기준을 짚는 점수예요.`,ghMetricReading(scoresSorted[0][0],r),ghMetricReading(lo[0],r,true),best[0]?`${best[0].y}년은 두 사람의 연간 점수가 함께 높은 구간이에요. 함께 살 계획이 있다면 주거비·일정·역할을 이때 구체적으로 맞춰 보세요.`:''],'* 아래 영역별 풀이에서 더 깊이 다뤄요.')+lcScene(s2,'이제 두 사람을<br>장면별로<br>풀어 볼까',true),
       ch2:lcChapter(2,'장면별 궁합 풀이'),
       ch3:lcChapter(3,'두 사람의 앞으로 10년')+lcBox('lc-graph','함께 가는 흐름 그래프','해마다 두 사람의 흐름을 합친 점수예요. 높은 해에 큰 결정을 두세요.',lcLineChart(years.map(x=>({l:`${String(x.y).slice(2)}년`,v:Math.round(x.joint)})),-1))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
@@ -14908,7 +14966,7 @@ function buildNewyearReadingV4(saju,y,meta){
   // 1. 올해 한눈에 보기와 사주 원국 해석
   h+=lvSec(1,NY_TITLES[0][0],NY_TITLES[0][1],`${y}년은 '${info.gz}'의 해예요. ${front.lead} ${back.lead}`,
     lv4Sub(`${y}년 한눈에 보기`,lv4P([`해마다 그해를 대표하는 두 글자가 있어요. ${y}년의 위 글자는 ${lv4Stem(m.yp.stem)}, 아래 글자는 ${lv4Branch(m.yp.branch)}${lv4Ida(BRCHKO[m.yp.branch])}. 이 두 글자가 본인 사주와 만나서 한 해의 분위기를 만들어요.`,`본인에게 위 글자는 '${plainTG(info.tg)}'의 기운으로 들어와요. 쉽게 말하면 ${front.use}이에요. 아래 글자는 '${plainTG(info.btg)}'의 기운으로 받쳐 줘요. ${back.use}이 바닥에 깔려 있는 셈이에요.`,`그래서 올해를 날씨에 비유하면, ${info.score>=80?'볕이 잘 드는 맑은 해예요. 계획해 둔 일을 밖으로 꺼내기 좋아요.':info.score>=65?'구름 사이로 해가 자주 비치는 해예요. 좋은 날을 골라 움직이면 결실이 있어요.':'바람이 조금 부는 해예요. 무리하게 나서기보다 우산을 챙기듯 준비를 먼저 하면 오히려 단단해져요.'} 올해 흐름 점수는 100점 만점에 ${info.score}점이에요.`,`${y}년에 본인은 ${m.ageText}예요.`])+
-      lv4Rows([{label:'돈',tag:`${m.scores.money}점`,text:LV4_YEAR_FIELD.money[fg][yi].split('. ')[0]+'.'},{label:young?'친구와 관계':'사랑과 관계',tag:`${m.scores.love}점`,text:LV4_YEAR_FIELD.love[fg][yi].split('. ')[0]+'.'},{label:young?'공부':'일',tag:`${m.scores.career}점`,text:LV4_YEAR_FIELD.career[fg][yi].split('. ')[0]+'.'},{label:'건강',tag:`${m.scores.health}점`,text:`가장 몸을 챙겨야 할 달은 ${lv4MonthLab(healthBad.map(x=>x.month))}이에요.`}])+
+      lv4Rows([{label:'돈',tag:`${m.scores.money}점`,text:lv4FieldDecision('wealth',m.scores.money,age,meta)},{label:young?'친구와 관계':'사랑과 관계',tag:`${m.scores.love}점`,text:lv4FieldDecision('love',m.scores.love,age,meta)},{label:young?'공부':'일',tag:`${m.scores.career}점`,text:lv4FieldDecision('career',m.scores.career,age,meta)},{label:'건강',tag:`${m.scores.health}점`,text:`가장 몸을 챙겨야 할 달은 ${lv4MonthLab(healthBad.map(x=>x.month))}이에요.`}])+
       lv4P([`올해 가장 힘이 붙는 달은 ${lv4MonthLab(m.lucky)}이고, 한 박자 쉬어 갈 달은 ${lv4MonthLab(m.tough)}이에요. 가장 결정적인 달은 ${m.decisive}월이에요.`]))+
     lv4Sub(`${y}년 달마다의 흐름`,lv4Rows(m.months.map(x=>({label:`${x.month}월`,tag:`${x.score}점`,text:lv4MonthNarrative(x,s,meta,age),on:x.month===m.decisive}))))+
     lv4Sub('계산한 사주 정보',`<dl class="lv4-facts">
@@ -14983,7 +15041,7 @@ function buildNewyearReadingV4(saju,y,meta){
   const ml4=a=>lv4MonthLab(a.map(x=>x.month));
   h=ctxApplyScenes('newyear',h,{axis:b.axis,work:ml4(workGood),workBad:ml4(workBad),money:ml4(moneyGood),moneyBad:ml4(moneyBad),love:ml4(loveGood),loveBad:ml4(loveBad),healthBad:ml4(healthBad)});
   const fr=(()=>{try{
-    const mo=[{x:{month:m.decisive},what:'올해 가장 결정적인 선택이 오는 달이에요',dot:'g'},moneyGood[0]&&{x:moneyGood[0],what:'돈이 크게 움직이는 달이에요',dot:'y'},healthBad[0]&&{x:healthBad[0],what:'몸과 마음을 아껴야 할 달이에요',dot:'r'}].filter(Boolean).sort((a,b)=>a.x.month-b.x.month);
+    const mo=[{x:{month:m.decisive},what:young?'발표·작품처럼 준비한 것을 보여 줄 달이에요':'미뤄 둔 제안을 견본과 조건으로 보여 줄 달이에요',dot:'g'},moneyGood[0]&&{x:moneyGood[0],what:young?'용돈의 사용 계획을 세워 볼 달이에요':'수입 제안의 보상과 실제 비용을 비교할 달이에요',dot:'y'},healthBad[0]&&{x:healthBad[0],what:'늦은 일정부터 줄이고 수면을 지킬 달이에요',dot:'r'}].filter(Boolean).sort((a,b)=>a.x.month-b.x.month);
     const avgF=k=>Math.round(m.months.reduce((n,x)=>n+(x.sc[k]||0),0)/m.months.length);
     return {top:lcOrbs(s)+lcScene(s,`${y}년,<br>${ppCall()}의 한 해를<br>뒤흔들 3가지<br>사건이 보이는군`)+lcMoments(mo.map(e=>({when:lcWhenYM(y,e.x.month),what:e.what,dot:e.dot})),`${y}년을 뒤흔드는 3가지 사건`)+lcScene(s,'안 좋은 말도<br>전부 풀어 줄 텐데<br>각오하고<br>들어 보겠소?',true),
       ch1:lcChapter(1,`${y}년 명식 분석`)+lcBox('lc-bars','본인이 타고난 성향',lcPersonaBars(s))+lcCard('lc-core',`${y}년, ${info.gz}의 해<br>${front.use}`,[front.lead||'',front.good?`올해 이렇게 하면 흐름을 타요. ${front.good}`:'',front.warn?`가장 조심할 점은 이거예요. ${front.warn}`:'',loveGood[0]?`특히 ${loveGood[0].month}월에는 마음이 잘 통해요. 중요한 만남과 약속을 이 달에 두어 보세요.`:''],'* 아래 영역별 풀이에서 더 깊이 다뤄요.')+lcScene(s,'이제 올해를<br>영역별로<br>풀어 볼까',true),
@@ -20465,7 +20523,7 @@ function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
   const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+textHash(String(_meta.ctx.text||''))+'-'+String(_meta.ctx.text||'').length:'';
-  return 'saju_ai_reading_v6:'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
+  return 'saju_ai_reading_v7:'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
@@ -26738,6 +26796,6 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 </script>
-<script src="assets/astrology.js?v=5e9b28a969a2"></script>
+<script src="assets/astrology.js?v=7e818f6ca1fc"></script>
 </body>
 </html>

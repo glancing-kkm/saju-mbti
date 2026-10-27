@@ -48,6 +48,20 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  const high=run("lv4MonthNarrative({...window.monthFixture,score:90,sc:{wealth:90}},_saju,_meta,41,'money')");
  assert.notEqual(low,high);assert.match(low,/확인할 여유/);assert.match(high,/반응|작게 시작|대화를 꺼내/);
  console.log('✓ 월별 풀이: 12달 개별 서술·장면과 행동, 영역별 구분, 기혼·아동 반영, 점수별 속도, 두 번째 인물 없음');
+ const gh=run("buildGunghapReadingV4(_saju,calcSaju(1992,8,10,8,0),{sy1:1987,sm1:9,sd1:21,h1:7,min1:0,gen1:'male',sy2:1992,sm2:8,sd2:10,h2:8,min2:0,gen2:'female'})");
+ assert(!gh.includes('여기서 서운함이 쌓이지 않게 자주 이야기하세요'));assert(!gh.includes('이 부분이 관계를 받쳐 주는 기둥'));
+ for(const metric of ['배우자 자리의 만남','서로를 바라보는 방식','중심 기운의 어울림','다섯 기운의 균형']){w.metric=metric;const v=run("ghMetricReading(window.metric,{dayBrRel:{kind:'충'},tg12:'정재'},true)");assert(v.length>80);assert.match(v,/시간|물어|구분|써 보세요/);}
+ assert.notEqual(run("lv4FieldDecision('wealth',40,40,{})"),run("lv4FieldDecision('wealth',90,40,{})"));
+ for(const topic of ['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health']){
+   w.tarotInput=run(`({topic:'${topic}',question:'무엇을 확인하면 좋을까요?',cards:TAROT_CARDS.slice(0,3).map((c,i)=>({positionLabel:['현재','장애물','조언'][i],positionMeaning:'확인할 조건',cardNameKo:c.nameKo,keywords:c.keywords,baseMeaning:c.uprightMeaning,categoryMeaning:c.careerMeaning,advice:c.advice,warning:c.warning,orientation:'upright'}))})`);
+   const t=run('generateTemplateReading(window.tarotInput)');assert(!t.includes('가능성이 열려 있지만'));assert(t.includes(w.tarotInput.cards[2].advice));assert.equal((t.match(/^# [1-8]\./gm)||[]).length,8);
+ }
+ run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
+ run("window.astroFixture={planets:[{planet:'sun',sign:'aries'},{planet:'moon',sign:'cancer'},{planet:'venus',sign:'libra'},{planet:'mercury',sign:'virgo'},{planet:'mars',sign:'leo'}],ascendant:null,elementBalance:{fire:2,earth:1,air:1,water:1},modalityBalance:{cardinal:3,fixed:1,mutable:1}};");
+ const astros=[];
+ for(const topic of ['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health']){w.topic=topic;const t=run('astroPracticalReading(window.astroFixture,window.topic)');assert(t.length>100);astros.push(t);assert(!run('generateTemplateAstrologyReading(window.astroFixture,window.topic)').includes('현재 트랜짓은 본인의 기본 성향에 새로운 자극'));}
+ assert.equal(new Set(astros).size,12);
+ console.log('✓ 구체성: 궁합 4지표별 장면·행동, 타로 12주제 실제 카드 조언, 점성술 12주제 실제 행성과 생활 기준');
  const rgb=hex=>{hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255);};
  const lum=c=>c.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);
  const ratio=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05);
