@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v2-scene',RP_SAFE=26;
+const RP_VERSION='v3-month',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -436,6 +436,15 @@ function rpDetFields(d){
   if(st.cautions&&st.cautions[0])o.si2=`${st.cautions[0]} — 이 부분은 속도를 한 박자 늦추면 좋아요.`;
   if(st.strengths&&st.strengths[0])o.si1=`${st.strengths[0]} — 본인이 가장 자연스럽게 힘을 내는 방식이라 계속 살려 주세요.`;
   if(bm)o.si3=`${bm.year}년 ${bm.month}월을 첫 실행의 달로 정하고, 그 전에 준비할 일 한 가지를 오늘 적어 두세요.`;
+  if(d.ny&&typeof lv4MonthNarrative==='function'){
+    const titles={'비견':'본인 속도를 찾는 달','겁재':'비교보다 기준이 필요한 달','식신':'준비한 것을 보여 주는 달','상관':'다른 방법을 제안하는 달','편재':'제안의 실속을 따져 보는 달','정재':'반복 지출을 정돈하는 달','편관':'책임의 범위를 정하는 달','정관':'해 온 일을 증명하는 달','편인':'막힌 문제를 다시 보는 달','정인':'배움을 생활에 쓰는 달'};
+    d.ny.months.forEach(x=>{
+      const ps=lv4MonthNarrative(x,d.saju,d.meta,d.ny.targetAge).match(/[^.!?]+[.!?]+/g)||[];
+      o[`m${x.month}a`]=titles[x.tg]||'본인 흐름을 살피는 달';
+      o[`m${x.month}b`]=ps.slice(0,3).join('').trim();
+      o[`m${x.month}c`]=ps.slice(3).join('').trim();
+    });
+  }
   return o;
 }
 // 모델 응답이 비어 있어도 웹과 같은 장면 → 근거 → 행동 순서를 유지한다.

@@ -4,11 +4,11 @@ html[data-flow-theme]{
   --bg-mid:color-mix(in srgb,var(--flow-bg) 80%,var(--flow-depth));
   --card:color-mix(in srgb,var(--flow-bg) 72%,var(--flow-depth));--card-elev:var(--flow-depth);
   --card-glass:color-mix(in srgb,var(--card) 94%,transparent);
-  --text:#f7f7f2;--sub:color-mix(in srgb,var(--flow-accent) 22%,#e9ece9);
-  --muted:color-mix(in srgb,var(--flow-accent) 27%,#98a39f);
+  --text:#fafaf7;--sub:#e9eeeb;
+  --muted:#c2cec8;
   --accent:var(--flow-accent);--accent-bright:var(--flow-accent);--gold:var(--flow-accent);--gold-soft:var(--flow-accent);
   --accent-soft:color-mix(in srgb,var(--flow-accent) 10%,transparent);--accent-bg:var(--accent-soft);
-  --border:color-mix(in srgb,var(--flow-accent) 13%,transparent);
+  --border:color-mix(in srgb,var(--flow-accent) 26%,transparent);
   --border-strong:color-mix(in srgb,var(--flow-accent) 32%,transparent);
   --on-accent:var(--flow-bg);--brand:var(--flow-accent);--brand-2:var(--flow-depth);
   --app-width:448px;--card-shadow:0 10px 30px #0002;color-scheme:dark;
@@ -208,3 +208,13 @@ html[data-flow-theme] #app #formWrap{--sub:#e0e9e5;--muted:#bdcec6;--border-stro
 #app .lc-preview-photo-label{position:absolute;inset:auto 12px 18px;padding:10px;background:#101513de;border-radius:10px;text-align:center;color:#fff;font-size:13px;line-height:1.6}
 #app .preview-story .lc-preview-photo{height:240px}
 #app :is(#view-result,#view-tarot,#view-astrology) :is(.cc-sub,.lc-pcard-body dd,.lk-person dd,.lv4-facts dd,.ck-body,.ag-block,.quick-summary-item,.ncr-reason,.ncr-use,.dp-tip,.nb-good,.nb-warn,.flow-box,.tarot-fortune-item,.astro-text){font-size:1rem;line-height:1.95}
+
+/* 모든 점술 테마에서 읽는 글은 불투명하게, 잠금 콘텐츠만 흐리게 표시한다. */
+html[data-flow-theme] #app :is(.lv4,.char-card,.form-body,.tarot-reading-flow,.astro-markdown){color:var(--text)}
+html[data-flow-theme] #app :is(.lv4 p,.cc-fingerprint,.cc-note,.nb-body,.abody,.daily-cat-body,.reading-brief,.chat-msg-body,.tarot-markdown,.astro-markdown,.tarot-fortune-item,.astro-text){color:var(--sub);opacity:1;text-shadow:none}
+html[data-flow-theme] #app :is(.lv4-sec-label,.lv4-hero-meta,.report-profile-birth,.lc-pcard-note,.lv4-facts dt,.lc-pcard-body dt){color:var(--muted);opacity:1}
+html[data-flow-theme] #app :is(.lv4-row-head,.lv4-sub h3,.lv4-sec-head h2,.cc-fingerprint>b){color:var(--text)}
+/* 사진 위 설명은 어두운 배경 위 흰색을 유지한다. 두루마리는 밝은 배경용 먹색. */
+html[data-flow-theme] #app .lc-pcard-body{color:#fff}
+html[data-flow-theme] #app .lc-pcard-body :is(p,dt,dd,small){color:#f1f4f2;opacity:1}
+html[data-flow-theme] #app .lc-scroll :is(p,.lk-tl-what){color:#202b26}
