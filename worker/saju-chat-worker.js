@@ -269,9 +269,11 @@ async function routeRequest(request, env) {
         }
       }
 
+      if (chatGate.fail) await chatGate.fail();
       return json({ error: '답변을 잠시 생성하지 못했습니다.', code: 'AI_TEMPORARY_UNAVAILABLE' }, 503);
     } catch (e) {
       console.error('Worker error:', e);
+      if (chatGate.fail) await chatGate.fail();
       return json({ error: '답변을 잠시 생성하지 못했습니다.', code: 'AI_TEMPORARY_UNAVAILABLE' }, 503);
     }
   }
@@ -323,6 +325,7 @@ async function handleChatUsage(request,env){
     const p=await verifyPaidToken(env,token);if(!p)continue;
     const pack=/^chatpack\d+$/.test(p.c);
     if(!pack&&!(token===b.activeReadingToken&&p.c===b.category&&['life','newyear'].includes(p.c)))continue;
+    if(pack&&await env.SAJU_QNA_CACHE.get('refunded:'+String(p.o).slice(0,80)))continue; // 자동 환불된 질문권
     const used=Number(await env.SAJU_QNA_CACHE.get('paid-use:chat:'+String(p.o).slice(0,80)))||0;
     grants.push({orderId:p.o,category:p.c,limit:chatLimitOf(p),used});
   }
@@ -339,6 +342,7 @@ async function requirePaidChat(env, request, body){
     if(!pack&&!((token===body.activeReadingToken||!Object.prototype.hasOwnProperty.call(body,'activeReadingToken'))&&paid.c===category&&['life','newyear'].includes(category)))continue;
     const limit=chatLimitOf(paid);if(!limit)continue;
     if(!env.SAJU_QNA_CACHE)return {error:json({error:'질문권 사용량을 확인하지 못했어요. 잠시 후 다시 시도해주세요.',code:'CHAT_USAGE_UNAVAILABLE'},503)};
+    if(pack&&await env.SAJU_QNA_CACHE.get('refunded:'+String(paid.o).slice(0,80)))continue; // 자동 환불된 질문권은 더 쓰지 않는다
     const key='paid-use:chat:'+String(paid.o).slice(0,80);
     const req=String(body.requestId||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80);
     const requestBytes=new TextEncoder().encode(JSON.stringify({question:body.question,category,context:body.sajuContext}));
@@ -346,7 +350,9 @@ async function requirePaidChat(env, request, body){
     const receipt=req?key+':request:'+req+':'+requestHash:'';
     if(receipt&&await env.SAJU_QNA_CACHE.get(receipt))return {commit:async()=>{}};
     const used=Number(await env.SAJU_QNA_CACHE.get(key))||0;if(used>=limit)continue;
-    return {commit:async()=>{await env.SAJU_QNA_CACHE.put(key,String(used+1),{expirationTtl:40*24*3600});if(receipt)await env.SAJU_QNA_CACHE.put(receipt,'1',{expirationTtl:40*24*3600});}};
+    // fail — 질문권으로 물었는데 시스템 오류로 답을 못 드린 경우. 결제 워커가 '사용 0회 + 오류 기록 + 승인 24시간 경과' 주문을 자동 환불한다.
+    const fail=pack?async()=>{try{const ek='chat-error:'+String(paid.o).slice(0,80),prev=JSON.parse(await env.SAJU_QNA_CACHE.get(ek)||'null');await env.SAJU_QNA_CACHE.put(ek,JSON.stringify({n:((prev&&prev.n)||0)+1,first:(prev&&prev.first)||Date.now(),last:Date.now()}),{expirationTtl:40*24*3600});}catch(e){}}:async()=>{};
+    return {fail,commit:async()=>{await env.SAJU_QNA_CACHE.put(key,String(used+1),{expirationTtl:40*24*3600});if(receipt)await env.SAJU_QNA_CACHE.put(receipt,'1',{expirationTtl:40*24*3600});}};
   }
   return {error:json({error:'무료 질문을 사용했거나 질문권이 없어요. 질문권을 충전하면 이어서 물어볼 수 있어요.',code:'QNA_NEED_PAYMENT'},402)};
 }

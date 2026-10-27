@@ -22,5 +22,14 @@ binding = "REVIEWS_KV"
 id = "25586ee2f1ef4df39aa0996b5f02c085"
 preview_id = "062e97a582204d5d88fd91386527b2ef"
 
+# 질문권 사용 횟수·시스템 오류 기록 — saju-chat 워커의 SAJU_QNA_CACHE와 같은 저장소(자동 환불 판단용, 읽기 + 환불 표시)
+[[kv_namespaces]]
+binding = "CHAT_KV"
+id = "2a538df7389e48ca994926ffcf8335ff"
+
+# 질문권 자동 환불 확인 — 매시간 17분 (실제 취소는 AUTO_REFUND_ENABLED=1일 때만)
+[triggers]
+crons = ["17 * * * *"]
+
 [observability]
 enabled = true

@@ -151,6 +151,10 @@ function isAmountValidWithGrace(category, amount, nowMs = Date.now()) {
 }
 
 export default {
+  // 매시간 — 시스템 오류로 질문권을 하나도 못 쓴 주문을 승인 24시간 뒤 자동 환불한다(AUTO_REFUND_ENABLED=1일 때만 실제 취소)
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(runAutoRefunds(env));
+  },
   async fetch(request, env) {
     const url = new URL(request.url);
     const corsHeaders = buildCorsHeaders(request, env);
@@ -322,6 +326,7 @@ async function handleApprove(request, env, cid, corsHeaders) {
 
   // 카카오페이 승인 응답: aid, tid, cid, sid?, partner_order_id, partner_user_id, payment_method_type, amount, item_name, ...
   const paidToken = await signPaidToken(env, data.partner_order_id, category);
+  await recordApprovedOrder(env, data, category);
   return json({
     ok: true,
     ...(paidToken ? { paidToken } : {}),
@@ -336,6 +341,82 @@ async function handleApprove(request, env, cid, corsHeaders) {
       approvedAt: data.approved_at,
     },
   }, 200, corsHeaders);
+}
+
+// 결제 승인 기록 — 충전·구매 내역을 서버에서 확인하고, 문의가 오면 주문번호로 찾을 수 있게 400일 보관한다.
+// 목록 조회만으로 볼 수 있게 핵심 값(카테고리·금액·승인 시각)은 메타데이터에도 넣는다. 개인정보는 넣지 않는다.
+// 확인: node tools/orders-report.js
+const PAID_ORDER_TTL_SEC = 400 * 24 * 60 * 60;
+async function recordApprovedOrder(env, data, category) {
+  if (!env.REVIEWS_KV || !data || !data.partner_order_id) return;
+  const at = Date.parse(data.approved_at || '') || Date.now();
+  const amount = (data.amount && data.amount.total) || 0;
+  const record = { orderId: data.partner_order_id, tid: data.tid, aid: data.aid, category, amount, method: data.payment_method_type || '', itemName: data.item_name || '', approvedAt: at, cid: data.cid || '' };
+  try {
+    await env.REVIEWS_KV.put(`paid_order:${data.partner_order_id}`, JSON.stringify(record), { expirationTtl: PAID_ORDER_TTL_SEC, metadata: { c: String(category).slice(0, 40), a: amount, t: at } });
+  } catch (e) {
+    console.warn('paid order record failed:', e && e.message);
+  }
+}
+
+// ─── 질문권 자동 환불 ───
+// 조건: 질문권(chatpackN) 주문 · 사용 0회 · 시스템 오류 기록 1회 이상 · 승인 후 24시간 경과. 1회라도 썼으면 환불하지 않는다(메일 문의).
+// 사용 횟수와 오류 기록은 채팅 워커가 CHAT_KV(SAJU_QNA_CACHE와 같은 저장소)에 남긴다.
+// 실제 가맹점 보호: AUTO_REFUND_ENABLED가 '1'이 아니면 카카오페이 취소는 하지 않고 refund_candidate: 기록만 남긴다.
+const REFUND_AFTER_MS = 24 * 60 * 60 * 1000;
+const REFUND_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+async function runAutoRefunds(env) {
+  if (!env.REVIEWS_KV || !env.CHAT_KV) return { checked: 0, refunded: 0 };
+  const now = Date.now();
+  let cursor, checked = 0, refunded = 0;
+  do {
+    const page = await env.REVIEWS_KV.list({ prefix: 'paid_order:', cursor });
+    cursor = page.list_complete ? undefined : page.cursor;
+    for (const k of page.keys) {
+      const m = k.metadata || {};
+      if (!/^chatpack\d+$/.test(m.c || '') || m.r || !m.t || now - m.t < REFUND_AFTER_MS || now - m.t > REFUND_WINDOW_MS) continue;
+      const orderId = k.name.slice('paid_order:'.length), short = orderId.slice(0, 80);
+      checked++;
+      const used = Number(await env.CHAT_KV.get(`paid-use:chat:${short}`)) || 0;
+      const errors = await env.CHAT_KV.get(`chat-error:${short}`);
+      if (used > 0 || !errors) continue;
+      if (env.AUTO_REFUND_ENABLED !== '1') {
+        await env.REVIEWS_KV.put(`refund_candidate:${orderId}`, JSON.stringify({ orderId, amount: m.a, at: now, errors: JSON.parse(errors) }), { expirationTtl: 60 * 24 * 3600 });
+        continue;
+      }
+      if (await env.REVIEWS_KV.get(`refund_lock:${orderId}`)) continue;
+      await env.REVIEWS_KV.put(`refund_lock:${orderId}`, '1', { expirationTtl: 24 * 3600 });
+      if (await refundOrder(env, orderId, 'chat-system-error')) refunded++;
+    }
+  } while (cursor);
+  return { checked, refunded };
+}
+async function refundOrder(env, orderId, reason) {
+  const raw = await env.REVIEWS_KV.get(`paid_order:${orderId}`);
+  const rec = raw ? JSON.parse(raw) : null;
+  if (!rec || !rec.tid || !rec.amount || rec.refundedAt) return false;
+  let res, data;
+  try {
+    res = await fetch('https://open-api.kakaopay.com/online/v1/payment/cancel', {
+      method: 'POST',
+      headers: { 'Authorization': `SECRET_KEY ${env.KAKAO_SECRET_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cid: rec.cid || env.KAKAO_CID, tid: rec.tid, cancel_amount: rec.amount, cancel_tax_free_amount: 0 }),
+    });
+    data = await res.json().catch(() => ({}));
+  } catch (e) {
+    console.warn('refund network error:', orderId, e && e.message);
+    return false;
+  }
+  if (!res.ok || !['CANCEL_PAYMENT', 'PART_CANCEL_PAYMENT'].includes(data.status)) {
+    console.warn('refund rejected:', orderId, res.status, data.error_code || data.status || '');
+    await env.REVIEWS_KV.put(`refund_failed:${orderId}`, JSON.stringify({ at: Date.now(), status: res.status, code: data.error_code || data.status || '' }), { expirationTtl: 60 * 24 * 3600 });
+    return false;
+  }
+  const at = Date.now();
+  rec.refundedAt = at; rec.refundReason = reason;
+  await env.REVIEWS_KV.put(`paid_order:${orderId}`, JSON.stringify(rec), { expirationTtl: PAID_ORDER_TTL_SEC, metadata: { c: rec.category, a: rec.amount, t: rec.approvedAt, r: at } });
+  await env.CHAT_KV.put(`refunded:${orderId.slice(0, 80)}`, String(at), { expirationTtl: 40 * 24 * 3600 });
+  return true;
 }
 
 // 결제 확인 토큰 — 결제한 사람만 쓸 수 있는 기능(인상 이미지 등)을 다른 워커가 확인할 수 있게 서명한다.
