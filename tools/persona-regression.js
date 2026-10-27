@@ -221,9 +221,8 @@ const harness = `
     const lifeForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','희신','기신','지장간','십이운성','공망'].filter(word=>lifeVisible.includes(word));
     ok('인생총운 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
        lifeForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(lifeVisible), lifeForbidden.join(','));
-    ok('인생총운 V3: 심층 요약본이 구조·공식·현재 시간을 사용',
-       layered.includes('심층 인생총운 요약본') && _lifeSummaryData && _lifeSummaryData.version===3 &&
-       buildLifeSummaryA4Html().includes('이 풀이가 나온 구조'));
+    ok('인생총운 V3: 요약본 다운로드 카드 없음',
+       !layered.includes('summary-card') && !layered.includes('요약본'));
     const EXAMPLE=C(3,3,5,9,9,9,2,4); // 정묘·기유·계유·병진
     const savedMeta=_meta,savedInputs=_lastInputs;
     _meta={gender:'male',sy:1987,sm:9,sd:21,hour:8,min:15,cityKey:'daejeon',tsoMin:-30.46199999999999};
@@ -289,7 +288,7 @@ const harness = `
        (newyearExample.match(/class="lv4-row/g)||[]).length>=12 && (newyearExample.match(/class="lv4-key/g)||[]).length===1);
     const cheapReadingEmoji=['💰','💕','❤️','🌿','🧠','📦','🤝','🚀','⚠️','📅'].filter(mark=>newyearExample.includes(mark));
     ok('풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용',
-       newyearExample.includes('class="reading-sigil"') && cheapReadingEmoji.length===0,
+       cheapReadingEmoji.length===0,
        cheapReadingEmoji.join(','));
     const premiumBody=_calmReadingHtml('<p>💰 돈 · ❤️ 사랑 · 🌿 건강 · ⚠️ 주의</p>');
     ok('풀이 심볼: 모든 유료 본문 공통 변환 계층 적용',

@@ -498,11 +498,12 @@ async function handlePortrait(request, env) {
   const prompt = `Photorealistic unretouched RAW color photograph, documentary DSLR photo, NOT a painting or illustration. Portrait photograph of a fictional ${nationality} ${who} around ${age} years old with ${look}, ${traits}, ${STYLE[kind]}, unique identity variation ${Math.abs(Number(b&&b.seed)||0)}, upper body, slightly angled toward the camera, soft natural window light, shallow depth of field, modern everyday setting, muted background, 85mm lens, realistic skin pores, fine facial hair, visible age-appropriate wrinkles, asymmetrical natural facial features, ordinary real-life appearance, candid everyday person rather than a fashion model, realistic eyes and teeth, no beauty retouching, no smoothing, no CGI, no 3D render, no anime, no drawing, no painted texture, not a celebrity, no text, no watermark`;
   try {
     let out;
-    for(let attempt=0;attempt<2;attempt++){
+    // 이미지 모델이 '3043: Internal server error'를 자주(약 40%) 바로 돌려주므로, 잠깐씩 쉬며 4번까지 다시 시도한다
+    for(let attempt=0;attempt<4;attempt++){
       const form=new FormData();form.set('prompt',prompt);form.set('width','1024');form.set('height','1024');form.set('seed',String(Math.abs(Math.trunc(Number(b&&b.seed)||1))%2147483647));
       const multipart=new Response(form);
       try{out=await env.AI.run('@cf/black-forest-labs/flux-2-klein-9b',{multipart:{body:multipart.body,contentType:multipart.headers.get('content-type')}});break;}
-      catch(e){if(attempt||!/3043|internal server|temporar/i.test(String(e&&e.message)))throw e;await new Promise(r=>setTimeout(r,250));}
+      catch(e){if(attempt===3||!/3043|internal server|temporar/i.test(String(e&&e.message)))throw e;await new Promise(r=>setTimeout(r,400*(attempt+1)));}
     }
     const img = out && out.image;
     if (!img) throw new Error('empty image');

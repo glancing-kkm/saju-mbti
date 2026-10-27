@@ -318,6 +318,7 @@ const submitBirth=async()=>{
       assert.equal(run("pdfReportCtaHTML('daypick')"),'');
       assert.match(run("pdfReportCtaHTML('life')"),/5,000원 · PDF 받기/);
       assert(!/Summary\('pdf'\)|PDF 다운로드/.test(html),'요약본 PDF 버튼이 남아 있음');
+      assert(!/onclick="download[A-Za-z]*Summary\(|<div class="nb-card summary-card"/.test(html),'요약본 다운로드 카드가 남아 있음');
       run("downloadReportPdf('topic-love')");
       assert.equal(d.getElementById('payProductName').textContent,'연애운 PDF 리포트');assert.equal(d.getElementById('payProductPrice').textContent,'5,000원');
       run('closePaymentConsent()');
@@ -418,6 +419,9 @@ const submitBirth=async()=>{
       check('운영자 코드: 취소하면 창이 닫히고 잠금 유지',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),false);});
       for(let i=0;i<4;i++)run(tap);pending=run(tap);await wait(0);await submit(' Test-Admin ');await pending;
       check('운영자 코드: 서버가 확인한 코드(대소문자·공백 무시)면 토큰을 받고 결제 없이 열림',()=>{assert(!box());assert.equal(run("isUnlockedFor('newyear')"),true);assert.equal(adminSent.pop(),'test-admin');assert(run('loadPaidTokens()').includes(adminTok));});
+      run("openPaymentConsent('newyear','KAKAOPAY')");assert(d.getElementById('payOverlay').classList.contains('vis'));
+      for(let i=0;i<4;i++)run("_secretUnlockTap(_payCategory)");pending=run("_secretUnlockTap(_payCategory)");await wait(0);await submit('test-admin');await pending;
+      check('운영자 코드: 결제 동의 창에서 열면 창이 닫히고 풀이가 보임',()=>{assert(!d.getElementById('payOverlay').classList.contains('vis'));assert.equal(d.body.style.overflow,'');assert.equal(run("isUnlockedFor('newyear')"),true);});
       w.fetch=prevFetch;w.prompt=()=>'';
     }
     run("goToInput('topic-love')");await birth('1994','5','18');

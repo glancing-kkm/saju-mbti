@@ -8759,7 +8759,6 @@ function renderDaypickFortune(saju,y,m,d,extra){
       const hourCards=Array.from({length:12},(_,bi)=>{const r=brRel(saju.dp.branch,bi).kind,r2=brRel(f.dp.branch,bi).kind;const kind=r==='합'||r2==='합'?'길시':r==='충'||r2==='충'?'주의':'평시';return {bi,kind,accent:kind==='길시'?'var(--good)':kind==='주의'?'var(--warn)':'var(--sub)',hourTG:tenGod(saju.dp.stem,BR_MAIN_STEM[bi]),note:HOUR_GENERAL[bi]};});
       let sins=[];try{sins=findSinsal(saju);}catch(e){}
       _daypickSummaryData={saju,y,m,d,wDay:['일','월','화','수','목','금','토'][test.getDay()],f,grade:dailyGrade(f.total),stemTG:f.tg,rel:f.rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo:BRCHKO[saju.dp.branch],curDaeun:cd,zod:getZodiac12(_meta.sm,_meta.sd),hourCards,activeSins:sins.filter(s=>s.b===f.dp.branch),dm:DM[saju.dp.stem],gender:g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
-      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${y}.${m}.${d} 지정일 운세 요약본 다운로드</div><div class="nb-body"><p>이 날의 점수와 분야별 흐름, 10년 흐름 안에서의 의미, 좋은 시간과 조심할 시간을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button></div></div></div>`);
     }
   }catch(e){}
   return `<div class="lv4-wrap dp-v4">${buildDaypickReadingV4(saju,y,m,d,extra)}${summary}</div></div>`;
@@ -9087,26 +9086,6 @@ function renderDaypickFortuneLegacy(saju,y,m,d,extra){
       }
       const _zod=getZodiac12(_meta.sm,_meta.sd);
       _daypickSummaryData={saju,y,m,d,wDay,f,grade,stemTG,rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo,curDaeun:_curD,zod:_zod,hourCards,activeSins,dm,gender:_g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
-      h+=`<div class="nb-card summary-card">
-        <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">${y}.${m}.${d} 지정일 운세 요약본 다운로드</div>
-        <div class="nb-body">
-          <div class="summary-intro">
-            <p>이 날의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-            <ul>
-              <li>📊 본인 사주의 네 자리 + 그날 점수</li>
-              <li>🗓 본인 10년 흐름 안에서 본 이 날</li>
-              <li>✦ 별자리 + 그날 분위기</li>
-              <li>⏰ 핵심 시간대 (길시·주의시)</li>
-              <li>📈 분야별 점수 (재물·연애·직업·건강)</li>
-            </ul>
-            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-          </div>
-          <div class="summary-actions">
-            <button class="summary-btn dp-summary-btn" onclick="downloadDaypickSummary('png')">이미지(PNG)</button>
-          </div>
-        </div>
-      </div>`;
     }
   }catch(e){}
 
@@ -9178,7 +9157,6 @@ function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
     if(_meta&&_meta.sy){
       const fmt=o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`;
       _monthlySummaryData={saju,sy,sm,ey,em,totalMonths:D.months.length,monthsData:D.months,luckyMonths:D.lucky.map(fmt),toughMonths:D.tough.map(fmt),decisive:D.decisive,avgTotal:D.avgT,avgGrade:D.g,gk:getGyeokguk(saju),ys:D.ys,curDaeun:D.sD,zod:getZodiac12(_meta.sm,_meta.sd),dm:DM[saju.dp.stem],gender:_meta.gender||'male',wealthAvg:D.avg('wealth'),loveAvg:D.avg('love'),careerAvg:D.avg('career'),healthAvg:D.avg('health'),metaSy:_meta.sy};
-      summary=lv4Sub('요약본',`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div><div class="nb-body"><p>기간 평균 점수, 10년 흐름 안에서의 의미, 달마다의 점수와 좋은 달·쉬어 갈 달, 분야별 평균을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button></div></div></div>`);
     }
   }catch(e){}
   return `<div class="lv4-wrap mo-v4">${built.html}${summary}</div></div>`;
@@ -9460,26 +9438,6 @@ function renderMonthlyFortuneLegacy(saju,sy,sm,ey,em,extra){
       }
       const _zod=getZodiac12(_meta.sm,_meta.sd);
       _monthlySummaryData={saju,sy,sm,ey,em,totalMonths,monthsData,luckyMonths,toughMonths,decisive,avgTotal,avgGrade,gk,ys,curDaeun:_startD,zod:_zod,dm,gender:_g,wealthAvg:avg('wealth'),loveAvg:avg('love'),careerAvg:avg('career'),healthAvg:avg('health'),metaSy:_meta.sy};
-      h+=`<div class="nb-card summary-card">
-        <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">${sy}.${sm}~${ey}.${em} 월별 운세 요약본 다운로드</div>
-        <div class="nb-body">
-          <div class="summary-intro">
-            <p>${totalMonths}개월의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-            <ul>
-              <li>📊 ${totalMonths}개월 평균 점수 + 등급</li>
-              <li>🗓 본인 10년 흐름 안에서 본 이 기간</li>
-              <li>✦ 별자리 + 사주 분위기</li>
-              <li>📅 월별 막대그래프 + 길월·주의월·결정적 시기</li>
-              <li>📈 분야별 평균 (재물·연애·직업·건강)</li>
-            </ul>
-            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-          </div>
-          <div class="summary-actions">
-            <button class="summary-btn mo-summary-btn" onclick="downloadMonthlySummary('png')">이미지(PNG)</button>
-          </div>
-        </div>
-      </div>`;
     }
   }catch(e){}
 
@@ -10184,27 +10142,6 @@ function renderNewyearFortuneLegacy(saju,y){
       const _stageWordN=_stageN<=2?'초입':_stageN<=5?'중반':_stageN<=8?'후반':'끝자락';
       const _zodN=getZodiac12(_meta.sm,_meta.sd);
       _newyearSummaryData={saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod:_zodN,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage:_stageWordN,curDaeun:_curDN,dm,gender:_gN,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd,sh:_meta.hour||12,smin:_meta.min||0};
-      h+=`<div class="nb-card summary-card">
-        <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">${y}년 신년 운세 요약본 다운로드</div>
-        <div class="nb-body">
-          <div class="summary-intro">
-            <p>${y}년 한 해의 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-            <ul>
-              <li>📊 본인 사주의 네 자리 + ${y}년 총점</li>
-              <li>🗓 본인 10년 흐름 안에서 본 ${y}년 — 대운 단계</li>
-              <li>✦ 별자리 + 사주 동·서양 이중 해석</li>
-              <li>📅 12개월 막대그래프 + 길월·주의월·결정적 시기</li>
-              <li>📈 분야별 평균 (재물·연애·직업·건강)</li>
-              <li>${ZODIAC_EMOJI[yearZodiac]} 띠 흐름 + 살아나는 작은 별자리</li>
-            </ul>
-            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-          </div>
-          <div class="summary-actions">
-            <button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button>
-          </div>
-        </div>
-      </div>`;
     }
   }catch(e){}
 
@@ -10288,7 +10225,7 @@ function newyearV3DaeunBoard(m){return `<div class="ny-v3-daeun">${m.eras.map(x=
 function newyearV3SeasonBoard(m){return `<div class="ny-v3-season">${m.seasons.map(x=>`<div class="ny-v3-season-card"><span>${lifeV3EmojiEntity(x.emoji)}</span><b>${x.name} · ${x.score}점</b><small>${preventOrphan(x.text)}</small></div>`).join('')}</div>`;}
 function renderNewyearV3SummaryCard(m){
   _newyearSummaryData={version:3,model:m,y:m.y};
-  return `<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">${m.y}년 신년운세 요약본 다운로드</div><div class="nb-body">${lifeV3EmojiGrid([{emoji:'🧭',label:'한 해의 큰 방향',text:'현재 10년과 선택한 해의 흐름을 연결해 보여줘요.'},{emoji:'📊',label:'분야와 계절',text:'돈·사랑·일·건강 점수와 계절별 활용법을 담아요.'},{emoji:'🧩',label:'계산 근거',text:'네 자리 사주판과 올해 두 글자를 함께 보여줘요.'}])}<div class="summary-actions"><button class="summary-btn ny-summary-btn" onclick="downloadNewyearSummary('png')">이미지(PNG)</button></div></div></div>`;
+  return '';
 }
 function buildNewyearV3Library(saju,y,meta){
   const m=buildNewyearV3Model(saju,y,meta),fp=m.fingerprint,dm=STEMKO[saju.dp.stem],support=m.support,support2=m.support2;
@@ -11921,7 +11858,7 @@ const PAID_META={
   life:{
     icon:'',title:'인생총운',
     desc:'하늘·땅 글자를 글자 단위로 풀이하고,<br>10년 흐름×올해 흐름을 시기별로 분석한 종합 풀이예요.',
-    features:['· 상담 기본 정보와 타고난 성정·내면 분석','· 타고난 재능과 전문성','· 직업운과 성공 방향 · 재물운과 자산 흐름','· 연애운과 배우자운 · 인간관계와 사람 복','· 건강과 생활 체질','· 현재 10년 흐름 · 올해 총운 · 올해 월별 흐름','· 앞으로의 10년 흐름과 인생의 황금기','· 운을 바꾸는 실천법 · 평생 조심할 7가지 · 요약본'],
+    features:['· 상담 기본 정보와 타고난 성정·내면 분석','· 타고난 재능과 전문성','· 직업운과 성공 방향 · 재물운과 자산 흐름','· 연애운과 배우자운 · 인간관계와 사람 복','· 건강과 생활 체질','· 현재 10년 흐름 · 올해 총운 · 올해 월별 흐름','· 앞으로의 10년 흐름과 인생의 황금기','· 운을 바꾸는 실천법 · 평생 조심할 7가지'],
     price:'1,500원'
   },
   gunghap:{
@@ -12116,9 +12053,6 @@ function getUsageGuide(category){
   const items=[
     `<b>다시 보는 방법</b> — 결제 후 같은 사주는 <b>24시간 동안 무제한 재조회</b>가 가능해요. 단, 다른 사주를 조회하시려면 다시 결제가 필요해요.`,
   ];
-  if(category==='life'){
-    items.push(`<b>요약본 다운로드</b> — 인생총운만 제공되는 A4 한 장짜리 요약본을 이미지(PNG)로 저장하실 수 있어요.`);
-  }
   if(chatCount>0){
     const packPriceGuide=isAugust990Promo()?'8월에는 추가 질문 3회 990원, 5회 1,490원, 7회 1,990원으로 충전할 수 있어요.':'한도 초과 시 1,500원부터의 추가 패키지(3·5·7회)로 즉시 충전돼요.';
     items.push(`<b>역술가 질문</b> — 풀이에 대한 궁금한 점을 역술가에게 <b>무료 ${chatCount}회</b> 질문 가능. ${packPriceGuide} <b>24시간 내 재진입 시에도 추가 구매가 가능</b>해요.`);
@@ -12491,6 +12425,8 @@ function _adminUnlockPaidCategory(category){
     }catch(e){alert('질문권 적립 중 문제가 있었어요.');}
     return;
   }
+  // 결제 동의 창에서 연 경우 창을 닫고 풀이를 보여 준다(실제 결제는 카카오페이에서 돌아오며 페이지가 새로 열려 창이 남지 않는다)
+  try{closePaymentConsent();}catch(e){}
   const rendered=unlockAndRender(cat);
   if(rendered)return;
   // 사주 또는 카테고리별 추가 데이터가 부족해서 즉시 렌더 불가
@@ -13270,20 +13206,7 @@ function lifeV2Card(label,icon,title,lead,html){
 }
 function renderLifeV2SummaryCard(m){
   _lifeSummaryData={version:3,model:m};
-  return `<div class="nb-card summary-card">
-    <div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div>
-    <div class="nb-title">심층 인생총운 요약본 다운로드</div>
-    <div class="nb-body">
-      ${lifeV2IconGrid([
-        {icon:'account_tree',label:'사주 구조',text:'네 자리와 본인의 핵심 힘을 흐름도로 보여줘요.'},
-        {icon:'route',label:'성공 공식',text:'타고난 무기를 결과물·수입·자리로 이어줘요.'},
-        {icon:'timeline',label:'지금의 시간',text:`${m.cur.age}~${m.cur.age+9}세 흐름과 ${m.year}년 핵심을 함께 담아요.`}
-      ])}
-      <div class="summary-actions">
-        <button class="summary-btn" onclick="downloadLifeSummary('png')">이미지(PNG)</button>
-      </div>
-    </div>
-  </div>`;
+  return '';
 }
 function _lifeV2First(text){return String(text||'').split(/(?<=[.!?])\s+/)[0]||'';}
 function _lifeV2YearInfo(saju,year){
@@ -13511,7 +13434,7 @@ const LV4_REL={
 };
 const LV4_YEAR_REL={합:'자석처럼 끌어당기는',반합:'같은 방향으로 힘을 모으는',반합약:'잔잔하게 어울리는',충:'정면으로 부딪히는',형:'서로 깎아 내는',자형:'같은 글자가 겹쳐 스스로를 다그치는',원진:'이유 없이 거슬리는',파:'마무리에서 어긋나는',해:'은근히 방해하는',동:'같은 글자끼리 만나는',평:'큰 부딪힘 없이 흘러가는'};
 const LV4_SIN={천을귀인:'어려울 때 손을 내밀어 주는 사람 복',천덕귀인:'베푼 덕이 도움으로 돌아오는 복',월덕귀인:'주변의 자연스러운 도움',문창귀인:'글과 문서를 정리하는 감각',역마살:'움직이며 기회를 찾는 힘',화개살:'한 분야를 깊게 파고드는 집중력',도화살:'사람을 끌어당기는 매력',장성살:'자기 영역을 지키는 주관',반안살:'시간이 갈수록 자리와 명예가 올라가는 힘'};
-const LV4_TITLES=[['basic','상담 기본 정보와 타고난 성정·내면 분석'],['talent','타고난 재능과 전문성'],['work-money','직업운과 성공 방향 · 재물운과 자산 흐름'],['love-people','연애운과 배우자운 · 인간관계와 사람 복'],['health','건강과 생활 체질'],['now','현재 10년 흐름 · 올해 총운 · 올해 월별 흐름'],['future','앞으로의 10년 흐름과 인생의 황금기'],['practice','운을 바꾸는 실천법 · 평생 조심할 7가지 · 요약본']];
+const LV4_TITLES=[['basic','상담 기본 정보와 타고난 성정·내면 분석'],['talent','타고난 재능과 전문성'],['work-money','직업운과 성공 방향 · 재물운과 자산 흐름'],['love-people','연애운과 배우자운 · 인간관계와 사람 복'],['health','건강과 생활 체질'],['now','현재 10년 흐름 · 올해 총운 · 올해 월별 흐름'],['future','앞으로의 10년 흐름과 인생의 황금기'],['practice','운을 바꾸는 실천법 · 평생 조심할 7가지']];
 const LV4_TG_YOUNG={
   '비견':{use:'스스로 해내는 힘이 자라는 흐름',lead:'스스로 해내려는 마음이 커지는 때예요.',good:'혼자 끝까지 해낸 경험을 하나씩 쌓게 도와주세요.',warn:'친구와 고집이 부딪힐 때 양보하는 연습도 필요해요.'},
   '겁재':{use:'건강한 경쟁으로 의욕이 커지는 흐름',lead:'친구들과 겨루며 의욕이 커지는 때예요.',good:'운동이나 대회처럼 건강하게 겨룰 수 있는 자리를 만들어 주세요.',warn:'지면 크게 속상해할 수 있으니 결과보다 과정을 칭찬해 주세요.'},
@@ -14196,14 +14119,14 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('인생의 황금기',lv4P(m.golden.map(g=>`${g.label}는 ${g.range}${lv4Ida(g.range)}. ${g.text}`).concat(['황금기는 저절로 오는 행운이라기보다, 미리 준비해 둔 사람에게 크게 열리는 문이에요. 그 몇 년 전부터 실력과 돈, 사람을 차곡차곡 모아 두세요.'])))+
     lv4Key('좋은 해를 한 해만 보지 말고, 이어지는 구간으로 묶어 계획을 세우세요.'));
 
-  // 8. 운을 바꾸는 실천법 · 평생 조심할 7가지 · 요약본
+  // 8. 운을 바꾸는 실천법 · 평생 조심할 7가지
   h+=lv4Section(8,`본인에게 가장 힘이 되는 기운은 ${LV4_OH[m.ys.main]}${lv4Ida(LV4_OH[m.ys.main])}. 보조로 ${LV4_OH[m.ys.support]} 기운도 도와줘요. 직장에서 든든한 선배가 옆에 있어 주는 것과 비슷해요. 색이나 물건보다 행동으로 채울 때 훨씬 강하게 작동해요.`,
     lv4Sub(`${LV4_OH[m.ys.main]} 기운을 채우는 실천법`,lv4P([`${support.lead}이 본인의 운을 열어 줘요.`].concat(support.items.map(x=>`<b>${x[1]}</b>. ${x[2]}`))))+
     lv4Sub(`보조로 돕는 ${LV4_OH[m.ys.support]} 기운`,lv4P([`${support2.lead}도 함께 챙기면 좋아요.`].concat(support2.items.slice(0,2).map(x=>`<b>${x[1]}</b>. ${x[2]}`))))+
     lv4Sub('평생 조심할 7가지',`<ol class="lv4-list">${lv4Cautions(m).map(([t,d])=>`<li><b>${t}</b><span>${lv4Text(d)}</span></li>`).join('')}</ol>`)+
     lv4Sub('천기의 마지막 이야기',lv4P([`${p.season}에 태어난 ${dsm.nick||''} 같은 본인은, ${ax.label}의 힘으로 한 걸음씩 자기 자리를 만들어 가는 사람이에요.`,`지금 ${curTxt}의 흐름은 ${tgNow.use}이에요. 이 시기에 쌓은 것이 다음 10년의 선택지를 넓혀 줘요.`,'사주는 정해진 운명이 아니라 본인이 타고난 지도예요. 지도를 알면 길을 잃어도 금방 돌아올 수 있어요. 오늘 한 가지만 골라 실천해 보세요.']))+
     lv4Act(`${support.items[0][1]}부터 시작해 보세요.`)+
-    lv4Sub('요약본',renderLifeV2SummaryCard(m)));
+    renderLifeV2SummaryCard(m));
 
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
   const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${ppName()?ppName()+' · ':''}${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
@@ -15042,7 +14965,7 @@ function buildNewyearReadingV4(saju,y,meta){
     lv4Sub('전체 10년 흐름표',lv4Rows(m.eras.map(e=>({label:e.range,tag:e.current?'지금':'',text:`'${plainTG(e.tg)}'의 기운이 앞에 서는 10년이에요. ${lv4Tg(e.tg,eraStart(e)).use}이에요.`,on:e.current}))))+
     (nextEra?lv4Sub(`다음 대운 (${nextEra.range})`,lv4P([`${nextEra.range}에는 '${plainTG(nextEra.tg)}'의 기운이 앞에 서요. 쉽게 말하면 ${lv4Tg(nextEra.tg,eraStart(nextEra)).use}이에요.`,`${y}년에 무엇을 남기느냐가 그 10년의 출발선을 정해요. 올해 만든 결과물과 관계가 다음 흐름의 밑천이 돼요.`])):'')+
     lv4Sub('천기의 종합 조언',lv4P([`${y}년의 본인은 ${front.use} 위에 서 있어요. ${ax.label}의 힘을 가진 본인에게, 올해는 그 힘을 ${young?'공부와 경험으로 키우는':'결과물과 신뢰로 바꾸는'} 해예요.`,`돈은 ${lv4MonthLab(moneyGood.map(x=>x.month))}에 움직이고, 마음은 ${lv4MonthLab(loveGood.map(x=>x.month))}에 표현하고, 몸은 ${lv4MonthLab(healthBad.map(x=>x.month))}에 특히 아껴 주세요.`,'사주는 정해진 운명이 아니라 한 해의 날씨를 미리 알려 주는 일기예보예요. 비 소식을 알면 우산을 챙기고, 맑은 날을 알면 소풍을 계획하면 돼요. 올해 계획을 세울 때 이 풀이를 지도로 써 보세요.']))+
-    lv4Sub('요약본',renderNewyearV3SummaryCard(m))+
+    renderNewyearV3SummaryCard(m)+
     lv4Key(`${y}년, 더 많이 하는 것보다 무엇을 남길지 먼저 정하세요.`));
 
   const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세`,lvTagsHTML([`${m.decisive}월이_결정적인_해`,`돈은_${moneyGood[0].month}월에_움직여요`,LV4_AXIS_TAG[b.axis]])+lvGaugeHTML(info.score,`${y}년 흐름`));
@@ -18478,25 +18401,7 @@ function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinN
   // 개운법 압축
   const _gwShort=`길색 ${['녹·청','적·자주','황·베이지','흰·금','검·남'][ys.main]} · 길방위 ${['동','남','중앙','서','북'][ys.main]} · 길음식 ${['신맛·녹채','쓴맛·붉은','단맛·뿌리','매운·흰','짠맛·검은'][ys.main]}`;
   _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo:_sgInfo,jobShort:_jobShort,yckShort:_yckShort,gwShort:_gwShort};
-  return `<div class="nb-card summary-card">
-    <div class="nb-cat">🎯 SUMMARY</div>
-    <div class="nb-title">인생총운 요약본 다운로드</div>
-    <div class="nb-body">
-      <div class="summary-intro">
-        <p>본인의 인생 전체 흐름을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-        <ul>
-          <li>사주팔자 네 자리 도식 + 다섯 기운 균형</li>
-          <li>다섯 기운의 돕고 누르는 관계도</li>
-          <li>사주의 핵심 관계 — 도움 되는 흐름 vs 살필 흐름</li>
-          <li>10년 단위 서술식 풀이 (현재 시기 강조)</li>
-        </ul>
-        <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-      </div>
-      <div class="summary-actions">
-        <button class="summary-btn" onclick="downloadLifeSummary('png')">이미지(PNG)</button>
-      </div>
-    </div>
-  </div>`;
+  return '';
 }
 
 function buildLifeSummaryA4HtmlV2(m){
@@ -20769,7 +20674,7 @@ async function hydratePortrait(card){
   try{
     const key=lcPortraitKey(info);
     if(!LC_PORTRAIT_INFLIGHT.has(key)){
-      const job=(async()=>{const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/portrait',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...info,paidToken:latestPaidToken()})},1);const raw=resp&&resp.ok&&data&&/^data:image\//.test(String(data.image||''))?data.image:'';return raw?await lcPortraitShrink(raw):'';})();
+      const job=(async()=>{const {resp,data}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/portrait',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...info,paidToken:latestPaidToken()})},2);const raw=resp&&resp.ok&&data&&/^data:image\//.test(String(data.image||''))?data.image:'';return raw?await lcPortraitShrink(raw):'';})();
       LC_PORTRAIT_INFLIGHT.set(key,job);job.finally(()=>LC_PORTRAIT_INFLIGHT.delete(key)).catch(()=>{});
     }
     const src=await LC_PORTRAIT_INFLIGHT.get(key);
@@ -23580,8 +23485,7 @@ function renderNamePaid(saju, nmExtra){
   }
   const built=buildNameReadingV4(saju,nmExtra);
   _nameSummaryData=built.data;
-  const summary=`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">이름풀이 요약본 다운로드</div><div class="nb-body"><p>종합 점수와 사주와의 궁합, 한글 소리의 기운${built.data.hasHan?', 한자 획수의 네 자리':''}, 사주와 합친 균형, 추천 이름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button></div></div></div>`;
-  return `<div class="lv4-wrap nm-v4" data-story-id="name-reading">${built.html}${lv4Sub('요약본',summary)}</div></div>`;
+  return `<div class="lv4-wrap nm-v4" data-story-id="name-reading">${built.html}</div></div>`;
 }
 function renderNamePaidLegacy(saju, nmExtra){
   if(!nmExtra||!nmExtra.surname||!nmExtra.given){
@@ -24133,26 +24037,6 @@ function renderNamePaidLegacy(saju, nmExtra){
       nameScore, grade, gradeColor, suri,
       recommended: recommended.slice(0,5)
     };
-    h+=`<div class="nb-card summary-card">
-      <div class="nb-cat">🎯 SUMMARY</div>
-      <div class="nb-title">이름풀이 요약본 다운로드</div>
-      <div class="nb-body">
-        <div class="summary-intro">
-          <p>「${full}」 이름풀이를 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-          <ul>
-            <li>📊 종합 점수 + 등급 + 사주와의 궁합</li>
-            <li>🪷 한글 자모 오행 분석 (초성·종성 5행)</li>
-            ${hasHan?'<li>㊗ 한자 4격(원·형·이·정) + 81수리 길흉</li>':''}
-            <li>🌳 사주 오행 vs 이름 오행 균형도</li>
-            <li>🪷 사주에 어울리는 추천 이름 (4격 모두 길수 우선)</li>
-          </ul>
-          <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-        </div>
-        <div class="summary-actions">
-          <button class="summary-btn nm-summary-btn" onclick="downloadNameSummary('png')">이미지(PNG)</button>
-        </div>
-      </div>
-    </div>`;
   }catch(e){}
 
   // CHX: 4장 흐름 — 종합 → 글자 분석 → 사주와의 조화 → 추천·실천 (장 헤더 삽입)
@@ -24601,26 +24485,6 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
       for(let i=0;i<dq1.daeuns.length;i++){if(age1>=dq1.daeuns[i].age&&(i===dq1.daeuns.length-1||age1<dq1.daeuns[i+1].age)){cd1=dq1.daeuns[i];break;}}
       for(let i=0;i<dq2.daeuns.length;i++){if(age2>=dq2.daeuns[i].age&&(i===dq2.daeuns.length-1||age2<dq2.daeuns[i+1].age)){cd2=dq2.daeuns[i];break;}}
       _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1,mbti2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
-      h+=`<div class="nb-card summary-card">
-        <div class="nb-cat">🎯 SUMMARY</div>
-        <div class="nb-title">궁합 요약본 다운로드</div>
-        <div class="nb-body">
-          <div class="summary-intro">
-            <p>두 분의 궁합을 <b>A4 한 장</b>에 정리한 요약본이에요.</p>
-            <ul>
-              <li>📊 두 분 사주의 네 자리 비교 (본인 vs 상대)</li>
-              <li>📈 종합 점수 + 4가지 세부 점수 (오행·십신·일지·균형)</li>
-              <li>💞 배우자 자리 관계 + 중심 기운의 끌림</li>
-              <li>✦ 별자리 4원소 궁합 (점성학)</li>
-              <li>🗓 두 분 현재 10년 흐름 단계 비교</li>
-            </ul>
-            <p style="margin-top:8px">아래 버튼을 누르면 다운로드돼요.</p>
-          </div>
-          <div class="summary-actions">
-            <button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button>
-          </div>
-        </div>
-      </div>`;
     }
   }catch(e){}
   // CHX: 5장 내러티브 — 두 사람 진단 → 관계의 분위기 → 깊이 통찰 → 시간 → 마무리
@@ -25024,8 +24888,7 @@ function renderGunghapPaid(saju1, gnExtra){
     const pick=(dq,age)=>{let c=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){c=dq.daeuns[i];break;}return c;};
     _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1:myMbti,mbti2:gnExtra.mbti||'',result,z1,z2,pair,cd1:pick(dq1,age1),cd2:pick(dq2,age2),age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
   }catch(e){}
-  const summary=_gunghapSummaryData?`<div class="nb-card summary-card"><div class="nb-cat"><span class="nb-cat-icon material-symbols-outlined" aria-hidden="true">download</span>SUMMARY</div><div class="nb-title">궁합 요약본 다운로드</div><div class="nb-body"><p>두 사람의 사주 비교, 종합 점수와 네 가지 세부 점수, 배우자 자리, 별자리 궁합, 지금 10년 흐름을 A4 한 장에 담았어요.</p><div class="summary-actions"><button class="summary-btn gh-summary-btn" onclick="downloadGunghapSummary('png')">이미지(PNG)</button></div></div></div>`:'';
-  ctx.tail=lv4Sub('천기의 맞춤 한마디',renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey))+lv4Sub('요약본',summary);
+  ctx.tail=lv4Sub('천기의 맞춤 한마디',renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey));
   return `<div class="lv4-wrap gh-v4" data-story-id="gunghap-reading">${buildGunghapReadingV4(saju1,saju2,ctx)}</div>`;
 }
 
