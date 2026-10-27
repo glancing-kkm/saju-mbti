@@ -310,12 +310,8 @@ const harness = `
     const newyearForbidden=['정관','편관','정재','편재','정인','편인','식신','상관','비견','겁재','격국','희신','기신','지장간','십이운성','공망'].filter(word=>newyearPlain.includes(word));
     ok('신년운세 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음',
        newyearForbidden.length===0 && !/(?<![가-힣])결(?![가-힣])/.test(newyearPlain),newyearForbidden.join(','));
-    ok('신년운세 V3: 심층 요약본도 V3 구조를 사용',
-       _newyearSummaryData && _newyearSummaryData.version===3 &&
-       buildNewyearSummaryA4Html().includes('신년운세 상담 요약') && buildNewyearSummaryA4Html().includes('10년 단위 큰 흐름'));
-    const premiumA4=premiumizeReadingHtml(buildNewyearSummaryA4Html());
-    ok('풀이 심볼: 저장 이미지·PDF도 프리미엄 문양으로 변환',
-       premiumA4.includes('class="reading-sigil"') && !/[💰❤️🌿⚠]/u.test(premiumA4));
+    ok('신년운세 V3: 요약본 다운로드 카드 없음',
+       !newyearExample.includes('summary-card') && !newyearExample.includes('요약본') && typeof downloadNewyearSummary==='undefined');
     _meta=savedMeta;_lastInputs=savedInputs;
 
     // 12) 다른 유료 풀이도 같은 3층 표현 계층을 사용하고 상세 본문은 보존한다.

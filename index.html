@@ -193,7 +193,7 @@ h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacin
   /* 본문 읽기 품질 — 짧은 끝어미 묶음과 preventOrphan()으로 고아글자를 막는다.
      미리보기와 전체 풀이 본문은 왼쪽 정렬과 자연스러운 간격을 함께 사용한다.
      가운데 정렬은 한 줄짜리 표시 문구와 비교 도식에만 남긴다. */
-  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
     line-break:strict;
     word-break:normal;
     overflow-wrap:break-word;
@@ -204,7 +204,7 @@ h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacin
     word-spacing:0;
     letter-spacing:0;
   }
-  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div),
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div),
   :where(.ck-body,.ag-block,.ag-block ul,.quick-summary-item,.name-compare-head,.ncr-reason,.ncr-use,.dp-tip,.ny-headline,.ai-reading-status,.cat-where,.nb-good,.nb-warn,.flow-box,.tarot-fortune-item,.astro-text){
     text-align:left;
     text-align-last:left;
@@ -212,7 +212,7 @@ h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacin
     word-spacing:0;
     letter-spacing:0;
   }
-  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(ul,ol){
+  :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(ul,ol){
     padding-left:1.25em;
     list-style-position:outside;
     text-align:left;
@@ -726,7 +726,6 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
 .tl-item,.dx-wrap,.dx-col,.ck-chips span,.chat-card,.chat-remaining,.chat-msg-reply,.dp-card,.review-card,.sinsal-mini-card,.compat-cell,.daily-cat,.simple-card,
 .mm,.mm-col,.ny-month,
 .life-timeline,.cap-watermark,.name-compare-row,.simple-emoji,.sin-card,.gg-side,.gg-mc,.mo-row,.mo-cat,.term-notice,.remember-line{border:none !important}
-.summary-btn.secondary{background:var(--accent-soft);border:none}
 .lock-pay,.pay-cta-cancel{background:rgba(0,98,65,.06)}
 .ctitle{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase}
 .ctitle.big{font-family:var(--font-heading);font-synthesis:none;font-size:1rem;color:var(--accent);letter-spacing:.02em;text-transform:none;font-weight:700}
@@ -1655,84 +1654,6 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
   .pillar4-char{font-size:1.32rem}
 }
 
-/* ── 인생총운 요약본 다운로드 카드 (화면) ── */
-.summary-card{background:var(--earth-bg);border:2px solid var(--accent-bright)}
-.summary-intro{padding:6px 2px;font-size:.86rem;line-height:1.85;color:var(--sub)}
-.summary-intro b{color:var(--accent-bright)}
-.summary-intro ul{padding-left:18px;margin:8px 0}
-.summary-intro li{margin-bottom:4px}
-.summary-actions{display:flex;gap:8px;margin-top:14px}
-.summary-btn{flex:1;padding:13px 14px;background:var(--accent-bright);color:#1a1c1d;border:none;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
-.summary-btn:hover{background:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(203,162,88,.3)}
-.summary-btn:active{transform:translateY(0)}
-.summary-btn:disabled{opacity:.6;cursor:wait}
-.summary-btn.secondary{background:var(--accent-soft);color:var(--accent-bright);border:none}
-.summary-btn.secondary:hover{background:rgba(203,162,88,.1)}
-
-/* ── A4 가로 요약본 (오프스크린 캡처용) ── */
-.a4-page{width:1123px;height:794px;background:#fdfaf0;color:#1a1c1d;font-family:var(--font-main);padding:14px 24px;box-sizing:border-box;display:flex;flex-direction:column;position:relative;text-align:left}
-.a4-header{text-align:center;border-bottom:2px solid #8b6f47;padding-bottom:6px;margin-bottom:8px}
-.a4-title{font-size:22px;font-weight:800;color:#8b6f47;letter-spacing:.04em;font-family:var(--font-main)}
-.a4-subtitle{font-size:12px;color:#6b574a;margin-top:3px}
-.a4-body{flex:1;display:flex;gap:20px;overflow:hidden;min-height:0}
-.a4-col-left{flex:1;padding-right:18px;border-right:1.5px dashed #b8a075;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0}
-.a4-col-right{flex:1;display:flex;flex-direction:column;gap:5px;overflow:hidden;min-width:0;min-height:0}
-.a4-h{font-size:13px;font-weight:800;color:#8b6f47;margin:0 0 5px;letter-spacing:.02em;border-bottom:1px solid #d4b88a;padding-bottom:3px}
-/* 사주팔자 도식 */
-.a4-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.a4-pillar{text-align:center;padding:6px 2px 5px;background:#fff8e8;border:1px solid #c8a888;border-radius:5px}
-.a4-pillar-lab{font-size:9px;color:#888;letter-spacing:.05em;font-weight:700}
-.a4-pillar-h{font-family:var(--font-heading);font-synthesis:none;font-size:22px;font-weight:800;color:#1a1c1d;line-height:1.1;margin:2px 0}
-.a4-pillar-glyph{font-family:var(--font-heading);font-synthesis:none;font-size:22px;font-weight:800;line-height:1;margin:3px auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1.5px solid;border-radius:6px}
-.a4-pillar-ko{font-size:9px;color:#666}
-.a4-pillar-oh{font-size:9px;color:#a8732e;margin-top:3px;font-weight:600}
-.a4-pillar-ten{font-size:9px;color:#5a7a8a;margin-top:1px}
-.a4-pillar.day{background:#fff3d0;border-color:#d4a849}
-/* 오행 분포 + 생극 도식 */
-.a4-oh-row{display:flex;align-items:center;gap:14px;margin-top:2px}
-.a4-oh-svg{flex-shrink:0;width:200px;height:200px}
-.a4-oh-bars{flex:1;display:flex;flex-direction:column;gap:5px}
-.a4-oh-bar{display:flex;align-items:center;gap:6px;font-size:11px;line-height:1.3}
-.a4-oh-bar-emoji{width:16px;flex-shrink:0}
-.a4-oh-bar-name{width:22px;font-weight:700;flex-shrink:0}
-.a4-oh-bar-track{flex:1;height:9px;background:#f0e8d8;border-radius:5px;overflow:hidden;position:relative}
-.a4-oh-bar-fill{height:100%;border-radius:5px}
-.a4-oh-bar-cnt{width:32px;text-align:right;font-weight:700;font-size:10px;color:#6b574a}
-.a4-oh-legend{font-size:9.5px;color:#888;line-height:1.5;margin-top:6px;text-align:left;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.a4-oh-legend b.lg-g{color:#2e7d32}
-.a4-oh-legend b.lg-r{color:#c44}
-/* 관계도 */
-.a4-rel{font-size:10px;line-height:1.55;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
-.a4-rel-col{padding:7px 9px;border-radius:6px;min-width:0;overflow:visible}
-.a4-rel-col.good{background:#eaf6ec;border-left:3px solid var(--good)}
-.a4-rel-col.bad{background:#fceae6;border-left:3px solid var(--warn)}
-.a4-rel-lab{font-size:10px;font-weight:800;margin-bottom:3px;word-break:keep-all}
-.a4-rel-col.good .a4-rel-lab{color:#2e7d32}
-.a4-rel-col.bad .a4-rel-lab{color:#c44}
-.a4-rel-item{font-size:9.5px;color:#1a1c1d;line-height:1.5;margin-bottom:1px;word-break:keep-all;overflow-wrap:anywhere}
-.a4-rel-none{color:#999;font-style:italic;font-size:9.5px}
-/* 대운 (오른쪽) — 8칸 + 풀텍스트를 자간·줄간격으로 압축해 모두 표시 */
-.a4-daeun-list{flex:1;display:flex;flex-direction:column;gap:3px;overflow:hidden;min-height:0}
-.a4-daeun{padding:4px 8px;background:#fff8e8;border-left:3px solid #c8a888;border-radius:4px;line-height:1.4;flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-.a4-daeun.cur{background:#fff0c8;border-left-color:#d4a849;box-shadow:0 0 0 1.5px #d4a849}
-.a4-daeun-head{font-weight:800;color:#8b6f47;font-size:10px;margin-bottom:2px;display:grid;grid-template-columns:84px 1fr 56px;align-items:center;gap:6px;letter-spacing:-.01em}
-.a4-daeun-head .age{font-size:10px;display:flex;align-items:center;gap:4px}
-.a4-daeun-head .age .cur-mark{font-size:7.5px;color:#fff;background:#d4a849;padding:1px 4px;border-radius:6px;font-weight:700;letter-spacing:.02em}
-.a4-daeun-head .pil{font-size:10px;color:#1a1c1d;font-family:var(--font-heading);font-synthesis:none;text-align:center}
-.a4-daeun-head .tg{font-size:9px;color:#a8732e;background:rgba(168,115,46,.1);padding:1px 5px;border-radius:8px;text-align:center}
-.a4-daeun.cur .a4-daeun-head .tg{background:#d4a849;color:#fff}
-.a4-daeun-body{color:#1a1c1d;font-size:8.8px;line-height:1.4;letter-spacing:-.025em;word-spacing:-.05em;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
-.a4-footer{text-align:left;font-size:9px;color:#999;margin-top:4px;border-top:1px dashed #c8a888;padding-top:4px}
-/* 신년 A4 — 12개월 막대그래프 */
-.a4-mo-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;align-items:end;padding:4px 2px;background:#fdf5e0;border-radius:5px;min-height:64px}
-.a4-mo{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;position:relative}
-.a4-mo-bar{width:14px;border-radius:2px 2px 0 0;transition:height .2s}
-.a4-mo-lab{font-size:9px;color:#1a1c1d;font-weight:600}
-.a4-mo.dec{background:rgba(212,168,73,.18);border-radius:4px;padding:1px}
-.a4-mo.dec::after{content:'⭐';position:absolute;top:-8px;font-size:9px}
-.a4-mo.lk .a4-mo-lab{color:var(--good);font-weight:800}
-.a4-mo.tg .a4-mo-lab{color:var(--warn);font-weight:800}
-
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:var(--earth-bg);border:1px solid rgba(138,101,21,.28);border-radius:14px;position:relative;overflow:hidden}
 .term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
@@ -1846,8 +1767,8 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
   .chapter-divider{margin:24px 2px 12px;padding:11px 13px}
   .chapter-divider .ch-title{font-size:1rem}
   .action-guide .ag-block{padding:10px 12px}
-  .summary-actions,.easypay-row{flex-direction:column}
-  .summary-btn,.easypay-btn{width:100%}
+  .easypay-row{flex-direction:column}
+  .easypay-btn{width:100%}
   .menu-grid{gap:8px}
   .menu-card{padding:16px 8px 14px}
   .tog-row{gap:6px}
@@ -2013,8 +1934,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .simple-card,
 .quick-summary,
 .chat-card,
-.summary-card,
-.summary-intro,
 .reading-brief,
 .lead-card,
 .flow-box,
@@ -2056,7 +1975,6 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .simple-card,
 .quick-summary,
 .chat-card,
-.summary-card,
 .dp-card,
 .ny-section,
 .ny-hero,
@@ -2091,7 +2009,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   margin-left:0 !important;
   margin-right:0 !important;
 }
-.nb-body :where(.reading-brief,.lead-card,.flow-box,.action-guide,.summary-intro),
+.nb-body :where(.reading-brief,.lead-card,.flow-box,.action-guide),
 .daily-cat-body :where(.reading-brief,.lead-card,.flow-box,.action-guide),
 .mbti-analysis :where(.mbti-intro,.mbti-axis-row,.mbti-balance){
   width:100% !important;
@@ -2120,9 +2038,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .life-timeline::before{
   opacity:0 !important;
 }
-/* 모든 풀이 화면·요약본의 굵은 왼쪽 강조선 제거 */
+/* 모든 풀이 화면의 굵은 왼쪽 강조선 제거 */
 :is(#view-result,#view-tarot,#view-astrology) [style*="border-left"],
-.a4-page [style*="border-left"],
 :is(#view-result,#view-tarot,#view-astrology) :where(
   .conversion-hook-point,
   .citem,
@@ -2139,8 +2056,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   .lead-card,
   .pillar4-card,
   .dp-tip
-),
-.a4-page :where(.a4-rel-col,.a4-daeun){
+){
   border-left-width:0 !important;
   border-left-style:none !important;
 }
@@ -2156,9 +2072,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 }
 /* 풀이마다 달랐던 명조체·차트 글꼴을 사이트 기본 글꼴로 통일 */
 :is(#view-result,#view-tarot,#view-astrology),
-:is(#view-result,#view-tarot,#view-astrology) :where(*):not(.material-symbols-outlined),
-.a4-page,
-.a4-page :where(*){
+:is(#view-result,#view-tarot,#view-astrology) :where(*):not(.material-symbols-outlined){
   font-family:var(--font-main) !important;
 }
 /* 인생총운 3층 구조 — 캐릭터 / 카드 덱 / 전체 풀이 */
@@ -8751,17 +8665,7 @@ function ctxCallOut(cat,tag,note){
 function renderDaypickFortune(saju,y,m,d,extra){
   const test=new Date(y,m-1,d);
   if(test.getFullYear()!==y||test.getMonth()!==m-1||test.getDate()!==d)return `<div class="dp-card"><div class="dp-headline">존재하지 않는 날짜예요.</div></div>`;
-  let summary='';
-  try{
-    if(_meta&&_meta.sy){
-      const f=calcDailyFortune(saju,test),g=_meta.gender||'male',dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,g),a=y-_meta.sy;
-      let cd=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(a>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||a<dq.daeuns[i+1].age)){cd=dq.daeuns[i];break;}
-      const hourCards=Array.from({length:12},(_,bi)=>{const r=brRel(saju.dp.branch,bi).kind,r2=brRel(f.dp.branch,bi).kind;const kind=r==='합'||r2==='합'?'길시':r==='충'||r2==='충'?'주의':'평시';return {bi,kind,accent:kind==='길시'?'var(--good)':kind==='주의'?'var(--warn)':'var(--sub)',hourTG:tenGod(saju.dp.stem,BR_MAIN_STEM[bi]),note:HOUR_GENERAL[bi]};});
-      let sins=[];try{sins=findSinsal(saju);}catch(e){}
-      _daypickSummaryData={saju,y,m,d,wDay:['일','월','화','수','목','금','토'][test.getDay()],f,grade:dailyGrade(f.total),stemTG:f.tg,rel:f.rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo:BRCHKO[saju.dp.branch],curDaeun:cd,zod:getZodiac12(_meta.sm,_meta.sd),hourCards,activeSins:sins.filter(s=>s.b===f.dp.branch),dm:DM[saju.dp.stem],gender:g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
-    }
-  }catch(e){}
-  return `<div class="lv4-wrap dp-v4">${buildDaypickReadingV4(saju,y,m,d,extra)}${summary}</div></div>`;
+  return `<div class="lv4-wrap dp-v4">${buildDaypickReadingV4(saju,y,m,d,extra)}</div></div>`;
 }
 function renderDaypickFortuneLegacy(saju,y,m,d,extra){
   const test=new Date(y,m-1,d);
@@ -9074,20 +8978,6 @@ function renderDaypickFortuneLegacy(saju,y,m,d,extra){
   prescBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(f.total)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','행동 처방 + 고전 한 줄',prescBody);
 
-  // 지정일 A4 요약본 데이터 저장 + 다운로드 카드
-  try{
-    if(_meta&&_meta.sy){
-      const _g=_meta.gender||'male';
-      const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
-      const _curAge=y-_meta.sy;
-      let _curD=_dq.daeuns[0];
-      for(let i=0;i<_dq.daeuns.length;i++){
-        if(_curAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_curAge<_dq.daeuns[i+1].age)){_curD=_dq.daeuns[i];break;}
-      }
-      const _zod=getZodiac12(_meta.sm,_meta.sd);
-      _daypickSummaryData={saju,y,m,d,wDay,f,grade,stemTG,rel,dpStemKo:STEMKO[f.dayStem],dpBrKo:BRCHKO[f.dayBranch],myBrKo,curDaeun:_curD,zod:_zod,hourCards,activeSins,dm,gender:_g,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd};
-    }
-  }catch(e){}
 
   // ── 마무리 가이드
   h+=`<div class="nb-card">
@@ -9151,15 +9041,8 @@ function _bestDayInMonth(saju,yy,mm){
 }
 
 function renderMonthlyFortune(saju,sy,sm,ey,em,extra){
-  const built=buildMonthlyReadingV4(saju,sy,sm,ey,em,extra),D=built.data;
-  let summary='';
-  try{
-    if(_meta&&_meta.sy){
-      const fmt=o=>`${o.yy}.${String(o.mm).padStart(2,'0')}`;
-      _monthlySummaryData={saju,sy,sm,ey,em,totalMonths:D.months.length,monthsData:D.months,luckyMonths:D.lucky.map(fmt),toughMonths:D.tough.map(fmt),decisive:D.decisive,avgTotal:D.avgT,avgGrade:D.g,gk:getGyeokguk(saju),ys:D.ys,curDaeun:D.sD,zod:getZodiac12(_meta.sm,_meta.sd),dm:DM[saju.dp.stem],gender:_meta.gender||'male',wealthAvg:D.avg('wealth'),loveAvg:D.avg('love'),careerAvg:D.avg('career'),healthAvg:D.avg('health'),metaSy:_meta.sy};
-    }
-  }catch(e){}
-  return `<div class="lv4-wrap mo-v4">${built.html}${summary}</div></div>`;
+  const built=buildMonthlyReadingV4(saju,sy,sm,ey,em,extra);
+  return `<div class="lv4-wrap mo-v4">${built.html}</div></div>`;
 }
 function renderMonthlyFortuneLegacy(saju,sy,sm,ey,em,extra){
   const _mPP=buildPersonaProfile(saju); // PSN: 8글자 개인 시그널
@@ -9426,20 +9309,6 @@ function renderMonthlyFortuneLegacy(saju,sy,sm,ey,em,extra){
   guideBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(avgTotal)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','기간 통합 행동 가이드 + 고전',guideBody);
 
-  // 월별 A4 요약본 데이터 저장 + 다운로드 카드
-  try{
-    if(_meta&&_meta.sy){
-      const _g=_meta.gender||'male';
-      const _dq=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_g);
-      const _startAge=sy-_meta.sy;
-      let _startD=_dq.daeuns[0];
-      for(let i=0;i<_dq.daeuns.length;i++){
-        if(_startAge>=_dq.daeuns[i].age && (i===_dq.daeuns.length-1||_startAge<_dq.daeuns[i+1].age)){_startD=_dq.daeuns[i];break;}
-      }
-      const _zod=getZodiac12(_meta.sm,_meta.sd);
-      _monthlySummaryData={saju,sy,sm,ey,em,totalMonths,monthsData,luckyMonths,toughMonths,decisive,avgTotal,avgGrade,gk,ys,curDaeun:_startD,zod:_zod,dm,gender:_g,wealthAvg:avg('wealth'),loveAvg:avg('love'),careerAvg:avg('career'),healthAvg:avg('health'),metaSy:_meta.sy};
-    }
-  }catch(e){}
 
   // ── 마무리
   h+=`<div class="nb-card">
@@ -10128,22 +9997,6 @@ function renderNewyearFortuneLegacy(saju,y){
   closeBody+=`<div class="dp-tip">📜 <b>고전이 전하는 한 줄</b><br>${pickQuote(total)}</div>`;
   h+=paidWrapBody('CLASSIC','📜','한 해를 살아가는 분위기 + 고전',closeBody);
 
-  // 신년 A4 요약본 데이터 저장 + 카드
-  try{
-    if(_meta&&_meta.sy){
-      const _gN=_meta.gender||'male';
-      const _dqN=calcDaeun(saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,_gN);
-      const _curAgeN=y-_meta.sy;
-      let _curDN=_dqN.daeuns[0];
-      for(let i=0;i<_dqN.daeuns.length;i++){
-        if(_curAgeN>=_dqN.daeuns[i].age && (i===_dqN.daeuns.length-1||_curAgeN<_dqN.daeuns[i+1].age)){_curDN=_dqN.daeuns[i];break;}
-      }
-      const _stageN=_curAgeN-_curDN.age;
-      const _stageWordN=_stageN<=2?'초입':_stageN<=5?'중반':_stageN<=8?'후반':'끝자락';
-      const _zodN=getZodiac12(_meta.sm,_meta.sd);
-      _newyearSummaryData={saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod:_zodN,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage:_stageWordN,curDaeun:_curDN,dm,gender:_gN,sy:_meta.sy,sm:_meta.sm,sd:_meta.sd,sh:_meta.hour||12,smin:_meta.min||0};
-    }
-  }catch(e){}
 
   // 채팅 (3회)
   h+=renderChatSection('newyear');
@@ -10223,10 +10076,6 @@ function newyearV3FiveElements(m){const marks=['🌳','🔥','⛰️','⚙️','
 function newyearV3Funds(){return `<div class="ny-v3-funds">${[['🛒','생활자금','매달 필요한 돈'],['🛟','비상자금','최소 6개월 생활비'],['🏦','장기자금','노후·주택·목표 자금'],['🚀','도전자금','투자·사업·새 프로젝트']].map(x=>`<div class="ny-v3-fund"><span>${lifeV3EmojiEntity(x[0])}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('')}</div>`;}
 function newyearV3DaeunBoard(m){return `<div class="ny-v3-daeun">${m.eras.map(x=>`<div class="ny-v3-daeun-card${x.current?' current':''}"><small>${x.range}</small><b>${x.gz}</b><span>${preventOrphan(x.text)}</span></div>`).join('')}</div>`;}
 function newyearV3SeasonBoard(m){return `<div class="ny-v3-season">${m.seasons.map(x=>`<div class="ny-v3-season-card"><span>${lifeV3EmojiEntity(x.emoji)}</span><b>${x.name} · ${x.score}점</b><small>${preventOrphan(x.text)}</small></div>`).join('')}</div>`;}
-function renderNewyearV3SummaryCard(m){
-  _newyearSummaryData={version:3,model:m,y:m.y};
-  return '';
-}
 function buildNewyearV3Library(saju,y,meta){
   const m=buildNewyearV3Model(saju,y,meta),fp=m.fingerprint,dm=STEMKO[saju.dp.stem],support=m.support,support2=m.support2;
   const monthLab=arr=>arr.map(v=>`${v}월`).join(' · '),yearGz=m.info.gz,currentGz=STEMKO[m.cur.stem]+BRCHKO[m.cur.branch];
@@ -10299,7 +10148,7 @@ function buildNewyearV3Library(saju,y,meta){
     {no:3,title:'좋은 흐름과 긴 시간',desc:'올해를 잘 쓰는 행동과 10년 단위 큰 흐름을 연결해요',labels:['NY_LUCK','NY_DAEUN']},
     {no:4,title:'천기의 최종 상담',desc:'성공 공식과 끊어야 할 흐름을 한 번에 정리해요',labels:['NY_MASTER']}
   ]);
-  return {model:m,html:_generateTOC(h,`${y}년 신년운세`)+h+renderNewyearV3SummaryCard(m)+renderChatSection('newyear')};
+  return {model:m,html:_generateTOC(h,`${y}년 신년운세`)+h+renderChatSection('newyear')};
 }
 function renderNewyearFortune(saju,y){
   const meta={...(_meta||{}),gender:(_meta&&_meta.gender)||gender},built=buildNewyearReadingV4(saju,y,meta);
@@ -12174,7 +12023,7 @@ function previewLockHTML(cat,html,opts){
   opts=opts||{};let secNo=0;
   const box=document.createElement('div');box.innerHTML=html;
   const q=(s,root)=>[...(root||box).querySelectorAll(s)];
-  q('.chat-card,[data-ai-reading],.ai-reading-card,.lv4-why,.next-actions,.pdf-cta,.summary-card,script,.lv4-actions').forEach(e=>e.remove());
+  q('.chat-card,[data-ai-reading],.ai-reading-card,.lv4-why,.next-actions,.pdf-cta,script,.lv4-actions').forEach(e=>e.remove());
   q('.life-experience').forEach(e=>e.classList.remove('life-experience'));
   q('[data-deep]').forEach(e=>e.removeAttribute('data-deep'));
   q('[data-portrait]').forEach(card=>{
@@ -13204,10 +13053,6 @@ const LIFE_V3_CARD_MARK={badge:'🪪',auto_awesome:'✨',neurology:'🧠',worksp
 function lifeV2Card(label,icon,title,lead,html){
   return paidWrapBody(label,`<span aria-hidden="true">${lifeV3EmojiEntity(LIFE_V3_CARD_MARK[icon]||'✦')}</span>`,title,`${lead?`<div class="life-v2-lead">${preventOrphan(lead)}</div>`:''}${html||''}`,null,false,{personal:false,stat:false});
 }
-function renderLifeV2SummaryCard(m){
-  _lifeSummaryData={version:3,model:m};
-  return '';
-}
 function _lifeV2First(text){return String(text||'').split(/(?<=[.!?])\s+/)[0]||'';}
 function _lifeV2YearInfo(saju,year){
   const yp=yearPillar(year,6,1,12,0),tg=tenGod(saju.dp.stem,yp.stem),btg=tenGod(saju.dp.stem,BR_MAIN_STEM[yp.branch]),rel=brRel(saju.dp.branch,yp.branch);
@@ -13412,7 +13257,7 @@ function buildLifeV2Library(saju,meta){
     {no:4,title:'본인 사주를 잘 쓰는 법',desc:'실천법·주의사항·최종 상담을 한 번에 정리해요',labels:['PRACTICE','CAUTION','MASTER']}
   ]);
   const toc=_generateTOC(h,'본인 사주풀이');
-  return toc+h+renderLifeV2SummaryCard(m)+renderChatSection();
+  return toc+h+renderChatSection();
 }
 
 // ══════════════════════════════════════════════
@@ -13579,7 +13424,6 @@ const LC_GWIN=[[1,7],[0,8],[11,9],[11,9],[1,7],[0,8],[1,7],[2,6],[5,3],[5,3]];
 // 일지 오행으로 보는 배우자 인상 (옛 해석)
 const LC_PARTNER_LOOK=['키가 크고 선이 곧은 인상','표정이 밝고 눈빛이 또렷한 인상','듬직하고 온화한 인상','이목구비가 또렷하고 단정한 인상','눈매가 부드럽고 차분한 인상'];
 // 배우자 별의 오행으로 보는 일 분야
-const LC_PARTNER_JOB=['교육·출판·디자인','방송·마케팅·IT','공공기관·부동산·중개','금융·법·엔지니어','연구·의료·무역'];
 const LC_TITLE={
   self:['내 길은 내가 정하는 힘은 강하지만','도움을 청할 때를 놓치기 쉬운 사주'],
   out:['말과 재능으로 사람을 끌어당기지만','마무리에서 힘이 빠지기 쉬운 사주'],
@@ -13723,26 +13567,17 @@ function lcWhenYM(year,month,y0){return month?`${year}년 <span class="lk-m">${m
 // 운명의 상대·귀인·거리 둘 사람 — 인생총운과 같은 계산
 
 function lcPeople(saju,o){
-  o=o||{};if(_meta&&_meta.marital==='married')o={...o,partner:false,helper:true};const y0=new Date().getFullYear(),years=Array.from({length:11},(_,i)=>_lifeV2YearInfo(saju,y0+i));
+  // 인물 카드는 귀인·악연 한 장씩만 보여 준다(운명의 상대 카드는 쓰지 않는다)
+  o=o||{};if(_meta&&_meta.marital==='married')o={...o,helper:true};const y0=new Date().getFullYear(),years=Array.from({length:11},(_,i)=>_lifeV2YearInfo(saju,y0+i));
   const P=o.P||(()=>{try{return buildPinpoint(saju,{...(_meta||{}),gender:o.genderKey||gender});}catch(e){return null;}})();
-  const me=SOH[saju.dp.stem],female=(o.genderKey||gender)==='female',spEl=female?(me+3)%5:(me+2)%5;
+  const female=(o.genderKey||gender)==='female';
   const clashB=(saju.dp.branch+6)%12,gw=LC_GWIN[saju.dp.stem]||[],gwYear=years.find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB),clashYear=years.slice(1).find(y=>y.yp.branch===clashB);
   const ds=saju.dp.stem,tgs=[saju.yp.stem,saju.mp.stem].map(x=>tenGod(ds,x)).concat([saju.yp.branch,saju.mp.branch,saju.dp.branch].map(b=>tenGod(ds,BR_MAIN_STEM[b])));
   const peer=tgs.filter(t=>t==='비견'||t==='겁재').length,gwanN=tgs.filter(t=>t==='정관'||t==='편관').length;
-  const who=ppWho(),call=ppCall(),seed=saju.dp.stem*7+saju.dp.branch,mg=female?'female':'male',og=female?'male':'female';
+  const who=ppWho(),seed=saju.dp.stem*7+saju.dp.branch,mg=female?'female':'male';
   const uAge=y0-(Number(_meta&&_meta.sy)||y0-30)+1,ageOf=(ys,d)=>ys&&ys[0]?y0-ys[0]+1:d,lk=BOH[saju.dp.branch];
   const dmg=peer>=2?'돈 거래로 인한 금전 손실':gwanN>=2?'책임 떠넘기기와 지나친 압박':'말 바꾸기로 인한 신뢰 손상';
   let h='';
-  if(o.partner&&(!(_meta&&_meta.marital==='married'))){
-    h+=lcScene(saju,`${call}에겐<br>운명의 짝이<br>있소`);
-    h+=lcProfileCard('love',`${who}의<br>${o.partnerTitle||'운명의 상대'}`,lcArt(og,seed),[
-      ['외모',`${LC_PARTNER_LOOK[BOH[saju.dp.branch]]}${o.seatShort?` · <span class="lk-m">${o.seatShort}</span>`:''}`],
-      o.seatLove?['성격',`<span class="lk-m">${String(o.seatLove).split('.')[0]}</span>`]:null,
-      ['직업',`<span class="lk-m">${LC_PARTNER_JOB[spEl]}</span>`],
-      P?['특징',`${ppM(P.years.map(ppYearLab).join(' · '))} · 초성 ${ppM(personInitials(seed))}`]:null,
-      P?['사는 곳',ppWhere(P.reg,P.city)]:null,
-      o.when?['만나는 때',o.when]:null],{kind:'love',gender:og,age:ageOf(P&&P.years,uAge),look:lk,seed});
-  }
   if(o.helper!==false)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(mg,seed+3),[
     P&&P.helper.years.length?['출생년도 예시',ppM(ppYearLab(P.helper.years[0]))]:['띠',`<span class="lk-m">${gw.map(b=>ANIMAL[b]+'띠').join(' · ')}</span>`],
     P?['초성 예시',ppM(personInitials(seed+3))]:null,
@@ -14125,8 +13960,7 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub(`보조로 돕는 ${LV4_OH[m.ys.support]} 기운`,lv4P([`${support2.lead}도 함께 챙기면 좋아요.`].concat(support2.items.slice(0,2).map(x=>`<b>${x[1]}</b>. ${x[2]}`))))+
     lv4Sub('평생 조심할 7가지',`<ol class="lv4-list">${lv4Cautions(m).map(([t,d])=>`<li><b>${t}</b><span>${lv4Text(d)}</span></li>`).join('')}</ol>`)+
     lv4Sub('천기의 마지막 이야기',lv4P([`${p.season}에 태어난 ${dsm.nick||''} 같은 본인은, ${ax.label}의 힘으로 한 걸음씩 자기 자리를 만들어 가는 사람이에요.`,`지금 ${curTxt}의 흐름은 ${tgNow.use}이에요. 이 시기에 쌓은 것이 다음 10년의 선택지를 넓혀 줘요.`,'사주는 정해진 운명이 아니라 본인이 타고난 지도예요. 지도를 알면 길을 잃어도 금방 돌아올 수 있어요. 오늘 한 가지만 골라 실천해 보세요.']))+
-    lv4Act(`${support.items[0][1]}부터 시작해 보세요.`)+
-    renderLifeV2SummaryCard(m));
+    lv4Act(`${support.items[0][1]}부터 시작해 보세요.`));
 
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
   const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${ppName()?ppName()+' · ':''}${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
@@ -14965,7 +14799,6 @@ function buildNewyearReadingV4(saju,y,meta){
     lv4Sub('전체 10년 흐름표',lv4Rows(m.eras.map(e=>({label:e.range,tag:e.current?'지금':'',text:`'${plainTG(e.tg)}'의 기운이 앞에 서는 10년이에요. ${lv4Tg(e.tg,eraStart(e)).use}이에요.`,on:e.current}))))+
     (nextEra?lv4Sub(`다음 대운 (${nextEra.range})`,lv4P([`${nextEra.range}에는 '${plainTG(nextEra.tg)}'의 기운이 앞에 서요. 쉽게 말하면 ${lv4Tg(nextEra.tg,eraStart(nextEra)).use}이에요.`,`${y}년에 무엇을 남기느냐가 그 10년의 출발선을 정해요. 올해 만든 결과물과 관계가 다음 흐름의 밑천이 돼요.`])):'')+
     lv4Sub('천기의 종합 조언',lv4P([`${y}년의 본인은 ${front.use} 위에 서 있어요. ${ax.label}의 힘을 가진 본인에게, 올해는 그 힘을 ${young?'공부와 경험으로 키우는':'결과물과 신뢰로 바꾸는'} 해예요.`,`돈은 ${lv4MonthLab(moneyGood.map(x=>x.month))}에 움직이고, 마음은 ${lv4MonthLab(loveGood.map(x=>x.month))}에 표현하고, 몸은 ${lv4MonthLab(healthBad.map(x=>x.month))}에 특히 아껴 주세요.`,'사주는 정해진 운명이 아니라 한 해의 날씨를 미리 알려 주는 일기예보예요. 비 소식을 알면 우산을 챙기고, 맑은 날을 알면 소풍을 계획하면 돼요. 올해 계획을 세울 때 이 풀이를 지도로 써 보세요.']))+
-    renderNewyearV3SummaryCard(m)+
     lv4Key(`${y}년, 더 많이 하는 것보다 무엇을 남길지 먼저 정하세요.`));
 
   const hero=lvHero(`${y}년 신년운세`,`${info.gz}의 해`,front.use,`${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${b.genderLabel} · ${y}년 ${age}세`,lvTagsHTML([`${m.decisive}월이_결정적인_해`,`돈은_${moneyGood[0].month}월에_움직여요`,LV4_AXIS_TAG[b.axis]])+lvGaugeHTML(info.score,`${y}년 흐름`));
@@ -17665,10 +17498,6 @@ function renderSajuPaidLegacy(saju,sy,sm,sd,sh,smin){
     h+=paidWrapBody('LIFE_HEATMAP','📊','평생 흐름 통합 마스터 차트 — 12종 분야 × 대운 한눈에',htBody);
   }catch(e){}
 
-  // ═════════════════════════════════════
-  // 인생총운 요약본 다운로드 카드 (A4 가로 — 오프스크린 캡처)
-  // ═════════════════════════════════════
-  h+=renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames,gender);
 
   // ═════════════════════════════════════
   // 역술가 채팅 (5가지 질문)
@@ -17775,12 +17604,6 @@ function renderSajuPaidLegacy(saju,sy,sm,sd,sh,smin){
 //  인생총운 요약본 — 다운로드 카드(화면) + A4 가로 캡처 본체(오프스크린)
 // ══════════════════════════════════════════════
 // 사주 데이터를 임시로 보관해 두는 변수 — 버튼 클릭 시 A4 생성에 사용
-let _lifeSummaryData=null;
-let _newyearSummaryData=null;
-let _gunghapSummaryData=null;
-let _nameSummaryData=null;
-let _daypickSummaryData=null;
-let _monthlySummaryData=null;
 
 // 자리 짝 + 관계 종류 → 본인 인생에 닿는 핵심 메시지
 function getRelLifeMessage(places,type){
@@ -18219,764 +18042,6 @@ function getLifeEventTimeline(saju, dq, gender){
     }
     return {du, idx, tg, btg, ageRange:`${du.age}~${du.age+9}세`, tags};
   });
-}
-
-function getDaeunNarrative(tg,du,saju,ys){
-  const opener=getTgAgeOpener(tg,du.age);
-  const caution=getTgAgeCaution(tg,du.age);
-  const stageLabel=LIFE_STAGE_LABEL[lifeStageOf(du.age)];
-  const head=`${du.age}~${du.age+9}세 ${stageLabel}의 ${plainTG(tg)} 10년 흐름 — ${opener}.`;
-  const duOh=SOH[du.stem];
-  let yongsinNote='';
-  if(duOh===ys.main)yongsinNote=` 본인을 도와주는 ${OHNAME[ys.main]} 기운이 직접 들어오는 10년이라, 미뤄둔 큰 결정을 이때 꺼내면 흐름을 받기 좋아요.`;
-  else if(duOh===(ys.main+2)%5)yongsinNote=` 다만 본인을 도와주는 ${OHNAME[ys.main]} 기운을 약하게 하는 흐름이라, 큰 변동보다 정리·관망·내실 다지기에 시간을 쓰는 게 좋아요.`;
-  return `${head} ${caution}${yongsinNote}`;
-}
-
-// 음양오행 생/극 5각형 SVG — 초보 친화
-function buildOhSangsaengSvg(oh){
-  const cx=100,cy=110,r=68;
-  // 0:목 1:화 2:토 3:금 4:수 — 시계방향 (top → right → ...)
-  const colors=['#5fa969','#d96b5a','#c89860','#7a7d85','#3a6090'];
-  const bgs=['#eaf6ec','#fbe9e3','#f6ecd9','#eeeef0','#e2eaf2'];
-  const names=['목','화','토','금','수'];
-  const positions=[0,1,2,3,4].map(i=>{
-    const angle=(-90+i*72)*Math.PI/180;
-    return{x:cx+r*Math.cos(angle),y:cy+r*Math.sin(angle)};
-  });
-  const nodeR=24;
-  let svg=`<svg class="a4-oh-svg" viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg"><defs>
-    <marker id="arrG" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="#5fa969"/></marker>
-    <marker id="arrR" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#c44"/></marker>
-  </defs>`;
-  // 상극 점선 (0→2→4→1→3→0)
-  for(let i=0;i<5;i++){
-    const from=positions[i],to=positions[(i+2)%5];
-    const dx=to.x-from.x,dy=to.y-from.y,len=Math.sqrt(dx*dx+dy*dy);
-    const fromX=from.x+dx/len*nodeR,fromY=from.y+dy/len*nodeR;
-    const toX=to.x-dx/len*(nodeR+5),toY=to.y-dy/len*(nodeR+5);
-    svg+=`<line x1="${fromX}" y1="${fromY}" x2="${toX}" y2="${toY}" stroke="#c44" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5" marker-end="url(#arrR)"/>`;
-  }
-  // 상생 실선 (0→1→2→3→4→0)
-  for(let i=0;i<5;i++){
-    const from=positions[i],to=positions[(i+1)%5];
-    const dx=to.x-from.x,dy=to.y-from.y,len=Math.sqrt(dx*dx+dy*dy);
-    const fromX=from.x+dx/len*nodeR,fromY=from.y+dy/len*nodeR;
-    const toX=to.x-dx/len*(nodeR+4),toY=to.y-dy/len*(nodeR+4);
-    svg+=`<line x1="${fromX}" y1="${fromY}" x2="${toX}" y2="${toY}" stroke="#5fa969" stroke-width="1.8" marker-end="url(#arrG)"/>`;
-  }
-  // 노드
-  positions.forEach((p,i)=>{
-    svg+=`<circle cx="${p.x}" cy="${p.y}" r="${nodeR}" fill="${bgs[i]}" stroke="${colors[i]}" stroke-width="2"/>`;
-    svg+=`<text x="${p.x}" y="${p.y-1}" text-anchor="middle" font-size="13" font-weight="800" fill="${colors[i]}" font-family="BM HANNA Pro, Apple SD Gothic Neo, sans-serif">${names[i]}</text>`;
-    svg+=`<text x="${p.x}" y="${p.y+12}" text-anchor="middle" font-size="10" font-weight="700" fill="${colors[i]}" font-family="BM HANNA Pro, Apple SD Gothic Neo, sans-serif">${oh[i]}개</text>`;
-  });
-  // 범례
-  svg+=`<text x="100" y="210" text-anchor="middle" font-size="9" fill="#555"><tspan fill="#5fa969" font-weight="700">→ 돕는 흐름</tspan>  <tspan dx="6" fill="#c44" font-weight="700">⇢ 누르는 흐름</tspan></text>`;
-  svg+='</svg>';
-  return svg;
-}
-
-// 4기둥 도식 — A4용 (오행 색 + 십신 풀어쓰기)
-function buildA4Pillars(saju,gender){
-  const ohKo=['목','화','토','금','수'];
-  const ohColors=['#5fa969','#d96b5a','#c89860','#7a7d85','#3a6090']; // 목 화 토 금 수
-  const ohBgs=['#eaf6ec','#fbe9e3','#f6ecd9','#eeeef0','#e2eaf2'];
-  const tgPlain={
-    '비견':'동료·라이벌','겁재':'경쟁자',
-    '식신':'표현·풍요','상관':'독창·재능',
-    '편재':'활동 재물','정재':'안정 재물',
-    '편관':'외부 도전','정관':'명예·책임',
-    '편인':'전문 학습','정인':'학문·인덕'
-  };
-  const ps=[
-    {key:'year',lab:'년주 (조상·초년)',stem:saju.yp.stem,branch:saju.yp.branch},
-    {key:'month',lab:'월주 (부모·청년)',stem:saju.mp.stem,branch:saju.mp.branch},
-    {key:'day',lab:'일주 (본인·배우자)',stem:saju.dp.stem,branch:saju.dp.branch,isDay:true},
-    {key:'hour',lab:'시주 (자녀·말년)',stem:saju.hp?saju.hp.stem:null,branch:saju.hp?saju.hp.branch:null}
-  ];
-  let h='<div class="a4-pillars">';
-  ps.forEach(p=>{
-    if(p.stem===null){
-      h+=`<div class="a4-pillar"><div class="a4-pillar-lab">${p.lab}</div><div class="a4-pillar-h" style="color:#aaa">미상</div><div class="a4-pillar-ko">시간 미상</div></div>`;
-    }else{
-      const stemOh=SOH[p.stem],brOh=BOH[p.branch];
-      const stemTg=p.isDay?'(나 자신)':(tgPlain[tenGod(saju.dp.stem,p.stem)]||'');
-      const brTg=p.isDay?'(앉은 자리)':(tgPlain[tenGod(saju.dp.stem,BR_MAIN_STEM[p.branch])]||'');
-      h+=`<div class="a4-pillar${p.isDay?' day':''}">
-        <div class="a4-pillar-lab">${p.lab}</div>
-        <div class="a4-pillar-glyph" style="background:${ohBgs[stemOh]};color:${ohColors[stemOh]};border-color:${ohColors[stemOh]}">${STEMKO[p.stem]}</div>
-        <div class="a4-pillar-ko" style="color:${ohColors[stemOh]}">${ohKo[stemOh]}</div>
-        <div class="a4-pillar-ten">${stemTg}</div>
-        <div class="a4-pillar-glyph" style="background:${ohBgs[brOh]};color:${ohColors[brOh]};border-color:${ohColors[brOh]};margin-top:4px">${BRCHKO[p.branch]}</div>
-        <div class="a4-pillar-ko" style="color:${ohColors[brOh]}">${ohKo[brOh]}</div>
-        <div class="a4-pillar-ten">${brTg}</div>
-      </div>`;
-    }
-  });
-  h+='</div>';
-  return h;
-}
-
-function buildA4OhBars(oh){
-  const ohData=[
-    {emoji:'🌳',name:'목',color:'#5fa969'},
-    {emoji:'🔥',name:'화',color:'#d96b5a'},
-    {emoji:'⛰️',name:'토',color:'#c89860'},
-    {emoji:'⚒️',name:'금',color:'#7a7d85'},
-    {emoji:'💧',name:'수',color:'#3a6090'}
-  ];
-  const max=Math.max(...oh,1);
-  let h='<div class="a4-oh-bars">';
-  ohData.forEach((o,i)=>{
-    const cnt=oh[i];
-    const pct=Math.max(6,Math.round(cnt/max*100));
-    h+=`<div class="a4-oh-bar">
-      <span class="a4-oh-bar-emoji">${o.emoji}</span>
-      <span class="a4-oh-bar-name" style="color:${o.color}">${o.name}</span>
-      <div class="a4-oh-bar-track"><div class="a4-oh-bar-fill" style="width:${cnt>0?pct:0}%;background:${o.color}"></div></div>
-      <span class="a4-oh-bar-cnt">${cnt}개</span>
-    </div>`;
-  });
-  h+='</div>';
-  return h;
-}
-
-function renderLifeSummaryCard(saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,has,sins,sinNames,gender){
-  // 데이터는 전역에 저장해 두고, 화면 카드는 다운로드 버튼만 표시
-  // 별자리(서양 12궁) + 현재 세운 활성화 신살을 미리 계산해 A4에 함께 노출
-  let zod=null, activeNowSins=[];
-  try{
-    if(_meta&&_meta.sm&&_meta.sd){
-      zod=getZodiac12(_meta.sm,_meta.sd);
-      const _curY=new Date().getFullYear();
-      const _curYp=yearPillar(_curY,6,1,12,0);
-      activeNowSins=sins.filter(s=>s.b===_curYp.branch);
-    }
-  }catch(e){}
-  // 평생 사건 타임라인 — A4에 핵심 사건 시기만 압축
-  let lifeEvents=[];
-  try{
-    const events=getLifeEventTimeline(saju,dq,gender);
-    const tagOrder=['💍 결혼 적기','🏛 승진·공식 자리','💰 사업·재물 활동','💎 자산 형성·결혼 자금','📚 학습·자격·시험·문서','🔬 전문 학습·연구'];
-    events.forEach(e=>{
-      e.tags.forEach(t=>{
-        const fullLabel=t.emoji+' '+t.label;
-        if(tagOrder.includes(fullLabel)){
-          lifeEvents.push({ageRange:e.ageRange,label:fullLabel});
-        }
-      });
-    });
-    // 같은 라벨 여러 번 → 첫 등장 시기만
-    const seen=new Set();
-    lifeEvents=lifeEvents.filter(e=>{const k=e.label;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,6);
-  }catch(e){}
-  // 신강/신약 압축
-  let _sgInfo=null;
-  try{
-    const _so=SOH[saju.dp.stem];
-    const _myPower=Math.max(0,oh[_so]-1)+1+oh[(_so+4)%5];
-    const _outPower=oh[(_so+1)%5]+oh[(_so+2)%5]+oh[(_so+3)%5];
-    const _myPct=Math.round(_myPower/(_myPower+_outPower)*100);
-    _sgInfo={kind:Math.abs(_myPower-_outPower)<=1?'중화':_myPower>_outPower?'신강':'신약',pct:_myPct};
-  }catch(e){}
-  // 직업 적성 압축
-  let _jobShort='';
-  try{
-    const _so=SOH[saju.dp.stem];
-    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
-    const _top=Object.entries(_sip).sort((a,b)=>b[1]-a[1])[0][0];
-    _jobShort={bigeop:'자립·전문직·1인 사업가형',siksang:'창작·표현·돌봄형',jaesung:'활동·재물·실무형',gwansung:'책임·관리·공직형',insung:'학문·교육·연구형'}[_top]||'';
-  }catch(e){}
-  // 6친 압축
-  let _yckShort='';
-  try{
-    const _so=SOH[saju.dp.stem];
-    const _sip={bigeop:Math.max(0,oh[_so]-1),siksang:oh[(_so+1)%5],jaesung:oh[(_so+2)%5],gwansung:oh[(_so+3)%5],insung:oh[(_so+4)%5]};
-    const _lab=(n)=>n>=3?'두텁다':n>=2?'적당':n===1?'한 자리':'약함';
-    const _spouse=gender==='male'?_sip.jaesung:_sip.gwansung;
-    const _child=gender==='male'?_sip.gwansung:_sip.siksang;
-    _yckShort=`부모 ${_lab(_sip.insung)} · 형제 ${_lab(_sip.bigeop)} · 배우자 ${_lab(_spouse)} · 자녀 ${_lab(_child)}`;
-  }catch(e){}
-  // 개운법 압축
-  const _gwShort=`길색 ${['녹·청','적·자주','황·베이지','흰·금','검·남'][ys.main]} · 길방위 ${['동','남','중앙','서','북'][ys.main]} · 길음식 ${['신맛·녹채','쓴맛·붉은','단맛·뿌리','매운·흰','짠맛·검은'][ys.main]}`;
-  _lifeSummaryData={saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo:_sgInfo,jobShort:_jobShort,yckShort:_yckShort,gwShort:_gwShort};
-  return '';
-}
-
-function buildLifeSummaryA4HtmlV2(m){
-  if(!m||!m.saju)return '';
-  const p=m.profile,axis=LIFE_V2_AXIS[m.axis],second=LIFE_V2_AXIS[m.secondAxis],low=LIFE_V2_AXIS[m.lowAxis];
-  const date=new Date().toISOString().slice(0,10),ohNames=['나무','불','흙','금속','물'];
-  const coreTiles=[
-    {label:'가장 먼저 쓰는 힘',value:axis.label,text:axis.gift},
-    {label:'두 번째로 받쳐주는 힘',value:second.label,text:second.gift},
-    {label:'의식적으로 채울 부분',value:low.label,text:low.risk}
-  ];
-  const tileHtml=coreTiles.map(x=>`<div style="padding:8px 9px;background:#f6f0df;border-radius:7px"><small style="color:#6d7d72;font-size:9px">${x.label}</small><b style="display:block;color:#006241;font-size:13px;margin:2px 0">${x.value}</b><span style="font-size:9.5px;line-height:1.45">${preventOrphan(x.text)}</span></div>`).join('');
-  const formula=[['🧠',axis.label],['📦','결과물'],['💰','반복 수입'],['🏅','신뢰·자리']].map((x,i)=>`<div style="flex:1;text-align:center;padding:7px 4px;background:${i===0?'#006241':'#f2ead8'};color:${i===0?'#fff':'#24352f'};border-radius:7px"><span style="display:block;font-size:17px">${x[0]}</span><b style="font-size:10px">${x[1]}</b></div>`).join('<span style="align-self:center;color:#8a6515">›</span>');
-  const eraHtml=m.eras.map(e=>`<div class="a4-daeun${e.current?' cur':''}"><div class="a4-daeun-head"><span class="age">${e.range}${e.current?'<span class="cur-mark">현재</span>':''}</span><span class="pil">${e.title.split(' · ')[0]}</span><span class="tg">${e.title.split(' · ')[1]||''}</span></div><div class="a4-daeun-body">${preventOrphan(e.text)}</div></div>`).join('');
-  const monthStart=Math.max(0,(m.month||1)-1);
-  const months=m.months.slice(monthStart,monthStart+6).map(x=>`<div style="padding:6px 7px;background:${x.current?'#e7f0e9':'#f6f0df'};border-radius:6px;border-top:3px solid ${x.current?'#006241':'#c6a15b'}"><b style="font-size:10px;color:#006241">${x.month}월 · ${x.gz}</b><span style="display:block;font-size:8.7px;line-height:1.45;margin-top:2px">${preventOrphan((LIFE_V3_TG_DETAIL[x.tg]||{}).good||x.text)}</span></div>`).join('');
-  return `<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">인생총운 핵심 요약</div>
-      <div class="a4-subtitle">${p.season} 태생 · ${p.iljuKey} · 현재 ${m.age}세 · ${date}</div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-        <div class="a4-section"><div class="a4-h">본인 사주의 네 자리</div>${buildA4Pillars(m.saju,(m.meta&&m.meta.gender)||gender)}</div>
-        <div class="a4-section"><div class="a4-h">이 풀이가 나온 구조</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">${tileHtml}</div></div>
-        <div class="a4-section"><div class="a4-h">본인의 성공 공식</div><div style="display:flex;gap:5px">${formula}</div></div>
-        <div class="a4-section"><div class="a4-h">실제 생활에서 쓰는 법</div><div class="a4-rel">
-          <div class="a4-rel-col good"><div class="a4-rel-lab">살릴 부분</div><div class="a4-rel-item">${preventOrphan(m.fingerprint.work)}</div><div class="a4-rel-item">${preventOrphan(m.fingerprint.learning)}</div></div>
-          <div class="a4-rel-col bad"><div class="a4-rel-lab">조절할 부분</div><div class="a4-rel-item">${preventOrphan(axis.risk)}</div><div class="a4-rel-item">${preventOrphan(m.fingerprint.stress)}</div></div>
-        </div></div>
-        <div class="a4-oh-legend">본인을 돕는 핵심은 <b>${ohNames[m.ys.main]} 기운</b>이에요. 색이나 물건보다 본인에게 맞는 행동을 반복할 때 더 크게 작동해요.</div>
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-section"><div class="a4-h">현재 10년과 인생의 전환</div><div class="a4-daeun-list">${eraHtml}</div></div>
-        <div class="a4-section"><div class="a4-h">${m.year}년 핵심</div><div style="padding:8px 10px;background:#e7f0e9;border-radius:7px"><b style="color:#006241;font-size:12px">${m.yearInfo.gz} · ${m.yearInfo.score}점</b><span style="display:block;font-size:9.5px;line-height:1.5;margin-top:3px">${preventOrphan(`${plainTG(m.yearInfo.tg)}이 앞에 서고 ${plainTG(m.yearInfo.btg)}이 받쳐줘요. ${LIFE_V2_MONTH_ACTION[m.yearInfo.tg]||''}`)}</span></div></div>
-        <div class="a4-section"><div class="a4-h">올해 남은 달 행동 키워드</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px">${months}</div></div>
-        <div style="margin-top:auto;padding:10px 12px;background:#006241;color:#fff;border-radius:8px;font-size:11px;line-height:1.5"><b style="color:#d8b45b">본인의 한 문장</b><br>${preventOrphan(`본인은 ${axis.label}으로 시작하지만, 결국 그 힘을 결과물과 구조로 바꿀 때 인생의 크기가 커져요.`)}</div>
-      </div>
-    </div>
-    <div class="a4-footer">사주는 가능성과 흐름을 보는 참고 도구예요. 건강·법률·투자와 같은 중요한 결정은 실제 조건과 전문가 판단을 먼저 확인하세요.</div>
-  </div>`;
-}
-
-function buildLifeSummaryA4Html(){
-  if(!_lifeSummaryData)return '';
-  if(_lifeSummaryData.version===2||_lifeSummaryData.version===3)return buildLifeSummaryA4HtmlV2(_lifeSummaryData.model);
-  const{saju,gk,oh,ys,dm,dStemOh,dq,curDIdx,sins,gender,zod,activeNowSins,lifeEvents,sgInfo,jobShort,yckShort,gwShort}=_lifeSummaryData;
-  const tot=oh.reduce((a,b)=>a+b,0);
-  const me=oh[dStemOh],isStrong=me>=tot/3;
-  const dom=oh.indexOf(Math.max(...oh)),weak=oh.indexOf(Math.min(...oh));
-  const relations=findBranchRelations(saju);
-  const goodRels=relations.filter(r=>r.tag==='g').slice(0,3);
-  const badRels=relations.filter(r=>r.tag==='r'||r.tag==='y').slice(0,3);
-  const sinNames=sins.map(s=>s.n.split(' ')[0]);
-  const goodSinsals=sins.filter(s=>s.tag==='g');
-  const badSinsals=sins.filter(s=>s.tag==='r'||s.tag==='y');
-  const ohNames=['목','화','토','금','수'];
-  const date=new Date().toISOString().slice(0,10);
-
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">인생총운 요약본</div>
-    <div class="a4-subtitle">${dm.n.split('(')[0]} 본인 글자 · 사주 유형 ${gk.name}${gk.nick?' · '+gk.nick:''} · 본인을 돕는 기운 ${ohNames[ys.main]} · 기운 강약 ${isStrong?'두터움':'약함'} (본인 글자가 사주의 ${Math.round(me/tot*100)}%)</div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-
-        <div class="a4-section">
-          <div class="a4-h">📊 사주팔자 네 자리 — 본인 사주의 「뼈대」</div>
-          ${buildA4Pillars(saju,gender)}
-          <div class="a4-oh-legend" style="margin-top:6px">각 기둥 위는 겉으로 드러나는 기운, 아래는 속에 자리잡은 기운이에요. 본인 자리는 <b>가운데 강조 칸</b>이에요.</div>
-        </div>
-
-        <div class="a4-section">
-          <div class="a4-h">🔄 다섯 기운(오행) 균형과 관계</div>
-          <div class="a4-oh-row">
-            ${buildOhSangsaengSvg(oh)}
-            ${buildA4OhBars(oh)}
-          </div>
-          <div class="a4-oh-legend">${preventOrphan(`본인 사주에 가장 많은 기운은 <b>${ohNames[dom]}</b>(${oh[dom]}개) — 본인의 <b>강점</b>이고, 가장 부족한 기운은 <b>${ohNames[weak]}</b>(${oh[weak]}개) — 일상에서 <b>의식적으로 채워야 할 영역</b>이에요. 다섯 기운은 서로 <b class="lg-g">돕는 흐름</b>(예: 목→화, 나무가 타며 불을 만듦)과 <b class="lg-r">누르는 흐름</b>(예: 목→토, 나무 뿌리가 흙을 헤침)으로 이어져요.`)}</div>
-        </div>
-
-        <div class="a4-section">
-          <div class="a4-h">🔗 사주 자리 사이의 핵심 관계</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good">
-              <div class="a4-rel-lab">✅ 도움 되는 흐름 — 본인 인생에 힘이 되는 분위기</div>
-              ${goodRels.length>0?
-                goodRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 도움 관계는 없어요 — 본인 분위기대로 잔잔히 흐르는 사주예요.</div>'}
-              ${goodSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>길성 신살</b> — '+[...new Set(goodSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (귀인의 분위기)')+'</div>':''}
-            </div>
-            <div class="a4-rel-col bad">
-              <div class="a4-rel-lab">⚠️ 주의 — 본인 인생의 평생 과제가 되는 분위기</div>
-              ${badRels.length>0?
-                badRels.map(r=>`<div class="a4-rel-item">${preventOrphan('· <b>'+r.type.replace(/\s*\([^)]*\)\s*/g,'')+'</b> — '+(getRelLifeMessage(r.places,r.type)||r.d.replace(/\s+/g,' ').trim()))}</div>`).join(''):
-                '<div class="a4-rel-none">두드러진 주의 관계는 없어요 — 큰 굴곡 없이 흐르는 사주예요.</div>'}
-              ${badSinsals.length>0?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('· <b>주의 신살</b> — '+[...new Set(badSinsals.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (의식적 다스림이 과제)')+'</div>':''}
-            </div>
-          </div>
-        </div>
-
-        ${zod?`<div class="a4-section">
-          <div class="a4-h">✦ 별자리 + 사주 — 동·서양 이중 해석</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 별자리는 <b>'+zod.emoji+' '+zod.ko+'</b>('+zod.el+' 원소) — '+zod.body+'. '+getZodiacSajuFusion(zod,SOH[saju.dp.stem],dm.n.split('(')[0]))}</div>
-          ${activeNowSins.length>0?'<div class="a4-rel-item" style="margin-top:6px;font-size:.78rem">'+preventOrphan('🔆 <b>'+(new Date().getFullYear())+'년 활성화 신살 부스트</b> — '+[...new Set(activeNowSins.map(s=>s.n.split(' ')[0]))].slice(0,3).join('·')+' (본인 사주의 이 신살이 올해 한 단계 더 강해져요)')+'</div>':''}
-        </div>`:''}
-
-        ${lifeEvents&&lifeEvents.length?`<div class="a4-section">
-          <div class="a4-h">📜 평생 사건 타임라인 (핵심 시기)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:10px;line-height:1.55">
-            ${lifeEvents.map(e=>`<div><b style="color:#8b6f47">${e.ageRange}</b> ${e.label}</div>`).join('')}
-          </div>
-        </div>`:''}
-
-        ${(()=>{
-          // BY: 미니 마스터 차트 (12종 분야 × 대운)
-          try{
-            const YOK=[2,5,8,11], HWG=[4,10,1,7];
-            const _gmA=emptyBranches(saju.dp.stem,saju.dp.branch);
-            const _fieldsA=[
-              {k:'wealth',ko:'재물'},{k:'career',ko:'직업'},{k:'love',ko:'연애'},
-              {k:'health',ko:'건강'},{k:'study',ko:'학업'},{k:'family',ko:'가족'},
-              {k:'move',ko:'이동'},{k:'spirit',ko:'영성'},{k:'human',ko:'인맥'},
-              {k:'gongmang',ko:'공망'}
-            ];
-            const judge=(tg,btg,brR,du,key)=>{
-              const isY=YOK.includes(du.branch), isH=HWG.includes(du.branch), isG=_gmA.includes(du.branch);
-              const has=arr=>arr.includes(tg)||arr.includes(btg);
-              if(key==='wealth')return has(['정재','편재','식신'])?'good':has(['겁재'])?'bad':brR.kind==='충'?'warn':'flat';
-              if(key==='career')return has(['정관','편관'])?'good':brR.kind==='형'?'warn':'flat';
-              if(key==='love')return brR.kind==='합'||brR.kind==='반합'||brR.kind==='반합약'?'good':brR.kind==='충'||brR.kind==='원진'?'warn':'flat';
-              if(key==='health')return has(['정인','편인','식신'])?'good':brR.kind==='충'?'warn':'flat';
-              if(key==='study')return has(['정인','편인'])?'good':'flat';
-              if(key==='family')return has(['정인','정재','식신'])?'good':brR.kind==='충'?'warn':'flat';
-              if(key==='move')return isY?'good':brR.kind==='충'?'bad':'flat';
-              if(key==='spirit')return isH||has(['정인','편인'])?'good':'flat';
-              if(key==='human')return has(['비견','정재','정관'])?'good':has(['겁재'])?'bad':'flat';
-              if(key==='gongmang')return isG?'good':'flat';
-              return 'flat';
-            };
-            const bgM={good:'var(--good)',flat:'#444',warn:'#d4a849',bad:'var(--warn)'};
-            let rows='';
-            _fieldsA.forEach(f=>{
-              rows+=`<div style="display:contents"><div style="padding:2px 4px;font-size:8.5px;color:#bbb;white-space:nowrap">${f.ko}</div>`;
-              dq.daeuns.forEach((du,i)=>{
-                const tg=tenGod(saju.dp.stem,du.stem), btg=tenGod(saju.dp.stem,BR_MAIN_STEM[du.branch]);
-                const brR=brRel(saju.dp.branch,du.branch);
-                const st=judge(tg,btg,brR,du,f.k);
-                const isCur=i===curDIdx;
-                rows+=`<div style="background:${bgM[st]};height:11px;border-radius:2px;${isCur?'box-shadow:inset 0 0 0 1px #cba258':''}"></div>`;
-              });
-              rows+='</div>';
-            });
-            const headers='<div style="padding:2px 4px;font-size:8px;color:#888">나이</div>'+dq.daeuns.map((du,i)=>`<div style="font-size:8px;color:${i===curDIdx?'#cba258':'#888'};text-align:center;font-weight:${i===curDIdx?700:400}">${du.age}</div>`).join('');
-            const cols=dq.daeuns.length;
-            return `<div class="a4-section">
-              <div class="a4-h">📊 평생 흐름 마스터 차트 — 12종 분야 × 10년 흐름</div>
-              <div style="display:grid;grid-template-columns:36px repeat(${cols},1fr);gap:1.5px;margin-top:4px">${headers}${rows}</div>
-              <div style="margin-top:5px;font-size:9px;color:#aaa;line-height:1.5">🟢 좋음 · ⬜ 평이 · 🟡 주의 · 🔴 변동 · ★ 현재 시기(금색 강조)</div>
-            </div>`;
-          }catch(e){return '';}
-        })()}
-
-        <div class="a4-section">
-          <div class="a4-h">⚖ 신강/신약 + 💼 직업 + 👨‍👩 6친 + ✨ 개운법</div>
-          <div style="font-size:10px;line-height:1.7">
-            ${sgInfo?`<div>· <b>그릇</b>: ${sgInfo.kind} (${sgInfo.pct}%) — ${sgInfo.kind==='신강'?'본인 사업·도전·리더 자리':sgInfo.kind==='신약'?'학습·자격·조직 입지':'시기 따라 유연'}</div>`:''}
-            ${jobShort?`<div>· <b>직업 적성</b>: ${jobShort}</div>`:''}
-            ${yckShort?`<div>· <b>6친</b>: ${yckShort}</div>`:''}
-            ${gwShort?`<div>· <b>개운법</b>: ${gwShort}</div>`:''}
-          </div>
-        </div>
-
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-h">📅 대운 10년 흐름 — 평생 풀이</div>
-        <div class="a4-daeun-list">
-          ${dq.daeuns.map((du,i)=>{
-            const tg=tenGod(saju.dp.stem,du.stem);
-            const narrative=getDaeunNarrative(tg,du,saju,ys);
-            const isCur=i===curDIdx;
-            return `<div class="a4-daeun${isCur?' cur':''}">
-              <div class="a4-daeun-head">
-                <span class="age">${du.age}~${du.age+9}세${isCur?'<span class="cur-mark">현재</span>':''}</span>
-                <span class="pil">${STEMKO[du.stem]}${BRCHKO[du.branch]}</span>
-                <span class="tg">${plainTG(tg)}</span>
-              </div>
-              <div class="a4-daeun-body">${preventOrphan(narrative)}</div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · 운은 정해진 것이 아니라 가꾸어 가는 것입니다</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-// A4 자동 맞춤 — 사주마다 콘텐츠 길이가 달라도 항상 1123×794 페이지에 가득 차게 보장
-//
-// 동작:
-//   1) 자연 높이 측정 — height·overflow 제약을 일시 해제해서 콘텐츠의 실제 높이 측정
-//   2) 콘텐츠가 짧을 때(naturalH < 794): 콘텐츠를 위로 확장(stretch)해서 빈 공간 없애기
-//      → .a4-page는 이미 height:794로 고정이고 .a4-body가 flex:1이라 자동으로 채움.
-//        단 좌·우 컬럼이 자식이 짧으면 빈 공간이 생기므로 align-items:flex-start와
-//        flex 분배 조정이 필요. 이건 CSS에서 처리.
-//   3) 콘텐츠가 길 때(naturalH > 794): transform:scale + width/height 보정으로
-//      시각적으로 정확히 1123×794에 가득 차도록 압축. 우측·하단 빈 공간 없음.
-async function autoFitA4(a4){
-  await new Promise(r=>requestAnimationFrame(r));
-  const body=a4.querySelector('.a4-body');
-  if(!body)return null;
-  // 1) 자연 높이 측정 — height·overflow 제약 일시 해제
-  const origPageH=a4.style.height;
-  const origBodyOverflow=body.style.overflow;
-  a4.style.height='auto';
-  body.style.overflow='visible';
-  await new Promise(r=>requestAnimationFrame(r));
-  const naturalH=a4.offsetHeight;
-  // 2) 원래 상태 복구
-  a4.style.height=origPageH||'794px';
-  body.style.overflow=origBodyOverflow||'hidden';
-  await new Promise(r=>requestAnimationFrame(r));
-  const target=794;
-  if(naturalH<=target+2)return null; // 안 넘치면 그대로 (페이지가 이미 1123×794로 채워짐)
-  // 3) 콘텐츠가 길 때 — 비례 축소
-  const scale=Math.max(0.5,target/naturalH);
-  // 4) 1123×794 외부 wrap을 만들고, a4 내부를 (1123/scale × 794/scale) 영역으로 확장
-  //    → scale 적용 후 시각 크기가 정확히 1123×794가 됨 (우/하 빈 공간 없음)
-  const wrap=document.createElement('div');
-  wrap.style.cssText='width:1123px;height:794px;overflow:hidden;background:#fdfaf0;position:relative';
-  const parent=a4.parentNode;
-  parent.appendChild(wrap);
-  wrap.appendChild(a4);
-  // width/height 보정 — 큰 영역에서 자연스럽게 배치되도록
-  a4.style.width=(1123/scale)+'px';
-  a4.style.height=(794/scale)+'px';
-  a4.style.transform='scale('+scale+')';
-  a4.style.transformOrigin='top left';
-  await new Promise(r=>requestAnimationFrame(r));
-  return {wrap,scale};
-}
-async function downloadLifeSummary(fmt){
-  if(!_lifeSummaryData){alert('요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-
-  const btns=document.querySelectorAll('.summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-
-  // 오프스크린 컨테이너 생성
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildLifeSummaryA4Html());
-  document.body.appendChild(offscreen);
-
-  try{
-    // 폰트 로딩 완료 대기
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    // 콘텐츠가 1페이지 안에 들어가도록 자동 축소
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{
-      backgroundColor:'#fdfaf0',
-      scale:2,
-      useCORS:true,
-      logging:false,
-      width:1123,
-      height:794,
-      windowWidth:1123,
-      windowHeight:794
-    });
-    const date=new Date().toISOString().slice(0,10);
-    if(fmt==='png'){
-      const link=document.createElement('a');
-      link.download=`인생총운_요약_${date}.png`;
-      link.href=canvas.toDataURL('image/png');
-      link.click();
-    }else{
-      const imgData=canvas.toDataURL('image/png');
-      const{jsPDF}=window.jspdf;
-      const pdf=new jsPDF('landscape','mm','a4');
-      const pdfW=pdf.internal.pageSize.getWidth();
-      const pdfH=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
-      pdf.save(`인생총운_요약_${date}.pdf`);
-    }
-  }catch(e){
-    console.error(e);
-    alert('요약본 생성에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-  }finally{
-    document.body.removeChild(offscreen);
-    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
-  }
-}
-
-function buildNewyearSummaryA4HtmlV3(m){
-  if(!m||!m.saju)return '';
-  const date=new Date().toISOString().slice(0,10),ohMarks=['🌳','🔥','⛰','⚙','💧'];
-  const scoreTiles=[['💰','돈',m.scores.money],['❤️','사랑',m.scores.love],['💼','일',m.scores.career],['🌿','건강',m.scores.health]].map(x=>`<div style="padding:8px;background:#f6f0df;border-radius:7px;text-align:center"><span style="font-size:15px">${x[0]}</span><b style="display:block;color:#006241;font-size:10px">${x[1]} ${x[2]}점</b></div>`).join('');
-  const ohRows=m.ohPct.map((v,i)=>`<div style="display:grid;grid-template-columns:42px 1fr 26px;gap:5px;align-items:center;margin:4px 0;font-size:9px"><span>${ohMarks[i]} ${OHNAME[i]}</span><i style="height:7px;background:#eee5d3;border-radius:9px;overflow:hidden"><b style="display:block;width:${Math.max(4,v)}%;height:100%;background:${i===m.ys.main||i===m.ys.support?'#006241':'#c6a15b'}"></b></i><em style="font-style:normal;text-align:right">${v}%</em></div>`).join('');
-  const seasonRows=m.seasons.map(x=>`<div style="padding:6px;background:#f6f0df;border-radius:6px;text-align:center"><b style="font-size:10px;color:#006241">${x.emoji} ${x.name} ${x.score}점</b><span style="display:block;font-size:8px;line-height:1.4;margin-top:2px">${preventOrphan(x.text)}</span></div>`).join('');
-  const eraRows=m.eras.map(x=>`<div style="padding:5px 6px;background:${x.current?'#e7f0e9':'#f6f0df'};border-radius:6px;border-left:3px solid ${x.current?'#006241':'#c6a15b'}"><small style="font-size:7.5px;color:#6d7d72">${x.range}${x.current?' · 현재':''}</small><b style="display:block;color:#006241;font-size:9.5px">${x.gz}</b><span style="display:block;font-size:7.5px;line-height:1.35">${preventOrphan(x.text)}</span></div>`).join('');
-  const flow=[['🧠','깊이 있는 지식'],['📦','결과물'],['💰','안정 수입'],['🏅','신뢰와 자리']].map((x,i)=>`<div style="flex:1;padding:7px 3px;border-radius:7px;text-align:center;background:${i===0?'#006241':'#f2ead8'};color:${i===0?'#fff':'#24352f'}"><span style="display:block;font-size:14px">${x[0]}</span><b style="font-size:8.5px">${x[1]}</b></div>`).join('<span style="align-self:center;color:#8a6515">›</span>');
-  return `<div class="a4-page"><div class="a4-header"><div class="a4-title">${m.y}년 신년운세 상담 요약</div><div class="a4-subtitle">${m.info.gz} · ${m.ageText} · 현재 ${m.cur.age}~${m.cur.age+9}세 ${STEMKO[m.cur.stem]}${BRCHKO[m.cur.branch]} 흐름</div></div><div class="a4-body"><div class="a4-col-left">
-    <div class="a4-section"><div class="a4-h">본인 사주의 네 자리</div>${buildA4Pillars(m.saju,m.base.genderKey)}</div>
-    <div class="a4-section"><div class="a4-h">${m.y}년 한눈에 보기</div><div style="padding:8px 10px;background:#e7f0e9;border-radius:7px;font-size:10px;line-height:1.5"><b style="color:#006241">${m.info.gz} · ${m.info.score}점</b><br>${preventOrphan(m.yearSentence)}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px">${scoreTiles}</div></div>
-    <div class="a4-section"><div class="a4-h">다섯 기운과 도움 방향</div>${ohRows}<div class="a4-oh-legend">주로 돕는 <b>${OHNAME[m.ys.main]}</b> · 보조하는 <b>${OHNAME[m.ys.support]}</b>. ${preventOrphan(m.support.lead)}</div></div>
-    <div class="a4-section"><div class="a4-h">본인의 성공 공식</div><div style="display:flex;gap:4px">${flow}</div></div>
-  </div><div class="a4-col-right">
-    <div class="a4-section"><div class="a4-h">계절별 활용 지도</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">${seasonRows}</div><div class="a4-oh-legend" style="margin-top:5px">좋은 달 <b>${m.lucky.map(v=>v+'월').join(' · ')}</b> · 조심할 달 <b>${m.tough.map(v=>v+'월').join(' · ')}</b> · 결정의 달 <b>${m.decisive}월</b></div></div>
-    <div class="a4-section"><div class="a4-h">10년 단위 큰 흐름</div><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px">${eraRows}</div></div>
-    <div class="a4-section"><div class="a4-h">${m.y}년 선택 기준</div><div class="a4-rel"><div class="a4-rel-col good"><div class="a4-rel-lab">살릴 부분</div><div class="a4-rel-item">${preventOrphan(m.yearFront.good||'하나의 결과물을 완성하세요.')}</div><div class="a4-rel-item">${preventOrphan(m.fingerprint.work)}</div></div><div class="a4-rel-col bad"><div class="a4-rel-lab">살필 부분</div><div class="a4-rel-item">${preventOrphan(m.yearFront.warn||'역할과 조건을 먼저 확인하세요.')}</div><div class="a4-rel-item">${preventOrphan(m.fingerprint.stress)}</div></div></div></div>
-    <div style="margin-top:auto;padding:9px 11px;background:#006241;color:#fff;border-radius:8px;font-size:10.5px;line-height:1.5"><b style="color:#d8b45b">${m.y}년 최종 한 문장</b><br>${preventOrphan('본인의 전문성이 돈과 자리로 이어지는 해예요. 성과를 오래 지키려면 선택과 관리가 반드시 필요해요.')}</div>
-  </div></div><div class="a4-footer">${date} · 사주는 가능성과 흐름을 보는 참고 도구예요. 건강·법률·투자는 실제 조건과 전문가 판단을 먼저 확인하세요.</div></div>`;
-}
-
-// 신년운세 A4 빌더
-function buildNewyearSummaryA4Html(){
-  if(!_newyearSummaryData)return '';
-  const d=_newyearSummaryData;
-  if(d.version===3)return buildNewyearSummaryA4HtmlV3(d.model);
-  const {saju,y,total,grade,tg,ypStemKo,ypBrKo,monthsArr,lucky,tough,decisive,wealthYr,loveYr,careerYr,healthYr,zod,activeYearSins,myZodiac,yearZodiac,zodiacRel,daeunStage,curDaeun,dm,gender,sm,sd,sh,smin,sy}=d;
-  const date=new Date().toISOString().slice(0,10);
-  const monthLab=arr=>arr.map(m=>`${m}월`).join(', ');
-  // 12개월 막대그래프 (압축)
-  const monthBars=monthsArr.map(o=>{
-    const g=dailyGrade(o.sc.total);
-    const isLucky=lucky.includes(o.mm);
-    const isTough=tough.includes(o.mm);
-    const isDec=decisive===o.mm;
-    return `<div class="a4-mo${isDec?' dec':''}${isLucky?' lk':''}${isTough?' tg':''}" title="${o.mm}월 ${o.sc.total}점">
-      <div class="a4-mo-bar" style="height:${Math.max(8,Math.round(o.sc.total*0.55))}px;background:${g.color}"></div>
-      <div class="a4-mo-lab">${o.mm}</div>
-    </div>`;
-  }).join('');
-  // 대운 한 줄
-  const curDStartY=sy+curDaeun.age;
-  const daeunLine=`${curDaeun.age}세부터 시작한 <b>${STEMKO[curDaeun.stem]}${BRCHKO[curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(saju.dp.stem,curDaeun.stem))}</em>의 분위기, ${y}년은 이 10년의 <b>${daeunStage}</b> 단계`;
-  // 별자리
-  const zodLine=zod?`${zod.emoji} <b>${zod.ko}</b>(${zod.el} 원소) — ${zod.body}`:'';
-  // 띠 작용
-  const tCol=(zodiacRel.kind==='합'||zodiacRel.kind==='반합'||zodiacRel.kind==='반합약')?'var(--good)':(zodiacRel.kind==='충'||zodiacRel.kind==='원진'||zodiacRel.kind==='형')?'var(--warn)':'#d4a849';
-  const tLab={'합':'자연스럽게 어울림','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'본인 본명년','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[zodiacRel.kind]||'평이';
-  // 신살 부스트
-  const matchedSins=[...new Set(activeYearSins.map(s=>s.n.split(' ')[0]))].slice(0,4);
-
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">${y}년 신년 운세 요약본</div>
-      <div class="a4-subtitle">${dm.n.split('(')[0]} 일간 · ${y}년 ${ypStemKo}${ypBrKo}(<em>${plainTG(tg)}</em>의 분위기) · 총점 <b style="color:${grade.color}">${total}점 (${grade.lab})</b></div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-
-        <div class="a4-section">
-          <div class="a4-h">📊 본인 사주의 네 자리</div>
-          ${buildA4Pillars(saju,gender)}
-          <div class="a4-oh-legend" style="margin-top:4px">본인 자리는 <b>일주</b>. ${y}년 들어오는 글자(${ypStemKo}${ypBrKo})와 이 자리가 어떻게 만나는지가 한 해 흐름을 결정.</div>
-        </div>
-
-        <div class="a4-section">
-          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 ${y}년</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
-        </div>
-
-        ${zod?`<div class="a4-section">
-          <div class="a4-h">✦ 별자리 + 사주 — 동·서양 이중 해석</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine+'. '+getZodiacSajuFusion(zod,SOH[saju.dp.stem],dm.n.split('(')[0]))}</div>
-        </div>`:''}
-
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-section">
-          <div class="a4-h">📅 12개월 흐름 + 월별 한 줄 풀이</div>
-          <div class="a4-mo-grid">${monthBars}</div>
-          <div class="a4-oh-legend" style="margin-top:6px">🍀 길월 <b>${monthLab(lucky)}</b> · ⚠️ 주의월 <b>${monthLab(tough)}</b> · ⭐ 결정적 <b>${decisive}월</b></div>
-          <div style="margin-top:7px;display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;font-size:.66rem;line-height:1.45">
-            ${monthsArr.map(o=>{
-              const tgM=tenGod(saju.dp.stem,o.mp.stem);
-              const relM=brRel(saju.dp.branch,o.mp.branch);
-              const isL=lucky.includes(o.mm), isT=tough.includes(o.mm), isD=decisive===o.mm;
-              let hint='';
-              if(['정재','편재','식신'].includes(tgM))hint='재물·활동';
-              else if(['정관','편관'].includes(tgM))hint='책임·시험';
-              else if(['정인','편인'].includes(tgM))hint='학습·문서';
-              else if(tgM==='상관')hint='창작·표현';
-              else hint='동료·인맥';
-              if(relM.kind==='충')hint+='/충 변동';
-              else if(relM.kind==='형')hint+='/형 시비';
-              else if(relM.kind==='원진')hint+='/원진 거슬림';
-              const mark=isD?'🎯':isL?'🍀':isT?'⚠️':'·';
-              const col=isD?'#cba258':isL?'var(--good)':isT?'var(--warn)':'#666';
-              return `<div style="color:${col}"><b>${mark}${o.mm}월</b>(${o.sc.total}): ${hint}</div>`;
-            }).join('')}
-          </div>
-        </div>
-
-        <div class="a4-section">
-          <div class="a4-h">📈 ${y}년 분야별 평균</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
-              <div>💰 재물 <b>${wealthYr}점</b></div>
-              <div>💕 연애 <b>${loveYr}점</b></div>
-            </div>
-            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
-              <div>🏛 직업 <b>${careerYr}점</b></div>
-              <div>🌿 건강 <b>${healthYr}점</b></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="a4-section">
-          <div class="a4-h">${ZODIAC_EMOJI[yearZodiac]} 띠 흐름 + ⚡ 살아나는 작은 별자리</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 띠 <b>'+ZODIAC_KO[myZodiac]+'띠</b> × '+y+'년 띠 <b>'+ZODIAC_KO[yearZodiac]+'띠</b> — <b style="color:'+tCol+'">'+tLab+'</b>의 분위기')}</div>
-          ${matchedSins.length?'<div class="a4-rel-item" style="margin-top:5px;font-size:.78rem">'+preventOrphan('🔆 '+y+'년 활성화 신살 — '+matchedSins.join('·')+' (본인 사주가 이 신살을 가지고 있다면 한 단계 더 강해져요)')+'</div>':''}
-        </div>
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · ${y}년 한 해, 사주는 외부 기운의 안내일 뿐 결정하는 건 본인의 분위기</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-async function downloadNewyearSummary(fmt){
-  if(!_newyearSummaryData){alert('신년 요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-  const btns=document.querySelectorAll('.ny-summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildNewyearSummaryA4Html());
-  document.body.appendChild(offscreen);
-  try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
-    const date=new Date().toISOString().slice(0,10);
-    const y=_newyearSummaryData.y;
-    if(fmt==='png'){
-      const link=document.createElement('a');
-      link.download=`신년운세_${y}_요약_${date}.png`;
-      link.href=canvas.toDataURL('image/png');
-      link.click();
-    }else{
-      const imgData=canvas.toDataURL('image/png');
-      const{jsPDF}=window.jspdf;
-      const pdf=new jsPDF('landscape','mm','a4');
-      const pdfW=pdf.internal.pageSize.getWidth();
-      const pdfH=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
-      pdf.save(`신년운세_${y}_요약_${date}.pdf`);
-    }
-  }catch(e){
-    console.error(e);
-    alert('요약본 생성에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-  }finally{
-    document.body.removeChild(offscreen);
-    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
-  }
-}
-
-// 궁합 A4 빌더
-function buildGunghapSummaryA4Html(){
-  if(!_gunghapSummaryData)return '';
-  const d=_gunghapSummaryData;
-  const {saju1,saju2,gen1,gen2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1,sy2,dmName1,dmName2}=d;
-  const date=new Date().toISOString().slice(0,10);
-  const brK=result.dayBrRel?result.dayBrRel.kind:'평';
-  const brLabel={'합':'자연스럽게 어울림','반합':'같은 방향으로 묶임','반합약':'잔잔하게 협력','동':'같은 글자 만남','충':'정면 부딪힘','원진':'미세하게 거슬림','형':'서로 깎임','자형':'같은 글자 겹침','파':'어긋남','해':'은근한 방해','평':'평이'}[brK]||'평이';
-  const brCol=(brK==='합'||brK==='반합'||brK==='반합약')?'var(--good)':(brK==='충'||brK==='원진'||brK==='형')?'var(--warn)':'#d4a849';
-  const tg1=plainTG(tenGod(saju1.dp.stem,cd1.stem));
-  const tg2=plainTG(tenGod(saju2.dp.stem,cd2.stem));
-  const sw=(age,du)=>{const v=age-du.age;return v<=2?'초입':v<=5?'중반':v<=8?'후반':'끝자락';};
-  const sameTG=tg1===tg2;
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">두 분 궁합 요약본</div>
-      <div class="a4-subtitle">${dmName1} × ${dmName2} 일간 · 총점 <b style="color:${result.gradeColor}">${result.score}점 (${result.grade})</b></div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-        <div class="a4-section">
-          <div class="a4-h">📊 본인 사주의 네 자리</div>
-          ${buildA4Pillars(saju1,gen1)}
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">📊 상대 사주의 네 자리</div>
-          ${buildA4Pillars(saju2,gen2)}
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">💞 두 분 자리가 만나는 분위기</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('본인 일지 <b>'+BRCHKO[saju1.dp.branch]+'</b> × 상대 일지 <b>'+BRCHKO[saju2.dp.branch]+'</b> — <b style="color:'+brCol+'">'+brLabel+'</b>의 분위기')}</div>
-          ${result.dayStemRel&&result.dayStemRel.kind==='합'?'<div class="a4-rel-item" style="margin-top:4px">'+preventOrphan('🔗 본인 일간 '+STEMKO[saju1.dp.stem]+' × 상대 일간 '+STEMKO[saju2.dp.stem]+' — 자연스럽게 잘 통하는 분위기 (부부 합)')+'</div>':''}
-        </div>
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-section">
-          <div class="a4-h">📈 세부 점수</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
-              <div>🔄 오행 상생·상극 <b>${result.ohScore}점</b></div>
-              <div>👁 본인 기준 관계 <b>${result.tgScore}점</b></div>
-            </div>
-            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
-              <div>💞 일지 합·충 <b>${result.brScore}점</b></div>
-              <div>⚖ 오행 균형 <b>${result.balScore}점</b></div>
-            </div>
-          </div>
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">✦ 별자리 4원소 궁합</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(z1.emoji+' <b>'+z1.ko+'</b>('+z1.el+') × '+z2.emoji+' <b>'+z2.ko+'</b>('+z2.el+') — <b>'+pair.t+'</b> · '+pair.score+'점. '+pair.body)}</div>
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">🗓 두 분 인생 흐름 비교</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan('· 본인: '+cd1.age+'세~ <b>'+STEMKO[cd1.stem]+BRCHKO[cd1.branch]+'</b> 10년 (<em>'+tg1+'</em>·'+sw(age1,cd1)+')')}<br>${preventOrphan('· 상대: '+cd2.age+'세~ <b>'+STEMKO[cd2.stem]+BRCHKO[cd2.branch]+'</b> 10년 (<em>'+tg2+'</em>·'+sw(age2,cd2)+')')}</div>
-          <div class="a4-rel-item" style="margin-top:4px">${preventOrphan(sameTG?'두 분 모두 <b>'+tg1+'</b>의 분위기 — 같은 인생 흐름으로 큰 결정의 운이 잘 맞는 시기':'두 분의 인생 흐름 색깔이 달라요. 큰 결정 전 두 흐름의 의미를 함께 짚으세요.')}</div>
-        </div>
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · 두 분의 궁합은 사주 + 별자리 + 인생 흐름의 종합 분위기</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-async function downloadGunghapSummary(fmt){
-  if(!_gunghapSummaryData){alert('궁합 요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');return;}
-  const btns=document.querySelectorAll('.gh-summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildGunghapSummaryA4Html());
-  document.body.appendChild(offscreen);
-  try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
-    const date=new Date().toISOString().slice(0,10);
-    if(fmt==='png'){
-      const link=document.createElement('a');
-      link.download=`궁합_요약_${date}.png`;
-      link.href=canvas.toDataURL('image/png');
-      link.click();
-    }else{
-      const imgData=canvas.toDataURL('image/png');
-      const{jsPDF}=window.jspdf;
-      const pdf=new jsPDF('landscape','mm','a4');
-      const pdfW=pdf.internal.pageSize.getWidth();
-      const pdfH=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
-      pdf.save(`궁합_요약_${date}.pdf`);
-    }
-  }catch(e){
-    console.error(e);
-    alert('요약본 생성에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-  }finally{
-    document.body.removeChild(offscreen);
-    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
-  }
 }
 
 let _paidFoldMode='';
@@ -23484,7 +22549,6 @@ function renderNamePaid(saju, nmExtra){
     return paidWrapBody('NAME','✒️','이름풀이','<p>이름 정보가 누락되었어요. 다시 입력 화면으로 돌아가 주세요.</p>');
   }
   const built=buildNameReadingV4(saju,nmExtra);
-  _nameSummaryData=built.data;
   return `<div class="lv4-wrap nm-v4" data-story-id="name-reading">${built.html}</div></div>`;
 }
 function renderNamePaidLegacy(saju, nmExtra){
@@ -24030,14 +23094,6 @@ function renderNamePaidLegacy(saju, nmExtra){
     }
   }catch(e){}
 
-  // 이름풀이 A4 요약본 — 데이터 저장 + 다운로드 카드
-  try{
-    _nameSummaryData={
-      full, surname, given, han, strokes, hasHan, nameOh, sajuOh, ys, sajuMinIdx,
-      nameScore, grade, gradeColor, suri,
-      recommended: recommended.slice(0,5)
-    };
-  }catch(e){}
 
   // CHX: 4장 흐름 — 종합 → 글자 분석 → 사주와의 조화 → 추천·실천 (장 헤더 삽입)
   h=reorderByChapters(h,[
@@ -24068,320 +23124,6 @@ function renderNamePaidLegacy(saju, nmExtra){
     nameDeck.forEach(card=>{if(nameLead[card.key])card.copy=`${nameLead[card.key]} ${card.copy}`;});
   }
   return buildStoryExperienceHTML({id:'name-reading',kicker:'NAME CHARACTER',icon:'signature',title:`「${full}」 이름 캐릭터`,subtitle:grade,personalNote:nameFingerprint?`${nameFingerprint.hook} 이름에서는 ${ohNamesShort[ys.main]} 기운을 보태면 본인의 장점이 더 잘 살아나요.`:'',score:nameScore,stats:ohNamesShort.map((label,i)=>({label,value:Math.round(nameOh.oh[i]/nameMax*100),display:nameOh.oh[i]})),highlights:[{icon:'eco',label:'도움 기운',text:ohNamesShort[ys.main]},{icon:'water_drop',label:'채울 기운',text:ohNamesShort[sajuMinIdx]},{icon:'recommend',label:'추천 후보',text:`${recommended.length}개`}],deck:nameDeck,deckTitle:'이름 핵심 6장',libraryTitle:'이름풀이·작명 전체 풀이',libraryIntro:'한글 소리·한자·획수·추천 후보의 전체 계산 근거를 그대로 보관했어요.',libraryHtml:h});
-}
-
-// 이름풀이 A4 빌더
-function buildNameSummaryA4Html(){
-  if(!_nameSummaryData)return '';
-  const d=_nameSummaryData;
-  const date=new Date().toISOString().slice(0,10);
-  const ohNames=['목','화','토','금','수'];
-  const ohEmoji=['🌱','🔥','🪨','⚙️','💧'];
-  // 한글 자모 오행 분포
-  const nohRow=d.nameOh.oh.map((v,i)=>`<div style="text-align:center"><div style="font-size:11px">${ohEmoji[i]} ${ohNames[i]}</div><div style="font-weight:800;font-size:13px;color:${v>0?'#1a1c1d':'#999'}">${v}</div></div>`).join('');
-  // 사주+이름 합산
-  const combined=d.sajuOh.map((v,i)=>v+d.nameOh.oh[i]);
-  const combinedRow=combined.map((v,i)=>{
-    const isYs=i===d.ys.main;
-    const isWeak=i===d.sajuMinIdx;
-    return `<div style="text-align:center;padding:3px 4px;border-radius:4px;background:${isYs?'#eaf6ec':isWeak?'#fceae6':'transparent'}"><div style="font-size:10px;color:${isYs?'#2e7d32':isWeak?'#c44':'#666'}">${ohEmoji[i]} ${ohNames[i]}${isYs?' (용신)':isWeak?' (약함)':''}</div><div style="font-weight:800;font-size:13px;color:#1a1c1d">${v}</div></div>`;
-  }).join('');
-  // 4격
-  let suriBlock='';
-  if(d.hasHan&&d.suri){
-    const gyeok=[
-      {k:'원격',sub:'초년',data:d.suri.won},
-      {k:'형격',sub:'청년',data:d.suri.hyeong},
-      {k:'이격',sub:'사회',data:d.suri.i},
-      {k:'정격',sub:'총운',data:d.suri.jeong}
-    ];
-    const goodCnt=gyeok.filter(g=>g.data.good).length;
-    const goodBadge=goodCnt===4?'<b style="color:#2e7d32">4격 모두 길수 ★</b>':goodCnt===3?'<b style="color:#2e7d32">4격 중 3개 길수 ✓</b>':goodCnt===2?'<span style="color:#a8732e">4격 중 2개 길수</span>':goodCnt===1?'<span style="color:#c44">4격 중 1개 길수</span>':'<span style="color:#c44">4격 모두 흉수</span>';
-    suriBlock=`<div class="a4-section">
-      <div class="a4-h">㊗ 한자 4격 (원·형·이·정) + 81수리</div>
-      <div class="a4-oh-legend" style="margin-bottom:5px">${goodBadge}</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px">
-        ${gyeok.map(g=>`<div style="padding:5px 6px;border-radius:5px;background:${g.data.good?'#eaf6ec':'#fceae6'};text-align:center">
-          <div style="font-size:10px;font-weight:800;color:${g.data.good?'#2e7d32':'#c44'}">${g.k}</div>
-          <div style="font-size:9px;color:#666">${g.sub}</div>
-          <div style="font-size:11px;font-weight:800">${g.data.stroke}획</div>
-          <div style="font-size:8.5px;color:${g.data.good?'#2e7d32':'#c44'}">${g.data.good?'✓ 길수':'⚠ 흉수'} · ${ohNames[g.data.oh]}</div>
-        </div>`).join('')}
-      </div>
-    </div>`;
-  }
-  // 추천 이름
-  let recBlock='';
-  if(d.recommended&&d.recommended.length){
-    recBlock=`<div class="a4-section">
-      <div class="a4-h">🪷 사주에 어울리는 추천 이름</div>
-      <div style="display:flex;flex-direction:column;gap:4px;margin-top:5px">
-        ${d.recommended.slice(0,5).map((r,i)=>`<div style="padding:5px 8px;background:#fff8e8;border-left:3px solid #d4a849;border-radius:4px;font-size:11px">
-          <b style="color:#8b6f47">${i+1}. ${d.surname}${r.name}</b> <span style="color:#666;font-size:10px">— ${r.reason}</span>
-        </div>`).join('')}
-      </div>
-    </div>`;
-  }
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">이름풀이 요약본 — ${d.full}</div>
-      <div class="a4-subtitle">${d.hasHan?`한자 ${d.han.surname||''}${d.han.given1||''}${d.han.given2||''} · ${d.strokes.surname}+${d.strokes.given1}${d.strokes.given2?'+'+d.strokes.given2:''}획 · `:''}종합 점수 <b style="color:${d.gradeColor}">${d.nameScore}점 (${d.grade})</b></div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-        <div class="a4-section">
-          <div class="a4-h">🪷 한글 자모 오행 분석</div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:5px">${nohRow}</div>
-          <div class="a4-oh-legend" style="margin-top:5px">${preventOrphan('본인을 도와주는 기운은 <b>'+ohNames[d.ys.main]+'</b>예요. 이름에 이 기운('+(d.nameOh.oh[d.ys.main]||0)+'개)이 들어있으면 사주 보완에 도움이 돼요.')}</div>
-        </div>
-        ${suriBlock}
-        <div class="a4-section">
-          <div class="a4-h">🌳 사주 + 이름 합산 오행 균형</div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:5px">${combinedRow}</div>
-        </div>
-      </div>
-      <div class="a4-col-right">
-        ${recBlock}
-        <div class="a4-section">
-          <div class="a4-h">📝 이름풀이 종합 의견</div>
-          <div class="a4-oh-legend" style="line-height:1.75">${preventOrphan('「'+d.full+'」 이름은 사주 본인 도움 기운('+ohNames[d.ys.main]+')과의 만남에서 <b>'+d.grade+'</b>으로 평가돼요. '+(d.hasHan?'한자 4격과 81수리 길흉까지 종합한 정통 작명학 기준 점수예요.':'한글 자모 오행 기준 점수예요. 한자까지 입력하시면 4격·81수리·자원오행까지 함께 풀어드려요.'))}</div>
-          <div class="a4-rel-item" style="margin-top:6px;font-size:10px">${preventOrphan('💡 실제 출생 신고·개명 시에는 같은 발음에도 한자에 따라 길흉이 갈려요. 추천 이름은 4격 모두 길수인 조합을 우선해서 제안했어요.')}</div>
-        </div>
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · 한글 자모 오행 + 한자 4격 + 81수리 정통 작명학 종합</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-async function downloadNameSummary(fmt){
-  if(!_nameSummaryData){alert('이름풀이 요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
-  const btns=document.querySelectorAll('.nm-summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildNameSummaryA4Html());
-  document.body.appendChild(offscreen);
-  try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
-    const date=new Date().toISOString().slice(0,10);
-    const fullName=_nameSummaryData.full;
-    if(fmt==='png'){
-      const link=document.createElement('a');
-      link.download=`이름풀이_${fullName}_${date}.png`;
-      link.href=canvas.toDataURL('image/png');
-      link.click();
-    }else{
-      const imgData=canvas.toDataURL('image/png');
-      const{jsPDF}=window.jspdf;
-      const pdf=new jsPDF('landscape','mm','a4');
-      const pdfW=pdf.internal.pageSize.getWidth();
-      const pdfH=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);
-      pdf.save(`이름풀이_${fullName}_${date}.pdf`);
-    }
-  }catch(e){
-    console.error(e);
-    alert('요약본 생성에 실패했습니다.');
-  }finally{
-    document.body.removeChild(offscreen);
-    btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});
-  }
-}
-
-// 지정일 A4 빌더
-function buildDaypickSummaryA4Html(){
-  if(!_daypickSummaryData)return '';
-  const d=_daypickSummaryData;
-  const date=new Date().toISOString().slice(0,10);
-  const curDStartY=d.sy+d.curDaeun.age;
-  const daeunLine=`${d.curDaeun.age}세부터 시작한 <b>${STEMKO[d.curDaeun.stem]}${BRCHKO[d.curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(d.saju.dp.stem,d.curDaeun.stem))}</em>의 분위기`;
-  const zodLine=d.zod?`${d.zod.emoji} <b>${d.zod.ko}</b>(${d.zod.el} 원소) — ${d.zod.body}.`:'';
-  // 시간대 핵심
-  const luckyHours=d.hourCards.filter(g=>g.kind==='길시').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
-  const cautionHours=d.hourCards.filter(g=>g.kind==='주의').map(g=>`${BRCHKO[g.bi]}시(${HOUR_RANGES[g.bi]})`);
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">${d.y}.${d.m}.${d.d} 지정일 운세 요약본</div>
-      <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · 그날 ${d.dpStemKo}${d.dpBrKo}(<em>${plainTG(d.stemTG)}</em>의 분위기) · 총점 <b style="color:${d.grade.color}">${d.f.total}점 (${d.grade.lab})</b></div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-        <div class="a4-section">
-          <div class="a4-h">📊 본인 사주의 네 자리</div>
-          ${buildA4Pillars(d.saju,d.gender)}
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 이 날</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
-        </div>
-        ${d.zod?`<div class="a4-section">
-          <div class="a4-h">✦ 별자리 + 사주</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine)}</div>
-        </div>`:''}
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-section">
-          <div class="a4-h">⏰ 이 날의 핵심 시간대</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
-              <div class="a4-rel-lab">🍀 길시</div>
-              ${luckyHours.length?luckyHours.map(t=>`<div>· ${t}</div>`).join(''):'<div class="a4-rel-none">두드러진 길시 없음</div>'}
-            </div>
-            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
-              <div class="a4-rel-lab">⚠️ 주의시</div>
-              ${cautionHours.length?cautionHours.map(t=>`<div>· ${t}</div>`).join(''):'<div class="a4-rel-none">두드러진 주의시 없음</div>'}
-            </div>
-          </div>
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">📈 분야별 점수</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
-              <div>💰 재물 <b>${d.f.wealth}점</b></div>
-              <div>💕 연애 <b>${d.f.love}점</b></div>
-            </div>
-            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
-              <div>🏛 직업 <b>${d.f.career}점</b></div>
-              <div>🌿 건강 <b>${d.f.health}점</b></div>
-            </div>
-          </div>
-        </div>
-        ${d.activeSins&&d.activeSins.length?`<div class="a4-section">
-          <div class="a4-h">⚡ 그날 활성화 신살</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan([...new Set(d.activeSins.map(s=>s.n.split(' ')[0]))].slice(0,5).join('·')+' (본인 사주 신살이 이 날 강하게 발현)')}</div>
-        </div>`:''}
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · 이 날의 운은 본인 10년 흐름 안에서 펼쳐져요</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-async function downloadDaypickSummary(fmt){
-  if(!_daypickSummaryData){alert('지정일 요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
-  const btns=document.querySelectorAll('.dp-summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildDaypickSummaryA4Html());
-  document.body.appendChild(offscreen);
-  try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
-    const date=new Date().toISOString().slice(0,10);
-    const ymd=`${_daypickSummaryData.y}${String(_daypickSummaryData.m).padStart(2,'0')}${String(_daypickSummaryData.d).padStart(2,'0')}`;
-    if(fmt==='png'){const link=document.createElement('a');link.download=`지정일_${ymd}_${date}.png`;link.href=canvas.toDataURL('image/png');link.click();}
-    else{const imgData=canvas.toDataURL('image/png');const{jsPDF}=window.jspdf;const pdf=new jsPDF('landscape','mm','a4');const pdfW=pdf.internal.pageSize.getWidth();const pdfH=pdf.internal.pageSize.getHeight();pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);pdf.save(`지정일_${ymd}_${date}.pdf`);}
-  }catch(e){console.error(e);alert('요약본 생성에 실패했습니다.');}
-  finally{document.body.removeChild(offscreen);btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});}
-}
-
-// 월별 A4 빌더
-function buildMonthlySummaryA4Html(){
-  if(!_monthlySummaryData)return '';
-  const d=_monthlySummaryData;
-  const date=new Date().toISOString().slice(0,10);
-  const monthLab=arr=>arr.map(m=>{const o=m.split('.');return o.length>1?`${o[1]}월`:m;}).join(', ');
-  const monthBars=d.monthsData.map(o=>{
-    const g=dailyGrade(o.sc.total);
-    const lab=`${o.yy%100}.${String(o.mm).padStart(2,'0')}`;
-    const isLucky=d.luckyMonths.includes(`${o.yy}.${String(o.mm).padStart(2,'0')}`);
-    const isTough=d.toughMonths.includes(`${o.yy}.${String(o.mm).padStart(2,'0')}`);
-    const isDec=d.decisive.yy===o.yy&&d.decisive.mm===o.mm;
-    return `<div class="a4-mo${isDec?' dec':''}${isLucky?' lk':''}${isTough?' tg':''}" title="${lab} ${o.sc.total}점">
-      <div class="a4-mo-bar" style="height:${Math.max(8,Math.round(o.sc.total*0.55))}px;background:${g.color}"></div>
-      <div class="a4-mo-lab" style="font-size:8px">${lab}</div>
-    </div>`;
-  }).join('');
-  const curDStartY=d.metaSy+d.curDaeun.age;
-  const daeunLine=`${d.curDaeun.age}세부터 시작한 <b>${STEMKO[d.curDaeun.stem]}${BRCHKO[d.curDaeun.branch]}</b> 10년 흐름 (${curDStartY}~${curDStartY+9}년) — <em>${plainTG(tenGod(d.saju.dp.stem,d.curDaeun.stem))}</em>의 분위기, 이 기간이 그 안에서 펼쳐져요.`;
-  const zodLine=d.zod?`${d.zod.emoji} <b>${d.zod.ko}</b>(${d.zod.el} 원소) — ${d.zod.body}.`:'';
-  let h=`<div class="a4-page">
-    <div class="a4-header">
-      <div class="a4-title">${d.sy}.${d.sm}~${d.ey}.${d.em} 월별 운세 요약본</div>
-      <div class="a4-subtitle">${d.dm.n.split('(')[0]} 일간 · ${d.totalMonths}개월 평균 <b style="color:${d.avgGrade.color}">${d.avgTotal}점 (${d.avgGrade.lab})</b> · 결정적 시기 <b>${d.decisive.yy}.${d.decisive.mm}</b></div>
-    </div>
-    <div class="a4-body">
-      <div class="a4-col-left">
-        <div class="a4-section">
-          <div class="a4-h">📊 본인 사주의 네 자리</div>
-          ${buildA4Pillars(d.saju,d.gender)}
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">🗓 본인 10년 흐름 안에서 본 이 기간</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(daeunLine)}</div>
-        </div>
-        ${d.zod?`<div class="a4-section">
-          <div class="a4-h">✦ 별자리 + 사주</div>
-          <div class="a4-oh-legend" style="line-height:1.7">${preventOrphan(zodLine)}</div>
-        </div>`:''}
-      </div>
-      <div class="a4-col-right">
-        <div class="a4-section">
-          <div class="a4-h">📅 ${d.totalMonths}개월 흐름</div>
-          <div class="a4-mo-grid" style="grid-template-columns:repeat(${Math.min(d.totalMonths,12)},1fr)">${monthBars}</div>
-          <div class="a4-oh-legend" style="margin-top:6px;font-size:9.5px">🍀 길월 <b>${monthLab(d.luckyMonths)}</b> · ⚠️ 주의월 <b>${monthLab(d.toughMonths)}</b> · ⭐ 결정적 <b>${d.decisive.mm}월</b></div>
-        </div>
-        <div class="a4-section">
-          <div class="a4-h">📈 분야별 평균</div>
-          <div class="a4-rel">
-            <div class="a4-rel-col good" style="font-size:.78rem;line-height:1.85">
-              <div>💰 재물 <b>${d.wealthAvg}점</b></div>
-              <div>💕 연애 <b>${d.loveAvg}점</b></div>
-            </div>
-            <div class="a4-rel-col bad" style="font-size:.78rem;line-height:1.85">
-              <div>🏛 직업 <b>${d.careerAvg}점</b></div>
-              <div>🌿 건강 <b>${d.healthAvg}점</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="a4-footer">${date} · saju-mbti-9h1.pages.dev · ${d.totalMonths}개월의 운이 본인 10년 흐름 안에서 펼쳐져요</div>
-  </div>`;
-  return preventOrphan(h);
-}
-
-async function downloadMonthlySummary(fmt){
-  if(!_monthlySummaryData){alert('월별 요약 내용을 찾을 수 없어요.');return;}
-  if(typeof html2canvas==='undefined'){alert('이미지 생성 기능을 불러오는 중입니다.');return;}
-  if(fmt==='pdf'&&typeof window.jspdf==='undefined'){alert('PDF 생성 기능을 불러오는 중입니다.');return;}
-  const btns=document.querySelectorAll('.mo-summary-btn');
-  btns.forEach(b=>{b.disabled=true;});
-  const origLabel=btns.length?Array.from(btns).map(b=>b.textContent):[];
-  btns.forEach(b=>{b.textContent='⏳ 생성 중...';});
-  const offscreen=document.createElement('div');
-  offscreen.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1';
-  offscreen.innerHTML=premiumizeReadingHtml(buildMonthlySummaryA4Html());
-  document.body.appendChild(offscreen);
-  try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const a4=offscreen.querySelector('.a4-page');
-    const fit=await autoFitA4(a4);
-    const captureTarget=fit?fit.wrap:a4;
-    const canvas=await html2canvas(captureTarget,{backgroundColor:'#fdfaf0',scale:2,useCORS:true,logging:false,width:1123,height:794,windowWidth:1123,windowHeight:794});
-    const date=new Date().toISOString().slice(0,10);
-    const range=`${_monthlySummaryData.sy}${String(_monthlySummaryData.sm).padStart(2,'0')}_${_monthlySummaryData.ey}${String(_monthlySummaryData.em).padStart(2,'0')}`;
-    if(fmt==='png'){const link=document.createElement('a');link.download=`월별_${range}_${date}.png`;link.href=canvas.toDataURL('image/png');link.click();}
-    else{const imgData=canvas.toDataURL('image/png');const{jsPDF}=window.jspdf;const pdf=new jsPDF('landscape','mm','a4');const pdfW=pdf.internal.pageSize.getWidth();const pdfH=pdf.internal.pageSize.getHeight();pdf.addImage(imgData,'PNG',0,0,pdfW,pdfH);pdf.save(`월별_${range}_${date}.pdf`);}
-  }catch(e){console.error(e);alert('요약본 생성에 실패했습니다.');}
-  finally{document.body.removeChild(offscreen);btns.forEach((b,i)=>{b.disabled=false;b.textContent=origLabel[i]||b.textContent;});}
 }
 
 // ── MBTI 궁합 점수 + 카드 ──
@@ -24467,26 +23209,6 @@ function renderGunghapBody(saju1, saju2, gen1, gen2, mbti1, mbti2){
   try{h+=renderGunghapStageGyeokgukCard(saju1,saju2,gen1,gen2);}catch(e){}
   // MBTI 궁합 카드 (양쪽 다 입력했을 때만)
   if(mbti1&&mbti2)h+=renderGunghapMbtiCard(mbti1, mbti2);
-  // 궁합 A4 요약본 데이터 저장 + 다운로드 카드
-  try{
-    if(_meta&&_meta.gnExtra){
-      const ge=_meta.gnExtra;
-      let sy2=ge.gy, sm2=ge.gm, sd2=ge.gd;
-      if(ge.cal==='lunar'){try{const s=l2s(ge.gy,ge.gm,ge.gd,!!ge.leap);sy2=s.y;sm2=s.m;sd2=s.d;}catch(e){}}
-      const z1=getZodiac12(_meta.sm,_meta.sd);
-      const z2=getZodiac12(sm2,sd2);
-      const pairKey=getZodiacPairKey(z1.el,z2.el);
-      const pair=_ZODIAC_ELEM_PAIR[pairKey]||{score:75,t:'평이한 흐름',body:''};
-      const dq1=calcDaeun(saju1,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,gen1);
-      const dq2=calcDaeun(saju2,sy2,sm2,sd2,ge.gh||12,ge.gmin||0,gen2);
-      const curY=new Date().getFullYear();
-      const age1=curY-_meta.sy, age2=curY-sy2;
-      let cd1=dq1.daeuns[0], cd2=dq2.daeuns[0];
-      for(let i=0;i<dq1.daeuns.length;i++){if(age1>=dq1.daeuns[i].age&&(i===dq1.daeuns.length-1||age1<dq1.daeuns[i+1].age)){cd1=dq1.daeuns[i];break;}}
-      for(let i=0;i<dq2.daeuns.length;i++){if(age2>=dq2.daeuns[i].age&&(i===dq2.daeuns.length-1||age2<dq2.daeuns[i+1].age)){cd2=dq2.daeuns[i];break;}}
-      _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1,mbti2,result,z1,z2,pair,cd1,cd2,age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
-    }
-  }catch(e){}
   // CHX: 5장 내러티브 — 두 사람 진단 → 관계의 분위기 → 깊이 통찰 → 시간 → 마무리
   h=reorderByChapters(h,[
     {no:1,title:'두 사람은 누구인가',desc:'종합 궁합과 타고난 성향·별자리 비교',labels:['GUNGHAP','PERSONA8','STAGE_GK','ZODIAC_DAEUN']},
@@ -24881,13 +23603,6 @@ function renderGunghapPaid(saju1, gnExtra){
     ?`본인은 ${firstPersonalSentence(myFingerprint.relationship)} 상대는 ${firstPersonalSentence(partnerFingerprint.relationship)} 두 반응의 속도를 말로 맞추는 게 이 관계의 핵심이에요.`:'';
   const gen1=gender,gen2=gnExtra.gender;
   const ctx={sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,h1:_meta.hour,min1:_meta.min,sy2,sm2,sd2,h2:gh,min2:gmin,gen1,gen2,mbti1:myMbti,mbti2:gnExtra.mbti||''};
-  try{
-    const z1=getZodiac12(_meta.sm,_meta.sd),z2=getZodiac12(sm2,sd2),pair=_ZODIAC_ELEM_PAIR[getZodiacPairKey(z1.el,z2.el)]||{score:75,t:'평이한 흐름',body:''};
-    const dq1=calcDaeun(saju1,_meta.sy,_meta.sm,_meta.sd,_meta.hour||12,_meta.min||0,gen1),dq2=calcDaeun(saju2,sy2,sm2,sd2,gh>=0?gh:12,gmin||0,gen2);
-    const curY=new Date().getFullYear(),age1=curY-_meta.sy,age2=curY-sy2;
-    const pick=(dq,age)=>{let c=dq.daeuns[0];for(let i=0;i<dq.daeuns.length;i++)if(age>=dq.daeuns[i].age&&(i===dq.daeuns.length-1||age<dq.daeuns[i+1].age)){c=dq.daeuns[i];break;}return c;};
-    _gunghapSummaryData={saju1,saju2,gen1,gen2,mbti1:myMbti,mbti2:gnExtra.mbti||'',result,z1,z2,pair,cd1:pick(dq1,age1),cd2:pick(dq2,age2),age1,age2,sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,sy2,sm2,sd2,dmName1:DM[saju1.dp.stem].n.split('(')[0],dmName2:DM[saju2.dp.stem].n.split('(')[0]};
-  }catch(e){}
   ctx.tail=lv4Sub('천기의 맞춤 한마디',renderAIReadingCard('gunghap','두 사람 관계 핵심 풀이',extraKey));
   return `<div class="lv4-wrap gh-v4" data-story-id="gunghap-reading">${buildGunghapReadingV4(saju1,saju2,ctx)}</div>`;
 }

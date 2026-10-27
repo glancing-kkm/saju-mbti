@@ -258,7 +258,7 @@ const submitBirth=async()=>{
       }));
       assert.equal(preview.querySelectorAll('.lc-scene').length,3);
       assert.equal(preview.querySelectorAll('.lc-chapter').length,3);
-      assert.equal(preview.querySelectorAll('.lc-pcard').length,3);
+      assert.equal(preview.querySelectorAll('.lc-pcard').length,2);assert(preview.querySelector('.lc-pcard.helper')&&preview.querySelector('.lc-pcard.foe')&&!preview.querySelector('.lc-pcard.love'));
       assert(preview.querySelectorAll('.lc-tl').length<=3);
       assert(!preview.querySelector('.lk-note,.lc-areas,.pp-box,.lv4-rows,table'));
       assert(preview.querySelector('.lc-orbs')&&preview.querySelector('.lc-people')&&preview.querySelector('.lc-curve'));
