@@ -512,7 +512,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4{display:flex;flex-direction:column;gap:18px;color:var(--text);word-break:keep-all;overflow-wrap:anywhere}
 .lv4 p,.lv4-list span{word-break:normal;line-break:strict}
 .lv4-nb{white-space:nowrap}
-.lv4 p{margin:0;font-size:1rem;line-height:1.95;color:var(--text);text-align:justify;text-justify:inter-word;text-align-last:left}
+.lv4 p{margin:0;font-size:1rem;line-height:1.95;color:var(--text);text-align:left;text-justify:none;text-align-last:left}
 .lv4 p+p{margin-top:12px}
 .lv4-hero{padding:26px 20px 22px;border:1px solid var(--border-strong);border-radius:18px;background:var(--card);text-align:center}
 .lv4-kicker{display:inline-block;margin:0 0 10px!important;padding:4px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent)!important;font-family:var(--font-heading);font-size:.82rem!important;line-height:1.4!important;text-align:center!important}
@@ -552,7 +552,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-list li{position:relative;padding:12px 0 12px 40px;border-bottom:1px solid var(--border);counter-increment:lv4c}
 .lv4-list li::before{content:counter(lv4c);position:absolute;left:0;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--font-heading);font-size:.85rem;line-height:26px;text-align:center}
 .lv4-list b{display:block;font-family:var(--font-heading);font-weight:400;font-size:1.04rem;line-height:1.5;color:var(--text)}
-.lv4-list span{display:block;margin-top:4px;font-size:.97rem;line-height:1.85;color:var(--sub);text-align:justify;text-justify:inter-word;text-align-last:left}
+.lv4-list span{display:block;margin-top:4px;font-size:.97rem;line-height:1.85;color:var(--sub);text-align:left;text-justify:none;text-align-last:left}
 .lv4 .summary-card{margin:0}
 @media(max-width:520px){
   #app .lv4-wrap{margin:0 10px 22px}
@@ -567,7 +567,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-md-list li{position:relative;padding:8px 0 8px 18px;border-bottom:1px solid var(--border)}
 .lv4-md-list li::before{content:"";position:absolute;left:2px;top:19px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .lv4-md-list li b{display:block;font-family:var(--font-heading);font-weight:400;font-size:1rem;color:var(--text)}
-.lv4-md-list li span{display:block;font-size:.97rem;line-height:1.85;color:var(--sub);text-align:justify;text-align-last:left;word-break:normal;line-break:strict}
+.lv4-md-list li span{display:block;font-size:.97rem;line-height:1.85;color:var(--sub);text-align:left;text-align-last:left;word-break:normal;line-break:strict}
 #app .tarot-v4,#app .astro-v4,.tarot-v4,.astro-v4{margin:12px 0 20px}
 
 /* 동양화 덱의 뒷면을 스프레드 미리보기에도 동일하게 표시해요. */
@@ -614,7 +614,7 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-scene-line>b{display:inline-block;margin-right:8px;padding:1px 8px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-family:var(--font-heading);font-weight:400;font-size:.78rem;vertical-align:1px}
 
 /* 풀이 본문 양쪽 정렬 — 낱말 사이를 벌리지 않고 글자 단위로 줄을 바꿔 양 끝을 맞춘다 */
-.lv4 p,.lv4-list span,.lv4-md-list li span{text-align:justify;text-justify:auto;text-align-last:left;word-break:normal;line-break:strict;overflow-wrap:break-word;word-spacing:normal}
+.lv4 p,.lv4-list span,.lv4-md-list li span{text-align:left;text-justify:none;text-align-last:left;word-break:normal;line-break:strict;overflow-wrap:break-word;word-spacing:normal}
 .lv4 h1,.lv4 h2,.lv4 h3,.lv4 b,.lv4-row-head,.lv4-tags span{word-break:keep-all}
 
 /* 입력 — 값을 채우면 다음 항목이 아래로 이어서 열린다 */

@@ -465,7 +465,7 @@ const RP_CSS=`
 .rp-foot{display:flex;justify-content:space-between;align-items:flex-end;padding-top:12px;font-size:9.5px;color:#7d867f}
 .rp-foot b{font-family:'Nanum Myeongjo',serif;font-weight:400;font-size:16px;color:var(--ac)}
 .rp-h{font-size:16.5px;font-weight:800;color:#252c2b;margin:20px 0 9px;line-height:1.4}
-.rp-p{text-align:justify;text-align-last:left;text-justify:inter-character;word-break:normal;line-break:strict;text-wrap:wrap;word-spacing:0;letter-spacing:0;font-size:13.4px;line-height:1.86;color:#5f6a62;margin:0 0 9px}
+.rp-p{text-align:left;text-align-last:left;text-justify:none;word-break:normal;line-break:strict;text-wrap:wrap;word-spacing:0;letter-spacing:0;font-size:13.4px;line-height:1.86;color:#5f6a62;margin:0 0 9px}
 .rp-cap{font-size:10.5px;color:#7d867f;text-align:center;margin:8px 0 6px}
 .rp-tbl{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 8px}
 .rp-tbl th{background:#e9e6dc;color:#252c2b;font-weight:800;text-align:left;padding:10px 12px;font-size:12px}

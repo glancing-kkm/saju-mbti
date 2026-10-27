@@ -250,14 +250,14 @@ const harness = `
        globalThis.__SOURCE_HTML__.includes('flex-direction:column;align-items:center;justify-content:center'));
     // 고아글자는 keep-all·text-wrap:pretty·preventOrphan()이 막는다. 정렬로 막지 않는다.
     ok('풀이 본문: 화면 폭과 무관하게 왼쪽 기준선으로 정렬',
-       globalThis.__SOURCE_HTML__.includes('풀이 본문은 양쪽 정렬하되 한글 문자 사이에 여백을 분산한다') &&
+       globalThis.__SOURCE_HTML__.includes('미리보기와 전체 풀이 본문은 왼쪽 정렬과 자연스러운 간격을 함께 사용한다') &&
        globalThis.__SOURCE_HTML__.includes('list-style-position:outside') &&
        !/@media\\(max-width:640px\\)\\{[^}]*text-align:left/.test(globalThis.__SOURCE_HTML__));
     const alignBlock=globalThis.__SOURCE_HTML__.slice(
       globalThis.__SOURCE_HTML__.indexOf('/* 본문 읽기 품질'),
       globalThis.__SOURCE_HTML__.indexOf('/* \\u2500\\u2500 Header \\u2500\\u2500 */'));
     ok('풀이 본문: 긴 글에 가운데 정렬이 남아있지 않음',
-       /text-align:justify;\\s*text-align-last:left/.test(alignBlock) &&
+       /text-align:left;\\s*text-align-last:left/.test(alignBlock) &&
        !/(\\.nb-body|\\.conversion-hook-body|\\.tarot-markdown)[^{]*\\{[^}]*text-align:center/.test(alignBlock),
        alignBlock.length+'자');
     ok('풀이 본문: 한 줄 표시 문구와 비교 도식은 가운데 유지',

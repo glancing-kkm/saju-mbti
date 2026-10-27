@@ -191,33 +191,33 @@ h1,h2,h3,h4,h5{font-family:var(--font-heading);font-synthesis:none;letter-spacin
 #app{max-width:480px;margin:0 auto;min-height:100vh}
 
   /* 본문 읽기 품질 — 짧은 끝어미 묶음과 preventOrphan()으로 고아글자를 막는다.
-     정렬은 그 일을 하지 않으므로, 풀이 본문은 양쪽 정렬하되 한글 문자 사이에 여백을 분산한다.
+     미리보기와 전체 풀이 본문은 왼쪽 정렬과 자연스러운 간격을 함께 사용한다.
      가운데 정렬은 한 줄짜리 표시 문구와 비교 도식에만 남긴다. */
   :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow){
     line-break:strict;
     word-break:normal;
     overflow-wrap:break-word;
     text-wrap:wrap;
-    text-align:justify;
+    text-align:left;
     text-align-last:left;
-    text-justify:inter-character;
+    text-justify:none;
     word-spacing:0;
     letter-spacing:0;
   }
   :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(p,li,h1,h2,h3,h4,div),
   :where(.ck-body,.ag-block,.ag-block ul,.quick-summary-item,.name-compare-head,.ncr-reason,.ncr-use,.dp-tip,.ny-headline,.ai-reading-status,.cat-where,.nb-good,.nb-warn,.flow-box,.tarot-fortune-item,.astro-text){
-    text-align:justify;
+    text-align:left;
     text-align-last:left;
-    text-justify:inter-character;
+    text-justify:none;
     word-spacing:0;
     letter-spacing:0;
   }
   :where(.nb-body,.nb-gw-body,.daily-cat-body,.abody,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.reading-brief,.lead-card,.summary-intro,.chat-msg-body,.conversion-hook-body,.teaser-leadline,.teaser-insight,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.tarot-reading-flow) :where(ul,ol){
     padding-left:1.25em;
     list-style-position:outside;
-    text-align:justify;
+    text-align:left;
     text-align-last:left;
-    text-justify:inter-character;
+    text-justify:none;
     word-spacing:0;
     letter-spacing:0;
   }
@@ -2259,9 +2259,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=42acc9ebf5be">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=1683a1b563ff">
-<script defer src="/assets/reading-spacing.js?v=b45b80429861"></script>
+<link rel="stylesheet" href="/assets/night.css?v=4a9805b09dd6">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=8d93ddaec2dc">
 </head>
 <body>
 <div id="app">
@@ -7633,7 +7632,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=51e10b5e2c89';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=c183ef35de8a';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
