@@ -38,6 +38,13 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='dating'");assert.match(run("ppPartnerHTML(buildPinpoint(_saju,_meta),{})"),/현재 연인과 배우자로 발전/);
    run("_meta.marital='single'");
  });
+ check('인물 카드: 연애운·결혼운·재회운만 운명의 상대 카드, 인생총운 등은 귀인·악연 두 장',()=>{
+   const cards=html=>{const b=d.createElement('div');b.innerHTML=html;return [...b.querySelectorAll('.lc-pcard')].map(x=>x.classList[1]).join(',');};
+   const want={'topic-love':'love,foe','topic-marriage':'love,helper,foe','topic-reunion':'love,foe'};
+   for(const c in want)assert.equal(cards(run(`renderTopicPaid('${c}',_saju,_meta)`)),want[c],c);
+   assert.equal(cards(run("lcPeople(_saju,{})")),'helper,foe');
+   assert.equal(cards(run("buildLifeReadingV4(_saju,_meta)")),'helper,foe');
+ });
  const unsigned=(id,cat)=>Buffer.from(JSON.stringify({o:id,c:cat,e:Date.now()+86400000})).toString('base64url')+'.mock';
  check('무료 질문: 이전 전역 소진 기록과 무관하게 결제 건마다 1회, 새 결제에는 다시 1회',()=>{
    run("_unlockedCats.set('life',unlockScopeOf('life'));localStorage.setItem('saju_chat_count_life_v2','999')");
