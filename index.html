@@ -13479,11 +13479,11 @@ function relationshipReadingHTML(html,meta){
   }).join('');
 }
 const LC_ROLE={love:'운명의 상대 · 이성 인연',helper:'귀인 · 나를 끌어 주는 윗사람',foe:'주의 인물 · 관계의 기준을 살필 사람'};
-function lcProfileCard(kind,title,img,rows,portrait){
+function lcProfileCard(kind,title,img,rows,portrait,role){
   const photo=portrait?` data-portrait="${encodeURIComponent(JSON.stringify({...portrait,v:4,country:portrait.country||'대한민국'}))}"`:'';
   const image=portrait?`<div class="lc-pcard-img lc-portrait-pending" role="status" aria-label="대표 인물 이미지 생성 중"><img alt="AI가 생성할 대표 인물의 인상 이미지" hidden width="300" height="400"><span class="lc-portrait-status">대표 인물 이미지를 준비하고 있어요</span></div>`:`<div class="lc-pcard-img"><img src="${img}" alt="" loading="lazy" width="300" height="400"></div>`;
   if(portrait)rows=[['대표 인물',`${portrait.gender==='female'?'여성':'남성'} · ${portrait.age}세 · ${portrait.country||'대한민국'}`],...rows];
-  return `<div class="lc-pcard ${kind}" data-person-index="1"${photo}>${image}<div class="lc-pcard-body"><span class="lc-pcard-role">${LC_ROLE[kind]||''}</span><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><small class="lc-pcard-note">대표 인물의 AI 인상 이미지 · 실존 인물이 아니에요</small></div></div>`;
+  return `<div class="lc-pcard ${kind}" data-person-index="1"${photo}>${image}<div class="lc-pcard-body"><span class="lc-pcard-role">${role||LC_ROLE[kind]||''}</span><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><small class="lc-pcard-note">대표 인물의 AI 인상 이미지 · 실존 인물이 아니에요</small></div></div>`;
 }
 
 // 상세 8대 영역 풀이 안내 (인생총운)
@@ -13501,7 +13501,7 @@ function lcLineChart(points,curIdx){return lcCurve(points,{cur:curIdx});}
 function lcAreaBars(items){return `<div class="lc-area">${items.map(([l,v])=>`<div class="lc-area-row"><span>${l}</span><div><i style="width:${v}%"></i></div><b>${v}</b></div>`).join('')}</div>`;}
 function lcMonthLab(x,y0){return `${x.year!==y0?`${x.year}년 `:''}<span class="lk-m">${x.month}월</span>`;}
 function buildLifeChapters(m,s,meta,ctx){
-  const p=m.profile,ax=LIFE_V2_AXIS[m.axis],y0=m.year,O=LV4_OH,seatLove=ctx.seatLove;
+  const p=m.profile,ax=LIFE_V2_AXIS[m.axis],y0=m.year,O=LV4_OH,seatShort=ctx.seatShort,seatLove=ctx.seatLove;
   const tm={};['love','money','career','marriage','health','study','children'].forEach(k=>{try{tm[k]=buildTopicModel('topic-'+k,s,meta);}catch(e){tm[k]=null;}});
   const top=list=>[...(list||[])].sort((a,b)=>b.score-a.score)[0];
   const cnt=list=>m.pillarTgs.filter(t=>list.includes(t)).length,c=ohCount(s);
@@ -13536,7 +13536,7 @@ function buildLifeChapters(m,s,meta,ctx){
   const clashB=(s.dp.branch+6)%12,gw=LC_GWIN[s.dp.stem]||[],gwYear=m.futureYears.concat([m.yearInfo]).sort((a,b)=>a.year-b.year).find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB);
   const clashYear=m.futureYears.find(y=>y.yp.branch===clashB);
   const peer=cnt(['비견','겁재']),gwanN=cnt(['정관','편관']);
-  const people=lcPeople(s,{genderKey:m.genderKey});
+  const people=lcPeople(s,{genderKey:m.genderKey,partner:true,seatShort,seatLove,when:lv?(lv1&&lv1.year!==lv.year?`${lv1.year}년 · `:'')+`${lv.year}년 <span class="lk-m">${lv.month}월</span>`:lv1?`${lv1.year}년`:''});
   // 5) 흐름 그래프
   const das=(m.dq.daeuns||[]).filter(du=>du.age<=85),pts=das.map(du=>({l:`${du.age}세`,v:lcEraScore(s,du)})),curI=das.indexOf(m.cur);
   const avgY=t=>t&&t.years&&t.years.length?Math.round(t.years.reduce((a,x)=>a+x.score,0)/t.years.length):0;
@@ -13568,8 +13568,9 @@ function lcWhenYM(year,month,y0){return month?`${year}년 <span class="lk-m">${m
 // 운명의 상대·귀인·거리 둘 사람 — 인생총운과 같은 계산
 
 function lcPeople(saju,o){
-  // 운명의 상대 카드는 partner를 켠 주제(연애운·결혼운·재회운)에서만, 나머지는 귀인·악연 두 장
-  o=o||{};if(_meta&&_meta.marital==='married')o={...o,partner:false,helper:true};const y0=new Date().getFullYear(),years=Array.from({length:11},(_,i)=>_lifeV2YearInfo(saju,y0+i));
+  // 좋은 인연 카드는 연애·결혼 상태에 따라 바뀐다: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼(또는 미성년)은 귀인.
+  // partner를 켠 풀이(인생총운·신년운세·자미두수·연애운·결혼운·재회운)에서만 연인 카드를 쓰고, 나머지 주제는 귀인. 악연 카드는 늘 함께 보인다.
+  o=o||{};const y0=new Date().getFullYear(),years=Array.from({length:11},(_,i)=>_lifeV2YearInfo(saju,y0+i));
   const P=o.P||(()=>{try{return buildPinpoint(saju,{...(_meta||{}),gender:o.genderKey||gender});}catch(e){return null;}})();
   const me=SOH[saju.dp.stem],female=(o.genderKey||gender)==='female',spEl=female?(me+3)%5:(me+2)%5;
   const clashB=(saju.dp.branch+6)%12,gw=LC_GWIN[saju.dp.stem]||[],gwYear=years.find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB),clashYear=years.slice(1).find(y=>y.yp.branch===clashB);
@@ -13578,18 +13579,19 @@ function lcPeople(saju,o){
   const who=ppWho(),call=ppCall(),seed=saju.dp.stem*7+saju.dp.branch,mg=female?'female':'male',og=female?'male':'female';
   const uAge=y0-(Number(_meta&&_meta.sy)||y0-30)+1,ageOf=(ys,d)=>ys&&ys[0]?y0-ys[0]+1:d,lk=BOH[saju.dp.branch];
   const dmg=peer>=2?'돈 거래로 인한 금전 손실':gwanN>=2?'책임 떠넘기기와 지나친 압박':'말 바꾸기로 인한 신뢰 손상';
+  const st=(_meta&&_meta.marital)||'',dating=st==='dating',partnerOn=!!o.partner&&st!=='married'&&uAge>=19;
   let h='';
-  if(o.partner&&(!(_meta&&_meta.marital==='married'))){
-    h+=lcScene(saju,`${call}에겐<br>운명의 짝이<br>있소`);
-    h+=lcProfileCard('love',`${who}의<br>${o.partnerTitle||'운명의 상대'}`,lcArt(og,seed),[
+  if(partnerOn){
+    h+=lcScene(saju,dating?`${call}에겐<br>함께 갈 짝이<br>보이오`:`${call}에겐<br>운명의 짝이<br>있소`);
+    h+=lcProfileCard('love',`${who}${dating?eul(who):'의'}<br>${o.partnerTitle||(dating?'결혼할 사람':'연인이 될 사람')}`,lcArt(og,seed),[
       ['외모',`${LC_PARTNER_LOOK[BOH[saju.dp.branch]]}${o.seatShort?` · <span class="lk-m">${o.seatShort}</span>`:''}`],
       o.seatLove?['성격',`<span class="lk-m">${String(o.seatLove).split('.')[0]}</span>`]:null,
       ['직업',`<span class="lk-m">${LC_PARTNER_JOB[spEl]}</span>`],
       P?['특징',`${ppM(P.years.map(ppYearLab).join(' · '))} · 초성 ${ppM(personInitials(seed))}`]:null,
       P?['사는 곳',ppWhere(P.reg,P.city)]:null,
-      o.when?['만나는 때',o.when]:null],{kind:'love',gender:og,age:ageOf(P&&P.years,uAge),look:lk,seed});
+      o.when?[dating?'관계가 깊어지는 때':'만나는 때',o.when]:null],{kind:'love',gender:og,age:ageOf(P&&P.years,uAge),look:lk,seed},o.partnerTitle?'':dating?'결혼할 사람 · 함께 미래를 그릴 인연':'연인이 될 사람 · 이성 인연');
   }
-  if(o.helper!==false)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(mg,seed+3),[
+  if(!partnerOn||o.helper===true)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(mg,seed+3),[
     P&&P.helper.years.length?['출생년도 예시',ppM(ppYearLab(P.helper.years[0]))]:['띠',`<span class="lk-m">${gw.map(b=>ANIMAL[b]+'띠').join(' · ')}</span>`],
     P?['초성 예시',ppM(personInitials(seed+3))]:null,
     ['특징',`말수는 적어도 막힐 때 <span class="lk-m">결정적인 길을 알려 주는 윗사람</span>`],
@@ -13627,7 +13629,7 @@ function topicFrame(tm,o){
   const yearPts=tm.years.map(x=>({l:`${String(x.year).slice(2)}년`,v:x.score}));
   const graph=lcBox('lc-graph',`앞으로의 ${info.stat} 흐름`,`해마다의 ${info.stat} 점수예요. 가장 높은 점이 흐름이 활짝 피는 해예요.`,lcLineChart(yearPts,-1)+(child?'':`<h4>다가오는 12개월</h4>${lcAreaBars(tm.months.slice(0,12).map(x=>[`${x.year!==y0?String(x.year).slice(2)+'.':''}${x.month}월`,x.score]))}`));
   const partnerKeys=['love','marriage','reunion'];
-  const people=child?'':lcPeople(s,{genderKey:tm.genderKey,partner:partnerKeys.includes(key),partnerTitle:key==='reunion'?'다시 만날 인연의 모습':'본인의 운명의 상대',seatShort:o.seatShort,seatLove:o.seatLove,when:bm?(by&&by.year!==bm.year?`${by.year}년 · `:'')+`${bm.year}년 <span class="lk-m">${bm.month}월</span>`:by?`${by.year}년`:'',helper:!partnerKeys.includes(key)||key==='marriage',avoid:key!=='health'&&key!=='study'});
+  const people=child?'':lcPeople(s,{genderKey:tm.genderKey,partner:partnerKeys.includes(key),partnerTitle:key==='reunion'?'다시 만날 인연의 모습':'',seatShort:o.seatShort,seatLove:o.seatLove,when:bm?(by&&by.year!==bm.year?`${by.year}년 · `:'')+`${bm.year}년 <span class="lk-m">${bm.month}월</span>`:by?`${by.year}년`:'',helper:!partnerKeys.includes(key)||key==='marriage',avoid:key!=='health'&&key!=='study'});
   return {top:lcOrbs(s)+lcScene(s,`${ppCall()}의<br>${info.label}${eul(info.label)}<br>뒤흔들 3가지<br>사건이 보이는군`)+lcMoments(mom,`${info.label}${eul(info.label)} 뒤흔드는 3가지 사건`)+lcScene(s,'안 좋은 말도<br>전부 풀어 줄 텐데<br>각오하고<br>들어 보겠소?',true),
     ch1:lcChapter(1,`${info.label} 명식 분석`)+(child?'':lcBox('lc-bars',`본인이 타고난 성향`,lcPersonaBars(s)))+card+lcScene(s,`이제 ${info.label}${eul(info.label)}<br>하나씩<br>풀어 볼까`,true),
     ch2:lcChapter(2,`${info.label} 깊이 보기`),
@@ -13976,7 +13978,7 @@ function buildLifeReadingV4(saju,meta){
   const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
   const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${ppName()?ppName()+' · ':''}${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
   h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
-  let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatLove});}catch(e){}
+  let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatShort,seatLove});}catch(e){}
   try{const P=buildPinpoint(s,meta);h=lv4Inject(h,'talent',ppCareerHTML(s,meta,P,{title:'재능이 돈이 되는 일'}));h=lv4Inject(h,'work-money',ppMoneyHTML2(s,meta,P));h=lv4Inject(h,'love-people',(meta.marital==='married'?ppSpouseHTML(s,meta,P):ppPartnerHTML(P,{noCard:true,title:meta.marital==='dating'?'오래 함께할 인연은 이런 사람이에요':''}))+ppHelperHTML(P));h=lv4Inject(h,'health',ppHealthHTML(s,meta,P));h=lv4Inject(h,'future',ppTurnHTML(P)+(meta.marital==='married'?'':ppMarriageHTML(s,meta,P)));h=lv4Inject(h,'practice',ppLuckHTML(s,meta,P));}catch(e){}
   return `<div class="lv4" data-deep="life">${hero}${ch.top}${ctxNoteHTML('life')}${ch.ch1}${toc}${ch.ch2}${h}${ch.ch3}${renderChatSection()}</div>`;
 }
@@ -14073,7 +14075,7 @@ function buildZiweiReadingV4(saju,m){
     return {top:lcOrbs(saju)+lcScene(saju,`열두 개의 방에<br>${ppCall()}의 별이<br>보이는군`)+lcMoments([{when:'나를 지키는 별',what:nick(me.stars[0]),dot:'g'},{when:'배우자의 방',what:`<span class="lk-m">${nick(love.stars[0])}</span>이 지켜요`,dot:'y'},cur?{when:'지금 10년',what:`<span class="lk-m">${ZW_SHORT[cur.palace.name]}의 방</span>이 열린 때예요`,dot:'r'}:null]),
       ch1:lcChapter(1,'별자리 명식 분석')+lcBox('lc-bars','본인이 타고난 성향',lcPersonaBars(saju)),
       ch2:lcChapter(2,'방마다 깊이 보기'),
-      ch3:lcChapter(3,'인생을 흔들 사람들')+lcPeople(saju,{genderKey:m.gender})};
+      ch3:lcChapter(3,'인생을 흔들 사람들')+lcPeople(saju,{genderKey:m.gender,partner:true})};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
   return {ch,me,html:`<div class="lv4" data-deep="ziwei">${lvHero('자미두수',`${ZW_STARS[me.stars[0]][0]}이 지키는 사람`,ZW_STARS[me.stars[0]][1].split('. ')[0]+'.',`${ZW_BUREAU_PLAIN[ch.bureau]} · 나를 나타내는 방 ${me.stars.map(s=>s+'성').join(', ')}`,lvTagsHTML([`${ZW_STARS[me.stars[0]][0]}이_지키는_사람`,`배우자의_방에_${ZW_STARS[love.stars[0]][0]}`,cur?`지금은_${ZW_SHORT[cur.palace.name]}의_방이_열린_때`:'']))}${fr.top}${ctxNoteHTML('ziwei')}${fr.ch1}${lvToc(ZW_TITLES,'자미두수 목차')}${fr.ch2}${ctxApplyScenes('ziwei',h,{})}${fr.ch3}</div>`};
 }
@@ -14822,7 +14824,7 @@ function buildNewyearReadingV4(saju,y,meta){
     return {top:lcOrbs(s)+lcScene(s,`${y}년,<br>${ppCall()}의 한 해를<br>뒤흔들 3가지<br>사건이 보이는군`)+lcMoments(mo.map(e=>({when:lcWhenYM(y,e.x.month),what:e.what,dot:e.dot})),`${y}년을 뒤흔드는 3가지 사건`)+lcScene(s,'안 좋은 말도<br>전부 풀어 줄 텐데<br>각오하고<br>들어 보겠소?',true),
       ch1:lcChapter(1,`${y}년 명식 분석`)+lcBox('lc-bars','본인이 타고난 성향',lcPersonaBars(s))+lcCard('lc-core',`${y}년, ${info.gz}의 해<br>${front.use}`,[front.lead||'',front.good?`올해 이렇게 하면 흐름을 타요. ${front.good}`:'',front.warn?`가장 조심할 점은 이거예요. ${front.warn}`:'',loveGood[0]?`특히 ${loveGood[0].month}월에는 마음이 잘 통해요. 중요한 만남과 약속을 이 달에 두어 보세요.`:''],'* 아래 영역별 풀이에서 더 깊이 다뤄요.')+lcScene(s,'이제 올해를<br>영역별로<br>풀어 볼까',true),
       ch2:lcChapter(2,'영역별 올해 풀이'),
-      ch3:lcChapter(3,'올해의 흐름과 사람들')+lcPeople(s,{genderKey:b.genderKey})+lcBox('lc-graph',`${y}년 달마다의 흐름`,'달마다의 흐름 점수예요. 가장 높은 달에 중요한 일을 두세요.',lcLineChart(m.months.map(x=>({l:`${x.month}월`,v:x.score})),-1)+`<h4>${y}년 영역별 평균</h4>`+lcAreaBars([['재물운',avgF('wealth')],['연애운',avgF('love')],['직업운',avgF('career')],['건강운',avgF('health')]]))};
+      ch3:lcChapter(3,'올해의 흐름과 사람들')+lcPeople(s,{genderKey:b.genderKey,partner:true,when:loveGood[0]?`${y}년 <span class="lk-m">${loveGood[0].month}월</span>`:''})+lcBox('lc-graph',`${y}년 달마다의 흐름`,'달마다의 흐름 점수예요. 가장 높은 달에 중요한 일을 두세요.',lcLineChart(m.months.map(x=>({l:`${x.month}월`,v:x.score})),-1)+`<h4>${y}년 영역별 평균</h4>`+lcAreaBars([['재물운',avgF('wealth')],['연애운',avgF('love')],['직업운',avgF('career')],['건강운',avgF('health')]]))};
   }catch(e){return {top:'',ch1:'',ch2:'',ch3:''};}})();
   return {model:m,html:`<div class="lv4" data-deep="newyear:${y}">${hero}${fr.top}${ctxNoteHTML('newyear')}${fr.ch1}${lvToc(NY_TITLES,`${y}년 신년운세 목차`)}${fr.ch2}${h}${fr.ch3}${renderChatSection('newyear')}</div>`};
 }

@@ -20,7 +20,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    for(let seed=0;seed<60;seed++){assert.match(run(`personInitials(${seed})`),/^[ㄱ-ㅎ]{3}$/);assert.notEqual(run(`personInitials(${seed},0)`),run(`personInitials(${seed},1)`));}
  });
  check('귀인·주의 인물: 각각 사진 1장과 서로 다른 초성의 프로필 2명 이하',()=>{
-   const box=d.createElement('div');box.innerHTML=run("lcPeople(_saju,{partner:true})");
+   const box=d.createElement('div');box.innerHTML=run("lcPeople(_saju,{})");
    for(const kind of ['helper','foe']){
      assert.equal(box.querySelectorAll('.lc-pcard.'+kind+'[data-portrait]').length,1);
      const profiles=[...box.querySelectorAll('.lc-pcard.'+kind)];assert(profiles.length>=1&&profiles.length<=2);
@@ -38,13 +38,24 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='dating'");assert.match(run("ppPartnerHTML(buildPinpoint(_saju,_meta),{})"),/현재 연인과 배우자로 발전/);
    run("_meta.marital='single'");
  });
- check('인물 카드: 연애운·결혼운·재회운만 운명의 상대 카드, 인생총운 등은 귀인·악연 두 장',()=>{
-   const cards=html=>{const b=d.createElement('div');b.innerHTML=html;return [...b.querySelectorAll('.lc-pcard')].map(x=>x.classList[1]).join(',');};
-   const want={'topic-love':'love,foe','topic-marriage':'love,helper,foe','topic-reunion':'love,foe'};
-   for(const c in want)assert.equal(cards(run(`renderTopicPaid('${c}',_saju,_meta)`)),want[c],c);
-   assert.equal(cards(run("lcPeople(_saju,{})")),'helper,foe');
-   assert.equal(cards(run("buildLifeReadingV4(_saju,_meta)")),'helper,foe');
+ check('인물 카드: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼은 귀인 + 늘 악연',()=>{
+   const parse=html=>{const b=d.createElement('div');b.innerHTML=html;return [...b.querySelectorAll('.lc-pcard')].map(x=>x.classList[1]+':'+x.querySelector('h4').textContent);};
+   const kinds=html=>parse(html).map(x=>x.split(':')[0]).join(',');
+   const life=()=>run("buildLifeReadingV4(_saju,_meta)");
+   run("_meta.marital='single'");
+   assert.equal(kinds(life()),'love,foe');assert(parse(life())[0].includes('연인이 될 사람'));
+   const want={'topic-love':'love,foe','topic-marriage':'love,helper,foe','topic-reunion':'love,foe','topic-career':'helper,foe'};
+   for(const c in want)assert.equal(kinds(run(`renderTopicPaid('${c}',_saju,_meta)`)),want[c],c);
+   assert(parse(run("renderTopicPaid('topic-reunion',_saju,_meta)"))[0].includes('다시 만날 인연'));
+   run("_meta.marital='dating'");
+   assert.equal(kinds(life()),'love,foe');assert(parse(life())[0].includes('결혼할 사람'));
+   assert(parse(run("renderTopicPaid('topic-love',_saju,_meta)"))[0].includes('결혼할 사람'));
+   run("_meta.marital='married'");
+   assert.equal(kinds(life()),'helper,foe');assert.equal(kinds(run("renderTopicPaid('topic-love',_saju,_meta)")),'helper,foe');
+   run("_meta.marital='single'");
+   const sy=run('_meta.sy');run(`_meta.sy=${new Date().getFullYear()-12}`);assert.equal(kinds(run("lcPeople(_saju,{partner:true})")),'helper,foe');run(`_meta.sy=${sy}`);
  });
+
  const unsigned=(id,cat)=>Buffer.from(JSON.stringify({o:id,c:cat,e:Date.now()+86400000})).toString('base64url')+'.mock';
  check('무료 질문: 이전 전역 소진 기록과 무관하게 결제 건마다 1회, 새 결제에는 다시 1회',()=>{
    run("_unlockedCats.set('life',unlockScopeOf('life'));localStorage.setItem('saju_chat_count_life_v2','999')");
