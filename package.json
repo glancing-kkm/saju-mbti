@@ -2,7 +2,8 @@
   "name": "cheonjiin-saju",
   "private": true,
   "scripts": {
-    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js"
+    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js",
+    "audit:reading": "node tools/reading-quality-audit.js"
   },
   "devDependencies": {
     "jsdom": "26.1.0"

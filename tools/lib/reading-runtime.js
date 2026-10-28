@@ -1,0 +1,21 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const {JSDOM,VirtualConsole}=require('jsdom');
+module.exports=function readingRuntime(root=process.env.READING_AUDIT_ROOT||path.resolve(__dirname,'../..')){
+ const source=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ const dom=new JSDOM(source,{url:'https://audit.example/',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:new VirtualConsole()});
+ const w=dom.window,d=w.document,ctx=dom.getInternalVMContext();
+ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.matchMedia=()=>({matches:false,addEventListener(){}});w.alert=()=>{};w.confirm=()=>false;
+ w.fetch=async()=>({ok:true,json:async()=>({}),text:async()=>'',headers:{get:()=>null}});
+ const NativeDate=w.Date,epoch=Date.parse('2026-10-28T03:00:00Z');
+ w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[epoch]));}static now(){return epoch;}};
+ const run=s=>vm.runInContext(s,ctx,{timeout:30000});
+ run(fs.readFileSync(path.join(root,'assets/vendor/astronomy.browser.min.js'),'utf8'));
+ run([...d.querySelectorAll('script')].filter(s=>!s.src&&!/json/.test(s.type)).map(s=>s.textContent).join('\n;\n'));
+ run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
+ const clean=s=>String(s||'').replace(/\u00a0|\u200b/g,' ').replace(/\s+/g,' ').trim();
+ const text=html=>{const box=d.createElement('div');box.innerHTML=html;box.querySelectorAll('script,style,button,svg,.lv4-toc,.chat-card,.next-actions,.pdf-cta,.lc-scene,.lc-pcard').forEach(e=>e.remove());return clean(box.textContent);};
+ const fixture=(age,i=0,status='single',unknown=false)=>({id:`age${age}-${status}-${unknown?'unknown':i}`,sy:2027-age,sm:i%12+1,sd:i%24+1,hour:unknown?-1:(i*3+5)%24,min:(i*11)%60,gender:i%2?'female':'male',marital:status,cityKey:'seoul',tsoMin:0,userName:'검증예시',nyExtra:{y:2027},dpExtra:{y:2027,m:3,d:15},moExtra:{sy:2027,sm:1,ey:2027,em:3},gnExtra:{gy:1991,gm:3,gd:20,gh:12,gmin:0,cal:'solar',gender:'female',cityKey:'seoul'},nmExtra:{surname:'김',given:'하늘',han:{surname:'金',given1:'河',given2:'訥'},strokes:{surname:8,given1:9,given2:11}}});
+ const set=m=>{w.fixture=m;run("_meta={...window.fixture};gender=_meta.gender;_lastInputs=null;_saju=calcSaju(_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min);");};
+ return {root,source,w,d,dom,ctx,run,clean,text,fixture,set,close:()=>dom.window.close()};
+};

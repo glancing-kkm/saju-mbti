@@ -1,0 +1,3836 @@
+{
+  "revision": "72c956fe3f68",
+  "referenceDate": "2026-10-28",
+  "scope": "생성 경로/대표 사례의 문장 품질 검사. 미래 사건의 정확도 검증이나 AI 실응답 전수 검증은 포함하지 않음.",
+  "routes": [
+    "life",
+    "newyear",
+    "gunghap",
+    "name",
+    "ziwei",
+    "monthly",
+    "daypick",
+    "manse",
+    "daily",
+    "vedic",
+    "mahabote",
+    "topic-love",
+    "topic-money",
+    "topic-career",
+    "topic-marriage",
+    "topic-reunion",
+    "topic-study",
+    "topic-child",
+    "topic-children",
+    "topic-health",
+    "free",
+    "mbti-comparison"
+  ],
+  "fixtures": [
+    "age5-single-0",
+    "age6-single-1",
+    "age15-single-2",
+    "age16-single-3",
+    "age19-single-4",
+    "age20-single-5",
+    "age25-single-6",
+    "age26-single-7",
+    "age35-single-8",
+    "age36-single-9",
+    "age45-single-10",
+    "age46-single-11",
+    "age55-single-12",
+    "age56-single-13",
+    "age65-single-14",
+    "age66-single-15",
+    "age80-single-16",
+    "age40-dating-7",
+    "age40-married-7",
+    "age40-single-unknown",
+    "age40-married-8"
+  ],
+  "records": [
+    {
+      "fixture": "age5-single-0",
+      "cat": "life",
+      "chars": 13791,
+      "sections": 8,
+      "paragraphs": 162
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "newyear",
+      "chars": 12863,
+      "sections": 7,
+      "paragraphs": 146
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "gunghap",
+      "chars": 7484,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "name",
+      "chars": 4682,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "ziwei",
+      "chars": 3479,
+      "sections": 6,
+      "paragraphs": 50
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "monthly",
+      "chars": 4072,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "daypick",
+      "chars": 4140,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "manse",
+      "chars": 2104,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "daily",
+      "chars": 2506,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "vedic",
+      "chars": 912,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-love",
+      "chars": 5398,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-money",
+      "chars": 5179,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-career",
+      "chars": 5256,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-marriage",
+      "chars": 5215,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-reunion",
+      "chars": 4891,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-study",
+      "chars": 4738,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-child",
+      "chars": 3492,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-children",
+      "chars": 5483,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "topic-health",
+      "chars": 4728,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "free",
+      "chars": 1084,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age5-single-0",
+      "cat": "mbti-comparison",
+      "chars": 1135,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "life",
+      "chars": 13781,
+      "sections": 8,
+      "paragraphs": 162
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "newyear",
+      "chars": 12945,
+      "sections": 7,
+      "paragraphs": 146
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "gunghap",
+      "chars": 7301,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "name",
+      "chars": 4726,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "ziwei",
+      "chars": 3453,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "monthly",
+      "chars": 4084,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "daypick",
+      "chars": 4006,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "manse",
+      "chars": 2092,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "daily",
+      "chars": 2501,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "vedic",
+      "chars": 917,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "mahabote",
+      "chars": 203,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-love",
+      "chars": 5475,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-money",
+      "chars": 5188,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-career",
+      "chars": 5268,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-marriage",
+      "chars": 5292,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-reunion",
+      "chars": 4906,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-study",
+      "chars": 4752,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-child",
+      "chars": 3438,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-children",
+      "chars": 5466,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "topic-health",
+      "chars": 4714,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "free",
+      "chars": 1083,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age6-single-1",
+      "cat": "mbti-comparison",
+      "chars": 1035,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "life",
+      "chars": 13937,
+      "sections": 8,
+      "paragraphs": 162
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "newyear",
+      "chars": 13053,
+      "sections": 7,
+      "paragraphs": 147
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "gunghap",
+      "chars": 7397,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "name",
+      "chars": 4568,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "ziwei",
+      "chars": 3040,
+      "sections": 6,
+      "paragraphs": 46
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "monthly",
+      "chars": 4237,
+      "sections": 6,
+      "paragraphs": 53
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "daypick",
+      "chars": 4524,
+      "sections": 7,
+      "paragraphs": 65
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "manse",
+      "chars": 2069,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "daily",
+      "chars": 2268,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "vedic",
+      "chars": 920,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-love",
+      "chars": 5486,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-money",
+      "chars": 5207,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-career",
+      "chars": 5267,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-marriage",
+      "chars": 5284,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-reunion",
+      "chars": 4898,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-study",
+      "chars": 4664,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-child",
+      "chars": 3443,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-children",
+      "chars": 5454,
+      "sections": 8,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "topic-health",
+      "chars": 4721,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "free",
+      "chars": 1089,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age15-single-2",
+      "cat": "mbti-comparison",
+      "chars": 1014,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "life",
+      "chars": 14305,
+      "sections": 8,
+      "paragraphs": 166
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "newyear",
+      "chars": 13556,
+      "sections": 7,
+      "paragraphs": 151
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "gunghap",
+      "chars": 6988,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "name",
+      "chars": 4707,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "ziwei",
+      "chars": 3574,
+      "sections": 6,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "monthly",
+      "chars": 4162,
+      "sections": 6,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "daypick",
+      "chars": 4312,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "manse",
+      "chars": 2065,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "daily",
+      "chars": 2215,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "vedic",
+      "chars": 908,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "mahabote",
+      "chars": 193,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-love",
+      "chars": 5492,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-money",
+      "chars": 5229,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-career",
+      "chars": 5311,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-marriage",
+      "chars": 5391,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-reunion",
+      "chars": 4906,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-study",
+      "chars": 4715,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-child",
+      "chars": 3459,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-children",
+      "chars": 5493,
+      "sections": 8,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "topic-health",
+      "chars": 4733,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "free",
+      "chars": 1091,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age16-single-3",
+      "cat": "mbti-comparison",
+      "chars": 1047,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "life",
+      "chars": 14274,
+      "sections": 8,
+      "paragraphs": 169
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "newyear",
+      "chars": 13960,
+      "sections": 7,
+      "paragraphs": 153
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "gunghap",
+      "chars": 7272,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "name",
+      "chars": 4727,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "ziwei",
+      "chars": 3252,
+      "sections": 6,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "monthly",
+      "chars": 4119,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "daypick",
+      "chars": 4040,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "manse",
+      "chars": 2067,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "daily",
+      "chars": 2545,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "vedic",
+      "chars": 912,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "mahabote",
+      "chars": 193,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-love",
+      "chars": 5485,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-money",
+      "chars": 5151,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-career",
+      "chars": 5249,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-marriage",
+      "chars": 5321,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-reunion",
+      "chars": 4921,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-study",
+      "chars": 4669,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-child",
+      "chars": 3379,
+      "sections": 7,
+      "paragraphs": 39
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-children",
+      "chars": 5435,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "topic-health",
+      "chars": 4752,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "free",
+      "chars": 1090,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age19-single-4",
+      "cat": "mbti-comparison",
+      "chars": 1094,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "life",
+      "chars": 14096,
+      "sections": 8,
+      "paragraphs": 164
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "newyear",
+      "chars": 13723,
+      "sections": 7,
+      "paragraphs": 148
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "gunghap",
+      "chars": 7314,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "name",
+      "chars": 4717,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "ziwei",
+      "chars": 3428,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "monthly",
+      "chars": 4148,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "daypick",
+      "chars": 4235,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "manse",
+      "chars": 2083,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "daily",
+      "chars": 2492,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "vedic",
+      "chars": 927,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "mahabote",
+      "chars": 227,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-love",
+      "chars": 5583,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-money",
+      "chars": 5273,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-career",
+      "chars": 5323,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-marriage",
+      "chars": 5406,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-reunion",
+      "chars": 4942,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-study",
+      "chars": 4759,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-child",
+      "chars": 3409,
+      "sections": 7,
+      "paragraphs": 39
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-children",
+      "chars": 5624,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "topic-health",
+      "chars": 4795,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "free",
+      "chars": 1101,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age20-single-5",
+      "cat": "mbti-comparison",
+      "chars": 1047,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "life",
+      "chars": 14315,
+      "sections": 8,
+      "paragraphs": 166
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "newyear",
+      "chars": 14007,
+      "sections": 7,
+      "paragraphs": 153
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "gunghap",
+      "chars": 7371,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "name",
+      "chars": 4552,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "ziwei",
+      "chars": 3207,
+      "sections": 6,
+      "paragraphs": 48
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "monthly",
+      "chars": 4251,
+      "sections": 6,
+      "paragraphs": 50
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "daypick",
+      "chars": 4286,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "manse",
+      "chars": 2066,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "daily",
+      "chars": 2209,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "vedic",
+      "chars": 932,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "mahabote",
+      "chars": 211,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-love",
+      "chars": 5478,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-money",
+      "chars": 5268,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-career",
+      "chars": 5305,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-marriage",
+      "chars": 5309,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-reunion",
+      "chars": 4911,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-study",
+      "chars": 4701,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-child",
+      "chars": 3384,
+      "sections": 7,
+      "paragraphs": 39
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-children",
+      "chars": 5579,
+      "sections": 8,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "topic-health",
+      "chars": 4791,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "free",
+      "chars": 1089,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age25-single-6",
+      "cat": "mbti-comparison",
+      "chars": 1096,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "life",
+      "chars": 14044,
+      "sections": 8,
+      "paragraphs": 163
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "newyear",
+      "chars": 13864,
+      "sections": 7,
+      "paragraphs": 148
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "gunghap",
+      "chars": 7269,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "name",
+      "chars": 4709,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "ziwei",
+      "chars": 3709,
+      "sections": 6,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "monthly",
+      "chars": 4125,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "daypick",
+      "chars": 4263,
+      "sections": 7,
+      "paragraphs": 63
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "manse",
+      "chars": 2095,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "daily",
+      "chars": 2511,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "vedic",
+      "chars": 932,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "mahabote",
+      "chars": 213,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-love",
+      "chars": 5468,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-money",
+      "chars": 5257,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-career",
+      "chars": 5328,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-marriage",
+      "chars": 5361,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-reunion",
+      "chars": 4944,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-study",
+      "chars": 4743,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-child",
+      "chars": 3412,
+      "sections": 7,
+      "paragraphs": 39
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-children",
+      "chars": 5598,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "topic-health",
+      "chars": 4789,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "free",
+      "chars": 1069,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age26-single-7",
+      "cat": "mbti-comparison",
+      "chars": 1032,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "life",
+      "chars": 14000,
+      "sections": 8,
+      "paragraphs": 162
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "newyear",
+      "chars": 13764,
+      "sections": 7,
+      "paragraphs": 146
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "gunghap",
+      "chars": 7262,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "name",
+      "chars": 4779,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "ziwei",
+      "chars": 3311,
+      "sections": 6,
+      "paragraphs": 48
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "monthly",
+      "chars": 4185,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "daypick",
+      "chars": 4346,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "manse",
+      "chars": 2057,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "daily",
+      "chars": 2216,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "vedic",
+      "chars": 938,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "mahabote",
+      "chars": 213,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-love",
+      "chars": 5520,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-money",
+      "chars": 5238,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-career",
+      "chars": 5307,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-marriage",
+      "chars": 5384,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-reunion",
+      "chars": 4895,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-study",
+      "chars": 4719,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-child",
+      "chars": 3468,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-children",
+      "chars": 5601,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "topic-health",
+      "chars": 4769,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "free",
+      "chars": 1088,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age35-single-8",
+      "cat": "mbti-comparison",
+      "chars": 1096,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "life",
+      "chars": 14065,
+      "sections": 8,
+      "paragraphs": 163
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "newyear",
+      "chars": 13945,
+      "sections": 7,
+      "paragraphs": 148
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "gunghap",
+      "chars": 7520,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "name",
+      "chars": 4609,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "ziwei",
+      "chars": 3314,
+      "sections": 6,
+      "paragraphs": 48
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "monthly",
+      "chars": 4134,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "daypick",
+      "chars": 4246,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "manse",
+      "chars": 2088,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "daily",
+      "chars": 2204,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "vedic",
+      "chars": 934,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "mahabote",
+      "chars": 195,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-love",
+      "chars": 5520,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-money",
+      "chars": 5241,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-career",
+      "chars": 5289,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-marriage",
+      "chars": 5364,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-reunion",
+      "chars": 4955,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-study",
+      "chars": 4733,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-child",
+      "chars": 3515,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-children",
+      "chars": 5526,
+      "sections": 8,
+      "paragraphs": 57
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "topic-health",
+      "chars": 4778,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "free",
+      "chars": 1073,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age36-single-9",
+      "cat": "mbti-comparison",
+      "chars": 1044,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "life",
+      "chars": 14227,
+      "sections": 8,
+      "paragraphs": 167
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "newyear",
+      "chars": 13948,
+      "sections": 7,
+      "paragraphs": 151
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "gunghap",
+      "chars": 7278,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "name",
+      "chars": 4631,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "ziwei",
+      "chars": 3209,
+      "sections": 6,
+      "paragraphs": 46
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "monthly",
+      "chars": 4229,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "daypick",
+      "chars": 4253,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "manse",
+      "chars": 2071,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "daily",
+      "chars": 2222,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "vedic",
+      "chars": 925,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "mahabote",
+      "chars": 195,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-love",
+      "chars": 5488,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-money",
+      "chars": 5241,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-career",
+      "chars": 5300,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-marriage",
+      "chars": 5343,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-reunion",
+      "chars": 4905,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-study",
+      "chars": 4737,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-child",
+      "chars": 3493,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-children",
+      "chars": 5540,
+      "sections": 8,
+      "paragraphs": 57
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "topic-health",
+      "chars": 4757,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "free",
+      "chars": 1075,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age45-single-10",
+      "cat": "mbti-comparison",
+      "chars": 1106,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "life",
+      "chars": 14508,
+      "sections": 8,
+      "paragraphs": 169
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "newyear",
+      "chars": 14073,
+      "sections": 7,
+      "paragraphs": 151
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "gunghap",
+      "chars": 7439,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "name",
+      "chars": 4770,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "ziwei",
+      "chars": 3582,
+      "sections": 6,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "monthly",
+      "chars": 4207,
+      "sections": 6,
+      "paragraphs": 50
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "daypick",
+      "chars": 4318,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "manse",
+      "chars": 2085,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "daily",
+      "chars": 2216,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "vedic",
+      "chars": 916,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-love",
+      "chars": 5632,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-money",
+      "chars": 5244,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-career",
+      "chars": 5320,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-marriage",
+      "chars": 5419,
+      "sections": 7,
+      "paragraphs": 63
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-reunion",
+      "chars": 4945,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-study",
+      "chars": 4746,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-child",
+      "chars": 3487,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-children",
+      "chars": 5503,
+      "sections": 8,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "topic-health",
+      "chars": 4739,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "free",
+      "chars": 1096,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age46-single-11",
+      "cat": "mbti-comparison",
+      "chars": 1138,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "life",
+      "chars": 14224,
+      "sections": 8,
+      "paragraphs": 165
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "newyear",
+      "chars": 13905,
+      "sections": 7,
+      "paragraphs": 150
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "gunghap",
+      "chars": 7278,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "name",
+      "chars": 4764,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "ziwei",
+      "chars": 3557,
+      "sections": 6,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "monthly",
+      "chars": 4134,
+      "sections": 6,
+      "paragraphs": 50
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "daypick",
+      "chars": 4220,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "manse",
+      "chars": 2101,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "daily",
+      "chars": 2502,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "vedic",
+      "chars": 929,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "mahabote",
+      "chars": 195,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-love",
+      "chars": 5550,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-money",
+      "chars": 5275,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-career",
+      "chars": 5303,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-marriage",
+      "chars": 5406,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-reunion",
+      "chars": 4933,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-study",
+      "chars": 4732,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-child",
+      "chars": 3482,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-children",
+      "chars": 5533,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "topic-health",
+      "chars": 4766,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "free",
+      "chars": 1086,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age55-single-12",
+      "cat": "mbti-comparison",
+      "chars": 1020,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "life",
+      "chars": 14155,
+      "sections": 8,
+      "paragraphs": 164
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "newyear",
+      "chars": 13754,
+      "sections": 7,
+      "paragraphs": 149
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "gunghap",
+      "chars": 7261,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "name",
+      "chars": 4654,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "ziwei",
+      "chars": 3212,
+      "sections": 6,
+      "paragraphs": 46
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "monthly",
+      "chars": 4187,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "daypick",
+      "chars": 4313,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "manse",
+      "chars": 2082,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "daily",
+      "chars": 2242,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "vedic",
+      "chars": 901,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "mahabote",
+      "chars": 211,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-love",
+      "chars": 5539,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-money",
+      "chars": 5241,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-career",
+      "chars": 5329,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-marriage",
+      "chars": 5393,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-reunion",
+      "chars": 4915,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-study",
+      "chars": 4748,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-child",
+      "chars": 3470,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-children",
+      "chars": 5572,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "topic-health",
+      "chars": 4771,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "free",
+      "chars": 1082,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age56-single-13",
+      "cat": "mbti-comparison",
+      "chars": 1033,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "life",
+      "chars": 14326,
+      "sections": 8,
+      "paragraphs": 166
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "newyear",
+      "chars": 14066,
+      "sections": 7,
+      "paragraphs": 152
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "gunghap",
+      "chars": 7305,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "name",
+      "chars": 4613,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "ziwei",
+      "chars": 3399,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "monthly",
+      "chars": 4249,
+      "sections": 6,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "daypick",
+      "chars": 4308,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "manse",
+      "chars": 2075,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "daily",
+      "chars": 2269,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "vedic",
+      "chars": 918,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "mahabote",
+      "chars": 195,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-love",
+      "chars": 5535,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-money",
+      "chars": 5201,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-career",
+      "chars": 5273,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-marriage",
+      "chars": 5375,
+      "sections": 7,
+      "paragraphs": 62
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-reunion",
+      "chars": 4896,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-study",
+      "chars": 4781,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-child",
+      "chars": 3462,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-children",
+      "chars": 5434,
+      "sections": 8,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "topic-health",
+      "chars": 4731,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "free",
+      "chars": 1089,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age65-single-14",
+      "cat": "mbti-comparison",
+      "chars": 1015,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "life",
+      "chars": 14274,
+      "sections": 8,
+      "paragraphs": 167
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "newyear",
+      "chars": 14001,
+      "sections": 7,
+      "paragraphs": 152
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "gunghap",
+      "chars": 7118,
+      "sections": 8,
+      "paragraphs": 91
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "name",
+      "chars": 4704,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "ziwei",
+      "chars": 3455,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "monthly",
+      "chars": 4118,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "daypick",
+      "chars": 4218,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "manse",
+      "chars": 2075,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "daily",
+      "chars": 2514,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "vedic",
+      "chars": 927,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "mahabote",
+      "chars": 211,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-love",
+      "chars": 5492,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-money",
+      "chars": 5262,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-career",
+      "chars": 5297,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-marriage",
+      "chars": 5325,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-reunion",
+      "chars": 4945,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-study",
+      "chars": 4754,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-child",
+      "chars": 3485,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-children",
+      "chars": 5461,
+      "sections": 8,
+      "paragraphs": 57
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "topic-health",
+      "chars": 4734,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "free",
+      "chars": 1075,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age66-single-15",
+      "cat": "mbti-comparison",
+      "chars": 1043,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "life",
+      "chars": 13844,
+      "sections": 8,
+      "paragraphs": 159
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "newyear",
+      "chars": 13557,
+      "sections": 7,
+      "paragraphs": 145
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "gunghap",
+      "chars": 7208,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "name",
+      "chars": 4686,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "ziwei",
+      "chars": 3502,
+      "sections": 6,
+      "paragraphs": 50
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "monthly",
+      "chars": 4153,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "daypick",
+      "chars": 4423,
+      "sections": 7,
+      "paragraphs": 64
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "manse",
+      "chars": 2068,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "daily",
+      "chars": 2630,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "vedic",
+      "chars": 913,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-love",
+      "chars": 5389,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-money",
+      "chars": 5150,
+      "sections": 7,
+      "paragraphs": 51
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-career",
+      "chars": 5159,
+      "sections": 7,
+      "paragraphs": 57
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-marriage",
+      "chars": 5201,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-reunion",
+      "chars": 4906,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-study",
+      "chars": 4748,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-child",
+      "chars": 3441,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-children",
+      "chars": 5385,
+      "sections": 8,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "topic-health",
+      "chars": 4630,
+      "sections": 7,
+      "paragraphs": 53
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "free",
+      "chars": 1070,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age80-single-16",
+      "cat": "mbti-comparison",
+      "chars": 1091,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "life",
+      "chars": 14173,
+      "sections": 8,
+      "paragraphs": 166
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "newyear",
+      "chars": 13971,
+      "sections": 7,
+      "paragraphs": 151
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "gunghap",
+      "chars": 7085,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "name",
+      "chars": 4568,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "ziwei",
+      "chars": 3084,
+      "sections": 6,
+      "paragraphs": 46
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "monthly",
+      "chars": 4300,
+      "sections": 6,
+      "paragraphs": 53
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "daypick",
+      "chars": 4289,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "manse",
+      "chars": 2074,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "daily",
+      "chars": 2222,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "vedic",
+      "chars": 939,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-love",
+      "chars": 5293,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-money",
+      "chars": 5246,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-career",
+      "chars": 5267,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-marriage",
+      "chars": 5139,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-reunion",
+      "chars": 4926,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-study",
+      "chars": 4718,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-child",
+      "chars": 3478,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-children",
+      "chars": 5420,
+      "sections": 8,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "topic-health",
+      "chars": 4721,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "free",
+      "chars": 1085,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-dating-7",
+      "cat": "mbti-comparison",
+      "chars": 1041,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "life",
+      "chars": 14149,
+      "sections": 8,
+      "paragraphs": 165
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "newyear",
+      "chars": 14046,
+      "sections": 7,
+      "paragraphs": 153
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "gunghap",
+      "chars": 7085,
+      "sections": 8,
+      "paragraphs": 93
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "name",
+      "chars": 4568,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "ziwei",
+      "chars": 3084,
+      "sections": 6,
+      "paragraphs": 46
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "monthly",
+      "chars": 4298,
+      "sections": 6,
+      "paragraphs": 53
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "daypick",
+      "chars": 4287,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "manse",
+      "chars": 2074,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "daily",
+      "chars": 2222,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "vedic",
+      "chars": 939,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-love",
+      "chars": 5381,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-money",
+      "chars": 5246,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-career",
+      "chars": 5267,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-marriage",
+      "chars": 5114,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-reunion",
+      "chars": 4928,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-study",
+      "chars": 4718,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-child",
+      "chars": 3478,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-children",
+      "chars": 5420,
+      "sections": 8,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "topic-health",
+      "chars": 4721,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "free",
+      "chars": 1085,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-7",
+      "cat": "mbti-comparison",
+      "chars": 1041,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "life",
+      "chars": 13383,
+      "sections": 8,
+      "paragraphs": 157
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "newyear",
+      "chars": 13221,
+      "sections": 7,
+      "paragraphs": 142
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "gunghap",
+      "chars": 7061,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "name",
+      "chars": 4695,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "monthly",
+      "chars": 4208,
+      "sections": 6,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "daypick",
+      "chars": 4308,
+      "sections": 7,
+      "paragraphs": 61
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "manse",
+      "chars": 2039,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "daily",
+      "chars": 2221,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "vedic",
+      "chars": 982,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "mahabote",
+      "chars": 212,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-love",
+      "chars": 5386,
+      "sections": 7,
+      "paragraphs": 59
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-money",
+      "chars": 5191,
+      "sections": 7,
+      "paragraphs": 55
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-career",
+      "chars": 5219,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-marriage",
+      "chars": 5245,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-reunion",
+      "chars": 4845,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-study",
+      "chars": 4668,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-child",
+      "chars": 3366,
+      "sections": 7,
+      "paragraphs": 39
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-children",
+      "chars": 5365,
+      "sections": 8,
+      "paragraphs": 57
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "topic-health",
+      "chars": 4691,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "free",
+      "chars": 1072,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-single-unknown",
+      "cat": "mbti-comparison",
+      "chars": 1041,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "life",
+      "chars": 14446,
+      "sections": 8,
+      "paragraphs": 168
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "newyear",
+      "chars": 14165,
+      "sections": 7,
+      "paragraphs": 156
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "gunghap",
+      "chars": 7151,
+      "sections": 8,
+      "paragraphs": 92
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "name",
+      "chars": 4703,
+      "sections": 7,
+      "paragraphs": 45
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "ziwei",
+      "chars": 3461,
+      "sections": 6,
+      "paragraphs": 49
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "monthly",
+      "chars": 4251,
+      "sections": 6,
+      "paragraphs": 53
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "daypick",
+      "chars": 4478,
+      "sections": 7,
+      "paragraphs": 63
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "manse",
+      "chars": 2069,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "daily",
+      "chars": 2230,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "vedic",
+      "chars": 926,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "mahabote",
+      "chars": 213,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-love",
+      "chars": 5378,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-money",
+      "chars": 5242,
+      "sections": 7,
+      "paragraphs": 54
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-career",
+      "chars": 5273,
+      "sections": 7,
+      "paragraphs": 60
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-marriage",
+      "chars": 5099,
+      "sections": 7,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-reunion",
+      "chars": 4928,
+      "sections": 7,
+      "paragraphs": 47
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-study",
+      "chars": 4731,
+      "sections": 7,
+      "paragraphs": 52
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-child",
+      "chars": 3462,
+      "sections": 7,
+      "paragraphs": 40
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-children",
+      "chars": 5605,
+      "sections": 8,
+      "paragraphs": 58
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "topic-health",
+      "chars": 4748,
+      "sections": 7,
+      "paragraphs": 56
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "free",
+      "chars": 1069,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "age40-married-8",
+      "cat": "mbti-comparison",
+      "chars": 1029,
+      "sections": 0,
+      "paragraphs": 0
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-life",
+      "chars": 1833,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-life",
+      "chars": 145
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-newyear",
+      "chars": 1838,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-newyear",
+      "chars": 133
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-gunghap",
+      "chars": 1836,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-gunghap",
+      "chars": 128
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-love",
+      "chars": 1830,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-love",
+      "chars": 137
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-marriage",
+      "chars": 1813,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-marriage",
+      "chars": 133
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-reunion",
+      "chars": 1876,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-reunion",
+      "chars": 135
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-money",
+      "chars": 1811,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-money",
+      "chars": 142
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-career",
+      "chars": 1822,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-career",
+      "chars": 127
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-study",
+      "chars": 1830,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-study",
+      "chars": 139
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-child",
+      "chars": 1823,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-child",
+      "chars": 126
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-children",
+      "chars": 1818,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-children",
+      "chars": 133
+    },
+    {
+      "fixture": "tarot-5",
+      "cat": "tarot-health",
+      "chars": 1856,
+      "sections": 8
+    },
+    {
+      "fixture": "astro-reference",
+      "cat": "astro-health",
+      "chars": 133
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age5-single-0/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age6-single-1/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age15-single-2/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age16-single-3/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age19-single-4/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age20-single-5/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age25-single-6/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age26-single-7/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age35-single-8/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age36-single-9/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age45-single-10/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age46-single-11/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age55-single-12/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age56-single-13/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age65-single-14/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age66-single-15/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age80-single-16/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age40-dating-7/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age40-married-7/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age40-single-unknown/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "arc",
+      "where": "age40-married-8/career",
+      "detail": "핵심·근거·전개·행동의 네 단락이 분리되지 않음"
+    },
+    {
+      "severity": "warning",
+      "code": "generic-action",
+      "where": "career",
+      "detail": "다른 사주와 생애주기에서도 행동 문장이 거의 같음"
+    },
+    {
+      "severity": "warning",
+      "code": "cosmetic-variation",
+      "where": "monthly",
+      "detail": "월 번호에 따라 마무리 조언을 순환 선택함"
+    }
+  ],
+  "metrics": {
+    "longSentences": {
+      "all": 2214,
+      "structured": 0
+    },
+    "repeatedSentences": {
+      "reports": 280,
+      "sentenceOccurrences": 44555,
+      "excessOccurrences": 2316,
+      "examples": [
+        {
+          "cat": "life",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "매일 정해진 분량을 지키는 공부 습관을 만들기 좋아요.",
+              3
+            ],
+            [
+              "갖고 싶은 것과 꼭 필요한 것 사이에서 고민할 수 있어요.",
+              3
+            ]
+          ]
+        },
+        {
+          "cat": "newyear",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "해야 할 숙제와 약속이 겹치면 부담이 커질 수 있어요.",
+              7
+            ],
+            [
+              "시간과 용돈의 한도를 정하면 마음이 편해져요.",
+              4
+            ]
+          ]
+        },
+        {
+          "cat": "gunghap",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "두 사람 모두 속도를 줄이고 기반을 다지기 좋은 해예요.",
+              4
+            ]
+          ]
+        },
+        {
+          "cat": "name",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "본인에게 가장 힘이 되는 화 기운을 보태는 소리(ㄴ· ㄷ· ㄹ· ㅌ)로 시작해요.",
+              3
+            ]
+          ]
+        },
+        {
+          "cat": "ziwei",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "별이 없는 방이라 마주 보는 방의 별을 함께 읽어요.",
+              4
+            ]
+          ]
+        },
+        {
+          "cat": "monthly",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "조심할 일은 큰 변화를 부르는 성급한 결정이에요.",
+              3
+            ],
+            [
+              "가장 좋은 달은 2027년 1월, 2027년 3월이고, 가장 조심할 달은 2027년 2월이에요.",
+              3
+            ]
+          ]
+        },
+        {
+          "cat": "topic-love",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "편안하고 다정한 분위기가 매력으로 드러나는 때예요.",
+              3
+            ],
+            [
+              "안정적이고 믿음직한 인연이 가까워지는 때예요.",
+              5
+            ]
+          ]
+        },
+        {
+          "cat": "topic-money",
+          "fixture": "age5-single-0",
+          "sentences": [
+            [
+              "재능과 노력이 수입으로 이어지기 좋은 때예요.",
+              3
+            ],
+            [
+              "새로운 방식으로 돈을 버는 아이디어가 많아지는 때예요.",
+              3
+            ]
+          ]
+        }
+      ]
+    },
+    "careerActionVariants": {
+      "outputs": 16,
+      "unique": 1
+    },
+    "monthlyEndings": [
+      {
+        "text": "작게 시작해 확인된 부분부터 넓혀 가세요.",
+        "count": 42
+      },
+      {
+        "text": "준비한 일을 제안하고, 상대의 반응으로 다음 폭을 정하세요.",
+        "count": 36
+      },
+      {
+        "text": "미뤄 둔 대화를 꺼내되 약속할 범위는 지켜 주세요.",
+        "count": 35
+      },
+      {
+        "text": "새 선택은 되돌릴 수 있는 규모로 먼저 해보세요.",
+        "count": 30
+      },
+      {
+        "text": "결정이 급해질수록 확인할 여유를 남기세요.",
+        "count": 25
+      },
+      {
+        "text": "한 번에 답을 내기보다 한 번 시도하고 반응을 살펴보세요.",
+        "count": 23
+      }
+    ],
+    "storyDomains": [
+      "core",
+      "career",
+      "money",
+      "love",
+      "health",
+      "study",
+      "child",
+      "children",
+      "reunion",
+      "marriage"
+    ],
+    "generated": 485,
+    "errors": 0,
+    "warnings": 23
+  },
+  "sourceInventory": [
+    {
+      "file": "index.html",
+      "functions": [
+        "_loadValidPaidTokens",
+        "_savePaidToken",
+        "restorePaidUnlocksForCurrentSaju",
+        "refreshPaidUnlocked",
+        "loadSajuPaidHistory",
+        "saveSajuPaidHistory",
+        "renderSajuPaidHistoryHome",
+        "openSajuPaidHistory",
+        "setReadingLanguage",
+        "chatReadingToken",
+        "chatReadingOrder",
+        "selectTodayReading",
+        "journeyReadingModel",
+        "freePaidRecommendationsHTML",
+        "ensurePaidPanel",
+        "startTarotReading",
+        "buildAIReadingInput",
+        "generateTemplateReading",
+        "generateAIReading",
+        "saveTarotReadingFromFlow",
+        "calcDailyFortune",
+        "renderDailyFortune",
+        "normalizeReadingText",
+        "pdfPaidToken",
+        "journeyReadingParagraphs",
+        "buildStoryExperienceHTML",
+        "renderDaypickFortune",
+        "renderDaypickFortuneLegacy",
+        "renderMonthlyFortune",
+        "renderMonthlyFortuneLegacy",
+        "renderNewyearFortuneLegacy",
+        "renderNewyearFortune",
+        "getStageLocReading",
+        "getGongmangReading",
+        "renderPaidLock",
+        "_adminUnlockPaidCategory",
+        "getTenGodLocReading",
+        "lv4FieldDecision",
+        "lv4MonthNarrative",
+        "lv4StoryLines",
+        "lv4StoryHTML",
+        "relationshipReadingHTML",
+        "buildLifeReadingV4",
+        "buildZiweiReadingV4",
+        "buildTopicReadingV4",
+        "buildMonthlyReadingV4",
+        "buildDaypickReadingV4",
+        "buildNameReadingV4",
+        "ghMetricReading",
+        "buildGunghapReadingV4",
+        "buildNewyearReadingV4",
+        "renderSajuPaidV2",
+        "renderSajuPaid",
+        "isExtraPaidCat",
+        "renderExtraPaid",
+        "renderTopicPaid",
+        "renderTopicPaidLegacy",
+        "renderZiweiPaid",
+        "renderZiweiPaidLegacy",
+        "renderSajuPaidLegacy",
+        "_plainReadingText",
+        "_shortReadingSentence",
+        "_premiumReadingSymbol",
+        "_premiumReadingSigil",
+        "premiumizeReadingHtml",
+        "_calmReadingHtml",
+        "_buildReadingBrief",
+        "cleanReadingTextFromElement",
+        "buildHiddenLifeReadingTextForQna",
+        "extractDetailedReadingText",
+        "aiReadingDomId",
+        "aiReadingCacheKey",
+        "aiReadingCacheGet",
+        "aiReadingCacheSet",
+        "aiReadingCanReplace",
+        "aiReadingFallbackSelector",
+        "setAIReadingFallbackVisible",
+        "aiReadingTextToHtml",
+        "renderAIReadingCard",
+        "buildAIReadingPayload",
+        "hydrateAIReading",
+        "hydrateDeepReading",
+        "loadPaidTokens",
+        "savePaidToken",
+        "latestPaidToken",
+        "hydrateAIReadings",
+        "renderFortune",
+        "suri81Reading",
+        "renderNamePaid",
+        "renderNamePaidLegacy",
+        "renderGunghapPaid",
+        "calc12MonthFortune"
+      ]
+    },
+    {
+      "file": "assets/astrology.js",
+      "functions": [
+        "astroPaidContextFormHTML",
+        "resumePaidAstrologyAfterPayment",
+        "finishAstrologyReading",
+        "buildAstrologyStoryConfig",
+        "astrologyReadingCTA",
+        "saveAstrologyReading",
+        "astroPracticalReading",
+        "generateTemplateAstrologySummary",
+        "astroPreviewTemplate",
+        "generateTemplateAstrologyReading",
+        "generateAstrologyReading"
+      ]
+    },
+    {
+      "file": "assets/report-pdf.js",
+      "functions": [
+        "rpReadingHTML",
+        "rpReadingSections",
+        "rpSourceStory",
+        "buildTemplateReport",
+        "askTemplateReportInfo"
+      ]
+    }
+  ]
+}

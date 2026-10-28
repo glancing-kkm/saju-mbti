@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v5-time-reference',RP_SAFE=26;
+const RP_VERSION='v6-evidence',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -215,7 +215,7 @@ function rpReadingSections(html){
       if(!t||t.length<2)return;
       if(/^(h3|h4)$/i.test(el.tagName)){if(t.length<=40)blocks.push({h:t});return;}
       if(t.length<12)return;
-      blocks.push({p:t});
+      blocks.push({p:t,step:el.dataset.readingStep||'',domain:el.closest('.reading-narrative')?.dataset.readingDomain||''});
     });
     if(title&&blocks.some(b=>b.p))out.push({title,blocks});
   });
@@ -304,9 +304,11 @@ function rpSihua(d){
 
 // ── 문장 묶음 (AI가 못 채운 칸의 대안) ──
 function rpPool(d){
-  const pool=[];d.sections.forEach(s=>s.blocks.forEach(b=>{if(b.p&&b.p.length>=30&&!/ — /.test(b.p.slice(0,24)))pool.push({t:b.p,sec:s.title,used:false});}));
-  return pool;
+ const pool=[];
+ d.sections.forEach(s=>{let sub='';s.blocks.forEach(b=>{if(b.h)sub=b.h;if(b.p&&b.p.length>=30&&!/ — /.test(b.p.slice(0,24)))pool.push({t:b.p,parent:s.title,sec:s.title+(sub?' / '+sub:''),step:b.step||'',domain:b.domain||'',used:false});});});
+ return pool;
 }
+
 function rpGrams(s){const t=String(s).replace(/[^가-힣]/g,'');const g=new Set();for(let i=0;i<t.length-1;i++)g.add(t.slice(i,i+2));return g;}
 function rpPick(pool,query,n){
   const q=rpGrams(query);const score=x=>{let c=0;rpGrams(x.sec+' '+x.t.slice(0,80)).forEach(g=>{if(q.has(g))c++;});return c-(x.used?100:0);};
@@ -345,7 +347,7 @@ function rpPlan(spec,d){
     if(v==='zwSihua')['화록','화권','화과','화기'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l}이 붙은 별과 궁에 대한 해석 메모`,34]));
     if(v==='zwIndex')ZW_ORDER.forEach((n,r)=>f.push([`p${pg.pi}z${r}`,`${ZW_SHOW(n)}의 풀이 핵심`,22]));
     if(v==='quarters')for(let q=1;q<=4;q++)f.push([`q${q}a`,`${q}분기 핵심 주제(명사구)`,16],[`q${q}b`,`${q}분기의 변화와 준비할 일`,140]);
-    if(/^months:/.test(v)){const st=Number(v.split(':')[1]);for(let m=st;m<st+3;m++)f.push([`m${m}a`,`${m}월의 핵심 주제(명사구)`,16],[`m${m}b`,`${m}월 전체 흐름과 일·돈·관계의 변화`,110],[`m${m}c`,`${m}월에 먼저 실행할 일과 조절할 부분`,90]);}
+    if(/^months:/.test(v)){const st=Number(v.split(':')[1]);for(let m=st;m<st+3;m++)f.push([`m${m}a`,`${m}월의 핵심 주제(명사구)`,16],[`m${m}b`,`${m}월 전체 흐름과 일·돈·관계의 변화`,160],[`m${m}c`,`${m}월에 먼저 실행할 일과 조절할 부분`,120]);}
     add(pg.pi,{page:pg,heads:pg.h.map((h,k)=>({id:`p${pg.pi}h${k}`,chapter:pg.t,title:h,hint:rpHint(pg,d)})),fields:f});
   });
   add('tail',{fields:[['sq','풀이를 생활에 연결하는 마무리 한 문장',46],['si1','계속 살릴 강점 — 실천할 내용과 이유',120],['si2','새롭게 조정할 부분 — 실천할 내용과 이유',120],['si3','지금 시작할 행동 — 실천할 내용과 이유',120],['send','앞으로의 나에게 — 보고서를 마무리하는 글(4~5문장)',360]]});
@@ -385,7 +387,8 @@ async function rpAI(spec,d,plan,onProgress,opts){
       const c=aiReadingCacheGet('report-tpl',key,'ko');const parsed=c&&rpParse(c.text);if(parsed)return parsed;
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
       payload.sajuContext.detailedReading=readingText;
-      payload.meta.narrativeStyle='생활 장면 → 짧은 사주 근거 → 본인이 선택할 행동. 장마다 다른 장면과 문장 호흡을 쓰고 날짜나 사건은 새로 만들지 않기.';
+      payload.sajuContext.readingEvidence=readingEvidencePayload(d.saju,d.meta,d.cat,d.nyYear||d.y0);
+      payload.meta.narrativeStyle='핵심 결론 → 본인 사주의 계산 근거 → 현재 운에서 장점과 부담이 나타날 장면 → 확인할 조건과 행동. 서로 다른 장의 이유와 결론을 섞지 말고 날짜나 사건은 새로 만들지 않기.';
       if(told)payload.sajuContext.situation=told.slice(0,300);
       Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
@@ -422,7 +425,8 @@ function rpParse(text){
   return out.sections.length||Object.keys(out.fields).length?out:null;
 }
 function rpScore(o){return o?(o.sections||[]).length*4+Object.keys(o.fields||{}).length:0;}
-function rpEnough(o,g){if(!o)return false;const ids=new Set((o.sections||[]).filter(x=>x&&Array.isArray(x.paragraphs)&&x.paragraphs.length>=2).map(x=>x.id));const f=o.fields||{};return g.heads.every(h=>ids.has(h.id))&&g.fields.filter(([id])=>!f[id]).length<=Math.floor(g.fields.length/4);}
+function rpSectionQuality(ps){return Array.isArray(ps)&&ps.length>=2&&ps.every(x=>typeof x==='string'&&x.trim().length>=25)&&ps.join(' ').length>=160&&new Set(ps.map(x=>x.trim())).size===ps.length;}
+function rpEnough(o,g){if(!o)return false;const ids=new Set((o.sections||[]).filter(x=>x&&rpSectionQuality(x.paragraphs)).map(x=>x.id));const f=o.fields||{};return g.heads.every(h=>ids.has(h.id))&&g.fields.filter(([id])=>!f[id]).length<=Math.floor(g.fields.length/4);}
 
 // AI가 못 채운 짧은 칸 — 계산된 성향·강점·시기로 채운다
 function rpDetFields(d){
@@ -433,10 +437,26 @@ function rpDetFields(d){
   if(st.strengths&&st.strengths[0])o.gk2=st.strengths[0].replace(/\s*\(.*\)$/,'');
   const bm=t.bestMonths&&t.bestMonths[0];if(bm)o.gk3=`${bm.year}년 ${bm.month}월에 움직이기`;
   if(fp.hook)o.intro=first(fp.hook);
+  const topic=/^topic-/.test(d.cat)?d.cat.slice(6):'core';
+  const story=buildReadingNarrative(d.saju,d.meta,topic,{year:d.nyYear||d.y0});
+  const fit=(text,max)=>{const ps=String(text).match(/[^.!?]+[.!?]+/g)||[String(text)];let out='';for(const p of ps){if(out.length+p.length>max)break;out+=p;}return out.trim();};
+  [story.paragraphs[0],story.paragraphs[2],story.paragraphs[3]].forEach((p,i)=>o[`gi${i+1}`]=fit(p,150));
+  if(['gunghap','name','ziwei'].includes(d.cat))rpPool(d).slice(0,3).forEach((p,i)=>o[`gi${i+1}`]=fit(p.t,150));
+  if(d.cat==='gunghap'&&d.gh){
+    o.intro=`두 사람의 종합 궁합은 ${d.gh.score}점, ${d.gh.grade}이에요.`;
+    o.gq='끌리는 이유와 부딪히는 생활 기준을 함께 읽어요.';
+    o.gk1='두 사람의 차이';o.gk2='서로 돕는 방식';o.gk3='지킬 약속 정하기';
+  }
   if(st.cautions&&st.cautions[0])o.si2=`${st.cautions[0]} — 이 부분은 속도를 한 박자 늦추면 좋아요.`;
   if(st.strengths&&st.strengths[0])o.si1=`${st.strengths[0]} — 본인이 가장 자연스럽게 힘을 내는 방식이라 계속 살려 주세요.`;
   if(bm)o.si3=`${bm.year}년 ${bm.month}월을 첫 실행의 달로 정하고, 그 전에 준비할 일 한 가지를 오늘 적어 두세요.`;
   if(d.ny&&typeof lv4MonthNarrative==='function'){
+    o.intro=`${d.nyYear}년, 기회의 달과 조절할 달을 함께 읽어요.`;
+    for(let q=1;q<=4;q++){
+      const rows=d.ny.months.slice((q-1)*3,q*3),sorted=[...rows].sort((a,b)=>b.score-a.score),best=sorted[0],low=sorted[sorted.length-1],avg=Math.round(rows.reduce((n,x)=>n+x.score,0)/rows.length);
+      o[`q${q}a`]=avg>=80?'준비한 것을 시험할 분기':avg<65?'범위와 부담을 줄일 분기':'결과를 보며 조정할 분기';
+      o[`q${q}b`]=`${best.month}월(${best.score}점)을 준비한 일의 실행 후보로 보세요. ${low.month}월(${low.score}점)에는 약속과 지출의 부담을 다시 확인하세요. ${LIFE_V2_MONTH_ACTION[low.tg]||''}`;
+    }
     const titles={'비견':'본인 속도를 찾는 달','겁재':'비교보다 기준이 필요한 달','식신':'준비한 것을 보여 주는 달','상관':'다른 방법을 제안하는 달','편재':'제안의 실속을 따져 보는 달','정재':'반복 지출을 정돈하는 달','편관':'책임의 범위를 정하는 달','정관':'해 온 일을 증명하는 달','편인':'막힌 문제를 다시 보는 달','정인':'배움을 생활에 쓰는 달'};
     d.ny.months.forEach(x=>{
       const ps=lv4MonthNarrative(x,d.saju,d.meta,d.ny.targetAge).match(/[^.!?]+[.!?]+/g)||[];
@@ -449,23 +469,38 @@ function rpDetFields(d){
 }
 // 모델 응답이 비어 있어도 웹과 같은 장면 → 근거 → 행동 순서를 유지한다.
 function rpSourceStory(pool,query,d){
-  const domain=/건강|회복|에너지/.test(query)?'health':/재물|지출|수입|돈/.test(query)?'money':/연애|가족|결혼|사랑|관계/.test(query)?'love':/직업|직무|경력|성과/.test(query)?'career':/학습|공부|학업|재능/.test(query)?'study':'core';
-  const fallback=lv4StoryLines(d.saju,d.meta,domain);
-  const take=(pattern,index)=>rpPick(pool.filter(x=>!x.used&&pattern.test(x.t)),query,1)[0]||fallback[index];
-  const scenes=pool.filter(x=>!x.used&&/시간|마음|부탁|약속|대화|지출|고민|업무|결정|회복|잠|연락/.test(x.t)&&!/(사주|일간|오행|대운|세운)/.test(x.t));
-  const scene=rpPick(scenes,query,1)[0]||fallback[0];
-  const reason=take(/사주|일간|일지|오행|대운|세운|기운|배우자 자리/,1);
-  const action=take(/보세요|하세요|정하세요|챙기세요|확인하세요|나누세요|지키세요/,2);
-  return [scene,reason,action];
+ const domain=/건강|회복|에너지/.test(query)?'health':/재물|지출|수입|돈/.test(query)?'money':/연애|가족|결혼|사랑|관계/.test(query)?'love':/직업|직무|경력|성과/.test(query)?'career':/학습|공부|학업|재능/.test(query)?'study':'core';
+ const specific=['gunghap','name','ziwei'].includes(d.cat);
+ const fresh=pool.filter(x=>!x.used),unused=fresh.length?fresh:specific?pool:[],matching=unused.filter(x=>x.domain===domain);
+ const first=rpPick(matching.length?matching:unused,query,1)[0];
+ const selected=first?unused.find(x=>x.t===first):null,local=selected?unused.filter(x=>x.sec===selected.sec):[];
+ const steps=['conclusion','evidence','development','action'],arc=steps.map(step=>local.find(x=>x.step===step));
+ if(arc.every(Boolean)){arc.forEach(x=>x.used=true);return arc.map(x=>x.t);}
+ // 같은 장의 문맥을 유지하고, 다른 장의 이유와 행동을 임의로 이어 붙이지 않는다.
+ if(local.length>=3){const rows=local.slice(0,4);rows.forEach(x=>x.used=true);return rows.map(x=>x.t);}
+ // 궁합·이름·자미두수를 개인 사주의 일반 성향으로 대체하지 않는다.
+ if(specific&&selected){const rows=pool.filter(x=>x.parent===selected.parent).slice(0,4);rows.forEach(x=>x.used=true);return rows.map(x=>x.t);}
+ return buildReadingNarrative(d.saju,d.meta,domain,{year:d.nyYear||d.y0}).paragraphs;
 }
+
 // 비어 있는 칸은 화면 풀이 문장으로 채운다
 function rpFill(plan,ai,d){
-  const pool=rpPool(d),sents=rpSents(pool),secs={...ai.secs},fields={};
+  const pool=rpPool(d),secs={...ai.secs},fields={};
   Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
   const det=rpDetFields(d);
   plan.groups.forEach(g=>{
-    g.heads.forEach(h=>{if(!secs[h.id]||secs[h.id].length<2){secs[h.id]=rpSourceStory(pool,`${h.chapter} ${h.title}`,d);}});
-    g.fields.forEach(([id,ask,max])=>{if(!fields[id]){const pre=det[id];const all=sents.filter(x=>x.t.length<=max&&!x.used);fields[id]=pre&&pre.length<=max*1.5?pre:rpShort(pool,ask,max,all);}else if(fields[id].length>max*1.6){fields[id]=fields[id].slice(0,Math.round(max*1.5)).replace(/\s\S*$/,'');}});
+    g.heads.forEach(h=>{if(!rpSectionQuality(secs[h.id])){secs[h.id]=rpSourceStory(pool,`${h.chapter} ${h.title}`,d);}});
+    g.fields.forEach(([id,ask,max])=>{
+      if(!fields[id]){
+        const match=id.match(/^p(\d+)/),pg=match&&plan.pages[Number(match[1])];
+        const local=pg?pg.h.flatMap((h,i)=>(secs[`p${pg.pi}h${i}`]||[]).map(t=>({t,sec:pg.t+' '+h,used:false}))):pool;
+        let pre=det[id];
+        if(pg&&/sub$/.test(id))pre=`${pg.t}에서 무엇을 살펴볼까요?`;
+        if(pg&&/kw[12]$/.test(id)){const words=pg.t.split(/[\s·]+/).filter(w=>w.length>=2);pre=words[Number(id.slice(-1))-1]||words[0];}
+        const candidates=rpSents(local).filter(x=>x.t.length<=max&&!x.used);
+        fields[id]=pre&&pre.length<=max*1.5?pre:rpShort(local.length?local:pool,ask,max,candidates);
+      }else if(fields[id].length>max*1.6){fields[id]=fields[id].slice(0,Math.round(max*1.5)).replace(/\s\S*$/,'');}
+    });
   });
   return {secs,fields};
 }

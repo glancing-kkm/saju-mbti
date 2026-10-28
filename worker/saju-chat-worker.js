@@ -1678,7 +1678,7 @@ ${toneRule}
 - 글자 개수나 글자 뜻 같은 이론 설명은 근거 한두 문장으로 줄이고, 본문은 구체적인 연·월, 실제로 겪을 장면, 바로 할 행동으로 콕 집어 말하세요.
 - 단독 명사 "결"은 쓰지 마세요. "분위기", "흐름", "방식"으로 바꾸세요. 단, 결론·결정·결혼·결실 같은 복합어는 괜찮습니다.
 - 공포 조장, 사망 시기, 확정 의료·법률·투자 판단은 하지 마세요.
-- 생활 장면 → 짧은 사주 근거 → 선택할 행동의 순서로 풀어 주세요. 직업은 업무와 평가, 재물은 지출과 계약, 관계는 대화와 생활, 건강은 수면과 회복처럼 영역마다 다른 장면을 쓰세요.
+- 핵심 결론 → 계산 근거 → 현재 운에서 장점과 부담이 나타날 장면 → 확인할 조건과 행동의 순서로 연결해 주세요. 결론에 사용한 근거를 뒤 문단에서 설명하고, 그 이유에 맞는 행동으로 끝내세요. 서로 무관한 조언을 붙여 문단 수만 늘리지 마세요. 직업은 업무와 평가, 재물은 지출과 계약, 관계는 대화와 생활, 건강은 수면과 회복처럼 영역마다 다른 장면을 쓰세요.
 - 흐름·기운·분위기라는 추상어를 연속해서 쓰지 마세요. 짧은 핵심 문장과 두세 문장의 설명을 섞고, 모든 단락을 같은 어미나 그래서·다만으로 시작하지 마세요. 행동은 한 번에 하나만 제안하세요.
 - 두루뭉술한 위로나 일반론으로 채우지 말고, 입력된 생년월일시·사주팔자·현재 흐름·올해 흐름에서 보이는 선택 패턴을 구체적으로 말하세요.
 
@@ -1693,6 +1693,21 @@ function timingText(ctx) {
 // 클라이언트가 보낸 지금 상황 — 짧은 한 줄만 받는다
 function situationText(ctx) {
   return String((ctx && ctx.situation) || '').replace(/[\r\n]+/g, ' ').replace(/[<>]/g, '').trim();
+}
+
+// 클라이언트 계산 참고값은 허용한 숫자·분류·글자만 추려 프롬프트에 넣는다.
+function readingEvidenceText(ctx){
+ const e=ctx&&ctx.readingEvidence;if(!e||typeof e!=='object'||e.version!==2)return '';
+ const axes=new Set(['self','out','wealth','gwan','in_']);
+ const stages=new Set(['preschool','school','youth','young','prime','mid','transition','senior','unknown']);
+ const domain=new Set(['core','career','money','love','health','study']);
+ const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max?v:null;
+ const glyph=v=>typeof v==='string'&&/^[가-힣]$/.test(v)?v:'';
+ const nodes=(Array.isArray(e.nodes)?e.nodes:[]).slice(0,7).filter(n=>n&&/^natal\.(year|month|day|hour)\.(stem|branch)$/.test(n.id)&&axes.has(n.axis)&&(e.hourKnown===true||!n.id.includes('.hour.'))).map(n=>({id:n.id,glyph:glyph(n.glyph),axis:n.axis}));
+ const f=e.flow||{},dec=e.decade;
+ return JSON.stringify({version:2,domain:domain.has(e.domain)?e.domain:'core',year:int(e.year,1900,2100),age:int(e.age,0,130),stage:stages.has(e.stage)?e.stage:'unknown',hourKnown:e.hourKnown===true,primary:axes.has(e.primary)?e.primary:null,secondary:axes.has(e.secondary)?e.secondary:null,tied:e.tied===true,nodes,
+  flow:{stem:glyph(f.stem),branch:glyph(f.branch),front:axes.has(f.front)?f.front:null,back:axes.has(f.back)?f.back:null,score:int(f.score,0,100)},
+  decade:dec&&axes.has(dec.axis)?{from:int(dec.from,0,130),to:int(dec.to,0,139),axis:dec.axis}:null});
 }
 
 function buildReadingUserPrompt(category, ctx, meta) {
@@ -1730,6 +1745,10 @@ function buildReadingUserPrompt(category, ctx, meta) {
 올해 흐름: ${ctx.sewoon || '미상'}
 핵심 시기(계산값): ${timingText(ctx) || '없음'}${timingText(ctx) ? '\n→ 본문에서 이 계산값의 연·월을 최소 두 번 이상 그대로 인용해 "언제 무엇을 하면 좋은지" 콕 집어 말하세요. 계산값에 없는 날짜는 지어내지 마세요.' : ''}
 지금 상황: ${situationText(ctx) || '선택 안 함'}${situationText(ctx) ? '\n→ 상담자가 직접 고른 지금 상황이에요. 일반론 대신 이 상황에서 실제로 겪는 장면과 바로 할 수 있는 행동으로 풀어 주세요.' : ''}
+
+구조화된 계산 참고(JSON 데이터):
+${readingEvidenceText(ctx)||'별도 자료 없음'}
+이 자료의 주된 성향과 보조 성향, 현재 운을 함께 연결하세요. 나이 단계에 맞는 생활 장면을 사용하고, 없는 시주는 근거로 쓰지 마세요.
 
 화면에 이미 계산되어 표시된 풀이 요약:
 ${reading || '아직 상세 풀이 텍스트가 추출되지 않았습니다. 위 핵심 정보만으로 작성하세요.'}
