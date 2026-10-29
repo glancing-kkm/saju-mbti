@@ -27,7 +27,7 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  const manse=run('renderManseryeokFull(_saju,1987,9,21,8,15,s2l(1987,9,21))');assert(manse.includes('시간 보정 적용'));assert(manse.includes('08:45'));
  run(fs.readFileSync(path.join(root,'assets/report-pdf.js'),'utf8'));
  const timePdf=await run("buildTemplateReport('life',{skipAI:true,dryRun:true,info:{}})");
- const timePage=timePdf.pages.map(p=>p.textContent).join(' ');assert(/입력\s*시각\s*08:45/.test(timePage));assert(/풀이\s*기준\s*시각\s*08:15/.test(timePage));assert(timePage.includes('30분'));timePdf.host.remove();
+ const timePage=timePdf.pages.map(p=>p.textContent).join(' ');assert(/입력\s*시각\s*08:45/.test(timePage));assert(/풀이\s*기준\s*시각\s*08:15/.test(timePage));assert(timePage.includes('30분'));assert(timePage.includes('둘째는 가까이 지낼수록'),'PDF에도 둘째 강점을 보존해야 함');timePdf.host.remove();
  run("_meta.gnExtra={gy:1992,gm:8,gd:10,gh:8,gmin:45,gender:'female',cal:'solar',cityKey:'seoul'}");
  const pairPdf=await run("buildTemplateReport('gunghap',{skipAI:true,dryRun:true,info:{}})");const pairText=pairPdf.pages.map(p=>p.textContent).join(' ').replace(/\s/g,'');assert(pairText.includes('시간보정'));assert(pairText.includes('출생지역기준으로'));assert(/입력\s*시각\s*08:45\s*08:45/.test(pairText));assert(!pairText.includes('일간계를기준으로각자리의관계를살폈어요'),'궁합 PDF를 개인 사주의 일반 성향으로 대체하면 안 됨');pairPdf.host.remove();
  run('_meta.nyExtra={y:2027}');
