@@ -13647,7 +13647,21 @@ function lcProfileCard(kind,title,img,rows,portrait,role){
 // 상세 8대 영역 풀이 안내 (인생총운)
 const LC_AREA_GRID=[['연애·배우자운','love-people',['인연이 들어오는 정확한 시기','운명의 상대 출생년도·초성','오래 가는 관계의 비결']],['재물운','work-money',['돈이 크게 들어오는 때','돈이 새는 길과 막는 법','나에게 맞는 돈 관리']],['성취운','talent',['타고난 재능과 직무','이직·승진이 열리는 달','일이 잘 풀리는 일터']],['관계운','love-people',['귀인의 띠와 등장 시기','악연의 특징과 조심할 때','사람에게 믿음을 얻는 법']],['건강운','health',['먼저 지치는 몸의 부위','몸을 아껴야 할 달','체질에 맞는 운동·음식']],['대운과 올해','now',['지금 10년의 의미','올해 가장 결정적인 달','달마다의 흐름']],['인생 전환점','future',['인생이 크게 바뀌는 나이','황금기가 열리는 해','결혼이 무르익는 때']],['개운법','practice',['행운의 색·숫자·물건','이사·여행 가면 좋은 곳','평생 조심할 일']]];
 function lcAreaGrid(){return `<section class="lc-areas"><h3 class="lc-card-title">${ppWho()}을 위한 상세 8대 영역 풀이</h3><div class="lc-area-grid">${LC_AREA_GRID.map(([t,id,items])=>`<a class="lc-area-card" href="#lv4-${id}" onclick="return lv4Jump('${id}')"><b>${t}</b><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></a>`).join('')}</div></section>`;}
-function lcScene(saju,text,right){return `<figure class="lc-scene${right?' right':''}"><img class="character-portrait" src="${LC_NARRATOR}" alt="천기" style="object-position:50% ${right?40:22}%" width="300" height="400" loading="lazy"><figcaption class="lc-bubble">${text}</figcaption></figure>`;}
+// 도령의 말풍선에만 적용한다. 풀이 본문의 친근한 존댓말은 그대로 둔다.
+function lcNarratorText(text){
+  const endings=[
+    ['살펴봐요','살펴봅시다'],['짚어봐요','짚어봅시다'],
+    ['살펴볼게요','살펴보겠소'],['이어볼게요','이어보겠소'],
+    ['짚어볼게요','짚어보겠소'],['나란히 볼게요','함께 보겠소'],
+    ['활용해 봐요','써봅시다'],['같이 골라요','골라봅시다'],
+    ['확인해요','확인합시다'],['정해봐요','정해봅시다'],
+    ['찾아봐요','찾아봅시다'],['찾아볼까요?','찾아봅시다.'],
+    ['편할까요?','편하겠소?'],['해 볼까요?','나눠봅시다.'],
+    ['힘이 커요','힘이 크오']
+  ];
+  return endings.reduce((s,[from,to])=>s.split(from).join(to),String(text||''));
+}
+function lcScene(saju,text,right){return `<figure class="lc-scene${right?' right':''}"><img class="character-portrait" src="${LC_NARRATOR}" alt="천기" style="object-position:50% ${right?40:22}%" width="300" height="400" loading="lazy"><figcaption class="lc-bubble">${lcNarratorText(text)}</figcaption></figure>`;}
 // 연간 영역 점수와 원국의 특징을 혼동하지 않는다. 멘트는 실제 원국 근거로 고른다.
 function lcChartCue(saju){
   const p=buildPersonaProfile(saju),names=(p.sins||[]).map(s=>String(s.n||'').split(' ')[0]);

@@ -40,9 +40,13 @@ try{
    const captions=[...b.querySelectorAll('.lc-bubble,.lc-scroll-title,.lc-chapter h2')];
    assert(captions.length,cat+'의 안내 문구 누락');
    assert(captions.every(e=>!old.test(e.textContent)),cat+'에 기존 멘트가 남음');bubbles+=captions.length;
+   assert([...b.querySelectorAll('.lc-bubble')].every(e=>!/[가-힣]요[.!?]/.test(e.textContent)),cat+'의 말풍선에 친근체 어미가 남음');
   }
  }
  console.log(`✓ 안내 멘트: ${Object.keys(routes).length}개 카테고리 전체/미리보기, ${bubbles}개 말풍선·제목 확인`);
  console.log(`✓ 원국별 멘트: 120개 명식 중 도화 ${dohwa}개·비도화 ${other}개, 실제 근거 ${cues.size}종 확인`);
  console.log('✓ 강점 목록: 첫째·둘째·셋째 연속 표시, 둘째만 근거 상자로 이동하는 오류 재현·수정');
+ assert.equal(rt.run("lcNarratorText('함께 짚어봐요.')"),'함께 짚어봅시다.');
+ assert(life.querySelector('[data-strength-order]').textContent.endsWith('이에요.'));
+ console.log('✓ 말투 구분: 도령의 말풍선만 ~봅시다·~보겠소, 설명 본문은 친근 존댓말 유지');
 }finally{rt.close();}
