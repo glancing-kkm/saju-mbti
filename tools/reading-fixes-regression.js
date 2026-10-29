@@ -38,7 +38,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='dating'");assert.match(run("ppPartnerHTML(buildPinpoint(_saju,_meta),{})"),/현재 연인과 배우자로 발전/);
    run("_meta.marital='single'");
  });
- check('공감 훅: 이런 적 있죠 장면 4개, 지난 일은 과거 연도와 다시 오는 해, 미래는 별점, 솔직한 약점+행동',()=>{
+ check('성향·회고 카드: 성향 4개, 과거 연도와 계산 근거, 미래 별점, 약점과 행동',()=>{
    run("_meta.marital='single'");const b=d.createElement('div');b.innerHTML=run("buildLifeReadingV4(_saju,_meta)");
    assert.equal(b.querySelectorAll('#lv4-lc-hook p').length,4);
    const past=[...b.querySelectorAll('#lv4-lc-past p:not(.lc-foot)')];assert(past.length>=1&&past.length<=3);
@@ -48,11 +48,17 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='married'");const w=d.createElement('div');w.innerHTML=run("buildLifeReadingV4(_saju,_meta)");assert(!/연인|이별/.test(w.querySelector('#lv4-lc-past')?.textContent||''));
    run("_meta.marital='single'");
  });
- check('지나온 해: 실제 확인된 표본(1987.9.21 남 기혼) — 2017 진로 전환·2018 새 직장·2024 결혼, 원국에 있는 글자의 충(2023)은 약하게',()=>{
+ check('지난 흐름: 특정인의 사건을 정답으로 고정하지 않고 실제 원국 관계만 제시',()=>{
    const saved=run('JSON.stringify(_meta)');
-   run("_meta={sy:1987,sm:9,sd:21,hour:8,min:45,cityKey:'daejeon',tsoMin:-30.462,gender:'male',marital:'married'};gender='male';window.__s=calcSaju(1987,9,21,8,15);");
-   const past=JSON.parse(run("JSON.stringify(hookPast(window.__s,buildLifeV2Model(window.__s,_meta)).map(x=>[x.year,x.kind]))"));
-   assert.deepEqual(past,[[2017,'move'],[2018,'job'],[2024,'wed']],JSON.stringify(past));
+   run("_meta={sy:1987,sm:9,sd:21,hour:8,min:15,cityKey:'daejeon',gender:'male',marital:'married'};gender='male';window.__s=calcSaju(1987,9,21,8,15);");
+   const past=JSON.parse(run("JSON.stringify(hookPast(window.__s,buildLifeV2Model(window.__s,_meta)))"));
+   assert(past.length<=3);
+   for(const item of past){
+     assert.equal(item.source,'calculated-pattern');assert.equal(item.confirmedEvent,false);assert(item.grounds.length);
+     assert(!/했을 거|생겼을 거|입사|전역|결혼했/.test(item.text));
+   }
+   run("_meta.pastEvents=[{year:2018,text:'사용자만의 비공개 사건'}];_meta.userName='다른 사람';_meta.marital='single';");
+   assert.deepEqual(JSON.parse(run("JSON.stringify(hookPast(window.__s,buildLifeV2Model(window.__s,_meta)))")),past);
    run(`_meta=${saved};gender=_meta.gender||'male';`);
  });
  check('인물 카드: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼은 귀인 + 늘 악연',()=>{

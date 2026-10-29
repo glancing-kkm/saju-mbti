@@ -234,7 +234,7 @@ const submitBirth=async()=>{
     run('closePaymentConsent()');
     run("continueJourney('life')");await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/2,000원/);});
-    check('궁금한 점: 인생총운 입력에는 없음',()=>assert.equal(d.getElementById('catExtraCtx').style.display,'none'));
+    check('인생총운 상담 정보: 선택 입력으로 제공',()=>{assert.notEqual(d.getElementById('catExtraCtx').style.display,'none');assert(d.querySelector('#counselFields details'));assert.equal(d.getElementById('ctxText').style.display,'none');});
     check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
       const root=d.querySelector('#p5 .report-preview-layout');assert(root);
       const children=[...root.children];assert(children[0].classList.contains('report-profile'));assert(children[1].classList.contains('lc-orbs'));assert(children[2].classList.contains('report-opening-scene'));

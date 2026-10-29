@@ -227,3 +227,10 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #app .birth-time-reference{margin:8px 0 0;color:var(--sub);font-size:1rem;line-height:1.75;word-break:keep-all}
 #app .report-profile .birth-time-reference{font-size:14px;line-height:1.65;margin-top:8px}
 #app .pdf-cta .pdf-time-reference{margin-top:8px;color:var(--sub);font-size:14px;line-height:1.7}
+
+/* Optional context belongs to this consultation, separate from birth-chart inputs. */
+#counselFields .counsel-details{margin-top:18px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+#counselFields summary{cursor:pointer;min-height:30px;color:var(--text);line-height:1.7}
+#counselFields .counsel-details>p{margin:12px 0;color:var(--muted);font-size:.875rem;line-height:1.75;word-break:keep-all}
+#counselFields .ig{margin-top:14px;min-width:0}
+#counselFields input{width:100%;min-width:0;box-sizing:border-box}

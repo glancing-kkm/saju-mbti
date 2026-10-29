@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v6-evidence',RP_SAFE=26;
+const RP_VERSION='v7-provenance',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -379,10 +379,11 @@ async function rpAI(spec,d,plan,onProgress,opts){
   const scope=(typeof unlockScopeOf==='function'?unlockScopeOf(d.cat):'')||'';
   const readingText=d.sections.map(s=>`[${s.title}] `+s.blocks.map(b=>b.p||b.h).join(' ')).join('\n').slice(0,17000);
   const told=Object.entries(d.info||{}).filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join(' / ');
-  const facts=(told?`상담자가 직접 알려 준 상황(최우선으로 반영): ${told}\n`:'')+rpFacts(d);let done=0;
+  const facts=(told?`상담자가 직접 알려 준 상황(사용자 진술이며 사주로 추론한 사건이 아님): ${told}\n`:'')+rpFacts(d);let done=0;
   const infoKey=told?'|'+rpHash(told):'';
   const one=async(g,i)=>{
     const key=`${d.cat}|${scope}|${i}|${RP_VERSION}${infoKey}`;
+    const requestCacheKey=aiReadingCacheKey('report-tpl',key,'ko');
     try{
       const c=aiReadingCacheGet('report-tpl',key,'ko');const parsed=c&&rpParse(c.text);if(parsed)return parsed;
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
@@ -395,11 +396,12 @@ async function rpAI(spec,d,plan,onProgress,opts){
       for(let k=0;k<2&&!rpEnough(out,g);k++){
         ({resp,data}=await fetchJsonWithRetry((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2));
         if(resp&&resp.status===403)break;
-        const t=resp&&resp.ok&&data?String(data.text||'').trim():'',o=rpParse(t);
+        const t=resp&&resp.ok&&data?String(data.text||'').trim():'',o=typeof readingProvenanceQuality==='function'&&!readingProvenanceQuality(t)?null:rpParse(t);
         if(o&&(!out||rpScore(o)>rpScore(out))){out=o;text=t;}
       }
       if(opts.debug)(window.__rpRaw=window.__rpRaw||[]).push(text);
       if(opts.debug)console.log('[report-ai]',i,resp&&resp.status,data&&data.provider,(data&&data.usage&&data.usage.output_tokens),data&&data.truncated,text.length,!!out,out?((out.sections||[]).length+'s/'+Object.keys(out.fields||{}).length+'f'):String(text).slice(-200),out&&(out.sections||[]).length<g.heads.length?String(text):'');
+      if(aiReadingCacheKey('report-tpl',key,'ko')!==requestCacheKey)return null;
       if(out)aiReadingCacheSet('report-tpl',key,text,'ko',true);
       return out;
     }catch(e){return null;}

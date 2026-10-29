@@ -2179,7 +2179,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4580fdebf7a1">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=837b08c5a80d">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=d9c2bc522d5b">
 </head>
 <body>
 <div id="app">
@@ -2955,6 +2955,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
         <textarea class="ctx-text" id="ctxText" name="ctxText" rows="3" autocomplete="off"></textarea>
         <div class="ctx-ask" id="ctxQAsk"></div>
         <div class="ctx-options" id="ctxQOptions"></div>
+        <div id="counselFields"></div>
       </fieldset>
       <div class="err" id="errMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="analyze-btn">무료 풀이 확인하기</button>
@@ -4373,6 +4374,51 @@ const CTX_Q={
   'topic-children':{t:'지금 자녀에 대한 상황은 어떤가요?',d:'지금 상황에 맞는 자녀(임신)운을 짚어 드려요.',o:[['plan','자녀를 계획 중이에요'],['raising','아이를 키우고 있어요'],['grown','자녀가 다 컸어요'],['none','아직 생각이 없어요']]},
   'topic-health':{t:'요즘 가장 신경 쓰이는 건 무엇인가요?',d:'고른 부분을 중심으로 관리법을 짚어 드려요.',o:[['sleep','피로·수면'],['digest','소화·식습관'],['weight','체중·운동'],['stress','스트레스·마음']]}
 };
+// 상담 맥락은 명식과 별개다. 현재 브라우저의 해당 출생정보/카테고리에만 저장한다.
+const COUNSEL_FIELDS={
+ life:[['activity','현재 하는 일','직장·사업·학업·은퇴 등'],['focus','가장 자세히 보고 싶은 부분','일, 돈, 가족 등'],['timing','변화를 생각하는 시점','예: 내년 봄']],
+ newyear:[['activity','현재 하는 일','업종이나 활동'],['focus','올해 가장 중요한 목표','이직·주거·관계 등'],['timing','예정된 변화와 시점','예: 3월 복직']],
+ gunghap:[['duration','두 사람의 관계와 기간','예: 교제 2년'],['concern','자주 부딪히는 부분','연락·생활비·가족 등'],['timing','함께 결정할 일과 시점','결혼·이사 등']],
+ 'topic-love':[['concern','지금 관계에서 어려운 점','연락·만남의 속도 등'],['goal','바라는 관계','새 만남·현재 관계 유지 등']],
+ 'topic-marriage':[['duration','교제 또는 결혼 기간','상대가 없다면 비워 두세요'],['timing','결혼·생활 변화 계획','예: 내년 가을'],['concern','가장 고민되는 현실 조건','주거·가족·생활 방식 등']],
+ 'topic-reunion':[['timing','헤어진 시점','예: 올해 6월'],['contact','현재 연락 상황','연락 중·연락 없음·연락 거절 등'],['concern','헤어지게 된 이유','아는 범위에서 적어 주세요']],
+ 'topic-money':[['activity','소득이 들어오는 방식','급여·사업·불규칙 수입 등'],['goal','현재 자금 목표','저축·상환·주거 등'],['timing','큰 지출이나 계약의 시점','구체적인 금액은 적지 않아도 돼요']],
+ 'topic-career':[['activity','업종·직무와 경력','예: 개발 5년 차'],['goal','지금 고민 중인 선택','취업·이직·승진·창업 등'],['timing','결정해야 하는 시점','예: 12월 계약 종료']],
+ 'topic-study':[['activity','시험 이름 또는 공부 분야','예: 공무원 시험'],['timing','시험일·목표 시점','정해지지 않았다면 비워 두세요'],['concern','준비 단계와 어려운 부분','개념·암기·실전 등']],
+ 'topic-child':[['activity','아이의 학년·생활 단계','아이 본인의 출생정보를 입력해 주세요'],['concern','보호자가 궁금한 부분','친구·학습·생활 습관 등'],['timing','최근 환경 변화','입학·전학·돌봄 환경 등']],
+ 'topic-children':[['goal','자녀와 관련한 고민','계획·돌봄·성인 자녀와의 관계 등'],['concern','생활·돌봄 여건','함께 돌볼 사람이나 생활 변화 등']],
+ 'topic-health':[['activity','평소 생활 리듬','교대근무·수면·식사·활동 등'],['goal','관리하고 싶은 습관','수면·운동·휴식 등']],
+ monthly:[['goal','이 기간에 중요한 목표','일·공부·생활 변화 등'],['timing','예정된 주요 일정','날짜와 일정 종류']],
+ daypick:[['activity','그날 예정된 일','면접·계약·약속 등'],['concern','준비하며 고민되는 점','변경할 수 있는 부분도 알려 주세요']],
+ name:[['goal','이름을 짓거나 바꾸는 목적','본인 개명·아이 작명 등'],['concern','원하는 인상·피하고 싶은 발음','돌림자가 있다면 함께 적어 주세요']],
+ ziwei:[['activity','현재 하는 일','직장·사업·학업 등'],['goal','가장 궁금한 부분','관계·일·돈 등']]
+};
+function counselOwnerKey(){return ['iY','iM','iD','iH','iMin'].map(id=>document.getElementById(id)?.value||'').concat([gender,calType,isLeap,document.getElementById('iCity')?.value||'']).join('|');}
+function counselStore(){try{return JSON.parse(sessionStorage.getItem('saju_counsel_v1')||'{}');}catch(e){return {};}}
+function counselRead(cat){
+ const host=document.getElementById('counselFields');if(!host||host.dataset.cat!==cat)return null;
+ const answers=(COUNSEL_FIELDS[cat]||[]).map(([key,label])=>({key,label,value:String(document.getElementById('counsel_'+key)?.value||'').trim()})).filter(a=>a.value);
+ return answers.length?{version:1,category:cat,source:'user-stated',answers}:null;
+}
+function refreshCounselOwner(){const h=document.getElementById('counselFields');if(h&&h.dataset.cat&&h.dataset.owner!==counselOwnerKey())renderCtxQuestion(h.dataset.cat);}
+function counselSave(){
+ const host=document.getElementById('counselFields');if(!host)return;
+ const data=counselStore(),owner=counselOwnerKey();data[owner]=data[owner]||{};data[owner][host.dataset.cat]=counselRead(host.dataset.cat);
+ try{sessionStorage.setItem('saju_counsel_v1',JSON.stringify(data));}catch(e){}
+}
+function renderCounselFields(cat){
+ const host=document.getElementById('counselFields');if(!host)return;
+ host.dataset.cat=cat;host.dataset.owner=counselOwnerKey();const fields=COUNSEL_FIELDS[cat]||[],saved=counselStore()[counselOwnerKey()]?.[cat];
+ host.innerHTML=fields.length?`<details class="counsel-details"><summary>상황을 조금 더 알려 주세요 <small>(선택)</small></summary><p>알려 주신 상황은 상담에 참고해요. 사주로 알아낸 사실과는 구분해 설명해요.</p>${fields.map(([k,l,ph])=>`<div class="ig"><label for="counsel_${k}">${storyEsc(l)}</label><input type="text" id="counsel_${k}" placeholder="${storyEsc(ph)}" autocomplete="off"></div>`).join('')}</details>`:'';
+ fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=saved?.answers?.find(a=>a.key===key)?.value||'';input.addEventListener('input',counselSave);});
+}
+function saveQuestionDraft(){
+ const ta=document.getElementById('ctxText');if(!ta||!ta.dataset.cat||ta.dataset.owner!==counselOwnerKey())return;
+ const store=counselStore(),owner=counselOwnerKey();store[owner]=store[owner]||{};store[owner].questions=store[owner].questions||{};
+ store[owner].questions[ta.dataset.cat]={text:ta.value,selection:_ctxSel&&_ctxSel.cat===ta.dataset.cat?_ctxSel:null};
+ try{sessionStorage.setItem('saju_counsel_v1',JSON.stringify(store));}catch(e){}
+}
+function counselForReading(){const c=_meta&&_meta.counsel;return c&&c.source==='user-stated'&&Array.isArray(c.answers)?c:null;}
 let _ctxSel=null;
 // 궁금한 점 입력칸 예시 문구
 const CTX_PH={
@@ -4407,6 +4453,7 @@ function ctxInfer(cat,text){
 function ctxCollect(cat){
   if(!CTX_Q[cat])return null;
   const ta=document.getElementById('ctxText'),text=String(ta&&ta.value||'').replace(/\s+/g,' ').trim();
+  saveQuestionDraft();
   const sel=_ctxSel&&_ctxSel.cat===cat?_ctxSel:null;
   const key=sel?sel.key:ctxInfer(cat,text);
   if(!key&&!text)return null;
@@ -4415,11 +4462,13 @@ function ctxCollect(cat){
 }
 function renderCtxQuestion(cat){
   const fs=document.getElementById('catExtraCtx'),q=CTX_Q[cat];if(!fs)return;
+  renderCounselFields(cat);
   if(!_ctxSel||_ctxSel.cat!==cat)_ctxSel=null;
-  if(!q){fs.style.display='none';return;}
+  if(!q){fs.style.display=COUNSEL_FIELDS[cat]?'':'none';['ctxText','ctxQDesc','ctxQAsk','ctxQOptions','ctxQTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});return;}
+  ['ctxText','ctxQDesc','ctxQAsk','ctxQOptions','ctxQTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
   fs.style.display='';
   const ta=document.getElementById('ctxText');
-  if(ta){if(ta.dataset.cat!==cat){ta.value='';ta.dataset.cat=cat;}ta.placeholder=CTX_PH[cat]||'궁금한 점을 편하게 적어 주세요';}
+  if(ta){const owner=counselOwnerKey();if(ta.dataset.cat!==cat||ta.dataset.owner!==owner){const saved=counselStore()[owner]?.questions?.[cat];ta.value=saved?.text||'';_ctxSel=saved?.selection||null;ta.dataset.cat=cat;ta.dataset.owner=owner;}if(!ta.dataset.draftBound){ta.addEventListener('input',saveQuestionDraft);ta.dataset.draftBound='1';}ta.placeholder=CTX_PH[cat]||'궁금한 점을 편하게 적어 주세요';}
   document.getElementById('ctxQTitle').textContent='궁금한 점';
   document.getElementById('ctxQDesc').textContent='지금 가장 궁금한 걸 편하게 적어 주세요. 적은 내용에 맞춰 풀이와 역술가 답변을 맞춰 드려요. 비워 둬도 괜찮아요.';
   const ask=document.getElementById('ctxQAsk');if(ask)ask.textContent=`${q.t} 해당하면 눌러 주세요`;
@@ -4429,6 +4478,7 @@ function pickCtx(cat,key){
   const q=CTX_Q[cat];if(!q)return;const o=q.o.find(x=>x[0]===key);
   _ctxSel=_ctxSel&&_ctxSel.key===key?null:{cat,key,label:o?o[1]:key};
   document.querySelectorAll('#ctxQOptions .ctx-btn').forEach(b=>b.classList.toggle('on',!!_ctxSel&&b.dataset.tag===_ctxSel.key));
+  saveQuestionDraft();
 }
 function ctxFor(cat){const c=(_meta&&_meta.ctx)||null;return c&&c.cat===cat?c:null;}
 // 고른 상황에 맞춘 풀이 첫 문장
@@ -4457,7 +4507,7 @@ function ctxTimingText(){
   }catch(e){return '';}
 }
 // AI 풀이·역술가 질문에 넘길 지금 상황 한 줄 — 예: 지금 연애 상태는 어떤가요? → 권태기
-function ctxSituationText(){const c=_meta&&_meta.ctx,q=c&&CTX_Q[c.cat];if(!c||!q)return '';return [c.label?`${q.t} → ${c.label}`:'',c.text?`직접 적은 궁금한 점: ${c.text}`:''].filter(Boolean).join(' / ');}
+function ctxSituationText(){const supplied=counselForReading();const extra=supplied?'상담자가 직접 알려 준 상황: '+supplied.answers.map(a=>a.label+' → '+a.value).join(' / '):'';const c=_meta&&_meta.ctx,q=c&&CTX_Q[c.cat];if(!c||!q)return extra;return [extra,c.label?`${q.t} → ${c.label}`:'',c.text?`직접 적은 궁금한 점: ${c.text}`:''].filter(Boolean).join(' / ');}
 function ctxNoteHTML(cat,answer){const t=ctxOpener(cat),c=ctxFor(cat);if(!c)return '';
   if(c.text)return `<div class="lv4-ctx"><b>본인이 적은 궁금한 점</b><p class="lv4-ctx-q">“${storyEsc(c.text)}”</p>${answer||`<p>${lv4Text(t||'이 궁금증을 가운데 두고 아래 풀이를 읽어 보세요. 더 자세한 답은 맨 아래 역술가 질문에서 바로 물어볼 수 있어요.')}</p>`}</div>`;
   return t?`<div class="lv4-ctx"><b>본인이 고른 상황 · ${c.label}</b><p>${lv4Text(t)}</p></div>`:'';}
@@ -4586,7 +4636,7 @@ function wzStepKind(step){
 }
 const WZ_PROMPT={name:'이름을 알려 주세요',naming:'풀이할 이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
 function wzPromptFor(step){
-  const k=wzStepKind(step);if(WZ_PROMPT[k])return WZ_PROMPT[k];
+  const k=wzStepKind(step);if(k==='ctx'&&!CTX_Q[_category])return '상황을 알려 주시면 더 자세히 풀어드려요 (선택)';if(WZ_PROMPT[k])return WZ_PROMPT[k];
   const t=step[0]&&(step[0].querySelector('.cat-extra-title')||step[0].querySelector('legend'));
   const lab=t?t.textContent.replace(/\(.*?\)/g,'').split('—').pop().trim():'';
   return lab?`${lab}${_hasJong(lab)?'을':'를'} 알려 주세요`:'나머지 정보를 알려 주세요';
@@ -4741,11 +4791,13 @@ function setGender(g){
   gender=g;
   _setTog('bm',g==='male');
   _setTog('bf',g==='female');
+  refreshCounselOwner();
 }
 function setCal(t){
   calType=t;
   document.getElementById('iCalType').value=t;
   document.getElementById('leapSec').className='leap-sec'+(t==='lunar'?' vis':'');
+  refreshCounselOwner();
 }
 let _marital='';
 function setMarital(v){_marital=v;if(_category!=='topic-child'&&_lastInputs&&['iY','iM','iD'].every((id,i)=>document.getElementById(id).value===String([_lastInputs.year,_lastInputs.month,_lastInputs.day][i])))_lastInputs.marital=v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
@@ -4753,6 +4805,7 @@ function setLeap(b){
   isLeap=b;
   _setTog('breg',!b);
   _setTog('blp',b);
+  refreshCounselOwner();
 }
 
 // 궁합 — 상대방 입력 상태
@@ -5529,6 +5582,7 @@ function goToInput(cat){
     restoreLastInputs();
   }
   renderCtxQuestion(cat);
+  const form=document.getElementById('formWrap');if(form&&!form.dataset.counselBound){form.dataset.counselBound='1';form.addEventListener('change',e=>{if(['iY','iM','iD','iH','iHourInput','iMin','iCity','iCalType','iTimeUnknown'].includes(e.target.id)){const h=document.getElementById('counselFields');if(h&&h.dataset.owner!==counselOwnerKey())renderCtxQuestion(_category);}});}
   showView('input');
   updateJourneyForm(cat);
   try{inputWizardInit();}catch(e){}
@@ -7594,7 +7648,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=ce880a8bb98b';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=412cb5bef490';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -13737,69 +13791,35 @@ function hookDomain(kind,m){return (HOOK_DOMAIN[kind]||{})[m.axis]||'';}
 // 가능성 별점 — 그달 점수와 그해 영역 점수의 평균(대개 79~96점)을 나눈다
 function hookStars(score,min){const n=Math.max(min||2,score>=92?5:score>=85?4:score>=79?3:2);return `<span class="hook-stars" role="img" aria-label="가능성 5점 중 ${n}점">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`;}
 const HOOK_TG_GROUP={정관:'work',편관:'work',정재:'money',편재:'money',식신:'out',상관:'out',정인:'study',편인:'study',비견:'peer',겁재:'peer'};
-// 지난 10년 중 신호가 겹친 해만 고른다. 명리의 기본 원칙을 그대로 쓴다.
-// · 그해 천간이 일간(본인)과 부딪히면(천간충) 본인 자신이 크게 움직인 해, 묶이면(천간합) 그 글자의 뜻(직장·배우자·돈)이 내 것이 된 해
-// · 그해 지지가 배우자 자리(일지)와 육합이면 배우자 자리에 사람이 들어온 해(결혼·깊은 인연)
-// · 자리와 부딪힌 글자가 원국에 이미 있으면 익숙한 충이라 힘을 덜 친다
-// 사건은 그해 글자가 본인에게 갖는 뜻(남녀 차이 포함)과 나이에 맞춰 말한다.
-const HOOK_PAST_EVENT={
-  work:{male:'직장에서 자리나 역할이 바뀌었을 거예요. 승진·발령·이직 중 하나였을 가능성이 커요.',female:'직장 일이나 남편·연인과의 관계에서 큰 결정이 있었을 거예요.',teen:'시험과 평가 부담이 유난히 컸을 거예요.',kid:'새 규칙과 생활 습관을 익히느라 애쓴 해였을 거예요.',senior:'맡은 역할이나 집안의 책임이 무거워졌을 거예요.'},
-  money:{male:'돈이나 아내·연인 쪽으로 큰일이 있었을 거예요. 결혼·큰 지출·계약 같은 일이에요.',maleWed:'아내와 함께 큰돈이 드는 결정을 했을 거예요. 집·차·계약 같은 일이에요.',female:'돈이 크게 들어오거나 나갔을 거예요. 큰 계약이나 지출이 있었을 거예요.',teen:'용돈이나 갖고 싶은 물건을 두고 선택할 일이 많았을 거예요.',kid:'갖고 싶은 것과 필요한 것을 두고 고민이 많았을 거예요.',senior:'목돈을 정리하거나 큰돈을 쓸 일이 있었을 거예요.'},
-  out:{male:'하던 일을 그만두거나 방식을 크게 바꿨을 거예요.',female:'자녀나 하던 일 쪽으로 변화가 있었을 거예요. 일을 그만두거나 새로 시작했을 수 있어요.',teen:'새 취미나 재능이 드러난 해였을 거예요.',kid:'새로운 재능이나 좋아하는 놀이가 눈에 띄었을 거예요.',senior:'새로 배우거나 시작한 일이 있었을 거예요.'},
-  study:{male:'집 문서·계약·자격처럼 서류가 오가는 일이 있었을 거예요. 이사나 시험이었을 수 있어요.',female:'집 문서·계약·자격처럼 서류가 오가는 일이 있었을 거예요. 이사나 시험이었을 수 있어요.',teen:'공부 방식이 바뀌거나 좋은 선생님을 만났을 거예요.',kid:'배우는 게 늘고 어른의 도움을 많이 받은 해였을 거예요.',senior:'집이나 건강 관련 서류를 챙길 일이 많았을 거예요.'},
-  peer:{male:'사람과 돈이 엮인 일이 있었을 거예요. 동업이나 경쟁, 또는 돈을 빌려주는 일이요.',female:'사람과 돈이 엮인 일이 있었을 거예요. 동업이나 경쟁, 또는 돈을 빌려주는 일이요.',teen:'친구 사이의 경쟁이나 서운함이 있었을 거예요.',kid:'친구와 다투거나 경쟁할 일이 있었을 거예요.',senior:'형제나 오랜 친구와 얽힌 일이 있었을 거예요.'},
-  move:{male:'몸담던 곳을 떠나거나 진로를 크게 틀었을 거예요. 인생의 방향이 바뀐 해예요.',female:'몸담던 곳을 떠나거나 진로를 크게 틀었을 거예요. 인생의 방향이 바뀐 해예요.',teen:'학교나 진로를 두고 큰 결정을 했을 거예요.',kid:'사는 곳이나 다니는 곳이 바뀌는 큰 변화가 있었을 거예요.',senior:'생활의 터전이나 하던 일을 크게 정리했을 거예요.'},
-  wed:{male:'배우자 자리에 사람이 들어온 해예요. 결혼이나 결혼을 약속할 만큼 깊은 인연이 생겼을 거예요.',female:'배우자 자리에 사람이 들어온 해예요. 결혼이나 결혼을 약속할 만큼 깊은 인연이 생겼을 거예요.',teen:'마음을 크게 나눈 친구가 생긴 해였을 거예요.',kid:'새로 가까워진 친구나 어른이 있었을 거예요.',senior:'가족이 늘거나 평생 갈 인연이 생겼을 거예요.'},
-  job:{male:'새 직장이나 자리에 들어갔을 거예요. 소속이 생기고 책임이 늘어난 해예요.',female:'새 직장이나 자리, 또는 남편·연인 인연이 생긴 해였을 거예요.',teen:'규칙이 분명한 곳에서 인정받거나 새 역할을 맡았을 거예요.',kid:'새 반이나 새 규칙에 적응한 해였을 거예요.',senior:'새 역할이나 맡을 자리가 생겼을 거예요.'},
-  partner:{male:'아내·연인 인연이나 큰돈이 내 것이 된 해였을 거예요.',female:'돈이 들어오거나 큰 계약이 성사된 해였을 거예요.',teen:'원하던 걸 손에 넣은 해였을 거예요.',kid:'원하던 걸 손에 넣은 해였을 거예요.',senior:'목돈이 들어오거나 정리된 해였을 거예요.'}
+// 과거 사건을 맞히는 기능이 아니다. 원국과 세운의 관계만 제시한다.
+// 개인이 알려 준 사건으로 공통 규칙·연도 순위·사건 이름을 보정하지 않는다.
+const HOOK_PAST_THEME={
+ work:'맡은 역할과 책임을 돌아볼 시기',money:'돈을 쓰고 관리하는 기준을 돌아볼 시기',
+ out:'표현 방식과 하던 일을 돌아볼 시기',study:'배움과 준비 과정을 돌아볼 시기',peer:'사람 사이의 역할과 경계를 돌아볼 시기'
 };
-const HOOK_PAST_YA={work:'진로나 첫 일자리를 두고 큰 결정을 했을 거예요. 취업·입대·전공 선택 같은 일이에요.',job:'첫 소속이 생긴 해였을 거예요. 취업이나 입대, 새 학교처럼 규칙이 분명한 곳에 들어갔을 거예요.',move:'다니던 곳을 떠나거나 진로를 크게 틀었을 거예요. 휴학·전역·자퇴·이사 같은 일이에요.',wed:'깊이 사귄 사람이 생겼을 거예요. 연애가 진지해진 해였을 거예요.',money:'처음으로 큰돈을 벌거나 쓴 해였을 거예요.',partner:{male:'연인이 생기거나 처음으로 내 돈이 생긴 해였을 거예요.',female:'처음으로 내 돈이 생기거나 큰 계약을 한 해였을 거예요.'}};
-// 배우자 자리와 묶인 해 — 지금 관계 상태에 맞춰 말한다(미혼에게 결혼했다고 하지 않는다)
-const HOOK_PAST_WED={married:'배우자 자리에 사람이 들어온 해예요. 결혼이나 결혼을 약속할 만큼 깊은 인연이 생겼을 거예요.',dating:'지금 인연과 가까워졌거나 관계가 깊어진 해예요. 결혼 이야기가 나왔을 수도 있어요.',single:'깊은 인연이 생겼을 거예요. 오래 기억에 남는 연애였을 거예요.'};
-const HOOK_PAST_WHY={move:'그해 천간이 본인 자신과 정면으로 부딪혔거든요.',wed:'그해 지지가 배우자 자리(일지)와 단단히 묶였거든요.',job:'그해 천간이 본인 자신과 묶였는데, 그 글자가 직장과 책임을 뜻해요.',partner:'그해 천간이 본인 자신과 묶였는데, 그 글자가 재물을 뜻해요.'};
-const HOOK_PLACE={mp:'직장 자리(월지)',dp:'배우자 자리(일지)',yp:'집안 자리(연지)',hp:'자녀 자리(시지)'},HOOK_PLACE_YOUNG={mp:'바깥 생활 자리(월지)',dp:'본인 자리(일지)',yp:'집안 자리(연지)',hp:'미래 자리(시지)'};
 function hookPast(s,m){
-  const y0=m.year,sy=Number(m.meta.sy)||y0-29,female=(m.genderKey||gender)==='female',wed=(m.meta&&m.meta.marital)==='married';
-  const stage=a=>a<13?'kid':a<20?'teen':a>=56?'senior':female?'female':'male',info=y=>_lifeV2YearInfo(s,y),ageAt=y=>y-sy+1;
-  const eras=(m.dq&&m.dq.daeuns||[]).map(d=>sy+d.age-1),natal=['yp','mp','dp','hp'].filter(k=>s[k]).map(k=>s[k].branch);
-  const read=y=>{
-    const x=info(y),hits=[],sr=stemRel(s.dp.stem,x.yp.stem).kind,g1=HOOK_TG_GROUP[x.tg],g2=HOOK_TG_GROUP[x.btg],old=natal.includes(x.yp.branch);
-    let sc=0,kind='';
-    if(sr==='충'){sc+=3;kind='move';}
-    else if(sr==='합'&&(g1==='work'||g1==='money')){sc+=2;kind=g1==='work'?'job':'partner';}
-    ['dp','mp','yp','hp'].forEach(k=>{if(!s[k])return;const r=brRel(s[k].branch,x.yp.branch).kind;
-      if(r==='충'){hits.push([k,'clash']);sc+=(k==='dp'?3:k==='mp'?2:1)*(old?.5:1);}
-      else if(r==='합'){hits.push([k,'bond']);sc+=k==='dp'?3:k==='mp'?1.5:.5;if(k==='dp'&&!kind)kind='wed';}
-      else if(/합/.test(r)){hits.push([k,'bond']);sc+=k==='dp'?1.5:k==='mp'?1:.3;}
-      else if(r==='자형'&&(k==='dp'||k==='mp'))sc+=1;});
-    const same=g1&&g1===g2,era=eras.some(e=>e===y||e===y+1);
-    if(same)sc+=2;if(['work','money'].includes(g1))sc+=1;if(era)sc+=1.5;
-    // 원국 자리를 건드린 해는 그 글자(지지)의 뜻으로, 아니면 위 글자(천간)의 뜻으로 사건을 읽는다
-    if(!kind)kind=hits.some(h=>h[1]==='clash'&&!old)?(g2||g1):(g1||g2);
-    return {year:y,age:ageAt(y),x,sc,hits,same,era,old,kind};
-  };
-  const pool=[];for(let y=y0-1;y>=y0-10&&ageAt(y)>=8;y--)pool.push(read(y));
-  const need=m.age<20?3:4,picked=pool.filter(r=>r.sc>=need&&r.kind).sort((a,b)=>b.sc-a.sc||b.year-a.year).slice(0,3);
-  return picked.sort((a,b)=>a.year-b.year).map(r=>{
-    const sg=stage(r.age),ev=HOOK_PAST_EVENT[r.kind]||HOOK_PAST_EVENT.peer;
-    const ya=r.age>=20&&r.age<=25&&HOOK_PAST_YA[r.kind],st=(m.meta&&m.meta.marital)||'single';
-    const text=ya?(typeof ya==='string'?ya:ya[female?'female':'male']):r.kind==='wed'&&(sg==='male'||sg==='female')?(HOOK_PAST_WED[st]||HOOK_PAST_WED.single):(sg==='male'&&wed&&r.kind==='money'&&ev.maleWed)||ev[sg]||ev.male;
-    // 직장·배우자 자리를 건드린 이유가 없으면, 작은 자리보다 위아래로 겹친 기운을 이유로 든다
-    const major=h=>['dp','mp'].includes(h[0])||!r.same,clash=r.old?[]:r.hits.filter(h=>h[1]==='clash'&&major(h)).map(h=>h[0]),bond=r.hits.filter(h=>h[1]==='bond'&&major(h)).map(h=>h[0]);
-    const kid=r.age<20,PL=kid?HOOK_PLACE_YOUNG:HOOK_PLACE,whyWed=kid?'그해 지지가 본인 자리(일지)와 단단히 묶였거든요.':HOOK_PAST_WHY.wed;
-    const why=(r.kind==='wed'?whyWed:HOOK_PAST_WHY[r.kind])||(clash.includes('mp')&&clash.includes('dp')?(kid?'그해 글자가 바깥 생활 자리와 본인 자리를 한꺼번에 쳤거든요. 밖과 집의 분위기가 같이 흔들린 해예요.':'그해 글자가 직장 자리와 배우자 자리를 한꺼번에 쳤거든요. 일과 집이 같이 흔들린 해예요.'):
-      clash.length?`그해 글자가 ${PL[clash[0]]}를 정면으로 쳤거든요.`:
-      bond.length?`그해 글자가 ${PL[bond[0]]}와 붙었거든요.`:
-      r.same?'그해에는 같은 기운이 위아래로 겹쳐 들어왔거든요.':'그해에는 그 기운이 유난히 강했거든요.');
-    const tail=r.era?' 마침 10년마다 바뀌는 큰 흐름, 대운도 바뀌던 때라 체감이 컸을 거예요.':'';
-    let next=0;for(let y=y0+1;y<=y0+15&&!next;y++){const z=read(y);if(z.kind===r.kind&&z.sc>=need)next=y;}
-    return {...r,text,why:why+tail,nextText:next?`비슷한 기운은 <span class="lk-m">${next}년</span>에 다시 와요.`:''};
-  });
+  const y0=m.year,sy=Number(m.meta.sy);if(!sy)return [];
+  const places={yp:'연지',mp:'월지',dp:'일지',hp:'시지'},pool=[];
+  for(let year=y0-1;year>=y0-10&&year-sy+1>=8;year--){
+    const x=_lifeV2YearInfo(s,year),grounds=[];
+    const sr=stemRel(s.dp.stem,x.yp.stem).kind;
+    if(['합','충'].includes(sr))grounds.push({place:'일간',kind:sr,type:'stem',glyph:STEMKO[s.dp.stem],transit:STEMKO[x.yp.stem]});
+    ['yp','mp','dp','hp'].forEach(k=>{if(!s[k])return;const kind=brRel(s[k].branch,x.yp.branch).kind;
+      if(kind&&kind!=='평'&&kind!=='동')grounds.push({place:places[k],kind,type:'branch',glyph:BRCHKO[s[k].branch],transit:BRCHKO[x.yp.branch]});
+    });
+    if(!grounds.length)continue;
+    const kind=HOOK_TG_GROUP[x.tg]||'peer',age=year-sy+1;
+    const text=age<20?'학교생활과 친구 관계를 돌아볼 만한 해예요.':HOOK_PAST_THEME[kind]+'예요.';
+    const why=grounds.slice(0,3).map(g=>`${g.place}의 ${g.glyph}와 그해 ${g.type==='stem'?'천간':'지지'} ${g.transit} 사이에 ${g.kind} 관계가 있어요.`).join(' ');
+    pool.push({year,age,kind,grounds,text,why,nextText:'',source:'calculated-pattern',confirmedEvent:false});
+  }
+  // 최근 해부터 최대 세 해. 특정 사용자의 사건에 맞춘 적중 순위는 사용하지 않는다.
+  return pool.slice(0,3).reverse();
 }
 function hookCardsHTML(s,m){
   const who=ppWho(),scenes=hookScenes(s,m),past=m.age>=10?hookPast(s,m):[];
   const hit=`<section class="lc-card hook-card" id="lv4-lc-hook"><h3 class="lc-card-title">${who}${eun(who)} 타고나기를<br>이런 분이에요</h3>${lv4P(scenes)}</section>`;
-  const back=past.length?`<section class="lc-card hook-past" id="lv4-lc-past"><h3 class="lc-card-title">지나온 해부터<br>짚어 보면</h3>${lv4P(past.map(it=>`<b>${it.year}년 · ${it.age}세</b> ${it.text} ${it.why} ${it.nextText}`))}<p class="lc-foot">* 맞았다면, 아래 앞으로의 흐름도 같은 계산으로 읽었어요.</p></section>`:'';
+  const back=past.length?`<section class="lc-card hook-past" id="lv4-lc-past"><h3 class="lc-card-title">지나온 해의 흐름을<br>돌아보면</h3>${lv4P(past.map(it=>`<b>${it.year}년 · ${it.age}세</b> ${it.text} ${it.why} ${it.nextText}`))}<p class="lc-foot">같은 사주라도 살아온 환경과 선택은 달라요. 위 내용은 사주에서 읽는 공통 경향이며, 실제 겪은 사건을 확인한 기록은 아니에요.</p></section>`:'';
   return hit+back;
 }
 function buildLifeChapters(m,s,meta,ctx){
@@ -19745,6 +19765,16 @@ function extractDetailedReadingText(source){
   return cleanReadingTextFromElement(p);
 }
 
+function buildChartAnalysis(s){
+ const ps=[['연주',s.yp],['월주',s.mp],['일주',s.dp],['시주',s.hp]].filter(x=>x[1]),relations=[];
+ for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){
+  [['stem',stemRel],['branch',brRel]].forEach(([type,fn])=>{const r=fn(ps[i][1][type],ps[j][1][type]);if(r.kind&&r.kind!=='평'&&r.kind!=='동')relations.push({left:ps[i][0],right:ps[j][0],type,kind:r.kind});});
+ }
+ return {version:1,source:'calculated',season:buildPersonaProfile(s).season,
+  pillars:ps.map(([place,p])=>({place,stem:STEMKO[p.stem],branch:BRCHKO[p.branch],stemGod:place==='일주'?'본인':tenGod(s.dp.stem,p.stem),branchGod:tenGod(s.dp.stem,BR_MAIN_STEM[p.branch]),hidden:AI_COPY_HIDDEN_STEMS[p.branch].map(h=>({stem:STEMKO[h],god:tenGod(s.dp.stem,h)}))})),relations,
+  sinsal:findSinsal(s).map(x=>({name:x.n,place:x.loc||''})),
+  limits:['용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님','강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님',...(!s.hp?['출생시각 미상: 시주 근거로 해석하지 않음']:[])]};
+}
 function buildSajuContextForChat(source){
   if(!_saju||!_meta)return null;
   const oh=ohCount(_saju);
@@ -19776,9 +19806,9 @@ function buildSajuContextForChat(source){
     dayMaster:`${STEMKO[_saju.dp.stem]} — ${dm.n.split('(')[0]}, ${dm.core}`,
     daySpouse:`${BRCHKO[_saju.dp.branch]} — ${ANIMAL[_saju.dp.branch]}, 오행 ${OHNAME[BOH[_saju.dp.branch]]}`,
     gyeokguk:gk.name,
-    yongsin:OHNAME[ys.main],
+    yongsin:OHNAME[ys.main]+' (단순 개수 기준 보완 후보·종합 판정 아님)',
     ohaeng:`목 ${oh[0]} · 화 ${oh[1]} · 토 ${oh[2]} · 금 ${oh[3]} · 수 ${oh[4]}`,
-    strength:isStrong?'신강':'신약',
+    strength:(isStrong?'신강':'신약')+' (단순 오행 비율 참고값)',
     sinsal:sinNames.length>0?sinNames.join(', '):'특별한 신살 없음',
     persona:(function(){try{
       const p=buildPersonaProfile(_saju);
@@ -19791,6 +19821,9 @@ function buildSajuContextForChat(source){
     sewoon:`${STEMKO[swStem]}${BRCHKO[swBranch]}년`,
     marital:(_meta&&_meta.marital)||'',
     situation:ctxSituationText(),
+    userStatements:counselForReading(),
+    provenance:{chart:'calculated',situation:'user-stated',pastEventsConfirmed:false},
+    chartAnalysis:buildChartAnalysis(_saju),
     timing:ctxTimingText(),
     qaExtra:qaExtra?{
       job:qaExtra.job||'',
@@ -19818,7 +19851,8 @@ function aiReadingCacheKey(category, extraKey, lang){
   const birth=_meta?[_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,_meta.gender,_meta.cityKey].join('-'):'no-meta';
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
   const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+textHash(String(_meta.ctx.text||''))+'-'+String(_meta.ctx.text||'').length:'';
-  return 'saju_ai_reading_v8:'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
+  const counsel=JSON.stringify({counsel:(_meta&&_meta.counsel)||null,userName:(_meta&&_meta.userName)||'',qaExtra:(_meta&&_meta.qaExtra)||null});
+  return 'saju_ai_reading_v9-provenance:'+textHash(counsel)+':'+counsel.length+':'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
@@ -19937,6 +19971,7 @@ async function hydrateAIReading(category, opts){
   if(!card)return;
   const body=card.querySelector('.ai-reading-body');
   if(!body)return;
+  const requestCacheKey=aiReadingCacheKey(category,extraKey,currentLanguage());
   const reqLang=currentLanguage(); // 요청 시점 언어 고정 — 도중에 언어가 바뀌면 이 응답은 화면에 쓰지 않음
   const cached=aiReadingCacheGet(category,extraKey,reqLang);
   if(cached){
@@ -19957,8 +19992,10 @@ async function hydrateAIReading(category, opts){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload),
     },3);
+    if(aiReadingCacheKey(category,extraKey,reqLang)!==requestCacheKey)return;
     if(!resp||!resp.ok)throw new Error((data&&data.error)||'맞춤 풀이를 불러오지 못했어요.');
     const text=(data.text||data.answer||'').trim();
+    if(!readingProvenanceQuality(text))throw new Error('출처 없는 과거 사건 단정');
     if(!text)throw new Error('맞춤 풀이가 비어 있어요.');
     // 워커가 잘림을 알려줬거나 분량이 기준에 못 미치면 "대체"가 아니라 "추가"로만 쓴다
     const canReplace=aiReadingCanReplace(category,text,data&&data.truncated);
@@ -19971,14 +20008,14 @@ async function hydrateAIReading(category, opts){
     setAIReadingFallbackVisible(category,extraKey,!canReplace);
     if(reqLang!=='ko')setTimeout(()=>applyLanguageToVisibleResult(card),0);
   }catch(e){
-    if(currentLanguage()!==reqLang)return;
+    if(currentLanguage()!==reqLang||aiReadingCacheKey(category,extraKey,reqLang)!==requestCacheKey)return;
     setAIReadingFallbackVisible(category,extraKey,true);
     card.style.display='none';
     body.innerHTML='';
   }
 }
-// ── 결제 후 심층 해석 — 미리보기에서 가렸던 해석 문단만 AI가 다시 쓴다 (풀이당 요청 한 번) ──
-// 보이던 문장·날짜·띠·점수 같은 계산값은 그대로 두고, 섹션마다 셋째 문단부터와 한 줄 정리만 바꾼다.
+// 결제 후 종합 풀이. 검증된 synthesis 응답은 해당 장의 설명을 대체한다.
+// 원국·차트·기간별 표·근거 보기·강점 순서는 보존한다. 실패 시 계산형 설명을 유지한다.
 function deepEligible(sec){return [...sec.querySelectorAll('p')].filter(p=>!p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lv4-why,.lv4-answer,.ai-reading-card,.lv4-scene,.lk-note,.deep-status,.reading-narrative,[data-strength-order]'));}
 function deepCollect(root){
   const clean=s=>String(s||'').replace(/[​⁠]/g,'').replace(/ /g,' ').replace(/\s+/g,' ').trim();
@@ -19988,9 +20025,18 @@ function deepCollect(root){
   }).filter(s=>s.id&&s.facts);
 }
 function deepParse(text){try{const s=String(text||''),a=s.indexOf('{'),b=s.lastIndexOf('}');if(a<0||b<a)return null;const o=JSON.parse(s.slice(a,b+1));return o&&Array.isArray(o.sections)&&o.sections.length?o:null;}catch(e){return null;}}
+// 출처를 표시하지 않은 과거 사건 단정을 화면·PDF에서 채택하지 않는다.
+// 이는 문장 규칙 검증이며 예측의 적중 여부를 검증하는 기능은 아니다.
+function readingProvenanceQuality(text){
+ const t=String(text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ');
+ if(/맞았다면.{0,40}(미래|앞으로)|사주로.{0,20}(알아맞|맞혔)/.test(t))return false;
+ const event=/(?:결혼|입사|전역|이직|이사|임신|취업|승진|퇴사|이별)/;
+ return !t.split(/(?<=[.!?。])|\n/).some(sentence=>event.test(sentence)&&/(?:했|됐|되었|하셨|하였|겪었|있었|생겼)(?:을 거|어요|습니다|지요|죠)|성사됐/.test(sentence)&&!/(?:말씀|알려|적어|입력|진술|하셨다면|했다면|했을 경우|예시)/.test(sentence));
+}
 function readingDeepQuality(paragraphs,source,meta,key){
   const clean=s=>String(s||'').replace(/\s+/g,' ').trim();
   const ps=(paragraphs||[]).map(clean).filter(Boolean),joined=ps.join(' ')+' '+clean(key);
+  if(!readingProvenanceQuality(joined))return false;
   if(ps.length<2||ps.join(' ').length<160||ps.some(p=>p.length<25))return false;
   if(new Set(ps).size!==ps.length||/undefined|NaN|이달에 챙길 일 하나/.test(joined))return false;
   const years=new Set(String(source||'').match(/(?:19|20|21)\d{2}/g)||[]);
@@ -19999,18 +20045,28 @@ function readingDeepQuality(paragraphs,source,meta,key){
   if(status==='married'&&/(?:새로운|새)\s*(?:연인|애인)|(?:연인|애인)을\s*만나/.test(joined))return false;
   return true;
 }
+function readingSynthesisReferences(){
+ const e=readingEvidencePayload(_saju,_meta,'reading-deep',_category==='newyear'?Number(_meta.nyExtra&&_meta.nyExtra.y):undefined);
+ return new Set(e.nodes.map(n=>n.id).concat(e.flow.id,e.decade?`decade.${e.decade.from}`:[]));
+}
+function readingSynthesisQuality(section){
+ const refs=section&&section.evidenceRefs,allowed=readingSynthesisReferences();
+ return Array.isArray(refs)&&new Set(refs).size>=2&&refs.every(id=>typeof id==='string'&&allowed.has(id));
+}
 function deepApply(root,data){
   const map={};(data&&data.sections||[]).forEach(s=>{if(s&&s.id)map[s.id]=s;});
   let n=0;
   root.querySelectorAll('.lv4-sec').forEach(sec=>{
     const d=map[sec.id];if(!d||!Array.isArray(d.paragraphs))return;
+    const synthesis=data.mode==='synthesis';if(synthesis&&!readingSynthesisQuality(d))return;
     const paras=d.paragraphs.map(x=>String(x||'').trim()).filter(Boolean).slice(0,4);
     if(!readingDeepQuality(paras,root.textContent,_meta,d.key))return;
-    const ps=deepEligible(sec),anchor=ps[1]||ps[0];
-    ps.slice(2).forEach(p=>p.remove());
+    const ps=deepEligible(sec),anchor=synthesis?ps[0]:(ps[1]||ps[0]);
+    if(!synthesis)ps.slice(2).forEach(p=>p.remove());
     const html=paras.map(t=>`<p class="ai-deep">${relationshipReadingHTML(lv4Text(storyEsc(t)),_meta)}</p>`).join('');
-    if(anchor&&anchor.isConnected)anchor.insertAdjacentHTML('afterend',html);
+    if(anchor&&anchor.isConnected)anchor.insertAdjacentHTML(synthesis?'beforebegin':'afterend',html);
     else{const k=sec.querySelector('.lv4-key');if(k)k.insertAdjacentHTML('beforebegin',html);else sec.insertAdjacentHTML('beforeend',html);}
+    if(synthesis){ps.forEach(p=>p.remove());sec.querySelectorAll('.reading-narrative').forEach(p=>p.remove());}
     if(d.key){const kp=sec.querySelector('.lv4-key p');if(kp)kp.innerHTML=relationshipReadingHTML(lv4Text(storyEsc(String(d.key))),_meta);}
     sec.querySelectorAll('.lv4-sub').forEach(sub=>{if(!sub.querySelector('p,li,.lv4-row,dl,table,svg,img,.lk-person'))sub.remove();});
     n++;
@@ -20020,7 +20076,9 @@ function deepApply(root,data){
 function deepCached(key){try{const c=aiReadingCacheGet('reading-deep',key,currentLanguage());return c&&deepParse(c.text);}catch(e){return null;}}
 async function hydrateDeepReading(el){
   const key=el&&el.getAttribute('data-deep');if(!key||el.dataset.deepDone)return;el.dataset.deepDone='1';
-  let data=deepCached(key),chip=null;
+  const requestCacheKey=aiReadingCacheKey('reading-deep',key,currentLanguage());
+  const requestStillCurrent=()=>aiReadingCacheKey('reading-deep',key,currentLanguage())===requestCacheKey;
+  let data=deepCached(key),chip=null,generatedText='';
   if(!data){
     const sections=deepCollect(el);if(!sections.length)return;
     chip=document.createElement('div');chip.className='deep-status';chip.setAttribute('role','status');
@@ -20029,15 +20087,18 @@ async function hydrateDeepReading(el){
     try{
       const payload=buildAIReadingPayload('reading-deep',{source:'paid-deep'});
       if(payload){
-        payload.sajuContext.detailedReading='';payload.meta.sections=sections;payload.meta.readingKind=key.split(':')[0];
+        payload.sajuContext.detailedReading='';payload.meta.sections=sections;payload.meta.readingKind=key.split(':')[0];payload.meta.synthesis=true;
         const {resp,data:res}=await fetchJsonWithRetry(WORKER_URL.replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2);
         const text=resp&&resp.ok&&res?String(res.text||'').trim():'';
+        if(!requestStillCurrent())return;
         data=deepParse(text);
-        if(data)aiReadingCacheSet('reading-deep',key,text,currentLanguage(),true);
+        if(data)generatedText=text;
       }
     }catch(e){}
   }
+  if(!requestStillCurrent())return;
   if(data&&deepApply(el,data)){
+    if(generatedText)aiReadingCacheSet('reading-deep',key,generatedText,currentLanguage(),true);
     if(chip){chip.textContent='천기의 심층 해석이 반영됐어요';chip.classList.add('done');setTimeout(()=>{try{chip.remove();}catch(e){}},4000);}
     if(currentLanguage()!=='ko')try{scheduleLanguageApply(el,[0]);}catch(e){}
   }else if(chip)chip.remove();
@@ -20201,13 +20262,15 @@ const QNA_ANSWER_TTL_MS=24*60*60*1000;
 function qnaAnswerCacheKey(cat, question, ctx){
   const sid=(_saju&&_meta&&typeof sajuIdOf==='function')?sajuIdOf(_saju,_meta):'no-saju';
   const basis=[
-    'qna_answer_v2',
+    'qna_answer_v3-provenance',
     currentLanguage(),
     cat||'life',
     sid||'no-sid',
     (ctx&&ctx.daeun)||'',
     (ctx&&ctx.sewoon)||'',
     JSON.stringify((ctx&&ctx.qaExtra)||{}),
+    JSON.stringify((ctx&&ctx.userStatements)||null),
+    (ctx&&ctx.situation)||'',
     String(question||'').trim().replace(/\s+/g,' ')
   ].concat(cat==='qna'&&_qnaCounselor!=='master'?[_qnaCounselor]:[]).join('|');
   let h=0;
@@ -24559,7 +24622,7 @@ function analyze(){
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={ctx:ctxCollect(cat),userName:cat==='name'?'':readSajuName(),marital:cat==='topic-child'?'':_marital,sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender,inputHour:parseInt(document.getElementById('iH').value),inputMin:parseInt(document.getElementById('iMin').value)||0};
+      _meta={counsel:counselRead(cat),ctx:ctxCollect(cat),userName:cat==='name'?'':readSajuName(),marital:cat==='topic-child'?'':_marital,sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,dpExtra,moExtra,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender,inputHour:parseInt(document.getElementById('iH').value),inputMin:parseInt(document.getElementById('iMin').value)||0};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.
