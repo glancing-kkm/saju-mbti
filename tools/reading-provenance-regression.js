@@ -23,6 +23,23 @@ vm.runInContext(fs.readFileSync('worker/saju-chat-worker.js','utf8').replace(/^i
   }
  }
  console.log('✓ 과거 풀이 120표본: 실제 원국 관계만 인용, 개인 사건·이름·혼인 상태로 사건을 역산하지 않음');
+ rt.set({...rt.fixture(40),sy:1987,sm:9,sd:21,hour:8,min:15});
+ const pastBox=d.createElement('div');pastBox.innerHTML=run('hookCardsHTML(_saju,buildLifeV2Model(_saju,_meta))');
+ const years=[...pastBox.querySelectorAll('.hook-past-year')];assert.equal(years.length,3);
+ const visible=years.map(y=>[...y.children].filter(e=>e.tagName!=='DETAILS').map(e=>e.textContent).join(' '));
+ assert.equal(new Set(visible).size,3);
+ assert(visible[0].includes('바깥일'));assert(visible[1].includes('주변의 기대'));assert(visible[2].includes('결과물'));
+ for(const y of years){
+   const main=[...y.querySelectorAll(':scope>p')].map(e=>e.textContent).join(' ');
+   assert(main.length>=80);assert(!/천간|지지|월지|일지|시지|원진|반합|충 관계/.test(main));
+   const why=y.querySelector('details');assert(why&&!why.open);assert(why.textContent.includes('관계'));
+ }
+ assert(pastBox.textContent.includes('진과'));assert(!pastBox.textContent.includes('진와'));
+ run("_meta.sy=2012;_saju=calcSaju(2012,3,4,9,0)");
+ const childPast=run('hookPast(_saju,buildLifeV2Model(_saju,_meta))');
+ assert(childPast.every(x=>!/(직장|배우자|계약|이직|연봉)/.test(x.text)));
+ console.log('✓ 회고 본문: 세 해의 다른 생활 장면, 기술 근거는 접힘, 조사·아이 나이 문맥 유지');
+
  run("goToInput('topic-career');document.getElementById('iY').value='1990';document.getElementById('iM').value='5';document.getElementById('iD').value='15';renderCounselFields('topic-career');");
  d.getElementById('counsel_activity').value='개발 5년 차';d.getElementById('counsel_goal').value='직장 변경 검토';run('counselSave()');
  run("renderCounselFields('topic-money')");assert.equal(d.getElementById('counsel_activity').value,'');

@@ -234,3 +234,9 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #counselFields .counsel-details>p{margin:12px 0;color:var(--muted);font-size:.875rem;line-height:1.75;word-break:keep-all}
 #counselFields .ig{margin-top:14px;min-width:0}
 #counselFields input{width:100%;min-width:0;box-sizing:border-box}
+
+/* 회고 카드는 생활 해석을 먼저 읽고 계산 근거는 필요할 때 펼친다. */
+#lv4-lc-past .hook-past-year+.hook-past-year{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+#lv4-lc-past .hook-past-year>h4{margin:0 0 10px;color:var(--accent);font-size:1rem;line-height:1.7}
+#lv4-lc-past .hook-past-year>p{margin:10px 0;line-height:1.95}
+#lv4-lc-past .lv4-why{margin-top:12px}

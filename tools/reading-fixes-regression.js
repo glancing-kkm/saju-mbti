@@ -41,8 +41,8 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
  check('성향·회고 카드: 성향 4개, 과거 연도와 계산 근거, 미래 별점, 약점과 행동',()=>{
    run("_meta.marital='single'");const b=d.createElement('div');b.innerHTML=run("buildLifeReadingV4(_saju,_meta)");
    assert.equal(b.querySelectorAll('#lv4-lc-hook p').length,4);
-   const past=[...b.querySelectorAll('#lv4-lc-past p:not(.lc-foot)')];assert(past.length>=1&&past.length<=3);
-   const y0=new Date().getFullYear();for(const p of past){const y=Number(p.querySelector('b').textContent.slice(0,4));assert(y<y0&&y>=y0-10,String(y));}
+   const past=[...b.querySelectorAll('#lv4-lc-past .hook-past-year')];assert(past.length>=1&&past.length<=3);
+   const y0=new Date().getFullYear();for(const p of past){const y=Number(p.querySelector('h4').textContent.slice(0,4));assert(y<y0&&y>=y0-10,String(y));}
    assert(b.querySelectorAll('.lc-moments .hook-stars').length>=2);assert(/솔직히 말하면, .+ → /.test(b.querySelector('#lv4-lc-core').textContent));
    assert(!/앉은 자리|undefined/.test(b.querySelector('#lv4-lc-past').textContent));
    run("_meta.marital='married'");const w=d.createElement('div');w.innerHTML=run("buildLifeReadingV4(_saju,_meta)");assert(!/연인|이별/.test(w.querySelector('#lv4-lc-past')?.textContent||''));

@@ -2179,7 +2179,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4580fdebf7a1">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=d9c2bc522d5b">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=4ea60f48fb30">
 </head>
 <body>
 <div id="app">
@@ -13793,10 +13793,79 @@ function hookStars(score,min){const n=Math.max(min||2,score>=92?5:score>=85?4:sc
 const HOOK_TG_GROUP={정관:'work',편관:'work',정재:'money',편재:'money',식신:'out',상관:'out',정인:'study',편인:'study',비견:'peer',겁재:'peer'};
 // 과거 사건을 맞히는 기능이 아니다. 원국과 세운의 관계만 제시한다.
 // 개인이 알려 준 사건으로 공통 규칙·연도 순위·사건 이름을 보정하지 않는다.
-const HOOK_PAST_THEME={
- work:'맡은 역할과 책임을 돌아볼 시기',money:'돈을 쓰고 관리하는 기준을 돌아볼 시기',
- out:'표현 방식과 하던 일을 돌아볼 시기',study:'배움과 준비 과정을 돌아볼 시기',peer:'사람 사이의 역할과 경계를 돌아볼 시기'
-};
+// 생활 해석은 관계의 종류와 작용하는 자리를 함께 읽는다.
+// 같은 명식의 공통 해석이며, 개인에게 실제 생긴 사건을 복원하지 않는다.
+function hookPastReading(grounds,kind,age){
+ const has=(place,test)=>grounds.some(g=>g.place===place&&test(g.kind));
+ const clash=k=>k==='충',bond=k=>/합/.test(k),friction=k=>/형|파|해|원진/.test(k);
+ const monthClash=has('월지',clash),dayClash=has('일지',clash),monthBond=has('월지',bond),dayBond=has('일지',bond);
+ const half=grounds.some(g=>['월지','일지'].includes(g.place)&&g.kind==='반합'),familyFriction=has('연지',friction);
+ let lines;
+ if(age<20){
+  lines=monthClash||dayClash?[
+   '주변에서 시키는 것과 본인이 하고 싶은 것이 엇갈리기 쉬운 때로 읽어요.',
+   '친구와 약속한 일, 공부 계획이 겹치면 어느 쪽을 택해도 아쉬움이 남기 쉬워요.',
+   '이 시기는 잘했는지보다 누구의 기대에 맞추려 애썼는지 돌아보는 게 더 도움이 돼요.'
+  ]:monthBond||dayBond?[
+   '혼자 하는 것보다 친구나 선생님과 함께할 때 의욕이 붙기 쉬운 때로 읽어요.',
+   '같이 공부하거나 맡은 일을 나누는 경험이 자신감을 키우는 쪽이에요.',
+   '다만 친해지고 싶은 마음에 원하지 않는 부탁까지 받아들일 필요는 없어요.'
+  ]:[
+   '익숙한 공부법이나 친구를 대하는 방식을 조정할 필요가 생기기 쉬운 때예요.',
+   '열심히 한 만큼 반응이 없으면 쉽게 풀이 죽을 수 있어요.',
+   '성적이나 친구 수보다 꾸준히 이어 간 활동을 기준으로 돌아보세요.'
+  ];
+ }else if(monthClash&&dayClash){
+  lines=[
+   '이 해에는 일과 가까운 관계를 함께 봐야 해요. 바깥일에 시간을 쓰면 가까운 사람을 챙길 여유가 줄기 쉬워요.',
+   '한쪽 약속을 지키려다 다른 쪽에는 설명이 늦어지는 식이에요.',
+   '당시 갈등이 있었다면 마음이 식어서인지, 시간과 역할이 한쪽에 몰려서인지 나눠 볼 필요가 있어요.'
+  ];
+ }else if(monthBond&&dayBond){
+  lines=half?[
+   '준비한 것을 밖으로 꺼내 반응을 살펴볼 때예요.',
+   '처음부터 큰 약속을 잡기보다 작은 결과물을 공유하고 반응을 보는 쪽에 힘이 붙어요.',
+   '관심을 받는 것과 일이 확정되는 것은 달라요. 구체적인 역할과 일정이 정해졌는지가 중요한 기준이에요.'
+  ]:[
+   '사람과 뜻을 맞추는 것이 계획을 진전시키는 열쇠예요.',
+   '대화로 방향을 정하거나 함께할 일을 구체화하는 데 힘이 붙는 쪽이에요.',
+   familyFriction?'다만 가까운 사람과 뜻이 맞아도 가족이나 주변의 기대까지 같지는 않아요. 누구와 무엇을 합의한 건지 구분해서 돌아보세요.':'함께하자는 말만으로 역할까지 정해지는 것은 아니에요. 시간과 비용을 누가 맡는지까지 맞췄는지가 중요해요.'
+  ];
+ }else if(monthClash){
+  lines=[
+   age>=56?'익숙한 활동 방식과 주변에서 기대하는 역할이 어긋나기 쉬운 때로 읽어요.':'하던 일의 방식과 주변에서 요구하는 기준이 어긋나기 쉬운 때로 읽어요.',
+   '더 맡아 달라는 요청을 받아들이면 원래 하던 일의 마감이 밀리는 식이에요.',
+   '그 시기를 돌아볼 때는 일을 바꿨는지보다 책임과 결정 권한이 균형을 이뤘는지 살펴보세요.'
+  ];
+ }else if(dayClash||has('일간',clash)){
+  lines=[
+   '본인이 원하는 방식과 가까운 사람의 요구를 다시 맞출 필요가 큰 해로 읽어요.',
+   '평소 넘어가던 연락 빈도나 함께 쓰는 시간도 유난히 예민하게 느껴질 수 있어요.',
+   '관계를 정리할 때로 단정하기보다, 지킬 약속과 각자 결정할 몫을 구분하는 시기예요.'
+  ];
+ }else if(monthBond||dayBond){
+  lines=[
+   '혼자 밀어붙이기보다 대화하고 조율할수록 일이 풀리기 쉬운 해로 읽어요.',
+   monthBond?'함께 일하거나 배우는 사람과 역할을 맞추는 것이 중요한 지점이에요.':'가까운 사람과 생활의 속도나 약속을 맞추는 것이 중요한 지점이에요.',
+   '서로 좋다는 말에서 그쳤는지, 실제 시간과 수고를 나눴는지가 그 관계를 돌아볼 기준이에요.'
+  ];
+ }else{
+  const themes={
+   work:['맡은 일의 기준과 책임을 분명히 하는 것이 중요한 때로 읽어요.','부탁을 잘 들어주는 것과 본인 몫을 넘어서는 일은 구분할 필요가 있어요.','그때 얻은 평가보다 오래 떠안게 된 역할이 무엇인지 돌아보세요.'],
+   money:['들어오는 돈보다 남는 돈을 따져 볼 필요가 큰 해로 읽어요.','좋아 보이는 제안도 유지비나 함께 부담할 비용까지 보면 판단이 달라질 수 있어요.','얼마를 벌었는지보다 반복 지출과 돈을 함께 쓰는 약속을 어떻게 정했는지 돌아보세요.'],
+   out:['생각만 해 두던 것을 말이나 결과물로 꺼내는 일이 중요한 때로 읽어요.','설명이 길어지면 의도보다 말투가 먼저 전달될 수 있어요.','당시 반응을 돌아볼 때는 아이디어 자체와 전달 방식을 나눠 살펴보세요.'],
+   study:['새로 벌이는 일보다 배우고 준비한 것을 정리하는 데 무게가 실리는 때예요.','자료를 더 찾느라 이미 아는 것을 써 볼 기회가 늦어질 수 있어요.','무엇을 더 배웠는지보다 실제로 적용해 본 것이 무엇인지 돌아보세요.'],
+   peer:['사람들과 함께하면서 본인 몫을 어디까지 지킬지가 중요한 때로 읽어요.','같이 시작해도 시간이나 비용을 더 내는 쪽이 생기면 서운함이 쌓이기 쉬워요.','누가 더 좋은 사람인지보다 역할과 부담을 어떻게 나눴는지 돌아보세요.']
+  };
+  lines=themes[kind]||themes.peer;
+ }
+ return lines;
+}
+function hookPastWhy(grounds){
+ const grouped=new Map();
+ grounds.forEach(g=>{const key=[g.type,g.glyph,g.transit,g.kind].join('|');if(!grouped.has(key))grouped.set(key,{...g,places:[]});grouped.get(key).places.push(g.place);});
+ return [...grouped.values()].map(g=>`${g.places.join('·')}의 ${g.glyph}${gwa(g.glyph)} 그해 ${g.type==='stem'?'천간':'지지'} ${g.transit} 사이에 ${g.kind} 관계가 있어요.`).join(' ');
+}
 function hookPast(s,m){
   const y0=m.year,sy=Number(m.meta.sy);if(!sy)return [];
   const places={yp:'연지',mp:'월지',dp:'일지',hp:'시지'},pool=[];
@@ -13809,9 +13878,9 @@ function hookPast(s,m){
     });
     if(!grounds.length)continue;
     const kind=HOOK_TG_GROUP[x.tg]||'peer',age=year-sy+1;
-    const text=age<20?'학교생활과 친구 관계를 돌아볼 만한 해예요.':HOOK_PAST_THEME[kind]+'예요.';
-    const why=grounds.slice(0,3).map(g=>`${g.place}의 ${g.glyph}와 그해 ${g.type==='stem'?'천간':'지지'} ${g.transit} 사이에 ${g.kind} 관계가 있어요.`).join(' ');
-    pool.push({year,age,kind,grounds,text,why,nextText:'',source:'calculated-pattern',confirmedEvent:false});
+    const paragraphs=hookPastReading(grounds,kind,age),text=paragraphs.join(' ');
+    const why=hookPastWhy(grounds);
+    pool.push({year,age,kind,grounds,paragraphs,text,why,nextText:'',source:'calculated-pattern',confirmedEvent:false});
   }
   // 최근 해부터 최대 세 해. 특정 사용자의 사건에 맞춘 적중 순위는 사용하지 않는다.
   return pool.slice(0,3).reverse();
@@ -13819,7 +13888,7 @@ function hookPast(s,m){
 function hookCardsHTML(s,m){
   const who=ppWho(),scenes=hookScenes(s,m),past=m.age>=10?hookPast(s,m):[];
   const hit=`<section class="lc-card hook-card" id="lv4-lc-hook"><h3 class="lc-card-title">${who}${eun(who)} 타고나기를<br>이런 분이에요</h3>${lv4P(scenes)}</section>`;
-  const back=past.length?`<section class="lc-card hook-past" id="lv4-lc-past"><h3 class="lc-card-title">지나온 해의 흐름을<br>돌아보면</h3>${lv4P(past.map(it=>`<b>${it.year}년 · ${it.age}세</b> ${it.text} ${it.why} ${it.nextText}`))}<p class="lc-foot">같은 사주라도 살아온 환경과 선택은 달라요. 위 내용은 사주에서 읽는 공통 경향이며, 실제 겪은 사건을 확인한 기록은 아니에요.</p></section>`:'';
+  const back=past.length?`<section class="lc-card hook-past" id="lv4-lc-past"><h3 class="lc-card-title">지나온 해의 흐름을<br>돌아보면</h3>${past.map(it=>`<div class="hook-past-year"><h4>${it.year}년 · ${it.age}세</h4>${lv4P(it.paragraphs)}<details class="lv4-why"><summary>이렇게 읽은 사주 근거</summary><div class="lv4-why-body">${lv4P([it.why])}</div></details></div>`).join('')}<p class="lc-foot">명식에서 읽는 공통 경향이에요. 실제 경험은 각자의 환경과 선택에 따라 달라요.</p></section>`:'';
   return hit+back;
 }
 function buildLifeChapters(m,s,meta,ctx){
