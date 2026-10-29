@@ -38,6 +38,16 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='dating'");assert.match(run("ppPartnerHTML(buildPinpoint(_saju,_meta),{})"),/현재 연인과 배우자로 발전/);
    run("_meta.marital='single'");
  });
+ check('공감 훅: 이런 적 있죠 장면 4개, 지난 일은 과거 연도와 다시 오는 해, 미래는 별점, 솔직한 약점+행동',()=>{
+   run("_meta.marital='single'");const b=d.createElement('div');b.innerHTML=run("buildLifeReadingV4(_saju,_meta)");
+   assert.equal(b.querySelectorAll('#lv4-lc-hook p').length,4);
+   const past=[...b.querySelectorAll('#lv4-lc-past p:not(.lc-foot)')];assert(past.length>=1&&past.length<=3);
+   const y0=new Date().getFullYear();for(const p of past){const y=Number(p.querySelector('b').textContent.slice(0,4));assert(y<y0&&y>=y0-10,String(y));}
+   assert(b.querySelectorAll('.lc-moments .hook-stars').length>=2);assert(/솔직히 말하면, .+ → /.test(b.querySelector('#lv4-lc-core').textContent));
+   assert(!/앉은 자리|undefined/.test(b.querySelector('#lv4-lc-past').textContent));
+   run("_meta.marital='married'");const w=d.createElement('div');w.innerHTML=run("buildLifeReadingV4(_saju,_meta)");assert(!/연인|이별/.test(w.querySelector('#lv4-lc-past')?.textContent||''));
+   run("_meta.marital='single'");
+ });
  check('인물 카드: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼은 귀인 + 늘 악연',()=>{
    const parse=html=>{const b=d.createElement('div');b.innerHTML=html;return [...b.querySelectorAll('.lc-pcard')].map(x=>x.classList[1]+':'+x.querySelector('h4').textContent);};
    const kinds=html=>parse(html).map(x=>x.split(':')[0]).join(',');

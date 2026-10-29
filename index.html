@@ -1654,6 +1654,10 @@ button.astro-bar-row.tappable.active{background:rgba(203,162,88,.13);box-shadow:
   .pillar4-char{font-size:1.32rem}
 }
 
+/* ── 공감 훅 카드 · 가능성 별점 ── */
+.hook-stars{color:var(--accent-bright);letter-spacing:1px;font-size:.85em;white-space:nowrap;margin-left:2px}
+.hook-past p b{color:var(--accent);margin-right:4px}
+
 /* ── 용어 안내 공지 카드 ── */
 .term-notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:var(--earth-bg);border:1px solid rgba(138,101,21,.28);border-radius:14px;position:relative;overflow:hidden}
 .term-notice::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--accent-bright);opacity:0}
@@ -13693,6 +13697,75 @@ function lcEraScore(saju,du){const tg=tenGod(saju.dp.stem,du.stem),btg=tenGod(sa
 function lcLineChart(points,curIdx){return lcCurve(points,{cur:curIdx});}
 function lcAreaBars(items){return `<div class="lc-area">${items.map(([l,v])=>`<div class="lc-area-row"><span>${l}</span><div><i style="width:${v}%"></i></div><b>${v}</b></div>`).join('')}</div>`;}
 function lcMonthLab(x,y0){return `${x.year!==y0?`${x.year}년 `:''}<span class="lk-m">${x.month}월</span>`;}
+// ── 공감 훅: "완전 내 얘기" 장면 · 지난 일 맞히기 · 솔직한 약점 ──
+// 성향은 단정형으로, 미래는 시기와 가능성(★)으로 말한다. 장면은 주 성향·보조 성향과 원국 글자로 골라 같은 성향끼리도 겹치지 않게 한다.
+const HOOK_SCENES={
+  adult:{
+    self:['누가 "이렇게 해"라고 정해 주면 이상하게 하기 싫어져요. 같은 일도 본인이 정하면 밤새서 해요.','단체 대화방에서 결정이 안 나면 결국 본인이 "그럼 이렇게 하자"고 정리해요.','도움을 받으면 고마운데, 동시에 빚진 기분이 들어서 빨리 갚고 싶어져요.','남이 하는 걸 보면 "내가 하면 더 빨리 할 텐데" 싶어서 속이 답답해요.','아파도 웬만하면 티를 안 내요. 다 해결한 뒤에야 주변이 알아요.','충고를 들으면 일단 "알았어"라고 하고, 결국 본인 방식대로 해요.'],
+    out:['머릿속에 생각이 많아서, 말하다 보면 처음 주제에서 세 번쯤 옆길로 새요.','재미없는 회의나 모임에서는 표정 관리가 제일 힘들어요.','칭찬 한마디에 밤새 일하고, 반응이 없으면 금방 흥미가 식어요.','맞는 말이라도 굳이 해서 분위기가 싸해진 적이 있어요.','사진이든 글이든 뭔가 남기지 않으면 그날이 아까운 기분이 들어요.','남이 만든 틀을 따르기 전에 "이렇게 하면 더 낫지 않아?"부터 떠올려요.'],
+    wealth:['물건 하나를 사도 가격을 세 군데는 비교해야 마음이 놓여요.','약속을 잡을 때 머릿속으로 이동 시간과 비용부터 계산해요.','말만 앞서는 사람보다 결과로 보여 주는 사람을 믿어요.','돈 얘기를 대놓고 하진 않지만, 누가 손해 보는 구조인지는 제일 먼저 알아채요.','계획 없이 흘러간 하루가 생기면 괜히 불안해서 할 일 목록을 만들어요.','남들이 감으로 고를 때 본인은 조건을 하나씩 따져 봐요.'],
+    gwan:['약속 시간보다 먼저 도착하는 쪽이고, 늦는 사람을 보면 속으로 점수를 깎아요.','"괜찮아, 내가 할게"라는 말을 너무 자주 해요. 그리고 진짜 혼자 다 해요.','규칙을 어기는 사람을 보면 내 일이 아니어도 신경이 쓰여요.','일을 끝내기 전에는 쉬어도 쉬는 것 같지 않아요.','남들 눈에는 여유 있어 보여도, 속으로는 실수할까 봐 두세 번 확인해요.','부탁을 거절 못 해서 결국 남의 일까지 떠안아요.'],
+    in_:['식당 하나를 골라도 후기를 한참 읽어야 들어가요.','말하기 전에 머릿속에서 문장을 다 만들어 보고 나서야 입을 열어요.','궁금한 게 생기면 새벽까지 찾아보다가 처음 찾던 걸 잊어버려요.','사람을 처음 만나면 말보다 관찰부터 해요. 그리고 그 첫인상이 대부분 맞아요.','결정을 내려도 "더 좋은 게 있지 않을까" 하는 생각이 계속 남아요.','혼자 있는 시간이 없으면 배터리가 방전된 것처럼 지쳐요.']
+  },
+  young:{
+    self:['친구들이 정한 놀이보다 본인이 정한 놀이를 할 때 훨씬 신나요.','하지 말라고 하면 이상하게 더 하고 싶어져요.','모르는 문제를 물어보기보다 혼자 끝까지 풀어 보려고 해요.'],
+    out:['수업 중에 떠오른 생각을 참지 못하고 말해서 웃음이 터진 적이 있어요.','칭찬받은 과목은 쑥쑥 늘고, 재미없는 과목은 손이 안 가요.','그림·노래·말처럼 뭔가를 표현하는 시간에 눈이 반짝여요.'],
+    wealth:['용돈을 받으면 어디에 쓸지 계획부터 세워요.','친구끼리 나눌 때 공평하지 않으면 바로 알아채요.','점수나 스티커처럼 결과가 보이면 훨씬 열심히 해요.'],
+    gwan:['숙제를 안 하고 자려면 마음이 불편해서 잠이 안 와요.','규칙을 어기는 친구를 보면 내 일이 아니어도 신경이 쓰여요.','반장이나 모둠장 같은 역할을 맡으면 끝까지 책임지고 해내요.'],
+    in_:['궁금한 게 생기면 "왜?"를 끝없이 물어요.','새로운 곳에 가면 바로 어울리기보다 먼저 지켜봐요.','책이나 영상 하나에 빠지면 시간 가는 줄 몰라요.']
+  }
+};
+const HOOK_HONEST={
+  self:[['도와 달라는 말을 못 해서 일을 키워요. 혼자 끙끙대다 마감 직전에 몰아서 해결해요.','막히면 하루 안에 한 사람에게 "이것만 봐 줄래?"라고 물어보세요.'],['본인이 맞다고 생각하면 남의 말이 잘 안 들려요. 그래서 나중에 "그때 말했잖아"라는 소리를 들어요.','큰 결정 전에는 반대 의견 하나를 일부러 들어 보세요.']],
+  out:[['시작한 일은 많은데 끝까지 간 일은 적어요.','새 일을 시작하기 전에 하던 일 하나를 먼저 마무리하세요.'],['감정이 말투에 그대로 실려서 의도보다 세게 전달돼요.','화난 날 보내는 메시지는 30분 뒤에 다시 읽고 보내세요.']],
+  wealth:[['손해 볼 것 같으면 좋은 기회도 너무 오래 재다가 놓쳐요.','고민할 기한을 미리 정하고, 그날은 꼭 결정하세요.'],['결과가 안 보이면 본인을 깎아내려요. 잘하고 있는데도 "이게 맞나" 하고 흔들려요.','한 달에 한 번, 쌓인 결과를 숫자로 적어 보세요.']],
+  gwan:[['서운한 걸 말 안 하고 쌓아 두다가, 어느 날 갑자기 관계를 정리해 버려요.','서운한 건 그 주 안에 한 문장으로 말해 보세요.'],['남한테는 너그러운데 본인한테는 지나치게 엄격해요. 그래서 칭찬을 들어도 잘 안 믿어요.','오늘 잘한 일 하나를 적고, 그대로 인정해 주세요.']],
+  in_:[['생각만 하다가 타이밍을 놓친 적이 많아요. 준비가 끝날 때쯤 기회는 이미 지나가 있어요.','80% 준비됐으면 일단 시작하세요.'],['속마음을 잘 안 보여서, 가까운 사람도 본인 생각을 몰라 서운해해요.','고마운 마음은 생각났을 때 바로 말로 하세요.']]
+};
+const HOOK_DOMAIN={
+  work:{self:'윗사람이 하나하나 지시하는 곳에서는 오래 못 버텨요. 맡겨 주면 기대 이상을 해내요.',out:'같은 일만 반복하는 자리에서는 금방 지루해져요. 본인 아이디어가 들어갈 틈이 있어야 오래 해요.',wealth:'성과가 숫자로 보이는 일에서 사람이 달라져요. 보상이 분명하면 누구보다 빨리 움직여요.',gwan:'역할과 책임이 분명한 곳에서 제일 빛나요. 기준이 애매한 조직에서는 결국 혼자 다 떠안아요.',in_:'한 분야를 깊게 파는 일에서 "그건 저 사람한테 물어봐"라는 말을 듣게 돼요.'},
+  money:{self:'남 밑에서 받는 월급보다 본인 걸 할 때 돈이 더 붙어요.',out:'재능을 팔 때 돈이 들어와요. 대신 기분 따라 쓰는 돈도 커요.',wealth:'돈 냄새를 잘 맡아요. 남들이 모르는 조건과 할인을 먼저 찾아내요.',gwan:'큰돈 한 방보다 꾸준한 돈이 맞아요. 월급과 적금처럼 예측되는 돈이 마음을 편하게 해요.',in_:'자격과 전문 지식이 돈이 되는 사주예요. 공부에 쓴 돈이 결국 몇 배로 돌아와요.'},
+  love:{self:'좋아해도 먼저 매달리지 않아요. 상대가 본인 영역을 존중해 줄 때 마음이 열려요.',out:'좋아하면 티가 다 나요. 연락 속도부터 달라지거든요.',wealth:'설렘보다 "이 사람과 생활이 될까"를 먼저 따져요.',gwan:'한번 사귀면 오래 가요. 대신 약속을 어기면 마음이 한순간에 식어요.',in_:'마음을 여는 데 시간이 걸려요. 대신 한번 열면 상대의 사소한 습관까지 다 기억해요.'}
+};
+function hookSeed(s){return s.dp.stem*12+s.dp.branch+s.mp.branch*7+s.yp.stem*3;}
+function hookPick(arr,seed,n,skip){const out=[];for(let i=0;out.length<n&&i<arr.length*3;i++){const x=arr[(seed+i*5)%arr.length];if(!out.includes(x)&&!(skip||[]).includes(x))out.push(x);}return out;}
+function hookScenes(s,m){const pool=m.age<20?HOOK_SCENES.young:HOOK_SCENES.adult,seed=hookSeed(s),main=hookPick(pool[m.axis]||pool.gwan,seed,3);return main.concat(m.secondAxis&&m.secondAxis!==m.axis?hookPick(pool[m.secondAxis]||[],seed+1,1,main):[]);}
+function hookHonest(s,m){const list=HOOK_HONEST[m.axis]||HOOK_HONEST.gwan;return list[hookSeed(s)%list.length];}
+function hookDomain(kind,m){return (HOOK_DOMAIN[kind]||{})[m.axis]||'';}
+// 가능성 별점 — 그달 점수와 그해 영역 점수의 평균(대개 79~96점)을 나눈다
+function hookStars(score,min){const n=Math.max(min||2,score>=92?5:score>=85?4:score>=79?3:2);return `<span class="hook-stars" role="img" aria-label="가능성 5점 중 ${n}점">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`;}
+const HOOK_PAST={
+  clash:{kid:'다니던 곳이나 함께 지내는 사람이 바뀌는 일이 있었을 거예요. 이사나 전학 같은 변화예요.',teen:'학교나 반, 친구 관계가 크게 바뀌었을 거예요. 마음고생도 했을 거예요.',adult:'일, 사는 곳, 가까운 관계 중 하나가 크게 흔들렸을 거예요. 이직·이사·이별 같은 일이에요.',senior:'생활 터전이나 가족의 일로 큰 변화를 겪었을 거예요.',why:'그해의 글자가 본인 자리와 정면으로 부딪혔거든요.',next:'같은 기운이 {y}에 다시 와요. 이번엔 미리 알고 맞는 거니, 바꿀 것은 본인이 먼저 고르세요.'},
+  era:{kid:'그 무렵 성격이나 좋아하는 것이 눈에 띄게 달라졌을 거예요.',teen:'그 무렵 관심사나 어울리는 친구들이 바뀌었을 거예요.',adult:'그해 전후로 하는 일이나 만나는 사람들의 분위기가 확 달라졌다고 느꼈을 거예요.',senior:'그 무렵 생활의 리듬과 마음 쓰는 곳이 바뀌었을 거예요.',why:'10년마다 바뀌는 큰 흐름, 대운이 바뀐 해였어요.',next:'다음 대운은 {y}에 시작돼요. 그때 또 한 번 배경이 바뀌어요.'},
+  bond:{kid:'그해 새로 가까워진 친구나 어른이 있었을 거예요.',teen:'그해 사귄 친구가 지금까지 기억에 남아 있을 거예요.',adult:'그해 새로 가까워진 사람이 있었을 거예요. 연인이든 동료든, 그 사람이 지금까지 영향을 주고 있어요.',senior:'그해 가족이 늘거나 새 모임이 생겼을 거예요.',why:'그해의 글자가 본인 자리와 자석처럼 끌어당겼거든요.',next:'이런 인연의 해는 {y}에 다시 와요.'},
+  work:{kid:'새로운 규칙이나 생활 습관을 익히느라 애쓴 해였을 거예요.',teen:'시험과 평가 부담이 유난히 컸을 거예요.',adult:'책임이 늘거나 평가받는 일이 몰렸을 거예요. 승진·발령·시험 같은 일이에요.',senior:'맡은 역할이나 집안의 책임이 무거워졌을 거예요.',why:'그해에는 책임과 규칙의 기운이 앞에 섰거든요.',next:'책임이 커지는 해는 {y}에 다시 와요. 그때는 자리로 보상받을 차례예요.'},
+  money:{kid:'갖고 싶은 것과 필요한 것을 두고 고민이 많았을 거예요.',teen:'용돈이나 물건을 두고 선택할 일이 많았을 거예요.',adult:'돈이 크게 들어오거나 나간 해였을 거예요. 큰 지출이나 계약이 있었을 거예요.',senior:'목돈을 정리하거나 큰돈을 쓸 일이 있었을 거예요.',why:'그해에는 현실과 재물의 기운이 앞에 섰거든요.',next:'돈이 크게 움직이는 해는 {y}에 다시 와요.'},
+  out:{kid:'새로운 재능이나 좋아하는 놀이가 눈에 띄었을 거예요.',teen:'새 취미나 재능이 드러난 해였을 거예요.',adult:'새로운 걸 시작하거나 하던 걸 그만뒀을 거예요.',senior:'새로 배우거나 시작한 일이 있었을 거예요.',why:'그해에는 표현하고 풀어내는 기운이 앞에 섰거든요.',next:'새로 시작하기 좋은 해는 {y}에 다시 와요.'},
+  study:{kid:'배우는 게 늘고 어른의 도움을 많이 받은 해였을 거예요.',teen:'공부 방식이 바뀌거나 좋은 선생님을 만났을 거예요.',adult:'공부·자격·서류 일이 많았을 거예요. 계약서나 시험이 있었을 거예요.',senior:'건강 정보나 서류를 챙길 일이 많았을 거예요.',why:'그해에는 배우고 받아들이는 기운이 앞에 섰거든요.',next:'배움과 문서의 해는 {y}에 다시 와요.'},
+  peer:{kid:'친구와 다투거나 경쟁할 일이 있었을 거예요.',teen:'친구 사이의 경쟁이나 서운함이 있었을 거예요.',adult:'사람 문제로 신경 쓸 일이 많았을 거예요. 경쟁하거나 돈을 나눌 일이요.',senior:'형제나 오랜 친구와 얽힌 일이 있었을 거예요.',why:'그해에는 동료와 경쟁의 기운이 앞에 섰거든요.',next:'사람 문제를 조심할 해는 {y}에 다시 와요.'}
+};
+const HOOK_TG_GROUP={정관:'work',편관:'work',정재:'money',편재:'money',식신:'out',상관:'out',정인:'study',편인:'study',비견:'peer',겁재:'peer'};
+function hookPast(s,m){
+  const y0=m.year,sy=Number(m.meta.sy)||y0-29,clashB=(s.dp.branch+6)%12,stage=a=>a<13?'kid':a<20?'teen':a<56?'adult':'senior';
+  const info=y=>_lifeV2YearInfo(s,y),ageAt=y=>y-sy+1,used=new Set(),out=[];
+  const next=pred=>{for(let y=y0+1;y<=y0+15;y++)if(pred(info(y)))return y;return 0;};
+  const push=(year,kind)=>{if(used.has(year)||out.length>=3)return;used.add(year);out.push({year,age:ageAt(year),kind});};
+  const past=[];for(let y=y0-1;y>=y0-10&&ageAt(y)>=8;y--)past.push(info(y));
+  const clash=past.find(x=>x.yp.branch===clashB);if(clash){push(clash.year,'clash');out[out.length-1].next=next(x=>x.yp.branch===clashB);}
+  const das=m.dq&&m.dq.daeuns||[],du=das.filter(d=>{const y=sy+d.age-1;return y<y0&&y>=y0-10&&d.age>=8;}).pop();
+  if(du){const y=sy+du.age-1;if(!used.has(y)){push(y,'era');const n=das.find(d=>sy+d.age-1>y0);out[out.length-1].next=n?sy+n.age-1:0;}}
+  const bond=past.find(x=>!used.has(x.year)&&/합/.test(x.rel.kind));if(bond&&out.length<3){push(bond.year,'bond');out[out.length-1].next=next(x=>/합/.test(x.rel.kind));}
+  const strong=past.filter(x=>!used.has(x.year)&&HOOK_TG_GROUP[x.tg]).sort((a,b)=>Math.abs(b.score-60)-Math.abs(a.score-60))[0];
+  if(strong&&out.length<3){const g=HOOK_TG_GROUP[strong.tg];push(strong.year,g);out[out.length-1].next=next(x=>HOOK_TG_GROUP[x.tg]===g);}
+  const married=(m.meta&&m.meta.marital)==='married',wed={clash:'일, 사는 곳, 집안의 일 중 하나가 크게 흔들렸을 거예요. 이직·이사·가족의 큰 결정 같은 일이에요.',bond:'그해 새로 가까워진 사람이 있었을 거예요. 동료든 이웃이든, 그 사람이 지금까지 영향을 주고 있어요.'};
+  return out.sort((a,b)=>a.year-b.year).map(it=>{const t=HOOK_PAST[it.kind],sg=stage(it.age);return {...it,text:married&&sg==='adult'&&wed[it.kind]||t[sg],why:t.why,nextText:it.next?t.next.replace('{y}',`<span class="lk-m">${it.next}년</span>`):''};});
+}
+function hookCardsHTML(s,m){
+  const who=ppWho(),scenes=hookScenes(s,m),past=m.age>=10?hookPast(s,m):[];
+  const hit=`<section class="lc-card hook-card" id="lv4-lc-hook"><small class="lc-kicker">이런 적 있죠?</small><h3 class="lc-card-title">${who}, 이건 완전<br>본인 얘기예요</h3>${lv4P(scenes)}</section>`;
+  const back=past.length?`<section class="lc-card hook-past" id="lv4-lc-past"><small class="lc-kicker">지난 일 맞히기</small><h3 class="lc-card-title">지난 몇 년,<br>이랬을 거예요</h3>${lv4P(past.map(it=>`<b>${it.year}년 · ${it.age}세</b> ${it.text} ${it.why} ${it.nextText}`))}<p class="lc-foot">* 맞았다면, 아래 앞으로의 흐름도 같은 계산으로 읽었어요.</p></section>`:'';
+  return hit+back;
+}
 function buildLifeChapters(m,s,meta,ctx){
   const p=m.profile,ax=LIFE_V2_AXIS[m.axis],y0=m.year,O=LV4_OH,seatShort=ctx.seatShort,seatLove=ctx.seatLove;
   const tm={};['love','money','career','marriage','health','study','children'].forEach(k=>{try{tm[k]=buildTopicModel('topic-'+k,s,meta);}catch(e){tm[k]=null;}});
@@ -13700,11 +13773,12 @@ function buildLifeChapters(m,s,meta,ctx){
   const cnt=list=>m.pillarTgs.filter(t=>list.includes(t)).length,c=ohCount(s);
   // 1) 인생을 흔드는 3가지 순간
   const ev=[];
-  const lv=tm.love&&top(tm.love.bestMonths),spE=m.genderKey==='female'?(SOH[s.dp.stem]+3)%5:(SOH[s.dp.stem]+2)%5;if(lv)ev.push({k:'love',x:lv,t:`직업 <span class="lk-m">${PP_JOB[spE].split(',')[0]}</span> 쪽인 운명의 상대를 만나요`,dot:'g'});
-  const mo=tm.money&&top(tm.money.bestMonths);if(mo)ev.push({k:'money',x:mo,t:m.stableMoney>=m.activeMoney?'월급 밖의 목돈이 들어오는 길이 열려요':'목돈이 크게 움직이는 기회가 와요',dot:'y'});
+  const st=(meta&&meta.marital)||'',kid=m.age<20;
+  const lv=tm.love&&top(tm.love.bestMonths),spE=m.genderKey==='female'?(SOH[s.dp.stem]+3)%5:(SOH[s.dp.stem]+2)%5;if(lv)ev.push({k:'love',x:lv,t:kid?'마음이 잘 맞는 친구가 생겨요':st==='married'?'배우자와 큰 결정을 함께 내리기 좋은 때예요':st==='dating'?'지금 만나는 사람과 결혼 이야기가 구체적으로 나와요':`직업 <span class="lk-m">${PP_JOB[spE].split(',')[0]}</span> 쪽인 사람에게 마음이 움직여요`,dot:'g'});
+  const mo=tm.money&&top(tm.money.bestMonths);if(mo)ev.push({k:'money',x:mo,t:kid?'노력한 만큼 눈에 보이는 보상을 받아요':m.age>=56?'묶여 있던 돈이 풀리거나 노후 자금이 정리돼요':m.stableMoney>=m.activeMoney?'연봉이나 계약 조건이 오르고, 월급 밖의 돈이 들어와요':'목돈이 크게 움직이는 제안이 와요',dot:'y'});
   const ca=tm.health&&(tm.health.careMonths||[])[0];if(ca)ev.push({k:'care',x:ca,t:`<span class="lk-m">${(TOPIC_HEALTH_OH[p.top]||[''])[0]}</span> 쪽이 보내는 경고 신호를 챙겨야 해요`,dot:'r'});
   ev.sort((a,b)=>(a.x.year*12+a.x.month)-(b.x.year*12+b.x.month));
-  const timeline=ev.length?`<section class="lc-moments"><div class="lc-scroll"><p class="lc-scroll-title">사주로 살펴본 삶의 세 장면</p>${ev.map(e=>`<div class="lc-tl ${e.dot}"><span class="lc-tl-when">${e.x.year}년 <span class="lk-m">${e.x.month}월</span></span><span class="lk-tl-what">${e.t}</span></div>`).join('')}</div></section>`:'';
+  const timeline=ev.length?`<section class="lc-moments"><div class="lc-scroll"><p class="lc-scroll-title">그래서 앞으로는, 이 세 장면</p>${ev.map(e=>`<div class="lc-tl ${e.dot}"><span class="lc-tl-when">${e.x.year}년 <span class="lk-m">${e.x.month}월</span></span><span class="lk-tl-what">${e.t} ${hookStars(e.k==='care'?140-(e.x.score||60):(()=>{const t=tm[e.k],yr=t&&(t.years||[]).find(y=>y.year===e.x.year);return Math.round(((e.x.score||70)+(yr?yr.score:e.x.score||70))/2);})(),e.k==='care'?2:3)}</span></div>`).join('')}</div></section>`:'';
   // 2) 성향 막대
   const clamp=v=>Math.max(15,Math.min(85,Math.round(v)));
   const emo=c[1]*1.2+c[0]+c[4]*0.8,logic=c[3]*1.2+c[2]+c[4]*0.4;
@@ -13716,6 +13790,7 @@ function buildLifeChapters(m,s,meta,ctx){
   const card=`<section class="lc-card" id="lv4-lc-core"><h3 class="lc-card-title">${tt[0]}<br>${tt[1]}</h3>${lv4P([
     lv4StoryLines(s,meta,'core')[0].split(/(?<=[.!?])\s+/)[0],
     dohwa?'이성 관계에서는 사주의 도화살 때문에 본인도 모르게 사람을 끌어당겨요. 상대에게 "이 사람은 나를 진짜 이해해 준다"는 느낌을 주거든요.':`이성 관계에서는 ${seatLove||'믿음이 쌓일수록 매력이 커지는 편이에요.'}`,
+    (h=>`솔직히 말하면, ${h[0]} → ${h[1]}`)(hookHonest(s,m)),
     `${ax.risk} ${lv4StoryLines(s,meta,'core')[3]}`,
     lv?`특히 ${lv.year}년 ${lv.month}월에 계획한 일의 준비 상태를 점검해 보세요. 그달에 예정된 만남이나 제안은 역할과 조건을 적어 두고 비교해 보세요.`:'',
     lv1?`인연이 가장 강하게 들어오는 해는 ${lv1.year}년이에요. 그 전후로 생활 반경을 넓혀 두면 흐름을 잡기 쉬워요.`:''
@@ -13735,7 +13810,7 @@ function buildLifeChapters(m,s,meta,ctx){
   const avgY=t=>t&&t.years&&t.years.length?Math.round(t.years.reduce((a,x)=>a+x.score,0)/t.years.length):0;
   const radar=[['연애',avgY(tm.love)],['재물',avgY(tm.money)],['결혼',avgY(tm.marriage)],['직업',avgY(tm.career)],['건강',avgY(tm.health)],['학업',avgY(tm.study)],['자녀',avgY(tm.children)]].filter(x=>x[1]);
   const graph=`<section class="lc-card lc-graph" id="lv4-lc-graph"><h3 class="lc-card-title">${ppWho()}의 인생 그래프</h3><p class="lc-sub">대운(10년 단위)이 바뀌는 해마다의 흐름 점수예요. 가장 높은 곳이 인생의 최고조예요.</p>${lcCurve(pts.map((pt,i)=>({...pt,l:String(m.meta.sy+das[i].age-1)})),{cur:curI,label:'인생 그래프'})}<h4>영역별 운 지도 · 앞으로 10년</h4>${lcRadar(radar)}<h4>${y0}년 영역별 흐름</h4>${lcAreaBars(areas.map(([,l,v])=>[l,v]))}</section>`;
-  return {top:lcOrbs(s)+lcScene(s,'삶의 흐름을<br>세 장면으로<br>먼저 살펴봐요.')+timeline+lcScene(s,'기회는 살리고<br>부담은 덜도록<br>생활 속 선택을<br>함께 짚어봐요.',true),
+  return {top:lcOrbs(s)+lcScene(s,'먼저<br>본인 얘기부터<br>해 볼까요?')+hookCardsHTML(s,m)+timeline+lcScene(s,'기회는 살리고<br>부담은 덜도록<br>생활 속 선택을<br>함께 짚어봐요.',true),
     ch1:lcChapter(1,'명식 분석')+`<section class="lc-card" id="lv4-lc-bars"><h3 class="lc-card-title">${ppWho()}이 타고난 성향</h3>${bars}</section>`+card+lcScene(s,'이 성향을<br>일과 관계에<br>어떻게 쓸지<br>살펴볼게요.',true),
     ch2:lcChapter(2,'영역별 사주풀이')+lcScene(s,lcChartCue(s).html)+special+lcAreaGrid(),
     ch3:lcChapter(3,`${ppWho()}의 관계 지도`)+people+graph};
@@ -14123,15 +14198,15 @@ function buildLifeReadingV4(saju,meta){
     lv4Key('한 가지를 깊게 파고들어 다른 사람이 쓸 수 있는 결과물로 꺼낼 때, 본인의 재능이 이름값이 돼요.'));
 
   // 3. 직업운과 성공 방향 · 재물운과 자산 흐름
-  h+=lv4Section(3,`${young?'아직 일과 돈을 이야기하기엔 이른 나이예요. 여기서는 타고난 방향을 미리 알아 두는 지도로 읽어 주세요. ':''}일하는 방식은 ${m.career.axisLabel}에 가까워요. ${fp.work||''}`,
+  h+=lv4Section(3,`${young?'아직 일과 돈을 이야기하기엔 이른 나이예요. 여기서는 타고난 방향을 미리 알아 두는 지도로 읽어 주세요. ':`${hookDomain('work',m)} `}일하는 방식은 ${m.career.axisLabel}에 가까워요. ${fp.work||''}`,
     lv4Sub('잘 맞는 일',lv4StoryHTML(s,meta,'career')+lv4P([young?_lifeStageAdvice(m.age,'study'):`계산한 적성으로는 ${m.career.careers.slice(0,5).join(', ')} 쪽을 살펴볼 수 있어요. 실제 직무에서는 하는 일과 결정 권한을 함께 확인하세요.`,_lifeStageAdvice(m.age,'work')]))+
     lv4Sub(young?'지금 배움의 흐름':'지금 일의 흐름',lv4P([`지금 ${curTxt} 대운에는 '${plainTG(m.curTg)}'의 기운이 들어와 있어요. ${tgNow.lead||''}`,tgNow.good?`이 시기에는 이렇게 해 보세요. ${tgNow.good}`:'',tgNow.warn?`조심할 점도 있어요. ${tgNow.warn}`:'']))+
-    lv4Sub('돈이 들어오는 방식',lv4StoryHTML(s,meta,'money'))+
+    lv4Sub('돈이 들어오는 방식',(young?'':lv4P([hookDomain('money',m)]))+lv4StoryHTML(s,meta,'money'))+
     lv4Sub('돈을 지키는 법',lv4P([peer>=2?`사주에 동료와 경쟁을 뜻하는 글자가 ${peer}개 있어요. 사람이 많이 모이는 대신, 돈을 나누거나 빌려주는 일에서 새는 구멍이 생기기 쉬워요.`:'돈이 새는 구멍이 큰 편은 아니에요. 다만 기분이 좋을 때와 지쳤을 때의 씀씀이 차이를 한 번 살펴보세요.','통장을 생활비, 비상금, 오래 묵힐 자산, 도전해 볼 돈 네 칸으로 나눠 보세요. 좋은 기회가 와도 생활이 흔들리지 않아요.',`${ageTxt[3]} ${_lifeStageAdvice(m.age,'money')}`]))+
     lv4Key('본인의 전문성을 반복해서 들어오는 수입으로 바꾸는 것, 그게 본인 사주가 가리키는 성공 공식이에요.'));
 
   // 4. 연애운과 배우자운 · 인간관계와 사람 복
-  h+=lv4Section(4,`${m.age<16?'연애와 배우자 이야기는 아직 먼 미래예요. 지금은 친구와 가족 사이에서 마음을 나누는 방식으로 읽어 주세요. ':''}${fp.relationship||''}`,
+  h+=lv4Section(4,`${m.age<16?'연애와 배우자 이야기는 아직 먼 미래예요. 지금은 친구와 가족 사이에서 마음을 나누는 방식으로 읽어 주세요. ':`${hookDomain('love',m)} `}${fp.relationship||''}`,
     lv4Sub('사랑하는 방식',lv4P([loveAx[0]?`${loveAx[0]} ${loveAx[1]||''}`:'',loveAx[2]?`다만 ${loveAx[2]}`:'',`${ageTxt[2]} ${_lifeStageAdvice(m.age,'love')}`]))+
     lv4Sub('배우자 자리로 보는 인연',lv4P([`사주에서 배우자를 보여주는 곳은 본인이 앉은 자리, 그러니까 태어난 날의 아래 글자예요. 본인은 이 자리에 ${lv4Branch(db)}${ip(BRCHKO[db])} 있고, '${seatShort}'의 분위기가 담겨 있어요. ${seatLove}`,partnerN?`또 사주 글자 안에 배우자 인연을 뜻하는 글자가 ${partnerN}개 보여요. ${partnerN>=2?'인연을 만날 기회가 많은 편이라, 오히려 고르는 눈이 더 중요해요.':'분명한 인연의 신호가 하나 있어서, 한 사람과 깊게 가는 편이에요.'}`:'사주 겉으로는 배우자 인연을 뜻하는 글자가 보이지 않아요. 인연이 없다는 뜻이 아니에요. 서두르기보다 생활 속에서 신뢰가 쌓일 때 인연이 또렷해지는 사주라는 뜻이에요.',seatRels.length?`배우자 자리는 다른 글자와도 영향을 주고받아요. ${lv4Relations(s,seatRels.slice(0,1))[0]||''}`:'배우자 자리는 다른 글자와 크게 부딪히지 않아요. 그래서 관계가 비교적 잔잔하게 흘러가는 편이에요.']))+
     lv4Sub('사람 복과 인간관계',lv4P([peer?`동료와 친구를 뜻하는 글자가 ${peer}개 있어요. ${peer>=2?'사람이 잘 모이고 함께하는 힘이 크지만, 경쟁도 자연스럽게 따라와요. 역할과 몫을 처음부터 분명히 해 두면 관계가 오래가요.':'마음 맞는 소수와 깊게 지내는 편이에요.'}`:'동료를 뜻하는 글자가 적어요. 그래서 넓은 인맥보다 오래 믿을 수 있는 몇 사람이 본인에게 큰 힘이 돼요.',inn?'윗사람과 스승의 도움을 뜻하는 글자도 있어요. 막힐 때 경험 많은 사람에게 먼저 물어보면 길이 빨리 보여요.':'윗사람의 도움을 기다리기보다, 본인이 먼저 필요한 사람을 찾아가는 편이 좋아요.',sinsPlain.includes(LV4_SIN.천을귀인)?'특히 사주에 어려울 때 손을 내밀어 주는 사람 복이 들어 있어요. 막다른 순간에 뜻밖의 도움이 오는 편이에요.':'',`${ageTxt[0]} ${_lifeStageAdvice(m.age,'people')}`]))+
