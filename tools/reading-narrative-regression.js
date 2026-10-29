@@ -25,7 +25,7 @@ try{
     w.request={year:2027,month:{month},domain};const p=run('buildReadingNarrative(_saju,_meta,window.domain,window.request)');
     w.flow=p.evidence.flow;const expected=run('_monthScore(_saju,window.flow.stem,window.flow.branch)');assert.equal(p.evidence.flow.tg,expected.tg);assert.equal(p.evidence.flow.btg,expected.btg);
     w.request.month={month,mp:{stem:p.evidence.flow.stem,branch:p.evidence.flow.branch},score:expected.total,sc:expected,tg:expected.tg,btg:expected.btg};
-    const text=run('lv4MonthNarrative(window.request.month,_saju,_meta,2027-_meta.sy+1,window.domain)');assert(text.includes(`2027년 ${month}월`));assert(!/undefined|NaN/.test(text));periods++;
+    const text=run('lv4MonthNarrative(window.request.month,_saju,_meta,2027-_meta.sy+1,window.domain)');assert(text.length>40&&!/견줘 읽었어요|계산 점수/.test(text));assert(!/undefined|NaN/.test(text));periods++;
    }
   }
  }

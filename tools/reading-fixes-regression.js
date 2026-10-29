@@ -48,6 +48,13 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
    run("_meta.marital='married'");const w=d.createElement('div');w.innerHTML=run("buildLifeReadingV4(_saju,_meta)");assert(!/연인|이별/.test(w.querySelector('#lv4-lc-past')?.textContent||''));
    run("_meta.marital='single'");
  });
+ check('지나온 해: 실제 확인된 표본(1987.9.21 남 기혼) — 2017 진로 전환·2018 새 직장·2024 결혼, 원국에 있는 글자의 충(2023)은 약하게',()=>{
+   const saved=run('JSON.stringify(_meta)');
+   run("_meta={sy:1987,sm:9,sd:21,hour:8,min:45,cityKey:'daejeon',tsoMin:-30.462,gender:'male',marital:'married'};gender='male';window.__s=calcSaju(1987,9,21,8,15);");
+   const past=JSON.parse(run("JSON.stringify(hookPast(window.__s,buildLifeV2Model(window.__s,_meta)).map(x=>[x.year,x.kind]))"));
+   assert.deepEqual(past,[[2017,'move'],[2018,'job'],[2024,'wed']],JSON.stringify(past));
+   run(`_meta=${saved};gender=_meta.gender||'male';`);
+ });
  check('인물 카드: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼은 귀인 + 늘 악연',()=>{
    const parse=html=>{const b=d.createElement('div');b.innerHTML=html;return [...b.querySelectorAll('.lc-pcard')].map(x=>x.classList[1]+':'+x.querySelector('h4').textContent);};
    const kinds=html=>parse(html).map(x=>x.split(':')[0]).join(',');
