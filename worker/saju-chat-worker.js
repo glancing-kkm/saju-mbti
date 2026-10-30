@@ -653,7 +653,7 @@ async function handleTarotReading(request, env) {
   const cardCount = input.cards.length;
   const maxOutputTokens = cardCount >= 10 ? 7600 : cardCount >= 5 ? 4800 : 3200;
   const systemPrompt = buildTarotReadingSystemPrompt(lang);
-  const userPrompt = buildTarotReadingUserPrompt(input, lang) + skipSectionsNote(body && body.skipSections);
+  const userPrompt = buildTarotReadingUserPrompt(input, lang);
 
   try {
     if (env.OPENAI_API_KEY) {
@@ -767,14 +767,14 @@ function buildTarotReadingUserPrompt(input, language = 'ko') {
     positionIndex: card.positionIndex,
     positionLabel: card.positionLabel,
     positionMeaning: card.positionMeaning,
+    positionRole: ['self','other','past','present','obstacle','hidden','advice','outcome','env','hope'].includes(card.positionRole) ? card.positionRole : undefined,
+    suit: ['wands','cups','swords','pentacles','major'].includes(card.suit) ? card.suit : undefined,
     cardNameKo: card.cardNameKo,
     cardNameEn: card.cardNameEn,
     orientation: card.orientation,
     keywords: Array.isArray(card.keywords) ? card.keywords : [],
     baseMeaning: card.baseMeaning,
     categoryMeaning: card.categoryMeaning,
-    advice: card.advice,
-    warning: card.warning,
   }));
   const count = cards.length;
   const lengthGuide = count >= 10
@@ -785,14 +785,14 @@ function buildTarotReadingUserPrompt(input, language = 'ko') {
   const depthGuide = count >= 10
     ? `10장 켈틱크로스는 프리미엄 리딩이다.
 - 각 카드 해석은 짧게 끝내지 말고, 위치 의미와 질문을 함께 엮어 설명한다.
-- "카드 조합 해석"은 과거, 현재, 내면, 외부 환경, 기대와 두려움, 최종 흐름이 어떻게 이어지는지 길게 풀어준다.
-- "질문에 대한 최종 답변"은 가장 깊은 섹션으로 작성하고, 가능성, 조건, 시기감, 사용자가 바꿀 수 있는 부분을 함께 다룬다.
-- "현실적인 조언"과 "다음 행동 가이드"는 일반론이 아니라 질문 상황에 맞춘 구체 행동으로 작성한다.`
+- "흐름이 바뀌는 지점"은 과거, 현재, 의식·무의식, 주변 환경, 희망과 두려움, 최종 결과 자리가 어떻게 이어지는지 풀어준다.
+- "질문에 대한 답"은 가장 깊은 섹션으로 작성하고, 가능성과 조건, 사용자가 바꿀 수 있는 부분을 함께 다룬다.
+- "선택지별로 얻는 것과 잃는 것"과 "다음에 확인할 신호"는 일반론이 아니라 질문 상황에 맞춘 구체 기준으로 작성한다.`
     : count >= 5
       ? `5장 리딩은 표준 유료 리딩이다.
 - 현재 상황, 장애물, 숨겨진 흐름, 조언, 가까운 결과가 서로 어떻게 연결되는지 분명히 보여준다.
-- 3장 리딩보다 카드 조합 해석과 최종 답변을 더 자세히 작성한다.
-- 조언은 최소 3가지로, 감정 조절, 대화/실행 방식, 확인해야 할 현실 조건을 나누어 제안한다.`
+- 3장 리딩보다 흐름 변화와 질문에 대한 답을 더 자세히 작성한다.
+- 선택지 비교에서는 감정, 대화/실행 방식, 확인해야 할 현실 조건을 나누어 득실을 설명한다.`
       : `3장 리딩은 빠른 핵심 리딩이다.
 - 질문의 핵심 답을 먼저 잡고, 과거/현재/미래 또는 상황/조언/결과 흐름을 간결하게 연결한다.
 - 카드별 설명은 길게 늘리지 말고 최종 답변과 바로 이어지게 작성한다.
@@ -820,13 +820,13 @@ ${JSON.stringify(cards, null, 2)}
 ${languageInstruction(lang)}
 ${lang.code === 'ko' ? '' : `All headings below are structural source labels only. In the final answer, translate them naturally into ${lang.label} and do not output Korean section titles.`}
 
-아래 구조로 Markdown 타로 리딩을 작성해줘.
+아래 구조로 Markdown 타로 리딩을 작성해줘. 이 리딩은 화면의 계산형 풀이 전체를 대체하므로, 처음부터 끝까지 하나의 이야기로 새로 써줘.
 
-# 1. 질문 요약
-사용자의 질문이 어떤 고민인지 2~3문장으로 정리해줘.
+# 1. 지금 이 질문에서 보이는 장면
+현재·본인 자리 카드의 실제 슈트(완드/컵/소드/펜타클 또는 메이저)와 방향을 질문 주제의 생활 장면으로 바꿔 보여줘. 질문을 다시 말하는 것으로 시작하지 마.
 
-# 2. 전체 흐름 요약
-선택된 카드들이 전체적으로 어떤 흐름을 보여주는지 먼저 설명해줘.
+# 2. 같은 고민이 반복되는 이유
+현재 카드의 방식과 장애물·숨은 자리(없으면 뒤집힌 카드나 슈트가 다른 카드) 사이의 어긋남으로, 강점이 부담으로 바뀌는 조건을 설명해줘.
 
 # 3. 카드별 해석
 각 카드를 아래 형식으로 해석해줘.
@@ -834,22 +834,22 @@ ${lang.code === 'ko' ? '' : `All headings below are structural source labels onl
 ## {{positionLabel}} - {{cardNameKo}}
 - 핵심키워드: {{keyword1}}, {{keyword2}}, {{keyword3}}
 
-이 위치가 질문 안에서 어떤 역할을 하는지 먼저 자연스럽게 설명해줘. 이어서 이 카드가 왜 이 위치에서 나왔는지, 사용자의 질문과 어떻게 연결되는지 이야기하듯 풀어줘.
+이 자리가 질문 안에서 맡는 역할(positionRole)과 카드의 슈트·숫자 단계·방향을 연결해 2~4문장으로 써줘. 카드 사전 의미를 그대로 옮기지 마.
 
-# 4. 카드 조합 해석
-카드들이 서로 연결될 때 어떤 이야기를 만드는지 설명해줘. 단순히 카드 의미를 나열하지 말고, 흐름으로 연결해줘.
+# 4. 흐름이 바뀌는 지점
+처음 자리와 결과 자리의 슈트 변화, 가장 많이 나온 슈트, 뒤집힌 카드 수처럼 실제 카드 구성에서 보이는 변화를 설명해줘.
 
-# 5. 질문에 대한 최종 답변
-사용자의 질문에 직접 답해줘. 단, 너무 단정하지 말고 가능성과 조건을 함께 말해줘.
+# 5. 질문에 대한 답
+가능성과 조건을 함께 말해줘. 결과 카드와 조언 카드(있을 때만)를 근거로 삼아.
 
-# 6. 현실적인 조언
-사용자가 지금 실제로 할 수 있는 행동을 3가지 정도 제안해줘. 단, 번호 목록으로 나열하지 말고 하나의 상담 문단처럼 자연스럽게 이어서 설명해줘.
+# 6. 선택지별로 얻는 것과 잃는 것
+두 가지 길을 나란히 놓고 각각 얻는 것과 잃는 것, 본인이 판단할 기준을 서술형으로 써줘.
 
-# 7. 주의할 점
-지금 조심해야 할 태도, 오해, 성급한 행동을 설명해줘.
+# 7. 조심할 해석
+뒤집힌 카드의 의미를 공포 없이 설명하고, 카드로 확인할 수 없는 것(상대 속마음·실제 사건·날짜·진단·투자 결과)을 짚어줘.
 
-# 8. 다음 행동 가이드
-오늘부터 바로 적용할 수 있는 구체적인 다음 행동을 알려줘.
+# 8. 다음에 확인할 신호
+오늘 할 행동 하나와, 다음에 이 질문을 다시 볼 때 무엇이 달라졌는지 확인할 신호를 써줘.
 
 작성 조건:
 - 전체 분량은 ${lengthGuide}
@@ -857,7 +857,9 @@ ${lang.code === 'ko' ? '' : `All headings below are structural source labels onl
 ${depthGuide}
 - 위 분량 범위를 넘길 것 같으면 각 섹션을 조금 압축하되, 절대 중간에 끊지 말고 "# 8. 다음 행동 가이드"까지 완결한다.
 - 마지막 문장은 조언이 자연스럽게 마무리되는 완성 문장으로 끝낸다.
-- 토큰 한도가 부족하다고 느껴지면 카드별 해석을 조금 줄이고, 카드 조합 해석과 최종 답변을 우선한다.
+- 토큰 한도가 부족하다고 느껴지면 카드별 해석을 조금 줄이고, 1·2·5·6번 섹션을 우선한다.
+- 뽑히지 않은 카드 이름, 입력에 없는 연도·날짜·사건을 쓰지 않는다. 상대의 속마음을 확인했다고 말하지 않는다.
+- 질문을 바꿔 말한 문장을 새 통찰처럼 쓰지 않는다. 같은 조언을 여러 섹션에 반복하지 않는다.
 - 개조식 표현은 카드별 해석의 "핵심키워드" 한 줄에만 사용한다.
 - "위치 의미:", "카드 핵심:", "질문과 연결한 해석:" 같은 항목형 라벨은 쓰지 않는다.
 - 핵심키워드 외의 모든 풀이는 서술식, 이야기식, 대화식 문장으로 작성한다.
@@ -892,7 +894,7 @@ async function handleAstrologyReading(request, env) {
   const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
   if (!ASTRO_READING_TOPICS[ASTRO_PRODUCT_ALIAS[productType]||productType]) return json({ error: '점성술 주제를 확인해주세요.' }, 400);
   if (productType==='gunghap'&&(!partnerChart||!Array.isArray(partnerChart.planets)||!partnerChart.birthInfo)) return json({ error: '궁합은 상대방 출생차트도 필요해요.' }, 400);
-  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, partnerChart, synastryAspects, targetYear, yearTransits, question, language: lang }) + skipSectionsNote(body && body.skipSections);
+  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, partnerChart, synastryAspects, targetYear, yearTransits, question, transitAspects: body && body.transitAspects, language: lang });
   const premium = ['life','newyear','full-report','yearly'].includes(productType);
   const maxOutputTokens = premium ? 5200 : 2800;
 
@@ -1111,14 +1113,20 @@ const ASTRO_READING_TOPICS={
   }
 };
 const ASTRO_PRODUCT_ALIAS={'birth-basic':'life','full-report':'life','love-marriage':'love','career-money':'career',yearly:'newyear'};
-function buildAstrologyReadingUserPrompt({chart,transit,productType,language,partnerChart,synastryAspects,targetYear,yearTransits,question}){
+const ASTRO_NEEDS_SERVER={life:['sun','moon','saturn'],newyear:['sun','moon','jupiter'],love:['venus','mars','moon'],marriage:['venus','saturn','moon'],reunion:['venus','moon','mercury'],gunghap:['venus','moon','mars'],money:['venus','saturn','jupiter'],career:['sun','saturn','mars'],study:['mercury','moon','saturn'],child:['moon','mercury','mars'],children:['moon','saturn','venus'],health:['moon','mars','saturn']};
+// 클라이언트가 계산한 트랜짓-출생차트 각도는 허용한 행성·각도 이름과 숫자만 받는다.
+function astroTransitAspectsText(list){
+  const planets=new Set(['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto']),types=new Set(['conjunction','opposition','square','trine','sextile']);
+  return JSON.stringify((Array.isArray(list)?list:[]).slice(0,8).filter(a=>a&&planets.has(a.transit)&&planets.has(a.natal)&&types.has(a.aspectType)).map(a=>({transit:a.transit,natal:a.natal,aspectType:a.aspectType,orb:Math.max(0,Math.min(10,Number(a.orb)||0))})));
+}
+function buildAstrologyReadingUserPrompt({chart,transit,productType,language,partnerChart,synastryAspects,targetYear,yearTransits,question,transitAspects}){
   const lang=normalizeLanguage(language),key=ASTRO_PRODUCT_ALIAS[productType]||productType;
   const topic=ASTRO_READING_TOPICS[key]||ASTRO_READING_TOPICS.life;
   const hasTime=!(chart.birthInfo&&chart.birthInfo.birthTimeUnknown);
   const sections=key==='life'?['타고난 성향과 강점','관계와 사랑','일과 재물','인생의 성장 과제','현재 흐름과 실천']:
     key==='newyear'?['선택한 해의 전체 흐름','상반기와 하반기','일과 돈의 기회','관계와 생활의 변화','한 해를 위한 실천']:
     key==='gunghap'?['두 사람의 관계 방식','끌리는 부분과 차이','대화와 감정의 궁합','함께 맞출 생활 기준','관계를 위한 실천']:
-    [topic.label+'의 타고난 성향',topic.focus,'현재 흐름과 기회','조심할 패턴',topic.label+'을 위한 실천'];
+    [topic.label+'의 타고난 성향',topic.focus,'현재 흐름과 기회','선택의 기준과 조심할 패턴',topic.label+'을(를) 위한 실천'];
   return `상품 유형: ${topic.label}
 출력 언어: ${languageInstruction(lang)}
 집중할 주제: ${topic.focus}. 다른 주제의 일반론을 늘어놓지 말고 이 주제의 구체적인 해석에 집중하세요.
@@ -1130,6 +1138,9 @@ ${key==='newyear'?`보고 싶은 해: ${targetYear||new Date().getFullYear()}년
 ${key==='child'?'아이의 실제 나이와 발달 단계에 맞게 양육·기질·학습·또래 관계로 설명하세요. 성인의 취업·결혼 문제로 바꾸지 마세요.':''}
 ${['health','children'].includes(key)?'질병 진단, 임신 가능 여부나 임신 시기, 태아 성별, 생존 여부를 예언하거나 보장하지 마세요. 생활 습관·마음의 준비·가족 소통 관점으로 설명하고, 의학적 판단은 진료를 통해 확인하도록 안내하세요.':''}
 본인 출생시간 사용 가능: ${hasTime?'제공된 ASC·하우스만 사용':'ASC·하우스 해석 금지. 달 위치 오차 가능성 안내'}
+계산된 지금 트랜짓과 본인 행성의 각도: ${astroTransitAspectsText(transitAspects)}
+이 주제에서 먼저 연결할 본인 행성: ${(ASTRO_NEEDS_SERVER[key]||ASTRO_NEEDS_SERVER.life).join(', ')}
+편집 원칙: 이 리딩은 화면의 계산형 풀이 전체를 대체해요. 1번 섹션부터 새로 쓰세요. 서로 다른 요구를 가진 두 행성(위 목록의 앞 두 개)의 별자리와, chart.aspects에 실제로 있는 두 행성 사이 각도(없으면 없다고)를 연결해 독자가 알아볼 장면과 안에서 당기는 두 마음을 먼저 보여 주세요. 이어서 강점이 부담으로 바뀌는 조건(실제 긴장 각도나 별자리 주의점), 지금 트랜짓 각도가 바꾸는 점, 선택지별로 얻는 것과 잃는 것과 판단 기준 순서로 이어 주세요. 같은 원소라는 이유로 각도가 있다고 말하지 마세요. 행성 이름만 나열하지 말고 생활 장면으로 바꿔 쓰세요.
 행성 위치와 각도는 주어진 계산값만 사용하세요. 합격·투자 수익·재회·임신 등을 확정하지 마세요.
 응답은 Markdown 본문만 쓰고, 아래 제목 순서에 맞춰 ${['life','newyear'].includes(key)?'3,000~4,000':'1,500~2,000'}자 안팎으로 친근하게 설명하세요.
 # 1. 출생차트 핵심 요약
@@ -1623,7 +1634,7 @@ function buildReadingSystemPrompt(category, meta) {
     'newyear-core': `${meta.targetYear || '올해'} 신년운세의 주요 해석 문단 대부분을 AI로 다시 고도화하는 리딩입니다. 기존 계산형 풀이를 바탕으로 올해 총론·재물·직업·연애·인간관계·건강·12개월 흐름·기회 시기·주의 시기·올해 행동 가이드를 본인 맞춤으로 재작성하세요. 점수 링, 월별 점수표, 차트는 화면에 따로 남으므로 문장 해석에 집중하세요.`,
     gunghap: '별도 궁합 카테고리 첫머리에 들어갈 개인화 리딩입니다. 두 사람의 끌림, 피로가 쌓이는 지점, 결혼·장기 관계 가능성, 바로 실천할 대화 방식을 짚으세요.',
     'life-gunghap': '인생총운 내부 궁합 결과 첫머리에 들어갈 개인화 리딩입니다. 본인 인생 흐름 안에서 이 관계가 어떤 의미인지, 가까워지는 방식과 조심할 반복 패턴을 짚으세요.',
-    'reading-deep': meta.synthesis ? '결제 후 장별 종합 풀이입니다. 각 장의 본문을 처음부터 구성하세요. 초안 문장을 이어 붙이지 말고 원국의 주요 근거 두 가지 이상과 현재 운의 작용을 연결하세요. 서로 반대되는 근거가 있으면 어느 조건에서 무엇이 앞서는지 설명하세요. 사용자 진술은 별도 출처로 밝혀 해당 상담에만 적용하세요. facts는 검증할 초안이며 사실 기록이 아닙니다. 계산에 없는 날짜·사건은 만들지 마세요.' : '결제 후 공개되는 심층 해석입니다. 섹션 자료의 각 섹션마다, 화면에 이미 보이는 문장(visible)에 자연스럽게 이어지는 깊은 해석 문단과 한 줄 정리를 새로 쓰세요. facts는 기존 풀이 초안입니다. 구조화된 계산 근거와 대조해 필요한 내용만 사용하고, facts에 없는 날짜·숫자는 지어내지 마세요. visible 문장을 그대로 반복하지 마세요. 일반론이 아니라 이 사람에게만 해당하는 장면과 행동으로 콕 집어 쓰세요.',
+    'reading-deep': meta.synthesis ? '결제 후 장별 종합 풀이입니다. 네 문단은 ① 독자가 알아볼 생활 장면과 안에서 당기는 두 기준 ② 그 강점이 부담으로 바뀌는 조건 ③ 지금 운에서 달라지는 점 ④ 선택지별로 얻는 것과 잃는 것, 본인이 판단할 기준으로 이어 주세요. 같은 조언을 장마다 반복하지 말고 각 장의 focus에 답하세요. 각 장의 본문을 처음부터 구성하세요. 초안 문장을 이어 붙이지 말고 원국의 주요 근거 두 가지 이상과 현재 운의 작용을 연결하세요. 서로 반대되는 근거가 있으면 어느 조건에서 무엇이 앞서는지 설명하세요. 사용자 진술은 별도 출처로 밝혀 해당 상담에만 적용하세요. facts는 검증할 초안이며 사실 기록이 아닙니다. 계산에 없는 날짜·사건은 만들지 마세요. editorial이 있는 장은 단순 요약이 아니라 편집 핵심을 바탕으로 새로 풀어 쓰세요. 성향 장은 함께 나타나는 두 기준과 그 갈등, 직업 장은 능력이 쓰이는 환경과 소모되는 환경, 재물 장은 수입 경로와 실속이 사라지는 조건을 각각 다르게 설명하세요.' : '결제 후 공개되는 심층 해석입니다. 섹션 자료의 각 섹션마다, 화면에 이미 보이는 문장(visible)에 자연스럽게 이어지는 깊은 해석 문단과 한 줄 정리를 새로 쓰세요. facts는 기존 풀이 초안입니다. 구조화된 계산 근거와 대조해 필요한 내용만 사용하고, facts에 없는 날짜·숫자는 지어내지 마세요. visible 문장을 그대로 반복하지 마세요. 일반론이 아니라 이 사람에게만 해당하는 장면과 행동으로 콕 집어 쓰세요.',
     'topic-answer': `주제별 운세(${meta.topic || '주제'})에서 상담자가 직접 적은 질문에 답하는 문단입니다. 질문에 정면으로 답하세요. 첫 문장은 결론, 이어서 사주에서 그렇게 보는 이유, 언제(계산된 연·월 인용), 어떻게 하면 좋은지를 상담자의 구체적인 상황에 맞춰 쓰세요. 질문과 관계없는 일반론으로 채우지 마세요.`,
     'report-tpl': `유료 PDF 보고서(${String((meta && meta.reportName) || '사주').slice(0, 20)})의 본문 일부를 씁니다. 보고서 목차의 소제목마다 이 사람에게만 해당하는 풀이를 쓰세요. 아래 "화면 풀이 요약"과 "계산 결과"에 있는 시기·점수·성향·사람을 근거로 삼고, 소제목이 묻는 내용에 정면으로 답하세요. 같은 문장이나 같은 시기를 소제목마다 되풀이하지 마세요.`,
     'report-life': 'PDF 평생 사주 리포트에 들어갈 심층 장(章)입니다. 인생 전체를 관통하는 그릇, 인생에서 크게 열리는 기회의 시기, 평생 조심할 함정, 나이대별 전략을 시기와 장면으로 콕 집어 쓰세요.',
@@ -1651,7 +1662,8 @@ function buildReadingSystemPrompt(category, meta) {
 - 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
 - {"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단","문단"]}],"fields":[{"id":"필드 id","text":"내용"}]}
 - 섹션 자료의 모든 섹션을 같은 순서로 넣고 id는 바꾸지 마세요. 섹션마다 paragraphs는 4개, 문단마다 4~5문장으로 쓰고 문단 하나가 공백 포함 260자 이상이 되게 하세요. 한 섹션은 1,100자 안팎이에요. 짧게 줄이지 마세요.
-- 첫 문단은 소제목에 답하는 생활 장면과 핵심 결론, 둘째 문단은 사주에서 그렇게 보는 짧은 근거, 셋째 문단은 그 장점이 부담으로 바뀌는 구체적인 상황, 넷째 문단은 본인이 선택할 수 있는 행동으로 쓰세요. 각 장면은 가능성의 예시로 쓰고 이미 일어난 일처럼 단정하지 마세요.
+- 첫 문단은 소제목의 focus에 답하는 알아볼 장면과 안에서 당기는 두 기준, 둘째 문단은 그 장점이 부담으로 바뀌는 조건과 근거, 셋째 문단은 지금(계산된 연·월·10년) 달라지는 점, 넷째 문단은 선택지별로 얻는 것과 잃는 것과 본인이 판단할 기준으로 쓰세요. draft는 계산으로 확인한 사실의 초안이에요. 사실만 가져오고 문장은 그대로 옮기지 마세요. 각 장면은 가능성의 예시로 쓰고 이미 일어난 일처럼 단정하지 마세요.
+- 서로 다른 소제목에 같은 문장이나 같은 조언을 쓰지 마세요. 자미두수 보고서는 제공된 궁·주성·대한·사화만 쓰고 유년(해마다의 흐름)은 계산하지 않았다고 밝히세요. 이름 보고서는 실제 글자·한자·획수와 계산된 후보만, 궁합 보고서는 두 사람의 실제 관계 수치만 근거로 쓰세요.
 - fields에는 필드 자료의 모든 id를 하나씩 넣고, 각 필드의 지시(ask)와 글자 수(max) 안에서 쓰세요.
 - 문단과 필드 안에 줄바꿈, 마크다운, 번호, 따옴표 장식을 넣지 마세요. 문장 안에서 무언가를 인용할 때는 작은따옴표(')를 그대로 쓰고 역슬래시를 붙이지 마세요.
 - 정관·편관·정재·편재·식신·상관·비견·겁재·정인·편인과 '~격' 같은 사주 유형 이름은 쓰지 말고 쉬운 말로 풀어 쓰세요.`
@@ -1659,7 +1671,7 @@ function buildReadingSystemPrompt(category, meta) {
     ? `출력 형식:
 - 아래 JSON 한 개만 출력하세요. 코드블록, 설명 문장은 쓰지 마세요.
 - ${meta.synthesis ? '{"mode":"synthesis","sections":[{"id":"섹션 id 그대로","evidenceRefs":["natal.month.branch","year.대상연도"],"paragraphs":["문단","문단","문단","문단"]}]}' : '{"sections":[{"id":"섹션 id 그대로","paragraphs":["문단","문단","문단"]}]}'}
-- 종합 모드에서는 evidenceRefs에 실제로 사용한 구조화 계산 참고의 nodes.id, flow.id 또는 decade.id 중 서로 다른 두 개 이상을 정확히 넣으세요. id를 임의로 만들지 마세요. 참조한 근거의 글자·관계를 본문에서도 설명하세요.
+- 종합 모드에서는 evidenceRefs에 실제로 사용한 근거 id를 서로 다른 두 개 이상 정확히 넣으세요. '이 풀이 체계의 계산 근거'가 있으면 그 refs의 id만, 없으면 구조화 계산 참고의 nodes.id, flow.id 또는 decade.id만 씁니다. id를 임의로 만들지 마세요. 참조한 근거의 글자·관계를 본문에서도 설명하세요.
 - 섹션 자료에 있는 모든 섹션을 같은 순서로 넣고, id는 바꾸지 마세요.
 - 섹션마다 paragraphs는 ${meta.synthesis ? '4' : '3'}개, 문단마다 3~4문장으로 쓰세요. 초안의 단정을 그대로 옮기지 말고 계산 근거와 사용자 진술의 출처를 구분하세요.
 - 문단 안에 줄바꿈, 마크다운, 번호를 넣지 마세요.`
@@ -1700,6 +1712,7 @@ ${READING_PROVENANCE_RULES}
 말투와 표현 규칙:
 - 상담석에서 이야기하듯 짧은 결론과 구체적인 설명을 이어 주세요. "분위기를 살펴보세요", "기회를 활용하세요"처럼 대상 없는 조언을 반복하지 마세요.
 - "핵심 결론/이유/그래서"를 기계적으로 되풀이하지 마세요. "여기서 눈여겨볼 건", "이 글자가 이 자리에 있어서" 같은 연결도 필요한 곳에만 자연스럽게 쓰세요.
+- editorial 자료가 있으면 evidenceGroups의 두 성향을 함께 설명하세요. evidenceRefs에는 각 그룹의 natal 근거를 최소 하나씩 넣어야 하며, 같은 성향의 근거만 두 개 넣지 마세요. 초안의 문장을 그대로 옮기거나 결론을 더 세게 단정하지 마세요. 사용자 진술 없이 직장·자녀·실제 사건이 있다고 가정하지 마세요. 네 문단은 읽는 사람이 알아볼 장면, 강점이 부담으로 바뀌는 조건, 현재 운에서 달라지는 점, 선택의 기준으로 자연스럽게 이어 주세요.
 - 절마다 주요 근거 2~3개를 골라 연결하세요. 모든 오행·신살 이름을 나열하지 마세요. 같은 근거가 장점과 부담으로 갈리는 조건을 설명하세요.
 - 출력 언어: ${languageInstruction(lang)}
 ${toneRule}
@@ -1740,13 +1753,26 @@ function readingEvidenceText(ctx){
   decade:dec&&axes.has(dec.axis)?{id:`decade.${int(dec.from,0,130)}`,from:int(dec.from,0,130),to:int(dec.to,0,139),axis:dec.axis}:null});
 }
 
+// 사주 외 시스템(자미두수·궁합·이름)의 계산 근거 — 허용한 ID 모양과 짧은 설명만 받는다. 클라이언트 자료는 초안으로 취급한다.
+function systemEvidenceText(raw){
+ if(!raw||!['ziwei','pair','name'].includes(raw.system)||!Array.isArray(raw.refs))return '';
+ const pattern={ziwei:/^zw\.(palace|star|decade|sihua)\.[가-힣0-9]{1,6}$|^zw\.shen$/,pair:/^pair\.[a-z]{2,12}$/,name:/^name\.(char|han|yongsin)(\.[a-z0-9]{1,8})?$/}[raw.system];
+ const refs=raw.refs.slice(0,60).filter(r=>r&&typeof r.id==='string'&&pattern.test(r.id)).map(r=>({id:r.id,label:String(r.label||'').replace(/[<>\r\n]/g,' ').slice(0,80)}));
+ return refs.length?JSON.stringify({system:raw.system,refs}):'';
+}
+function editorialBrief(raw){
+ if(!raw||!['core','career','money'].includes(raw.domain))return undefined;
+ const clean=(v,n)=>String(v||'').replace(/[<>]/g,'').slice(0,n);
+ return {domain:raw.domain,motif:clean(raw.motif,40),title:clean(raw.title,80),evidenceGroups:(Array.isArray(raw.evidenceGroups)?raw.evidenceGroups:[]).filter(g=>g&&['self','out','wealth','gwan','in_'].includes(g.axis)).slice(0,2).map(g=>({axis:g.axis,sourceIds:(Array.isArray(g.sourceIds)?g.sourceIds:[]).filter(id=>typeof id==='string'&&/^natal\.(year|month|day|hour)\.(stem|branch)$/.test(id)).slice(0,7)})),tension:clean(raw.tension,500),reversal:clean(raw.reversal,500),decision:clean(raw.decision,500),period:clean(raw.period,500),limits:(Array.isArray(raw.limits)?raw.limits:[]).slice(0,3).map(x=>clean(x,200)),sourceIds:(Array.isArray(raw.sourceIds)?raw.sourceIds:[]).filter(x=>typeof x==='string'&&/^(natal\.(year|month|day|hour)\.(stem|branch)|year\.\d{4}|decade\.\d{1,3})$/.test(x)).slice(0,8)};
+}
+
 function buildReadingUserPrompt(category, ctx, meta) {
   const lang = normalizeLanguage(meta && meta.language);
   const reading = String(ctx.detailedReading || '').slice(0, isCoreReadingCategory(category) ? 18000 : 12000);
   const task = category === 'report-tpl'
-    ? `보고서: ${String(meta.reportName || '').slice(0, 20)}\n계산 결과: ${String(meta.facts || '').replace(/[<>]/g, '').slice(0, 2400)}\n\n섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 16).map((s) => ({ id: String(s.id || '').slice(0, 24), chapter: String(s.chapter || '').slice(0, 40), title: String(s.title || '').slice(0, 60), hint: String(s.hint || '').slice(0, 300) })) : [])}\n\n필드 자료(JSON): ${JSON.stringify(Array.isArray(meta.fields) ? meta.fields.slice(0, 40).map((f) => ({ id: String(f.id || '').slice(0, 24), ask: String(f.ask || '').slice(0, 120), max: Math.max(8, Math.min(240, Number(f.max) || 60)) })) : [])}\n\n위 섹션과 필드를 모두 채워 JSON으로만 답하세요.`
+    ? `보고서: ${String(meta.reportName || '').slice(0, 20)}\n계산 결과: ${String(meta.facts || '').replace(/[<>]/g, '').slice(0, 2400)}\n\n섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 16).map((s) => ({ id: String(s.id || '').slice(0, 24), chapter: String(s.chapter || '').slice(0, 40), title: String(s.title || '').slice(0, 60), hint: String(s.hint || '').slice(0, 300), focus: String(s.focus || '').replace(/[<>]/g, '').slice(0, 220), draft: String(s.draft || '').replace(/[<>]/g, '').slice(0, 300) })) : [])}\n\n필드 자료(JSON): ${JSON.stringify(Array.isArray(meta.fields) ? meta.fields.slice(0, 40).map((f) => ({ id: String(f.id || '').slice(0, 24), ask: String(f.ask || '').slice(0, 120), max: Math.max(8, Math.min(240, Number(f.max) || 60)) })) : [])}\n\n위 섹션과 필드를 모두 채워 JSON으로만 답하세요.`
     : category === 'reading-deep'
-    ? `섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 14).map((s) => ({ id: String(s.id || '').slice(0, 40), title: String(s.title || '').slice(0, 80), visible: String(s.visible || '').slice(0, 450), facts: String(s.facts || '').slice(0, 1000) })) : [])}\n\n위 섹션마다 심층 해석을 써서 JSON으로만 답하세요. 풀이 종류: ${String(meta.readingKind || '').slice(0, 20)}.`
+    ? `섹션 자료(JSON): ${JSON.stringify(Array.isArray(meta.sections) ? meta.sections.slice(0, 8).map((s) => ({ id: String(s.id || '').slice(0, 40), title: String(s.title || '').slice(0, 80), focus: String(s.focus || '').replace(/[<>]/g, '').slice(0, 240), visible: String(s.visible || '').slice(0, 450), facts: String(s.facts || '').slice(0, 1000), editorial: editorialBrief(s.editorial) })) : [])}\n${systemEvidenceText(meta.systemEvidence) ? `\n이 풀이 체계의 계산 근거(JSON): ${systemEvidenceText(meta.systemEvidence)}\n→ 이 풀이는 위 체계의 근거로 써야 해요. evidenceRefs에는 위 refs의 id만 서로 다른 두 개 이상 넣고, 사주 natal/year/decade id를 섞지 마세요. 별·궁·글자·관계를 말할 때는 label에 적힌 실제 배치와 다르게 쓰지 마세요.\n` : ''}\n위 섹션마다 focus가 묻는 질문에 답하는 종합 해석을 써서 JSON으로만 답하세요. 풀이 종류: ${String(meta.readingKind || '').slice(0, 20)}.`
     : category === 'topic-answer'
     ? `위 정보와 모순되지 않게, "지금 상황"에 적힌 상담자의 질문에 정면으로 답하세요. 상담 주제: ${meta.topic || '미상'}.`
     : isCoreReadingCategory(category)

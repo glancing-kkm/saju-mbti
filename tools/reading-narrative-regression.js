@@ -10,13 +10,13 @@ try{
   const original=run('JSON.stringify(_saju)'),data=run('JSON.stringify(_meta)');
   for(const domain of domains){
    w.domain=domain;const n=run('buildReadingNarrative(_saju,_meta,window.domain)');plans++;stages.add(n.evidence.stage);pairs.add(n.evidence.primary+'/'+n.evidence.secondary);actions.add(n.paragraphs[3]);
-   assert.deepEqual(Array.from(n.steps),['conclusion','evidence','development','action']);assert.equal(n.paragraphs.length,4);assert(n.paragraphs.every(x=>typeof x==='string'&&x.length>=20));
+   assert.deepEqual(Array.from(n.steps),['recognition','reversal','timing','choice']);assert(n.evidenceNote.length>=30);assert.equal(n.paragraphs.length,4);assert(n.paragraphs.every(x=>typeof x==='string'&&x.length>=20));
    assert(!/undefined|NaN|\[object Object\]/.test(n.paragraphs.join(' ')));
    assert.equal(n.evidence.nodes.length,meta.hour<0?5:7);
    for(const node of n.evidence.nodes){
     w.node=node;const actual=run("(()=>{const [_,place,part]=window.node.id.split('.');const p=_saju[({year:'yp',month:'mp',day:'dp',hour:'hp'})[place]];return part==='stem'?STEMKO[p.stem]:BRCHKO[p.branch];})()");assert.equal(node.glyph,actual);
    }
-   if(meta.hour<0){assert(!n.sourceIds.some(id=>id.includes('natal.hour')));assert(n.paragraphs[1].includes('세 자리'));}
+   if(meta.hour<0){assert(!n.sourceIds.some(id=>id.includes('natal.hour')));assert(n.evidenceNote.includes('세 자리'));assert(!n.paragraphs.join(' ').includes('시주'));}
    assert.equal(run('JSON.stringify(_saju)'),original);assert.equal(run('JSON.stringify(_meta)'),data);
    if(meta.sy>=2012)assert(!/직장|승진|이직|대출|계약금|새 연인|배우자와|현재 연인/.test(n.paragraphs.join(' ')),'아동의 생애주기에 맞지 않는 설명');
    if(domain==='career'&&n.evidence.stage==='senior')assert(!/승진|취업|신입/.test(n.paragraphs.join(' ')));

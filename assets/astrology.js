@@ -10,7 +10,7 @@ function astroTopicSections(id){
   if(key==='life')return ['출생차트 핵심 요약','타고난 성향과 강점','관계와 사랑','일과 재물','인생의 성장 과제','현재 흐름과 실천'];
   if(key==='newyear')return ['출생차트 핵심 요약','선택한 해의 전체 흐름','상반기와 하반기','일과 돈의 기회','관계와 생활의 변화','한 해를 위한 실천'];
   if(key==='gunghap')return ['출생차트 핵심 요약','두 사람의 관계 방식','끌리는 부분과 차이','대화와 감정의 궁합','함께 맞출 생활 기준','관계를 위한 실천'];
-  return ['출생차트 핵심 요약',t.label+'의 타고난 성향',t.focus,'현재 흐름과 기회','조심할 패턴',t.label+'을 위한 실천'];
+  return ['출생차트 핵심 요약',t.label+'의 타고난 성향',t.focus,'현재 흐름과 기회','선택의 기준과 조심할 패턴',t.label+(koHasBatchim(t.label)?'을':'를')+' 위한 실천'];
 }
 function astroPartnerFormHTML(){
   const saved=(_astroFlow&&_astroFlow.partnerBirthInfo)||{};
@@ -184,7 +184,7 @@ function startAstrologyPayment(){if(!_astroFlow||!_astroFlow.productType)return;
 function completeAstrologyPayment(){const now=Date.now();_astroFlow.paymentStatus='paid';_astroFlow.paidAt=_astroFlow.paidAt||now;_astroFlow.expiresAt=_astroFlow.expiresAt||now+ASTRO_HISTORY_TTL_MS;saveAstrologyFlow();if(_astroFlow.resultMarkdown&&!_astroFlow.previewTemplate){saveAstrologyReading(_astroFlow);astroNavigate('result');}else finishAstrologyReading();}
 function resumePaidAstrologyAfterPayment(category){const productType=canonicalAstroProduct(String(category||'').replace(/^astro-/,''));const p=ASTRO_PRODUCTS.find(x=>x.id===productType);_astroFlow=loadAstrologyFlow();if(!_astroFlow||!_astroFlow.chart){alert('출생차트 정보가 만료됐어요. 출생정보를 다시 입력해 주세요.');goToAstrology('input');return;}const now=Date.now();_astroFlow={..._astroFlow,productType:p?p.id:productType,productName:p?p.name:(_astroFlow.productName||'점성술 풀이'),price:p?p.price:(_astroFlow.price||basePriceFor(category)),paymentStatus:'paid',paidAt:now,expiresAt:now+ASTRO_HISTORY_TTL_MS,resultMarkdown:(!_astroFlow.previewTemplate&&_astroFlow.productType===(p?p.id:productType)&&_astroFlow.resultMarkdown)||''};saveAstrologyFlow();if(_astroFlow.resultMarkdown){saveAstrologyReading(_astroFlow);goToAstrology('result');}else{goToAstrology('result');finishAstrologyReading();}}
 window.resumePaidAstrologyAfterPayment=resumePaidAstrologyAfterPayment;
-async function finishAstrologyReading(){if(_astroFlow.paymentStatus!=='paid'){/* 결제 전 미리보기는 AI 없이 계산한 차트로 만든 기본 풀이만 쓴다 */_astroFlow.resultMarkdown=astroPreviewTemplate(_astroFlow.chart,_astroFlow.productType);_astroFlow.previewTemplate=true;_astroFlow.resultLoading=false;saveAstrologyFlow();astroNavigate('result');return;}/* 결제 뒤 — 첫 섹션(계산한 차트 요약)은 그대로, 가렸던 나머지 섹션만 AI가 쓴다 */const tpl=_astroFlow.previewTemplate&&_astroFlow.resultMarkdown?_astroFlow.resultMarkdown:astroPreviewTemplate(_astroFlow.chart,_astroFlow.productType),keep=mdSections(tpl).slice(0,1);_astroFlow.previewTemplate=false;_astroFlow.resultMarkdown=tpl;_astroFlow.deepLoading=true;saveAstrologyFlow();astroNavigate('result');try{const merged=mdMerge(keep,await generateAstrologyReading(_astroFlow.chart,_astroFlow.transit,_astroFlow.productType,{skipSections:keep.map(s=>s.title)}));_astroFlow.resultMarkdown=merged||generateTemplateAstrologyReading(_astroFlow.chart,_astroFlow.productType);}catch(e){console.warn('Astrology deep reading failed:',e&&e.message);_astroFlow.resultMarkdown=generateTemplateAstrologyReading(_astroFlow.chart,_astroFlow.productType);}_astroFlow.deepLoading=false;_astroFlow.resultLoading=false;saveAstrologyFlow();if(_astroFlow.paymentStatus==='paid')saveAstrologyReading(_astroFlow);renderAstrology();}
+async function finishAstrologyReading(){if(_astroFlow.paymentStatus!=='paid'){/* 결제 전 미리보기는 AI 없이 계산한 차트로 만든 기본 풀이만 쓴다 */_astroFlow.resultMarkdown=astroPreviewTemplate(_astroFlow.chart,_astroFlow.productType);_astroFlow.previewTemplate=true;_astroFlow.resultLoading=false;saveAstrologyFlow();astroNavigate('result');return;}/* 결제 뒤 — 계산형 전체 풀이를 먼저 보여 주고, 같은 차트로 AI가 처음부터 다시 종합한다. 검증을 통과한 응답만 전체를 대체한다 */const tpl=_astroFlow.previewTemplate&&_astroFlow.resultMarkdown?_astroFlow.resultMarkdown:astroPreviewTemplate(_astroFlow.chart,_astroFlow.productType);_astroFlow.previewTemplate=false;_astroFlow.resultMarkdown=tpl;_astroFlow.deepLoading=true;saveAstrologyFlow();astroNavigate('result');try{const ai=await generateAstrologyReading(_astroFlow.chart,_astroFlow.transit,_astroFlow.productType);if(astroAIQuality(ai,_astroFlow))_astroFlow.resultMarkdown=ai.trim();}catch(e){console.warn('Astrology deep reading failed, keeping computed reading:',e&&e.message);}_astroFlow.deepLoading=false;_astroFlow.resultLoading=false;saveAstrologyFlow();if(_astroFlow.paymentStatus==='paid')saveAstrologyReading(_astroFlow);renderAstrology();}
 function astrologyResultVisualHTML(flow){if(!flow||!flow.chart)return '';const transit=flow.transit||calculateTransit(new Date());const tj={date:transit&&transit.date?new Date(transit.date):new Date(),transit,aspects:calculateTransitAspects(flow.chart,transit)};return `<section class="astro-panel astro-today-visual"><div class="astro-section-title">풀이 기준 차트</div><div class="astro-text">바깥의 금색 행성은 출생차트, 안쪽의 파란 행성은 풀이 시점의 트랜짓이에요.</div><div class="astro-wheel-wrap compact">${renderNatalChartWheel(flow.chart,tj)}</div></section>`;}
 function buildAstrologyStoryConfig(flow){
   const chart=flow.chart;
@@ -249,6 +249,7 @@ function renderNatalChartResult(root){
       ${unknown?'<div class="astro-warn">출생시간이 없어 ASC·MC·하우스는 표시하지 않아요. 행성은 정오 기준이며, 달 위치는 실제 출생시간에 따라 달라질 수 있어요.</div>':''}
       <div class="astro-wheel-wrap">${renderNatalChartWheel(chart)}</div>
     </section>
+    ${(()=>{const x=astroInsight(chart,'life');return x?`<section class="astro-panel natal-insight"><h2 class="astro-section-title">차트에서 먼저 읽을 장면</h2><div class="astro-text"><p>${astroEsc(x.recognition)}</p><p>${astroEsc(x.reversal)}</p></div></section>`:'';})()}
     <details class="astro-details"><summary>행성 위치표</summary>${planetPositionTable(chart,true)}</details>
     ${unknown?'':`<details class="astro-details"><summary>ASC · MC와 12하우스</summary><div class="astro-two-col">${ascMcCards(chart,true)}</div>${houseTable(chart,true)}</details>`}
     <details class="astro-details"><summary>주요 애스펙트</summary>${aspectTable(chart,true)}</details>
@@ -747,38 +748,115 @@ function generateTodayAstrology(chart,transit){
 
   return paras.join('\n\n');
 }
-function astroPracticalReading(chart,productType){
-  const key=canonicalAstroProduct(productType||'life');
-  const id=({love:'venus',marriage:'venus',reunion:'venus',gunghap:'venus',money:'venus',study:'mercury',health:'moon',child:'moon',children:'moon'})[key]||'sun';
-  const planet=findPlanet(chart,id),sign=planet&&signById(planet.sign);
-  if(!sign)return '';
-  const plans={
-    life:['진로를 바꿀지 고민한다면 남에게 잘 보이는 선택과 오래 할 수 있는 선택을 나눠 보세요.','후보마다 필요한 준비·수입 공백·실제로 해볼 작은 일을 적어 보세요.'],
-    newyear:['한 해의 계획이 많다면 새로 시작할 일과 끝낼 일을 구분해 보세요.','분기마다 완료할 결과물 하나와 쓰지 않을 시간·돈의 한도를 정하세요.'],
-    love:['호감이 생겼을 때 본인이 원하는 연락과 상대가 편한 연락이 다를 수 있어요.','다음 만남을 제안하고 상대도 구체적인 시간을 제시하는지 살펴보세요.'],
-    marriage:['함께 살 준비는 마음뿐 아니라 지출과 생활의 분담에서도 확인해 보세요.','주거비·집안일·가족 연락의 기준을 따로 적은 뒤 서로 비교하세요.'],
-    reunion:['다시 만나고 싶은 마음과 같은 갈등을 줄일 준비를 구분하세요.','헤어진 이유 중 달라진 조건을 적고, 상대가 연락을 원치 않았다면 존중하세요.'],
-    gunghap:['같은 말도 조언으로 듣는 사람과 평가로 듣는 사람이 있어요.','고민을 들을 때 해결책이 필요한지 공감이 필요한지 먼저 물어보세요.'],
-    money:['갖고 싶은 물건이나 새 제안을 볼 때 결제 이후의 부담도 함께 살펴보세요.','초기 지출·반복 비용·취소 비용을 나누고 생활비를 남긴 금액으로 비교하세요.'],
-    career:['일의 내용은 좋은데 자꾸 지친다면 역할과 마감을 먼저 살펴보세요.','새 일을 맡기 전에 결정권·업무 범위·보상을 함께 확인하세요.'],
-    study:['아는 내용을 설명할 때 막힌다면 읽은 시간과 이해한 양이 다를 수 있어요.','교재를 덮고 한 개념을 설명한 뒤 막힌 부분만 다시 확인하세요.'],
-    child:['아이의 표정과 행동이 바뀔 때 직전의 환경을 함께 살펴보세요.','잠·식사·활동을 기록하고 아이가 편안했던 조건을 반복해 보세요.'],
-    children:['자녀 계획을 세울 때 원하는 시기만큼 돌봄 부담도 함께 이야기하세요.','각자 낼 수 있는 시간·생활비·가족의 도움을 구체적으로 적어 보세요.'],
-    health:['피로가 반복된다면 하루 중 언제 무너지는지부터 살펴보세요.','수면·식사·불편한 증상을 기록하세요. 증상이 이어지면 차트보다 진료가 먼저예요.']
-  };
-  const plan=plans[key]||plans.life;
-  const basis=key==='money'?sign.moneyStyle:id==='venus'?sign.loveStyle:id==='sun'&&key==='career'?sign.careerStyle:sign.personality;
-  return `${plan[0]}\n\n${planetNameKo(id)}이 ${sign.nameKo}에 놓인 점을 생활 방식으로 읽으면 이래요. ${basis}\n\n${plan[1]}`;
+// 주제별 계산형 풀이 — 서로 다른 요구를 가진 두 행성, 그 사이의 실제 각도, 긴장 각도, (시간을 알 때만) 하우스,
+// 지금 트랜짓이 그 행성에 닿는 각도를 잇는다. 같은 원소라는 이유로 각도가 있다고 말하지 않는다.
+const ASTRO_TOPIC_NEEDS={life:['sun','moon','saturn'],newyear:['sun','moon','jupiter'],love:['venus','mars','moon'],marriage:['venus','saturn','moon'],reunion:['venus','moon','mercury'],gunghap:['venus','moon','mars'],money:['venus','saturn','jupiter'],career:['sun','saturn','mars'],study:['mercury','moon','saturn'],child:['moon','mercury','mars'],children:['moon','saturn','venus'],health:['moon','mars','saturn']};
+const ASTRO_NEED={sun:'스스로 방향을 정하고 인정받고 싶은 마음',moon:'편안한 리듬과 안정감을 지키고 싶은 마음',mercury:'이해하고 말로 정리하고 싶은 마음',venus:'좋아하는 것과 가까운 관계를 누리고 싶은 마음',mars:'바로 움직여 결과를 보고 싶은 마음',saturn:'책임을 지고 오래 버틸 구조를 만들고 싶은 마음',jupiter:'더 넓히고 기회를 키우고 싶은 마음',mercury_child:'궁금한 것을 묻고 이해하고 싶은 마음'};
+const ASTRO_NEED_CHOICE={sun:['방향과 인정','자기 확신이 커져요','주변과 속도가 어긋날 수 있어요'],moon:['안정과 회복','오래 버틸 힘이 생겨요','새 기회 앞에서 망설일 수 있어요'],mercury:['이해와 정리','같은 실수를 줄여요','생각만 길어질 수 있어요'],venus:['좋아하는 것과 관계','만족과 친밀감이 커져요','현실 조건을 뒤로 미루게 돼요'],mars:['바로 움직이는 것','결과를 빨리 확인해요','부딪힘과 피로가 늘 수 있어요'],saturn:['책임과 구조','오래 가는 기반이 생겨요','즐거움과 여유가 줄어요'],jupiter:['확장과 기회','가능성이 넓어져요','감당할 범위를 넘기 쉬워요']};
+const ASTRO_CRITERION={life:'되돌릴 때 드는 시간과 비용',newyear:'한 해 동안 유지할 수 있는 속도인지',love:'상대가 약속과 행동으로 응답하는지',marriage:'두 사람이 생활 기준을 말로 맞출 수 있는지',reunion:'헤어진 이유가 지금 달라졌는지',gunghap:'같은 행동을 서로 다르게 받아들이는 지점이 줄어드는지',money:'중단할 때의 비용까지 감당할 수 있는지',career:'역할·보상·권한이 함께 움직이는지',study:'설명할 수 있는 내용이 늘어나는지',child:'아이가 편안해하는 조건이 무엇인지',children:'두 사람이 감당할 돌봄 시간과 생활 여건',health:'잠과 회복 시간이 지켜지는지'};
+const ASTRO_ASPECT_KO={conjunction:'겹치는',opposition:'마주 보는',square:'부딪치는',trine:'부드럽게 이어지는',sextile:'서로 돕는'};
+function astroJ(w,a,b){return koHasBatchim(w)?a:b;}
+function astroStyle(sign,planet,key){
+  if(planet==='venus')return key==='money'?sign.moneyStyle:sign.loveStyle;
+  if(planet==='sun'&&key==='career')return sign.careerStyle;
+  if(planet==='mars')return key==='career'?sign.careerStyle:sign.personality;
+  if(planet==='saturn'&&key==='money')return sign.moneyStyle;
+  return sign.personality;
 }
-function generateTemplateAstrologySummary(chart){const sun=chart.planets.find(p=>p.planet==='sun'),moon=chart.planets.find(p=>p.planet==='moon'),venus=chart.planets.find(p=>p.planet==='venus');return `본인의 태양은 ${signNameKo(sun.sign)}, 달은 ${signNameKo(moon.sign)}, 금성은 ${signNameKo(venus.sign)}에 있어요. 삶의 방향은 ${signById(sun.sign).personality} 감정은 ${signById(moon.sign).personality} 관계에서는 ${signById(venus.sign).loveStyle} ${chart.ascendant?`상승궁은 ${signNameKo(chart.ascendant.sign)}라 첫인상과 외적 태도에 그 별자리의 분위기가 더해져요.`:'출생시간이 없어 상승궁과 하우스는 제외했어요.'}`;}
-// 결제 전 미리보기 — AI 리포트와 같은 목차, 첫 섹션만 계산한 차트 요약으로 채운다
-function astroPreviewTemplate(chart,productType){const t=READING_TOPICS.find(t=>t.key===canonicalAstroProduct(productType))||READING_TOPICS[0];const heads=astroTopicSections(productType);return heads.map((h,i)=>`# ${i+1}. ${h}\n\n${i===0?generateTemplateAstrologySummary(chart)+'\n\n'+astroPracticalReading(chart,productType):`${t.focus}을 출생차트의 행성 위치와 각도로 살펴봐요. ${h}에서 본인이 살릴 강점과 조심할 패턴을 자세히 풀어드려요.`}`).join('\n\n');}
-
-function generateTemplateAstrologyReading(chart,productType){
-  return `# 출생차트 핵심 요약\n\n${generateTemplateAstrologySummary(chart)}\n\n# 생활에서 확인할 장면\n\n${astroPracticalReading(chart,productType)}\n\n# 계산한 차트의 적용 범위\n\n위 내용은 실제 출생차트로 읽은 기본 풀이예요. 상세 AI 풀이 연결이 원활하지 않아, 계산하지 않은 사건이나 시기는 덧붙이지 않았어요.`;
+function astroPairAspect(chart,a,b){return (chart.aspects||[]).find(x=>(x.planetA===a&&x.planetB===b)||(x.planetA===b&&x.planetB===a));}
+function astroInsight(chart,productType,transit){
+  const key=canonicalAstroProduct(productType||'life'),P=id=>findPlanet(chart,id);
+  // 계산값에 없는 행성은 쓰지 않고, 같은 주제의 개인 행성으로만 채운다
+  const needs=[...new Set((ASTRO_TOPIC_NEEDS[key]||ASTRO_TOPIC_NEEDS.life).concat(['sun','moon','venus','mars','mercury']))].filter(P).slice(0,3);
+  const [A,B,C]=needs.map(P);if(!A||!B)return null;
+  const sa=signById(A.sign),sb=signById(B.sign),na=planetNameKo(A.planet),nb=planetNameKo(B.planet);
+  const timeKnown=!(chart.birthInfo&&chart.birthInfo.birthTimeUnknown);
+  const needA=key==='child'&&A.planet==='mercury'?ASTRO_NEED.mercury_child:ASTRO_NEED[A.planet];
+  // 1. 알아볼 수 있는 장면 — 서로 다른 두 요구
+  let recognition=`${na}${astroJ(na,'은','는')} ${sa.nameKo}에 있어 ${needA}${astroJ(needA,'을','를')} ${sa.keywords[0]}·${sa.keywords[1]}의 방식으로 드러내요. ${astroStyle(sa,A.planet,key)} ${nb}${astroJ(nb,'은','는')} ${sb.nameKo}에 있어 ${ASTRO_NEED[B.planet]}${astroJ(ASTRO_NEED[B.planet],'을','를')} 함께 보여 줘요.`;
+  const ab=astroPairAspect(chart,A.planet,B.planet);
+  if(ab)recognition+=` 두 행성이 실제로 ${ASTRO_ASPECT_KO[ab.aspectType]} 각도(${Number(ab.orb).toFixed(1)}° 차이)에 있어요. ${({conjunction:'두 마음이 한 번에 움직여, 한쪽이 흔들리면 다른 쪽도 함께 흔들려요.',opposition:'한쪽을 채우면 다른 쪽이 비는 느낌이 자주 들어요.',square:'두 마음이 동시에 커질 때 안에서 부딪힘이 생겨요.',trine:'두 마음을 함께 채울 방법을 비교적 쉽게 찾아요.',sextile:'조금만 신경 쓰면 두 마음이 서로를 도와요.'})[ab.aspectType]}`;
+  else{const rel=astroElemRel(sa.element,sb.element);recognition+=` 두 행성 사이에 계산된 주요 각도는 없어요. ${rel==='same'?'원소가 같아 비슷한 온도로 움직이지만, 직접 맞물린 연결로 보지는 않아요.':rel==='friend'?'원소는 서로 어울리는 편이지만, 따로 움직이는 두 마음으로 읽어요.':'원소의 온도도 달라, 두 마음이 각자 다른 때에 고개를 들어요.'}`;}
+  // 2. 강점이 부담이 되는 조건 — 실제 긴장 각도 또는 별자리의 주의점
+  const tense=(chart.aspects||[]).filter(x=>x.meaningType==='tense'&&needs.some(n=>n===x.planetA||n===x.planetB)).sort((x,y)=>x.orb-y.orb)[0];
+  let reversal;
+  if(tense){const p1=tense.planetA,p2=tense.planetB,t1=ASTRO_NATAL_THEME[p1],t2=ASTRO_NATAL_THEME[p2];reversal=`${planetNameKo(p1)}의 ${t1}${astroJ(t1,'과','와')} ${planetNameKo(p2)}의 ${t2}${astroJ(t2,'이','가')} ${ASTRO_ASPECT_KO[tense.aspectType]} 각도예요. 그래서 ${t1}${astroJ(t1,'을','를')} 밀어붙일수록 ${t2} 쪽이 버거워지는 때가 와요. ${sa.caution}`;}
+  else reversal=`${na}에 걸린 긴장 각도는 계산되지 않았어요. 대신 ${sa.nameKo}의 방식이 과해질 때를 살펴보세요. ${sa.caution}${C?` ${planetNameKo(C.planet)}${astroJ(planetNameKo(C.planet),'은','는')} ${signById(C.sign).nameKo}에 있어 ${ASTRO_NATAL_THEME[C.planet]} 쪽에서 균형을 잡아 줘요.`:''}`;
+  if(timeKnown&&A.house)reversal+=` ${na}${astroJ(na,'은','는')} ${A.house}하우스에 있어 이 고민은 주로 ${getHouseMeaning(A.house)} 영역에서 드러나요.`;
+  // 3. 지금 달라지는 점 — 트랜짓이 이 주제의 행성에 닿는 각도
+  let present='';
+  if(transit&&Array.isArray(transit.planets)){
+    const hits=calculateTransitAspects(chart,transit).filter(x=>needs.includes(x.natal)&&x.transit!=='moon');
+    const slow=hits.find(x=>['jupiter','saturn','uranus','neptune','pluto'].includes(x.transit))||hits[0];
+    if(slow){const t=planetNameKo(slow.transit),n=planetNameKo(slow.natal);present=`지금 하늘의 ${t}${astroJ(t,'이','가')} 본인 ${n}${astroJ(n,'과','와')} ${ASTRO_ASPECT_KO[slow.aspectType]} 각도를 만들고 있어요. ${slow.meaningType==='tense'?`${ASTRO_NATAL_THEME[slow.natal]} 쪽에서 압박이나 조정이 생기기 쉬운 때예요.`:slow.meaningType==='harmonious'?`${ASTRO_NATAL_THEME[slow.natal]} 쪽에서 도움을 받기 쉬운 때예요.`:`${ASTRO_NATAL_THEME[slow.natal]}${astroJ(ASTRO_NATAL_THEME[slow.natal],'이','가')} 지금의 주제로 떠오르는 때예요.`}`;}
+    else present=`지금 ${na}·${nb}에 직접 닿는 큰 트랜짓 각도는 계산되지 않았어요. 바깥의 변화보다 본인이 고르는 기준이 더 크게 작용하는 때예요.`;
+  }
+  // 4. 선택지의 득실과 기준
+  const ca=ASTRO_NEED_CHOICE[A.planet],cb=ASTRO_NEED_CHOICE[B.planet],crit=ASTRO_CRITERION[key]||ASTRO_CRITERION.life;
+  const choice=`${ca[0]}${astroJ(ca[0],'을','를')} 먼저 채우면 ${ca[1]}. 대신 ${ca[2]}. ${cb[0]}${astroJ(cb[0],'을','를')} 먼저 두면 ${cb[1]}. 대신 ${cb[2]}. 어느 쪽이든 ${crit}${/지$/.test(crit)?'를':astroJ(crit,'을','를')} 기준으로 정해 보세요.`;
+  return {key,needs,recognition,reversal,present,choice,timeKnown,refs:[A.planet,B.planet].concat(ab?[`aspect.${ab.planetA}.${ab.planetB}`]:[],tense?[`aspect.${tense.planetA}.${tense.planetB}`]:[])};
+}
+const ASTRO_PLANS={
+  life:['진로를 바꿀지 고민한다면 남에게 잘 보이는 선택과 오래 할 수 있는 선택을 나눠 보세요.','후보마다 필요한 준비·수입 공백·실제로 해볼 작은 일을 적어 보세요.'],
+  newyear:['한 해의 계획이 많다면 새로 시작할 일과 끝낼 일을 구분해 보세요.','분기마다 완료할 결과물 하나와 쓰지 않을 시간·돈의 한도를 정하세요.'],
+  love:['호감이 생겼을 때 본인이 원하는 연락과 상대가 편한 연락이 다를 수 있어요.','다음 만남을 제안하고 상대도 구체적인 시간을 제시하는지 살펴보세요.'],
+  marriage:['함께 살 준비는 마음뿐 아니라 지출과 생활의 분담에서도 확인해 보세요.','주거비·집안일·가족 연락의 기준을 따로 적은 뒤 서로 비교하세요.'],
+  reunion:['다시 만나고 싶은 마음과 같은 갈등을 줄일 준비를 구분하세요.','헤어진 이유 중 달라진 조건을 적고, 상대가 연락을 원치 않았다면 존중하세요.'],
+  gunghap:['같은 말도 조언으로 듣는 사람과 평가로 듣는 사람이 있어요.','고민을 들을 때 해결책이 필요한지 공감이 필요한지 먼저 물어보세요.'],
+  money:['갖고 싶은 물건이나 새 제안을 볼 때 결제 이후의 부담도 함께 살펴보세요.','초기 지출·반복 비용·취소 비용을 나누고 생활비를 남긴 금액으로 비교하세요.'],
+  career:['일의 내용은 좋은데 자꾸 지친다면 역할과 마감을 먼저 살펴보세요.','새 일을 맡기 전에 결정권·업무 범위·보상을 함께 확인하세요.'],
+  study:['아는 내용을 설명할 때 막힌다면 읽은 시간과 이해한 양이 다를 수 있어요.','교재를 덮고 한 개념을 설명한 뒤 막힌 부분만 다시 확인하세요.'],
+  child:['아이의 표정과 행동이 바뀔 때 직전의 환경을 함께 살펴보세요.','잠·식사·활동을 기록하고 아이가 편안했던 조건을 반복해 보세요.'],
+  children:['자녀 계획을 세울 때 원하는 시기만큼 돌봄 부담도 함께 이야기하세요.','각자 낼 수 있는 시간·생활비·가족의 도움을 구체적으로 적어 보세요.'],
+  health:['피로가 반복된다면 하루 중 언제 무너지는지부터 살펴보세요.','수면·식사·불편한 증상을 기록하세요. 증상이 이어지면 차트보다 진료가 먼저예요.']
+};
+function astroPracticalReading(chart,productType,transit){
+  const key=canonicalAstroProduct(productType||'life'),x=astroInsight(chart,key,transit);if(!x)return '';
+  const plan=ASTRO_PLANS[key]||ASTRO_PLANS.life;
+  return `${x.recognition}\n\n${x.reversal}\n\n${x.choice} ${plan[1]}`;
+}
+function generateTemplateAstrologySummary(chart){
+  const sun=findPlanet(chart,'sun'),moon=findPlanet(chart,'moon'),venus=findPlanet(chart,'venus');
+  const de=getDominantElement(chart.elementBalance),top=(chart.aspects||[]).slice().sort((a,b)=>a.orb-b.orb)[0];
+  let t=`본인의 태양은 ${signNameKo(sun.sign)}, 달은 ${signNameKo(moon.sign)}, 금성은 ${signNameKo(venus.sign)}에 있어요. 행성은 ${ASTRO_ELEM_KO[de]} 원소에 가장 많이 모여 있어요.`;
+  if(top)t+=` 가장 촘촘한 각도는 ${planetNameKo(top.planetA)}${astroJ(planetNameKo(top.planetA),'과','와')} ${planetNameKo(top.planetB)}의 ${ASTRO_ASPECT_KO[top.aspectType]} 각도예요.`;
+  t+=chart.ascendant?` 상승궁은 ${signNameKo(chart.ascendant.sign)}라 첫인상과 외적 태도에 그 별자리의 분위기가 더해져요.`:' 출생시간이 없어 상승궁과 하우스는 제외했어요.';
+  return t;
+}
+// 계산형 전체 풀이 — 결제 전 미리보기와 AI 실패 시 같은 목차를 실제 차트 근거로 채운다
+function astroComputedSections(chart,productType,transit){
+  const key=canonicalAstroProduct(productType||'life'),heads=astroTopicSections(productType),plan=ASTRO_PLANS[key]||ASTRO_PLANS.life;
+  const x=astroInsight(chart,key,transit)||{recognition:'',reversal:'',present:'',choice:''};
+  let bodies;
+  if(key==='life'){const love=astroInsight(chart,'love',transit),work=astroInsight(chart,'career',transit);bodies=[generateTemplateAstrologySummary(chart),x.recognition,love?`${love.recognition} ${love.choice}`:'',work?`${work.recognition} ${work.reversal}`:'',`${x.reversal} ${x.choice}`,`${x.present} ${plan[1]}`];}
+  else if(key==='newyear'){const half=astroYearHalves(chart,_astroFlow&&_astroFlow.yearTransits),money=astroInsight(chart,'money',transit),love=astroInsight(chart,'love',transit);bodies=[generateTemplateAstrologySummary(chart),`${x.recognition} ${x.present}`,half,money?`${money.recognition} ${money.choice}`:'',love?`${love.recognition} ${love.reversal}`:'',`${x.choice} ${plan[1]}`];}
+  else if(key==='gunghap'){const syn=((_astroFlow&&_astroFlow.synastryAspects)||[]).filter(a=>['sun','moon','venus','mars','mercury'].includes(a.natal)&&['sun','moon','venus','mars','mercury'].includes(a.transit)).slice(0,2);const synText=syn.length?syn.map(a=>`상대의 ${planetNameKo(a.transit)}${astroJ(planetNameKo(a.transit),'이','가')} 본인의 ${planetNameKo(a.natal)}${astroJ(planetNameKo(a.natal),'과','와')} ${ASTRO_ASPECT_KO[a.aspectType]} 각도를 이뤄요. ${a.meaningType==='tense'?`${ASTRO_NATAL_THEME[a.natal]} 쪽에서 서로 다르게 반응하기 쉬워요.`:`${ASTRO_NATAL_THEME[a.natal]} 쪽에서 서로를 편하게 느끼기 쉬워요.`}`).join(' '):'두 차트의 개인 행성 사이에 계산된 주요 각도가 적어, 끌림보다 생활 기준을 맞추는 과정이 관계를 만들어요.';bodies=[generateTemplateAstrologySummary(chart),x.recognition,synText,x.reversal,x.choice,`${plan[0]} ${plan[1]}`];}
+  else bodies=[generateTemplateAstrologySummary(chart),x.recognition,x.reversal,x.present||'지금의 트랜짓 자료가 없어 현재 흐름은 출생차트의 기본 성향 안에서만 읽었어요.',x.choice,`${plan[0]} ${plan[1]}`];
+  return heads.map((h,i)=>({title:`${i+1}. ${h}`,body:bodies[i]||plan[0]}));
+}
+function astroYearHalves(chart,yearTransits){
+  if(!Array.isArray(yearTransits)||yearTransits.length<12)return '선택한 해의 월별 행성 위치가 없어 상반기·하반기 비교는 생략했어요.';
+  const pick=(from,to)=>{const hits=[];for(let i=from;i<to;i++){const t=yearTransits[i];calculateTransitAspects(chart,t).filter(a=>['jupiter','saturn'].includes(a.transit)&&['sun','moon','venus','mars','mercury'].includes(a.natal)).forEach(a=>hits.push({...a,month:t.month}));}return hits.sort((a,b)=>b.weight-a.weight)[0];};
+  const h1=pick(0,6),h2=pick(6,12),line=(h,lab)=>h?`${lab}에는 ${h.month}월 무렵 하늘의 ${planetNameKo(h.transit)}${astroJ(planetNameKo(h.transit),'이','가')} 본인 ${planetNameKo(h.natal)}${astroJ(planetNameKo(h.natal),'과','와')} ${ASTRO_ASPECT_KO[h.aspectType]} 각도를 만들어요. ${h.meaningType==='tense'?`${ASTRO_NATAL_THEME[h.natal]} 쪽을 조정할 일이 생기기 쉬워요.`:`${ASTRO_NATAL_THEME[h.natal]} 쪽에서 힘을 받기 쉬워요.`}`:`${lab}에는 목성·토성이 개인 행성에 크게 닿는 각도가 계산되지 않았어요.`;
+  return `${line(h1,'상반기')} ${line(h2,'하반기')}`;
+}
+function astroPreviewTemplate(chart,productType){return astroComputedSections(chart,productType,_astroFlow&&_astroFlow.transit).map(s=>`# ${s.title}\n\n${s.body}`).join('\n\n');}
+function generateTemplateAstrologyReading(chart,productType){return astroPreviewTemplate(chart,productType);}
+// 유료 AI 응답 채택 기준 — 실제 계산과 다른 본인 행성 별자리, 시간 미상인데 하우스·상승궁 해석, 입력에 없는 연도를 거절한다.
+// 문장 규칙 검사이며 해석의 정확도를 보장하지 않는다.
+function astroAIQuality(md,flow){
+  const t=String(md||'').trim();if(t.length<900||mdSections(t).length<5)return false;
+  if(typeof readingProvenanceQuality==='function'&&!readingProvenanceQuality(t))return false;
+  const chart=flow&&flow.chart;if(!chart)return false;
+  const unknown=chart.birthInfo&&chart.birthInfo.birthTimeUnknown;
+  if(unknown&&/상승궁|어센던트|ASC|\d{1,2}\s?하우스/.test(t.replace(/상승궁과 하우스[^.]*제외[^.]*\./g,'')))return false;
+  const names={태양:'sun',달:'moon',수성:'mercury',금성:'venus',화성:'mars',목성:'jupiter',토성:'saturn'};
+  for(const m of t.matchAll(/본인(?:의)?\s?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s?([가-힣]{1,3}자리)/g)){const p=findPlanet(chart,names[m[1]]);if(p&&signNameKo(p.sign)!==m[2])return false;}
+  const y=new Date().getFullYear(),allowed=new Set([String(y),String(y+1),String((flow&&flow.targetYear)||y),String(chart.birthInfo&&chart.birthInfo.year)]);
+  return !(t.match(/(?:19|20)\d{2}년/g)||[]).some(x=>!allowed.has(x.slice(0,4)));
 }
 
-async function generateAstrologyReading(chart,transit,productType,opts){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,productType,partnerChart:_astroFlow&&_astroFlow.partnerChart,synastryAspects:_astroFlow&&_astroFlow.synastryAspects,targetYear:_astroFlow&&_astroFlow.targetYear,yearTransits:_astroFlow&&_astroFlow.yearTransits,question:_astroFlow&&_astroFlow.question,language:currentLanguagePayload(),skipSections:(opts&&opts.skipSections)||[],paidToken:typeof latestPaidToken==='function'?latestPaidToken():''})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
+async function generateAstrologyReading(chart,transit,productType,opts){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,transitAspects:transit&&Array.isArray(transit.planets)?calculateTransitAspects(chart,transit):[],productType,partnerChart:_astroFlow&&_astroFlow.partnerChart,synastryAspects:_astroFlow&&_astroFlow.synastryAspects,targetYear:_astroFlow&&_astroFlow.targetYear,yearTransits:_astroFlow&&_astroFlow.yearTransits,question:_astroFlow&&_astroFlow.question,language:currentLanguagePayload(),paidToken:typeof latestPaidToken==='function'?latestPaidToken():''})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
 
 (function processPendingAstrologyPaymentReturn(){
   let pending=null;

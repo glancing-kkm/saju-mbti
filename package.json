@@ -2,7 +2,7 @@
   "name": "cheonjiin-saju",
   "private": true,
   "scripts": {
-    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js && node tools/reading-copy-regression.js && node tools/reading-provenance-regression.js",
+    "test": "node tools/persona-regression.js && node tools/journey-regression.js && node tools/counsel-input-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js && node tools/reading-copy-regression.js && node tools/reading-provenance-regression.js && node tools/reading-editorial-regression.js && node tools/reading-system-depth-regression.js",
     "audit:reading": "node tools/reading-quality-audit.js"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v7-provenance',RP_SAFE=26;
+const RP_VERSION='v9-depth',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -215,7 +215,7 @@ function rpReadingSections(html){
       if(!t||t.length<2)return;
       if(/^(h3|h4)$/i.test(el.tagName)){if(t.length<=40)blocks.push({h:t});return;}
       if(t.length<12)return;
-      blocks.push({p:t,step:el.dataset.readingStep||'',domain:el.closest('.reading-narrative')?.dataset.readingDomain||''});
+      blocks.push({p:t,step:el.dataset.readingStep||el.dataset.editorialStep||'',domain:el.closest('.life-editorial')?.dataset.editorialDomain||el.closest('.reading-narrative')?.dataset.readingDomain||''});
     });
     if(title&&blocks.some(b=>b.p))out.push({title,blocks});
   });
@@ -348,7 +348,7 @@ function rpPlan(spec,d){
     if(v==='zwIndex')ZW_ORDER.forEach((n,r)=>f.push([`p${pg.pi}z${r}`,`${ZW_SHOW(n)}의 풀이 핵심`,22]));
     if(v==='quarters')for(let q=1;q<=4;q++)f.push([`q${q}a`,`${q}분기 핵심 주제(명사구)`,16],[`q${q}b`,`${q}분기의 변화와 준비할 일`,140]);
     if(/^months:/.test(v)){const st=Number(v.split(':')[1]);for(let m=st;m<st+3;m++)f.push([`m${m}a`,`${m}월의 핵심 주제(명사구)`,16],[`m${m}b`,`${m}월 전체 흐름과 일·돈·관계의 변화`,160],[`m${m}c`,`${m}월에 먼저 실행할 일과 조절할 부분`,120]);}
-    add(pg.pi,{page:pg,heads:pg.h.map((h,k)=>({id:`p${pg.pi}h${k}`,chapter:pg.t,title:h,hint:rpHint(pg,d)})),fields:f});
+    add(pg.pi,{page:pg,heads:pg.h.map((h,k)=>({id:`p${pg.pi}h${k}`,chapter:pg.t,title:h,hint:rpHint(pg,d),focus:rpHeadFocus(d,pg,h),draft:rpHeadDraft(spec,d,pg,h)})),fields:f});
   });
   add('tail',{fields:[['sq','풀이를 생활에 연결하는 마무리 한 문장',46],['si1','계속 살릴 강점 — 실천할 내용과 이유',120],['si2','새롭게 조정할 부분 — 실천할 내용과 이유',120],['si3','지금 시작할 행동 — 실천할 내용과 이유',120],['send','앞으로의 나에게 — 보고서를 마무리하는 글(4~5문장)',360]]});
   // 요청 단위로 묶기 — 한 번에 너무 많이 시키면 답이 짧아지거나 끊기므로 소제목 5개, 필드 18개까지
@@ -357,6 +357,13 @@ function rpPlan(spec,d){
   split.forEach(u=>{const hn=(u.heads||[]).length,fn=u.fields.length;if(!cur||cur.heads.length+hn>5||cur.fields.length+fn>18){cur={heads:[],fields:[]};groups.push(cur);}cur.heads.push(...(u.heads||[]));cur.fields.push(...u.fields);});
   return {pages,groups};
 }
+// 소제목마다 AI에 주는 질문과 계산 초안 — 초안은 사실 확인용이며 그대로 옮기라는 뜻이 아니다
+function rpHeadFocus(d,pg,h){
+  const it=rpIntent(h),q={scene:'이 소제목이 가리키는 생활 장면과 안에서 당기는 두 기준',burden:'강점이 부담으로 바뀌는 조건과 그 이유',timing:'계산된 연·월·10년 중 언제 무엇이 달라지는지',choice:'선택지별로 얻는 것과 잃는 것, 판단 기준',action:'실제로 해 볼 행동과 다시 점검할 신호',evidence:'계산 근거가 무엇이고 어디까지 말할 수 있는지'}[it];
+  const sys=d.cat==='ziwei'?' 자미두수 명반의 궁·주성·대한·사화만 근거로 쓰고, 유년은 계산하지 않았다고 밝히세요.':d.cat==='name'?' 실제 글자·한자·획수·소리 오행과 계산된 후보만 근거로 쓰세요.':d.cat==='gunghap'?' 두 사람의 실제 관계 수치와 성향 차이만 근거로 쓰세요.':'';
+  return `${q}에 답하세요. 다른 소제목과 같은 문장·조언을 쓰지 마세요.${sys}`;
+}
+function rpHeadDraft(spec,d,pg,h){try{return rpFallbackParas(spec,d,pg,h,rpLedger(),{},null).join(' ').slice(0,280);}catch(e){return '';}}
 function rpHint(pg,d){
   const v=pg.vis||'';
   try{
@@ -389,9 +396,9 @@ async function rpAI(spec,d,plan,onProgress,opts){
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
       payload.sajuContext.detailedReading=readingText;
       payload.sajuContext.readingEvidence=readingEvidencePayload(d.saju,d.meta,d.cat,d.nyYear||d.y0);
-      payload.meta.narrativeStyle='핵심 결론 → 본인 사주의 계산 근거 → 현재 운에서 장점과 부담이 나타날 장면 → 확인할 조건과 행동. 서로 다른 장의 이유와 결론을 섞지 말고 날짜나 사건은 새로 만들지 않기.';
+      payload.meta.narrativeStyle='알아볼 수 있는 장면과 안에서 당기는 두 기준 → 강점이 부담으로 바뀌는 조건 → 지금 달라지는 점 → 선택지의 득실과 판단 기준. 소제목마다 focus에 답하고 draft의 사실만 쓰며, 서로 다른 소제목에 같은 문장을 쓰지 않기. 날짜나 사건은 새로 만들지 않기.';
       if(told)payload.sajuContext.situation=told.slice(0,300);
-      Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
+      Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint,focus:h.focus,draft:h.draft})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
       for(let k=0;k<2&&!rpEnough(out,g);k++){
         ({resp,data}=await fetchJsonWithRetry((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2));
@@ -407,10 +414,13 @@ async function rpAI(spec,d,plan,onProgress,opts){
     }catch(e){return null;}
     finally{done++;if(onProgress)onProgress(done,plan.groups.length);}
   };
-  const res=await Promise.all(plan.groups.map(one));
+  // 동시 요청은 2개까지 — 주문당 요청 한도와 서버 부담을 지킨다. 성공한 묶음은 캐시에서 다시 쓴다.
+  const res=new Array(plan.groups.length).fill(null);let next=0;
+  const worker=async()=>{while(next<plan.groups.length){const i=next++;res[i]=await one(plan.groups[i],i);}};
+  await Promise.all(Array.from({length:Math.min(2,plan.groups.length)},worker));
   const secs={},fields={};
   res.forEach(r=>{if(!r)return;(r.sections||[]).forEach(s=>{if(s&&s.id&&Array.isArray(s.paragraphs))secs[s.id]=s.paragraphs.map(clean).filter(x=>x.length>=10).slice(0,4);});Object.entries(r.fields||{}).forEach(([k,v])=>{const t=clean(v);if(t)fields[k]=t;});});
-  return {secs,fields,okGroups:res.filter(Boolean).length};
+  return {secs,fields,okGroups:res.filter(Boolean).length,facts};
 }
 // JSON이 중간에 끊겨도 온전한 섹션·필드는 살린다
 function rpParse(text){
@@ -427,7 +437,44 @@ function rpParse(text){
   return out.sections.length||Object.keys(out.fields).length?out:null;
 }
 function rpScore(o){return o?(o.sections||[]).length*4+Object.keys(o.fields||{}).length:0;}
-function rpSectionQuality(ps){return Array.isArray(ps)&&ps.length>=2&&ps.every(x=>typeof x==='string'&&x.trim().length>=25)&&ps.join(' ').length>=160&&new Set(ps.map(x=>x.trim())).size===ps.length;}
+// AI 소제목 본문 채택 기준 — 분량만이 아니라 실제 근거 인용, 일반론 비율, 소제목 관련성, 입력에 없는 연도, 다른 소제목과의 반복을 본다.
+// 문장 규칙 검사이며 해석의 정확도나 예측 적중을 보장하지 않는다.
+const RP_GENERIC=/(?:상황을|흐름을|방향을|마음을)\s?(?:살펴|정리|점검|돌아)|기회를 (?:잘 )?활용|균형을 (?:잘 )?잡|좋은 방향으로|도움이 될 (?:거|것)|긍정적인 (?:변화|결과)|차근차근 (?:준비|살펴)|가능성이 열려|노력하면 (?:좋|돼)/;
+function rpGround(d){
+  const set=new Set(),s=d.saju;
+  [s.yp,s.mp,s.dp,s.hp].filter(Boolean).forEach(p=>set.add(STEMKO[p.stem]+BRCHKO[p.branch]));
+  (d.daeuns||[]).forEach(x=>{set.add(`${x.age}~${x.age+9}세`);set.add(STEMKO[x.stem]+BRCHKO[x.branch]);});
+  if(d.base){d.base.years.forEach(y=>{set.add(`${y.year}년`);set.add(y.gz);});d.base.months.forEach(m=>{set.add(`${m.month}월`);set.add(m.gz);});}
+  if(d.ny){set.add(`${d.nyYear}년`);d.ny.months.forEach(x=>set.add(`${x.month}월`));}
+  try{const e=buildReadingEvidence(d.saju,d.meta,{year:d.nyYear||d.y0});e.axes.forEach(([a])=>set.add(READING_AXIS[a]));e.nodes.forEach(n=>set.add(`${n.place} ${n.glyph}`));}catch(err){}
+  ['일간','일지','월주','대운','세운','용신'].forEach(x=>set.add(x));
+  if(d.zw){Object.keys(ZW_STARS).forEach(st=>set.add(st+'성'));ZW_ORDER.forEach(n=>{set.add(n);set.add(ZW_PALACE_PLAIN[n]);});set.add('대한');set.add('사화');}
+  if(d.cat==='name'){const nm=d.meta.nmExtra||{};[...String((nm.surname||'')+(nm.given||''))].forEach(c=>set.add(c+'('));Object.values(nm.han||{}).filter(Boolean).forEach(h=>set.add(h));set.add('획');set.add('소리');(d.cands||[]).forEach(c=>set.add(c.name));}
+  if(d.gh){set.add(`${d.gh.score}점`);set.add('두 사람');set.add('상대');}
+  return [...set].filter(x=>x&&x.length>=2);
+}
+function rpAllowedYears(d,facts){
+  const ys=new Set(String(facts||'').match(/(?:19|20|21)\d{2}/g)||[]);
+  for(let y=d.y0-1;y<=d.y0+10;y++)ys.add(String(y));
+  if(d.meta&&d.meta.sy)ys.add(String(d.meta.sy));if(d.nyYear)ys.add(String(d.nyYear));
+  return ys;
+}
+function rpSectionQuality(ps,ctx){
+  if(!(Array.isArray(ps)&&ps.length>=2&&ps.every(x=>typeof x==='string'&&x.trim().length>=25)&&ps.join(' ').length>=160&&new Set(ps.map(x=>x.trim())).size===ps.length))return false;
+  const joined=ps.join(' '),sents=joined.match(/[^.!?]+[.!?]+/g)||[joined];
+  if(sents.filter(x=>RP_GENERIC.test(x)).length*3>sents.length)return false;
+  if(!ctx)return true;
+  if(typeof readingProvenanceQuality==='function'&&!readingProvenanceQuality(joined))return false;
+  if((joined.match(/(?:19|20|21)\d{2}년/g)||[]).some(y=>!ctx.years.has(y.slice(0,4))))return false;
+  if(ctx.marital==='married'&&/(?:새로운|새)\s*(?:연인|애인)|(?:연인|애인)을\s*만나/.test(joined))return false;
+  if(ctx.ground&&ctx.ground.length&&!ctx.ground.some(t=>joined.includes(t)))return false;
+  const q=rpGrams(`${ctx.title}`),c=rpGrams(`${ctx.chapter}`),g=rpGrams(joined);let hit=0,chit=0;q.forEach(x=>{if(g.has(x))hit++;});c.forEach(x=>{if(g.has(x))chit++;});
+  if(!hit&&chit<2)return false;
+  if(ctx.ledger&&sents.filter(x=>ctx.ledger.has(x)).length>=2)return false;
+  // 자미두수는 별·궁 주장을 실제 명반과 대조하고, 계산하지 않은 유년을 사실처럼 쓰면 거절한다
+  if(ctx.zw&&(!zwClaimsConsistent(joined,ctx.zw)||(/유년/.test(joined)&&!/계산하지 않/.test(joined))))return false;
+  return true;
+}
 function rpEnough(o,g){if(!o)return false;const ids=new Set((o.sections||[]).filter(x=>x&&rpSectionQuality(x.paragraphs)).map(x=>x.id));const f=o.fields||{};return g.heads.every(h=>ids.has(h.id))&&g.fields.filter(([id])=>!f[id]).length<=Math.floor(g.fields.length/4);}
 
 // AI가 못 채운 짧은 칸 — 계산된 성향·강점·시기로 채운다
@@ -443,11 +490,14 @@ function rpDetFields(d){
   const story=buildReadingNarrative(d.saju,d.meta,topic,{year:d.nyYear||d.y0});
   const fit=(text,max)=>{const ps=String(text).match(/[^.!?]+[.!?]+/g)||[String(text)];let out='';for(const p of ps){if(out.length+p.length>max)break;out+=p;}return out.trim();};
   [story.paragraphs[0],story.paragraphs[2],story.paragraphs[3]].forEach((p,i)=>o[`gi${i+1}`]=fit(p,150));
+  o.send=`${story.paragraphs[1]} 이 보고서의 시기와 기준은 계산된 흐름을 정리한 참고예요. 실제 선택은 지금의 여건과 마음을 함께 보고 정하세요.`;
   if(['gunghap','name','ziwei'].includes(d.cat))rpPool(d).slice(0,3).forEach((p,i)=>o[`gi${i+1}`]=fit(p.t,150));
   if(d.cat==='gunghap'&&d.gh){
     o.intro=`두 사람의 종합 궁합은 ${d.gh.score}점, ${d.gh.grade}이에요.`;
     o.gq='끌리는 이유와 부딪히는 생활 기준을 함께 읽어요.';
     o.gk1='두 사람의 차이';o.gk2='서로 돕는 방식';o.gk3='지킬 약속 정하기';
+    const rows=PAIR_ROWS.map(([k,fn])=>({k,diff:Math.abs(fn(d.persona)-fn(d.persona2||d.persona))})).sort((a,b)=>b.diff-a.diff);
+    o.send=`두 사람의 종합 궁합은 ${d.gh.score}점이에요. 점수보다 ${rows[0].k}의 차이를 말로 맞추는 습관이 관계를 오래 받쳐 줘요. 서로 다른 점은 고칠 대상이 아니라 역할을 나눌 근거로 써 보세요. 이 보고서는 두 사람의 사주 계산을 정리한 참고이고, 관계의 결정은 두 사람의 대화로 정하세요.`;
   }
   if(st.cautions&&st.cautions[0])o.si2=`${st.cautions[0]} — 이 부분은 속도를 한 박자 늦추면 좋아요.`;
   if(st.strengths&&st.strengths[0])o.si1=`${st.strengths[0]} — 본인이 가장 자연스럽게 힘을 내는 방식이라 계속 살려 주세요.`;
@@ -467,31 +517,241 @@ function rpDetFields(d){
       o[`m${x.month}c`]=ps.slice(3).join('').trim();
     });
   }
+  if(d.cat==='ziwei'&&d.zw){const sh=zwSihua(d.zw),nx=d.zw.decades.find(x=>x.from>d.zw.age),me=zwStarsOf(d.zw,'명궁');
+    if(sh[0].palace)o.si1=`화록이 붙은 ${ZW_SHOW(sh[0].palace)}의 ${sh[0].star}성 — 막힐 때 기댈 자원이라 이 영역의 강점을 계속 살려 주세요.`;
+    if(sh[3].palace)o.si2=`화기가 붙은 ${ZW_SHOW(sh[3].palace)} — 같은 걱정이 반복되면 이 방의 일을 따로 떼어 점검하세요.`;
+    if(nx)o.si3=`${nx.from}세에 열릴 ${ZW_SHOW(nx.palace.name)}을 앞두고 ${ZW_DECADE_THEME[nx.palace.name]}을 준비할 일 하나를 적어 두세요.`;
+    o.send=`명궁의 ${me.stars.map(x=>x+'성').join('과 ')}은 본인이 가장 자연스럽게 쓰는 힘이에요. 다만 ${ZW_STAR_SHADOW[me.stars[0]]||'같은 방식만 고집하기 쉬워요.'} 지금 열린 대한의 방에서 그 힘을 어디에 쓸지 정하면 흐름을 덜 소모하며 지나갈 수 있어요. 이 보고서는 해마다의 유년은 계산하지 않았으니, 한 해 단위의 변화는 직접 기록하며 맞춰 가세요.`;}
+  if(d.cat==='name'){try{const m=nameModel(d.saju,d.meta.nmExtra||{});o.si1=`이름 소리에 담긴 ${LV4_OH[m.ys.main]} 기운 ${m.nameOh.oh[m.ys.main]}개 — 사주의 도움 기운과 이어지는 부분이에요.`;o.si3='후보를 소리 내어 불러 보고, 한자 뜻과 인명용 등록 가능 여부를 함께 확인하세요.';o.send=`이 이름은 '${m.grade}'로 계산됐어요. 이름은 사주를 바꾸는 장치가 아니라, 본인에게 필요한 기운을 일상에서 의식하게 돕는 이름표예요. 뜻과 소리, 부르는 사람의 편안함까지 함께 보고 오래 쓸 이름을 고르세요.`;}catch(e){}}
   return o;
 }
-// 모델 응답이 비어 있어도 웹과 같은 장면 → 근거 → 행동 순서를 유지한다.
-function rpSourceStory(pool,query,d){
- const domain=/건강|회복|에너지/.test(query)?'health':/재물|지출|수입|돈/.test(query)?'money':/연애|가족|결혼|사랑|관계/.test(query)?'love':/직업|직무|경력|성과/.test(query)?'career':/학습|공부|학업|재능/.test(query)?'study':'core';
- const specific=['gunghap','name','ziwei'].includes(d.cat);
- const fresh=pool.filter(x=>!x.used),unused=fresh.length?fresh:specific?pool:[],matching=unused.filter(x=>x.domain===domain);
- const first=rpPick(matching.length?matching:unused,query,1)[0];
- const selected=first?unused.find(x=>x.t===first):null,local=selected?unused.filter(x=>x.sec===selected.sec):[];
- const steps=['conclusion','evidence','development','action'],arc=steps.map(step=>local.find(x=>x.step===step));
- if(arc.every(Boolean)){arc.forEach(x=>x.used=true);return arc.map(x=>x.t);}
- // 같은 장의 문맥을 유지하고, 다른 장의 이유와 행동을 임의로 이어 붙이지 않는다.
- if(local.length>=3){const rows=local.slice(0,4);rows.forEach(x=>x.used=true);return rows.map(x=>x.t);}
- // 궁합·이름·자미두수를 개인 사주의 일반 성향으로 대체하지 않는다.
- if(specific&&selected){const rows=pool.filter(x=>x.parent===selected.parent).slice(0,4);rows.forEach(x=>x.used=true);return rows.map(x=>x.t);}
- return buildReadingNarrative(d.saju,d.meta,domain,{year:d.nyYear||d.y0}).paragraphs;
+// ── 소제목별 대체 본문 ──
+// AI가 비었거나 검증을 통과하지 못한 소제목을 채운다. 소제목의 질문(장면·부담·시기·선택·실천·근거)을 고르고,
+// 보고서 안에서 아직 쓰지 않은 실제 계산 근거를 하나씩 배정한다. 같은 문장은 보고서 전체에서 한 번만 쓴다.
+// 궁합·이름·자미두수는 각 체계의 계산으로만 채우고 개인 사주의 일반 성향으로 대신하지 않는다.
+const rpJ=(w,a,b)=>{const c=String(w||'').trim().slice(-1),code=c.charCodeAt(0);if(/[0-9]/.test(c))return '013678'.includes(c)?a:b;return code>=0xac00&&code<=0xd7a3&&(code-0xac00)%28?a:b;};
+const rpBase=t=>String(t||'').replace(/[)\]\s.]+$/,'').replace(/\([^()]*$/,'');
+const rpIda=t=>rpJ(rpBase(t),'이에요','예요');
+const rpRo=t=>{const w=rpBase(t),c=w.slice(-1),code=c.charCodeAt(0);if(/[0-9]/.test(c))return '036'.includes(c)?'으로':'로';return code>=0xac00&&code<=0xd7a3&&(code-0xac00)%28&&(code-0xac00)%28!==8?'으로':'로';};
+function rpLedger(){
+  const seen=new Set();
+  const key=t=>clean(t).replace(/[^가-힣0-9]/g,'');
+  return {
+    // 이미 쓴 문장은 빼고 돌려준다
+    fresh(text){const ss=String(text||'').match(/[^.!?]+[.!?]+/g)||[String(text||'')];return ss.every(x=>{const k=key(x);return k.length<14||!seen.has(k);});},
+    take(text){const out=[];(String(text||'').match(/[^.!?]+[.!?]+/g)||[String(text||'')]).forEach(s=>{s=clean(s);const k=key(s);if(!s)return;if(k.length>=14&&seen.has(k))return;out.push(s);});return out.join(' ');},
+    mark(text){(String(text||'').match(/[^.!?]+[.!?]+/g)||[]).forEach(s=>{const k=key(s);if(k.length>=14)seen.add(k);});},
+    has(s){return seen.has(key(s));}
+  };
+}
+function rpIntent(h){
+  const t=String(h||'');
+  if(/일간|오행|십성|명식|구조|계절|산정|체계|사화표|해석 범위|해석 기준|적용/.test(t))return 'evidence';
+  if(/시기|때$|흐름|구간|변화|전환|진전|후반|초년|청년|중년|대운|대한|유년|다음 시기|겹치는/.test(t))return 'timing';
+  if(/갈등|과제|반복|어려|부담|차이|스트레스|압박|실수|새는|함정|늘어나는|긴장|방해/.test(t))return 'burden';
+  if(/기준|선택|판단|결정|우선|확인할|검토|합의|존중/.test(t))return 'choice';
+  if(/실천|습관|계획|기록|준비|행동|방법|점검|돌아볼|만들기|나누기|묻기|정리|요청|조정|배치|약속/.test(t))return 'action';
+  return 'scene';
+}
+function rpDomain(d,pg,h){
+  const t=`${pg.t} ${h}`;
+  const cat=d.cat.replace(/^topic-/,'');
+  const byCat={love:'love',marriage:'love',reunion:'love',money:'money',career:'career',study:'study',child:'study',children:'love',health:'health'};
+  if(byCat[cat])return byCat[cat];
+  if(/돈|재물|수입|지출|자산|소비/.test(t))return 'money';
+  if(/일|직업|경력|역할|업무|성과/.test(t))return 'career';
+  if(/연애|사랑|가족|결혼|배우자|관계|공동생활/.test(t))return 'love';
+  if(/건강|회복|에너지|생활 리듬|쉬는/.test(t))return 'health';
+  if(/학습|공부|배움|학업/.test(t))return 'study';
+  return 'core';
+}
+// 사주 근거 칸 — 같은 축·시기라도 소제목의 질문에 맞는 문장을 고른다
+function rpSajuItems(d,domain){
+  const year=d.nyYear||d.y0,e=buildReadingEvidence(d.saju,d.meta,{year,domain}),t=(typeof d.tm==='function'&&d.tm(({love:d.meta.marital==='married'?'marriage':'love',money:'money',career:'career',health:'health',study:'study'})[domain]||''))||d.base,young=['preschool','school'].includes(e.stage);
+  let dom=young&&['career','money','love'].includes(domain)?'study':domain;if(!READING_SCENES[dom])dom='core';
+  const AX=a=>READING_AXIS[a]||'',items=[],ax=e.axes.map(x=>x[0]).slice(0,3);
+  const nodeOf=a=>e.nodes.find(n=>n.axis===a);
+  const axisYears=a=>t?t.years.filter(y=>READING_TG_AXIS[y.tg]===a).map(y=>`${y.year}년(${y.gz})`).slice(0,3):[];
+  ax.forEach((a,i)=>{const n=nodeOf(a),rank=i===0?'가장 두터운':i===1?'보조로 있는':'함께 있는';
+    items.push({id:`axis${i}`,basis:n?`${n.place} ${n.glyph}`:'',render:{
+      scene:`${n?`${n.place} ${n.glyph}에서 `:''}${rank} ${AX(a)}${rpJ(AX(a),'이','가')} 보여요. ${young?READING_REVERSAL_YOUNG[a].split(/(?<=[.!?])\s+/)[0]:READING_SCENES[dom][a]}`,
+      burden:young?READING_REVERSAL_YOUNG[a]:`${(READING_REVERSAL[dom]||READING_REVERSAL.core)[a]}${i===1&&READING_SECOND_ROLE[a]?' '+READING_SECOND_ROLE[a]:''}`,
+      choice:`${rank} ${AX(a)}${rpJ(AX(a),'을','를')} 기준으로 보면 선택은 이렇게 갈려요. ${young?READING_CHOICE.study[a]:(READING_CHOICE[dom]||READING_CHOICE.core)[a]}`,
+      action:`${(READING_ACTION[dom]||READING_ACTION.core)[a]}${(READING_DOMAIN_DEVELOPMENT[dom]||{})[a]?' '+READING_DOMAIN_DEVELOPMENT[dom][a]:''}`,
+      timing:axisYears(a).length?`앞으로 10년 중 ${AX(a)}${rpJ(AX(a),'이','가')} 해의 앞자리에 서는 때는 ${axisYears(a).join(', ')}${rpIda(axisYears(a).slice(-1)[0])}. ${(READING_SHIFT[dom]||READING_SHIFT.core)[a]}`:`앞으로 10년 안에 ${AX(a)}${rpJ(AX(a),'이','가')} 해의 앞자리에 서는 해는 계산되지 않았어요. 이 힘은 기다리기보다 스스로 꺼내 써야 하는 쪽이에요.`,
+      evidence:`${n?`${n.place}의 ${n.glyph}${rpJ(n.glyph,'은','는')} 일간 ${e.dayStem} 기준으로 ${AX(a)}에 해당해요. `:''}사주의 여러 자리 중 이 성향이 ${e.axes[i][1]}곳에 나와 ${rank} 축으로 읽어요.${!e.hourKnown?' 시주는 입력되지 않아 세 자리 안에서 셌어요.':''}`}});});
+  const f=e.flow,front=f.front;
+  if(front)items.push({id:'flow',basis:`${f.label} ${STEMKO[f.stem]}${BRCHKO[f.branch]}`,render:{
+    timing:readingShiftLine(e,dom),scene:`${f.label}에는 ${(READING_SHIFT[dom]||READING_SHIFT.core)[front]} ${front===e.primary?'평소 강한 힘이 한 번 더 실리는 해예요.':'평소와 다른 쪽의 힘을 써 보라는 해예요.'}`,
+    burden:front===e.primary?`${f.label}에는 이미 두터운 ${AX(front)}에 같은 힘이 더해져요. ${(READING_REVERSAL[dom]||READING_REVERSAL.core)[front].split(/(?<=[.!?])\s+/).slice(-1)[0]}`:`${f.label}에 들어오는 ${AX(front)}${rpJ(AX(front),'은','는')} 익숙한 방식과 달라 처음엔 어색할 수 있어요. ${(READING_REVERSAL[dom]||READING_REVERSAL.core)[front].split(/(?<=[.!?])\s+/).slice(-1)[0]}`,
+    choice:`${f.label}에 앞에 서는 ${AX(front)}${rpJ(AX(front),'으로','로')} 보면 이래요. ${(READING_CHOICE[young?'study':dom]||READING_CHOICE.core)[front]}`,action:`${f.label} 안에 ${(READING_ACTION[young?'study':dom]||READING_ACTION.core)[front]}`,
+    evidence:`${f.label}의 간지는 ${STEMKO[f.stem]}${BRCHKO[f.branch]}예요. 위 글자는 ${AX(front)}, 아래 글자는 ${AX(f.back)||'같은 힘'}으로 읽어요.`}});
+  if(e.decade){const dc=e.decade,nx=t&&t.eras?t.eras.find(x=>Number(String(x.range).split('~')[0])>dc.from):null;
+    items.push({id:'decade',basis:`${dc.from}~${dc.to}세 대운`,render:{
+      timing:`지금 ${dc.from}~${dc.to}세 대운(${STEMKO[dc.stem]}${BRCHKO[dc.branch]})은 ${AX(dc.axis)}${rpJ(AX(dc.axis),'을','를')} ${dc.axis===e.primary?'더 굳히는':'함께 쓰게 하는'} 10년이에요.${nx?` 다음 ${nx.range} 대운은 ${nx.title}${rpRo(nx.title)} 넘어가요.`:''}`,
+      scene:`이번 10년은 ${(READING_SHIFT[dom]||READING_SHIFT.core)[dc.axis]} 대운의 글자가 ${STEMKO[dc.stem]}${BRCHKO[dc.branch]}${rpJ(BRCHKO[dc.branch],'이라','라')} 이 주제가 한 해에 그치지 않고 길게 이어져요.`,
+      choice:`대운이 ${AX(dc.axis)} 쪽이라 이번 10년의 선택은 이렇게 갈려요. ${(READING_CHOICE[young?'study':dom]||READING_CHOICE.core)[dc.axis]}`,
+      burden:`대운의 ${AX(dc.axis)}${rpJ(AX(dc.axis),'이','가')} ${dc.axis===e.primary?'원래 강한 힘과 겹쳐 같은 습관이 길게 굳을 수 있어요.':'원래 익숙한 방식과 달라 10년 초반에는 어긋나는 느낌이 들 수 있어요.'}`,
+      action:`이번 10년 안에 ${(READING_ACTION[young?'study':dom]||READING_ACTION.core)[dc.axis]}`,evidence:`대운은 월주에서 출발해 10년마다 바뀌어요. 지금은 ${dc.from}세에 시작한 ${STEMKO[dc.stem]}${BRCHKO[dc.branch]} 대운이에요.`}});}
+  if(t&&t.bestYears&&t.bestYears.length){const by=t.bestYears,cy=t.careYears||[],L=x=>`${x.year}년(${x.gz}, ${x.score}점)`;
+    const T=x=>t.tgText(x.tg)||['','',''];
+    items.push({id:'years',basis:'해마다의 점수',render:{
+      timing:[`${t.info.stat} 점수가 높은 해는 ${by.map(L).join(', ')}${rpIda(L(by[by.length-1]))}.${cy.length?` 살필 해는 ${cy.map(L).join(', ')}${rpIda(L(cy[cy.length-1]))}.`:''}`].concat(by.map(x=>`${x.year}년(${x.gz})은 ${t.info.stat} 점수가 ${x.score}점이에요. ${T(x)[0]} ${T(x)[1]}`),cy.map(x=>`${x.year}년(${x.gz})은 ${t.info.stat} 점수가 ${x.score}점으로 낮은 편이에요. ${T(x)[0]} ${T(x)[2]}`)),
+      choice:[`${by[0].year}년처럼 점수가 높은 해에는 미뤄 둔 결정을 꺼내 볼 만해요. ${cy[0]?`${cy[0].year}년처럼 낮은 해에는 규모를 줄이고 조건을 다시 확인하세요.`:''}`].concat(by.slice(1).map(x=>`${x.year}년에 큰 선택을 둔다면 이 기준을 먼저 보세요. ${T(x)[2]}`)),
+      burden:cy[0]?`${cy[0].year}년(${cy[0].gz})은 ${['충','원진','형','자형','파','해'].includes(cy[0].rel&&cy[0].rel.kind)?'일지와 맞부딪히는 글자가 들어와':'흐름이 약해져'} 무리한 확장이 부담으로 돌아오기 쉬워요.`:'',
+      action:`${by.map(x=>x.year+'년').join('·')}을 달력에 먼저 표시하고, 그 전 해에 준비할 일 하나를 적어 두세요.`,scene:`해마다 점수가 달라 같은 노력도 해에 따라 결과가 다르게 보여요. 가장 높은 해는 ${L(by[0])}이에요.`,evidence:`해마다의 점수는 그해 간지와 본인 일간·일지의 관계로 계산했어요.`}});}
+  if(t&&t.bestMonths&&t.bestMonths.length&&!young){const bm=t.bestMonths,cm=t.careMonths||[],M=x=>`${x.year}년 ${x.month}월`;
+    const TM=x=>t.tgText(x.tg)||['','',''];
+    items.push({id:'months',basis:'달마다의 점수',render:{
+      timing:[`다가오는 12개월 중 ${bm.map(M).join(', ')}이 흐름이 좋은 달이에요.${cm.length?` ${cm.map(M).join(', ')}은 한 박자 늦추는 편이 좋아요.`:''}`].concat(bm.map(x=>`${M(x)}(${x.gz})은 ${x.score}점이에요. ${TM(x)[0]}`),cm.map(x=>`${M(x)}(${x.gz})은 ${x.score}점이에요. ${TM(x)[0]} ${TM(x)[2]}`)),
+      action:[`${M(bm[0])}을 첫 실행의 달로 정하고, 그 전에 필요한 준비를 하나만 끝내 두세요.`].concat(bm.slice(1).map(x=>`${M(x)}에는 ${TM(x)[1]}`)),choice:cm[0]?`${M(cm[0])}처럼 낮은 달에 계약이나 큰 지출이 겹치면 날짜를 옮길 수 있는지부터 보세요.`:'',
+      scene:`달마다 앞에 서는 힘이 바뀌어요. ${M(bm[0])}에는 ${(t.tgText(bm[0].tg)||[''])[0]}`,burden:cm[0]?`${M(cm[0])}에는 ${(t.tgText(cm[0].tg)||['',''])[0]}`:'',evidence:'달마다의 점수는 그달 월주와 본인 사주의 관계로 계산했어요.'}});}
+  const seatTg=e.seatTg,db=d.saju.dp.branch;
+  items.push({id:'seat',basis:`일지 ${BRCHKO[db]}`,render:{
+    scene:`일지(가까운 관계를 보는 자리) ${BRCHKO[db]}에는 '${TOPIC_SEAT_SHORT[seatTg]||'차분한 안정감'}'의 분위기가 담겨 있어요. ${dom==='love'&&!young?(TOPIC_SEAT_LOVE[seatTg]||''):'가까운 사람과 지낼 때 이 분위기가 먼저 드러나요.'}`,
+    burden:`가까운 사이일수록 '${TOPIC_SEAT_SHORT[seatTg]||'차분한 안정감'}'을 당연하게 기대하게 돼요. 기대를 말하지 않으면 서운함이 먼저 쌓여요.`,
+    choice:`가까운 사람과 정할 일은 기대를 먼저 말할지, 상대의 방식을 지켜볼지로 갈려요. 같은 일이 세 번 반복되면 말로 꺼내는 쪽을 고르세요.`,
+    action:`가까운 사람에게 바라는 행동 하나를 구체적으로 말해 보세요.`,evidence:`일지는 태어난 날의 아래 글자로, 본인과 가장 가까운 관계를 보여 주는 자리예요.`}});
+  const lack=e.oh.indexOf(Math.min(...e.oh)),lc=LV4_LACK_CAUTION[lack];
+  if(lc)items.push({id:'lack',basis:`${LV4_OH[lack]} 기운`,render:{burden:`${LV4_OH[lack]} 기운이 사주에서 가장 옅어요. ${lc[1]}`,action:`${lc[0]}부터 해 보세요. ${lc[1].split(/(?<=[.!?])\s+/).slice(-1)[0]}`,scene:`다섯 기운 중 ${LV4_OH[lack]}${rpJ(LV4_OH[lack],'이','가')} 가장 옅어 그 영역의 일은 의식해서 챙겨야 해요.`,choice:'',timing:'',evidence:`다섯 기운 수는 목 ${e.oh[0]}, 화 ${e.oh[1]}, 토 ${e.oh[2]}, 금 ${e.oh[3]}, 수 ${e.oh[4]}이에요.`}});
+  return items;
+}
+const RP_ORDER={scene:['axis0','axis1','seat','axis2','flow','decade'],burden:['axis0','axis1','lack','flow','years','months','decade'],timing:['flow','decade','years','months','axis1','axis0'],choice:['axis0','flow','axis1','years','decade','seat'],action:['axis0','axis1','months','flow','lack','years'],evidence:['axis0','axis1','flow','seat','lack','decade']};
+const RP_NEXT={scene:'burden',burden:'timing',timing:'choice',choice:'timing',action:'choice',evidence:'scene'};
+function rpComposeSaju(items,intent,ledger,usage){
+  const byId=Object.fromEntries(items.map(x=>[x.id,x]));
+  const pick=(it,skip)=>{const order=(RP_ORDER[it]||RP_ORDER.scene).filter(id=>byId[id]&&[].concat(byId[id].render[it]).some(Boolean)&&!skip.includes(id));order.sort((a,b)=>(usage[a+it]||0)-(usage[b+it]||0));for(const id of order){const alts=[].concat(byId[id].render[it]).filter(Boolean);for(const raw of alts){if(!ledger.fresh(raw))continue;const t=ledger.take(raw);if(t.length>=30){usage[id+it]=(usage[id+it]||0)+1;return {id,t};}}}return null;};
+  const out=[],used=[];
+  const add=it=>{const r=pick(it,used);if(r){used.push(r.id);out.push(r.t);ledger.mark(r.t);}};
+  add(intent);add(RP_NEXT[intent]);add(intent==='action'||intent==='choice'?'timing':'action');
+  return out;
+}
+// 자미두수 — 소제목이 묻는 궁·별·사화·대한을 실제 명반에서 찾는다
+function rpZiweiParas(d,h,ledger){
+  const ch=d.zw,sh=zwSihua(ch),plan=zwEditorialPlan(d.saju,d.meta),plain=n=>ZW_PALACE_PLAIN[n]||n;
+  const palaceOf=name=>ch.palaces.find(p=>p.name===name);
+  const palaceText=name=>{const p=palaceOf(name);if(!p)return '';const x=zwStarsOf(ch,name),field={부부궁:2,재백궁:3,관록궁:4}[name]||1;
+    const stars=x.stars.map(s=>s+'성').join('과 ');let t=`${ZW_SHOW(name)}(${plain(name)})${x.borrowed?`은 별이 없는 빈 방이라 마주 보는 방의 ${stars}${rpJ(stars,'을','를')} 빌려 읽어요.`:`에는 ${stars}${rpJ(stars,'이','가')} 있어요.`}`;
+    if(x.stars[0])t+=` ${ZW_STARS[x.stars[0]][field]}`;if(x.stars[0]&&ZW_STAR_SHADOW[x.stars[0]])t+=` 다만 ${ZW_STAR_SHADOW[x.stars[0]]}`;
+    sh.filter(s=>s.palace===name).forEach(s=>{t+=` 이 궁의 ${s.star}성에는 ${s.kind}${s.kind==='화기'?'가 붙어 같은 걱정이 되풀이되기 쉬워요.':s.kind==='화록'?'이 붙어 이 영역에서 쓸 자원이 생기기 쉬워요.':s.kind==='화권'?'이 붙어 이 영역에서 주도권을 쥐기 쉬워요.':'가 붙어 이 영역에서 평판과 정리가 도움이 돼요.'}`;});
+    if(ch.curDecade&&ch.curDecade.palace.name===name)t+=` 지금 ${ch.curDecade.from}~${ch.curDecade.to}세 대한에 열려 있는 방이라, 이 영역의 일이 생활의 중심에 서 있어요.`;
+    return t;};
+  const named=['명궁','부부궁','부모궁','자녀궁','관록궁','재백궁','전택궁','복덕궁','천이궁','형제궁','질액궁'].filter(n=>h.includes(n));
+  if(/교우궁/.test(h))named.push('노복궁');
+  let ps=[];
+  if(/신궁/.test(h))ps=[`신궁(몸과 행동을 보여 주는 자리)은 ${ZW_SHOW(ch.shenPalace.name)}에 있어요. ${ch.shenPalace.name==='명궁'?'타고난 성향이 나이가 들어도 그대로 이어지는 편이에요.':`나이가 들수록 ${plain(ch.shenPalace.name)}의 일에 힘을 쏟게 돼요.`}`,palaceText(ch.shenPalace.name)];
+  else if(named.length)ps=named.map(palaceText);
+  else if(/관통|핵심 주제/.test(h)){const me=zwStarsOf(ch,'명궁'),m0=me.stars[0],ki=sh[3],cur=ch.curDecade,shen=ch.shenPalace.name;
+    const spots=[`명궁의 ${m0}성(${ZW_STARS[m0][0]})`,`신궁이 있는 ${ZW_SHOW(shen)}`].concat(ki.palace?[`화기가 붙은 ${ZW_SHOW(ki.palace)}`]:[]).concat(cur?[`지금 열린 ${ZW_SHOW(cur.palace.name)}`]:[]);
+    const overlap=[shen,ki.palace,cur&&cur.palace.name].filter(Boolean),twice=overlap.find((x,i)=>overlap.indexOf(x)!==i);
+    ps=[`명반에서 되풀이되는 주제는 몇 자리를 겹쳐 보면 드러나요. 이번 명반에서는 ${spots.join(', ')}이 그 자리예요.`,
+      twice?`${ZW_SHOW(twice)}${rpJ(ZW_SHOW(twice),'이','가')} 두 번 겹쳐, ${plain(twice)}의 일이 삶에서 유난히 자주 돌아오는 숙제가 되기 쉬워요. ${m0}성의 방식이 이 영역에서 가장 많이 시험받아요.`:`${ki.palace?`${plain(ki.palace)}의 일에서 ${m0}성의 방식이 자주 시험받아요. `:''}${plain(shen)}에는 나이가 들수록 힘을 쏟게 되니, 두 영역을 따로 떼어 살피면 같은 고민이 덜 반복돼요.`];}
+  else if(/주요 별의 배치/.test(h))ps=[`명반의 열네 주성은 이렇게 놓였어요. ${ch.palaces.filter(p=>p.stars.length).map(p=>`${ZW_SHOW(p.name)} ${p.stars.join('·')}`).join(', ')}.`,`별이 없는 빈 방은 ${ch.palaces.filter(p=>!p.stars.length).map(p=>ZW_SHOW(p.name)).join(', ')||'없어요'}${ch.palaces.some(p=>!p.stars.length)?'이에요. 빈 방은 마주 보는 방의 별을 빌려 함께 읽어요.':''}`];
+  else if(/함께 보는 요소/.test(h)){const two=ch.palaces.filter(p=>p.stars.length>=2);ps=[two.length?`한 방에 두 별이 함께 든 곳은 ${two.map(p=>`${ZW_SHOW(p.name)}(${p.stars.join('·')})`).join(', ')}이에요. 앞의 별이 방의 성격을 정하고, 뒤의 별이 그 성격의 쓰임을 바꿔요.`:'한 방에 두 주성이 함께 든 곳은 없어요. 방마다 한 별의 성격이 또렷하게 드러나는 명반이에요.',`사화가 붙은 별도 같은 방에서 함께 읽어요. ${sh.filter(s=>s.palace).map(s=>`${s.kind}${rpJ(s.kind,'은','는')} ${ZW_SHOW(s.palace)}의 ${s.star}성`).join(', ')}에 있어요.`];}
+  else if(/조합을 해석하는 기준/.test(h))ps=['이 보고서는 열네 주성의 위치를 먼저 보고, 같은 방의 다른 주성과 마주 보는 방을 함께 읽었어요.','태어난 해 천간으로 정한 사화를 겹쳐 그 방의 쓰임과 막힘을 봤어요. 문창·문곡·좌보·우필 같은 보조 별은 명반에 따로 배치하지 않았고, 사화가 이 별에 붙으면 위치를 정하지 않았어요.'];
+  else if(/화록과 화권/.test(h))ps=sh.slice(0,2).map(s=>s.palace?`${s.kind}${rpJ(s.kind,'은','는')} ${s.star}성에 붙어 ${ZW_SHOW(s.palace)}(${plain(s.palace)})에 있어요. ${s.kind==='화록'?'이 영역에서 자원과 기회가 자연스럽게 모이기 쉬워요.':'이 영역에서 주도권을 쥐고 결정하는 힘이 커져요.'} ${ZW_STARS[s.star]?ZW_STARS[s.star][1].split(/(?<=[.!?])\s+/)[0]:''}`:`${s.kind}${rpJ(s.kind,'은','는')} ${s.star}에 붙는데, 이 보고서의 명반에는 배치하지 않는 보조 별이라 위치를 정하지 않았어요.`);
+  else if(/화과와 화기/.test(h))ps=sh.slice(2).map(s=>s.palace?`${s.kind}는 ${s.star}성에 붙어 ${ZW_SHOW(s.palace)}(${plain(s.palace)})에 있어요. ${s.kind==='화과'?'이 영역에서는 정리와 평판이 도움이 돼요.':'이 영역에서 같은 걱정이나 집착이 되풀이되기 쉬워요. 걱정이 반복될 때 이 방의 일을 따로 떼어 점검해 보세요.'}`:`${s.kind}는 ${s.star}에 붙는데, 이 보고서의 명반에는 배치하지 않는 보조 별이라 위치를 정하지 않았어요. 그 영역을 지어내 해석하지 않았어요.`);
+  else if(/사화표|해석 범위/.test(h))ps=[`사화는 태어난 해의 천간 ${STEMKO[ch.yStem]}에 따라 화록 ${sh[0].star}, 화권 ${sh[1].star}, 화과 ${sh[2].star}, 화기 ${sh[3].star}${rpRo(sh[3].star)} 정했어요.`,'해마다 바뀌는 유년 사화와 삼방사정은 이 보고서에서 계산하지 않았어요. 위치를 정하지 않은 보조 별의 사화도 해석에서 뺐어요.'];
+  else if(/현재 대한/.test(h)){const cur=ch.curDecade;ps=[plan.paragraphs[2],cur?ZW_DECADE_CHOICE[cur.palace.name]:''];}
+  else if(/유년/.test(h)){const cur=ch.curDecade,ki=sh[3];ps=['해마다의 흐름을 보는 유년은 이 보고서에서 따로 계산하지 않았어요. 그래서 특정 해에 무슨 일이 생긴다고 말하지 않아요.',`대신 지금 확인할 수 있는 범위는 현재 대한과 사화예요.${cur?` ${cur.from}~${cur.to}세 대한의 ${ZW_SHOW(cur.palace.name)}`:''}${ki.palace?`과 화기가 붙은 ${ZW_SHOW(ki.palace)}`:''}의 일을 이번 해의 점검 목록으로 두고, 실제로 달라진 점을 직접 기록해 보세요.`];}
+  else if(/전환기|준비/.test(h)){const nx=ch.decades.find(x=>x.from>ch.age);ps=nx?[`다음 대한은 ${nx.from}세부터 ${ZW_SHOW(nx.palace.name)}(${plain(nx.palace.name)})이 열려요. ${ZW_DECADE_THEME[nx.palace.name]}이에요.`,ZW_DECADE_CHOICE[nx.palace.name]]:['이 명반에서 계산한 대한은 여기까지예요. 지금 대한의 방을 마무리하는 쪽으로 준비하세요.'];}
+  else ps=[plan.paragraphs[3]];
+  return ps.map(p=>ledger.take(p)).filter(p=>p.length>=25);
+}
+// 이름 — 실제 글자·한자·획수·소리 오행과 후보만 쓴다
+function rpNameParas(d,h,ledger){
+  const nm=d.meta.nmExtra||{},m=nameModel(d.saju,nm),O=LV4_OH,cands=d.cands||[],chars=[...m.full];
+  const per=(m.nameOh.perChar||[]).filter(c=>c&&c.ch);
+  const sound=per.map(c=>`${c.ch}(${c.chos!=null?O[c.chos]:'미상'})`).join(' · ');
+  const hanList=['surname','given1','given2'].filter(k=>m.han[k]).map(k=>`${m.han[k]} ${m.strokes[k]||'?'}획`).join(', ');
+  const suriLine=m.suri?['won','hyeong','i','jeong'].map(k=>`${({won:'원격',hyeong:'형격',i:'이격',jeong:'정격'})[k]} ${m.suri[k].stroke}수${m.suri[k].good?'(좋은 수)':'(살필 수)'}`).join(', '):'';
+  const cand=i=>cands[i]?`후보 ${i+1}은 ${cands[i].name}(${cands[i].han})이에요.${cands[i].meaning?` 글자 뜻은 ${cands[i].meaning}이에요.`:''}${cands[i].good?` ${cands[i].good}로 계산됐어요.`:''}${cands[i].why?` ${cands[i].why}.`:''}`:`후보 ${i+1}은 화면 풀이에서 계산되지 않아 비워 뒀어요. 후보를 지어 넣지 않았어요.`;
+  let ps;
+  if(/성명학 체계/.test(h))ps=['이 보고서는 두 기준을 함께 써요. 한글 소리의 첫소리로 다섯 기운을 보고, 한자가 있으면 획수로 원격·형격·이격·정격의 네 수리를 봐요.',m.hasHan?`이번 이름은 한자 ${hanList}${m.auto?'(입력하지 않은 글자는 같은 소리의 대표 한자로 가정)':''}로 계산했어요.`:'한자가 없어 획수 수리는 계산하지 않고 소리 오행만 봤어요.'];
+  else if(/획수와 오행/.test(h))ps=[m.hasHan?`획수는 ${hanList}이에요. 네 수리는 ${suriLine}로 나와요.`:'한자 획수가 없어 수리를 계산하지 않았어요.',`소리 오행은 ${sound}예요.`];
+  else if(/한글 이름의 해석 범위/.test(h))ps=['한글 이름은 소리의 기운과 부르는 느낌까지만 해석해요. 한자 뜻이나 획수가 없는 글자는 뜻풀이를 지어내지 않아요.',`이름 소리에 사주에 도움이 되는 ${O[m.ys.main]} 기운이 ${m.nameOh.oh[m.ys.main]}번 들어 있어요.`];
+  else if(/각 글자의 정확한 의미/.test(h))ps=[`이름 글자는 ${chars.join(', ')}이에요. ${hanList?`한자는 ${hanList}예요.`:'한자는 입력되지 않았어요.'}`,'글자의 뜻은 실제 등록하거나 쓰는 한자로 다시 확인해야 해요. 같은 소리에도 뜻이 다른 한자가 많아요.'];
+  else if(/의미 연결/.test(h))ps=[`소리 오행의 흐름은 ${sound}예요. 앞 글자의 기운이 뒤 글자를 살리면 부를 때 자연스럽게 이어진다고 봐요.`,`사주와 이름을 합친 다섯 기운의 차이는 ${m.span}칸이에요. ${m.span<=4?'한쪽으로 치우치지 않은 편이에요.':'한쪽 기운이 두드러져 다른 기운을 생활에서 보태면 좋아요.'}`];
+  else if(/발음|인상|부르기/.test(h))ps=[`첫소리 기준으로 ${sound}의 순서로 불려요. 밝은 소리 ${m.nameOh.yinYang['양']||0}개, 차분한 소리 ${m.nameOh.yinYang['음']||0}개가 섞여 있어요.`,'실제 인상은 부르는 사람과 상황에 따라 달라져요. 소리 내어 불러 보고 가족이 편하게 부르는지 확인해 보세요.'];
+  else if(/명식의 주요 특징/.test(h))ps=[`사주에서 가장 두터운 기운은 ${O[m.sajuMax]}, 가장 옅은 기운은 ${O[m.sajuMin]}이에요. 도움이 되는 기운은 ${O[m.ys.main]}으로 봤어요.`];
+  else if(/연결해 읽는 관점/.test(h))ps=[`이름 소리에 ${O[m.ys.main]} 기운이 ${m.nameOh.oh[m.ys.main]}번, 이를 누르는 ${O[m.hurt]} 기운이 ${m.nameOh.oh[m.hurt]}번 들어 있어요.`,`그래서 이 이름은 '${m.grade}'로 계산됐어요. 이름이 사주를 바꾸는 것이 아니라, 부족한 쪽을 생활에서 의식하게 돕는 정도로 읽어요.`];
+  else if(/범위와 차이/.test(h))ps=['성명학은 학파마다 획수 세는 법과 오행 배정이 달라요. 이 보고서는 소리 오행과 원획 기준을 썼어요.','다른 기준으로 보면 결과가 달라질 수 있어요. 결정은 뜻과 사용성까지 함께 보고 하세요.'];
+  else if(/후보\s?(\d)/.test(h)){const i=Number(h.match(/후보\s?(\d)/)[1])-1;ps=[cand(i)];}
+  else if(/뜻과 발음의 조화/.test(h))ps=cands.length?[cands.map((c,i)=>`${i+1}. ${c.name}(${c.han}) ${c.meaning||''}`).join(' / '),'뜻이 좋아도 발음이 어색하면 오래 쓰기 어려워요. 후보마다 소리 내어 불러 보세요.']:['화면 풀이에서 계산된 후보가 없어 비교하지 않았어요.'];
+  else if(/사주와 연결한 해석/.test(h))ps=cands.length?[`후보는 사주의 도움 기운 ${O[m.ys.main]}을 기준으로 골랐어요. ${cands.map((c,i)=>`${i+1}번 ${c.name}${c.good?` ${c.good}`:''}`).join(', ')}.`]:['계산된 후보가 없어요.'];
+  else if(/정확한 글자/.test(h))ps=['후보마다 한자의 뜻, 획수, 대법원 인명용 한자 해당 여부를 공식 자료로 다시 확인하세요.'];
+  else if(/선호/.test(h))ps=['본인과 가족이 각자 마음에 드는 후보를 따로 고른 뒤, 고른 이유를 비교해 보세요. 계산 점수와 선호가 다를 때는 오래 부를 사람의 느낌을 우선 보세요.'];
+  else if(/공식 사용/.test(h))ps=['개명이나 출생 신고에 쓰려면 인명용 한자 해당 여부와 필요한 서류를 관할 기관에서 확인하세요. 이 보고서는 공식 판단을 대신하지 않아요.'];
+  else if(/우선 검토할 후보/.test(h))ps=cands.length?[`먼저 볼 후보는 ${cands[0].name}(${cands[0].han})이에요. ${cands[0].good||''} ${cands[0].why||''}`.trim()]:['계산된 후보가 없어 기존 이름의 보완 방향을 먼저 보세요.'];
+  else if(/남은 확인/.test(h))ps=['남은 확인은 세 가지예요. 실제 한자의 뜻, 가족의 부르기 편함, 공식 등록 가능 여부예요.'];
+  else ps=[`이름을 고를 때는 계산 결과(${m.grade}, ${m.score}점)와 뜻, 부르는 느낌을 함께 보세요. 셋 중 무엇을 가장 중요하게 볼지 먼저 정하면 비교가 쉬워져요.`];
+  return ps.map(p=>ledger.take(p)).filter(p=>p.length>=20);
+}
+// 궁합 — 두 사람의 실제 관계 수치와 성향 막대 차이로만 채운다
+const RP_PAIR_ROW_TEXT={
+  '감정 표현':['표현하는 쪽은 확인받고 싶고, 아끼는 쪽은 행동으로 보여 줬다고 느껴요.','고마움과 서운함을 각자 어떤 방식으로 전하는지 서로 말해 보세요.'],
+  '결정 속도':['빠른 쪽은 기다림을 망설임으로, 신중한 쪽은 재촉을 압박으로 받아들이기 쉬워요.','큰 결정은 답을 줄 날짜를 함께 정해 두면 속도 차이가 줄어요.'],
+  '개인 시간':['혼자 있는 시간이 필요한 쪽과 함께 있고 싶은 쪽의 기대가 엇갈릴 수 있어요.','혼자 쉬는 시간과 함께 보낼 시간을 일정으로 정해 보세요.'],
+  '생활 규칙':['규칙을 중시하는 쪽은 즉흥을 무책임으로, 유연한 쪽은 규칙을 간섭으로 느낄 수 있어요.','꼭 지킬 규칙 두 가지와 자유롭게 둘 부분을 나눠 보세요.']};
+function rpPairParas(d,h,ledger,usage){
+  const g=d.gh,s1=d.saju,s2=d.partner.saju,a=d.persona,b=d.persona2||{E:50,A:50,I:50,L:50},O=LV4_OH;
+  const rows=PAIR_ROWS.map(([k,fn])=>({k,v1:fn(a),v2:fn(b),diff:Math.abs(fn(a)-fn(b))})).sort((x,y)=>y.diff-x.diff);
+  const rowText=r=>`${r.k}${rpJ(r.k,'은','는')} 본인 ${r.v1}, 상대 ${r.v2}${rpRo(String(r.v2))} ${r.diff>=25?'차이가 커요':r.diff>=10?'조금 달라요':'비슷해요'}. ${r.diff>=10?RP_PAIR_ROW_TEXT[r.k][0]:'이 부분은 서로 설명하지 않아도 잘 맞는 편이에요.'}`;
+  const metric=(name,score)=>{try{return ghMetricReading(name,g,score<70);}catch(e){return '';}};
+  const oh1=ohCount(s1),oh2=ohCount(s2);
+  let ps;
+  if(/일간과 기질/.test(h))ps=[`본인의 일간은 ${STEMKO[s1.dp.stem]}, 상대는 ${STEMKO[s2.dp.stem]}${rpIda(STEMKO[s2.dp.stem])}. 두 글자의 관계는 '${(g.dayStemRel&&g.dayStemRel.kind)||'평'}'으로 계산돼요.`,metric('중심 기운의 어울림',g.ohScore)];
+  else if(/공통점과 차이/.test(h))ps=[`다섯 기운 수는 본인 ${oh1.join('·')}, 상대 ${oh2.join('·')}이에요(목·화·토·금·수 순서).`,`두 사람 모두 ${O[oh1.map((v,i)=>v+oh2[i]).indexOf(Math.max(...oh1.map((v,i)=>v+oh2[i])))]} 기운이 두터워요. 같은 기운이 겹치는 영역은 함께 편하지만 같은 실수도 함께 반복하기 쉬워요.`];
+  else if(/보완/.test(h)){const l1=oh1.indexOf(Math.min(...oh1)),l2=oh2.indexOf(Math.min(...oh2));ps=[`본인에게 옅은 ${O[l1]} 기운을 상대는 ${oh2[l1]}개, 상대에게 옅은 ${O[l2]} 기운을 본인은 ${oh1[l2]}개 가지고 있어요.`,metric('다섯 기운의 균형',g.balScore)];}
+  else if(/갈등이 시작|반복되는 반응/.test(h))ps=[`두 사람의 배우자 자리(일지)는 ${BRCHKO[s1.dp.branch]}${rpJ(BRCHKO[s1.dp.branch],'과','와')} ${BRCHKO[s2.dp.branch]}${rpRo(BRCHKO[s2.dp.branch])} 관계는 '${(g.dayBrRel&&g.dayBrRel.kind)||'평'}'이에요.`,metric('배우자 자리의 만남',g.brScore)];
+  else if(/바라보는|기대를 확인/.test(h))ps=[metric('서로를 바라보는 방식',g.tgScore)];
+  else if(/관계의 속도|환경 변화/.test(h)){
+    const tA=typeof d.tm==='function'?d.tm('marriage'):null,tB=d.tm2,ageB=d.y0-d.partner.meta.sy+1;
+    const dec=(t,age)=>t&&t.cur?{from:t.cur.age,to:t.cur.age+9,gz:STEMKO[t.cur.stem]+BRCHKO[t.cur.branch],next:(t.dq.daeuns.find(x=>x.age>t.cur.age)||{}).age,age}:null;
+    const a1=dec(tA,d.age),b1=dec(tB,ageB);
+    const r=rows.find(x=>x.k==='결정 속도');
+    ps=/관계의 속도/.test(h)?[rowText(r),a1&&b1?`본인은 ${a1.from}~${a1.to}세 대운(${a1.gz}), 상대는 ${b1.from}~${b1.to}세 대운(${b1.gz})을 지나고 있어요. 각자 10년의 다른 구간에 있어 같은 일도 서두르는 정도가 다를 수 있어요.`:'',RP_PAIR_ROW_TEXT['결정 속도'][1]]
+      :[`두 사람의 연지(태어난 해의 띠 글자) 관계는 '${brRel(s1.yp.branch,s2.yp.branch).kind}'${rpIda(brRel(s1.yp.branch,s2.yp.branch).kind)}. 집안 분위기나 가족 행사처럼 바깥 환경이 바뀔 때 반응이 이 관계를 따라가기 쉬워요.`,a1&&b1&&a1.next&&b1.next?`본인의 다음 대운은 ${d.y0+(a1.next-a1.age)}년(${a1.next}세), 상대는 ${d.y0+(b1.next-b1.age)}년(${b1.next}세)에 바뀌어요. 한 사람의 흐름이 먼저 바뀌는 해에는 생활 계획을 함께 다시 맞춰 보세요.`:''];}
+  else if(/선택을 존중|역할의 배분|생활 습관|오래 유지/.test(h)){
+    const k=/존중/.test(h)?'개인 시간':/역할/.test(h)?'생활 규칙':'감정 표현',r=rows.find(x=>x.k===k);
+    ps=[rowText(r),/존중/.test(h)?metric('서로를 바라보는 방식',g.tgScore):/역할/.test(h)?`두 사람 다섯 기운 균형은 ${g.balScore}점이에요. ${g.balScore>=70?'서로 비어 있는 기운을 채워 주는 편이라 잘하는 일 위주로 역할을 나누면 돼요.':'둘 다 약한 기운이 겹쳐, 둘 다 미루기 쉬운 일은 따로 담당을 정해야 해요.'}`:`종합 궁합은 ${g.score}점(${g.grade})이에요. 점수보다 작은 약속을 꾸준히 지키는 습관이 관계를 오래 받쳐 줘요.`,RP_PAIR_ROW_TEXT[k][1]];}
+  else if(/겹치는 때|시기|속도를 맞추는/.test(h)){const L=rpLine(d,'pairYears');const top=[...L.pts].sort((x,y)=>y.v-x.v)[0],low=[...L.pts].sort((x,y)=>x.v-y.v)[0];ps=[`두 사람의 결혼·관계 흐름을 합친 점수는 ${L.pts.map(p=>`${p.l} ${p.v}`).join(', ')}이에요.`,`가장 높은 ${top.l}에는 함께 정할 일을 꺼내기 좋고, 가장 낮은 ${low.l}에는 각자의 사정을 먼저 확인하는 편이 좋아요.`];}
+  else{const key=Object.keys(RP_PAIR_ROW_TEXT).find(k=>h.includes(k.slice(0,2)))||null;const order=key?[rows.find(r=>r.k===key)].concat(rows.filter(r=>r.k!==key)):rows;
+    const r=order.find(r=>!(usage['pair'+r.k]))||order[0];usage['pair'+r.k]=(usage['pair'+r.k]||0)+1;
+    ps=[rowText(r),RP_PAIR_ROW_TEXT[r.k][1]];
+    if(/약속|부탁|회복|존중|역할|습관|대응/.test(h))ps.push(`${(g.dayBrRel&&['충','원진','형','자형','파','해'].includes(g.dayBrRel.kind))?'배우자 자리가 부딪히는 조합이라 다툰 뒤에는 결론보다 다시 이야기할 시간을 먼저 정하세요.':'배우자 자리가 크게 부딪히지 않는 조합이라, 작은 약속을 꾸준히 지키는 것이 관계를 오래 받쳐 줘요.'}`);}
+  return ps.map(p=>ledger.take(p)).filter(p=>p.length>=20);
+}
+function rpFallbackParas(spec,d,pg,h,ledger,usage,pool){
+  let ps=[];
+  try{
+    if(d.cat==='ziwei'&&d.zw)ps=rpZiweiParas(d,h,ledger);
+    else if(d.cat==='name')ps=rpNameParas(d,h,ledger);
+    else if(d.cat==='gunghap'&&d.partner&&d.gh)ps=rpPairParas(d,h,ledger,usage);
+    else{const domain=rpDomain(d,pg,h),key=`items:${domain}`;d[key]=d[key]||rpSajuItems(d,domain);ps=rpComposeSaju(d[key],rpIntent(h),ledger,usage);}
+  }catch(e){ps=[];}
+  ps.forEach(p=>ledger.mark(p));
+  // 계산으로 채울 문장이 부족하면 같은 장의 화면 풀이 문장을 쓰되, 이미 쓴 문장은 건너뛴다
+  if(ps.join('').length<120&&pool){const fresh=pool.filter(x=>!x.used&&x.parent!==undefined&&!ledger.has(x.t));const extra=rpPick(fresh,`${pg.t} ${h}`,2).map(t=>ledger.take(t)).filter(t=>t.length>=30);extra.forEach(t=>ledger.mark(t));ps=ps.concat(extra);}
+  return ps;
 }
 
-// 비어 있는 칸은 화면 풀이 문장으로 채운다
-function rpFill(plan,ai,d){
-  const pool=rpPool(d),secs={...ai.secs},fields={};
+// 소제목은 검증을 통과한 AI 본문 → 계산 근거 기반 대체 본문 순서로 채운다. 같은 문장은 보고서 전체에서 한 번만 쓴다.
+function rpFill(plan,ai,d,spec,facts){
+  const pool=rpPool(d),ledger=rpLedger(),usage={},secs={},fields={},sources={};
   Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
-  const det=rpDetFields(d);
+  const det=rpDetFields(d),ctxBase={ground:rpGround(d),years:rpAllowedYears(d,facts),marital:d.meta&&d.meta.marital,ledger,zw:d.zw||null};
+  // 한눈에 보기 문장을 먼저 장부에 올려 장 본문에서 같은 문장이 반복되지 않게 한다
+  ['gi1','gi2','gi3','gq','intro'].forEach(k=>ledger.mark(fields[k]||det[k]||''));
+  plan.pages.forEach(pg=>pg.h.forEach((title,k)=>{
+    const id=`p${pg.pi}h${k}`,aiPs=(ai.secs[id]||[]).map(clean).filter(Boolean);
+    if(aiPs.length&&rpSectionQuality(aiPs,{...ctxBase,title,chapter:pg.t})){const kept=aiPs.map(t=>ledger.take(t)).filter(t=>t.length>=25);if(kept.length>=2&&kept.join(' ').length>=160){kept.forEach(t=>ledger.mark(t));secs[id]=kept;sources[id]='ai';return;}}
+    secs[id]=rpFallbackParas(spec,d,pg,title,ledger,usage,null);sources[id]='computed';
+  }));
+  // 계산 근거로 채울 문장이 부족한 소제목만 같은 장의 화면 풀이 문장으로 보탠다(이미 쓴 문장은 제외)
+  plan.pages.forEach(pg=>pg.h.forEach((title,k)=>{const id=`p${pg.pi}h${k}`;if(sources[id]!=='computed'||secs[id].join('').length>=120)return;
+    const fresh=pool.filter(x=>!x.used&&ledger.fresh(x.t));const extra=rpPick(fresh,`${pg.t} ${title}`,2).map(t=>ledger.take(t)).filter(t=>t.length>=30);extra.forEach(t=>ledger.mark(t));secs[id]=secs[id].concat(extra);}));
   plan.groups.forEach(g=>{
-    g.heads.forEach(h=>{if(!rpSectionQuality(secs[h.id])){secs[h.id]=rpSourceStory(pool,`${h.chapter} ${h.title}`,d);}});
     g.fields.forEach(([id,ask,max])=>{
       if(!fields[id]){
         const match=id.match(/^p(\d+)/),pg=match&&plan.pages[Number(match[1])];
@@ -499,12 +759,13 @@ function rpFill(plan,ai,d){
         let pre=det[id];
         if(pg&&/sub$/.test(id))pre=`${pg.t}에서 무엇을 살펴볼까요?`;
         if(pg&&/kw[12]$/.test(id)){const words=pg.t.split(/[\s·]+/).filter(w=>w.length>=2);pre=words[Number(id.slice(-1))-1]||words[0];}
-        const candidates=rpSents(local).filter(x=>x.t.length<=max&&!x.used);
-        fields[id]=pre&&pre.length<=max*1.5?pre:rpShort(local.length?local:pool,ask,max,candidates);
+        const src=(local.length?local:pool).filter(x=>!ledger.has(x.t)),candidates=rpSents(src).filter(x=>x.t.length<=max&&!x.used&&!ledger.has(x.t));
+        fields[id]=pre&&pre.length<=max*1.5?pre:rpShort(src.length?src:pool,ask,max,candidates);ledger.mark(fields[id]);
       }else if(fields[id].length>max*1.6){fields[id]=fields[id].slice(0,Math.round(max*1.5)).replace(/\s\S*$/,'');}
     });
   });
-  return {secs,fields};
+  const n=Object.values(sources),aiN=n.filter(x=>x==='ai').length;
+  return {secs,fields,sources,coverage:{total:n.length,ai:aiN,computed:n.length-aiN},ledger};
 }
 
 // ── 그리기 ──
@@ -798,7 +1059,8 @@ function rpInfoPage(host,spec,d){
     const p=d.partner.meta,gn=d.partner.gn,partnerTime=birthTimeReference(p);
     html=rpTable(['구분','A','B'],[['이름',m.userName||'본인','상대'],['생년월일',birth,`${p.sy}.${pad2(p.sm)}.${pad2(p.sd)}`],['양력 / 음력',cal,gn.cal==='lunar'?`음력${gn.leap?' · 윤달':''}`:'양력'],['입력 시각',time.input,partnerTime.input],['풀이 기준 시각',time.corrected,partnerTime.corrected],['시간 보정',time.note,partnerTime.note],['출생 지역',city,(()=>{try{return cityLabelOf(gn.cityKey);}catch(e){return '';}})()]],true);
   }else html=rpTable(['구분','입력 정보'],[['이름',m.userName||'입력하지 않음'],['생년월일',birth],['달력 구분',cal],['입력 시각',time.input],['풀이 기준 시각',time.corrected],['시간 보정',time.note],['출생 지역',city]],true);
-  html+=rpTable(['상담 및 해석 기준','입력 정보'],rpInfoRows(spec,d).concat([['명식 기준',spec.pair?'두 사람 모두 만세력 기준 사주팔자':(d.cat==='ziwei'?'음력 명반 + 만세력 사주팔자':'만세력 기준 사주팔자 · 출생 지역 시차 보정')]]),true);
+  const cov=d.coverage,system=d.cat==='ziwei'?'자미두수 명반(궁·주성·대한·사화) · 유년은 계산하지 않음':d.cat==='name'?'이름 글자의 소리 오행 · 한자 획수 수리 · 사주의 도움 기운':d.cat==='gunghap'?'두 사람의 사주와 관계 수치 · 각자의 대운':'사주 원국 · 대운 · 해마다·달마다의 운';
+  html+=rpTable(['상담 및 해석 기준','입력 정보'],rpInfoRows(spec,d).concat([['명식 기준',spec.pair?'두 사람 모두 만세력 기준 사주팔자':(d.cat==='ziwei'?'음력 명반 + 만세력 사주팔자':'만세력 기준 사주팔자 · 출생 지역 시차 보정')],['해석에 쓴 계산',system]].concat(cov&&cov.total?[['소제목 본문 작성',`${cov.total}개 중 AI 종합 ${cov.ai}개 · 계산 근거로 쓴 해석 ${cov.computed}개`]]:[])),true);
   html+=`<h3 class="rp-h" style="margin-top:26px">풀이를 읽는 기준</h3><p class="rp-p">${txt(spec.note||NOTE_DEFAULT)}</p>`;
   return rpFlow(host,spec,d,{tab:true,ey:'BEFORE READING',title:'기본 정보와 풀이 기준',sub:spec.sub},[{html:`<div>${html}</div>`}]);
 }
@@ -826,7 +1088,7 @@ function rpContinued(host,spec,d,budget){
   d.sections.forEach((s,i)=>{
     if(used>budget)return;
     blocks.push({html:`<h3 class="rp-h rp-serif" style="font-size:21px;font-weight:400;margin-top:${i?30:4}px">${pad2(i+1)}&nbsp;&nbsp;${esc(s.title)}</h3>`,keep:true});
-    s.blocks.forEach(b=>{if(used>budget)return;if(b.h){blocks.push({html:`<h3 class="rp-h" style="font-size:14.5px">${esc(b.h)}</h3>`,keep:true});}else{used+=b.p.length;blocks.push({html:`<p class="rp-p">${txt(b.p)}</p>`});}});
+    s.blocks.forEach(b=>{if(used>budget)return;if(b.h){blocks.push({html:`<h3 class="rp-h" style="font-size:14.5px">${esc(b.h)}</h3>`,keep:true});}else{const t=d.ledger?d.ledger.take(b.p):b.p;if(t.length<25||used+t.length>budget)return;if(d.ledger)d.ledger.mark(t);used+=t.length;blocks.push({html:`<p class="rp-p">${txt(t)}</p>`});}});
     while(blocks.length&&blocks[blocks.length-1].keep)blocks.pop();
   });
   if(!blocks.length)return [];
@@ -835,6 +1097,17 @@ function rpContinued(host,spec,d,budget){
 function rpTocPage(host,spec,d,entries){
   const html=`<ol class="rp-toc">${entries.map(([t,n])=>`<li><span>${esc(t)}</span><b>${pad2(n)}</b></li>`).join('')}</ol>`;
   return rpFlow(host,spec,d,{tab:false,ey:'CONTENTS',title:'차례',sub:'관심 있는 주제부터 읽고, 보고서 전체의 흐름으로 이어 가세요.'},[{html}]);
+}
+// 넘친 글자 수만큼 문단이 3개 이상인 소제목의 마지막 문단을 긴 것부터 뺀다. 각 소제목은 최소 2문단을 남긴다.
+function rpTrim(S,need){
+  let cut=0;const rows=Object.entries(S).filter(([,ps])=>ps.length>2).sort((a,b)=>b[1].join('').length-a[1].join('').length);
+  for(const [id,ps] of rows){if(cut>=need)break;cut+=ps[ps.length-1].length;S[id]=ps.slice(0,-1);}
+  // 그래도 넘치면 긴 문단의 끝 문장부터 덜어 낸다. 문단마다 두 문장은 남긴다.
+  while(cut<need){
+    let best=null;Object.entries(S).forEach(([id,ps])=>ps.forEach((p,i)=>{const n=(p.match(/[^.!?]+[.!?]+/g)||[]).length;if(n>2&&(!best||p.length>best.len))best={id,i,len:p.length};}));
+    if(!best)break;const ps=S[best.id].slice(),ss=ps[best.i].match(/[^.!?]+[.!?]+/g);const last=ss.pop();ps[best.i]=ss.join('').trim();S[best.id]=ps;cut+=last.length;
+  }
+  return cut>0;
 }
 function rpCount(pages){return pages.reduce((n,p)=>n+clean(p.querySelector('.rp-body')?p.querySelector('.rp-body').textContent:p.textContent).length,0);}
 
@@ -849,8 +1122,8 @@ async function buildTemplateReport(cat,opts){
   if(cat==='gunghap'&&!d.partner)throw new Error('상대 정보가 없어요.');
   const plan=rpPlan(spec,d);
   prog(`천기가 보고서를 쓰는 중이에요 (0/${plan.groups.length}) · 2~3분 걸려요`);
-  const ai=opts.skipAI?{secs:{},fields:{},okGroups:0}:await rpAI(spec,d,plan,(n,t)=>prog(`천기가 보고서를 쓰는 중이에요 (${n}/${t}) · 2~3분 걸려요`),opts);
-  const {secs:S,fields:F}=rpFill(plan,ai,d);
+  const ai=opts.skipAI?{secs:{},fields:{},okGroups:0,facts:rpFacts(d)}:await rpAI(spec,d,plan,(n,t)=>prog(`천기가 보고서를 쓰는 중이에요 (${n}/${t}) · 2~3분 걸려요`),opts);
+  const filled=rpFill(plan,ai,d,spec,ai.facts),{secs:S,fields:F}=filled;d.coverage=filled.coverage;d.ledger=filled.ledger;
   prog('보고서 쪽을 짜는 중이에요');
   await fontLoad;
   const host=document.createElement('div');host.className='rp-host';document.body.appendChild(host);
@@ -859,14 +1132,20 @@ async function buildTemplateReport(cat,opts){
     const warm=document.createElement('div');warm.className='rp-page';warm.style.height='auto';
     warm.innerHTML=`<div class="rp-serif">${esc(spec.name+spec.sub+spec.kicker)}${spec.pages.map(p=>esc(p.t)).join('')}</div><div>${Object.values(F).map(esc).join(' ')} ${Object.values(S).flat().map(esc).join(' ')} ${d.sections.map(s=>esc(s.title)+s.blocks.map(b=>esc(b.p||b.h)).join(' ')).join(' ')}</div><b>${spec.pages.map(p=>p.h.map(esc).join('')).join('')}</b>`;
     host.appendChild(warm);await rpFontsReady();warm.remove();
-    const cover=rpCover(host,spec,d,F);
-    const tocSlot=document.createElement('div');host.appendChild(tocSlot);
-    const info=rpInfoPage(host,spec,d),glance=rpGlancePage(host,spec,d,F);
-    const chapters=plan.pages.map(pg=>({title:pg.t,pages:rpChapterPages(host,spec,d,pg,S,F)}));
-    const summary=rpSummaryPage(host,spec,d,F);
-    const mainPages=[...info,...glance,...chapters.flatMap(c=>c.pages),...summary];
-    const budget=Math.max(3000,RP_MAX_CHARS-rpCount(mainPages)-600);
-    const cont=rpContinued(host,spec,d,budget);
+    // 전체 글자 수 상한 — 본문이 커지면 부록을 먼저 줄이고, 그래도 넘으면 긴 소제목의 마지막 문단부터 덜어 다시 짠다
+    let cover,tocSlot,info,glance,chapters,summary,cont;
+    for(let attempt=0;attempt<4;attempt++){
+      host.innerHTML='';
+      cover=rpCover(host,spec,d,F);
+      tocSlot=document.createElement('div');host.appendChild(tocSlot);
+      info=rpInfoPage(host,spec,d);glance=rpGlancePage(host,spec,d,F);
+      chapters=plan.pages.map(pg=>({title:pg.t,pages:rpChapterPages(host,spec,d,pg,S,F)}));
+      summary=rpSummaryPage(host,spec,d,F);
+      const main=rpCount([cover,...info,...glance,...chapters.flatMap(c=>c.pages),...summary]),room=RP_MAX_CHARS-main-1200;
+      if(room>=0){cont=room>=1500?rpContinued(host,spec,d,room):[];break;}
+      cont=[];
+      if(!rpTrim(S,-room+400))break;
+    }
     // 차례 — 표지(1)·차례(2) 다음부터 번호를 매긴다
     let n=3;const entries=[];
     const push=(t,ps)=>{entries.push([t,n]);n+=ps.length;};

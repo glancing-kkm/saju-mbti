@@ -234,11 +234,6 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #app .report-profile .birth-time-reference{font-size:14px;line-height:1.65;margin-top:8px}
 #app .pdf-cta .pdf-time-reference{margin-top:8px;color:var(--sub);font-size:14px;line-height:1.7}
 
-/* Optional context belongs to this consultation, separate from birth-chart inputs. */
-#counselFields .counsel-details{margin-top:18px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
-#counselFields summary{cursor:pointer;min-height:30px;color:var(--text);line-height:1.7}
-#counselFields .counsel-details>p{margin:12px 0;color:var(--muted);font-size:.875rem;line-height:1.75;word-break:keep-all}
-#counselFields .ig{margin-top:14px;min-width:0}
 #counselFields input{width:100%;min-width:0;box-sizing:border-box}
 
 /* 회고 카드는 생활 해석을 먼저 읽고 계산 근거는 필요할 때 펼친다. */
@@ -246,3 +241,13 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #lv4-lc-past .hook-past-year>h4{margin:0 0 10px;color:var(--accent);font-size:1rem;line-height:1.7}
 #lv4-lc-past .hook-past-year>p{margin:10px 0;line-height:1.95}
 #lv4-lc-past .lv4-why{margin-top:12px}
+
+/* 추가 상담 정보도 출생정보와 같은 순차 입력 */
+#app #counselFields{display:contents}
+#app #formWrap #counselFields>fieldset{margin:0 0 26px;padding:0;border:0;background:none;box-shadow:none;min-width:0;opacity:1}
+#app #counselFields legend{font-size:.86rem;color:var(--muted);margin-bottom:6px}
+#app #counselFields .wz-cur legend{color:var(--accent)}
+#app #counselFields .ig{margin-top:0}
+#app .counsel-actions{display:flex;align-items:center;gap:12px;margin-top:12px}
+#app .counsel-skip{border:0;background:none;color:var(--sub);padding:10px 12px;cursor:pointer;font:inherit;font-size:.85rem}
+#app .counsel-skip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}

@@ -51,12 +51,14 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  }
  console.log('✓ 인물 검증: 계유일 표본과 120개 일간·일지 조합에서 귀인/충 기준 분리, 두 번째 인물 카드 없음');
  const core=run("lv4StoryLines(_saju,_meta,'core')"),money=run("lv4StoryLines(_saju,_meta,'money')"),work=run("lv4StoryLines(_saju,_meta,'career')");
- assert.equal(core.length,4);assert.notEqual(core[0],money[0]);assert.notEqual(work[0],money[0]);assert.match(core[1],/일간/);
+ assert.equal(core.length,4);assert.notEqual(core[0],money[0]);assert.notEqual(work[0],money[0]);assert.match(run("buildReadingNarrative(_saju,_meta,'core').evidenceNote"),/일간/);assert(!/일간/.test(core.join(' ')));
  const married=run("lv4StoryLines(_saju,_meta,'love').join(' ')");assert.match(married,/배우자/);assert(!/새로운 연인/.test(married));
  const child=run("lv4StoryLines(_saju,{sy:new Date().getFullYear()-10},'career').join(' ')");assert(!/이직|승진|직장|대출/.test(child));
- const reading=run('renderSajuPaid(_saju,1987,9,21,7,0)');const box=d.createElement('div');box.innerHTML=reading;const plain=box.textContent.replace(/\u00a0/g,' ');assert(plain.includes(core[0]));assert(plain.includes(money[0]));
+ const reading=run('renderSajuPaid(_saju,1987,9,21,7,0)');const box=d.createElement('div');box.innerHTML=reading;const plain=box.textContent.replace(/\u00a0/g,' ');const normalize=s=>String(s).replace(/[\u00a0\u200b]/g,' ').replace(/·\s+/g,'·').replace(/\s+/g,' ').trim();
+ const shownCore=run("lifeEditorialPlan(_saju,_meta,'core')?.paragraphs[0]")||core[0],shownMoney=run("lifeEditorialPlan(_saju,_meta,'money')?.paragraphs[0]")||money[0];
+ assert(normalize(plain).includes(normalize(shownCore)));assert(normalize(plain).includes(normalize(shownMoney)));
  assert(!/사주로 확정할 수 있어요/.test(run("lv4StoryLines(_saju,_meta,'children').join(' ')")));
- console.log('✓ 풀이: 생활 장면·계산 근거·행동, 주제별 구별, 기혼 관계, 어린이 생애주기, 실제 웹 본문 반영');
+ console.log('✓ 풀이: 생활 장면·부담 조건·현재 변화·선택 기준(근거는 접힘), 주제별 구별, 기혼 관계, 어린이 생애주기, 실제 웹 본문 반영');
  const annual=run('buildNewyearReadingV4(_saju,2027,_meta)');
  const monthly=annual.model.months.map(x=>{w.monthFixture=x;return run('lv4MonthNarrative(window.monthFixture,_saju,_meta,41)');});
  assert.equal(new Set(monthly).size,12);assert(monthly.every(t=>t.length>60));assert(!monthly.some(t=>/견줘 읽었어요|계산 점수|구간으로 읽어요|필요가 커질 수 있어요/.test(t)));
@@ -79,10 +81,11 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  assert(!gh.includes('여기서 서운함이 쌓이지 않게 자주 이야기하세요'));assert(!gh.includes('이 부분이 관계를 받쳐 주는 기둥'));
  for(const metric of ['배우자 자리의 만남','서로를 바라보는 방식','중심 기운의 어울림','다섯 기운의 균형']){w.metric=metric;const v=run("ghMetricReading(window.metric,{dayBrRel:{kind:'충'},tg12:'정재'},true)");assert(v.length>80);assert.match(v,/시간|물어|구분|써 보세요/);}
  assert.notEqual(run("lv4FieldDecision('wealth',40,40,{})"),run("lv4FieldDecision('wealth',90,40,{})"));
- for(const topic of ['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health']){
+ const tarotTexts=[];for(const topic of ['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health']){
    w.tarotInput=run(`({topic:'${topic}',question:'무엇을 확인하면 좋을까요?',cards:TAROT_CARDS.slice(0,3).map((c,i)=>({positionLabel:['현재','장애물','조언'][i],positionMeaning:'확인할 조건',cardNameKo:c.nameKo,keywords:c.keywords,baseMeaning:c.uprightMeaning,categoryMeaning:c.careerMeaning,advice:c.advice,warning:c.warning,orientation:'upright'}))})`);
-   const t=run('generateTemplateReading(window.tarotInput)');assert(!t.includes('가능성이 열려 있지만'));assert(t.includes(w.tarotInput.cards[2].advice));assert.equal((t.match(/^# [1-8]\./gm)||[]).length,8);
+   const t=run('generateTemplateReading(window.tarotInput)');assert(!t.includes('가능성이 열려 있지만'));assert.equal((t.match(/^# [1-8]\./gm)||[]).length,8);for(const c of w.tarotInput.cards)assert(t.includes(c.cardNameKo));assert(!t.includes('오늘 할 수 있는 작은 행동 하나를 정하고'));assert(/기준/.test(t.split('# 6.')[1]));assert(/반복되는 이유/.test(t));tarotTexts.push(t);
  }
+ assert(new Set(tarotTexts.map(t=>t.split('# 3.')[0])).size>=5,'주제별 장면이 같은 문장으로 고정됨');
  run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
  run("window.astroFixture={planets:[{planet:'sun',sign:'aries'},{planet:'moon',sign:'cancer'},{planet:'venus',sign:'libra'},{planet:'mercury',sign:'virgo'},{planet:'mars',sign:'leo'}],ascendant:null,elementBalance:{fire:2,earth:1,air:1,water:1},modalityBalance:{cardinal:3,fixed:1,mutable:1}};");
  const astros=[];

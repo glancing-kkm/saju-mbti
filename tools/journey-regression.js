@@ -27,11 +27,12 @@ const check=(label,fn)=>{fn();console.log('✓ '+label);};
 const scripts=[...d.querySelectorAll('script')].filter(s=>!s.src&&!/json/.test(s.type)).map(s=>s.textContent).join('\n;\n');
 const events=()=>Array.from(w.dataLayer||[]).filter(e=>e[0]==='event');
 const pending=()=>JSON.parse(w.sessionStorage.getItem('kakao_pay_pending_v1'));
+const completeCounsel=()=>run("renderCounselFields(_category);if(document.getElementById('counsel_occupation')){document.getElementById('counsel_occupation').value='사무직';counselSave();}");
 const submitBirth=async()=>{
   if(!d.getElementById('iName').value)d.getElementById('iName').value='김하늘';
   run("setMarital('single')");
   d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';
-  run('setTimeUnknown(true);analyze();');await wait(150);
+  run('setTimeUnknown(true)');completeCounsel();run('analyze();');await wait(150);
 };
 (async()=>{
   try{
@@ -224,7 +225,7 @@ const submitBirth=async()=>{
       assert.equal(hook.querySelectorAll('button').length,1);
       assert.match(hook.textContent,/2,000원/);
     });
-    run(d.querySelector('#p1 .daily-paid-hook button').getAttribute('onclick'));await wait(150);
+    run(d.querySelector('#p1 .daily-paid-hook button').getAttribute('onclick'));completeCounsel();run('analyze()');await wait(150);
     check('유료 연결 버튼: 기존 출생정보로 신년운세 가린 미리보기와 결제 버튼',()=>{
       assert.equal(run('_category'),'newyear');
       assert(d.querySelector('#p4 .lk-preview'));
@@ -232,9 +233,9 @@ const submitBirth=async()=>{
       assert(!d.getElementById('payOverlay').classList.contains('vis'));
     });
     run('closePaymentConsent()');
-    run("continueJourney('life')");await wait(150);
+    run("continueJourney('life')");completeCounsel();run('analyze()');await wait(150);
     check('입력 재사용: 동일한 생년월일로 인생총운 결제 안내',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.match(d.querySelector('#p5 .journey-contents').textContent,/2,000원/);});
-    check('인생총운 상담 정보: 선택 입력으로 제공',()=>{assert.notEqual(d.getElementById('catExtraCtx').style.display,'none');assert(d.querySelector('#counselFields details'));assert.equal(d.getElementById('ctxText').style.display,'none');});
+    check('인생총운 상담 정보: 직업 필수·그 외 선택 단계로 제공',()=>{assert.equal(d.getElementById('catExtraCtx').style.display,'none');assert(d.querySelector('#counsel_occupation[required]'));assert.equal(d.getElementById('ctxText').style.display,'none');});
     check('미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼',()=>{
       const root=d.querySelector('#p5 .report-preview-layout');assert(root);
       const children=[...root.children];assert(children[0].classList.contains('report-profile'));assert(children[1].classList.contains('lc-orbs'));assert(children[2].classList.contains('report-opening-scene'));
@@ -378,12 +379,12 @@ const submitBirth=async()=>{
     run("_savePendingPayment({tid:'TEST_APPROVE_PDF',partnerOrderId:'TEST-ORDER-PDF',category:'pdf-life',amount:5000,saju:_saju,meta:_meta});history.replaceState({},'','?kpay=ok&cat=pdf-life&pg_token=TEST_TOKEN');");
     await run('_handlePaymentReturn()');await wait(400);
     check('PDF 리포트 승인: 리포트만 열고 보던 인생총운으로 돌아와 PDF 받기 버튼 표시',()=>{assert.equal(run("isUnlockedFor('pdf-life')"),true);assert.equal(run("isUnlockedFor('life')"),true);assert.equal(run('_category'),'life');assert.match(d.querySelector('#p5 .pdf-cta').textContent,/결제가 확인됐어요/);assert.equal(d.querySelector('#p5 .pdf-cta-btn').textContent,'PDF 받기');});
-    run("goHome();continueJourney('life')");await wait(150);
+    run("goHome();continueJourney('life')");completeCounsel();run('analyze()');await wait(150);
     check('구매 후 홈 왕복: 같은 사주는 재결제 없이 복원',()=>assert(d.querySelector('#p5 .life-experience')));
     run("goHome();openVault()");
     check('보관함: 결제한 인생총운이 남은 시간과 함께 보임',()=>{assert(d.getElementById('view-vault').classList.contains('on'));const it=d.querySelector('.vault-item');assert(it);assert.match(it.textContent,/인생총운/);assert.match(it.textContent,/까지/);assert.equal(d.getElementById('vaultCount').hidden,false);});
     run("goHome()");
-    const birth=async(y,m,dd)=>{d.getElementById('iY').value=y;d.getElementById('iM').value=m;d.getElementById('iD').value=dd;run('setTimeUnknown(true);analyze();');await wait(150);};
+    const birth=async(y,m,dd)=>{d.getElementById('iY').value=y;d.getElementById('iM').value=m;d.getElementById('iD').value=dd;run('setTimeUnknown(true)');completeCounsel();run('analyze();');await wait(150);};
     run("goToInput('life')");await birth('1995','3','9');
     check('다른 사주: 이전 결제로 열리지 않고 결제 안내만 노출',()=>{assert.equal(run("isUnlockedFor('life')"),false);assert(d.querySelector('#p5 .paid-access-notice'));assert(!d.querySelector('#p5 .life-experience'));});
     run("goToInput('life')");await birth('1994','5','18');
@@ -524,9 +525,9 @@ const submitBirth=async()=>{
       run("setQnaCounselor('master')");
       w.fetch=prevFetch;
     }
-    run("goToInput('ziwei')");d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';run('setTimeUnknown(true);analyze();');await wait(150);
+    run("goToInput('ziwei')");d.getElementById('iY').value='1994';d.getElementById('iM').value='5';d.getElementById('iD').value='18';run('setTimeUnknown(true)');completeCounsel();run('analyze();');await wait(150);
     check('자미두수: 태어난 시간이 없으면 안내하고 진행하지 않음',()=>{assert.match(d.getElementById('errMsg').textContent,/태어난 시간/);assert(d.getElementById('view-input').classList.contains('on'));});
-    d.getElementById('iHourInput').value='9';run("setTimeUnknown(false);document.getElementById('iTimeUnknown').checked=false;analyze()");await wait(150);
+    d.getElementById('iHourInput').value='9';run("setTimeUnknown(false);document.getElementById('iTimeUnknown').checked=false;renderCounselFields(_category);document.getElementById('counsel_occupation').value='사무직';analyze()");await wait(150);
     check('자미두수: 결제 안내와 2,000원 결제 버튼',()=>{assert(d.querySelector('#p9 .paid-access-notice'));assert.match(d.querySelector('#p9 .teaser-pay-btn').textContent,/2,000원/);});
     run("unlockAndRender('ziwei')");
     check('자미두수: 결제 후 12궁 판과 주성 14개',()=>{assert(d.querySelector('#p9 .zw-board'));assert.equal(run("buildZiweiChart(_saju,_meta).palaces.reduce((n,p)=>n+p.stars.length,0)"),14);});
@@ -728,10 +729,10 @@ const submitBirth=async()=>{
     run(d.querySelector('#astroApp .today-paid-hook button').getAttribute('onclick'));
     check('오늘의 점성술: 짧은 안내에서 유료 상품 선택으로 연결',()=>assert.equal(d.querySelectorAll('#astroApp .astro-product').length,12));
     run("goToTarot('today');selectTodayTarot(_todayTarotCardIds[0])");
-    check('오늘의 타로: 카드 뽑은 직후 주제 선택 없이 전체 풀이 6개 표시',()=>{
+    check('오늘의 타로: 카드 뽑은 직후 주제 선택 없이 핵심·메시지·장면·확인할 일 4개 표시',()=>{
       assert(d.querySelector('#todayTarotResult .today-tarot-report'));
       assert.equal(d.querySelector('#todayTarotResult .same-kind-recommend').dataset.readingKind,'tarot');
-      assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,6);
+      assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,4);
       assert(!d.querySelector('#todayTarotResult .journey-chapters,#todayTarotResult .story-experience,#todayTarotResult .story-deck-layer'));
       assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,1);
       assert(!d.querySelector('#todayTarotResult .tarot-mini-face'));

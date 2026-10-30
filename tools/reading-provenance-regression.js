@@ -41,18 +41,18 @@ vm.runInContext(fs.readFileSync('worker/saju-chat-worker.js','utf8').replace(/^i
  console.log('✓ 회고 본문: 세 해의 다른 생활 장면, 기술 근거는 접힘, 조사·아이 나이 문맥 유지');
 
  run("goToInput('topic-career');document.getElementById('iY').value='1990';document.getElementById('iM').value='5';document.getElementById('iD').value='15';renderCounselFields('topic-career');");
- d.getElementById('counsel_activity').value='개발 5년 차';d.getElementById('counsel_goal').value='직장 변경 검토';run('counselSave()');
- run("renderCounselFields('topic-money')");assert.equal(d.getElementById('counsel_activity').value,'');
- run("renderCounselFields('topic-career')");assert.equal(d.getElementById('counsel_activity').value,'개발 5년 차');
- run("document.getElementById('iY').value='1991';renderCounselFields('topic-career')");assert.equal(d.getElementById('counsel_activity').value,'');
+ d.getElementById('counsel_occupation').value='개발 5년 차';d.getElementById('counsel_goal').value='직장 변경 검토';run('counselSave()');
+ run("renderCounselFields('topic-money')");assert.equal(d.getElementById('counsel_occupation').value,'개발 5년 차');assert.equal(d.getElementById('counsel_activity').value,'');
+ run("renderCounselFields('topic-career')");assert.equal(d.getElementById('counsel_occupation').value,'개발 5년 차');
+ run("document.getElementById('iY').value='1991';renderCounselFields('topic-career')");assert.equal(d.getElementById('counsel_occupation').value,'');
  run("document.getElementById('iY').value='1990';renderCounselFields('topic-career');_meta.counsel=counselRead('topic-career');_category='topic-career';");
  const key=run("aiReadingCacheKey('reading-deep','topic-career','ko')");
  const payload=run("buildAIReadingPayload('reading-deep',{source:'paid-deep'})");assert.equal(payload.sajuContext.userStatements.source,'user-stated');assert.equal(payload.sajuContext.userStatements.answers[0].value,'개발 5년 차');assert.equal(payload.sajuContext.provenance.pastEventsConfirmed,false);
  assert(payload.sajuContext.situation.includes('개발 5년 차'),'PDF가 쓰는 공통 상황에도 포함');
  run("_meta.counsel.answers[0].value='교사 2년 차'");assert.notEqual(run("aiReadingCacheKey('reading-deep','topic-career','ko')"),key);
  const cats=run('Object.keys(COUNSEL_FIELDS)');assert(cats.length>=16);
- for(const cat of cats){w.cat=cat;run('renderCtxQuestion(window.cat)');assert(d.querySelector('#counselFields details'));assert(!d.querySelector('#counselFields [required],#counselFields [maxlength]'));}
- console.log('✓ 카테고리별 선택 상담: 생일/카테고리별 저장·복원·격리, AI/PDF 전달, 상담 수정 시 캐시 분리');
+ for(const cat of cats){w.cat=cat;run('renderCtxQuestion(window.cat)');assert(d.querySelector('#counselFields .counsel-step'));assert.equal(d.querySelectorAll('#counselFields [required]').length,1);assert(!d.querySelector('#counselFields [maxlength]'));assert(!d.querySelector('#counselFields details'));}
+ console.log('✓ 카테고리별 상담: 직업 필수·다른 항목 선택, 생일/카테고리별 저장·복원·격리, AI/PDF 전달, 상담 수정 시 캐시 분리');
  for(const bad of ['2018년에 입사했을 거예요.','2024년에 결혼했어요.','그해 전역했죠.','맞았다면 앞으로의 미래도 믿으세요.']){w.bad=bad;assert.equal(run('readingProvenanceQuality(window.bad)'),false,bad);}
  for(const good of ['말씀하신 2024년 결혼을 기준으로 생활의 변화를 살펴볼게요.','그해 일지와 세운 지지가 합 관계를 이뤄요.','이직했다면 새 역할의 부담도 살펴보세요.']){w.good=good;assert(run('readingProvenanceQuality(window.good)'),good);}
  server.ctx=JSON.parse(JSON.stringify(payload.sajuContext));server.ctx.situation='사용자가 직접 적은 정보';
