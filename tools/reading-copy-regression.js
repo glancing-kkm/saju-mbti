@@ -31,7 +31,7 @@ try{
  rt.w.copyRoot=life;rt.w.copyRewrite=rt.run("buildReadingNarrative(_saju,_meta,'career').paragraphs");
  assert.equal(rt.run("deepApply(window.copyRoot,{sections:[{id:'lv4-talent',paragraphs:window.copyRewrite}]})"),1);
  assert.deepEqual([...life.querySelectorAll('#lv4-talent [data-strength-order]')].map(e=>+e.dataset.strengthOrder),[1,2,3]);
- const routes={life:'buildLifeReadingV4(_saju,_meta)',newyear:'renderNewyearFortune(_saju,2027)',gunghap:'renderGunghapPaid(_saju,_meta.gnExtra)',name:'renderNamePaid(_saju,_meta.nmExtra)',ziwei:'renderZiweiPaid(_saju,_meta)',monthly:'renderMonthlyFortune(_saju,2027,1,2027,3,{})',daypick:'renderDaypickFortune(_saju,2027,3,15,{})'};
+ const routes={life:'buildLifeReadingV4(_saju,_meta)',newyear:'renderNewyearFortune(_saju,2027)',gunghap:'renderGunghapPaid(_saju,_meta.gnExtra)',name:'renderNamePaid(_saju,_meta.nmExtra)',ziwei:'renderZiweiPaid(_saju,_meta)'};
  for(const key of ['love','money','career','marriage','reunion','study','child','children','health'])routes['topic-'+key]=`renderTopicPaid('topic-${key}',_saju,_meta)`;
  let bubbles=0;
  for(const [cat,expr] of Object.entries(routes)){

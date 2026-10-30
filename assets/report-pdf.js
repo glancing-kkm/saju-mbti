@@ -221,10 +221,7 @@ function rpReadingSections(html){
   });
   return out;
 }
-function rpPersona(saju){
-  const h=lcPersonaBars(saju),vals=[...h.matchAll(/<span>(\d+)%<\/span><span>(\d+)%<\/span>/g)].map(m=>Number(m[2]));
-  const [E,L,I,A]=vals.length>=4?vals:[50,50,50,50];return {E,L,I,A};
-}
+function rpPersona(saju){return personaAxesValues(saju);}
 function rpPartner(gn){
   if(!gn)return null;
   let sy=gn.gy,sm=gn.gm,sd=gn.gd;

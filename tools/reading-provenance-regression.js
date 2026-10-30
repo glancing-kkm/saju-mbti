@@ -50,7 +50,7 @@ vm.runInContext(fs.readFileSync('worker/saju-chat-worker.js','utf8').replace(/^i
  const payload=run("buildAIReadingPayload('reading-deep',{source:'paid-deep'})");assert.equal(payload.sajuContext.userStatements.source,'user-stated');assert.equal(payload.sajuContext.userStatements.answers[0].value,'개발 5년 차');assert.equal(payload.sajuContext.provenance.pastEventsConfirmed,false);
  assert(payload.sajuContext.situation.includes('개발 5년 차'),'PDF가 쓰는 공통 상황에도 포함');
  run("_meta.counsel.answers[0].value='교사 2년 차'");assert.notEqual(run("aiReadingCacheKey('reading-deep','topic-career','ko')"),key);
- const cats=run('Object.keys(COUNSEL_FIELDS)');assert(cats.length>=16);
+ const cats=run('Object.keys(COUNSEL_FIELDS)');assert(cats.length>=14);assert(!cats.includes('monthly')&&!cats.includes('daypick'));
  for(const cat of cats){w.cat=cat;run('renderCtxQuestion(window.cat)');assert(d.querySelector('#counselFields .counsel-step'));assert.equal(d.querySelectorAll('#counselFields [required]').length,1);assert(!d.querySelector('#counselFields [maxlength]'));assert(!d.querySelector('#counselFields details'));}
  console.log('✓ 카테고리별 상담: 직업 필수·다른 항목 선택, 생일/카테고리별 저장·복원·격리, AI/PDF 전달, 상담 수정 시 캐시 분리');
  for(const bad of ['2018년에 입사했을 거예요.','2024년에 결혼했어요.','그해 전역했죠.','맞았다면 앞으로의 미래도 믿으세요.']){w.bad=bad;assert.equal(run('readingProvenanceQuality(window.bad)'),false,bad);}

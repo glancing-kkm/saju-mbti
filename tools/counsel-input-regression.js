@@ -15,7 +15,7 @@ try{
   run("document.getElementById('counsel_occupation').value='';confirmCounselStep('occupation')");
   assert.match(d.getElementById('errMsg').textContent,/직업/);
  }
- console.log('✓ 17개 상담 입력: 직업만 필수, 추가 항목은 각각 다음·건너뛰기 단계');
+ console.log(`✓ ${cats.length}개 상담 입력: 직업만 필수, 추가 항목은 각각 다음·건너뛰기 단계`);
  run("goToInput('life');document.getElementById('iName').value='검증예시';document.getElementById('iY').value='1990';document.getElementById('iM').value='5';document.getElementById('iD').value='15';setTimeUnknown(true);setMarital('single');renderCounselFields('life');inputWizardInit();_wz.open=_wz.steps.findIndex(s=>s[0].dataset.counselKey==='occupation');wizardShow(null);");
  run("document.getElementById('counsel_occupation').value=' ';analyze()");assert.match(d.getElementById('errMsg').textContent,/직업/);assert(d.getElementById('view-input').classList.contains('on'));
  run("document.getElementById('counsel_occupation').value='프리랜서';document.getElementById('counsel_occupation').dispatchEvent(new Event('input',{bubbles:true}));");

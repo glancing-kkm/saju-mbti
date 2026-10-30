@@ -22,10 +22,8 @@
 //    5. 클라이언트 → /approve POST {tid, partnerOrderId, partnerUserId, pgToken, category, amount}
 //    6. Worker → kakaopay /approve API → 결제 완료 (status='SUCCESS_PAYMENT')
 
-// 카테고리당 단가 (원). monthly는 월당 단가
+// 카테고리당 단가 (원).
 const CATEGORY_PRICE = {
-  "daypick": 1500,
-  "monthly": 2000,
   "newyear": 2000,
   "gunghap": 1500,
   "name": 1500,
@@ -82,8 +80,6 @@ const CATEGORY_PRICE = {
   "pdf-topic-health": 5000
 };
 const PREVIOUS_CATEGORY_PRICE = {
-  "daypick": 1500,
-  "monthly": 2000,
   "newyear": 1500,
   "gunghap": 1000,
   "name": 1500,
@@ -111,8 +107,6 @@ const PREVIOUS_CATEGORY_PRICE = {
   "ziwei": 1500
 };
 const CATALOG_PRICE_CHANGED_AT = 1792934184727;
-const MONTHLY_MAX = 6;
-const MONTHLY_UNIT = 2000;
 const AUGUST_990_PROMO_PRICE = 990;
 const AUGUST_CHAT_PACK_PRICE = { chatpack3: 990, chatpack5: 1490, chatpack7: 1990 };
 const AUGUST_990_PROMO_START_MS = Date.parse('2026-07-31T15:00:00.000Z');
@@ -134,11 +128,6 @@ function isAmountValid(category, amount, nowMs = Date.now()) {
   if (!CATEGORY_PRICE[category]) return false;
   if (!Number.isSafeInteger(amount) || amount <= 0) return false;
   if (isAugust990Promo(nowMs)) return amount === augustPromoPriceForCategory(category);
-  if (category === 'monthly') {
-    if (amount % MONTHLY_UNIT !== 0) return false;
-    const cnt = amount / MONTHLY_UNIT;
-    return cnt >= 1 && cnt <= MONTHLY_MAX;
-  }
   return CATEGORY_PRICE[category] === amount;
 }
 // 주문 시작부터 승인까지는 시간이 걸린다(결제창 왕복·앱 전환). 그 사이 프로모션 경계를

@@ -5,7 +5,7 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const rt=require('./lib/reading-runtime')();
 const arg=name=>{const i=process.argv.indexOf(name);return i<0?null:process.argv[i+1];};
 const out=arg('--out')||'docs/reading-quality/latest.json';
-const routes={life:'renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)',newyear:'renderNewyearFortune(_saju,2027)',gunghap:'renderGunghapPaid(_saju,_meta.gnExtra)',name:'renderNamePaid(_saju,_meta.nmExtra)',ziwei:'renderZiweiPaid(_saju,_meta)',monthly:'renderMonthlyFortune(_saju,2027,1,2027,3,{})',daypick:'renderDaypickFortune(_saju,2027,3,15,{})',manse:'renderManseryeokFull(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,s2l(_meta.sy,_meta.sm,_meta.sd))',daily:'renderDailyFortune(_saju)',vedic:'renderVedicFree(_saju,_meta)',mahabote:'renderMahaboteFree(_saju,_meta)'};
+const routes={life:'renderSajuPaid(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min)',newyear:'renderNewyearFortune(_saju,2027)',gunghap:'renderGunghapPaid(_saju,_meta.gnExtra)',name:'renderNamePaid(_saju,_meta.nmExtra)',ziwei:'renderZiweiPaid(_saju,_meta)',manse:'renderManseryeokFull(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,s2l(_meta.sy,_meta.sm,_meta.sd))',daily:'renderDailyFortune(_saju)',vedic:'renderVedicFree(_saju,_meta)',mahabote:'renderMahaboteFree(_saju,_meta)'};
 for(const key of ['love','money','career','marriage','reunion','study','child','children','health'])routes['topic-'+key]=`renderTopicPaid('topic-${key}',_saju,_meta)`;
 routes.free='renderSajuFree(_saju)';routes['mbti-comparison']="renderMBTI(_saju,'INTJ')";
 const fixtures=[5,6,15,16,19,20,25,26,35,36,45,46,55,56,65,66,80].map((age,i)=>rt.fixture(age,i));

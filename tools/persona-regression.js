@@ -349,50 +349,15 @@ const harness = `
     ok('카드 이동: 전환·이전·다음 버튼이 스크롤을 맨 위로 올리지 않음',
        !storyNavigateSource.includes('window.scrollTo')&&!lifeNavigateSource.includes('window.scrollTo'));
 
-    const dpPage=renderDaypickFortune(SELF,2026,8,20,{contextTag:'job'}),moPage=renderMonthlyFortune(SELF,2026,8,2026,10,{contextTag:'money'});
-    const dpPlain=clean(dpPage).replace(/&nbsp;|\u00a0|\u200b/g,' '),moPlain=clean(moPage).replace(/&nbsp;|\u00a0|\u200b/g,' ');
-    ok('지정일 한 페이지: 소개 순서 7개 섹션과 열두 시간대 풀이',
-       (dpPage.match(/class="lv4-sec"/g)||[]).length===7 && dpPage.indexOf('id="lv4-dp-daeun"')<dpPage.indexOf('id="lv4-dp-stars"') &&
-       (dpPlain.match(/[자축인묘진사오미신유술해]시 · /g)||[]).length===12 && !/상관|정관|편관|길시/.test(dpPlain) && !leaky(dpPage));
-    ok('월별 한 페이지: 소개 순서 6개 섹션과 달마다 풀이',
-       (moPage.match(/class="lv4-sec"/g)||[]).length===6 && moPage.indexOf('id="lv4-mo-daeun"')<moPage.indexOf('id="lv4-mo-guide"') &&
-       ['2026년 8월 ·','2026년 9월 ·','2026년 10월 ·'].every(x=>moPlain.includes(x)) && !/상관|정관|편관|관성/.test(moPlain) && !leaky(moPage));
-
-    const zwPage=renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0}),zwPlain=clean(zwPage);
-    ok('자미두수 한 페이지: 소개 순서 6개 섹션, 12개 방 판, 한자 방 이름 노출 없음',
-       (zwPage.match(/class="lv4-sec"/g)||[]).length===6 && zwPage.includes('zw-board') && !zwPage.includes('data-story-layer=') &&
-       !/명궁|부부궁|재백궁|관록궁|복덕궁|대한(?!민국)|오행국|[수목금토화][이삼사오육]국/.test(zwPlain) && /성\(.+의 별\)/.test(zwPlain) && !leaky(zwPage));
-
-    const __md=lv4FromMarkdown('# 1. 질문 요약\\n고민을 정리했어요.\\n\\n# 3. 카드별 해석\\n## 현재 - 별\\n- 핵심키워드: 희망, 회복\\n희망이 보여요.\\n한 줄 정리: 다시 일어설 힘이 있어요.\\n<script>x</script>','tr');
-    ok('AI 마크다운 → 한 페이지 섹션: 제목·소제목·목록 변환, 한 줄 정리 줄은 빼고 HTML 이스케이프',
-       __md.items.length===2 && __md.items[1][1]==='카드별 해석' && __md.html.includes('<h3>현재 - 별</h3>') && __md.html.includes('lv4-md-list') && !__md.html.includes('한 줄 정리') && !__md.html.includes('<script>'));
-
-    const __savedCtx=_meta.ctx;_meta.ctx={cat:'topic-love',key:'tired',label:'권태기'};
-    const __ctxLove=renderTopicPaid('topic-love',SELF,_meta);_meta.ctx=__savedCtx;
-    ok('지금 상황 객관식: 고른 상황이 풀이 첫머리·질문형 소제목·해시태그로 반영',
-       __ctxLove.includes('lv4-ctx') && clean(__ctxLove).includes('권태기') && __ctxLove.includes('lv4-sec-label') && clean(__ctxLove).includes('우리는 왜 같은 일로 자꾸 부딪힐까?') && __ctxLove.includes('lv4-scene') && __ctxLove.includes('lv4-tags') && __ctxLove.includes('lv4-gauge') &&
-       Object.keys(CTX_Q).every(c=>CTX_Q[c].o.length>=3));
-
-    const __svC=_meta.ctx;_meta.ctx=null;const __keyNo=aiReadingCacheKey('life','');
-    _meta.ctx={cat:'topic-love',key:'tired',label:'권태기'};
-    const __sit=ctxSituationText(),__keyCtx=aiReadingCacheKey('life',''),__chat=renderChatSection('life');_meta.ctx=__svC;
-    ok('AI 풀이·역술가 질문: 고른 상황을 함께 보내고, 상황이 바뀌면 AI 풀이 캐시도 따로 저장',
-       __sit==='지금 연애 상태는 어떤가요? → 권태기' && __keyNo!==__keyCtx && __chat.includes('제 상황(권태기)'));
-
-    const __lifePin=renderSajuPaid(SELF,1990,5,15,12,0),__topicPin=renderTopicPaid('topic-money',SELF,_meta);
-    const __mainOnly=h=>clean(h.replace(/<details class="lv4-why">[\\s\\S]*?<\\/details>/g,''));
-    ok('핀셋 풀이: 글자 개수 같은 이론은 접힌 사주 근거로, 기본 용어는 첫 등장만 풀이',
-       __lifePin.includes('class="lv4-why"') && !/뜻하는 글자가 \\d+개|글자가 \\d+개예요/.test(__mainOnly(__lifePin)+__mainOnly(__topicPin)) && /연주/.test(__lifePin) && /대운\\(10년마다 바뀌는 큰 흐름\\)/.test(__lifePin) && !__lifePin.includes('lv4-pin') && !__topicPin.includes('lv4-pin'));
-    ok('궁금한 점 직접 입력: 적은 글에서 상황을 짐작하고 MBTI 입력은 받지 않음',
-       ctxInfer('topic-love','요즘 남자친구랑 자꾸 싸워요')==='tired' && ctxInfer('topic-career','회사를 그만두고 싶어요')==='move' &&
-       globalThis.__SOURCE_HTML__.includes('id="ctxText"') && globalThis.__SOURCE_HTML__.includes('const hideMbti=true'));
+    ok('월별·지정일 운세 제거: 렌더러·입력 칸·가격이 남지 않음',
+       typeof renderDaypickFortune==='undefined'&&typeof renderMonthlyFortune==='undefined'&&!('daypick' in PAID_META)&&!('monthly' in PAID_META)&&!('monthly' in PAY_BASE_PRICE)&&!globalThis.__SOURCE_HTML__.includes('id="catExtraMonthly"')&&!globalThis.__SOURCE_HTML__.includes('id="catExtraDaypick"') && globalThis.__SOURCE_HTML__.includes('id="ctxText"') && globalThis.__SOURCE_HTML__.includes('const hideMbti=true'));
 
     const __frameBad=[];
     [['life',()=>renderSajuPaid(SELF,1990,5,15,12,0)],['newyear',()=>renderNewyearFortune(SELF,2026)],['name',()=>renderNamePaid(SELF,nameExtra)],['ziwei',()=>renderZiweiPaid(SELF,{..._meta,sy:1990,sm:5,sd:15,hour:12,min:0})],
-     ['daypick',()=>renderDaypickFortune(SELF,2026,8,20,{})],['monthly',()=>renderMonthlyFortune(SELF,2026,8,2026,10,{})],['gunghap',()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})]]
+     ['gunghap',()=>buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''})]]
       .concat(['topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'].map(c=>[c,()=>renderTopicPaid(c,SELF,_meta)]))
       .forEach(([c,fn])=>{let h='';try{h=fn();}catch(e){h='';}if(!h.includes('class="lc-orbs"')||!h.includes('class="lc-chapter"')||!h.includes('class="lc-tl '))__frameBad.push(c);});
-    ok('유료 풀이 장 구성: 16개 카테고리 모두 원국 구슬·3가지 순간·장 제목', __frameBad.length===0, __frameBad.join(', '));
+    ok('유료 풀이 장 구성: 14개 카테고리 모두 원국 구슬·3가지 순간·장 제목', __frameBad.length===0, __frameBad.join(', '));
 
     const __ppLove=renderTopicPaid('topic-love',SELF,_meta),__ppLife=renderSajuPaid(SELF,1990,5,15,12,0),__ppNy=renderNewyearFortune(SELF,2026),__ppPlain=clean(__ppLove).replace(/&nbsp;|\\u00a0|\\u200b|\\u2060/g,'');
     ok('콕 찍은 풀이: 연애운·인생총운·신년운세 본문에 출생년도·띠·이름 초성·지역·직업·만나는 곳',
@@ -403,9 +368,8 @@ const harness = `
     const __ppBad=['topic-money','topic-career','topic-health','topic-study','topic-marriage','topic-reunion','topic-child','topic-children'].filter(c=>!renderTopicPaid(c,SELF,_meta).includes('pp-box'));
     if((renderSajuPaid(SELF,1990,5,15,12,0).match(/pp-box/g)||[]).length<7)__ppBad.push('life');
     if((renderNewyearFortune(SELF,2026).match(/pp-box/g)||[]).length<5)__ppBad.push('newyear');
-    if(!renderDaypickFortune(SELF,2026,8,20,{}).includes('pp-box'))__ppBad.push('daypick');
     if(!buildGunghapReadingV4(SELF,C(6,8,7,9,3,7,6,8),{sy1:1990,sm1:5,sd1:15,h1:12,min1:0,sy2:1992,sm2:3,sd2:2,h2:-1,min2:0,gen1:'male',gen2:'female',mbti1:'',mbti2:''}).includes('pp-box'))__ppBad.push('gunghap');
-    ok('콕 찍은 풀이: 직업·재물·건강·학업·결혼·재회·아이·행운·궁합·하루까지 구체 풀이 상자', __ppBad.length===0, __ppBad.join(', '));
+    ok('콕 찍은 풀이: 직업·재물·건강·학업·결혼·재회·아이·행운·궁합까지 구체 풀이 상자', __ppBad.length===0, __ppBad.join(', '));
 
     const __svMeta=_meta;_meta={..._meta,userName:'김하늘',marital:'married'};
     const __lifeM=renderSajuPaid(SELF,1990,5,15,12,0),__nyM=renderNewyearFortune(SELF,2026);let __ctxJson='';try{__ctxJson=JSON.stringify(buildSajuContextForChat('paid-life')||{});}catch(e){}
@@ -431,13 +395,11 @@ const harness = `
     }));
     ok('상황별 본문 장면: 모든 상황 선택지가 해당 섹션에 장면 문단을 넣고, 빈 값·금지어 없음',__sceneBad.length===0,__sceneBad.join(', '));
 
-    // 13) 같은 입력을 12번 렌더해도 6개 유료 카테고리가 모두 한 가지 결과여야 한다.
+    // 13) 같은 입력을 12번 렌더해도 4개 유료 카테고리가 모두 한 가지 결과여야 한다.
     const OTHER=C(6,8,7,9,3,7,6,8);
     const deterministicRenderers={
       life:()=>renderSajuPaid(SELF,1990,5,15,12,0),
       newyear:()=>renderNewyearFortune(SELF,2026),
-      daypick:()=>renderDaypickFortune(SELF,2026,8,20,{}),
-      monthly:()=>renderMonthlyFortune(SELF,2026,8,2026,9,{}),
       gunghap:()=>renderGunghapBody(SELF,OTHER,'male','female','',''),
       name:()=>renderNamePaid(SELF,null)
     };

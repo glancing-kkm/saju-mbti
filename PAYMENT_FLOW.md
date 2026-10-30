@@ -46,7 +46,7 @@
 
 ### ① 결제 트리거
 - 위치: `index.html` 의 `renderPaidLock(category, saju)` → `<button class="lock-pay" onclick="openPaymentConsent('${category}')">`
-- 카테고리: `daypick` / `monthly` / `newyear` / `life`
+- 카테고리: `newyear` / `life` / `gunghap` / `name` / 주제별·자미두수 등 (월별·지정일 운세는 2026-10-30 종료·코드 삭제)
 
 ### ② 결제 동의 모달
 - HTML: `<div class="pay-overlay" id="payOverlay">` (share 모달 다음에 위치)

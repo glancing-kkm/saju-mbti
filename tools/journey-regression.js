@@ -281,7 +281,7 @@ const submitBirth=async()=>{
       assert(!/2031|9월|부산해운대매장|PAID_HIDDEN_DETAILS|이 문장은 미리보기에서 생략/.test(box.innerHTML));
       assert(!box.querySelector('[data-deep],[data-ai-reading],[data-portrait]'));
     });
-    for(const cat of ['life','newyear','monthly','daypick','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-health']){
+    for(const cat of ['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-health']){
       check('결제 전 풀이 비공개: '+cat,()=>{
         const lock=run(`renderPaidLock('${cat}',_saju)`);
         assert(!/paid-preview|journey-overview|teaser-score|미리보기/.test(lock));
@@ -289,10 +289,8 @@ const submitBirth=async()=>{
         assert.match(lock,new RegExp("openPaymentConsent\\('"+cat+"'"));
       });
     }
-    check('월별·지정일·이름·자미두수도 미리보기만 축약하고 전체 본문 보존',()=>{
+    check('이름·자미두수도 미리보기만 축약하고 전체 본문 보존',()=>{
       for(const [cat,expr] of [
-        ['monthly','renderMonthlyFortune(_saju,2026,10,2026,12,{})'],
-        ['daypick','renderDaypickFortune(_saju,2026,11,1,{})'],
         ['name',"renderNamePaid(_saju,{surname:'김',given:'하늘'})"],
         ['ziwei','renderZiweiPaid(_saju,_meta)']
       ]){
@@ -316,7 +314,7 @@ const submitBirth=async()=>{
     check('PDF 리포트: 14개 주제 5천원 별도 상품, 요약본 PDF 버튼 제거',()=>{
       const cats=JSON.parse(run('JSON.stringify(PDF_REPORT_CATS)'));assert.equal(cats.length,14);
       for(const c of cats){assert.equal(run(`computePayAmount('pdf-${c}',null)`),5000,c);assert.match(run(`PAID_META['pdf-${c}'].price`),/^5,000원$/,c);assert.equal(run(`unlockScopeOf('pdf-${c}')`),run(`unlockScopeOf('${c}')`),c);}
-      assert.equal(run("pdfReportCtaHTML('daypick')"),'');
+      assert.equal(run("pdfReportCtaHTML('daily')"),'');
       assert.match(run("pdfReportCtaHTML('life')"),/5,000원 · PDF 받기/);
       assert(!/Summary\('pdf'\)|PDF 다운로드/.test(html),'요약본 PDF 버튼이 남아 있음');
       assert(!/onclick="download[A-Za-z]*Summary\(|<div class="nb-card summary-card"/.test(html),'요약본 다운로드 카드가 남아 있음');

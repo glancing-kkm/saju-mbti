@@ -19,11 +19,9 @@
 //    4) 토스 API 호출 결과의 status === 'DONE' 확인
 //    5) 동일 orderId 중복 승인 방지를 위해 KV 또는 D1에 처리 이력 저장 (권장)
 
-// 카테고리당 단가 (원). monthly는 월당 단가이며 실제 결제 금액은 1~6개월 ×2000
+// 카테고리당 단가 (원).
 // chatpack* 은 AI 채팅 질문 추가 패키지 — 결제 후 클라이언트에서 현재 사주의 채팅 보너스 +N
 const CATEGORY_PRICE = {
-  "daypick": 1500,
-  "monthly": 2000,
   "newyear": 2000,
   "gunghap": 1500,
   "name": 1500,
@@ -80,8 +78,6 @@ const CATEGORY_PRICE = {
   "pdf-topic-health": 5000
 };
 const PREVIOUS_CATEGORY_PRICE = {
-  "daypick": 1500,
-  "monthly": 2000,
   "newyear": 1500,
   "gunghap": 1000,
   "name": 1500,
@@ -109,8 +105,6 @@ const PREVIOUS_CATEGORY_PRICE = {
   "ziwei": 1500
 };
 const CATALOG_PRICE_CHANGED_AT = 1792934184727;
-const MONTHLY_MAX = 6;
-const MONTHLY_UNIT = 2000;
 const AUGUST_990_PROMO_PRICE = 990;
 const AUGUST_CHAT_PACK_PRICE = { chatpack3: 990, chatpack5: 1490, chatpack7: 1990 };
 const AUGUST_990_PROMO_START_MS = Date.parse('2026-07-31T15:00:00.000Z');
@@ -121,16 +115,11 @@ function isAugust990Promo(nowMs = Date.now()) {
 function augustPromoPriceForCategory(category) {
   return AUGUST_CHAT_PACK_PRICE[category] || AUGUST_990_PROMO_PRICE;
 }
-// 카테고리·금액 위조 방지 — 월별은 월당 단가의 1~6배수 허용, 그 외는 단일 정가 일치
+// 카테고리·금액 위조 방지 — 단일 정가 일치
 function isAmountValid(category, amount, nowMs = Date.now()) {
   if (!CATEGORY_PRICE[category]) return false;
   if (!Number.isSafeInteger(amount) || amount <= 0) return false;
   if (isAugust990Promo(nowMs)) return amount === augustPromoPriceForCategory(category);
-  if (category === 'monthly') {
-    if (amount % MONTHLY_UNIT !== 0) return false;
-    const cnt = amount / MONTHLY_UNIT;
-    return cnt >= 1 && cnt <= MONTHLY_MAX;
-  }
   return CATEGORY_PRICE[category] === amount;
 }
 // 결제창을 띄운 뒤 승인까지 걸리는 시간 동안 프로모션 경계를 넘긴 주문이 거부되지 않도록
@@ -176,8 +165,6 @@ export default {
     if (!isAmountValidWithGrace(category, amount)) {
       const hint = isAugust990Promo()
         ? `expected ${augustPromoPriceForCategory(category)} for the August promotion`
-        : category === 'monthly'
-        ? `monthly amount must be ${MONTHLY_UNIT} × 1~${MONTHLY_MAX}`
         : `expected ${CATEGORY_PRICE[category]}`;
       return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `${hint}, got ${amount}` }, 400, corsHeaders);
     }

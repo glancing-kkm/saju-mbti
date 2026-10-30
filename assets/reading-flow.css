@@ -208,7 +208,7 @@ html[data-flow-theme] #app #formWrap{--sub:#e0e9e5;--muted:#bdcec6;--border-stro
 #app #formWrap.wz-on input::placeholder{color:var(--muted);opacity:1}
 
 /* 설명 본문은 인생총운과 같은 크기로 읽는다. 제목·점수·짧은 주석은 유지. */
-#app :is(#view-result,#view-tarot,#view-astrology) :is(.lv4 p,.lv4-list li>span,.lv4-md-list li>span,.cc-fingerprint,.cc-note,.nb-body,.nb-gw-body,.abody,.daily-cat-body,.reading-brief,.chat-msg-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.life-v3-section-body,.story-deck-copy,.story-deck-point,.dp-body,.mo-row-body,.ny-sec-body,.month-advice-body,.tl-body,.preview-story-summary,.preview-story-lock,.teaser-leadline,.teaser-insight,.conversion-hook-body){font-size:1rem;line-height:1.95}
+#app :is(#view-result,#view-tarot,#view-astrology) :is(.lv4 p,.lv4-list li>span,.lv4-md-list li>span,.cc-fingerprint,.cc-note,.nb-body,.nb-gw-body,.abody,.daily-cat-body,.reading-brief,.chat-msg-body,.mbti-badge-body,.mbti-ind-reason,.mbti-ind-example,.mbti-ind-advice,.mbti-analysis-synth,.mbti-intro,.mbti-axis-body,.life-v3-section-body,.story-deck-copy,.story-deck-point,.dp-body,.ny-sec-body,.month-advice-body,.tl-body,.preview-story-summary,.preview-story-lock,.teaser-leadline,.teaser-insight,.conversion-hook-body){font-size:1rem;line-height:1.95}
 #app .lc-preview-photo{position:relative;overflow:hidden;aspect-ratio:1/1;min-height:240px;background:var(--card)}
 #app .lc-preview-photo img{display:block;width:100%;height:100%;object-fit:cover;filter:blur(18px) saturate(.75);transform:scale(1.1);opacity:.8}
 #app .lc-preview-photo-label{position:absolute;inset:auto 12px 18px;padding:10px;background:#101513de;border-radius:10px;text-align:center;color:#fff;font-size:13px;line-height:1.6}
