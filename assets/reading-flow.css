@@ -4,8 +4,9 @@ html[data-flow-theme]{
   --bg-mid:color-mix(in srgb,var(--flow-bg) 80%,var(--flow-depth));
   --card:color-mix(in srgb,var(--flow-bg) 72%,var(--flow-depth));--card-elev:var(--flow-depth);
   --card-glass:color-mix(in srgb,var(--card) 94%,transparent);
-  --text:#fafaf7;--sub:#e9eeeb;
-  --muted:#c2cec8;
+  /* 글씨는 회녹색 기운 없는 중립 흰색 계열 — 붉은·갈색 테마에서 뿌옇게 보이지 않도록 밝기를 올렸다 */
+  --text:#ffffff;--sub:#f3f1ef;
+  --muted:#dcd8d4;
   --accent:var(--flow-accent);--accent-bright:var(--flow-accent);--gold:var(--flow-accent);--gold-soft:var(--flow-accent);
   --accent-soft:color-mix(in srgb,var(--flow-accent) 10%,transparent);--accent-bg:var(--accent-soft);
   --border:color-mix(in srgb,var(--flow-accent) 26%,transparent);
@@ -19,6 +20,11 @@ html[data-flow-theme] #app{background:var(--bg);box-shadow:none}
 html[data-flow-theme] #app .hdr-back{background-color:var(--bg)}
 html[data-flow-theme] #app .hdr-back::before{background:linear-gradient(0deg,var(--bg),transparent 85%)}
 html[data-flow-theme] #app .journey-form-note{background:var(--accent-soft);border-color:var(--border-strong)}
+/* 입력 화면의 작은 안내 글씨를 반투명 대신 또렷한 색과 조금 큰 크기로 */
+html[data-flow-theme] #app .hdr-back-sub{color:var(--sub)}
+html[data-flow-theme] #app .input-steps span{color:var(--sub);font-size:.84rem}
+html[data-flow-theme] #app .input-steps .on{color:var(--accent)}
+html[data-flow-theme] #app .journey-form-help{color:var(--sub);font-size:.86rem}
 html[data-flow-theme] #app .form-body :is(.ig input,.ig select,textarea,input[type=text]){background-color:var(--bg-deep)}
 html[data-flow-theme] #app #formWrap.wz-on .ig input,html[data-flow-theme] #app #formWrap .birth-date-row :is(input,select){background-color:transparent}
 html[data-flow-theme] #app :is(.analyze-btn,.journey-primary){background:var(--accent);color:var(--on-accent);box-shadow:0 8px 24px #0002}

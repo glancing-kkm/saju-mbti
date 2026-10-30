@@ -93,7 +93,7 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  const lum=c=>c.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);
  const ratio=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05);
  const tones=run('Object.values(PRODUCT_INTRO).map(x=>x.tone).filter(Boolean)');
- for(const [base,depth] of tones){const bg=rgb(base),card=bg.map((v,i)=>v*.72+rgb(depth)[i]*.28);for(const fg of ['#fafaf7','#e9eeeb','#c2cec8']){assert(ratio(rgb(fg),bg)>=4.5);assert(ratio(rgb(fg),card)>=4.5);}}
+ for(const [base,depth] of tones){const bg=rgb(base),card=bg.map((v,i)=>v*.72+rgb(depth)[i]*.28);for(const fg of ['#ffffff','#f3f1ef','#dcd8d4']){assert(ratio(rgb(fg),bg)>=4.5);assert(ratio(rgb(fg),card)>=4.5);}}
  console.log(`✓ 공통 색상: ${tones.length}개 상품 테마의 본문·보조 글씨가 배경과 카드에서 대비 4.5:1 이상`);
 
  run("_lastInputs={gender:'male',calType:'solar',isLeap:false,year:'1987',month:'9',day:'21',hour:'7',min:'0',cityKey:'seoul',marital:'married'};_marital='';document.getElementById('iName').value='김하늘';goToInput('newyear');");
