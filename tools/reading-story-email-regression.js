@@ -83,7 +83,7 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  assert.notEqual(run("lv4FieldDecision('wealth',40,40,{})"),run("lv4FieldDecision('wealth',90,40,{})"));
  const tarotTexts=[];for(const topic of ['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health']){
    w.tarotInput=run(`({topic:'${topic}',question:'무엇을 확인하면 좋을까요?',cards:TAROT_CARDS.slice(0,3).map((c,i)=>({positionLabel:['현재','장애물','조언'][i],positionMeaning:'확인할 조건',cardNameKo:c.nameKo,keywords:c.keywords,baseMeaning:c.uprightMeaning,categoryMeaning:c.careerMeaning,advice:c.advice,warning:c.warning,orientation:'upright'}))})`);
-   const t=run('generateTemplateReading(window.tarotInput)');assert(!t.includes('가능성이 열려 있지만'));assert.equal((t.match(/^# [1-8]\./gm)||[]).length,8);for(const c of w.tarotInput.cards)assert(t.includes(c.cardNameKo));assert(!t.includes('오늘 할 수 있는 작은 행동 하나를 정하고'));assert(/기준/.test(t.split('# 6.')[1]));assert(/반복되는 이유/.test(t));tarotTexts.push(t);
+   const t=run('generateTemplateReading(window.tarotInput)');assert(!t.includes('가능성이 열려 있지만'));assert.equal((t.match(/^# [1-8]\./gm)||[]).length,8);for(const c of w.tarotInput.cards)assert(t.includes(c.cardNameKo));assert(!t.includes('오늘 할 수 있는 작은 행동 하나를 정하고'));assert(t.split('# 6.')[1].includes(run('TAROT_TOPIC_CRITERION[window.tarotInput.topic]')),'선택 장에 해당 주제의 실제 판단 항목이 있어야 함');assert(/반복되는 이유/.test(t));tarotTexts.push(t);
  }
  assert(new Set(tarotTexts.map(t=>t.split('# 3.')[0])).size>=5,'주제별 장면이 같은 문장으로 고정됨');
  run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));

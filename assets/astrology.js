@@ -207,7 +207,7 @@ function buildAstrologyStoryConfig(flow){
   ];
   deck.personalNote=personalNote;
   const created=flow.createdAt?new Date(flow.createdAt).toLocaleString('ko-KR'):'';
-  const libraryHtml=`<section class="astro-panel"><div class="astro-section-title">${astroEsc(flow.productName||'점성술 풀이')}</div><div class="astro-small">${astroEsc(flow.birthInfo.city)}${created?` · ${astroEsc(created)}`:''}</div></section>${astrologyResultVisualHTML(flow)}<section class="astro-panel"><div class="astro-markdown">${markdownToAstroHTML(flow.resultMarkdown)}</div></section><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('products')">다른 풀이 보기</button><button class="astro-btn secondary" onclick="astroNavigate('history')">히스토리 보기</button></div>`;
+  const libraryHtml=`<section class="astro-panel"><div class="astro-section-title">${astroEsc(flow.productName||'점성술 풀이')}</div><div class="astro-small">${astroEsc(flow.birthInfo.city)}${created?` · ${astroEsc(created)}`:''}</div></section>${astrologyResultVisualHTML(flow)}${typeof storyMarkdownView==='function'&&canonicalAstroProduct(flow.productType)==='life'?storyMarkdownView(flow.resultMarkdown,'astrology',flow,'life'):''}<section class="astro-panel"><div class="astro-markdown">${markdownToAstroHTML(flow.resultMarkdown)}</div></section><div class="astro-actions"><button class="astro-btn" onclick="astroNavigate('products')">다른 풀이 보기</button><button class="astro-btn secondary" onclick="astroNavigate('history')">히스토리 보기</button></div>`;
   return {id:'astrology-reading',kicker:'COSMIC CHARACTER',icon:'orbit',title:`태양 ${sunSign.nameKo} · 달 ${moonSign.nameKo}`,subtitle:`${flow.productName||'점성술 풀이'} · 계산된 출생차트를 가볍게 먼저 만나보세요`,stats:elementStats,highlights:[{icon:'north_east',label:'첫인상',text:chart.ascendant?signNameKo(chart.ascendant.sign):'출생시간 미상'},{icon:'local_fire_department',label:'강한 원소',text:elementKo[dominant]},{icon:'sync_alt',label:'움직임',text:modeKo[mode]}],deck,deckTitle:'점성술 핵심 7장',libraryTitle:'점성술 전체 서고',libraryIntro:'원형 차트와 상세 리포트를 그대로 보관했어요. 핵심을 본 뒤 필요한 부분을 깊게 읽으세요.',libraryHtml};
 }
 function buildAstrologyOnePageHTML(flow){
@@ -223,8 +223,9 @@ function renderAstrologyResult(root){
   astroSetHeader('점성술 결과',_astroFlow.productName||'점성술 풀이');
   if(_astroFlow.resultLoading){root.innerHTML=`<section class="astro-panel"><div class="astro-section-title">점성술 리포트를 작성하고 있어요</div><div class="astro-text">계산된 출생차트와 트랜짓 데이터를 바탕으로 풀이를 정리 중이에요.</div></section>`;return;}
   if(!_astroFlow.resultMarkdown)return astroNavigate('products');
-  if(_astroFlow.paymentStatus!=='paid'&&typeof previewLockHTML==='function'){const cat=astroPaymentCategory(_astroFlow.productType);root.innerHTML=`<div class="lk-preview">${previewLockHTML(cat,buildAstrologyOnePageHTML(_astroFlow),{visibleSections:2})}</div>${lkBarHTML(cat)}`;return;}
+  if(_astroFlow.paymentStatus!=='paid'&&typeof previewLockHTML==='function'){const cat=astroPaymentCategory(_astroFlow.productType);root.innerHTML=`<div class="lk-preview">${previewLockHTML(cat,buildAstrologyOnePageHTML(_astroFlow),{visibleSections:2})}</div>${lkBarHTML(cat)}`;if(typeof storyBindMarkdownView==='function')storyBindMarkdownView(root);return;}
   root.innerHTML=(_astroFlow.deepLoading?'<div class="deep-status" role="status">천기가 가려졌던 해석을 쓰고 있어요. 30초쯤 걸려요.</div>':'')+(typeof lv4FromMarkdown==='function'?buildAstrologyOnePageHTML(_astroFlow):`${astrologyResultVisualHTML(_astroFlow)}<section class="astro-panel"><div class="astro-markdown">${markdownToAstroHTML(_astroFlow.resultMarkdown)}</div></section>`);
+  if(typeof storyBindMarkdownView==='function')storyBindMarkdownView(root);
 }
 function renderAstrologyHistory(root){astroSetHeader('점성술 히스토리','24시간 보관');const list=loadAstrologyHistory();root.innerHTML=`<section class="astro-hero"><div class="astro-kicker">History</div><div class="astro-title">점성술 히스토리</div><div class="astro-desc">결제 시점부터 24시간 동안 유료 풀이 결과를 다시 볼 수 있어요.</div></section><div class="astro-grid">${list.length?list.map(r=>`<section class="astro-history-item"><div class="astro-section-title">${astroEsc(r.productName||r.productType)}</div><div class="astro-small">${astroEsc(r.birthInfo.city)} · ${new Date(r.createdAt).toLocaleString('ko-KR')}</div><div class="astro-small">만료: ${new Date(r.expiresAt||Date.parse(r.createdAt)+ASTRO_HISTORY_TTL_MS).toLocaleString('ko-KR')}</div><div class="astro-actions"><button class="astro-btn" onclick="openAstrologyHistory('${r.id}')">다시 보기</button></div></section>`).join(''):'<div class="tarot-empty">24시간 안에 저장된 점성술 결과가 없어요.</div>'}</div>`;}
 function openAstrologyHistory(id){const r=loadAstrologyHistory().find(x=>x.id===id);if(!r){alert('24시간이 지나 만료된 풀이예요.');return;}_astroFlow={...r,paymentStatus:'paid'};saveAstrologyFlow();astroNavigate('result');}
@@ -800,7 +801,8 @@ function astroInsight(chart,productType,transit){
   // 4. 선택지의 득실과 기준
   const ca=ASTRO_NEED_CHOICE[A.planet],cb=ASTRO_NEED_CHOICE[B.planet],crit=ASTRO_CRITERION[key]||ASTRO_CRITERION.life;
   const choice=`${ca[0]}${astroJ(ca[0],'을','를')} 먼저 채우면 ${ca[1]}. 대신 ${ca[2]}. ${cb[0]}${astroJ(cb[0],'을','를')} 먼저 두면 ${cb[1]}. 대신 ${cb[2]}. 어느 쪽이든 ${crit}${/지$/.test(crit)?'를':astroJ(crit,'을','를')} 기준으로 정해 보세요.`;
-  return {key,needs,recognition,reversal,present,choice,timeKnown,refs:[A.planet,B.planet].concat(ab?[`aspect.${ab.planetA}.${ab.planetB}`]:[],tense?[`aspect.${tense.planetA}.${tense.planetB}`]:[])};
+  if(typeof ReadingVoice==='object'){recognition=ReadingVoice.text(recognition);reversal=ReadingVoice.text(reversal);present=ReadingVoice.text(present);}
+  return {key,needs,recognition,reversal,present,choice:typeof ReadingVoice==='object'?ReadingVoice.text(choice):choice,timeKnown,refs:[A.planet,B.planet].concat(ab?[`aspect.${ab.planetA}.${ab.planetB}`]:[],tense?[`aspect.${tense.planetA}.${tense.planetB}`]:[])};
 }
 const ASTRO_PLANS={
   life:['진로를 바꿀지 고민한다면 남에게 잘 보이는 선택과 오래 할 수 있는 선택을 나눠 보세요.','후보마다 필요한 준비·수입 공백·실제로 해볼 작은 일을 적어 보세요.'],
@@ -846,7 +848,7 @@ function astroYearHalves(chart,yearTransits){
   const h1=pick(0,6),h2=pick(6,12),line=(h,lab)=>h?`${lab}에는 ${h.month}월 무렵 하늘의 ${planetNameKo(h.transit)}${astroJ(planetNameKo(h.transit),'이','가')} 본인 ${planetNameKo(h.natal)}${astroJ(planetNameKo(h.natal),'과','와')} ${ASTRO_ASPECT_KO[h.aspectType]} 각도를 만들어요. ${h.meaningType==='tense'?`${ASTRO_NATAL_THEME[h.natal]} 쪽을 조정할 일이 생기기 쉬워요.`:`${ASTRO_NATAL_THEME[h.natal]} 쪽에서 힘을 받기 쉬워요.`}`:`${lab}에는 목성·토성이 개인 행성에 크게 닿는 각도가 계산되지 않았어요.`;
   return `${line(h1,'상반기')} ${line(h2,'하반기')}`;
 }
-function astroPreviewTemplate(chart,productType){return astroComputedSections(chart,productType,_astroFlow&&_astroFlow.transit).map(s=>`# ${s.title}\n\n${s.body}`).join('\n\n');}
+function astroPreviewTemplate(chart,productType){const md=astroComputedSections(chart,productType,_astroFlow&&_astroFlow.transit).map(s=>`# ${s.title}\n\n${s.body}`).join('\n\n');return canonicalAstroProduct(productType)==='life'&&typeof storyMarkdown==='function'?storyMarkdown(md,'astrology',{chart,transit:_astroFlow?.transit,question:_astroFlow?.question},'life'):md;}
 function generateTemplateAstrologyReading(chart,productType){return astroPreviewTemplate(chart,productType);}
 // 유료 AI 응답 채택 기준 — 실제 계산과 다른 본인 행성 별자리, 시간 미상인데 하우스·상승궁 해석, 입력에 없는 연도를 거절한다.
 // 문장 규칙 검사이며 해석의 정확도를 보장하지 않는다.
@@ -859,10 +861,10 @@ function astroAIQuality(md,flow){
   const names={태양:'sun',달:'moon',수성:'mercury',금성:'venus',화성:'mars',목성:'jupiter',토성:'saturn'};
   for(const m of t.matchAll(/본인(?:의)?\s?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s?([가-힣]{1,3}자리)/g)){const p=findPlanet(chart,names[m[1]]);if(p&&signNameKo(p.sign)!==m[2])return false;}
   const y=new Date().getFullYear(),allowed=new Set([String(y),String(y+1),String((flow&&flow.targetYear)||y),String(chart.birthInfo&&chart.birthInfo.year)]);
-  return !(t.match(/(?:19|20)\d{2}년/g)||[]).some(x=>!allowed.has(x.slice(0,4)));
+  return !(t.match(/(?:19|20)\d{2}년/g)||[]).some(x=>!allowed.has(x.slice(0,4)))&&(typeof storyValidateMarkdown!=='function'||canonicalAstroProduct(flow.productType||'life')!=='life'||storyValidateMarkdown(t,'astrology',flow));
 }
 
-async function generateAstrologyReading(chart,transit,productType,opts){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,transitAspects:transit&&Array.isArray(transit.planets)?calculateTransitAspects(chart,transit):[],productType,partnerChart:_astroFlow&&_astroFlow.partnerChart,synastryAspects:_astroFlow&&_astroFlow.synastryAspects,targetYear:_astroFlow&&_astroFlow.targetYear,yearTransits:_astroFlow&&_astroFlow.yearTransits,question:_astroFlow&&_astroFlow.question,language:currentLanguagePayload(),paidToken:typeof latestPaidToken==='function'?latestPaidToken():''})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
+async function generateAstrologyReading(chart,transit,productType,opts){const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/astrology-reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chart,transit,transitAspects:transit&&Array.isArray(transit.planets)?calculateTransitAspects(chart,transit):[],productType,partnerChart:_astroFlow&&_astroFlow.partnerChart,synastryAspects:_astroFlow&&_astroFlow.synastryAspects,targetYear:_astroFlow&&_astroFlow.targetYear,yearTransits:_astroFlow&&_astroFlow.yearTransits,question:_astroFlow&&_astroFlow.question,storyPlan:typeof storyMdPlan==='function'&&canonicalAstroProduct(productType)==='life'?storyPayload(storyMdPlan(astroPreviewTemplate(chart,productType),'astrology',{chart,transit,question:_astroFlow?.question},'life')):undefined,language:currentLanguagePayload(),paidToken:typeof latestPaidToken==='function'?latestPaidToken():''})});if(!resp.ok)throw new Error(`astrology-reading ${resp.status}`);const data=await resp.json();const text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty astrology-reading');return text;}
 
 (function processPendingAstrologyPaymentReturn(){
   let pending=null;
@@ -871,3 +873,6 @@ async function generateAstrologyReading(chart,transit,productType,opts){const re
   try{localStorage.removeItem('astrology_paid_return_pending_v1');}catch(e){}
   setTimeout(()=>resumePaidAstrologyAfterPayment(pending.category),0);
 })();
+
+// Include free daily/natal and every paid topic, independent of the story pilot flag.
+if(typeof ReadingVoice==='object')ReadingVoice.install(window,["astroInsight","astroComputedSections","astroPracticalReading","generateTemplateAstrologySummary","astroPreviewTemplate","generateTemplateAstrologyReading","generateTodayAstrology","renderTodayAstrologyResult","renderNatalChartResult","renderAstrologyResult"]);

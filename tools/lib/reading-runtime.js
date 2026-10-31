@@ -11,6 +11,9 @@ module.exports=function readingRuntime(root=process.env.READING_AUDIT_ROOT||path
  w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[epoch]));}static now(){return epoch;}};
  const run=s=>vm.runInContext(s,ctx,{timeout:30000});
  run(fs.readFileSync(path.join(root,'assets/vendor/astronomy.browser.min.js'),'utf8'));
+ run(fs.readFileSync(path.join(root,'assets/reading-voice.js'),'utf8'));
+ run(fs.readFileSync(path.join(root,'assets/interpretation-engine.js'),'utf8'));
+ run(fs.readFileSync(path.join(root,'assets/interpretation-adapters.js'),'utf8'));
  run([...d.querySelectorAll('script')].filter(s=>!s.src&&!/json/.test(s.type)).map(s=>s.textContent).join('\n;\n'));
  run(fs.readFileSync(path.join(root,'assets/astrology.js'),'utf8'));
  const clean=s=>String(s||'').replace(/\u00a0|\u200b/g,' ').replace(/\s+/g,' ').trim();

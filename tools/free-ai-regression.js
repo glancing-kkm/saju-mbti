@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const rt=require('./lib/reading-runtime')(),{run,w,d}=rt;
+if(process.env.STORY_PILOT==='1')rt.run('window.FortuneStoryConfig={enabled:true}');
 const calls=[],rows=[];const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const ai=p=>['/reading','/tarot-reading','/astrology-reading','/portrait','/translate','/'].includes(p);
 w.fetch=async(url,options={})=>{const p=new URL(String(url),'https://audit.example/').pathname;calls.push({path:p,method:options.method||'GET'});return {ok:true,status:200,json:async()=>({}),text:async()=>'',headers:{get:()=>null}};};

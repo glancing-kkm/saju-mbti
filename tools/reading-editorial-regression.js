@@ -36,7 +36,7 @@ try{
  const server=vm.createContext({console,TextEncoder,TextDecoder,atob,btoa,Request,Response,URL,FormData,Blob});
  vm.runInContext(fs.readFileSync('worker/saju-chat-worker.js','utf8').replace(/^import .*;\s*$/gm,'').replace('export default {','const testWorker={'),server);
  server.meta={synthesis:true,readingKind:'life',sections:JSON.parse(JSON.stringify(req))};server.ctx=JSON.parse(JSON.stringify(run("buildSajuContextForChat('paid-deep')")));
- const prompt=vm.runInContext("buildReadingUserPrompt('reading-deep',ctx,meta)",server);assert(prompt.includes('editorial'));assert(prompt.includes('믿고 맡기는 일이'));
+ const prompt=vm.runInContext("buildReadingUserPrompt('reading-deep',ctx,meta)",server);assert(prompt.includes('editorial'));assert(brief.every(s=>prompt.includes(s.editorial.title)),'서버가 현재 편집 제목을 보존해야 함');
  server.raw={domain:'core',sourceIds:['IGNORE','natal.hour.stem','natal.day.branch'],tension:'검증'};
  const safe=vm.runInContext('editorialBrief(raw)',server);assert(!safe.sourceIds.includes('IGNORE'));
  run(fs.readFileSync('assets/report-pdf.js','utf8').replace('window.TEMPLATE_REPORT_SPECS=SPECS;', 'window.rpReadingSections=rpReadingSections;window.TEMPLATE_REPORT_SPECS=SPECS;'));

@@ -6,7 +6,7 @@
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v9-depth',RP_SAFE=26;
+const RP_VERSION='v10-consultation',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -182,7 +182,7 @@ const OH_WORD=['목','화','토','금','수'];
 // ── 공통 유틸 ──
 const esc=s=>storyEsc(String(s==null?'':s));
 const txt=s=>lv4Text(esc(s));
-const clean=s=>String(s||'').replace(/[​⁠]/g,'').replace(/ /g,' ').replace(/\s+/g,' ').trim();
+const clean=s=>(typeof ReadingVoice==='object'?ReadingVoice.text(String(s||'')):String(s||'')).replace(/[​⁠]/g,'').replace(/ /g,' ').replace(/\s+/g,' ').trim();
 const pad2=n=>String(n).padStart(2,'0');
 const tint=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
 const josa=(w,a,b)=>{const c=String(w||'').charCodeAt(String(w||'').length-1);return c>=0xac00&&c<=0xd7a3&&(c-0xac00)%28?a:b;};
@@ -352,7 +352,8 @@ function rpPlan(spec,d){
   const groups=[];let cur=null;
   const split=[];units.forEach(u=>{if(u.fields.length<=18){split.push(u);return;}for(let i=0;i<u.fields.length;i+=18)split.push({...u,heads:i?[]:u.heads,fields:u.fields.slice(i,i+18)});});
   split.forEach(u=>{const hn=(u.heads||[]).length,fn=u.fields.length;if(!cur||cur.heads.length+hn>5||cur.fields.length+fn>18){cur={heads:[],fields:[]};groups.push(cur);}cur.heads.push(...(u.heads||[]));cur.fields.push(...u.fields);});
-  return {pages,groups};
+  const storyPlan=d.cat==='life'&&typeof storyBuild==='function'?storyBuild('saju','life',{saju:d.saju,meta:d.meta},groups.flatMap(g=>g.heads).map(h=>({id:h.id,title:h.title,topic:storyTopic(h.id,h.chapter+' '+h.title)}))):null;
+  d.storyPlan=storyPlan;return {pages,groups,storyPlan};
 }
 // 소제목마다 AI에 주는 질문과 계산 초안 — 초안은 사실 확인용이며 그대로 옮기라는 뜻이 아니다
 function rpHeadFocus(d,pg,h){
@@ -386,18 +387,21 @@ async function rpAI(spec,d,plan,onProgress,opts){
   const facts=(told?`상담자가 직접 알려 준 상황(사용자 진술이며 사주로 추론한 사건이 아님): ${told}\n`:'')+rpFacts(d);let done=0;
   const infoKey=told?'|'+rpHash(told):'';
   const one=async(g,i)=>{
-    const key=`${d.cat}|${scope}|${i}|${RP_VERSION}${infoKey}`;
+    const requestGroup=plan.storyPlan?{...g,fields:[]}:g;
+    const key=`${d.cat}|${scope}|${i}|${RP_VERSION}${infoKey}${plan.storyPlan?'|'+plan.storyPlan.id:''}`;
     const requestCacheKey=aiReadingCacheKey('report-tpl',key,'ko');
     try{
+      if(plan.storyPlan&&!g.heads.length)return null;
       const c=aiReadingCacheGet('report-tpl',key,'ko');const parsed=c&&rpParse(c.text);if(parsed)return parsed;
       const payload=buildAIReadingPayload('report-tpl',{source:'paid-report'});if(!payload)return null;
       payload.sajuContext.detailedReading=readingText;
       payload.sajuContext.readingEvidence=readingEvidencePayload(d.saju,d.meta,d.cat,d.nyYear||d.y0);
+      if(plan.storyPlan)payload.meta.storyPlan=storyPayload(plan.storyPlan);
       payload.meta.narrativeStyle='알아볼 수 있는 장면과 안에서 당기는 두 기준 → 강점이 부담으로 바뀌는 조건 → 지금 달라지는 점 → 선택지의 득실과 판단 기준. 소제목마다 focus에 답하고 draft의 사실만 쓰며, 서로 다른 소제목에 같은 문장을 쓰지 않기. 날짜나 사건은 새로 만들지 않기.';
       if(told)payload.sajuContext.situation=told.slice(0,300);
-      Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint,focus:h.focus,draft:h.draft})),fields:g.fields.map(([id,ask,max])=>({id,ask,max}))});
+      Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint,focus:h.focus,draft:h.draft})),fields:requestGroup.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
-      for(let k=0;k<2&&!rpEnough(out,g);k++){
+      for(let k=0;k<2&&!rpEnough(out,requestGroup);k++){
         ({resp,data}=await fetchJsonWithRetry((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2));
         if(resp&&resp.status===403)break;
         const t=resp&&resp.ok&&data?String(data.text||'').trim():'',o=typeof readingProvenanceQuality==='function'&&!readingProvenanceQuality(t)?null:rpParse(t);
@@ -415,9 +419,9 @@ async function rpAI(spec,d,plan,onProgress,opts){
   const res=new Array(plan.groups.length).fill(null);let next=0;
   const worker=async()=>{while(next<plan.groups.length){const i=next++;res[i]=await one(plan.groups[i],i);}};
   await Promise.all(Array.from({length:Math.min(2,plan.groups.length)},worker));
-  const secs={},fields={};
-  res.forEach(r=>{if(!r)return;(r.sections||[]).forEach(s=>{if(s&&s.id&&Array.isArray(s.paragraphs))secs[s.id]=s.paragraphs.map(clean).filter(x=>x.length>=10).slice(0,4);});Object.entries(r.fields||{}).forEach(([k,v])=>{const t=clean(v);if(t)fields[k]=t;});});
-  return {secs,fields,okGroups:res.filter(Boolean).length,facts};
+  const secs={},fields={},storyProofs={};
+  res.forEach(r=>{if(!r)return;(r.sections||[]).forEach(s=>{if(s&&s.id&&Array.isArray(s.paragraphs)){secs[s.id]=s.paragraphs.map(clean).filter(x=>x.length>=10).slice(0,4);if(s.story)storyProofs[s.id]=s.story;}});Object.entries(r.fields||{}).forEach(([k,v])=>{const t=clean(v);if(t)fields[k]=t;});});
+  return {secs,fields,storyProofs,okGroups:res.filter(Boolean).length,facts};
 }
 // JSON이 중간에 끊겨도 온전한 섹션·필드는 살린다
 function rpParse(text){
@@ -571,9 +575,9 @@ function rpSajuItems(d,domain){
   const axisYears=a=>t?t.years.filter(y=>READING_TG_AXIS[y.tg]===a).map(y=>`${y.year}년(${y.gz})`).slice(0,3):[];
   ax.forEach((a,i)=>{const n=nodeOf(a),rank=i===0?'가장 두터운':i===1?'보조로 있는':'함께 있는';
     items.push({id:`axis${i}`,basis:n?`${n.place} ${n.glyph}`:'',render:{
-      scene:`${n?`${n.place} ${n.glyph}에서 `:''}${rank} ${AX(a)}${rpJ(AX(a),'이','가')} 보여요. ${young?READING_REVERSAL_YOUNG[a].split(/(?<=[.!?])\s+/)[0]:READING_SCENES[dom][a]}`,
+      scene:young?READING_REVERSAL_YOUNG[a].split(/(?<=[.!?])\s+/)[0]:READING_SCENES[dom][a],
       burden:young?READING_REVERSAL_YOUNG[a]:`${(READING_REVERSAL[dom]||READING_REVERSAL.core)[a]}${i===1&&READING_SECOND_ROLE[a]?' '+READING_SECOND_ROLE[a]:''}`,
-      choice:`${rank} ${AX(a)}${rpJ(AX(a),'을','를')} 기준으로 보면 선택은 이렇게 갈려요. ${young?READING_CHOICE.study[a]:(READING_CHOICE[dom]||READING_CHOICE.core)[a]}`,
+      choice:`${young?READING_CHOICE.study[a]:(READING_CHOICE[dom]||READING_CHOICE.core)[a]}`,
       action:`${(READING_ACTION[dom]||READING_ACTION.core)[a]}${(READING_DOMAIN_DEVELOPMENT[dom]||{})[a]?' '+READING_DOMAIN_DEVELOPMENT[dom][a]:''}`,
       timing:axisYears(a).length?`앞으로 10년 중 ${AX(a)}${rpJ(AX(a),'이','가')} 해의 앞자리에 서는 때는 ${axisYears(a).join(', ')}${rpIda(axisYears(a).slice(-1)[0])}. ${(READING_SHIFT[dom]||READING_SHIFT.core)[a]}`:`앞으로 10년 안에 ${AX(a)}${rpJ(AX(a),'이','가')} 해의 앞자리에 서는 해는 계산되지 않았어요. 이 힘은 기다리기보다 스스로 꺼내 써야 하는 쪽이에요.`,
       evidence:`${n?`${n.place}의 ${n.glyph}${rpJ(n.glyph,'은','는')} 일간 ${e.dayStem} 기준으로 ${AX(a)}에 해당해요. `:''}사주의 여러 자리 중 이 성향이 ${e.axes[i][1]}곳에 나와 ${rank} 축으로 읽어요.${!e.hourKnown?' 시주는 입력되지 않아 세 자리 안에서 셌어요.':''}`}});});
@@ -629,7 +633,7 @@ function rpZiweiParas(d,h,ledger){
   const palaceOf=name=>ch.palaces.find(p=>p.name===name);
   const palaceText=name=>{const p=palaceOf(name);if(!p)return '';const x=zwStarsOf(ch,name),field={부부궁:2,재백궁:3,관록궁:4}[name]||1;
     const stars=x.stars.map(s=>s+'성').join('과 ');let t=`${ZW_SHOW(name)}(${plain(name)})${x.borrowed?`은 별이 없는 빈 방이라 마주 보는 방의 ${stars}${rpJ(stars,'을','를')} 빌려 읽어요.`:`에는 ${stars}${rpJ(stars,'이','가')} 있어요.`}`;
-    if(x.stars[0])t+=` ${ZW_STARS[x.stars[0]][field]}`;if(x.stars[0]&&ZW_STAR_SHADOW[x.stars[0]])t+=` 다만 ${ZW_STAR_SHADOW[x.stars[0]]}`;
+    if(x.stars[0])t=`${ZW_STARS[x.stars[0]][field]} `+t;if(x.stars[0]&&ZW_STAR_SHADOW[x.stars[0]])t+=` 다만 ${ZW_STAR_SHADOW[x.stars[0]]}`;
     sh.filter(s=>s.palace===name).forEach(s=>{t+=` 이 궁의 ${s.star}성에는 ${s.kind}${s.kind==='화기'?'가 붙어 같은 걱정이 되풀이되기 쉬워요.':s.kind==='화록'?'이 붙어 이 영역에서 쓸 자원이 생기기 쉬워요.':s.kind==='화권'?'이 붙어 이 영역에서 주도권을 쥐기 쉬워요.':'가 붙어 이 영역에서 평판과 정리가 도움이 돼요.'}`;});
     if(ch.curDecade&&ch.curDecade.palace.name===name)t+=` 지금 ${ch.curDecade.from}~${ch.curDecade.to}세 대한에 열려 있는 방이라, 이 영역의 일이 생활의 중심에 서 있어요.`;
     return t;};
@@ -730,19 +734,22 @@ function rpFallbackParas(spec,d,pg,h,ledger,usage,pool){
   ps.forEach(p=>ledger.mark(p));
   // 계산으로 채울 문장이 부족하면 같은 장의 화면 풀이 문장을 쓰되, 이미 쓴 문장은 건너뛴다
   if(ps.join('').length<120&&pool){const fresh=pool.filter(x=>!x.used&&x.parent!==undefined&&!ledger.has(x.t));const extra=rpPick(fresh,`${pg.t} ${h}`,2).map(t=>ledger.take(t)).filter(t=>t.length>=30);extra.forEach(t=>ledger.mark(t));ps=ps.concat(extra);}
-  return ps;
+  return typeof ReadingVoice==='object'?ps.map(ReadingVoice.text):ps;
 }
 
 // 소제목은 검증을 통과한 AI 본문 → 계산 근거 기반 대체 본문 순서로 채운다. 같은 문장은 보고서 전체에서 한 번만 쓴다.
 function rpFill(plan,ai,d,spec,facts){
   const pool=rpPool(d),ledger=rpLedger(),usage={},secs={},fields={},sources={};
-  Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
+  // Pilot fields use calculated defaults; unstructured AI fields have no source proof.
+  if(!plan.storyPlan)Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
   const det=rpDetFields(d),ctxBase={ground:rpGround(d),years:rpAllowedYears(d,facts),marital:d.meta&&d.meta.marital,ledger,zw:d.zw||null};
+  if(plan.storyPlan){const sp=plan.storyPlan,first=sp.selected_signals[0],natal=sp.selected_signals.filter(s=>!s.applicable_period);det.intro=sp.main_theme.split(/(?<=[.!?])\s+/)[0];det.gq='타고난 방식을 지금의 선택에 어떻게 쓸까요?';det.gk1=natal[0]?.keyword||'본인의 기준';det.gk2=natal.find(s=>s.keyword&&s.keyword!==det.gk1)?.keyword||'함께 쓸 강점';det.gk3='역할과 조건 나누기';det.gi1=sp.main_theme;det.gi2=first.counterpoint||sp.limitations[0];det.gi3=sp.resolution?.action||first.advice||'';if(sp.resolution){det.send=sp.resolution.text+' '+sp.resolution.action;det.sq='읽은 성향을 실제로 정할 조건으로 옮겨 보세요.';}}
   // 한눈에 보기 문장을 먼저 장부에 올려 장 본문에서 같은 문장이 반복되지 않게 한다
   ['gi1','gi2','gi3','gq','intro'].forEach(k=>ledger.mark(fields[k]||det[k]||''));
   plan.pages.forEach(pg=>pg.h.forEach((title,k)=>{
     const id=`p${pg.pi}h${k}`,aiPs=(ai.secs[id]||[]).map(clean).filter(Boolean);
-    if(aiPs.length&&rpSectionQuality(aiPs,{...ctxBase,title,chapter:pg.t})){const kept=aiPs.map(t=>ledger.take(t)).filter(t=>t.length>=25);if(kept.length>=2&&kept.join(' ').length>=160){kept.forEach(t=>ledger.mark(t));secs[id]=kept;sources[id]='ai';return;}}
+    const proof=ai.storyProofs?.[id],storyOK=!plan.storyPlan||(proof?.planId===plan.storyPlan.id&&proof?.claims?.length&&FortuneStory.validateChapters(plan.storyPlan,[{id,paragraphs:aiPs,supporting_signal_ids:proof.signalIds,claims:proof.claims}]).ok);
+    if(storyOK&&aiPs.length&&rpSectionQuality(aiPs,{...ctxBase,title,chapter:pg.t})){const kept=aiPs.map(t=>ledger.take(t)).filter(t=>t.length>=25);if(kept.length>=2&&kept.join(' ').length>=160){kept.forEach(t=>ledger.mark(t));secs[id]=kept;sources[id]='ai';return;}}
     secs[id]=rpFallbackParas(spec,d,pg,title,ledger,usage,null);sources[id]='computed';
   }));
   // 계산 근거로 채울 문장이 부족한 소제목만 같은 장의 화면 풀이 문장으로 보탠다(이미 쓴 문장은 제외)
@@ -1071,7 +1078,9 @@ function rpChapterPages(host,spec,d,pg,S,F){
   const blocks=[];const vis=rpVis(pg,d,spec,F),after=rpAfterVis(pg,F),top=RP_TABLE_TOP[pg.vis];
   if(vis)blocks.push({html:`<div>${vis}</div>`});
   if(after&&top)blocks.push({html:`<div>${after}</div>`});
+  if(d.storyPlan&&pg.h.length){const id=`p${pg.pi}h0`,chapter=d.storyPlan.chapter_outline.find(c=>c.id===id),dep=d.storyPlan.chapter_dependencies.find(c=>c.to===id);if(chapter&&dep){const prev=d.storyPlan.chapter_outline.find(c=>c.id===dep.from);blocks.push({html:`<p class="rp-note">앞서 살핀 ‘${esc(prev.title)}’의 근거를 이번에는 ‘${esc(pg.t)}’의 관점에서 이어 읽어요.</p>`});}}
   pg.h.forEach((h,k)=>{const ps=S[`p${pg.pi}h${k}`]||[];blocks.push({html:`<h3 class="rp-h">${esc(h)}</h3>`,keep:true});ps.forEach(p=>blocks.push({html:`<p class="rp-p">${txt(p)}</p>`}));});
+  if(d.storyPlan&&pg.h.length){const c=d.storyPlan.chapter_outline.find(c=>c.id===`p${pg.pi}h0`);if(c){const refs=d.storyPlan.selected_signals.filter(s=>c.supporting_signal_ids.includes(s.id));blocks.push({html:`<p class="rp-note">해석 근거: ${esc(refs.map(s=>s.label||s.source_reference).join(' / '))}. 배치에 대한 상징적 해석이며 실제 사건을 확인한 기록은 아니에요.</p>`});}}
   if(after&&!top)blocks.push({html:`<div style="margin-top:14px">${after}</div>`});
   return rpFlow(host,spec,d,{tab:true,ey:pg.ey,title:pg.t,sub},blocks);
 }
@@ -1153,7 +1162,7 @@ async function buildTemplateReport(cat,opts){
     const all=[...host.querySelectorAll('.rp-page')];
     all.forEach((p,i)=>{const b=p.querySelector('.rp-foot b');if(b)b.textContent=pad2(i+1);});
     const chars=rpCount(all);
-    if(opts.dryRun)return {host,pages:all,chars,ai:ai.okGroups,groups:plan.groups.length};
+    if(opts.dryRun)return {host,pages:all,chars,ai:ai.okGroups,groups:plan.groups.length,storyPlan:plan.storyPlan||null,html:rpStandalone(all)};
     const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
     // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
     if(!opts.imageOnly){
