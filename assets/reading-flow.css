@@ -269,3 +269,7 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 .ai-report-notice{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--card);color:var(--text)}
 .ai-report-notice p{margin:0 0 12px}
 .ai-report-notice button{font:inherit;border:1px solid var(--accent);background:transparent;color:var(--text);border-radius:8px;padding:10px 16px;cursor:pointer}
+
+/* 서머타임 선택: 시간 입력 줄 아래 한 줄로 */
+#app #formWrap .dst-row{display:inline-flex;margin-top:12px;border-radius:10px;white-space:normal}
+#app #formWrap .dst-help{margin:8px 2px 0;line-height:1.6;text-align:left}

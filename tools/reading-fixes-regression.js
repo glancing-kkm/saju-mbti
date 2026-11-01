@@ -123,5 +123,11 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
  server.photoBody={kind:'helper',gender:'female',age:58,country:'일본',look:2,seed:72,traits:'calm expression and neat appearance'};
  const photo=await vm.runInContext("handlePortrait(new Request('https://worker.example/portrait',{method:'POST',body:JSON.stringify(photoBody)}),photoEnv)",server);assert.equal(photo.status,200);assert.match(prompt,/Japanese woman around 58/);assert.match(prompt,/calm expression/);assert.match(prompt,/Photorealistic/);
  console.log('✓ 대표 인물 사진: 성별·나이·국가·특징을 실사풍 생성 요청에 전달(모델 호출은 모의 처리)');
+ // 서머타임: 1987·1988년 등 기간이면 체크하지 않을 때 1시간 앞당기고(자정을 넘으면 날짜도), 체크하면 입력 그대로.
+ assert.equal(run('krDstActive(1987,9,21,8,45)'),true);assert.equal(run('krDstActive(1987,10,11,3,0)'),false);assert.equal(run('krDstActive(1990,7,1,12,0)'),false);
+ assert.equal(run('JSON.stringify(krDstShift(1987,9,21,0,20))'),JSON.stringify({y:1987,m:9,d:20,h:23,mi:20}));
+ assert.match(run("birthTimeReference({hour:7,min:15,tsoMin:-30,dstMin:-60,inputHour:8,inputMin:45}).note"),/서머타임 기간이라 1시간 앞당기고/);
+ assert.match(run("birthTimeReference({hour:8,min:45,tsoMin:0,dstMin:0,dstAsIs:true,inputHour:8,inputMin:45}).note"),/서머타임 시각을 입력한 그대로/);
+ console.log('✓ 서머타임: 기간 판정·1시간 보정·입력 그대로 선택과 안내 문구');
  console.log('Reading fix checks passed. No live AI or payment requests.');w.close();
 })().catch(e=>{console.error(e);w.close();process.exitCode=1;});

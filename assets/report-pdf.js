@@ -774,6 +774,36 @@ function rpFill(plan,ai,d,spec,facts){
 
 // ── 그리기 ──
 const RP_CSS=`
+.rp-toc+.rp-toc{margin-top:0}
+.rp-ai .ai-birth,.rp-ai .ai-headline,.rp-ai .ai-basis,.rp-ai .ai-advice{border-radius:0}
+.rp-ai .rp-title{font-size:25px;letter-spacing:.02em;line-height:1.35}
+.rp-ai .rp-body p{font-size:13.4px;line-height:1.86;color:#4d5650;margin:0 0 9px}
+.rp-ai .ai-key strong{color:#252c2b}
+.rp-ai .ai-subhead{font-size:15.5px;font-weight:800;color:var(--ac);margin:16px 0 8px;line-height:1.45}
+.rp-ai .ai-headline{margin:0 0 16px;padding:12px 16px;border-left:3px solid var(--ac);background:var(--ac3);font-family:'Nanum Myeongjo',serif;font-size:15px;line-height:1.7;color:#252c2b}
+.rp-ai .ai-quote{margin:8px 0;padding:4px 14px;border-left:2px solid var(--ac2);color:#4d5650;font-size:13px}
+.rp-ai .ai-list{margin:4px 0 12px;padding-left:20px;font-size:13px;line-height:1.8;color:#4d5650}
+.rp-ai .ai-advice{margin:12px 0 8px;padding:12px 16px;border:1px solid var(--ac2)}
+.rp-ai .ai-advice b{display:block;font-size:11.5px;color:var(--ac);margin-bottom:6px}
+.rp-ai .ai-advice p{margin:0;color:#252c2b;font-weight:700}
+.rp-ai .ai-basis{margin:12px 0 4px;padding:10px 14px;background:#f1eee5}
+.rp-ai .ai-basis b{display:block;font-size:11px;color:var(--ac);margin-bottom:4px}
+.rp-ai .ai-basis ul{margin:0;padding-left:18px;font-size:12px;line-height:1.7;color:#4d5650}
+.rp-ai .ai-table{width:100%;border-collapse:collapse;font-size:12px;margin:2px 0 12px}
+.rp-ai .ai-table caption{text-align:left;font-weight:800;color:#252c2b;margin-bottom:6px;font-size:12.5px}
+.rp-ai .ai-table th{background:#e9e6dc;color:#252c2b;font-weight:800;text-align:left;padding:8px 10px}
+.rp-ai .ai-table td{padding:8px 10px;color:#4d5650;border-bottom:1px solid #ebe7dc;vertical-align:top}
+.rp-ai .ai-table tbody th{background:none;color:var(--ac)}
+.rp-ai .ai-table small{color:#7d867f}
+.rp-ai .ai-span{font-size:11.5px;color:#7d867f;margin:0 0 8px}
+.rp-ai .ai-note{font-size:11.5px;color:#7d867f;line-height:1.7}
+.rp-ai .ai-mw-head{margin:18px 0 6px;border-top:1px solid #e3dfd3;padding-top:14px}
+.rp-ai .ai-mw-head h3{margin:0 0 4px;font-size:15.5px;color:#252c2b}
+.rp-ai .ai-birth{margin:0 0 16px;padding:14px 18px;border:1px solid #e3dfd3}
+.rp-ai .ai-birth .ai-birth-head{font-weight:800;color:#252c2b;margin-bottom:6px}
+.rp-ai .ai-birth>div{display:flex;gap:14px;font-size:13px;line-height:1.8}
+.rp-ai .ai-birth dt{flex:0 0 80px;color:#7d867f}
+.rp-ai .ai-birth dd{margin:0;color:#252c2b}
 .rp-host{position:fixed;left:-20000px;top:0;width:${RP_W}px;pointer-events:none}
 .rp-page{position:relative;box-sizing:border-box;width:${RP_W}px;height:${RP_H}px;padding:76px 80px 52px;background:#faf8f3;color:#5f6a62;display:flex;flex-direction:column;overflow:hidden;font-family:'Nanum Gothic','Apple SD Gothic Neo','Malgun Gothic',sans-serif;letter-spacing:0;word-break:keep-all;overflow-wrap:break-word}
 .rp-page *{box-sizing:border-box}
@@ -999,7 +1029,7 @@ function rpTable(head,rows,keyCol){return `<table class="rp-tbl"><tr>${head.map(
 
 // ── 쪽 만들기 ──
 function rpShell(host,spec,d,o){
-  const pg=document.createElement('div');pg.className='rp-page';
+  const pg=document.createElement('div');pg.className='rp-page'+(o.cls?' '+o.cls:'');
   pg.style.setProperty('--ac',spec.accent);pg.style.setProperty('--ac2',tint(spec.accent,.55));pg.style.setProperty('--ac3',tint(spec.accent,.12));
   const who=d.meta.userName?`${esc(d.meta.userName)} 님`:'';
   pg.innerHTML=`<div class="rp-top"><span>${esc(spec.name)} 보고서</span><span>${who}</span></div>${o.tab?'<div class="rp-tab"></div>':''}${o.ey?`<p class="rp-ey">${esc(o.ey)}</p>`:''}${o.title?`<h2 class="rp-title">${esc(o.title)}</h2>`:''}${o.sub?`<p class="rp-sub">${txt(o.sub)}</p>`:''}<div class="rp-body"></div><div class="rp-foot"><span>${RP_BRAND} · ${esc(spec.name)}</span><b></b></div>`;
@@ -1101,8 +1131,8 @@ function rpContinued(host,spec,d,budget){
   return [{title:'상세 풀이',pages:rpFlow(host,spec,d,{tab:true,ey:'CONTINUED READING',title:'상세 풀이',sub:'화면에서 본 풀이 전문을 장별로 이어서 담았어요.'},blocks)}];
 }
 function rpTocPage(host,spec,d,entries){
-  const html=`<ol class="rp-toc">${entries.map(([t,n])=>`<li><span>${esc(t)}</span><b>${pad2(n)}</b></li>`).join('')}</ol>`;
-  return rpFlow(host,spec,d,{tab:false,ey:'CONTENTS',title:'차례',sub:'관심 있는 주제부터 읽고, 보고서 전체의 흐름으로 이어 가세요.'},[{html}]);
+  // 항목마다 한 덩어리로 넘겨 차례가 길면 다음 쪽으로 이어지게 한다
+  return rpFlow(host,spec,d,{tab:false,ey:'CONTENTS',title:'차례',sub:'관심 있는 주제부터 읽고, 보고서 전체의 흐름으로 이어 가세요.'},entries.map(([t,n])=>({html:`<ol class="rp-toc"><li><span>${esc(t)}</span><b>${pad2(n)}</b></li></ol>`})));
 }
 // 넘친 글자 수만큼 문단이 3개 이상인 소제목의 마지막 문단을 긴 것부터 뺀다. 각 소제목은 최소 2문단을 남긴다.
 function rpTrim(S,need){
@@ -1169,6 +1199,7 @@ async function buildTemplateReport(cat,opts){
   prog('풀이를 모으는 중이에요');
   const d=rpCollect(cat);d.info=rpCleanInfo(opts.info);
   if(cat==='gunghap'&&!d.partner)throw new Error('상대 정보가 없어요.');
+  if(!opts.skipAI&&typeof AIReport==='object'&&AIReport.pdfDoc)return rpWebReport(cat,spec,d,opts,prog,fontLoad);
   const plan=rpPlan(spec,d);
   prog('풀이 중입니다');
   let ai,filled,authorship='computed-test';
@@ -1210,7 +1241,38 @@ async function buildTemplateReport(cat,opts){
     all.forEach((p,i)=>{const b=p.querySelector('.rp-foot b');if(b)b.textContent=pad2(i+1);});
     const chars=rpCount(all);
     if(opts.dryRun)return {host,pages:all,chars,authorship,coverage:d.coverage,ai:ai.okGroups,groups:plan.groups.length,storyPlan:d.aiStoryPlan||plan.storyPlan||null,html:rpStandalone(all)};
-    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,authorship,coverage:d.coverage,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
+    return await rpOutput(host,all,spec,d,cat,opts,prog,{authorship,coverage:d.coverage,chars,ai:ai.okGroups,groups:plan.groups.length});
+  }catch(e){host.remove();throw e;}
+}
+// 웹 전체 풀이(심층 상담 리포트)를 그대로 A4 쪽으로 옮긴다. 웹에서 이미 받은 풀이가 있으면 같은 저장본을 쓴다.
+async function rpWebReport(cat,spec,d,opts,prog,fontLoad){
+  const report=AIReport.sources(cat,_saju,{..._meta,gender:_meta.gender||gender});
+  if(Object.keys(d.info||{}).length)report.userStatements.pdfInfo={source:'user-stated',...d.info};
+  const token=typeof pdfPaidToken==='function'?pdfPaidToken(cat):undefined;
+  const premium=!!report.productGuide;if(premium)report.depth='pdf';
+  const state=await AIReport.author(report,{...(premium?{kind:'report-tpl'}:{}),token,endpoint:opts.endpoint,onProgress:(a,b)=>prog(`풀이 중입니다 · ${a}/${b}장`)});
+  const doc=AIReport.pdfDoc(report,state);
+  prog('보고서 쪽을 짜는 중이에요');
+  await fontLoad;
+  const host=document.createElement('div');host.className='rp-host';document.body.appendChild(host);
+  try{
+    const warm=document.createElement('div');warm.className='rp-page rp-ai';warm.style.height='auto';warm.innerHTML=doc.parts.map(p=>esc(p.title)+p.blocks.join('')).join('');host.appendChild(warm);await rpFontsReady();warm.remove();
+    const cover=rpCover(host,{...spec,sub:cat==='newyear'?(doc.subs[0]||spec.sub):doc.title},d,{intro:doc.intro});
+    const tocSlot=document.createElement('div');host.appendChild(tocSlot);
+    const chapters=doc.parts.map(p=>({title:(p.label&&/장$|로그$/.test(p.label)?p.label+'. ':'')+p.title,pages:rpFlow(host,spec,d,{tab:true,cls:'rp-ai',ey:p.label||spec.en,title:p.title},p.blocks.map((html,i)=>({html,keep:/^<(?:h3|div class="ai-mw-head")/.test(html)&&i<p.blocks.length-1})))}));
+    // 차례가 두 쪽 이상이면 그만큼 뒤 쪽 번호를 밀어 다시 만든다
+    const tocFor=start=>{let n=start;return chapters.map(c=>{const e=[c.title,n];n+=c.pages.length;return e;});};
+    let toc=rpTocPage(host,spec,d,tocFor(3));if(toc.length>1){toc.forEach(p=>p.remove());toc=rpTocPage(host,spec,d,tocFor(2+toc.length));}
+    tocSlot.replaceWith(...toc);
+    const all=[...host.querySelectorAll('.rp-page')];all.forEach((p,i)=>{const b=p.querySelector('.rp-foot b');if(b)b.textContent=pad2(i+1);});
+    const chars=rpCount(all);
+    if(opts.dryRun)return {host,pages:all,chars,authorship:'ai-full-v1',coverage:{total:report.chapters.length,ai:report.chapters.length,computed:0},ai:report.chapters.length,groups:report.chapters.length,storyPlan:state.plan,html:rpStandalone(all)};
+    return await rpOutput(host,all,spec,d,cat,opts,prog,{authorship:'ai-full-v1',coverage:{total:report.chapters.length,ai:report.chapters.length,computed:0},chars,ai:report.chapters.length,groups:report.chapters.length});
+  }catch(e){host.remove();throw e;}
+}
+async function rpOutput(host,all,spec,d,cat,opts,prog,info){
+  try{
+    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,authorship:info.authorship,coverage:info.coverage,title:`${spec.name} 리포트`,pages:all.length,chars:info.chars,ai:info.ai,groups:info.groups};
     // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
     if(!opts.imageOnly){
       prog('PDF 파일로 만드는 중이에요');

@@ -2154,7 +2154,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=cdad70dbe031">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=71fc507510a3">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=e49b0b006eac">
 </head>
 <body>
 <div id="app">
@@ -2684,6 +2684,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span>시간을 몰라요</span>
           </label>
         </div>
+        <label class="time-unknown-row dst-row">
+          <input type="checkbox" id="iDstAsIs" aria-describedby="dstHelp">
+          <span>서머타임 적용 (입력한 시각 그대로)</span>
+        </label>
+        <p class="journey-form-help dst-help" id="dstHelp">서머타임 기간(1948~1951년, 1955~1960년, 1987~1988년의 여름)에 태어났다면 체크하지 않을 때 1시간 앞당겨 보정해요. 체크하면 입력한 시각을 그대로 써요.</p>
       </fieldset>
 
       <fieldset>
@@ -2793,6 +2798,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <input type="number" id="gnMin" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
           </div>
         </div>
+        <label class="time-unknown-row dst-row">
+          <input type="checkbox" id="gnDstAsIs">
+          <span>상대 서머타임 적용 (입력한 시각 그대로)</span>
+        </label>
         <div class="ig" style="margin-top:9px">
           <label for="gnCity">태어난 곳 <span style="font-weight:400;text-transform:none;font-size:.65rem;color:var(--muted)">(시간 보정용)</span></label>
           <input type="text" id="gnCity" placeholder="예: 서울, 부산, Tokyo" list="cityOptions" autocomplete="off">
@@ -3080,7 +3089,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
-<script src="assets/ai-report.js?v=fff50caf939c"></script>
+<script src="assets/premium-saju.js?v=0544723594c7"></script>
+<script src="assets/ai-report.js?v=3c861c665ff0"></script>
 <script src="assets/reading-voice.js?v=59650d7c4102"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -3251,7 +3261,7 @@ function unlockScopeOf(cat,saju=_saju,meta=_meta){
   const m=meta||{};
   const gn=m.gnExtra,nm=m.nmExtra,ny=m.nyExtra;
   const extra={
-    gunghap:gn&&[gn.gy,gn.gm,gn.gd,gn.gh,gn.gmin,gn.gender,gn.cal,gn.leap?1:0].join('.'),
+    gunghap:gn&&[gn.gy,gn.gm,gn.gd,gn.gh,gn.gmin,gn.gender,gn.cal,gn.leap?1:0,gn.dstAsIs?1:0].join('.'),
     name:nm&&[nm.surname,nm.given,JSON.stringify(nm.han||''),JSON.stringify(nm.strokes||'')].join('.'),
     newyear:ny&&String(ny.y)
   }[cat];
@@ -4151,11 +4161,17 @@ function birthTimeReference(meta){
   const delta=Math.round(Number(m.tsoMin)||0),corrected=format(Number(m.hour)*60+(Number(m.min)||0));
   const explicit=m.inputHour!=null&&Number.isFinite(Number(m.inputHour))&&Number(m.inputHour)>=0;
   const input=format(explicit?Number(m.inputHour)*60+(Number(m.inputMin)||0):Number(m.hour)*60+(Number(m.min)||0)-delta);
-  const applied=delta!==0;
-  return {known:true,applied,input,corrected,delta,
+  const dst=Number(m.dstMin)||0,applied=delta!==0||dst!==0;
+  const dstNote=dst?'서머타임 기간이라 1시간 앞당기고, ':'';
+  return {known:true,applied,input,corrected,delta,dst,
     label:applied?`${corrected} (시간 보정 적용 · 입력 ${input})`:corrected,
-    note:applied?`입력 시각 ${input} → 풀이 기준 ${corrected}. 출생 지역 기준으로 ${Math.abs(delta)}분 ${delta<0?'앞당겨':'늦춰'} 계산했어요.`:'입력 시각을 그대로 풀이에 사용했어요 (시간 보정 없음).'};
+    note:applied?`입력 시각 ${input} → 풀이 기준 ${corrected}. ${dstNote}${delta?`출생 지역 기준으로 ${Math.abs(delta)}분 ${delta<0?'앞당겨':'늦춰'} 계산했어요.`:'계산했어요.'}`:m.dstAsIs?'서머타임 시각을 입력한 그대로 풀이에 사용했어요.':'입력 시각을 그대로 풀이에 사용했어요 (시간 보정 없음).'};
 }
+// 한국 서머타임 기간(당시 시계 기준, 시작 포함·끝 제외). 이 기간의 시계는 표준시보다 1시간 빨랐다.
+const KR_DST=[[1948,6,1,0,1948,9,13,0],[1949,4,3,0,1949,9,11,0],[1950,4,1,0,1950,9,10,0],[1951,5,6,0,1951,9,9,0],[1955,5,5,0,1955,9,9,0],[1956,5,20,0,1956,9,30,0],[1957,5,5,0,1957,9,22,0],[1958,5,4,0,1958,9,21,0],[1959,5,3,0,1959,9,20,0],[1960,5,1,0,1960,9,18,0],[1987,5,10,2,1987,10,11,3],[1988,5,8,2,1988,10,9,3]];
+function krDstActive(y,m,d,h,mi){if(!(h>=0))return false;const t=Date.UTC(y,m-1,d,h,mi||0);return KR_DST.some(([a,b,c,e,f,g2,i,j])=>t>=Date.UTC(a,b-1,c,e)&&t<Date.UTC(f,g2-1,i,j));}
+// 1시간 앞당긴 시각. 자정을 넘으면 날짜도 하루 앞당긴다.
+function krDstShift(y,m,d,h,mi){const t=new Date(Date.UTC(y,m-1,d,h,mi||0)-3600000);return {y:t.getUTCFullYear(),m:t.getUTCMonth()+1,d:t.getUTCDate(),h:t.getUTCHours(),mi:t.getUTCMinutes()};}
 function birthTimeReferenceHTML(meta){const t=birthTimeReference(meta);return `<p class="birth-time-reference">${preventOrphan(t.note)}</p>`;}
 
 // 시간 미상 토글 + 시 입력 동기화
@@ -4167,6 +4183,7 @@ function setTimeUnknown(unknown){
   if(wrap)wrap.style.opacity=unknown?'.4':'1';
   if(hourIn){hourIn.disabled=unknown;}
   if(minIn){minIn.disabled=unknown;}
+  const dstBox=document.getElementById('iDstAsIs');if(dstBox)dstBox.disabled=unknown;
   if(hidden){
     if(unknown){hidden.value='-1';}
     else{
@@ -4280,15 +4297,21 @@ const COUNSEL_FIELDS={
 function counselOwnerKey(){return ['iY','iM','iD','iH','iMin'].map(id=>document.getElementById(id)?.value||'').concat([gender,calType,isLeap,document.getElementById('iCity')?.value||'']).join('|');}
 function counselStore(){try{return JSON.parse(sessionStorage.getItem('saju_counsel_v1')||'{}');}catch(e){return {};}}
 // 직업은 같은 출생정보의 상담끼리 공유하고, 주제별 답변은 별도로 보관한다.
+function counselDefinition(cat,key){return globalThis.PremiumSaju?.products[cat]?.fields.find(f=>f.key===key);}
+function counselFieldVisible(cat,key){const f=counselDefinition(cat,key);return !f?.when||Object.entries(f.when).every(([k,values])=>values.includes(document.getElementById('counsel_'+k)?.value));}
 function counselFieldsFor(cat){
  if(!COUNSEL_FIELDS[cat])return [];
+ const spec=globalThis.PremiumSaju?.products[cat];
  const occupational=['life','newyear','topic-career','ziwei'].includes(cat);
  return [['occupation',cat==='topic-child'?'아이의 현재 활동 (직업·학업)':'현재 하는 일 (직업)',cat==='topic-child'?'예: 미취학, 초등학생, 중학생':'예: 사무직, 자영업, 학생, 구직 중, 육아, 은퇴'],
-  ...COUNSEL_FIELDS[cat].filter(([key])=>!(occupational&&key==='activity'))];
+  ...(spec?spec.fields.map(f=>[f.key,f.label,f.placeholder]):COUNSEL_FIELDS[cat].filter(([key])=>!(occupational&&key==='activity')))];
+}
+function counselUpdateVisibility(){const host=document.getElementById('counselFields');if(!host)return;
+ host.querySelectorAll('.counsel-step').forEach(fs=>{const visible=counselFieldVisible(host.dataset.cat,fs.dataset.counselKey);fs.hidden=!visible;fs.style.display=visible?'':'none';});
 }
 function counselRead(cat){
  const host=document.getElementById('counselFields');if(!host||host.dataset.cat!==cat)return null;
- const answers=counselFieldsFor(cat).map(([key,label])=>({key,label,value:String(document.getElementById('counsel_'+key)?.value||'').trim()})).filter(a=>a.value);
+ const answers=counselFieldsFor(cat).filter(([key])=>counselFieldVisible(cat,key)).map(([key,label])=>({key,label,value:String(document.getElementById('counsel_'+key)?.value||'').trim()})).filter(a=>a.value);
  return answers.length?{version:1,category:cat,source:'user-stated',answers}:null;
 }
 function refreshCounselOwner(){const h=document.getElementById('counselFields');if(h&&h.dataset.cat&&h.dataset.owner!==counselOwnerKey())renderCtxQuestion(h.dataset.cat);}
@@ -4312,8 +4335,11 @@ function renderCounselFields(cat){
  host.dataset.cat=cat;host.dataset.owner=counselOwnerKey();
  const fields=counselFieldsFor(cat),owner=counselStore()[counselOwnerKey()]||{},saved=owner[cat];
  const occupation=owner.occupation??Object.entries(owner).filter(([c])=>['life','newyear','topic-career','ziwei'].includes(c)).flatMap(([,v])=>v?.answers||[]).find(a=>a.key==='occupation'||a.key==='activity')?.value??'';
- host.innerHTML=fields.map(([key,label,ph])=>`<fieldset class="cat-extra counsel-step" data-counsel-key="${key}"><legend><label for="counsel_${key}">${storyEsc(label)}</label> <small class="${key==='occupation'?'required-note':'optional-note'}">${key==='occupation'?'필수':'(선택)'}</small></legend><div class="ig"><input type="text" id="counsel_${key}" name="counsel_${key}" placeholder="${storyEsc(ph)}" autocomplete="off" ${key==='occupation'?'required aria-required="true"':''}></div><div class="counsel-actions"><button type="button" class="name-next" onclick="confirmCounselStep('${key}')">다음 →</button>${key==='occupation'?'':`<button type="button" class="counsel-skip" onclick="confirmCounselStep('${key}',true)">건너뛰기</button>`}</div></fieldset>`).join('');
- fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=key==='occupation'?occupation:saved?.answers?.find(a=>a.key===key)?.value||'';input.closest('fieldset').dataset.wzConfirmed=input.value||saved?.confirmed?.includes(key)?'1':'0';input.addEventListener('input',()=>{input.closest('fieldset').dataset.wzConfirmed='0';counselSave();});});
+ host.innerHTML=fields.map(([key,label,ph])=>{const def=counselDefinition(cat,key),id='counsel_'+key;
+ const control=def?.type==='select'?`<select id="${id}" name="${id}"><option value="">선택해 주세요</option>${def.options.map(v=>`<option value="${storyEsc(v)}">${storyEsc(v)}</option>`).join('')}</select>`:`<input type="text" id="${id}" name="${id}" placeholder="${storyEsc(ph)}" autocomplete="off" ${key==='occupation'?'required aria-required="true"':''}>`;
+ return `<fieldset class="cat-extra counsel-step" data-counsel-key="${key}"><legend><label for="${id}">${storyEsc(label)}</label> <small class="${key==='occupation'?'required-note':'optional-note'}">${key==='occupation'?'필수':'(선택)'}</small></legend><div class="ig">${control}</div><div class="counsel-actions"><button type="button" class="name-next" onclick="confirmCounselStep('${key}')">다음 →</button>${key==='occupation'?'':`<button type="button" class="counsel-skip" onclick="confirmCounselStep('${key}',true)">건너뛰기</button>`}</div></fieldset>`;}).join('');
+ fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=key==='occupation'?occupation:saved?.answers?.find(a=>a.key===key)?.value||(key==='question'?owner.questions?.[cat]?.text:'')||'';input.closest('fieldset').dataset.wzConfirmed=input.value||saved?.confirmed?.includes(key)?'1':'0';input.addEventListener('input',()=>{input.closest('fieldset').dataset.wzConfirmed='0';counselUpdateVisibility();counselSave();});input.addEventListener('change',()=>{counselUpdateVisibility();counselSave();if(input.tagName==='SELECT')inputWizardInit();});});
+ counselUpdateVisibility();
  if(cat==='qna')counselSave();
  // 생년월일·출생지 변경으로 새 입력칸이 만들어졌을 때 단계 목록도 갱신한다.
  if(active&&previous===cat)inputWizardInit();
@@ -4357,6 +4383,7 @@ function ctxInfer(cat,text){
 }
 // 분석할 때 화면 입력을 모아 _meta.ctx로 넘긴다 — 직접 적은 글이 있으면 그 글을 우선한다
 function ctxCollect(cat){
+  if(globalThis.PremiumSaju?.products[cat]){const question=document.getElementById('counsel_question')?.value||'';return question?{cat,key:'',label:'',text:question}:null;}
   if(!CTX_Q[cat])return null;
   const ta=document.getElementById('ctxText'),text=String(ta&&ta.value||'').replace(/\s+/g,' ').trim();
   saveQuestionDraft();
@@ -4367,7 +4394,7 @@ function ctxCollect(cat){
   return {cat,key:key||'',label:o?o[1]:'',text};
 }
 function renderCtxQuestion(cat){
-  const fs=document.getElementById('catExtraCtx'),q=CTX_Q[cat];if(!fs)return;
+  const fs=document.getElementById('catExtraCtx'),q=globalThis.PremiumSaju?.products[cat]?null:CTX_Q[cat];if(!fs)return;
   renderCounselFields(cat);
   if(!_ctxSel||_ctxSel.cat!==cat)_ctxSel=null;
   if(!q){fs.style.display='none';['ctxText','ctxQDesc','ctxQAsk','ctxQOptions','ctxQTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});return;}
@@ -4551,7 +4578,7 @@ function wzPromptFor(step){
 function wzBirthOk(){const y=+document.getElementById('iY').value,m=+document.getElementById('iM').value,d=+document.getElementById('iD').value;return y>=1900&&y<=2050&&m>=1&&m<=12&&d>=1&&d<=31;}
 function wzStepDone(step){
   const form=document.getElementById('formWrap'),k=wzStepKind(step);
-  if(k==='counsel'){const f=step[0],input=f.querySelector('input');return f.dataset.wzConfirmed==='1'&&(f.dataset.counselKey!=='occupation'||!!input.value.trim());}
+  if(k==='counsel'){const f=step[0],input=f.querySelector('input,select,textarea');return f.dataset.wzConfirmed==='1'&&(f.dataset.counselKey!=='occupation'||!!input.value.trim());}
   if(k==='gender')return form&&form.dataset.genderPicked==='1';
   if(k==='birth')return wzBirthOk();
   if(k==='time'){const u=document.getElementById('iTimeUnknown'),h=document.getElementById('iHourInput').value,mi=document.getElementById('iMin').value;return (u&&u.checked)||(h!==''&&(mi!==''||!step.some(f=>f.contains(document.activeElement))));}
@@ -5469,6 +5496,7 @@ function restoreLastInputs(){
     if(hi)hi.value=String(hr); // select 먼저 복원 — setTimeUnknown(false)가 select 값으로 iH를 재산출하므로
     if(tu){tu.checked=false;setTimeUnknown(false);}
   }
+  const dstBox=document.getElementById('iDstAsIs');if(dstBox)dstBox.checked=!!i.dstAsIs;
 }
 // ── 결과 패널 라우팅 ──
 function gotoCard(idx){
@@ -7572,7 +7600,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=8f7d76d1d952';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=bd52f51656d9';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -19636,6 +19664,7 @@ function rpPartnerSaju(gn){
  if(!gn)return null;let sy=gn.gy,sm=gn.gm,sd=gn.gd;
  if(gn.cal==='lunar'){const s=l2s(gn.gy,gn.gm,gn.gd,!!gn.leap);sy=s.y;sm=s.m;sd=s.d;}
  let gh=gn.gh,gmin=gn.gmin||0;
+ if(gh>=0&&!gn.dstAsIs&&krDstActive(sy,sm,sd,gh,gmin)){const t=krDstShift(sy,sm,sd,gh,gmin);sy=t.y;sm=t.m;sd=t.d;gh=t.h;gmin=t.mi;}
  if(gh>=0&&gn.cityKey){const tso=getTrueSolarOffsetMin(gn.cityKey);if(tso){let t=gh*60+gmin+Math.round(tso);while(t<0)t+=1440;while(t>=1440)t-=1440;gh=Math.floor(t/60);gmin=t%60;}}
  const saju=calcSaju(sy,sm,sd,gh,gmin);
  return {saju,ctx:{gen1:(_meta&&_meta.gender)||gender,gen2:gn.gender}};
@@ -23636,8 +23665,9 @@ function renderGunghapPaid(saju1, gnExtra){
     const s=l2s(gnExtra.gy,gnExtra.gm,gnExtra.gd,!!gnExtra.leap);
     sy2=s.y; sm2=s.m; sd2=s.d;
   }
-  // 상대 진태양시 보정
+  // 상대 서머타임·진태양시 보정
   let gh=gnExtra.gh, gmin=gnExtra.gmin||0;
+  if(gh>=0&&!gnExtra.dstAsIs&&krDstActive(sy2,sm2,sd2,gh,gmin)){const t=krDstShift(sy2,sm2,sd2,gh,gmin);sy2=t.y;sm2=t.m;sd2=t.d;gh=t.h;gmin=t.mi;}
   if(gh>=0&&gnExtra.cityKey){
     const tso=getTrueSolarOffsetMin(gnExtra.cityKey);
     if(tso!==0){
@@ -24112,6 +24142,7 @@ function analyze(){
   const mbti=''; // MBTI 입력을 받지 않는다 (rawMbti는 예전 입력 호환용)
   if(isNaN(hour))hour=-1;
   if(isNaN(min))min=0;
+  const inputHour=hour,inputMin=min,dstAsIs=!!document.getElementById('iDstAsIs')?.checked;
 
   if(cat0!=='name'&&!readSajuName())return showErr('이름을 입력해 주세요.','iName');
   if((cat0==='life'||cat0==='newyear'||(/^topic-/.test(cat0)&&cat0!=='topic-child'))&&!['single','dating','married'].includes(_marital))return showErr('연애·결혼 상태를 선택해 주세요.','mrSingle');
@@ -24151,7 +24182,7 @@ function analyze(){
     const gnCityKey=normalizeCityInput((gnCityEl&&gnCityEl.value)||'서울특별시');
     const gnMbtiEl=document.getElementById('gnMbti');
     const gnMbtiVal='';
-    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,cityKey:gnCityKey,mbti:gnMbtiVal};
+    window._gnExtra={gy,gm,gd,gh,gmin,gender:_gnGender,cal:_gnCal,leap:_gnLeap,cityKey:gnCityKey,mbti:gnMbtiVal,dstAsIs:!!document.getElementById('gnDstAsIs')?.checked};
   }else if(cat==='name'){
     const surname=(document.getElementById('nmSurname').value||'').trim();
     const given=(document.getElementById('nmGiven').value||'').trim();
@@ -24198,7 +24229,7 @@ function analyze(){
     day:document.getElementById('iD').value,
     hour:document.getElementById('iH').value,
     min:document.getElementById('iMin').value,
-    cityKey,mbti:rawMbti,marital:_marital
+    cityKey,mbti:rawMbti,marital:_marital,dstAsIs
   };
 
   const btn=document.querySelector('.analyze-btn');
@@ -24224,11 +24255,14 @@ function analyze(){
       if(testG.month!==sm||testG.day!==sd){
         return showErr('존재하지 않는 날짜예요. 날짜를 다시 확인해주세요.');
       }
+      // 서머타임: 체크하지 않았고 당시 시계가 서머타임이면 1시간 앞당긴다(진태양시 보정과 별도).
+      let dstMin=0;
+      if(inputHour>=0&&!dstAsIs&&krDstActive(sy,sm,sd,inputHour,inputMin)){const t=krDstShift(sy,sm,sd,hour,min);sy=t.y;sm=t.m;sd=t.d;hour=t.h;min=t.mi;dstMin=-60;}
 
       const saju=calcSaju(sy,sm,sd,hour,min);
       const lunarInfo=s2l(sy,sm,sd);
       _saju=saju;
-      _meta={counsel:counselRead(cat),ctx:ctxCollect(cat),userName:cat==='name'?'':readSajuName(),marital:cat==='topic-child'?'':_marital,sy,sm,sd,hour,min,cityKey,tsoMin,lunarInfo,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender,inputHour:parseInt(document.getElementById('iH').value),inputMin:parseInt(document.getElementById('iMin').value)||0};
+      _meta={counsel:counselRead(cat),ctx:ctxCollect(cat),userName:cat==='name'?'':readSajuName(),marital:cat==='topic-child'?'':_marital,sy,sm,sd,hour,min,cityKey,tsoMin,dstMin,dstAsIs,inputHour,inputMin,lunarInfo,nyExtra,qaExtra,gnExtra:cat==='gunghap'?(window._gnExtra||null):null,nmExtra:cat==='name'?(window._nmExtra||null):null,mbti,gender,inputHour:parseInt(document.getElementById('iH').value),inputMin:parseInt(document.getElementById('iMin').value)||0};
       // 같은 사주에 대해 24시간 내 결제 토큰이 있으면 자동 잠금 해제 복원
       restorePaidUnlocksForCurrentSaju();
       // 운영자 코드를 사주 입력 전에 쓴 경우 — 지금 사주에 묶는다. 다른 사주로 연 기록은 여기서 옮겨오지 않는다.
