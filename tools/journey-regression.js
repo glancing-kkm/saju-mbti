@@ -589,9 +589,10 @@ const submitBirth=async()=>{
     run("completeAstrologyPayment()");await wait(80);
     check('점성술 결제 완료: 이때 처음 AI 풀이를 요청',()=>assert(aiCalls>=1));
     w.fetch=fetchBeforeAstro;
-    check('점성술 결제 완료: 다시 만들지 않고 저장해 둔 풀이를 바로 열기',()=>{
-      assert(!d.querySelector('#astroApp .lk-preview') && d.querySelector('#astroApp .astro-v4'));
-      assert.equal(run("loadAstrologyHistory().length"),1);
+    check('점성술 결제 완료: 불완전한 AI 응답은 계산형으로 대체하지 않고 재시도 제공',()=>{
+      assert(!d.querySelector('#astroApp .lk-preview'));assert.equal(run('_astroFlow.authorError'),true);
+      assert(d.querySelector('#astroApp button[onclick="finishAstrologyReading()"]'));
+      assert.equal(run("loadAstrologyHistory().length"),0);
     });
     run("closePaymentConsent();goToAstrology('natalInput')");
     d.getElementById('astroTimeUnknown').checked=false;

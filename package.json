@@ -2,10 +2,11 @@
   "name": "cheonjiin-saju",
   "private": true,
   "scripts": {
-    "test": "node tools/reading-voice-regression.js && node tools/interpretation-story-regression.js && node tools/tarot-meaning-regression.js && node tools/free-ai-regression.js && node tools/persona-regression.js && node tools/journey-regression.js && node tools/counsel-input-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js && node tools/reading-copy-regression.js && node tools/reading-provenance-regression.js && node tools/reading-editorial-regression.js && node tools/reading-system-depth-regression.js",
+    "test": "node tools/ai-full-report-regression.js && AI_REPORT_FULL=1 node tools/free-ai-regression.js && node tools/reading-loading-regression.js && node tools/reading-voice-regression.js && node tools/interpretation-story-regression.js && node tools/tarot-meaning-regression.js && node tools/free-ai-regression.js && node tools/persona-regression.js && node tools/journey-regression.js && node tools/counsel-input-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js && node tools/reading-copy-regression.js && node tools/reading-provenance-regression.js && node tools/reading-editorial-regression.js && node tools/reading-system-depth-regression.js",
     "audit:reading": "node tools/reading-quality-audit.js",
     "test:story-pilot": "node tools/interpretation-story-regression.js && STORY_PILOT=1 node tools/free-ai-regression.js",
-    "test:voice": "node tools/reading-voice-regression.js && node tools/free-ai-regression.js"
+    "test:voice": "node tools/reading-voice-regression.js && node tools/free-ai-regression.js",
+    "test:ai-full": "node tools/ai-full-report-regression.js && AI_REPORT_FULL=1 node tools/free-ai-regression.js"
   },
   "devDependencies": {
     "jsdom": "26.1.0"

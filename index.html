@@ -2154,7 +2154,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=4580fdebf7a1">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=8cc325e24506">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=6c12ba63435a">
 </head>
 <body>
 <div id="app">
@@ -3080,6 +3080,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
+<script src="assets/ai-report.js?v=a3ed89eb24df"></script>
 <script src="assets/reading-voice.js?v=59650d7c4102"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -6063,23 +6064,23 @@ function selectDeckCard(cardId){
 }
 function resetTarotDraw(){if(confirm('선택한 카드를 모두 지우고 다시 뽑을까요?')){_tarotFlow.selectedCards=[];_tarotFlow.resultMarkdown='';_tarotFlow.resultLoading=false;saveTarotFlow();renderTarot();}}
 async function finishTarotDraw(){
+  const target=_tarotFlow;
   const input=buildAIReadingInput(_tarotFlow);
   if(_tarotFlow.paymentStatus!=='paid'){
     // 결제 전 미리보기는 AI를 부르지 않는다 — 뽑은 카드의 정해진 의미로 만든 기본 풀이만 쓴다
     _tarotFlow.resultMarkdown=generateTemplateReading(input);_tarotFlow.meaningVersion=TAROT_MEANING_VERSION;_tarotFlow.previewTemplate=true;_tarotFlow.resultLoading=false;
     saveTarotFlow();tarotNavigate('result');return;
   }
-  // 결제 뒤 — 계산 풀이를 먼저 보여 주고, 같은 카드·자리·방향으로 AI가 전체를 다시 종합한다.
-  // 검증을 통과한 응답만 앞부분까지 대체하고, 실패하면 계산 풀이를 그대로 둔다.
-  const tpl=generateTemplateReading(input);
+  // 결제 뒤 — 준비 화면에서 기다린 뒤 같은 카드·자리·방향의 종합 풀이를 표시한다.
+  // 유료 풀이가 완성되지 않으면 다시 작성할 수 있게 한다. 계산형 본문을 완성본으로 대체하지 않는다.
   _tarotFlow.meaningVersion=TAROT_MEANING_VERSION;
-  _tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=tpl;_tarotFlow.resultLoading=false;_tarotFlow.deepLoading=true;
+  _tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown='';_tarotFlow.authorError=false;_tarotFlow.resultLoading=false;_tarotFlow.deepLoading=true;
   saveTarotFlow();tarotNavigate('result');
-  try{const ai=await generateAIReading(input);if(tarotAIQuality(ai,input))_tarotFlow.resultMarkdown=ai.trim();}
-  catch(e){console.warn('Tarot deep reading failed, keeping computed reading:',e&&e.message);}
+  try{const ai=await generateAIReading(input);if(_tarotFlow!==target)return;if(!tarotAIQuality(ai,input))throw Error('invalid reading');_tarotFlow.resultMarkdown=ai.trim();_tarotFlow.aiAuthored=true;}
+  catch(e){if(_tarotFlow!==target)return;_tarotFlow.authorError=true;}
   _tarotFlow.deepLoading=false;
   saveTarotFlow();
-  saveTarotReadingFromFlow(_tarotFlow);
+  if(!_tarotFlow.authorError)saveTarotReadingFromFlow(_tarotFlow);
   renderTarot();
 }
 function buildAIReadingInput(flow){
@@ -6219,14 +6220,10 @@ function tarotAIQuality(md,input){
   return !/\d{1,2}월\s?\d{1,2}일/.test(t.replace(String(input.question||''),''))&&(typeof storyValidateMarkdown!=='function'||storyValidateMarkdown(t,'tarot',input));
 }
 function renderTarotResult(root){
-  if(_tarotFlow&&_tarotFlow.resultLoading){
-    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'풀이 정리 중');
-    root.innerHTML=tarotHtml(`<section class="tarot-panel">
-      <div class="tarot-section-title">타로 풀이를 정리하고 있어요</div>
-      <div class="tarot-small">선택한 카드와 질문을 바탕으로 깊은 풀이를 정리하고 있어요. 잠시만 기다려주세요.</div>
-    </section>`);
-    return;
+  if(_tarotFlow&&(_tarotFlow.resultLoading||_tarotFlow.deepLoading)){
+    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'');root.innerHTML=readingLoadingHTML();return;
   }
+  if(_tarotFlow?.paymentStatus==='paid'&&_tarotFlow.authorError){root.innerHTML='<section class="tarot-panel"><p>풀이를 완성하지 못했어요. 선택한 카드는 유지돼요.</p><button class="ts-cta" onclick="finishTarotDraw()">다시 풀이하기</button></section>';return;}
   if(_tarotFlow&&_tarotFlow.previewTemplate&&_tarotFlow.meaningVersion!==TAROT_MEANING_VERSION){
     _tarotFlow.resultMarkdown=generateTemplateReading(buildAIReadingInput(_tarotFlow));
     _tarotFlow.meaningVersion=TAROT_MEANING_VERSION;saveTarotFlow();
@@ -6237,7 +6234,6 @@ function renderTarotResult(root){
   root.innerHTML=tarotHtml(`<section class="tarot-panel">
     <div class="tarot-section-title">${tarotEsc(_tarotFlow.question)}</div>
     <div class="tarot-small">${tarotEsc(_tarotFlow.spreadName)} · ${(_tarotFlow.price||0).toLocaleString()}원</div>
-    ${_tarotFlow.deepLoading?'<div class="deep-status" role="status">천기가 뽑은 카드 전체를 다시 엮어 종합 풀이를 쓰고 있어요. 30초쯤 걸려요.</div>':''}
     <div class="tarot-selected-strip">${input.cards.map(c=>{const card=TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);return `<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotCardImageHTML(card,'')}</div>${tarotEsc(c.positionLabel)}<br>${tarotEsc(c.cardNameKo)}</div>`;}).join('')}</div>
   </section>
   ${(()=>{const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr'),body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${typeof storyMarkdownView==='function'?storyMarkdownView(_tarotFlow.resultMarkdown,'tarot',input,input.topic||input.questionCategory):''}${lvToc(r.items,'타로 풀이 목차')}${r.html}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(tarotPaymentCategory(_tarotFlow),body,{visibleSections:2})}</div>${lkBarHTML(tarotPaymentCategory(_tarotFlow))}`;})()}
@@ -6265,7 +6261,7 @@ function renderTarotHistory(root){
   </section>`).join(''):'<div class="tarot-empty">24시간 안에 저장된 타로 풀이가 없어요.</div>'}</div>`);
 }
 function openTarotHistory(id){const r=loadTarotHistory().find(x=>x.id===id);if(!r){alert('24시간이 지나 만료된 풀이예요.');renderTarot();return;}_tarotFlow={...r,selectedSpreadId:r.spreadId,paymentStatus:'paid',positions:getSpreadPositions(r.spreadId,r.questionCategory||'general',r.topic),selectedCards:r.selectedCards.map((c,i)=>({positionIndex:i,cardId:c.cardId,orientation:c.orientation})),resultMarkdown:r.resultMarkdown};saveTarotFlow();tarotNavigate('result');}
-function loadTarotFlow(){try{const flow=JSON.parse(sessionStorage.getItem(TAROT_FLOW_KEY)||localStorage.getItem(TAROT_FLOW_KEY)||'null')||{};if(flow&&flow.paymentStatus==='paid'&&Number(flow.expiresAt)&&Number(flow.expiresAt)<=Date.now()){flow.paymentStatus='none';flow.resultMarkdown='';flow.resultLoading=false;try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));}catch(e){}}return flow;}catch(e){return {};}}
+function loadTarotFlow(){try{const flow=JSON.parse(sessionStorage.getItem(TAROT_FLOW_KEY)||localStorage.getItem(TAROT_FLOW_KEY)||'null')||{};if(flow.paymentStatus==='paid'&&!flow.resultMarkdown)flow.authorError=true;flow.deepLoading=false;flow.resultLoading=false;if(flow&&flow.paymentStatus==='paid'&&Number(flow.expiresAt)&&Number(flow.expiresAt)<=Date.now()){flow.paymentStatus='none';flow.resultMarkdown='';flow.resultLoading=false;try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(flow));}catch(e){}}return flow;}catch(e){return {};}}
 function saveTarotFlow(){try{sessionStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));localStorage.setItem(TAROT_FLOW_KEY,JSON.stringify(_tarotFlow));}catch(e){}}
 function loadTarotHistory(){let list=[];try{list=JSON.parse(localStorage.getItem(TAROT_HISTORY_KEY)||'[]');}catch(e){list=[];}if(!Array.isArray(list))list=[];const now=Date.now();const valid=list.filter(r=>{const exp=Number(r.expiresAt)||((r.paidAt?Number(r.paidAt):Date.parse(r.createdAt||0))+TAROT_HISTORY_TTL_MS);return exp>now;});if(valid.length!==list.length){try{localStorage.setItem(TAROT_HISTORY_KEY,JSON.stringify(valid));}catch(e){}}return valid;}
 function saveTarotReadingFromFlow(flow){
@@ -7578,7 +7574,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=fc4bef0c3285';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=a6c2eeb1c43b';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -19494,7 +19490,7 @@ function renderAIReadingCard(category, title, extraKey, opts){
   const id=aiReadingDomId(category,extraKey);
   const cls='nb-card ai-reading-card'+(opts.main?' main-reading':'')+(cachedText?' ai-ready':'');
   const catHtml=opts.catLabel===null?'':`<div class="nb-cat">${chatEscape(opts.catLabel||'천기 풀이')}</div>`;
-  const loading=opts.loadingText||'본인 사주를 바탕으로 풀이를 정리하고 있어요. 잠시만 기다려주세요.';
+  const loading='풀이 중입니다';
   return `<div class="${cls}" data-ai-reading="${category}" data-ai-extra="${chatEscape(extraKey||'')}" id="${id}">
     ${catHtml}
     <div class="nb-title">${chatEscape(title||AI_READING_LABELS[category]||'맞춤 풀이')}</div>
@@ -19581,7 +19577,7 @@ async function hydrateAIReading(category, opts){
 }
 // 결제 후 종합 풀이. 검증된 synthesis 응답은 해당 장의 설명을 대체한다.
 // 원국·차트·기간별 표·근거 보기·강점 순서는 보존한다. 실패 시 계산형 설명을 유지한다.
-function deepEligible(sec){return [...sec.querySelectorAll('p')].filter(p=>!p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lv4-why,.lv4-answer,.ai-reading-card,.lv4-scene,.lk-note,.deep-status,.reading-narrative,.story-evidence,.story-overview,.story-connection,.story-resolution,[data-strength-order]'));}
+function deepEligible(sec){return [...sec.querySelectorAll('p')].filter(p=>!p.closest('.lv4-rows,.lv4-key,.lv4-ctx,.lv4-pin,.lv4-list,.pp-box,.lv4-why,.lv4-answer,.ai-reading-card,.lv4-scene,.lk-note,.deep-status,.reading-narrative,.story-evidence,.story-overview,.story-connection,.story-resolution,.reading-wait,[data-strength-order]'));}
 // 장마다 무엇에 답해야 하는지 — 제목에서 질문을 고르고 같은 조언을 장마다 반복하지 않게 한다.
 function deepFocus(title,system){
  const t=String(title||'');
@@ -19723,7 +19719,16 @@ function deepCached(key){
   return any?out:null;
  }catch(e){return null;}
 }
+// Keep the draft out of view until every requested text section has settled.
+function readingLoadingHTML(){return '<div class="reading-wait" role="status" aria-live="polite"><span class="reading-wait-spinner" aria-hidden="true"></span><p>풀이 중입니다</p></div>';}
+function beginReadingWait(el){
+  if(!el)return ()=>{};
+  el._readingWaitCount=(el._readingWaitCount||0)+1;
+  if(el._readingWaitCount===1){el.classList.add('reading-pending');el.setAttribute('aria-busy','true');el.insertAdjacentHTML('afterbegin',readingLoadingHTML());}
+  let finished=false;return ()=>{if(finished)return;finished=true;el._readingWaitCount=Math.max(0,(el._readingWaitCount||1)-1);if(el._readingWaitCount)return;el.querySelector(':scope > .reading-wait')?.remove();el.classList.remove('reading-pending');el.removeAttribute('aria-busy');};
+}
 async function hydrateDeepReading(el){
+  if(typeof AIReport==='object'&&AIReport.enabled(el))return AIReport.run(el);
   const key=el&&el.getAttribute('data-deep');if(!key||el.dataset.deepDone)return;el.dataset.deepDone='1';
   const storyPlan=typeof storyFromElement==='function'?storyFromElement(el):null,cacheKey=storyPlan?key+'@'+storyPlan.id:key;
   const lang=currentLanguage(),requestCacheKey=aiReadingCacheKey('reading-deep',cacheKey,lang);
@@ -19733,10 +19738,8 @@ async function hydrateDeepReading(el){
   const done=new Set(((cached&&cached.sections)||[]).map(s=>s.id));
   const sections=deepCollect(el).filter(s=>!done.has(s.id)).map(s=>{const c=storyPlan?.chapter_outline.find(c=>c.id===s.id);return c?{...s,focus:s.focus+' '+c.core_question,storyChapter:{id:c.id,signalIds:c.supporting_signal_ids,next:c.next_chapter_connection}}:s;});if(!sections.length)return;
   const groups=[];for(let i=0;i<sections.length&&groups.length<DEEP_MAX_GROUPS;i+=DEEP_GROUP_SIZE)groups.push(sections.slice(i,i+DEEP_GROUP_SIZE));
-  const chip=document.createElement('div');chip.className='deep-status';chip.setAttribute('role','status');
-  chip.textContent='천기가 장마다 근거를 엮어 종합 풀이를 다시 쓰고 있어요. 30초쯤 걸려요.';
-  const hero=el.querySelector('.lv4-hero');if(hero&&hero.nextSibling)el.insertBefore(chip,hero.nextSibling);else el.insertBefore(chip,el.firstChild);
-  const systemEvidence=deepSystemEvidence(key);let applied=0;
+  const finishWaiting=beginReadingWait(el);
+  const systemEvidence=deepSystemEvidence(key);
   const one=async(group,gi)=>{
     try{
       const payload=buildAIReadingPayload('reading-deep',{source:'paid-deep'});if(!payload)return;
@@ -19748,17 +19751,15 @@ async function hydrateDeepReading(el){
       const data=deepParse(text);if(!data)return;
       const n=deepApply(el,data);
       // 실제로 채택된 장이 있을 때만 저장한다. 채택되지 않은 응답은 다음 방문에 다시 요청할 수 있다.
-      if(n){applied+=n;aiReadingCacheSet('reading-deep',`${cacheKey}#${group[0].id}`,text,lang,true);if(currentLanguage()!=='ko')try{scheduleLanguageApply(el,[0]);}catch(e){}}
+      if(n){aiReadingCacheSet('reading-deep',`${cacheKey}#${group[0].id}`,text,lang,true);if(currentLanguage()!=='ko')try{scheduleLanguageApply(el,[0]);}catch(e){}}
     }catch(e){}
   };
   // 동시 요청은 2개까지 — 주문당 요청 한도와 응답 길이를 함께 지킨다
   let next=0;const worker=async()=>{while(next<groups.length){const gi=next++;await one(groups[gi],gi);}};
-  await Promise.all(Array.from({length:Math.min(DEEP_CONCURRENCY,groups.length)},worker));
-  if(!requestStillCurrent()){chip.remove();return;}
-  if(applied){chip.textContent='천기의 종합 풀이가 반영됐어요';chip.classList.add('done');setTimeout(()=>{try{chip.remove();}catch(e){}},4000);}
-  else chip.remove();
+  try{await Promise.all(Array.from({length:Math.min(DEEP_CONCURRENCY,groups.length)},worker));}
+  finally{finishWaiting();}
 }
-// 타로·점성술 — 마크다운 섹션 단위로 앞부분은 계산 풀이, 가렸던 뒷부분은 AI 풀이로 합친다
+// 타로·점성술 — 무료/미리보기는 계산형, 결제 후 본문은 검증된 AI 전체 집필
 function mdSections(md){return String(md||'').split(/^# /m).slice(1).map(c=>{const i=c.indexOf('\n');return {title:(i<0?c:c.slice(0,i)).trim(),body:(i<0?'':c.slice(i+1)).trim()};}).filter(s=>s.title);}
 function mdMerge(keep,aiMd){
   const norm=s=>String(s).replace(/^\d+\.\s*/,'').replace(/\s+/g,'');
@@ -19803,16 +19804,17 @@ async function hydratePortrait(card){
   }catch(e){fail('이미지를 만들지 못했어요. 다시 시도해 주세요.');}
 }
 function hydrateAIReadings(root){
-  const scope=root||document;
-  scope.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>{try{hydratePortrait(card);}catch(e){}});
-  scope.querySelectorAll('[data-deep]').forEach(el=>{try{hydrateDeepReading(el);}catch(e){}});
+  const scope=root||document,pending=[],release=[];
+  scope.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>{if(typeof AIReport==='object'&&AIReport.enabled(card.closest('[data-deep]')))return;try{hydratePortrait(card);}catch(e){}});
+  scope.querySelectorAll('[data-deep]').forEach(el=>{if(typeof AIReport==='object'&&AIReport.enabled(el)){pending.push(AIReport.run(el));return;}release.push(beginReadingWait(el));try{pending.push(hydrateDeepReading(el));}catch(e){}});
   scope.querySelectorAll('[data-ai-reading]').forEach(card=>{
-    const category=card.getAttribute('data-ai-reading');
-    const extraKey=card.getAttribute('data-ai-extra')||'';
-    if(category==='newyear'||category==='newyear-core')hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-'+category});
-    else if(category==='topic-answer')hydrateAIReading(category,{extraKey,source:'paid-'+extraKey});
-    else hydrateAIReading(category,{extraKey,source:'paid-'+category});
+    if(typeof AIReport==='object'&&AIReport.enabled(card.closest('[data-deep]')))return;
+    const category=card.getAttribute('data-ai-reading'),extraKey=card.getAttribute('data-ai-extra')||'';
+    if(category==='newyear'||category==='newyear-core')pending.push(hydrateAIReading(category,{extraKey,targetYear:_meta&&_meta.nyExtra&&_meta.nyExtra.y,source:'paid-'+category}));
+    else if(category==='topic-answer')pending.push(hydrateAIReading(category,{extraKey,source:'paid-'+extraKey}));
+    else pending.push(hydrateAIReading(category,{extraKey,source:'paid-'+category}));
   });
+  return Promise.allSettled(pending).finally(()=>release.forEach(done=>done()));
 }
 
 function chatEscape(s){
@@ -24204,24 +24206,9 @@ function analyze(){
   const btn=document.querySelector('.analyze-btn');
   btn.disabled=true;
   btn.setAttribute('aria-busy','true');
-  // 단계별 메시지 — 체감 대기 시간 단축
-  const stages=[
-    '⏳ 만세력 계산 중...',
-    '🌗 진태양시 보정 중...',
-    '🌀 천간·지지 계산 중...',
-    '✦ 사주 구조 분석 중...',
-    '✨ 풀이 완성 중...'
-  ];
-  btn.innerHTML=`<span class="ldspin" aria-hidden="true"></span> <span id="loadingMsg">${stages[0]}</span>`;
-  let _stageI=0;
-  const _stageTimer=setInterval(()=>{
-    _stageI=Math.min(_stageI+1,stages.length-1);
-    const m=document.getElementById('loadingMsg');
-    if(m)m.textContent=stages[_stageI];
-  },280);
+  btn.innerHTML='<span class="ldspin" aria-hidden="true"></span> <span id="loadingMsg">풀이 중입니다</span>';
   // 분석 후 정리
   const _restoreBtn=()=>{
-    clearInterval(_stageTimer);
     btn.removeAttribute('aria-busy');
     btn.disabled=false;
     updateJourneyForm(_category);
@@ -25378,7 +25365,7 @@ function _hanziSearchGoPage(delta){
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=0cf173bc4ced">
+<script src="assets/astrology.js?v=f1112b0ae6ab">
 </script>
 </body>
 </html>

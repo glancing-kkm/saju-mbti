@@ -51,7 +51,7 @@ try{
  run("_tarotFlow={question:'이직해도 될까요?',topic:'career',questionCategory:'career',spreadName:'3장',selectedSpreadId:'tarot3',positions:getSpreadPositions('tarot3','career','career'),selectedCards:[{positionIndex:0,cardId:'cups-05',orientation:'upright'},{positionIndex:1,cardId:'major-07-chariot',orientation:'reversed'},{positionIndex:2,cardId:'pentacles-01',orientation:'upright'}],paymentStatus:'none'};tarotNavigate=()=>{};renderTarot=()=>{};");
  await run('finishTarotDraw()');assert.equal(calls,0,'미리보기에서 AI 호출 금지');const preview=run('_tarotFlow.resultMarkdown');
  run("_tarotFlow.paymentStatus='paid'");w.tarotReply=good;await run('finishTarotDraw()');assert.equal(calls,1);assert.equal(run('_tarotFlow.resultMarkdown'),good.trim(),'검증된 AI가 첫 장면까지 전체 대체');
- w.tarotReply=w.tbad2;run("_tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=''");await run('finishTarotDraw()');assert.equal(run('_tarotFlow.resultMarkdown'),preview,'검증 실패 시 계산 풀이 유지');
+ w.tarotReply=w.tbad2;run("_tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=''");await run('finishTarotDraw()');assert.equal(run('_tarotFlow.resultMarkdown'),'','유료 검증 실패 시 계산형으로 대체 금지');assert.equal(run('_tarotFlow.authorError'),true,'선택한 카드를 유지한 재시도 화면');
  ok(`타로 ${tarotN}개 조합(12주제×3·5·10장): 실제 카드·자리 역할·방향, 미리보기 AI 차단, 검증된 AI만 전체 대체`);
 
  // ── 3. 점성술: 서로 다른 요구·실제 각도·트랜짓 ──
@@ -163,15 +163,12 @@ try{
  assert(run('window.__rp.rpSectionQuality(window.zok,window.zctx)'),'실제 명반과 맞는 자미두수 문단 채택');
  w.zno=[`명궁에는 ${zwrong}성이 있어 주요 별과 특징이 또렷해요. 사람들 앞에서 이 별의 방식이 먼저 보여요.`,w.zok[1]];assert(!run('window.__rp.rpSectionQuality(window.zno,window.zctx)'),'실제와 다른 별 배치 거절');
  w.zyr=[w.zok[0],'올해 유년에서 명궁의 주요 별이 크게 움직여 특징이 바뀌는 해예요. 대한의 방도 함께 흔들려요.'];assert(!run('window.__rp.rpSectionQuality(window.zyr,window.zctx)'),'계산하지 않은 유년 단정 거절');
- // 매우 긴 AI 응답이 와도 전체 글자 수 상한을 지킨다
- let pdfCalls=0,pdfLive=0,pdfPeak=0;
- w.fetch=async(url,opt)=>{pdfCalls++;pdfLive++;pdfPeak=Math.max(pdfPeak,pdfLive);const b=JSON.parse(opt.body);await new Promise(r=>setTimeout(r,3));pdfLive--;const sections=(b.meta.sections||[]).map((s,i)=>({id:s.id,paragraphs:[0,1,2,3].map(k=>Array.from({length:13},(_,j)=>`${s.title}의 ${k+1}-${j+1}번째 장면에서 일지 미의 약속과 책임을 지키는 힘이 ${s.id} 방식으로 드러나요.`).join(' '))}));return {ok:true,status:200,json:async()=>({text:JSON.stringify({sections,fields:[]})})};};
+ // Invalid/unstructured paid AI output must stop the export, without silently restoring computed paragraphs.
+ let pdfCalls=0;w.fetch=async()=>{pdfCalls++;return {ok:true,status:200,json:async()=>({text:JSON.stringify({sections:[],fields:[]})})};};
  run("localStorage.clear();savePaidToken('a.b')");
- const big=await run("buildTemplateReport('life',{dryRun:true,info:{}})");
- assert(big.chars<=58000,`긴 AI 응답에도 ${big.chars}자 ≤ 58000`);assert(pdfPeak<=2,'PDF AI 요청 동시 2개 이하');big.host.remove();
- const calls1=pdfCalls;const again=await run("buildTemplateReport('life',{dryRun:true,info:{}})");again.host.remove();
- assert.equal(pdfCalls,calls1,'성공한 묶음은 캐시를 다시 쓰고 재요청하지 않음');
- ok(`PDF 14종: 소제목 간 같은 본문 0건, 자미두수 유년 미계산 명시, 이름·궁합 고유 근거, 일반론·없는 연도 거절, 긴 응답 ${big.chars}자로 상한 유지, 동시 ${pdfPeak}개`);
+ await assert.rejects(run("buildTemplateReport('life',{dryRun:true,info:{}})"),/해석 방향/);
+ assert(pdfCalls>0);assert.equal(d.querySelectorAll('.rp-host').length,0,'no incomplete paid document');
+ ok('PDF 14종: 소제목 중복·글자 수 상한, 체계별 근거 검증, 불완전한 유료 응답은 파일 생성 중단');
  console.log('  '+pdfStats.join(' · '));
  console.log('System depth checks passed. No live AI, payment, or email requests.');
 }finally{rt.close();}

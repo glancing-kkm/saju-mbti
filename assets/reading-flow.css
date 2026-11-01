@@ -251,3 +251,12 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #app .counsel-actions{display:flex;align-items:center;gap:12px;margin-top:12px}
 #app .counsel-skip{border:0;background:none;color:var(--sub);padding:10px 12px;cursor:pointer;font:inherit;font-size:.85rem}
 #app .counsel-skip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* A single preparation screen; the computed draft stays in the DOM for validation. */
+.reading-pending{min-height:320px!important}
+.reading-pending>:not(.reading-wait){display:none!important}
+.reading-wait{width:100%;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;color:var(--text,#f7f7f2)}
+.reading-wait p{margin:0!important;font-size:1rem;line-height:1.7}
+.reading-wait-spinner{width:30px;height:30px;border:2px solid var(--line,rgba(255,255,255,.2));border-top-color:var(--accent,#90cbb0);border-radius:50%;animation:reading-wait-spin .9s linear infinite}
+@keyframes reading-wait-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.reading-wait-spinner{animation:none}}

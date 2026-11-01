@@ -24,6 +24,6 @@ try{
  const prompts=[vm.runInContext("buildTarotReadingSystemPrompt('ko')",ctx),vm.runInContext("buildAstrologyReadingSystemPrompt('ko')",ctx)];
  for(const cat of ['life','life-core','newyear','newyear-core','gunghap','reading-deep','report-tpl','topic-answer','name','ziwei']){ctx.cat=cat;prompts.push(vm.runInContext("buildReadingSystemPrompt(cat,{synthesis:true,reportName:'검증',topic:'검증'})",ctx));}
  for(const p of prompts){assert(p.includes('장 전체를 새로 집필'));assert(p.includes('웹 분량을 늘리지'));assert(p.includes('근거 없는 이별'));assert(p.includes('짧고 분명하게'));}
- assert(fs.readFileSync('assets/report-pdf.js','utf8').includes("RP_VERSION='v10-consultation'"));
+ assert(fs.readFileSync('assets/report-pdf.js','utf8').includes("RP_VERSION='v11-ai-authored'"));
  console.log('Voice coverage: 19 saju/free routes, 78 daily cards, 36 paid tarot combinations, 12 astrology topics, all Korean AI prompt families and PDF editor; uncertainty/HTML attributes preserved. No real AI/payment requests.');
 }finally{rt.close();}

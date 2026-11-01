@@ -1,12 +1,12 @@
 // ── 프리미엄 PDF 리포트 — 14개 주제 템플릿에 맞춰 풀이를 채워 A4 보고서로 만든다 ──
 // 풀이 결제와 별도 상품(pdf-<카테고리>)이다. index.html의 downloadReportPdf()가 결제를 확인한 뒤 이 파일을 불러 쓴다.
 // 구성: 표지 → 차례 → 기본 정보 → 한눈에 보기 → 템플릿의 장(도표 + 소제목 풀이) → 종합 정리 → 상세 풀이(화면 풀이 전문).
-// 소제목 풀이와 표 칸은 AI가 쓰고(report-tpl), 실패한 칸은 화면 풀이 문장으로 채운다. 이름은 AI에 보내지 않는다.
+// 유료 소제목 본문·요약 칸은 모두 AI가 집필한다. 검증 실패 시 파일을 생성하지 않고 재시도한다.
 (function(){
 'use strict';
 const RP_BRAND='천지인 사주';
 const RP_W=794,RP_H=1123,RP_MAX_CHARS=58000;
-const RP_VERSION='v10-consultation',RP_SAFE=26;
+const RP_VERSION='v11-ai-authored',RP_SAFE=26;
 
 // ── 템플릿 스펙 ──
 // 장(page): ey 눈썹 글(없으면 '번호 / 영문 제목'), t 제목, sub 고정 부제(없으면 AI), vis 도표, h 소제목
@@ -965,7 +965,7 @@ function rpVis(pg,d,spec,F){
     const z=d.zw,pos={5:[1,1],6:[1,2],7:[1,3],8:[1,4],4:[2,1],9:[2,4],3:[3,1],10:[3,4],2:[4,1],1:[4,2],0:[4,3],11:[4,4]};
     const dec=b=>(z.decades.find(x=>x.palace.branch===b)||{});
     const li=z.li||{};
-    return `<div class="rp-zw">${z.palaces.map(p=>{const [r,c]=pos[p.branch];const dd=dec(p.branch);return `<div class="zc${p.name==='명궁'?' me':''}" style="grid-row:${r};grid-column:${c}"><b>${ZW_SHOW(p.name)}${z.shenPalace.branch===p.branch?' · 신궁':''}</b><span class="st">${esc(p.stars.join(' · ')||'빈 방')}</span><br>${STEMKO[p.stem]}${BRCHKO[p.branch]}<br><span class="dc">${dd.from!=null?`대한 ${dd.from}~${dd.to}세`:''}</span></div>`;}).join('')}<div class="zct"><h4>자미두수 명반</h4><span>${esc(d.meta.userName||'')}</span><span>음력 ${li.ly||''}.${li.lm||''}.${li.ld||''}${li.leap?' (윤달)':''} · ${birthTimeReference(d.meta).known?`${birthTimeReference(d.meta).corrected}${birthTimeReference(d.meta).applied?' (보정 시각)':''}`:'태어난 시간 모름'}</span><span>명궁 ${BRCHKO[z.palaces[0].branch]}궁 · 신궁 ${ZW_SHOW(z.shenPalace.name)} · ${ZW_BUREAU_NAME[z.bureau]||''}</span></div></div><p class="rp-cap">14개 주성 기준 명반이에요 · 별이 없는 빈 방은 마주 보는 궁의 별을 함께 읽어요</p>`;
+    return `<div class="rp-zw">${z.palaces.map(p=>{const [r,c]=pos[p.branch];const dd=dec(p.branch);return `<div class="zc${p.name==='명궁'?' me':''}" style="grid-row:${r};grid-column:${c}"><b>${ZW_SHOW(p.name)}${z.shenPalace.branch===p.branch?' · 신궁':''}</b><span class="st">${esc(p.stars.join(' · ')||'빈 방')}</span><br>${STEMKO[p.stem]}${BRCHKO[p.branch]}<br><span class="dc">${dd.from!=null?`대한 ${dd.from}~${dd.to}세`:''}</span></div>`;}).join('')}<div class="zct"><h4>자미두수 명반</h4><span>${esc(d.meta.userName||'')}</span><span>음력 ${li.ly||''}.${li.lm||''}.${li.ld||''}${li.leap?' (윤달)':''} · ${birthTimeReference(d.meta).known?`${birthTimeReference(d.meta).corrected}${birthTimeReference(d.meta).applied?' (보정 시각)':''}`:'태어난 시간 모름'}</span><span>명궁 ${BRCHKO[z.palaces[0].branch]}궁 · 신궁 ${ZW_SHOW(z.shenPalace.name)} · ${ZW_BUREAU_NAME[z.bureau]||''}</span></div></div><p class="rp-cap">${birthTimeReference(d.meta).known?'14개 주성 기준 명반이에요 · 별이 없는 빈 방은 마주 보는 궁의 별을 함께 읽어요':'출생시각 미상의 임시 명반이에요 · 시각을 확인하면 궁과 별 배치가 달라질 수 있어요'}</p>`;
   }
   if(v==='zwStars'){const z=d.zw,pal=n=>z.palaces.find(p=>p.name===n),me=pal('명궁'),sh=z.shenPalace,out=pal('천이궁');const rows=[['명궁의 주성',me],['신궁의 주성',sh],['마주 보는 천이궁',out]];return rpTable(['항목','확인된 배치','해석 메모'],rows.map(([l,p],r)=>[l,`${p.stars.join('·')||'빈 방'} · ${ZW_SHOW(p.name)}`,f(`p${pi}c${r}a`)]));}
   if(v==='zwSihua'){return rpTable(['항목','확인된 배치','해석 메모'],rpSihua(d).map((r,i)=>[r[0],r[2]?`${r[1]} · ${r[2]}`:`${r[1]} · 보조성(이 명반에는 미배치)`,f(`p${pi}c${i}a`)]));}
@@ -1117,6 +1117,49 @@ function rpTrim(S,need){
 }
 function rpCount(pages){return pages.reduce((n,p)=>n+clean(p.querySelector('.rp-body')?p.querySelector('.rp-body').textContent:p.textContent).length,0);}
 
+// Paid report prose has one source: validated AI authorship. Facts/diagrams keep the original calculators.
+async function rpFullAuthor(spec,d,plan,prog,opts){
+ const report=AIReport.sources(d.cat,d.saju,d.meta);report.depth='pdf';
+ if(d.cat==='name'&&d.cands?.length)report.ledger.push({id:'name.candidates',label:'기존 계산에서 실제 생성된 후보',value:d.cands.map(c=>({name:c.name,han:c.han,meaning:c.meaning})),anchors:d.cands.flatMap(c=>[c.name,c.han])});
+ report.userStatements.pdfInfo={source:'user-stated',...d.info};
+ report.chapters=plan.groups.flatMap(g=>g.heads||[]).map(h=>({id:h.id,title:h.chapter+' · '+h.title,question:h.title+'의 근거와 원인, 생활 모습과 조건별 차이를 자세히 설명하세요.',months:[]}));
+ // Month and quarter pages have no paragraph heads in the old layout. Author these explicitly, too.
+ const monthly=[];
+ plan.pages.forEach(pg=>{const match=(pg.vis||'').match(/^months:(\d+)/);if(match)for(let m=+match[1];m<+match[1]+3;m++)monthly.push({id:'pdf-month-'+m,title:m+'월의 흐름',question:m+'월에 달라지는 조건과 생활에서 확인할 점을 설명하세요.',months:[m]});
+ if(pg.vis==='quarters')for(let q=1;q<=4;q++)monthly.push({id:'pdf-quarter-'+q,title:q+'분기의 흐름',question:q+'분기를 구성하는 월들의 차이와 준비할 일을 연결하세요.',months:[q*3-2,q*3-1,q*3]});});
+ report.chapters.push(...monthly);
+ const token=typeof pdfPaidToken==='function'?pdfPaidToken(d.cat):undefined;
+ const authorOpts={kind:'report-tpl',token,endpoint:opts.endpoint,onProgress:()=>prog('풀이 중입니다')};
+ const state=await AIReport.author(report,authorOpts),secs={},sources={},ledger=rpLedger();d.storyPlan=null;d.aiStoryPlan=state.plan;
+ for(const ch of report.chapters){secs[ch.id]=state.accepted[ch.id].paragraphs.slice();sources[ch.id]='ai';secs[ch.id].forEach(t=>ledger.mark(t));}
+ const context=id=>{const match=id.match(/^p(\d+)/),month=id.match(/^m(\d+)/),quarter=id.match(/^q(\d+)/);
+ if(month)return secs['pdf-month-'+month[1]].join(' ');
+ if(quarter)return secs['pdf-quarter-'+quarter[1]].join(' ');
+ if(match){const pg=plan.pages[Number(match[1])];return pg.h.flatMap((h,i)=>secs[`p${pg.pi}h${i}`]||[]).join(' ').slice(0,2200);}
+ return JSON.stringify(state.plan.profile);
+ };
+ const fields={},fieldProofs={},all=plan.groups.flatMap(g=>g.fields),cacheId='pdf-ai-fields:'+RP_VERSION+':'+aiReadingCacheKey('report-tpl',d.cat,currentLanguage()),fingerprint=JSON.stringify(report);
+ let cached;try{cached=JSON.parse(localStorage.getItem(cacheId)||'null');}catch(e){}
+ if(cached?.fingerprint===fingerprint&&cached.exp>Date.now()){Object.assign(fields,cached.fields||{});Object.assign(fieldProofs,cached.fieldProofs||{});}
+ const valid=(v,max)=>typeof v==='string'&&v.trim().length>0&&v.length<=max*1.6&&readingProvenanceQuality(v);
+ for(const [id,ask,max]of all)if(!valid(fields[id],max)||!Array.isArray(fieldProofs[id])||new Set(fieldProofs[id]).size<2||fieldProofs[id].some(x=>!report.ledger.some(r=>r.id===x))||AIReport.factIssues(fields[id],report,fieldProofs[id]).length){delete fields[id];delete fieldProofs[id];}
+ const pending=all.filter(([id])=>!fields[id]);
+ for(let i=0;i<pending.length;i+=18){let todo=pending.slice(i,i+18);
+  for(let attempt=0;attempt<2&&todo.length;attempt++){
+   const request={...report,fieldRequests:todo.map(([id,ask,max])=>({id,ask,max,context:context(id)}))};
+   const out=await AIReport.request(request,'fields',state.plan,null,attempt?['길이와 누락된 칸을 확인하고 실제 근거 ID 두 개 이상을 함께 반환하세요.']:[],authorOpts);
+   for(const [id,ask,max]of todo){const v=out.fields?.find(f=>f.id===id);if(valid(v?.text,max)&&Array.isArray(v.evidenceRefs)&&new Set(v.evidenceRefs).size>=2&&v.evidenceRefs.every(x=>report.ledger.some(r=>r.id===x))&&!AIReport.factIssues(v.text,report,v.evidenceRefs).length){fields[id]=v.text.trim();fieldProofs[id]=v.evidenceRefs.slice();}}
+   todo=todo.filter(([id])=>!fields[id]);
+   try{localStorage.setItem(cacheId,JSON.stringify({fingerprint,fields,fieldProofs,exp:Date.now()+AI_READING_TTL_MS}));}catch(e){}
+  }
+  if(todo.length)throw Error('PDF 요약 문장을 완성하지 못했어요. 다시 시도해 주세요.');
+ }
+ // Only additional AI-authored month/quarter explanations may enter the appendix.
+ d.sections=monthly.map(ch=>({title:ch.title,blocks:secs[ch.id].map(p=>({p}))}));
+ const bodyIds=report.chapters.filter(c=>!monthly.includes(c)).map(c=>c.id);
+ const bodyLedger=rpLedger();bodyIds.forEach(id=>secs[id].forEach(t=>bodyLedger.mark(t)));
+ return {filled:{secs,fields,fieldProofs,sources,coverage:{total:report.chapters.length,ai:report.chapters.length,computed:0},ledger:bodyLedger},ai:{okGroups:Math.ceil(report.chapters.length/4),facts:rpFacts(d)},authorship:'ai-full-v1'};
+}
 // ── 진입점 ──
 async function buildTemplateReport(cat,opts){
   opts=opts||{};const prog=opts.onProgress||(()=>{});
@@ -1127,9 +1170,13 @@ async function buildTemplateReport(cat,opts){
   const d=rpCollect(cat);d.info=rpCleanInfo(opts.info);
   if(cat==='gunghap'&&!d.partner)throw new Error('상대 정보가 없어요.');
   const plan=rpPlan(spec,d);
-  prog(`천기가 보고서를 쓰는 중이에요 (0/${plan.groups.length}) · 2~3분 걸려요`);
-  const ai=opts.skipAI?{secs:{},fields:{},okGroups:0,facts:rpFacts(d)}:await rpAI(spec,d,plan,(n,t)=>prog(`천기가 보고서를 쓰는 중이에요 (${n}/${t}) · 2~3분 걸려요`),opts);
-  const filled=rpFill(plan,ai,d,spec,ai.facts),{secs:S,fields:F}=filled;d.coverage=filled.coverage;d.ledger=filled.ledger;
+  prog('풀이 중입니다');
+  let ai,filled,authorship='computed-test';
+  if(!opts.skipAI){
+    if(typeof AIReport!=='object')throw Error('AI 집필 모듈을 불러오지 못했어요. 새로고침해 주세요.');
+    const result=await rpFullAuthor(spec,d,plan,prog,opts);ai=result.ai;filled=result.filled;authorship=result.authorship;
+  }else{ai={secs:{},fields:{},okGroups:0,facts:rpFacts(d)};filled=rpFill(plan,ai,d,spec,ai.facts);}
+  const {secs:S,fields:F}=filled;d.coverage=filled.coverage;d.ledger=filled.ledger;
   prog('보고서 쪽을 짜는 중이에요');
   await fontLoad;
   const host=document.createElement('div');host.className='rp-host';document.body.appendChild(host);
@@ -1162,8 +1209,8 @@ async function buildTemplateReport(cat,opts){
     const all=[...host.querySelectorAll('.rp-page')];
     all.forEach((p,i)=>{const b=p.querySelector('.rp-foot b');if(b)b.textContent=pad2(i+1);});
     const chars=rpCount(all);
-    if(opts.dryRun)return {host,pages:all,chars,ai:ai.okGroups,groups:plan.groups.length,storyPlan:plan.storyPlan||null,html:rpStandalone(all)};
-    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
+    if(opts.dryRun)return {host,pages:all,chars,authorship,coverage:d.coverage,ai:ai.okGroups,groups:plan.groups.length,storyPlan:d.aiStoryPlan||plan.storyPlan||null,html:rpStandalone(all)};
+    const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,authorship,coverage:d.coverage,title:`${spec.name} 리포트`,pages:all.length,chars,ai:ai.okGroups,groups:plan.groups.length};
     // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
     if(!opts.imageOnly){
       prog('PDF 파일로 만드는 중이에요');
