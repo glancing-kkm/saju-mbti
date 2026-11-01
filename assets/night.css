@@ -526,6 +526,45 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-toc a span{flex:0 0 24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--font-heading);font-size:.8rem;line-height:24px;text-align:center}
 .lv4-toc .ai-toc-text{flex:1;min-width:0;font-style:normal}
 .ai-chapter-tag{font-size:.82em;color:var(--accent);white-space:nowrap}
+/* 전체 풀이(심층 상담 리포트): 질문형 제목·출생정보·장 머리·인용구·소제목·핵심 조언·명리학적 근거·표 */
+.ai-report-hero{text-align:left}
+.ai-report-hero h1{font-size:1.7rem;line-height:1.4}
+.lv4 .ai-hero-sub,.ai-hero-sub{margin:10px 0 0;color:var(--accent);font-size:.95rem;text-align:left}
+.ai-birth{margin:18px 0 0;padding:14px 16px;border:1px solid var(--border);border-radius:12px;display:grid;gap:6px}
+.ai-birth .ai-birth-head{font-weight:700;color:var(--text);margin-bottom:4px}
+.ai-birth>div{display:flex;gap:12px;font-size:.92rem;line-height:1.6}
+.ai-birth dt{flex:0 0 64px;color:var(--muted)}
+.ai-birth dd{margin:0;color:var(--text)}
+.ai-ch-head{margin-bottom:14px}
+.ai-ch-label{display:inline-block;margin-bottom:6px;padding:2px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.8rem;letter-spacing:.02em}
+.ai-ch-head h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.35rem;line-height:1.45;color:var(--text)}
+.ai-span{margin:-6px 0 12px;color:var(--muted);font-size:.88rem}
+.ai-headline{margin:6px 0 18px;padding:12px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;color:var(--text);font-size:1.02rem;line-height:1.7}
+.ai-quote{margin:12px 0;padding:8px 14px;border-left:2px solid var(--border-strong,var(--border));color:var(--sub)}
+.ai-subhead{margin:22px 0 8px;font-size:1.05rem;line-height:1.55;color:var(--accent)}
+.ai-authored-chapter p,.ai-limits p{line-height:1.9}
+.ai-key{margin:16px 0}
+.ai-key strong{color:var(--text)}
+.ai-list{margin:8px 0 14px;padding-left:20px;line-height:1.85}
+.ai-list li{margin:2px 0}
+.ai-advice{margin:20px 0 6px;padding:14px 16px;border:1px solid var(--border-strong,var(--border));border-radius:12px}
+.ai-advice>b{display:block;margin-bottom:6px;color:var(--accent);font-size:.9rem}
+.ai-advice p{margin:0}
+.ai-basis{margin:18px 0 0;padding:12px 14px;border-radius:10px;background:var(--accent-soft)}
+.ai-basis>b{display:block;margin-bottom:4px;font-size:.85rem;color:var(--accent)}
+.ai-basis ul{margin:0;padding-left:18px;font-size:.88rem;line-height:1.75;color:var(--sub)}
+.ai-table-wrap{margin:10px 0 16px;overflow-x:auto}
+.ai-table{width:100%;border-collapse:collapse;font-size:.9rem;line-height:1.5}
+.ai-table caption{text-align:left;margin-bottom:6px;color:var(--accent);font-weight:700}
+.ai-table th,.ai-table td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.ai-table thead th{color:var(--muted);font-weight:500}
+.ai-table tbody th{color:var(--accent);font-weight:500;white-space:nowrap}
+.ai-table small{color:var(--muted)}
+.ai-note{color:var(--muted);font-size:.85rem}
+.ai-hero-q{font-family:var(--font-display);font-size:1.15rem;color:var(--text)}
+.ai-group-head{margin:28px 0 8px;padding:0 4px}
+.ai-group-head h2{margin:0 0 8px;font-family:var(--font-display);font-weight:400;font-size:1.35rem;color:var(--text)}
+.ai-mw-head h3{margin:0;font-size:1.12rem;color:var(--accent)}
 .lv4-sec{scroll-margin-top:84px;padding:24px 20px;border:1px solid var(--border);border-radius:18px;background:var(--card)}
 .lv4-sec-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
 .lv4-no{flex:none;min-width:38px;padding:3px 0;border-radius:10px;background:var(--accent);color:var(--on-accent);font-family:var(--font-heading);font-size:.9rem;line-height:1.5;text-align:center}

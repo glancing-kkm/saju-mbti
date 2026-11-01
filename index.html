@@ -2153,7 +2153,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=974879ee4db0">
+<link rel="stylesheet" href="/assets/night.css?v=cdad70dbe031">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=71fc507510a3">
 </head>
 <body>
@@ -3080,7 +3080,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
-<script src="assets/ai-report.js?v=33bc3ffc4378"></script>
+<script src="assets/ai-report.js?v=fff50caf939c"></script>
 <script src="assets/reading-voice.js?v=59650d7c4102"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -6925,7 +6925,7 @@ function normalizeReadingText(html){
     .replace(/(?<![0-9가-힣])년(주|지)/g,'연$1')
     .replace(/(^|[\s(“‘'"])년간(?=[은는이가의을에과와\s,.)]|$)/g,(x,a,i,str)=>/(?:몇|수|[일이삼사오육칠팔구십백]|\d)\s*$/.test(str.slice(0,i+a.length))?x:a+'연간')
     // 단독 명사 '결'은 쓰지 않는다 — '분위기'로 바꾸고 조사를 맞춘다.
-    .replace(/(^|[\s(])결(이에요|이라|이|을|은|에서|에|대로)(?=[\s.,!?)]|$)/g,(x,a,j)=>a+'분위기'+(({이에요:'예요',이라:'라',이:'가',을:'를',은:'는'})[j]||j));
+    .replace(/(^|[\s(])결(이에요|이라|이나|이|을|은|에서|에|대로)(?=[\s.,!?)]|$)/g,(x,a,j)=>a+'분위기'+(({이에요:'예요',이라:'라',이나:'나',이:'가',을:'를',은:'는'})[j]||j));
 }
 const READING_TG_PLAIN={정관:'책임과 신뢰의 기운',편관:'압박을 견디는 기운',정재:'꾸준히 모으는 재물 기운',편재:'흐름을 타는 재물 기운',정인:'보살핌을 받는 기운',편인:'한 분야를 깊이 파고드는 기운',식신:'표현하고 즐기는 기운',상관:'톡톡 튀는 표현 기운',비견:'나와 닮은 동료 기운',겁재:'경쟁하는 승부 기운'};
 function _glueOrphanSegment(text){
@@ -7572,7 +7572,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=a6c2eeb1c43b';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=8f7d76d1d952';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';

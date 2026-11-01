@@ -1131,7 +1131,7 @@ async function rpFullAuthor(spec,d,plan,prog,opts){
  const token=typeof pdfPaidToken==='function'?pdfPaidToken(d.cat):undefined;
  const authorOpts={kind:'report-tpl',token,endpoint:opts.endpoint,onProgress:()=>prog('풀이 중입니다')};
  const state=await AIReport.author(report,authorOpts),secs={},sources={},ledger=rpLedger();d.storyPlan=null;d.aiStoryPlan=state.plan;
- for(const ch of report.chapters){secs[ch.id]=state.accepted[ch.id].paragraphs.slice();sources[ch.id]='ai';secs[ch.id].forEach(t=>ledger.mark(t));}
+ for(const ch of report.chapters){secs[ch.id]=state.accepted[ch.id].paragraphs.map(t=>AIReport.plain?AIReport.plain(t):t).filter(Boolean);sources[ch.id]='ai';secs[ch.id].forEach(t=>ledger.mark(t));}
  const context=id=>{const match=id.match(/^p(\d+)/),month=id.match(/^m(\d+)/),quarter=id.match(/^q(\d+)/);
  if(month)return secs['pdf-month-'+month[1]].join(' ');
  if(quarter)return secs['pdf-quarter-'+quarter[1]].join(' ');
