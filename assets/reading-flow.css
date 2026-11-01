@@ -260,3 +260,12 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 .reading-wait-spinner{width:30px;height:30px;border:2px solid var(--line,rgba(255,255,255,.2));border-top-color:var(--accent,#90cbb0);border-radius:50%;animation:reading-wait-spin .9s linear infinite}
 @keyframes reading-wait-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.reading-wait-spinner{animation:none}}
+
+/* Completed AI chapters stay readable while later chapters arrive. */
+.ai-report-content{display:contents}
+.ai-report-content>*{min-width:0;max-width:100%;box-sizing:border-box}
+.ai-report-progress{position:sticky;bottom:12px;z-index:4;margin:12px auto;padding:10px 18px;border:1px solid var(--border);border-radius:30px;background:var(--card);color:var(--text);font-size:14px;text-align:center}
+.ai-chapter-pending{color:var(--muted);min-height:44px}
+.ai-report-notice{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--card);color:var(--text)}
+.ai-report-notice p{margin:0 0 12px}
+.ai-report-notice button{font:inherit;border:1px solid var(--accent);background:transparent;color:var(--text);border-radius:8px;padding:10px 16px;cursor:pointer}

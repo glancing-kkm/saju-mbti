@@ -542,7 +542,8 @@ async function handleReading(request, env) {
   const promptMeta = { ...(meta || {}), language: lang };
   const systemPrompt = buildReadingSystemPrompt(category, promptMeta);
   const userPrompt = buildReadingUserPrompt(category, sajuContext, promptMeta);
-  const coreReading = isCoreReadingCategory(category);
+  const coreReading = isCoreReadingCategory(category),professional=professionalReportData(promptMeta.aiReport),reportStarted=Date.now();
+  const readingJSON=(body,status=200)=>{if(professional)console.info(JSON.stringify({event:'professional_report',phase:professional.phase,product:professional.product,status,provider:body.provider||'',ms:Date.now()-reportStarted,code:body.code||''}));return json(body,status);};
 
   try {
     // 핵심 리딩(life-core/newyear-core)은 3,000~4,200자 한국어를 요구한다.
@@ -562,19 +563,21 @@ async function handleReading(request, env) {
           systemPrompt,
           userPrompt,
           maxOutputTokens: READING_MAX_TOKENS,
-          reasoningEffort: coreReading && category !== 'report-tpl' ? 'medium' : 'low',
+          reasoningEffort: professional?.phase==='plan' ? 'low' : coreReading && category !== 'report-tpl' ? 'medium' : 'low',
           verbosity: category === 'report-tpl' ? 'high' : 'medium',
-          format: category === 'report-tpl' && !professionalReportData(promptMeta.aiReport) ? REPORT_TPL_FORMAT : null,
+          format: professional ? professionalReportFormat(professional) : category === 'report-tpl' ? REPORT_TPL_FORMAT : null,
+          timeoutMs: professional ? (professional.depth==='pdf'?140000:90000) : 0,
         });
         if (result.text && !result.truncated) {
-          return json({ ok: true, provider: 'openai', text: result.text, truncated: false, usage: result.usage || null });
+          return readingJSON({ ok: true, provider: 'openai', text: result.text, truncated: false, usage: result.usage || null });
         }
         console.warn('OpenAI reading truncated or empty, trying next provider:', category, 'len=' + (result.text || '').length);
         if (result.text) truncatedFallback = { provider: 'openai', text: result.text, usage: result.usage || null };
         if (!env.ANTHROPIC_API_KEY && !env.AI) {
-          return json({ ok: true, provider: 'openai', text: result.text, truncated: true, usage: result.usage || null });
+          return readingJSON({ ok: true, provider: 'openai', text: result.text, truncated: true, usage: result.usage || null });
         }
       } catch (e) {
+        if(professional&&/Timeout|Abort/.test(e?.name||''))return readingJSON({error:'AI 응답 제한 시간을 넘었어요.',code:'AI_TIMEOUT'},504);
         console.warn('OpenAI reading failed, falling back to Anthropic if available:', e && e.message);
         if (!env.ANTHROPIC_API_KEY && !env.AI) throw e;
       }
@@ -583,6 +586,7 @@ async function handleReading(request, env) {
     if (env.ANTHROPIC_API_KEY) {
       const apiResp = await callAnthropicWithRetry({
         apiKey: env.ANTHROPIC_API_KEY,
+        maxAttempts:professional?1:3,timeoutMs:professional?Math.max(1,(professional.depth==='pdf'?140000:90000)-(Date.now()-reportStarted)):0,
         body: {
           model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
           max_tokens: ANTHROPIC_READING_MAX_TOKENS,
@@ -599,7 +603,7 @@ async function handleReading(request, env) {
           .trim();
         const truncated = data.stop_reason === 'max_tokens';
         if (text && !truncated) {
-          return json({ ok: true, provider: 'anthropic', text, truncated: false, usage: data.usage || null });
+          return readingJSON({ ok: true, provider: 'anthropic', text, truncated: false, usage: data.usage || null });
         }
         console.warn('Anthropic reading truncated or empty, trying Workers AI:', category, 'stop_reason=' + data.stop_reason);
         if (text && !truncatedFallback) truncatedFallback = { provider: 'anthropic', text, usage: data.usage || null };
@@ -616,17 +620,17 @@ async function handleReading(request, env) {
         userPrompt,
         maxTokens: READING_MAX_TOKENS,
       });
-      if (result.text) return json({ ok: true, provider: 'workers-ai', model: result.model, text: result.text, truncated: false, usage: result.usage || null });
+      if (result.text) return readingJSON({ ok: true, provider: 'workers-ai', model: result.model, text: result.text, truncated: false, usage: result.usage || null });
     }
     // 어느 제공자도 완결된 본문을 못 냈으면, 있는 것이라도 truncated 로 표시해서 내려준다.
     // 클라이언트는 이걸 보고 AI 카드는 띄우되 정적 상세 카드를 그대로 유지한다.
     if (truncatedFallback) {
-      return json({ ok: true, provider: truncatedFallback.provider, text: truncatedFallback.text, truncated: true, usage: truncatedFallback.usage });
+      return readingJSON({ ok: true, provider: truncatedFallback.provider, text: truncatedFallback.text, truncated: true, usage: truncatedFallback.usage });
     }
-    return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
+    return readingJSON({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   } catch (e) {
     console.error('Reading worker error:', e);
-    return json({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
+    return readingJSON({ error: '개인화 리딩을 잠시 생성하지 못했습니다.', code: 'AI_READING_TEMPORARY_UNAVAILABLE' }, 503);
   }
 }
 
@@ -1362,7 +1366,7 @@ function json(obj, status = 200) {
   });
 }
 
-async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, maxOutputTokens = 1800, reasoningEffort = 'low', verbosity = 'medium', format = null }) {
+async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, maxOutputTokens = 1800, reasoningEffort = 'low', verbosity = 'medium', format = null, timeoutMs = 0 }) {
   const body = {
     model,
     input: [
@@ -1377,6 +1381,7 @@ async function callOpenAIResponses({ apiKey, model, systemPrompt, userPrompt, ma
   }
   if (format) body.text = { ...(body.text || {}), format };
   const resp = await fetch('https://api.openai.com/v1/responses', {
+    ...(timeoutMs?{signal:AbortSignal.timeout(timeoutMs)}:{}),
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -1580,7 +1585,7 @@ async function qnaFreeGuardMark(env, keys) {
 // Anthropic API 호출 + 일시적 오류 자동 재시도
 // 재시도 대상: 403 (권한 캐시 미스), 408/425/429 (속도 제한·타임아웃), 5xx (서버 일시 장애), 네트워크 예외
 // 재시도 안 함: 400 (잘못된 요청), 401 (잘못된 키), 404 — 재시도해도 안 풀리는 영구 오류
-async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
+async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3, timeoutMs = 0 }) {
   const transientStatuses = new Set([403, 408, 425, 429, 500, 502, 503, 504, 524]);
   const backoffsMs = [300, 800]; // 1차 실패 후 300ms, 2차 실패 후 800ms
 
@@ -1590,6 +1595,7 @@ async function callAnthropicWithRetry({ apiKey, body, maxAttempts = 3 }) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        ...(timeoutMs?{signal:AbortSignal.timeout(timeoutMs)}:{}),
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1658,7 +1664,17 @@ function professionalReportData(raw){
  const chapterIds=new Set(chapters.map(c=>c.id));if(!chapters.length||chapterIds.size!==chapters.length)return null;
  const requested=(Array.isArray(raw.requestedChapters)?raw.requestedChapters:[]).slice(0,4).map(c=>chapters.find(x=>x.id===c.id)).filter(Boolean);
  const plan=raw.plan&&typeof raw.plan==='object'?{links:(Array.isArray(raw.plan.links)?raw.plan.links:[]).slice(0,80).filter(l=>chapterIds.has(l.from)&&chapterIds.has(l.to)).map(l=>({from:l.from,to:l.to,evidenceRefs:(Array.isArray(l.evidenceRefs)?l.evidenceRefs:[]).filter(id=>ids.has(id)).slice(0,16),development:clean(l.development,300)})),profile:{theme:clean(raw.plan.profile?.theme,100),mainConclusion:clean(raw.plan.profile?.mainConclusion,500),evidenceRefs:(Array.isArray(raw.plan.profile?.evidenceRefs)?raw.plan.profile.evidenceRefs:[]).filter(x=>ids.has(x))},chapters:(Array.isArray(raw.plan.chapters)?raw.plan.chapters:[]).slice(0,80).filter(c=>chapterIds.has(c.id)).map(c=>({id:c.id,focus:clean(c.focus,300),conclusion:clean(c.conclusion,350),connection:clean(c.connection,250),evidenceRefs:(Array.isArray(c.evidenceRefs)?c.evidenceRefs:[]).filter(x=>ids.has(x)).slice(0,16)}))}:null;
- return {version:raw.version,storytelling:{primary:clean(raw.storytelling?.primary,20),secondary:(Array.isArray(raw.storytelling?.secondary)?raw.storytelling.secondary:[]).slice(0,2).map(x=>clean(x,20)),conflictSource:ids.has(raw.storytelling?.conflictSource)?raw.storytelling.conflictSource:null},phase:raw.phase,product:raw.product,label:clean(raw.label,60),year:Number(raw.year)||null,age:Number(raw.age)||null,birthTimeKnown:raw.birthTimeKnown===true,limits:(Array.isArray(raw.limits)?raw.limits:[]).slice(0,8).map(x=>clean(x,300)),ledger,chapters,requestedChapters:requested,plan,userStatements:clean(JSON.stringify(raw.userStatements||{}),7000),feedback:clean(JSON.stringify(raw.feedback||[]),1800),depth:raw.depth==='pdf'?'pdf':'web',fieldRequests:(Array.isArray(raw.fieldRequests)?raw.fieldRequests:[]).slice(0,18).filter(f=>/^[a-zA-Z0-9_-]{1,30}$/.test(f.id||'')).map(f=>({id:f.id,ask:clean(f.ask,300),max:Math.min(600,Math.max(8,Number(f.max)||100)),context:clean(f.context,2200)}))};
+ return {version:raw.version,clientProtocol:raw.clientProtocol==='incremental-v2'?'incremental-v2':'legacy',storytelling:{primary:clean(raw.storytelling?.primary,20),secondary:(Array.isArray(raw.storytelling?.secondary)?raw.storytelling.secondary:[]).slice(0,2).map(x=>clean(x,20)),conflictSource:ids.has(raw.storytelling?.conflictSource)?raw.storytelling.conflictSource:null},phase:raw.phase,product:raw.product,label:clean(raw.label,60),year:Number(raw.year)||null,age:Number(raw.age)||null,birthTimeKnown:raw.birthTimeKnown===true,limits:(Array.isArray(raw.limits)?raw.limits:[]).slice(0,8).map(x=>clean(x,300)),ledger,chapters,requestedChapters:requested,plan,userStatements:clean(JSON.stringify(raw.userStatements||{}),7000),feedback:clean(JSON.stringify(raw.feedback||[]),1800),depth:raw.depth==='pdf'?'pdf':'web',fieldRequests:(Array.isArray(raw.fieldRequests)?raw.fieldRequests:[]).slice(0,18).filter(f=>/^[a-zA-Z0-9_-]{1,30}$/.test(f.id||'')).map(f=>({id:f.id,ask:clean(f.ask,300),max:Math.min(600,Math.max(8,Number(f.max)||100)),context:clean(f.context,2200)}))};
+}
+function professionalReportFormat(data){
+ const str={type:'string'},arr=(items,minItems=0,maxItems=128)=>({type:'array',items,minItems,maxItems}),obj=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
+ const ids=(data.ledger||[]).map(s=>s.id),ref=ids.length?{type:'string',enum:ids}:str,refs=arr(ref,2,16);
+ const allIds=(data.chapters||[]).map(c=>c.id),requestedIds=(data.requestedChapters||[]).map(c=>c.id),chapterId=allIds.length?{type:'string',enum:allIds}:str;
+ const chapter=obj({id:chapterId,focus:str,conclusion:{type:'string',minLength:15},connection:str,evidenceRefs:refs});
+ const profile=obj({theme:{type:'string',minLength:8,maxLength:100},mainConclusion:{type:'string',minLength:15},strength:str,challenge:str,action:str,closing:str,keywords:arr(str,1,5),evidenceRefs:refs});
+ const fieldIds=(data.fieldRequests||[]).map(f=>f.id),analysis=data.clientProtocol==='incremental-v2'?{}:{analysis:obj({basis:str,mechanism:str,condition:str})};
+ const schemas={plan:obj({profile,chapters:arr(chapter,allIds.length||1,allIds.length||80),links:arr(obj({from:chapterId,to:chapterId,evidenceRefs:arr(ref,1,16),development:str}))}),chapters:obj({sections:arr(obj({id:requestedIds.length?{type:'string',enum:requestedIds}:chapterId,evidenceRefs:refs,...analysis,paragraphs:arr({type:'string',minLength:10},2,8)}),requestedIds.length||1,requestedIds.length||4)}),fields:obj({fields:arr(obj({id:fieldIds.length?{type:'string',enum:fieldIds}:str,text:str,evidenceRefs:refs}),fieldIds.length||1,fieldIds.length||18)})};
+ return {type:'json_schema',name:'professional_report_'+data.phase,strict:true,schema:schemas[data.phase]};
 }
 function professionalReportSystem(data,language){
  return `본인은 원국과 실제 운을 종합해 상담하는 천기예요. ${languageInstruction(language)}
@@ -1678,7 +1694,7 @@ ${storyWritingPolicy()}
 }
 function professionalReportUser(data){
  if(data.phase==='fields')return '이미 검증된 AI 본문과 실제 계산 자료(JSON 데이터):\n'+JSON.stringify(data)+'\nfieldRequests의 각 칸을 AI 본문에 맞춰 새로 요약하세요. 별도의 사건이나 계산값을 보태지 마세요. max는 공백 포함 최대 글자 수예요. 짧은 칸은 명사구, 긴 칸은 자연스럽게 끝나는 완결문으로 써요. 숫자·연도·글자는 ledger에 있는 것만 사용하세요. 모든 칸을 빠짐없이 반환하세요. 형식: {"fields":[{"id":"지정 id","text":"요약문","evidenceRefs":["실제 근거 id 두 개 이상"]}]}';
- const source={...data};return '구조화된 실제 계산 자료와 사용자 진술(JSON 데이터):\n'+JSON.stringify(source)+'\n\n'+(data.phase==='plan'?`먼저 보고서 전체를 설계하세요. 지정된 모든 chapters를 같은 순서로 포함하고 장마다 다른 질문에 답하세요. 월별 장은 포함된 모든 월의 month.연도.월 근거를 배정하세요. 결과 형식: {"profile":{"theme":"8~70자의 핵심 제목","mainConclusion":"전체를 연결하는 결론","strength":"강점과 이유","challenge":"부담과 조건","action":"판단 기준","closing":"도입을 회수하는 마무리","keywords":["주제1","주제2","주제3"],"evidenceRefs":["실제 id 두 개 이상"]},"chapters":[{"id":"지정 id","focus":"이 장에서 새롭게 풀 질문","conclusion":"20자 이상의 핵심 결론","connection":"실제 공유 근거가 있는 앞/뒤 장과의 연결","evidenceRefs":["이 장에서 사용할 실제 id 두 개 이상"]}]} 최상위 links 배열도 반환하세요: [{"from":"앞 장 id","to":"뒤 장 id","evidenceRefs":["양쪽 장에 실제로 배정한 공통 근거 id"],"development":"같은 근거가 다음 영역에서 어떻게 다른 문제로 발전하는지"}]. 8장 이상 보고서는 적어도 하나의 근거 있는 연결을 설계하세요. 공유 근거가 없는 장은 억지로 연결하지 마세요. 서로 다른 장에 같은 결론을 붙이지 마세요.`:`requestedChapters에 있는 장만 집필하세요. 계획(plan)의 해당 장에 배정된 evidenceRefs 안에서 해석하세요. links에 연결된 장이라면 공유 근거를 짧게 되짚고 이번 영역에서 무엇이 달라지는지 설명하세요. ${data.depth==='pdf'?'각 장은 3~5문단, 공백 포함 650~1800자 안에서 조건별 차이와 근거 연결을 자세히 풀어요.':'각 장은 3~4문단, 공백 포함 300~1000자로 핵심을 풀어요.'} 문단의 길이를 맞추려고 같은 말을 늘리지 마세요. months가 있는 장은 해당 월을 모두 나누어 최소 한 문단씩 쓰고, 각 월의 실제 근거와 달라지는 조건을 설명하세요. 지정된 것 외의 장/연도를 만들지 마세요. analysis의 basis(어떤 원국/운/명반/이름의 근거), mechanism(그 근거가 성향/문제로 이어지는 이유), condition(다른 모습으로 나타나는 조건)은 각각 15자 이상으로 쓰고, 동일한 문장을 본문 paragraphs 안에도 자연스럽게 포함하세요. 본문과 다른 내부 분석을 쓰지 마세요. 형식: {"sections":[{"id":"지정 id","evidenceRefs":["실제로 사용한 id 두 개 이상"],"analysis":{"basis":"본문에 들어간 실제 근거 설명","mechanism":"본문에 들어간 인과 설명","condition":"본문에 들어간 조건 설명"},"paragraphs":["근거와 결론이 이어지는 첫 문단","일상에서 나타나는 이유와 모습","조건에 따른 차이와 다음 선택"]}]} feedback이 있으면 해당 문제만 고치고 이미 성공한 장을 다시 쓰지 마세요.`);
+ const source={...data};return '구조화된 실제 계산 자료와 사용자 진술(JSON 데이터):\n'+JSON.stringify(source)+'\n\n'+(data.phase==='plan'?`먼저 짧은 설계안만 만드세요. 아직 본문을 집필하지 마세요. profile의 각 설명은 30~80자, focus·conclusion·connection은 각각 20~70자 안에서 핵심만 적으세요. 지정된 모든 chapters를 같은 순서로 포함하고 장마다 다른 질문에 답하세요. 월별 장은 포함된 모든 월의 month.연도.월 근거를 배정하세요. 결과 형식: {"profile":{"theme":"8~70자의 핵심 제목","mainConclusion":"전체를 연결하는 결론","strength":"강점과 이유","challenge":"부담과 조건","action":"판단 기준","closing":"도입을 회수하는 마무리","keywords":["주제1","주제2","주제3"],"evidenceRefs":["실제 id 두 개 이상"]},"chapters":[{"id":"지정 id","focus":"이 장에서 새롭게 풀 질문","conclusion":"20자 이상의 핵심 결론","connection":"실제 공유 근거가 있는 앞/뒤 장과의 연결","evidenceRefs":["이 장에서 사용할 실제 id 두 개 이상"]}]} 최상위 links 배열도 반환하세요: [{"from":"앞 장 id","to":"뒤 장 id","evidenceRefs":["양쪽 장에 실제로 배정한 공통 근거 id"],"development":"같은 근거가 다음 영역에서 어떻게 다른 문제로 발전하는지"}]. 8장 이상 보고서는 적어도 하나의 근거 있는 연결을 설계하세요. 공유 근거가 없는 장은 억지로 연결하지 마세요. 서로 다른 장에 같은 결론을 붙이지 마세요.`:`requestedChapters에 있는 장만 집필하세요. 계획(plan)의 해당 장에 배정된 evidenceRefs 안에서 해석하세요. links에 연결된 장이라면 공유 근거를 짧게 되짚고 이번 영역에서 무엇이 달라지는지 설명하세요. ${data.depth==='pdf'?'각 장은 3~5문단, 공백 포함 650~1800자 안에서 조건별 차이와 근거 연결을 자세히 풀어요.':'각 장은 3~4문단, 공백 포함 300~1000자로 핵심을 풀어요.'} 문단의 길이를 맞추려고 같은 말을 늘리지 마세요. months가 있는 장은 해당 월을 모두 나누어 최소 한 문단씩 쓰고, 각 월의 실제 근거와 달라지는 조건을 설명하세요. 지정된 것 외의 장/연도를 만들지 마세요. ${data.clientProtocol==='incremental-v2'?'내부 분석 문장을 별도 필드에 다시 복사하지 마세요.':'각 section에 analysis:{basis,mechanism,condition}도 반환하세요. 세 값은 각각 15자 이상이며 본문에 동일한 문장으로 포함하세요.'} 이유와 조건별 차이는 본문 안에서 자연스럽게 설명하세요. 형식: {"sections":[{"id":"지정 id","evidenceRefs":["실제로 사용한 id 두 개 이상"],"paragraphs":["근거와 결론이 이어지는 첫 문단","일상에서 나타나는 이유와 모습","조건에 따른 차이와 다음 선택"]}]} feedback이 있으면 해당 문제만 고치고 이미 성공한 장을 다시 쓰지 마세요.`);
 }
 
 function buildReadingSystemPrompt(category, meta) {

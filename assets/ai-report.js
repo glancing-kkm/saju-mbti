@@ -65,9 +65,27 @@ function selectStory(cat,ledger){
  return {primary,secondary:unique([...(relation?['STORY_02']:[]),...(['life','newyear','ziwei'].includes(cat)?['STORY_06']:[])]).filter(x=>x!==primary),conflictSource:relation?.id||null,rule:'상품 목적을 우선하고, 상충 서사는 실제 관계 신호가 있을 때만 선택'};
 }
 function parse(text){try{const t=String(text||''),a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(t.slice(a,b+1));}catch(e){return null;}}
+const inflight=new Map();
+function reportError(code,message,status=0){return Object.assign(new Error(message),{code,status,permanent:['NEED_PAYMENT','PAID_LIMIT','INVALID_REPORT_SOURCE'].includes(code)||[400,401,403,404].includes(status)});}
+function diagnostic(report,event,details={}){const row={at:Date.now(),product:report.product,event,...details};try{const rows=JSON.parse(localStorage.getItem('ai-report-diagnostics-v2')||'[]');rows.push(row);localStorage.setItem('ai-report-diagnostics-v2',JSON.stringify(rows.slice(-40)));}catch(e){}}
+function normalizePlan(raw,report){
+ if(!raw||!raw.profile||!Array.isArray(raw.chapters))return raw;
+ const plan=JSON.parse(JSON.stringify(raw)),by=new Map(plan.chapters.map(c=>[c.id,c]));
+ plan.chapters=report.chapters.map(c=>by.get(c.id)).filter(Boolean);
+ // Attach the exact requested months already present in the calculation ledger; no prose or facts are invented.
+ for(const c of report.chapters){const p=by.get(c.id);if(p&&Array.isArray(p.evidenceRefs))p.evidenceRefs=unique(p.evidenceRefs.concat(c.months.map(m=>`month.${report.year}.${m}`).filter(id=>report.ledger.some(x=>x.id===id))));}
+ if(!Array.isArray(plan.links))plan.links=[];
+ plan.links=plan.links.filter(l=>{const a=by.get(l.from),b=by.get(l.to);return a&&b&&report.chapters.findIndex(c=>c.id===l.from)<report.chapters.findIndex(c=>c.id===l.to)&&typeof l.development==='string'&&l.development.length>=15&&Array.isArray(l.evidenceRefs)&&l.evidenceRefs.length&&l.evidenceRefs.every(id=>a.evidenceRefs?.includes(id)&&b.evidenceRefs?.includes(id));});
+ if(!plan.links.length&&plan.chapters.length>=8){for(let i=1;i<plan.chapters.length;i++){const a=plan.chapters[i-1],b=plan.chapters[i],shared=(a.evidenceRefs||[]).filter(id=>(b.evidenceRefs||[]).includes(id));if(shared.length&&typeof b.connection==='string'&&b.connection.length>=15){plan.links.push({from:a.id,to:b.id,evidenceRefs:shared,development:b.connection});break;}}}
+ return plan;
+}
+function normalizeSection(raw){
+ if(!raw||!Array.isArray(raw.paragraphs))return raw;
+ return {...raw,paragraphs:raw.paragraphs.filter(t=>typeof t==='string').map(t=>t.trim()).filter(Boolean)};
+}
 function validRefs(refs,report,min=2){return Array.isArray(refs)&&unique(refs).length>=min&&refs.every(id=>report.ledger.some(s=>s.id===id));}
 function validLinks(plan,report){const links=plan?.links;if(!Array.isArray(links)||(report.chapters.length>=8&&!links.length))return false;return links.every(l=>{const from=plan.chapters?.find(c=>c.id===l.from),to=plan.chapters?.find(c=>c.id===l.to);return from&&to&&report.chapters.findIndex(c=>c.id===l.from)<report.chapters.findIndex(c=>c.id===l.to)&&typeof l.development==='string'&&l.development.length>=15&&Array.isArray(l.evidenceRefs)&&l.evidenceRefs.length>0&&l.evidenceRefs.every(id=>from.evidenceRefs.includes(id)&&to.evidenceRefs.includes(id));});}
-function planQuality(plan,report){return !!(plan&&plan.profile&&typeof plan.profile.theme==='string'&&plan.profile.theme.length>=8&&plan.profile.theme.length<=100&&['mainConclusion','strength','challenge','action','closing'].every(k=>typeof plan.profile[k]==='string'&&plan.profile[k].length>=15)&&Array.isArray(plan.profile.keywords)&&plan.profile.keywords.length===3&&validRefs(plan.profile.evidenceRefs,report)&&!factIssues(Object.values(plan.profile).filter(v=>typeof v==='string').join(' '),report,plan.profile.evidenceRefs).length&&Array.isArray(plan.chapters)&&plan.chapters.length===report.chapters.length&&validLinks(plan,report)&&new Set(plan.chapters.map(c=>compact(c.conclusion))).size===report.chapters.length&&report.chapters.every(c=>{const p=plan.chapters.find(x=>x.id===c.id);return p&&typeof p.conclusion==='string'&&p.conclusion.length>=20&&validRefs(p.evidenceRefs,report)&&typeof p.focus==='string'&&!factIssues(p.conclusion,report,p.evidenceRefs).length&&c.months.every(m=>p.evidenceRefs.includes(`month.${report.year}.${m}`));}));}
+function planQuality(plan,report){return !!(plan&&plan.profile&&typeof plan.profile.theme==='string'&&plan.profile.theme.length>=8&&plan.profile.theme.length<=100&&typeof plan.profile.mainConclusion==='string'&&plan.profile.mainConclusion.length>=15&&['strength','challenge','action','closing'].every(k=>typeof plan.profile[k]==='string'&&plan.profile[k].trim().length>0)&&Array.isArray(plan.profile.keywords)&&plan.profile.keywords.length>=1&&plan.profile.keywords.length<=5&&validRefs(plan.profile.evidenceRefs,report)&&!factIssues(Object.values(plan.profile).filter(v=>typeof v==='string').join(' '),report,plan.profile.evidenceRefs).length&&Array.isArray(plan.chapters)&&plan.chapters.length===report.chapters.length&&validLinks(plan,report)&&new Set(plan.chapters.map(c=>compact(c.conclusion))).size===report.chapters.length&&report.chapters.every(c=>{const p=plan.chapters.find(x=>x.id===c.id);return p&&typeof p.conclusion==='string'&&p.conclusion.length>=15&&validRefs(p.evidenceRefs,report)&&typeof p.focus==='string'&&!factIssues(p.conclusion,report,p.evidenceRefs).length&&c.months.every(m=>p.evidenceRefs.includes(`month.${report.year}.${m}`));}));}
 function natalClaimsConsistent(body,report){
  if(['ziwei','gunghap'].includes(report.product))return true;
  const chart=report.ledger.find(x=>x.id==='name.chart')?.value;
@@ -98,10 +116,11 @@ function factIssues(body,report,refs){
 function chapterIssues(section,report,plan,accepted={}){
  const issues=[];if(!section||!report.chapters.some(c=>c.id===section.id))return ['unknown_chapter'];
  const target=report.chapters.find(c=>c.id===section.id),p=plan?.chapters.find(c=>c.id===section.id),ps=section.paragraphs,refs=section.evidenceRefs;
- if(!validRefs(refs,report)||refs.some(id=>!p?.evidenceRefs.includes(id)))issues.push('unassigned_evidence');
- if(!Array.isArray(ps)||ps.length<3||ps.length>6||ps.some(x=>typeof x!=='string'||x.length<35)||ps.join('').length<240||ps.join('').length>2400)return issues.concat('insufficient_explanation');
+ if(!validRefs(refs,report))issues.push('unassigned_evidence');
+ if(!Array.isArray(ps)||ps.length<2||ps.length>8||ps.some(x=>typeof x!=='string'||x.trim().length<10)||ps.join('').length<240||ps.join('').length>2400)return issues.concat('insufficient_explanation');
  const body=ps.join(' '),analysis=section.analysis;
- if(!analysis||['basis','mechanism','condition'].some(k=>typeof analysis[k]!=='string'||analysis[k].length<15||!body.includes(analysis[k])))issues.push('missing_causal_chain');
+ // Causal reasoning belongs in prose. Internal analysis strings need not be verbatim duplicates.
+ if(!/(?:때문|그래서|따라|이유|조건|반면|다만|경우|때는|다면|이에 따라|연결|이어|으로|에서|because|therefore|when|if )/i.test(body))issues.push('missing_causal_chain');
  const anchors=report.ledger.filter(s=>refs?.includes(s.id)).flatMap(s=>s.anchors);if(!anchors.some(a=>body.includes(a)))issues.push('basis_not_in_body');
  issues.push(...factIssues(body,report,refs));
  if(!report.birthTimeKnown&&refs?.some(id=>id.startsWith('decade.'))&&!/대략|가정|참고|달라|불확실|확인|approx|uncertain/i.test(body))issues.push('unknown_decade_boundary');
@@ -128,57 +147,104 @@ function render(report,state,visual){
  const uncertainty=!report.birthTimeKnown?'<p class="birth-time-reference">'+esc(report.product==='ziwei'?'출생시각을 몰라 명궁·신궁과 별 배치는 임시 명반 기준으로 살펴봐요. 시각을 확인하면 풀이가 달라질 수 있어요.':'출생시각 미상으로 시주는 해석에서 제외했어요. 대운의 시작 시기는 참고 범위로 살펴봐요.')+'</p>':'';
  const head=`<header class="lv4-hero"><small>${esc(report.label)}</small><h1>${esc(state.plan.profile.theme)}</h1><p>${lv4Text(esc(state.plan.profile.mainConclusion))}</p><p>${name}${_meta.sy}년 ${_meta.sm}월 ${_meta.sd}일${time?' · '+esc(time.label):''}</p></header>`;
  const nav=`<nav class="lv4-toc" aria-label="전체 풀이 목차"><b>전체 풀이 목차</b>${report.chapters.map(c=>`<a href="#${c.id}">${esc(c.title)}</a>`).join('')}</nav>`;
- return head+uncertainty+visual.orbs.join('')+(visual.boards||[]).join('')+nav+report.chapters.map((c,i)=>`${(visual.diagrams||[]).filter((x,k)=>i===(k===0?0:Math.floor(report.chapters.length*2/3)+k-1)).join('')}${i&&i%4===0&&visual.scenes.length?'<figure class="lc-scene">'+visual.scenes[(i/4-1)%visual.scenes.length]+'</figure>':''}<section class="lv4-sec ai-authored-chapter" id="${c.id}" data-ai-authored="true"><div class="lv4-sec-head"><span class="lv4-no">${i+1}</span><h2>${esc(c.title)}</h2></div>${state.accepted[c.id].paragraphs.map(t=>'<p>'+lv4Text(esc(t))+'</p>').join('')}</section>`).join('')+(visual.portraits.length?'<section class="lc-card"><h3>관계 유형의 참고 이미지</h3>'+visual.portraits.join('')+'</section>':'');
+ return head+uncertainty+visual.orbs.join('')+(visual.boards||[]).join('')+nav+report.chapters.map((c,i)=>`${(visual.diagrams||[]).filter((x,k)=>i===(k===0?0:Math.floor(report.chapters.length*2/3)+k-1)).join('')}${i&&i%4===0&&visual.scenes.length?'<figure class="lc-scene">'+visual.scenes[(i/4-1)%visual.scenes.length]+'</figure>':''}<section class="lv4-sec ai-authored-chapter" id="${c.id}" data-ai-authored="${state.accepted[c.id]?'true':'false'}"><div class="lv4-sec-head"><span class="lv4-no">${i+1}</span><h2>${esc(c.title)}</h2></div>${state.accepted[c.id]?state.accepted[c.id].paragraphs.map(t=>'<p>'+lv4Text(esc(t))+'</p>').join(''):'<p class="ai-chapter-pending" role="status">풀이 중입니다</p>'}</section>`).join('')+(state.complete&&visual.portraits.length?'<section class="lc-card" data-portrait-references><h3>관계 유형의 참고 이미지</h3>'+visual.portraits.join('')+'</section>':'');
 }
-function showError(el,message,retry){el.classList.add('reading-pending');el.removeAttribute('aria-busy');let wait=el.querySelector(':scope > .reading-wait');if(!wait){el.insertAdjacentHTML('afterbegin',readingLoadingHTML());wait=el.querySelector(':scope > .reading-wait');}wait.innerHTML='<p>'+esc(message)+'</p><button type="button" class="analyze-btn">다시 풀이하기</button>';wait.querySelector('button').onclick=retry;}
+function showError(el,error,retry,hasContent=false){
+ el.classList.remove('reading-pending');el.removeAttribute('aria-busy');el.querySelector(':scope > .reading-wait')?.remove();el.querySelector(':scope > .ai-report-notice')?.remove();
+ const auth=error?.code==='NEED_PAYMENT',limit=error?.code==='PAID_LIMIT',validation=/VALIDATION/.test(error?.code||'');
+ const message=auth?'결제 정보를 확인하지 못했어요. 결제한 기기와 이용 기간을 확인해 주세요.':limit?'이 결제의 생성 요청 한도에 도달했어요. 결제 내역과 함께 고객센터로 문의해 주세요.':validation?'계산 자료와 맞지 않는 내용은 표시하지 않았어요. 완성된 내용과 입력 정보는 저장돼 있어요.':hasContent?'받은 풀이는 저장했어요. 남은 부분은 서버 연결을 확인한 뒤 이어서 받을 수 있어요.':'서버 연결을 확인하고 있어요. 입력 정보는 유지돼요.';
+ const box=document.createElement('div');box.className='ai-report-notice';box.setAttribute('role','status');box.innerHTML='<p>'+message+'</p>';
+ if(!auth&&!limit){const button=document.createElement('button');button.type='button';button.textContent='이어서 불러오기';button.onclick=retry;box.appendChild(button);}el.appendChild(box);
+ if(!auth&&!limit&&g.addEventListener){const resume=()=>{if(el.isConnected)retry();};g.addEventListener('online',resume,{once:true});}
+}
 async function request(report,phase,plan,chapters,feedback,opts={}){
  const payload=buildAIReadingPayload(opts.kind||'reading-deep',{source:opts.kind==='report-tpl'?'paid-report':'paid-deep'});if(!payload)throw Error('풀이 정보를 확인해 주세요.');
  // No calculated prose, old axes-based draft or fictional person details are sent as an interpretation.
  payload.sajuContext.detailedReading='';payload.sajuContext.gyeokguk='별도 종합 판정 없음';payload.sajuContext.yongsin='별도 종합 판정 없음';payload.sajuContext.strength='별도 종합 판정 없음';payload.sajuContext.persona='';
  if(opts.token)payload.paidToken=opts.token;
- payload.meta={...payload.meta,reportName:report.label,readingKind:report.product,synthesis:true,aiReport:{...report,phase,plan:plan||null,requestedChapters:chapters||[],feedback:feedback||[]}};
- const {resp,data}=await fetchJsonWithRetry((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2);
- if(!resp?.ok||data?.truncated)throw Error('완성된 풀이를 받지 못했어요.');const out=parse(data.text||'');if(!out)throw Error('풀이 형식을 다시 확인해야 해요.');return out;
+ payload.meta={...payload.meta,reportName:report.label,readingKind:report.product,synthesis:true,aiReport:{...report,clientProtocol:'incremental-v2',phase,plan:plan||null,requestedChapters:chapters||[],feedback:feedback||[]}};
+ const started=performance.now(),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),opts.timeoutMs||(opts.kind==='report-tpl'?150000:100000));
+ try{
+  const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/, '')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
+  const data=await resp.json().catch(()=>null);
+  diagnostic(report,'response',{phase,status:resp.status,ms:Math.round(performance.now()-started),code:data?.code||''});
+  if(!resp.ok)throw reportError(data?.code||'HTTP_ERROR',data?.error||'서버 연결 오류',resp.status);
+  if(data?.truncated)throw reportError('TRUNCATED','AI 응답이 중간에 끊겼어요.');const out=parse(data?.text||'');if(!out)throw reportError('INVALID_JSON','AI 응답 형식을 확인해야 해요.');return out;
+ }catch(e){diagnostic(report,'request_error',{phase,code:e.code||(controller.signal.aborted?'TIMEOUT':'NETWORK'),ms:Math.round(performance.now()-started)});if(e.code)throw e;throw reportError(controller.signal.aborted?'TIMEOUT':'NETWORK','서버 응답을 받지 못했어요.');}finally{clearTimeout(timer);}
 }
 async function author(report,opts={}){
+ const key=JSON.stringify([report,opts.kind||'reading-deep',opts.endpoint||WORKER_URL]);let entry=inflight.get(key);
+ if(!entry){entry={listeners:new Set(),state:null};inflight.set(key,entry);entry.promise=authorCore(report,{...opts,onState:state=>{entry.state=state;for(const listener of entry.listeners)listener(state);}}).finally(()=>{if(inflight.get(key)===entry)inflight.delete(key);});}
+ if(opts.onState){entry.listeners.add(opts.onState);if(entry.state)opts.onState(entry.state);}
+ try{return await entry.promise;}finally{if(opts.onState)entry.listeners.delete(opts.onState);}
+}
+
+async function authorCore(report,opts={}){
  const fingerprint=JSON.stringify(report),storageKey=cacheKey(report)+(opts.kind==='report-tpl'?':pdf':'');
  let old=null;try{old=JSON.parse(localStorage.getItem(storageKey)||'null');}catch(e){}
  const state=old&&old.exp>Date.now()&&old.fingerprint===fingerprint?old:{fingerprint,accepted:{},plan:null};
  const save=()=>{try{localStorage.setItem(storageKey,JSON.stringify({...state,exp:Date.now()+AI_READING_TTL_MS}));}catch(e){}};
- let plan=state.plan;
+ const notify=()=>opts.onState?.(state);
+ let plan=normalizePlan(state.plan,report);
  if(!planQuality(plan,report)){
-  plan=null;for(let attempt=0;attempt<2&&!plan;attempt++){try{const out=await request(report,'plan',null,null,attempt?['실제 근거 ID와 모든 장을 빠짐없이 구성하세요.']:[],opts);if(planQuality(out,report))plan=out;}catch(e){if(attempt)throw e;}}
-  if(!plan)throw Error('보고서 전체의 해석 방향을 다시 정리해야 해요.');state.plan=plan;save();
- }
+  plan=null;for(let attempt=0;attempt<2&&!plan;attempt++){try{const out=normalizePlan(await request(report,'plan',null,null,attempt?['profile의 모든 문장과 chapters 전체를 반환하고 실제 근거 ID 두 개 이상을 배정하세요.']:[],opts),report);if(planQuality(out,report))plan=out;else diagnostic(report,'plan_rejected',{attempt:attempt+1});}catch(e){if(e.permanent||attempt)throw e;}}
+  if(!plan)throw reportError('PLAN_VALIDATION','보고서 전체의 해석 방향을 다시 정리해야 해요.');state.plan=plan;save();
+ }else state.plan=plan;
  for(const [id,value]of Object.entries(state.accepted))if(chapterIssues(value,report,plan).length)delete state.accepted[id];
+ notify();
+ state.complete=report.chapters.every(c=>!!state.accepted[c.id]);
  const missing=report.chapters.filter(c=>!state.accepted[c.id]),groups=[];for(let i=0;i<missing.length;i+=4)groups.push(missing.slice(i,i+4));
- let next=0;const worker=async()=>{while(next<groups.length){const group=groups[next++];let feedback=[];
-  for(let attempt=0;attempt<2;attempt++){
+ let next=0,fatal=null,lastError=null;
+ const worker=async()=>{while(next<groups.length&&!fatal){const group=groups[next++];let feedback=[];
+  for(let attempt=0;attempt<2&&!fatal;attempt++){
    const remaining=group.filter(c=>!state.accepted[c.id]);if(!remaining.length)break;
-   try{const out=await request(report,'chapters',plan,remaining,feedback,opts);feedback=[];
-    for(const c of remaining){const section=out.sections?.find(x=>x.id===c.id),issues=chapterIssues(section,report,plan,state.accepted);if(!issues.length){state.accepted[c.id]=section;save();}else feedback.push({id:c.id,issues});}
-   }catch(e){feedback=[{issues:['일시 오류 또는 잘린 응답. 완성된 장만 작성하세요.']}];}
+   // A failed large response is retried as smaller pieces, never as another full report.
+   const parts=attempt&&remaining.length>2?[remaining.slice(0,2),remaining.slice(2)]:[remaining];
+   for(const part of parts){if(fatal)break;
+    try{const out=await request(report,'chapters',plan,part,feedback,opts);feedback=[];
+     for(const c of part){const section=normalizeSection(out.sections?.find(x=>x.id===c.id)),issues=chapterIssues(section,report,plan,state.accepted);if(!issues.length){state.accepted[c.id]=section;save();notify();}else{feedback.push({id:c.id,issues,instruction:'기존에 통과한 장은 쓰지 마세요. 실제 ledger의 글자·연도·근거 ID를 다시 대조하고, 이 장의 근거와 작용 이유 및 조건별 차이를 본문에서 설명하세요.'});diagnostic(report,'chapter_rejected',{id:c.id,issues,attempt:attempt+1});}}
+    }catch(e){lastError=e;if(e.permanent){fatal=e;break;}feedback=[{issues:[e.code||'NETWORK'],instruction:'요청한 장만 완결된 JSON으로 반환하세요.'}];diagnostic(report,'retry',{phase:'chapters',code:e.code||'NETWORK',attempt:attempt+1});}
+   }
   }
   opts.onProgress?.(Object.keys(state.accepted).length,report.chapters.length);
  }};
- await Promise.all(Array.from({length:Math.min(2,groups.length)},worker));
- if(report.chapters.some(c=>!state.accepted[c.id]))throw Error('일부 장의 설명이 충분하지 않아 다시 정리해야 해요.');
- return state;
+ await Promise.all(Array.from({length:Math.min(opts.kind==='report-tpl'?2:3,groups.length)},worker));
+ if(fatal)throw fatal;
+ if(report.chapters.some(c=>!state.accepted[c.id]))throw lastError||reportError('CHAPTER_VALIDATION','일부 장을 이어서 작성해야 해요.');
+ state.complete=true;save();notify();return state;
 }
 async function run(el){
  if(el._fullReportTask)return el._fullReportTask;
+ const currentIdentity=JSON.stringify({meta:_meta,lang:currentLanguage()});
+ if(el.dataset.aiComplete===VERSION&&el._completedReportIdentity===currentIdentity&&el.querySelector('[data-ai-authored="true"]'))return;
  const task=async()=>{
   const cat=category(el),report=sources(cat,_saju,{..._meta,gender:_meta.gender||gender});
-  const identity=JSON.stringify({meta:_meta,lang:currentLanguage()}),stillCurrent=()=>identity===JSON.stringify({meta:_meta,lang:currentLanguage()});
-  const visual=el._fullReportVisual||visuals(el);el._fullReportVisual=visual;
-  el.querySelector(':scope > .reading-wait')?.remove();const finish=beginReadingWait(el);let completed=false;
+  const identity=JSON.stringify({meta:_meta,lang:currentLanguage()}),stillCurrent=()=>el.isConnected&&identity===JSON.stringify({meta:_meta,lang:currentLanguage()});
+  const visual=el._fullReportVisual||visuals(el);el._fullReportVisual=visual;let latest=null,progress=null;
+  delete el.dataset.aiComplete;delete el.dataset.deepDone;el._reportSnapshot=null;el.innerHTML=readingLoadingHTML();el.classList.add('reading-pending');el.setAttribute('aria-busy','true');
+  const update=state=>{
+   if(!stillCurrent()||!planQuality(state.plan,report))return;latest=state;
+   if(!el.querySelector('.ai-report-content')){el.innerHTML='<div class="ai-report-content"></div><div class="ai-report-progress" role="status"></div>';el.classList.remove('reading-pending');el.setAttribute('aria-busy','true');}
+   const content=el.querySelector('.ai-report-content'),snapshot=JSON.stringify([state.plan,Object.keys(state.accepted),state.complete]);
+   if(snapshot!==el._reportSnapshot){
+    const fresh=document.createElement('div');fresh.innerHTML=render(report,state,visual);
+    if(!content.children.length)content.append(...fresh.childNodes);
+    else{
+     for(const c of report.chapters){const old=content.querySelector('#'+c.id);if(state.accepted[c.id]&&old?.dataset.aiAuthored!=='true'){const replacement=fresh.querySelector('#'+c.id);if(replacement)old.replaceWith(replacement);}}
+     if(state.complete&&!content.querySelector('[data-portrait-references]')){const portraits=fresh.querySelector('[data-portrait-references]');if(portraits)content.append(portraits);}
+    }
+    el._reportSnapshot=snapshot;
+   }
+   progress=el.querySelector('.ai-report-progress');if(progress)progress.textContent='풀이 중입니다 · '+Object.keys(state.accepted).length+'/'+report.chapters.length+'장';
+  };
   try{
-   const state=await author(report);if(!stillCurrent())return;
-   el.innerHTML=render(report,state,visual);(visual.controls||[]).forEach(node=>el.appendChild(node));el._aiReportEvidence={ledger:report.ledger,plan:state.plan,chapters:state.accepted};el.dataset.aiComplete=VERSION;completed=true;el.dataset.deepDone='1';
+   const state=await author(report,{onState:update});if(!stillCurrent())return;
+   update(state);el.querySelector('.ai-report-progress')?.remove();el.removeAttribute('aria-busy');el.querySelector('.ai-report-content').append(...(visual.controls||[]));
+   el._aiReportEvidence={ledger:report.ledger,plan:state.plan,chapters:state.accepted};el.dataset.aiComplete=VERSION;el.dataset.deepDone='1';el._completedReportIdentity=identity;
    el.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>hydratePortrait(card));
-  }finally{finish();if(!completed)showError(el,stillCurrent()?'풀이를 완성하지 못했어요. 저장된 장은 유지하고 나머지를 다시 작성할 수 있어요.':'입력 정보가 바뀌었어요. 새 정보로 풀이를 다시 작성해 주세요.',()=>run(el));}
+  }catch(error){if(!stillCurrent())return;el.querySelector('.ai-report-progress')?.remove();if(!latest)el.innerHTML='';showError(el,error,()=>run(el),!!latest);}
  };
- el._fullReportTask=task().catch(()=>{showError(el,'풀이를 완성하지 못했어요. 저장된 장은 유지하고 나머지를 다시 작성할 수 있어요.',()=>run(el));}).finally(()=>{el._fullReportTask=null;});return el._fullReportTask;
+ el._fullReportTask=task().catch(error=>{el.innerHTML='';showError(el,error,()=>run(el));}).finally(()=>{el._fullReportTask=null;});return el._fullReportTask;
 }
-g.AIReport={VERSION,CAT,enabled,category,outline,sources,selectStory,natalClaimsConsistent,factIssues,parse,planQuality,chapterIssues,render,request,author,run};
+g.AIReport={VERSION,CAT,enabled,category,outline,sources,selectStory,natalClaimsConsistent,factIssues,parse,normalizePlan,normalizeSection,planQuality,chapterIssues,render,request,author,run};
 })(globalThis);
