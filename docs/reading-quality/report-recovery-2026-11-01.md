@@ -39,3 +39,12 @@
 열려 있던 인생총운 화면의 실제 인증 상태에서 설계 응답 1건을 진단했다. 140,844ms 후 정상 JSON이 도착했고, 프로필과 12개 장 결론의 실제 근거/연도 검사는 모두 통과했다. 그러나 키워드는 5개(기존 검사 정확히 3개 요구), 장 연결 6개 중 3개는 양쪽 장에 함께 배정되지 않은 근거 ID를 가지고 있어 전체 계획이 탈락했다. 본문 생성 전에 계획 단계가 반복되는 원인을 확인했다.
 
 동일 실응답에 새 보정을 적용한 결과: 기존 `planQuality=false` → 새 `planQuality=true`, 실제 공유 근거가 확인된 연결 3개 유지. 근거가 없는 연결만 제외했으며 프로필·결론 산문은 바꾸지 않았다. 개인의 실제 사주/상담 문장은 로그나 이 문서에 기록하지 않는다. 이 조건을 회귀 테스트에 추가했다.
+
+## Live production recovery verification
+
+- Worker version: `3c068744-cb13-4a79-a5f0-bdaebce44078`, code `3b77ebc`.
+- Pages deployment: `4a7b960f-a143-4fde-99c7-85f6a833a24d`. Production HTML/JS/CSS hashes match the release files.
+- Reused the actual AI plan after metadata normalization. All 12 actual AI chapters were generated, validated and displayed in 13,721 ms. Three parallel responses took 12,099 / 13,275 / 13,685 ms, with no rejected chapters or additional retries.
+- Confirmed the existing user's page now displays 12 chapters and the chat allowance, without the previous retry button or error notice.
+- Separately tested a fresh plan: 12,111 ms and validation passed, compared with the 140,844 ms legacy diagnostic request.
+- These are component measurements for one real production input, not an end-to-end latency guarantee across products or a claim of divination accuracy. No calculated prose replaced AI authorship.
