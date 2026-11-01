@@ -524,6 +524,8 @@ body:has(#todayChoiceDialog[open]){overflow:hidden}
 .lv4-toc a{display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-radius:10px;color:var(--text);text-decoration:none;font-size:.95rem;line-height:1.5}
 .lv4-toc a:hover{background:var(--accent-soft)}
 .lv4-toc a span{flex:0 0 24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--font-heading);font-size:.8rem;line-height:24px;text-align:center}
+.lv4-toc .ai-toc-text{flex:1;min-width:0;font-style:normal}
+.ai-chapter-tag{font-size:.82em;color:var(--accent);white-space:nowrap}
 .lv4-sec{scroll-margin-top:84px;padding:24px 20px;border:1px solid var(--border);border-radius:18px;background:var(--card)}
 .lv4-sec-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
 .lv4-no{flex:none;min-width:38px;padding:3px 0;border-radius:10px;background:var(--accent);color:var(--on-accent);font-family:var(--font-heading);font-size:.9rem;line-height:1.5;text-align:center}
