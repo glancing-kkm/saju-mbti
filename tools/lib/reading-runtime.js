@@ -13,6 +13,7 @@ module.exports=function readingRuntime(root=process.env.READING_AUDIT_ROOT||path
  run(fs.readFileSync(path.join(root,'assets/vendor/astronomy.browser.min.js'),'utf8'));
  w.AIReportConfig={enabled:process.env.AI_REPORT_FULL==='1'};
  run(fs.readFileSync(path.join(root,'assets/premium-saju.js'),'utf8'));
+ run(fs.readFileSync(path.join(root,'assets/reading-stage.js'),'utf8'));
  run(fs.readFileSync(path.join(root,'assets/ai-report.js'),'utf8'));
  run(fs.readFileSync(path.join(root,'assets/reading-voice.js'),'utf8'));
  run(fs.readFileSync(path.join(root,'assets/interpretation-engine.js'),'utf8'));

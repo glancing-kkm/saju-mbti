@@ -776,6 +776,35 @@ function rpFill(plan,ai,d,spec,facts){
 const RP_CSS=`
 .rp-toc+.rp-toc{margin-top:0}
 .rp-ai .ai-birth,.rp-ai .ai-headline,.rp-ai .ai-basis,.rp-ai .ai-advice{border-radius:0}
+.rp-ai .ai-board,.rp-ai .ai-diagram{margin:4px 0 14px;padding:12px 14px;border:1px solid #e3dfd3}
+.rp-ai .ai-board figcaption,.rp-ai .ai-diagram figcaption{margin-bottom:8px;font-weight:800;color:#252c2b;font-size:12.5px}
+.rp-ai .ai-board-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.rp-ai .ai-bcol{display:flex;flex-direction:column;gap:5px;padding:4px}
+.rp-ai .ai-bcol.day{background:var(--ac3)}
+.rp-ai .ai-bplace{font-size:11px;color:#7d867f}
+.rp-ai .ai-bcell{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border:1px solid #ddd9cc}
+.rp-ai .ai-bcell b{font-family:'Nanum Myeongjo',serif;font-size:22px;line-height:1.15;color:#252c2b;font-weight:400}
+.rp-ai .ai-bko{font-size:10px;color:#5f6a62}
+.rp-ai .ai-bcell small{font-size:10.5px;color:#252c2b;font-weight:700}
+.rp-ai .ai-bhid{font-size:10px;color:#7d867f}
+.rp-ai .rp-body .ai-board-legend{margin:8px 0 0;font-size:10px;line-height:1.5;color:#7d867f}
+.rp-ai .ai-dia-top{display:flex;gap:8px;margin-bottom:8px}
+.rp-ai .ai-pill{padding:3px 9px;border:1px solid #ddd9cc;font-size:11px;color:#252c2b}
+.rp-ai .ai-rels,.rp-ai .ai-ohs{display:grid;gap:6px 18px;margin-top:8px}
+.rp-ai .ai-rels{grid-template-columns:1fr 1fr}
+.rp-ai .ai-rels>b{grid-column:1/-1}
+.rp-ai .ai-rels>b,.rp-ai .ai-ohs>b{font-size:11px;color:#5f6a62}
+.rp-ai .ai-rel{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px}
+.rp-ai .ai-chip{padding:2px 7px;border:1px solid;font-size:11px;color:#252c2b}
+.rp-ai .ai-rel-line{border-top:2px solid;height:0;text-align:center}
+.rp-ai .ai-rel-line em{position:relative;top:-.75em;padding:0 6px;font-style:normal;font-weight:800;font-size:11px;background:#faf8f3}
+.rp-ai .ai-oh{display:grid;grid-template-columns:52px 1fr 18px;align-items:center;gap:8px;font-size:11px;color:#5f6a62}
+.rp-ai .ai-oh-track{height:7px;background:#e6e4da}
+.rp-ai .ai-oh-track i{display:block;height:100%}
+.rp-ai .ai-ohs small{font-size:10px;color:#7d867f}
+.rp-ai .ai-oh b{color:#252c2b;text-align:right}
+.rp-ai .ai-rel-line{position:relative}
+.rp-ai .ai-rel-line em{position:absolute;left:50%;top:-8px;transform:translateX(-50%);line-height:14px}
 .rp-ai .rp-title{font-size:25px;letter-spacing:.02em;line-height:1.35}
 .rp-ai .rp-body p{font-size:13.4px;line-height:1.86;color:#4d5650;margin:0 0 9px}
 .rp-ai .ai-key strong{color:#252c2b}

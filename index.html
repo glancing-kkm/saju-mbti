@@ -2153,8 +2153,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=cdad70dbe031">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=e49b0b006eac">
+<link rel="stylesheet" href="/assets/night.css?v=d11a534947b9">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=8c5af1f52732">
 </head>
 <body>
 <div id="app">
@@ -3090,7 +3090,8 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </div>
 
 <script src="assets/premium-saju.js?v=0544723594c7"></script>
-<script src="assets/ai-report.js?v=3c861c665ff0"></script>
+<script src="assets/reading-stage.js?v=d10c3101528f"></script>
+<script src="assets/ai-report.js?v=c929a943170c"></script>
 <script src="assets/reading-voice.js?v=59650d7c4102"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -5307,6 +5308,7 @@ function inputBack(){
 }
 // 풀이를 여는 순간의 짧은 연출. 계산은 이미 끝났고, 눌러서 바로 건너뛸 수 있다.
 function playReveal(cat){
+  if(typeof ReadingStage==='object'&&ReadingStage.active)return;
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const old=document.getElementById('revealLayer');if(old)old.remove();
   const msg={manse:'여덟 글자를 펼치는 중',daily:'오늘의 기운을 읽는 중',life:'인생의 큰 흐름을 읽는 중',newyear:'한 해의 흐름을 읽는 중',gunghap:'두 사람의 기운을 맞춰보는 중',name:'이름의 기운을 읽는 중',ziwei:'열두 방에 별을 놓는 중',vedic:'달이 지나던 별을 찾는 중',mahabote:'태어난 요일을 찾는 중','topic-love':'인연의 흐름을 읽는 중','topic-money':'돈의 흐름을 읽는 중','topic-career':'일의 흐름을 읽는 중','topic-marriage':'결혼의 흐름을 읽는 중','topic-reunion':'다시 이어지는 흐름을 읽는 중','topic-study':'배움의 흐름을 읽는 중','topic-child':'아이의 기질을 읽는 중','topic-children':'자녀와의 인연을 읽는 중','topic-health':'몸의 흐름을 읽는 중'}[cat]||'하늘의 기운을 읽는 중';
@@ -5345,8 +5347,13 @@ window.addEventListener('popstate',()=>{
 });
 // ── View Router ──
 function showView(name){
+  if(name==='result'&&typeof ReadingStage==='object'&&typeof AIReport==='object'){
+    const root=[...document.querySelectorAll('#view-result .panel.on [data-deep]')].find(el=>AIReport.enabled(el)&&!AIReport.ready(el));
+    if(root){ReadingStage.begin(root);AIReport.run(root);return;}
+  }
+  if(name!=='analysis'&&name!=='result'&&typeof ReadingStage==='object')ReadingStage.cancel();
   closeHomeShareMenu();
-  ['home','intro','vault','input','result','tarot','astrology'].forEach(v=>{
+  ['home','intro','vault','input','analysis','result','tarot','astrology'].forEach(v=>{
     const el=document.getElementById('view-'+v);
     if(el)el.className='view'+(v===name?' on':'');
   });
@@ -5510,6 +5517,7 @@ function gotoCard(idx){
   document.querySelectorAll('.panel').forEach((p,i)=>p.className='panel'+(i===idx?' on':''));
   syncManseAiCopyButton(idx);
   if(idx===5)ensurePaidPanel();
+  if(typeof AIReport==='object'&&typeof ReadingStage==='object'&&_saju&&_meta){const root=document.querySelector('#p'+idx+' [data-deep]');if(root&&AIReport.enabled(root)&&!AIReport.ready(root)){ReadingStage.begin(root);AIReport.run(root);}}
   window.scrollTo({top:0,behavior:'instant'});
 }
 function syncManseAiCopyButton(activePanelIdx){
@@ -7605,7 +7613,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=bd52f51656d9';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=2c2e1be64588';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
@@ -11421,6 +11429,7 @@ function unlockAndRender(category){
     el.innerHTML=fixKoreanJosa(back+(isLife?'':headerBlock+termNoticeHTML())+html+(isLife?'':nextActions));
     enrichTerms(el);
     el.dataset.rendered='1';
+    const root=el.querySelector('[data-deep]');if(root&&typeof AIReport==='object'&&AIReport.enabled(root)&&typeof ReadingStage==='object'){ReadingStage.begin(root);AIReport.run(root);}
     setTimeout(()=>{try{applyLanguageToVisibleResult(el);}catch(e){}},0);
     setTimeout(()=>{try{hydrateAIReadings(el);}catch(e){}},0);
   };

@@ -25,7 +25,7 @@ const TOPICS={
  name:['실제 글자의 뜻과 소리','소리 오행과 사주의 관계','한자와 획수에서 보는 차이','현재 이름의 장점과 부담','후보가 있다면 무엇이 달라지는지','실제 사용성과 당신의 선호']};
 const ASK={
  prologue:noun=>`${noun?noun+'에서 ':''}가장 두드러진 세 가지 모습을 "~한 사람." 형태의 세 문단으로 단정해 보여 주세요. 이어서 이 세 모습이 사주에서 하나의 구조로 연결되며 시기에 따라 다르게 해석된다는 예고로 마무리하고, 마지막 문단은 **굵은 한 문장**으로 쓰세요. headline은 당신에게 건네는 짧은 인용구 한 문장이에요. basis와 advice는 비우세요.`,
- chart:'원국의 핵심 구조를 "- " 목록 6~9개로 정리하세요(일주, 월지의 계절, 반복되는 글자, 눈에 띄는 십성, 실제 합·충). 이어서 이 구조가 왜 중요한지 두세 문단으로 설명하세요. 사주 표와 출생시간·대운 기준은 화면이 따로 보여 주므로 쓰지 마세요. advice는 비우세요.',
+ chart:'화면에는 사주판(네 기둥의 천간·지지·십성·지장간)과 구조 도식(일간과 태어난 계절, 실제로 계산된 합·충·형, 겉글자 오행 개수)이 먼저 나옵니다. 본문은 그 도식을 읽어 주는 설명으로 쓰세요: "### 일간과 계절", "### 반복되는 글자와 눈에 띄는 십성", "### 실제 합·충이 만드는 긴장", "### 오행 배치" 네 소제목 아래 각각 두세 문단. 합·충·형은 natal.relations에 있는 것만, 자리 이름(연지·월지·일지·시지)은 자료 그대로 쓰세요. 목록과 표는 쓰지 마세요. 출생시간·대운 기준도 화면이 따로 보여 줍니다. advice는 비우세요.',
  nature:['일간의 전통적 이미지와 태어난 계절, 일간을 돕거나 누르는 글자로 본성을 설명하세요. 구체적인 장면 하나(당신이 적은 직업이 있으면 그 일의 장면)를 대사나 속으로 떠올리는 질문으로 보여 주고, 그 장점의 반대쪽 모습과 **굵은 한 문장**의 약점 정리를 넣으세요.','원국에서 책임·평가·압박이나 그에 해당하는 가장 강한 십성 관계를 골라, 그것이 사회생활에서 어떻게 나타나는지 설명하세요. 용어를 먼저 짧게 풀고 "복잡한 용어를 현실적인 언어로 바꿔보겠습니다"처럼 생활 장면으로 옮긴 뒤, 독자가 스스로 돌아볼 **굵은 질문 한 문장**을 넣으세요.','원국의 실제 충·합이나 서로 부딪히는 두 십성이 만드는 내적 갈등을 설명하세요. 하고 싶은 마음과 멈추게 하는 마음이 어떤 장면으로 나타나는지, 이 명식이 평생 다룰 주제가 무엇인지 쓰세요.'],
  decade:(d,stage)=>`${d.from}~${d.from+10}세 무렵(${d.y1}~${d.y2}년) ${d.stem}${d.branch}대운을 그 나이대의 인생 단계 언어로 풀어 주세요(${stage}). 천간·지지의 십성과 지장간, 원국과의 합·충을 근거로 이 시기의 핵심 주제를 설명하고, 이 시기에 돌아볼 **굵은 질문 한 문장**을 넣으세요. ${d.when==='past'?'지난 시기이므로 실제 사건은 단정하지 말고 "사주만으로 알 수 없습니다"처럼 한계를 밝히세요.':d.when==='now'?'지금의 대운이므로 앞선 대운과 무엇이 달라졌는지, 지금의 성장 과제를 "### 소제목"으로 나눠 쓰세요.':'앞으로의 대운이므로 준비할 방향과 그 시기의 현실적인 선택지를 쓰세요.'} headline은 그 대운을 한 문장으로 요약하는 말이에요.`,
  future:y=>`현재 대운이 언제까지 이어지는지 먼저 짚고, ${y}~${y+9}년 가운데 중요한 해 5~7개를 "### ${y}년 병오 — 주제"처럼 연도·간지·주제로 된 소제목으로 나누어 원국과의 관계(같은 간지의 반복, 실제 충·합)를 근거로 설명하세요. 어떤 해도 사고·이직·승진을 확정하지 마세요. 연도별 표는 화면이 따로 보여 줘요.`,
@@ -271,6 +271,27 @@ function plain(t){return readerText(t).replace(/^#{2,4}\s*|^[-•]\s+|^>\s*/gm,'
 const SEUN_THEME={정재:'경제적 성과와 책임',편재:'새로운 기회와 활동',정관:'역할과 조직 내 책임',편관:'압박과 기존 방식의 재검토',정인:'배움과 기반 정비',편인:'지식과 방향의 재정비',비견:'자신의 기준과 기반',겁재:'경쟁과 새로운 출발',식신:'실행과 결과물',상관:'표현·기획·주도권'};
 const gz=(s,b)=>`${s}${b}(${HJ_S[STEMKO.indexOf(s)]||''}${HJ_B[BRCHKO.indexOf(b)]||''})`;
 function ledgerValue(report,id){return report.ledger.find(x=>x.id===id)?.value;}
+// 사주판: 네 기둥을 천간·지지 칸으로 그리고 오행 색, 일간 기준 십성, 지장간을 함께 보인다(웹·PDF 공통).
+const OH_HEX=['#4e9a6a','#d2604e','#c99a3e','#9d9b92','#4b7bb5'],OH_HJ=['木','火','土','金','水'];
+const ohRGBA=(i,a)=>{const n=parseInt(OH_HEX[i].slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`;};
+function natalPillars(report){return [['year','연주'],['month','월주'],['day','일주'],['hour','시주']].map(([k,place])=>{const st=ledgerValue(report,`natal.${k}.stem`),br=ledgerValue(report,`natal.${k}.branch`);return st&&br?{key:k,place,stem:st.glyph,branch:br.glyph,stemGod:k==='day'?'일간':st.god,branchGod:br.god,hidden:br.hidden||[]}:{key:k,place,unknown:true};});}
+function chartPillars(chart){return ['연주','월주','일주','시주'].map((place,i)=>{const p=(chart?.pillars||[]).find(x=>x.place===place);return p?{key:['year','month','day','hour'][i],place,stem:p.stem,branch:p.branch,stemGod:place==='일주'?'일간':p.stemGod,branchGod:p.branchGod,hidden:p.hidden||[]}:{key:['year','month','day','hour'][i],place,unknown:true};});}
+function boardHTML(pillars,caption){
+ const cell=(g,isStem,god)=>{const i=isStem?STEMKO.indexOf(g):BRCHKO.indexOf(g),oh=isStem?SOH[i]:BOH[i];return `<div class="ai-bcell" style="background:${ohRGBA(oh,.15)};border-color:${ohRGBA(oh,.6)}"><b>${isStem?HJ_S[i]:HJ_B[i]}</b><span class="ai-bko">${esc(g)} · ${OH_HJ[oh]}</span><small>${esc(god||'')}</small></div>`;};
+ const ordered=typeof manseOrdered==='function'?manseOrdered(pillars):pillars;
+ return `<figure class="ai-board"><figcaption>${esc(caption||'사주 원국')}</figcaption><div class="ai-board-grid">${ordered.map(p=>p.unknown?`<div class="ai-bcol unknown"><span class="ai-bplace">${p.place}</span><div class="ai-bcell"><b>?</b><small>시간 미상</small></div><div class="ai-bcell"><b>?</b><small>&nbsp;</small></div><span class="ai-bhid">&nbsp;</span></div>`:`<div class="ai-bcol${p.key==='day'?' day':''}"><span class="ai-bplace">${p.place}</span>${cell(p.stem,true,p.stemGod)}${cell(p.branch,false,p.branchGod)}<span class="ai-bhid">${p.hidden.map(h=>esc(h.stem)).join('·')}</span></div>`).join('')}</div><p class="ai-board-legend">위 칸 천간 · 아래 칸 지지 · 맨 아래 지장간 · 칸 안 작은 글씨는 일간 기준 십성</p></figure>`;
+}
+// 원국 구조 도식: 일간·계절 → 실제 계산된 합·충·형 → 겉글자 오행 개수.
+const REL_COLOR={충:'#d2604e',합:'#4e9a6a',반합:'#4e9a6a',삼합:'#4e9a6a',방합:'#4e9a6a',형:'#c99a3e',자형:'#c99a3e',원진:'#8e6bb5',파:'#9d9b92',해:'#9d9b92'};
+function structureHTML(report){
+ const ps=natalPillars(report).filter(p=>!p.unknown),rel=ledgerValue(report,'natal.relations')||[],season=ledgerValue(report,'natal.season'),el=ledgerValue(report,'natal.elements'),day=ps.find(p=>p.key==='day');
+ const chip=(place,type)=>{const p=ps.find(x=>x.place===place);if(!p)return esc(place);const g=type==='stem'?p.stem:p.branch,i=type==='stem'?STEMKO.indexOf(g):BRCHKO.indexOf(g),oh=type==='stem'?SOH[i]:BOH[i];return `<span class="ai-chip" style="border-color:${OH_HEX[oh]};background:${ohRGBA(oh,.12)}">${esc(place.replace('주',type==='stem'?'간':'지'))} ${type==='stem'?HJ_S[i]:HJ_B[i]}(${esc(g)})</span>`;};
+ const rows=rel.map(r=>`<div class="ai-rel">${chip(r.left,r.type)}<span class="ai-rel-line" style="border-color:${REL_COLOR[r.kind]||'#9d9b92'}"><em style="color:${REL_COLOR[r.kind]||'#9d9b92'}">${esc(r.kind)}</em></span>${chip(r.right,r.type)}</div>`).join('');
+ const counts=el?.counts||[],max=Math.max(1,...counts);
+ const bars=counts.map((n,i)=>`<div class="ai-oh"><span>${OH_HJ[i]} ${OHNAME[i]}</span><span class="ai-oh-track"><i style="width:${Math.round(n/max*100)}%;background:${OH_HEX[i]}"></i></span><b>${n}</b></div>`).join('');
+ const di=day?STEMKO.indexOf(day.stem):-1;
+ return `<figure class="ai-diagram"><figcaption>원국의 구조 한눈에</figcaption><div class="ai-dia-top">${day?`<span class="ai-pill" style="border-color:${OH_HEX[SOH[di]]}">일간 ${HJ_S[di]}(${esc(day.stem)}) · ${OH_HJ[SOH[di]]}</span>`:''}${season?`<span class="ai-pill">${esc(season.season)}에 태어남 · 월지 ${esc(season.monthBranch)}</span>`:''}</div>${rows?`<div class="ai-rels"><b>실제로 계산된 합·충·형</b>${rows}</div>`:''}${bars?`<div class="ai-ohs"><b>겉글자 오행 개수</b>${bars}<small>개수는 계절의 힘이나 신강약 판정이 아닙니다.</small></div>`:''}</figure>`;
+}
 function chartTable(report){
  const rows=[['hour','시주'],['day','일주'],['month','월주'],['year','연주']].map(([k,place])=>{const s=ledgerValue(report,`natal.${k}.stem`),b=ledgerValue(report,`natal.${k}.branch`);if(!s||!b)return '';
   return `<tr><th>${place}</th><td>${HJ_S[STEMKO.indexOf(s.glyph)]||''}(${esc(s.glyph)})</td><td>${HJ_B[BRCHKO.indexOf(b.glyph)]||''}(${esc(b.glyph)})</td><td>${k==='day'?'일간':esc(s.god||'')} / ${esc(b.god||'')}</td></tr>`;}).join('');
@@ -301,7 +322,7 @@ function heroHTML(report,state){
   const sub=themeIssues(state.plan,report).length?'':' · '+esc(readerText(state.plan.profile.theme));
   const who=[...rows,['일주',il&&ib?esc(gz(il.glyph,ib.glyph).replace('(','일주(').replace(')','日柱)')):''],['현재 대운',dg?esc(dg.replace('(','대운(').replace(')','大運)')):''],['분석 세운',esc(`${f.year}년 ${yg.replace('(','년(').replace(')','年)')}`)]].filter(r=>r[1]&&r[0]!=='이름');
   const basis=[['원국',esc(pillars)],['현재 대운',dg?esc(dg.replace(/.*\(|\)/g,'')):''],[`${f.year}년 세운`,esc(yg.replace(/.*\(|\)/g,''))],['연운 기간',esc(`${f.ipchun.replace(/^(\d+)-0?(\d+)-0?(\d+) /,'$1년 $2월 $3일 ')}부터 ${f.year+1}년 입춘 직전까지`)],['월운','절기 기준 12개월']].filter(r=>r[1]);
-  return `<header class="lv4-hero ai-report-hero"><h1>${f.year}년 신년운세</h1><p class="ai-hero-sub ai-hero-q">${esc(yg.replace('(','년(').replace(')','年)'))}${sub}</p><p class="ai-hero-sub">정통 사주명리 · ${f.year}년 신년운세 심층 리포트</p><dl class="ai-birth"><dt class="ai-birth-head">상담 대상</dt>${who.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><dl class="ai-birth"><dt class="ai-birth-head">분석 기준</dt>${basis.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><p class="ai-note">※ 본 리포트는 전통 명리학의 상징적 해석을 활용한 상담 자료입니다. 미래 사건이나 개인의 실제 행동을 확정하는 예측은 아닙니다.</p></header>`;}
+  return `<header class="lv4-hero ai-report-hero"><h1>${f.year}년 신년운세</h1><p class="ai-hero-sub ai-hero-q">${esc(yg.replace('(','년(').replace(')','年)'))}${sub}</p><p class="ai-hero-sub">정통 사주명리 · ${f.year}년 신년운세 심층 리포트</p><dl class="ai-birth"><dt class="ai-birth-head">상담 대상</dt>${who.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><dl class="ai-birth"><dt class="ai-birth-head">분석 기준</dt>${basis.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${boardHTML(natalPillars(report))}<p class="ai-note">※ 본 리포트는 전통 명리학의 상징적 해석을 활용한 상담 자료입니다. 미래 사건이나 개인의 실제 행동을 확정하는 예측은 아닙니다.</p></header>`;}
  const title=themeIssues(state.plan,report).length?`${m.userName?esc(m.userName)+'님의 ':''}${esc(report.label)}`:esc(readerText(state.plan.profile.theme));
  return `<header class="lv4-hero ai-report-hero"><h1>${title}</h1><p class="ai-hero-sub">${school} ${esc(report.label)} · 심층 상담 리포트</p><dl class="ai-birth"><dt class="ai-birth-head">출생정보</dt>${rows.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></header>`;
 }
@@ -316,16 +337,16 @@ function limitsHTML(report,labels,state){
   const seun=`<h3 class="ai-subhead">${f.year}년 세운</h3><ul class="ai-list">${[gz(f.yearPillar.stem,f.yearPillar.branch),`${f.yearPillar.stem}: ${f.yearPillar.stemGod}`,`${f.yearPillar.branch} 지장간: ${hid(f.yearPillar.hidden)}`,...f.yearPillar.relations.map(r=>`세운 ${f.yearPillar.branch}와 ${r.with} ${r.glyph}: ${r.kind}`)].map(li).join('')}</ul>`;
   const coreHTML=core.length?`<h3 class="ai-subhead">핵심 해석 구조</h3><ul class="ai-list">${core.map(x=>'<li>'+aiText(String(x))+'</li>').join('')}</ul>`:'';
   const closingHTML=closing?`<p class="ai-key"><strong>${f.year}년 신년운세의 최종 메시지</strong></p><blockquote class="ai-headline">“${aiText(String(closing).replace(/^["“]|["”]$/g,''))}”</blockquote>`:'';
-  return `<section class="lv4-sec ai-limits"><div class="ai-ch-head"><h2>명리학적 해석 근거</h2></div><h3 class="ai-subhead">원국</h3><ul class="ai-list">${natal.map(li).join('')}</ul>${daeun}${seun}${coreHTML}<h3 class="ai-subhead">해석의 한계</h3>${notes.map(x=>'<p>'+aiText(x)+'</p>').join('')}${closingHTML}</section>`;
+  return `<section class="lv4-sec ai-limits"><div class="ai-ch-head"><h2>명리학적 해석 근거</h2></div><h3 class="ai-subhead">원국</h3>${boardHTML(natalPillars(report))}${daeun}${seun}${coreHTML}<h3 class="ai-subhead">해석의 한계</h3>${notes.map(x=>'<p>'+aiText(x)+'</p>').join('')}${closingHTML}</section>`;
  }
  const items=[];
- if(ledgerValue(report,'natal.day.stem'))[['year','연주'],['month','월주'],['day','일주'],['hour','시주']].forEach(([k,p])=>{const s=ledgerValue(report,`natal.${k}.stem`),b=ledgerValue(report,`natal.${k}.branch`);if(s&&b)items.push(`${p}: ${gz(s.glyph,b.glyph)}`);});
+ const limitBoard=ledgerValue(report,'natal.day.stem')?boardHTML(natalPillars(report)):'';
  const rel=ledgerValue(report,'natal.relations');if(Array.isArray(rel)&&rel.length)items.push('원국의 관계: '+unique(rel.map(r=>`${r.left}·${r.right} ${r.kind}`)).join(', '));
  const ds=report.chapters.filter(c=>c.decade).map(c=>c.decade.stem+c.decade.branch+'대운');if(ds.length)items.push((report.timeline?.forward?'순행':'역행')+' 대운: '+ds.join('·'));
  const fy=report.chapters.find(c=>c.kind==='future');if(fy&&fy.refs.length)items.push(`${report.year}~${report.year+9}년 세운`);
  const job=stated(report,'occupation');
  const notes=[report.product==='ziwei'?'명반의 해석은 이 리포트가 계산한 간이 명반을 기준으로 하며, 유년·유월과 보조성 전체는 다루지 않았습니다.':report.product==='name'?'이름의 길흉은 사용한 성명학 방식에 따라 달라질 수 있습니다.':'신강약·격국·조후·용신의 최종 판정은 별도의 학파별 검증이 필요하므로 확정하지 않았습니다.','과거 사건이나 실제 성격을 확인한 것처럼 서술하지 않았으며, 대운과 세운에서 특정 사건의 발생을 단정하지 않았습니다.',job?`직업 관련 사례는 당신이 알려 준 ${job} 정보를 활용한 상담형 예시입니다.`:'','전통 명리학은 상징으로 해석하는 체계이며, 성격이나 미래 사건을 과학적으로 확정하는 방법이 아닙니다.'].filter(Boolean);
- return `<section class="lv4-sec ai-limits"><div class="ai-ch-head"><h2>해석 근거와 한계</h2></div>${items.length?'<p>이 리포트는 다음 요소를 활용한 해석입니다.</p><ul class="ai-list">'+items.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':''}${notes.map(x=>'<p>'+aiText(x)+'</p>').join('')}<p class="ai-key"><strong>이 리포트는 자신의 성향과 선택을 돌아보는 참고자료로 활용하는 것이 적절합니다.</strong></p></section>`;
+ return `<section class="lv4-sec ai-limits"><div class="ai-ch-head"><h2>해석 근거와 한계</h2></div>${limitBoard}${items.length?'<p>이 리포트는 다음 요소를 활용한 해석입니다.</p><ul class="ai-list">'+items.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':''}${notes.map(x=>'<p>'+aiText(x)+'</p>').join('')}<p class="ai-key"><strong>이 리포트는 자신의 성향과 선택을 돌아보는 참고자료로 활용하는 것이 적절합니다.</strong></p></section>`;
 }
 function chapterHTML(report,state,c,label){
  const a=state.accepted[c.id],title=chapterTitle(c,state.plan),d=c.decade;
@@ -335,14 +356,14 @@ function chapterHTML(report,state,c,label){
  const quote=typeof a.headline==='string'&&a.headline.trim().length>=6?`<blockquote class="ai-headline">“${aiText(a.headline.trim().replace(/^["“]|["”]$/g,''))}”</blockquote>`:'';
  const basis=(Array.isArray(a.basis)?a.basis:[]).map(x=>String(x).trim()).filter(x=>x.length>=2).slice(0,6);
  const advice=typeof a.advice==='string'&&a.advice.trim().length>=8?`<div class="ai-advice"><b>${report.product==='newyear'?esc(c.tag||'')+'의 결론':esc(c.tag||'이 장의')+' 핵심 조언'}</b><p><strong>${aiText(a.advice.trim().replace(/^\*\*|\*\*$/g,''))}</strong></p></div>`:'';
- return `<section class="lv4-sec ai-authored-chapter ai-ch-${c.kind}" id="${c.id}" data-ai-authored="true">${head}${d?`<p class="ai-span">대략 만 ${d.from}~${d.from+10}세</p>`:''}${c.kind!=='epilogue'?quote:''}${c.kind==='chart'?chartTable(report):''}${c.kind==='future'?yearTable(report,c):''}${c.monthTable?monthTable(report):''}${aiBody(a.paragraphs)}${c.kind==='chart'&&ledgerValue(report,'natal.day.stem')?timeBasis(report):''}${advice}${c.kind==='epilogue'?quote:''}${basis.length&&!['prologue','guide','epilogue','story'].includes(c.kind)?`<div class="ai-basis"><b>${report.product==='ziwei'?'자미두수 근거':report.product==='name'?'성명학 근거':'명리학적 근거'}</b><ul>${basis.map(x=>'<li>'+aiText(x)+'</li>').join('')}</ul></div>`:''}</section>`;
+ return `<section class="lv4-sec ai-authored-chapter ai-ch-${c.kind}" id="${c.id}" data-ai-authored="true">${head}${d?`<p class="ai-span">대략 만 ${d.from}~${d.from+10}세</p>`:''}${c.kind!=='epilogue'?quote:''}${c.kind==='chart'?(ledgerValue(report,'natal.day.stem')?boardHTML(natalPillars(report))+structureHTML(report):report.product==='gunghap'?boardHTML(chartPillars(ledgerValue(report,'pair.chart.self')),'본인 사주판')+boardHTML(chartPillars(ledgerValue(report,'pair.chart.partner')),'상대방 사주판'):''):''}${c.kind==='future'?yearTable(report,c):''}${c.monthTable?monthTable(report):''}${aiBody(a.paragraphs)}${c.kind==='chart'&&ledgerValue(report,'natal.day.stem')?timeBasis(report):''}${advice}${c.kind==='epilogue'?quote:''}${basis.length&&!['prologue','guide','epilogue','story'].includes(c.kind)?`<div class="ai-basis"><b>${report.product==='ziwei'?'자미두수 근거':report.product==='name'?'성명학 근거':'명리학적 근거'}</b><ul>${basis.map(x=>'<li>'+aiText(x)+'</li>').join('')}</ul></div>`:''}</section>`;
 }
 // PDF: 웹 전체 풀이와 같은 장·순서·문장을 쪽 나눔이 가능한 블록 묶음으로 돌려준다.
 function pdfDoc(report,state){
  const labels=chapterLabels(report.chapters),split=html=>{const box=document.createElement('div');box.innerHTML=html;return [...box.children].map(x=>x.outerHTML);};
  const parts=[],hero=document.createElement('div');hero.innerHTML=heroHTML(report,state);const h=hero.firstElementChild;
  const title=h.querySelector('h1')?.textContent||report.label,subs=[...h.querySelectorAll('.ai-hero-sub')].map(x=>x.textContent);
- parts.push({label:'',title:'기본 정보와 풀이 기준',blocks:[...h.querySelectorAll('dl')].map(x=>x.outerHTML).concat([...h.querySelectorAll('.ai-note')].map(x=>x.outerHTML))});
+ parts.push({label:'',title:'기본 정보와 풀이 기준',blocks:[...h.querySelectorAll('dl,.ai-board,.ai-note')].map(x=>x.outerHTML)});
  let group=null;
  report.chapters.forEach((c,i)=>{const a=state.accepted[c.id];if(!a)return;
   const sec=document.createElement('div');sec.innerHTML=chapterHTML(report,state,c,labels[i]);const el=sec.firstElementChild;el.querySelector('.ai-ch-head')?.remove();
@@ -372,12 +393,21 @@ function showError(el,error,retry,hasContent=false){
  if(!auth&&!limit){const button=document.createElement('button');button.type='button';button.textContent='이어서 불러오기';button.onclick=retry;box.appendChild(button);}el.appendChild(box);
  if(!auth&&!limit&&g.addEventListener){const resume=()=>{if(el.isConnected)retry();};g.addEventListener('online',resume,{once:true});}
 }
+function chapterPayload(report,plan,requested){
+ const wanted=new Set((requested||[]).map(c=>c.id)),links=(plan?.links||[]).filter(l=>wanted.has(l.from)||wanted.has(l.to));
+ const related=new Set([...wanted,...links.flatMap(l=>[l.from,l.to])]);
+ const planChapters=(plan?.chapters||[]).map(c=>related.has(c.id)?c:{id:c.id,focus:c.focus,conclusion:c.conclusion,connection:'',evidenceRefs:[]});
+ const keep=new Set([...planChapters.flatMap(c=>c.evidenceRefs||[]),...(requested||[]).flatMap(c=>c.refs||[]),...links.flatMap(l=>l.evidenceRefs||[]),...(plan?.profile?.evidenceRefs||[])]);
+ const ledger=report.ledger.filter(s=>keep.has(s.id)||/^(?:natal\.|pair\.chart\.|name\.)/.test(s.id));
+ return {...report,ledger,chapters:report.chapters.map(c=>({id:c.id,title:c.title,question:wanted.has(c.id)?c.question:'',months:wanted.has(c.id)?c.months:[]})),plan:{...plan,chapters:planChapters,links}};
+}
 async function request(report,phase,plan,chapters,feedback,opts={}){
  const payload=buildAIReadingPayload(opts.kind||'reading-deep',{source:opts.kind==='report-tpl'?'paid-report':'paid-deep'});if(!payload)throw Error('풀이 정보를 확인해 주세요.');
  // No calculated prose, old axes-based draft or fictional person details are sent as an interpretation.
  payload.sajuContext.detailedReading='';payload.sajuContext.gyeokguk='별도 종합 판정 없음';payload.sajuContext.yongsin='별도 종합 판정 없음';payload.sajuContext.strength='별도 종합 판정 없음';payload.sajuContext.persona='';
  if(opts.token)payload.paidToken=opts.token;
- payload.meta={...payload.meta,reportName:report.label,readingKind:report.product,synthesis:true,aiReport:{...report,clientProtocol:'incremental-v2',phase,plan:plan||null,requestedChapters:chapters||[],feedback:feedback||[]}};
+ const wire=phase==='chapters'?chapterPayload(report,plan,chapters):report;
+ payload.meta={...payload.meta,reportName:report.label,readingKind:report.product,synthesis:true,aiReport:{...wire,chapters:wire.chapters.map(c=>({id:c.id,title:c.title,question:c.question,months:c.months})),clientProtocol:'incremental-v2',phase,plan:wire.plan||plan||null,requestedChapters:(chapters||[]).map(c=>({id:c.id,title:c.title,question:c.question,months:c.months})),feedback:feedback||[]}};
  const started=performance.now(),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),opts.timeoutMs||(opts.kind==='report-tpl'?150000:100000));
  try{
   const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/, '')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
@@ -430,39 +460,31 @@ async function authorCore(report,opts={}){
  if(report.chapters.some(c=>!state.accepted[c.id]))throw lastError||reportError('CHAPTER_VALIDATION','일부 장을 이어서 작성해야 해요.');
  state.complete=true;save();notify();return state;
 }
+function ready(el){return el?.dataset.aiComplete===VERSION&&el._completedReportIdentity===JSON.stringify({meta:_meta,lang:currentLanguage()})&&!!el.querySelector('[data-ai-authored="true"]');}
 async function run(el){
- if(el._fullReportTask)return el._fullReportTask;
- const currentIdentity=JSON.stringify({meta:_meta,lang:currentLanguage()});
- if(el.dataset.aiComplete===VERSION&&el._completedReportIdentity===currentIdentity&&el.querySelector('[data-ai-authored="true"]'))return;
+ if(el._fullReportTask)return el._fullReportTask;if(ready(el))return;
  const task=async()=>{
   const cat=category(el),report=sources(cat,_saju,{..._meta,gender:_meta.gender||gender});
   const identity=JSON.stringify({meta:_meta,lang:currentLanguage()}),stillCurrent=()=>el.isConnected&&identity===JSON.stringify({meta:_meta,lang:currentLanguage()});
-  const visual=el._fullReportVisual||visuals(el);el._fullReportVisual=visual;let latest=null,progress=null;
-  delete el.dataset.aiComplete;delete el.dataset.deepDone;el._reportSnapshot=null;el.innerHTML=readingLoadingHTML();el.classList.add('reading-pending');el.setAttribute('aria-busy','true');
-  const update=state=>{
-   if(!stillCurrent()||!planQuality(state.plan,report))return;latest=state;
-   if(!el.querySelector('.ai-report-content')){el.innerHTML='<div class="ai-report-content"></div><div class="ai-report-progress" role="status"></div>';el.classList.remove('reading-pending');el.setAttribute('aria-busy','true');}
-   const content=el.querySelector('.ai-report-content'),snapshot=JSON.stringify([state.plan,Object.keys(state.accepted),state.complete]);
-   if(snapshot!==el._reportSnapshot){
-    const fresh=document.createElement('div');fresh.innerHTML=render(report,state,visual);
-    if(!content.children.length)content.append(...fresh.childNodes);
-    else{
-     for(const c of report.chapters){const old=content.querySelector('#'+c.id);if(state.accepted[c.id]&&old?.dataset.aiAuthored!=='true'){const replacement=fresh.querySelector('#'+c.id);if(replacement)old.replaceWith(replacement);}}
-     if(state.complete&&!content.querySelector('#ai-limits')){const limits=fresh.querySelector('#ai-limits');if(limits)content.append(limits);}
-    }
-    el._reportSnapshot=snapshot;
-    if(typeof hydratePortrait==='function')content.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>hydratePortrait(card));
-   }
-   progress=el.querySelector('.ai-report-progress');if(progress)progress.textContent='풀이 중입니다 · '+Object.keys(state.accepted).length+'/'+report.chapters.length+'장';
-  };
+  const visual=el._fullReportVisual||visuals(el);el._fullReportVisual=visual;
+  const stage=typeof ReadingStage==='object'&&ReadingStage.shouldStage(el)?ReadingStage.begin(el,report):null;
+  delete el.dataset.aiComplete;delete el.dataset.deepDone;el._reportSnapshot=null;el.innerHTML=stage?'':(typeof ReadingStage==='object'?ReadingStage.markup(_saju,_meta,report.label):readingLoadingHTML());el.classList.add('reading-pending');el.setAttribute('aria-busy','true');
   try{
-   const state=await author(report,{onState:update});if(!stillCurrent())return;
-   update(state);el.querySelector('.ai-report-progress')?.remove();el.removeAttribute('aria-busy');el.querySelector('.ai-report-content').append(...(visual.controls||[]));
+   const state=await author(report);if(!stillCurrent())return;
+   // Commit one complete, validated document. No chapter-level display during generation.
+   const content=document.createElement('div');content.className='ai-report-content';content.innerHTML=render(report,state,visual);content.append(...(visual.controls||[]));
+   el.replaceChildren(content);el.classList.remove('reading-pending');el.removeAttribute('aria-busy');
    el._aiReportEvidence={ledger:report.ledger,plan:state.plan,chapters:state.accepted};el.dataset.aiComplete=VERSION;el.dataset.deepDone='1';el._completedReportIdentity=identity;
+   const active=typeof ReadingStage==='object'?ReadingStage.active:null;if(active?.root===el)ReadingStage.complete(active);
    el.querySelectorAll('.lc-pcard[data-portrait]').forEach(card=>hydratePortrait(card));
-  }catch(error){if(!stillCurrent())return;el.querySelector('.ai-report-progress')?.remove();if(!latest)el.innerHTML='';showError(el,error,()=>run(el),!!latest);}
+  }catch(error){if(!stillCurrent())return;
+   const active=typeof ReadingStage==='object'?ReadingStage.active:null;
+   if(active?.root===el)ReadingStage.fail(active,error,()=>run(el));
+   else{el.innerHTML='';showError(el,error,()=>run(el),false);}
+  }
  };
  el._fullReportTask=task().catch(error=>{el.innerHTML='';showError(el,error,()=>run(el));}).finally(()=>{el._fullReportTask=null;});return el._fullReportTask;
 }
-g.AIReport={VERSION,CAT,enabled,category,outline,chapterTitle,chapterLabels,aiBody,aiBlocks,plain,pdfDoc,wordingIssues,themeIssues,readerText,sources,selectStory,natalClaimsConsistent,factIssues,parse,normalizePlan,normalizeSection,planQuality,chapterIssues,render,request,author,run};
+
+g.AIReport={VERSION,CAT,enabled,category,ready,outline,chapterTitle,chapterLabels,aiBody,aiBlocks,plain,pdfDoc,wordingIssues,themeIssues,readerText,sources,selectStory,natalClaimsConsistent,factIssues,parse,normalizePlan,normalizeSection,planQuality,chapterIssues,render,chapterPayload,request,author,run};
 })(globalThis);

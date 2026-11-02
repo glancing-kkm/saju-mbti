@@ -273,3 +273,41 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 /* 서머타임 선택: 시간 입력 줄 아래 한 줄로 */
 #app #formWrap .dst-row{display:inline-flex;margin-top:12px;border-radius:10px;white-space:normal}
 #app #formWrap .dst-help{margin:8px 2px 0;line-height:1.6;text-align:left}
+
+/* The analysis view is a real completion gate, without artificial countdowns. */
+#view-analysis{min-height:100svh;background:var(--bg)}
+.reading-analysis{position:relative;isolation:isolate;overflow:hidden;min-height:100svh;box-sizing:border-box;padding:70px 22px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text);background:radial-gradient(ellipse at 50% 38%,var(--flow-depth,var(--card)),var(--bg) 76%)}
+.reading-analysis *{box-sizing:border-box}
+.analysis-kicker{z-index:1;margin:0 0 16px;color:var(--accent);font-size:14px;letter-spacing:.12em}
+.reading-analysis h1{z-index:1;font-size:28px;line-height:1.5;margin:0 0 16px;font-weight:700;word-break:keep-all}
+.analysis-intro{z-index:1;font-size:14px;line-height:1.8;max-width:330px;margin:0 0 30px;word-break:keep-all;text-wrap:pretty}
+.analysis-board{position:relative;z-index:1;width:100%;max-width:380px;padding:20px 12px;background:color-mix(in srgb,var(--bg) 85%,transparent);border:1px solid var(--border-strong);border-radius:24px;overflow:hidden;box-shadow:0 0 65px color-mix(in srgb,var(--accent) 9%,transparent)}
+.analysis-chart{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.analysis-pillar{min-width:0;display:flex;flex-direction:column;gap:8px}
+.analysis-pillar h3{margin:0 0 4px;font-size:13px;color:var(--sub)}
+.analysis-glyph{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;min-height:79px;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:13px;background:color-mix(in srgb,currentColor 7%,transparent)}
+.analysis-glyph b{font:700 32px/1.2 'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+.analysis-glyph small{font-size:11px;line-height:1.5;white-space:nowrap}
+.analysis-oh-0{color:#a8e6bb}.analysis-oh-1{color:#ffaaa2}.analysis-oh-2{color:#efd59c}.analysis-oh-3{color:#e4e9fb}.analysis-oh-4{color:#9acdf7}
+.analysis-self h3{color:var(--accent)}
+.analysis-unknown{display:grid;place-content:center;min-height:166px;border:1px dashed var(--border);border-radius:13px;color:var(--muted);font-size:13px;line-height:1.8}
+.analysis-scan{position:absolute;inset:-40% 0 auto;height:50%;pointer-events:none;background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 17%,transparent),transparent);animation:analysis-scan 4.8s ease-in-out infinite}
+.analysis-halo{position:absolute;z-index:-1;left:8%;right:8%;top:18%;height:50%;border-radius:50%;background:var(--accent);opacity:.06;filter:blur(38px);animation:analysis-breathe 5s ease-in-out infinite}
+.analysis-orbit{position:absolute;inset:15% -30% 12%;z-index:-1;pointer-events:none;opacity:.2}
+.analysis-orbit i{position:absolute;inset:7%;border:1px solid var(--accent);border-radius:50%;transform:rotate(-30deg) scaleY(.7);animation:analysis-orbit 28s linear infinite}
+.analysis-orbit i:nth-child(2){inset:15%;animation-direction:reverse;animation-duration:35s}.analysis-orbit i:nth-child(3){inset:25%;animation-duration:42s}
+.analysis-time{z-index:1;max-width:360px;color:var(--sub);font-size:12px;line-height:1.7;margin:18px 0 28px;word-break:keep-all;text-wrap:pretty}.analysis-time span{display:block;margin-top:6px}
+.analysis-state{z-index:1;min-height:62px;font-size:14px}.analysis-state p{margin:12px 0 0}
+.analysis-dots{display:flex;justify-content:center;gap:6px}.analysis-dots i{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:analysis-dot 1.8s ease-in-out infinite}.analysis-dots i:nth-child(2){animation-delay:.2s}.analysis-dots i:nth-child(3){animation-delay:.4s}
+.analysis-home,.analysis-error button{z-index:1;margin-top:30px;border:1px solid var(--border-strong);border-radius:30px;padding:10px 20px;background:transparent;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.analysis-error{z-index:1;max-width:340px;line-height:1.8;font-size:14px}.analysis-error button{margin-top:10px}
+.analysis-paused :is(.analysis-scan,.analysis-halo,.analysis-orbit i,.analysis-dots i){animation-play-state:paused}
+.reading-analysis [hidden]{display:none!important}
+.reading-pending>.reading-analysis{display:flex!important}
+@keyframes analysis-scan{0%{transform:translateY(0)}75%,100%{transform:translateY(400%)}}
+@keyframes analysis-breathe{50%{opacity:.12;transform:scale(1.12)}}
+@keyframes analysis-orbit{to{transform:rotate(330deg) scaleY(.7)}}
+@keyframes analysis-dot{50%{opacity:.25;transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.reading-analysis *{animation:none!important}.analysis-scan{display:none}}
+
+.reading-analysis h1:focus{outline:none}
