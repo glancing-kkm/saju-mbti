@@ -4299,11 +4299,12 @@ function counselStore(){try{return JSON.parse(sessionStorage.getItem('saju_couns
 // 직업은 같은 출생정보의 상담끼리 공유하고, 주제별 답변은 별도로 보관한다.
 function counselDefinition(cat,key){return globalThis.PremiumSaju?.products[cat]?.fields.find(f=>f.key===key);}
 function counselFieldVisible(cat,key){const f=counselDefinition(cat,key);return !f?.when||Object.entries(f.when).every(([k,values])=>values.includes(document.getElementById('counsel_'+k)?.value));}
+const COUNSEL_OCCUPATION_CATS=['life','newyear','ziwei','qna'];
 function counselFieldsFor(cat){
  if(!COUNSEL_FIELDS[cat])return [];
  const spec=globalThis.PremiumSaju?.products[cat];
- const occupational=['life','newyear','topic-career','ziwei'].includes(cat);
- return [['occupation',cat==='topic-child'?'아이의 현재 활동 (직업·학업)':'현재 하는 일 (직업)',cat==='topic-child'?'예: 미취학, 초등학생, 중학생':'예: 사무직, 자영업, 학생, 구직 중, 육아, 은퇴'],
+ const occupational=COUNSEL_OCCUPATION_CATS.includes(cat);
+ return [...(occupational?[['occupation','현재 하는 일 (직업)','예: 사무직, 자영업, 학생, 구직 중, 육아, 은퇴']]:[]),
   ...(spec?spec.fields.map(f=>[f.key,f.label,f.placeholder]):COUNSEL_FIELDS[cat].filter(([key])=>!(occupational&&key==='activity')))];
 }
 function counselUpdateVisibility(){const host=document.getElementById('counselFields');if(!host)return;
@@ -4319,7 +4320,8 @@ function counselSave(){
  const host=document.getElementById('counselFields');if(!host||!COUNSEL_FIELDS[host.dataset.cat]||host.dataset.owner!==counselOwnerKey())return;
  const data=counselStore(),owner=counselOwnerKey();data[owner]=data[owner]||{};data[owner][host.dataset.cat]=counselRead(host.dataset.cat);
  if(data[owner][host.dataset.cat])data[owner][host.dataset.cat].confirmed=[...host.querySelectorAll('fieldset[data-wz-confirmed="1"]')].map(f=>f.dataset.counselKey);
- data[owner].occupation=String(document.getElementById('counsel_occupation')?.value||'').trim();
+ // 직업 칸이 없는 주제에서 저장할 때 앞서 적은 직업을 지우지 않는다.
+ const occ=document.getElementById('counsel_occupation');if(occ)data[owner].occupation=String(occ.value||'').trim();
  if(host.dataset.cat==='qna')['occupation','marriage','children'].forEach((k,i)=>{document.getElementById(['qaJob','qaMarriage','qaChildren'][i]).value=document.getElementById('counsel_'+k)?.value||'';});
  try{sessionStorage.setItem('saju_counsel_v1',JSON.stringify(data));}catch(e){}
 }
@@ -4338,11 +4340,11 @@ function renderCounselFields(cat){
  host.innerHTML=fields.map(([key,label,ph])=>{const def=counselDefinition(cat,key),id='counsel_'+key;
  const control=def?.type==='select'?`<select id="${id}" name="${id}"><option value="">선택해 주세요</option>${def.options.map(v=>`<option value="${storyEsc(v)}">${storyEsc(v)}</option>`).join('')}</select>`:`<input type="text" id="${id}" name="${id}" placeholder="${storyEsc(ph)}" autocomplete="off" ${key==='occupation'?'required aria-required="true"':''}>`;
  return `<fieldset class="cat-extra counsel-step" data-counsel-key="${key}"><legend><label for="${id}">${storyEsc(label)}</label> <small class="${key==='occupation'?'required-note':'optional-note'}">${key==='occupation'?'필수':'(선택)'}</small></legend><div class="ig">${control}</div><div class="counsel-actions"><button type="button" class="name-next" onclick="confirmCounselStep('${key}')">다음 →</button>${key==='occupation'?'':`<button type="button" class="counsel-skip" onclick="confirmCounselStep('${key}',true)">건너뛰기</button>`}</div></fieldset>`;}).join('');
- fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=key==='occupation'?occupation:saved?.answers?.find(a=>a.key===key)?.value||(key==='question'?owner.questions?.[cat]?.text:'')||'';input.closest('fieldset').dataset.wzConfirmed=input.value||saved?.confirmed?.includes(key)?'1':'0';input.addEventListener('input',()=>{input.closest('fieldset').dataset.wzConfirmed='0';counselUpdateVisibility();counselSave();});input.addEventListener('change',()=>{counselUpdateVisibility();counselSave();if(input.tagName==='SELECT')inputWizardInit();});});
+ fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=key==='occupation'?occupation:saved?.answers?.find(a=>a.key===key)?.value||(key==='question'?owner.questions?.[cat]?.text:'')||'';input.closest('fieldset').dataset.wzConfirmed=input.value||saved?.confirmed?.includes(key)?'1':'0';input.addEventListener('input',()=>{input.closest('fieldset').dataset.wzConfirmed='0';counselUpdateVisibility();counselSave();});input.addEventListener('change',()=>{counselUpdateVisibility();counselSave();if(input.tagName==='SELECT')inputWizardInit(true);});});
  counselUpdateVisibility();
  if(cat==='qna')counselSave();
  // 생년월일·출생지 변경으로 새 입력칸이 만들어졌을 때 단계 목록도 갱신한다.
- if(active&&previous===cat)inputWizardInit();
+ if(active&&previous===cat)inputWizardInit(true);
 }
 function saveQuestionDraft(){
  const ta=document.getElementById('ctxText');if(!ta||!ta.dataset.cat||ta.dataset.owner!==counselOwnerKey())return;
@@ -4590,7 +4592,8 @@ function wzStepDone(step){
   const nums=step.flatMap(f=>[...f.querySelectorAll('input[type="number"]')]).filter(el=>el.offsetParent!==null);
   return step.some(f=>f.dataset.wzTouched==='1')&&nums.every(el=>el.value!=='');
 }
-function inputWizardInit(){
+// keep: 진행 중인 입력에서 단계 목록만 갱신할 때. 이미 확인한 이름·출생지·상대 정보 단계를 되돌리지 않는다.
+function inputWizardInit(keep){
   const form=document.getElementById('formWrap');if(!form)return;
   const oldNav=document.getElementById('wzNav');if(oldNav)oldNav.remove();
   const fss=[...form.children].flatMap(el=>el.id==='counselFields'?[...el.children]:[el]).filter(el=>el.tagName==='FIELDSET'&&!el.hidden&&el.style.display!=='none'&&el.id!=='mbtiFieldset');
@@ -4599,12 +4602,14 @@ function inputWizardInit(){
   if(maritalIdx>=0){const marital=fss.splice(maritalIdx,1)[0],cityIdx=fss.findIndex(f=>f.querySelector('#iCity'));fss.splice(cityIdx+1,0,marital);}
   const steps=fss.map(f=>[f]);
   const reusedBirth=_category!=='topic-child'&&_lastInputs&&['iY','iM','iD'].every((id,i)=>document.getElementById(id).value===String([_lastInputs.year,_lastInputs.month,_lastInputs.day][i]))&&document.getElementById('iCity').value===cityLabelOf(_lastInputs.cityKey);
+  if(!keep){
   document.getElementById('iCity').dataset.wzConfirmed=reusedBirth?'1':'0';
   document.getElementById('catExtraName').dataset.wzConfirmed=namingFieldsValid()?'1':'0';
   const nameFs=document.getElementById('nameFieldset');
   if(nameFs)nameFs.dataset.wzConfirmed=readSajuName()?'1':'0';
+  }
   if(_lastInputs)form.dataset.genderPicked='1';
-  fss.forEach(f=>{f.classList.remove('wz-in','wz-done','wz-cur');delete f.dataset.wzTouched;});
+  fss.forEach(f=>{f.classList.remove('wz-in','wz-done','wz-cur');if(!keep)delete f.dataset.wzTouched;});
   let open=0;while(open<steps.length-1&&wzStepDone(steps[open]))open++;
   _wz={steps,open};
   let pr=document.getElementById('wzPrompt');
@@ -24148,7 +24153,7 @@ function analyze(){
   if((cat0==='life'||cat0==='newyear'||(/^topic-/.test(cat0)&&cat0!=='topic-child'))&&!['single','dating','married'].includes(_marital))return showErr('연애·결혼 상태를 선택해 주세요.','mrSingle');
 
   refreshCounselOwner();
-  if(counselFieldsFor(cat0).length&&!String(document.getElementById('counsel_occupation')?.value||'').trim())return showErr('현재 하는 일(직업)을 입력해 주세요.','counsel_occupation');
+  if(counselFieldsFor(cat0).some(([key])=>key==='occupation')&&!String(document.getElementById('counsel_occupation')?.value||'').trim())return showErr('현재 하는 일(직업)을 입력해 주세요.','counsel_occupation');
   counselSave();
 
   if(!year||year<1900||year>2050)return showErr('연도는 1900~2050 사이로 입력해주세요.','iY');

@@ -7,7 +7,8 @@ try{
  const outlines=new Set();
  for(const [cat,spec]of Object.entries(products)){
   w.cat=cat;run('goToInput(window.cat)');
-  assert(d.getElementById('counsel_occupation').required);
+  // 주제별 운세는 각자의 질문으로 상황을 받으므로 직업 칸을 따로 묻지 않는다(2026-11-02 사용자 요청).
+  assert(!d.getElementById('counsel_occupation'),cat+' should not ask occupation');
   for(const f of spec.fields){const input=d.getElementById('counsel_'+f.key);assert(input,cat+'/'+f.key);assert(!input.required);assert(!input.hasAttribute('maxlength'));if(f.type==='select'){assert.equal(input.tagName,'SELECT');assert([...input.options].some(o=>o.value==='답변하지 않음'));assert([...input.options].some(o=>o.value==='기타'));}}
   const report=run('AIReport.sources(window.cat,_saju,_meta)');
   assert(report.productGuide);assert.equal(report.productGuide.targetCharacters[0],spec.range[0]);assert(report.storytelling.secondary.includes('STORY_06'));
@@ -39,6 +40,8 @@ try{
  const name=run("AIReport.sources('name',_saju,_meta)");assert(name.ledger.some(x=>x.id==='name.sound'));assert(name.ledger.some(x=>x.id==='name.chart'));assert(!name.ledger.some(x=>/^name\.(han|suri)/.test(x.id)));assert(name.limits.some(x=>x.includes('한자 미확인')));
  const worker=fs.readFileSync('worker/saju-chat-worker.js','utf8');const server=vm.createContext({console,URL,TextEncoder,crypto:require('node:crypto').webcrypto});vm.runInContext(worker.replace(/^import .*;\s*$/gm,'').replace('export default {','const workerDefault = {'),server);
  server.raw={...name,phase:'plan'};const parsed=vm.runInContext('professionalReportData(raw)',server);assert(parsed.productGuide);assert.equal(parsed.chapters[0].question,name.chapters[0].question);
+ // 선택형 질문에 답해도 이미 확인한 출생지 단계가 풀리지 않는다(입력이 처음 단계로 되돌아가지 않음).
+ run("goToInput('gunghap');document.getElementById('iCity').value='대전광역시';document.getElementById('iCity').dataset.wzConfirmed='1';const s=document.getElementById('counsel_status');s.value=s.options[2].value;s.dispatchEvent(new Event('change',{bubbles:true}))");assert.equal(d.getElementById('iCity').dataset.wzConfirmed,'1');
  console.log('✓ 11개 상품별 질문·다른 목차·서사·분량 계약, 조건부 단계, 건너뛰기, 질문 보존·사용자 격리, 절기월 근거, 시간·한자 미상 제한, 서버 계약 전달');
  console.log('모델 출력·실제 해석 품질은 이 테스트에서 평가하지 않습니다. 실제 유료 요청 없음.');
 }finally{rt.close();}
