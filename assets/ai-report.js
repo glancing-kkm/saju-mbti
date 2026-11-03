@@ -96,7 +96,7 @@ function outline(cat,year,meta={},extra={}){
 // 장 번호: 프롤로그·에필로그는 이름으로, 활용 설명서는 번호 없이, 나머지는 1장부터.
 function chapterLabels(chapters){let n=0;const ny=chapters.some(c=>c.kind==='mw');return chapters.map((c,i)=>c.kind==='prologue'?'프롤로그':c.kind==='epilogue'?'에필로그':c.kind==='guide'?'':c.kind==='mw'?(chapters[i-1]?.kind==='mw'?'':`${ny?'제':''}${++n}장`):`${ny?'제':''}${++n}장`);}
 function chapterTitleText(c,plan){const p=plan?.chapters?.find(x=>x.id===c.id),t=typeof p?.title==='string'&&p.title.trim().length>=4&&p.title.length<=60&&!wordingIssues(p.title).length?readerText(p.title.trim()):'';return c.mode==='ai'?(t||c.title):c.mode==='prefix'?`${c.prefix} — ${t||c.title}`:c.title;}
-function chapterTitle(c,plan){return esc(chapterTitleText(c,plan))+(c.tag&&c.mode!=='prefix'&&c.kind!=='future'&&!c.title.includes(c.tag)?` <small class="ai-chapter-tag">(${esc(c.tag)})</small>`:'');}
+function chapterTitle(c,plan){const text=esc(chapterTitleText(c,plan)),title=typeof _glueOrphanSegment==='function'?_glueOrphanSegment(text):text;return title+(c.tag&&c.mode!=='prefix'&&c.kind!=='future'&&!c.title.includes(c.tag)?` <small class="ai-chapter-tag">(${esc(c.tag)})</small>`:'');}
 function sources(cat,s,meta){
  const ledger=[],sourceLimits=[],add=(id,label,value,anchors=[])=>{ledger.push({id,label,value,anchors:unique(anchors.filter(v=>typeof v==='string'&&v.length))});};
  let daeuns=[],timeline=null,newyearFrame=null;const chart=buildChartAnalysis(s),year=cat==='newyear'?Number(meta.nyExtra?.y)||new Date().getFullYear():new Date().getFullYear();

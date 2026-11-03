@@ -1061,7 +1061,7 @@ function rpShell(host,spec,d,o){
   const pg=document.createElement('div');pg.className='rp-page'+(o.cls?' '+o.cls:'');
   pg.style.setProperty('--ac',spec.accent);pg.style.setProperty('--ac2',tint(spec.accent,.55));pg.style.setProperty('--ac3',tint(spec.accent,.12));
   const who=d.meta.userName?`${esc(d.meta.userName)} 님`:'';
-  pg.innerHTML=`<div class="rp-top"><span>${esc(spec.name)} 보고서</span><span>${who}</span></div>${o.tab?'<div class="rp-tab"></div>':''}${o.ey?`<p class="rp-ey">${esc(o.ey)}</p>`:''}${o.title?`<h2 class="rp-title">${esc(o.title)}</h2>`:''}${o.sub?`<p class="rp-sub">${txt(o.sub)}</p>`:''}<div class="rp-body"></div><div class="rp-foot"><span>${RP_BRAND} · ${esc(spec.name)}</span><b></b></div>`;
+  pg.innerHTML=`<div class="rp-top"><span>${esc(spec.name)} 보고서</span><span>${who}</span></div>${o.tab?'<div class="rp-tab"></div>':''}${o.ey?`<p class="rp-ey">${esc(o.ey)}</p>`:''}${o.title?`<h2 class="rp-title">${txt(o.title)}</h2>`:''}${o.sub?`<p class="rp-sub">${txt(o.sub)}</p>`:''}<div class="rp-body"></div><div class="rp-foot"><span>${RP_BRAND} · ${esc(spec.name)}</span><b></b></div>`;
   host.appendChild(pg);return pg;
 }
 function rpFlow(host,spec,d,o,blocks){

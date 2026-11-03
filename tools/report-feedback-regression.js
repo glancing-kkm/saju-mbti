@@ -22,6 +22,7 @@ try{
  const bars=[...graph.querySelectorAll('.lc-area-row')].map(row=>[row.querySelector('span').textContent,Number(row.querySelector('b').textContent)]);
  assert(radar.length>=5);assert.deepEqual(radar,bars,'same domains, year and exact scores');assert(!graph.innerHTML.includes('영역별 운 지도 · 앞으로 10년'));
  const zero=run("lcYearAreaScores({love:{yearNow:{score:0}},money:{yearNow:{score:76},years:[{score:20}]}})");assert.deepEqual(JSON.parse(JSON.stringify(zero)),[['연애운',0],['재물운',76]],'zero is valid; never substitute multi-year average');
+ const heading=A.chapterTitle({title:'인간관계 — 돕는 사람과 멀리할 선을 가르는 법',mode:'fixed'},null);assert(heading.endsWith('가르는\u00a0법'),'short heading ending must remain with preceding word');
  const contrast='하지만 이 장점에는 반대쪽 모습도 있습니다. 휴식이 미루기로 이어지지 않게 시간을 정하세요.';
  assert.equal(A.readerText(contrast),'하지만 휴식이 미루기로 이어지지 않게 시간을 정하세요.');
  const job='사무직이라는 현재 정보를 토대로 연결해 보면, 오래 앉아 있는 날에는 자세를 바꿔 보세요.';
