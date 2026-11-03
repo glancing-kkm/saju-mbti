@@ -5,8 +5,8 @@ const products={
   "title": "궁합",
   "story": "STORY_02",
   "range": [
-   6000,
-   9000
+   5000,
+   7000
   ],
   "fields": [
    {
@@ -206,8 +206,8 @@ const products={
   "title": "결혼운",
   "story": "STORY_05",
   "range": [
-   5000,
-   8000
+   4500,
+   6500
   ],
   "fields": [
    {
@@ -779,8 +779,8 @@ const products={
   "title": "우리 아이 사주",
   "story": "STORY_01",
   "range": [
-   6000,
-   9000
+   5000,
+   7000
   ],
   "fields": [
    {
