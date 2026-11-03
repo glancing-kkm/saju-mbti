@@ -13327,13 +13327,15 @@ function lcPeople(saju,o){
     ['특징',`말수는 적어도 막힐 때 <span class="lk-m">결정적인 길을 알려 주는 윗사람</span>`],
     gwYear?['등장 시기',`${gwYear.year}년`]:null],{kind:'helper',gender:hg,age:Math.max(ageOf(P&&P.helper.years,uAge+12),uAge+5),look:(lk+1)%5,seed:seed+3,country:'대한민국',traits:lcPortraitTraits('helper',hg,seed+3)});
   if(o.avoid!==false){
+    // 악연의 출생년도 예시는 함께 보이는 카드(귀인 또는 연인)와 나이 차이가 가장 큰 해를 고른다. 비슷한 또래 두 사람이 나란히 서지 않게.
+    const refY=P?(!partnerOn||o.helper===true?P.helper.years[0]:P.years[0]):0,avs=P?P.avoid.years.filter(y=>y0-y+1>=20):[],foeY=avs.length?(refY?[...avs].sort((a,b)=>Math.abs(b-refY)-Math.abs(a-refY))[0]:avs[0]):(P&&P.avoid.years[0]);
     h+=lcScene(saju,'믿음이 자라는<br>관계의 기준도<br>함께 확인해요.',true);
     h+=lcProfileCard('foe',`${who}${eul(who)}<br>흔드는 악연`,lcArt(mg,seed+5),[
-      P&&P.avoid.years.length?['출생년도 예시',ppM(ppYearLab(P.avoid.years[0]))]:['띠',`<span class="lk-m">${ANIMAL[clashB]}띠</span>`],
+      foeY?['출생년도 예시',ppM(ppYearLab(foeY))]:['띠',`<span class="lk-m">${ANIMAL[clashB]}띠</span>`],
       P?['초성 예시',ppM(personInitials(seed+5))]:null,
       ['성격',`<span class="lk-m">${o.avoidTrait||(peer>=2?'친해지면 돈 이야기를 먼저 꺼내는 사람':gwanN>=2?'처음부터 지나치게 몰아붙이는 사람':'말과 행동이 자주 다른 사람')}</span>`],
       ['피해 유형',`<span class="lk-m">${dmg}</span>`],
-      clashYear?['주의 시기',`${clashYear.year}년 (일지와 부딪히는 해)`]:null],{kind:'foe',gender:mg,age:ageOf(P&&P.avoid.years,uAge),look:(lk+3)%5,seed:seed+5,country:'대한민국',traits:lcPortraitTraits('foe',mg,seed+5)});
+      clashYear?['주의 시기',`${clashYear.year}년 (일지와 부딪히는 해)`]:null],{kind:'foe',gender:mg,age:ageOf(foeY&&[foeY],uAge),look:(lk+3)%5,seed:seed+5,country:'대한민국',traits:lcPortraitTraits('foe',mg,seed+5)});
   }
   return h?`<section class="lc-people lc-people2" id="lv4-${o.id||'lc-people'}">${h}<p class="lc-foot">* 유형별 대표 인물 1명의 특징으로 AI 인상 이미지를 그려 드려요(실존 인물이 아니에요). 귀인의 띠는 일간의 천을귀인, 주의할 띠는 일지와 충하는 관계를 참고해요. 둘이 겹치면 귀인은 겹치지 않는 띠를 먼저 골라요. 출생년도·초성·인상은 참고 예시이며 실제 인물을 예측하는 정보가 아니에요. 따라서, 사람을 판단하기보다 관계의 속도를 조절하는 참고로 보세요.</p></section>`:'';
 }
