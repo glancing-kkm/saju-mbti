@@ -81,7 +81,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
 
  const unsigned=(id,cat)=>Buffer.from(JSON.stringify({o:id,c:cat,e:Date.now()+86400000})).toString('base64url')+'.mock';
  check('무료 질문: 이전 전역 소진 기록과 무관하게 결제 건마다 1회, 새 결제에는 다시 1회',()=>{
-   run("_unlockedCats.set('life',unlockScopeOf('life'));localStorage.setItem('saju_chat_count_life_v2','999')");
+   run("setUnlockedFor('life');localStorage.setItem('saju_chat_count_life_v2','999')");
    w.testToken=unsigned('ORDER-A','life');run('savePaidToken(window.testToken)');assert.equal(run("chatRemaining('life')"),1);
    run("chatIncCount('life')");assert.equal(run("chatRemaining('life')"),0);
    w.testToken=unsigned('ORDER-B','life');run('savePaidToken(window.testToken)');assert.equal(run("chatRemaining('life')"),1);

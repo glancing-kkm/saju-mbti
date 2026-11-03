@@ -1273,15 +1273,17 @@ async function buildTemplateReport(cat,opts){
     return await rpOutput(host,all,spec,d,cat,opts,prog,{authorship,coverage:d.coverage,chars,ai:ai.okGroups,groups:plan.groups.length});
   }catch(e){host.remove();throw e;}
 }
-// 웹 전체 풀이(심층 상담 리포트)를 그대로 A4 쪽으로 옮긴다. 웹에서 이미 받은 풀이가 있으면 같은 저장본을 쓴다.
+// PDF 결제 후에만 웹 스토리와 결론을 이어받아 심층 집필한다. 같은 PDF 저장본은 재사용한다.
 async function rpWebReport(cat,spec,d,opts,prog,fontLoad){
-  const report=AIReport.sources(cat,_saju,{..._meta,gender:_meta.gender||gender});
-  if(Object.keys(d.info||{}).length)report.userStatements.pdfInfo={source:'user-stated',...d.info};
+  const access=!opts.dryRun&&typeof ReportAccess==='object'?(opts.webAccessSession||await ReportAccess.requirePdf(cat)):null;
+  if(!opts.dryRun&&!access)throw Error('웹 풀이의 열람 권한을 확인하지 못했어요.');
+  const report=AIReport.preparePdf(AIReport.sources(cat,d.saju,d.meta),d.info||{});
+  opts={...opts,webAccessSession:access};
   const token=typeof pdfPaidToken==='function'?pdfPaidToken(cat):undefined;
-  const premium=!!report.productGuide;if(premium)report.depth='pdf';
-  const state=await AIReport.author(report,{...(premium?{kind:'report-tpl'}:{}),token,endpoint:opts.endpoint,onProgress:(a,b)=>prog(`풀이 중입니다 · ${a}/${b}장`)});
+  const state=await AIReport.author(report,{kind:'report-tpl',token,endpoint:opts.endpoint,onState:s=>{const n=Object.keys(s.accepted||{}).length;prog(`심층 풀이 작성 중 · ${n}/${report.chapters.length}장`,{percent:s.plan?5+80*n/report.chapters.length:0});}});
+  if(access)ReportAccess.assertActive(access);
   const doc=AIReport.pdfDoc(report,state);
-  prog('보고서 쪽을 짜는 중이에요');
+  prog('보고서 쪽을 짜는 중이에요',{percent:88});
   await fontLoad;
   const host=document.createElement('div');host.className='rp-host';document.body.appendChild(host);
   try{
@@ -1301,12 +1303,13 @@ async function rpWebReport(cat,spec,d,opts,prog,fontLoad){
 }
 async function rpOutput(host,all,spec,d,cat,opts,prog,info){
   try{
+    if(opts.webAccessSession)ReportAccess.assertActive(opts.webAccessSession);
     const m=d.meta,fileName=`${RP_BRAND.replace(/\s/g,'')}_${spec.file}_리포트_${m.sy}${pad2(m.sm)}${pad2(m.sd)}.pdf`,base={fileName,authorship:info.authorship,coverage:info.coverage,title:`${spec.name} 리포트`,pages:all.length,chars:info.chars,ai:info.ai,groups:info.groups};
     // 1순위 — 서버 브라우저로 인쇄(글자 선택·검색 가능, 용량 작음). 무료 한도를 넘거나 실패하면 아래 이미지 방식으로 만든다.
     if(!opts.imageOnly){
-      prog('PDF 파일로 만드는 중이에요');
+      prog('PDF 파일로 만드는 중이에요',{percent:93});
       const blob=await rpServerPdf(rpStandalone(all),{...opts,category:cat});
-      if(blob){host.remove();return {...base,blob,mode:'text'};}
+      if(blob){if(opts.webAccessSession)ReportAccess.assertActive(opts.webAccessSession);prog('PDF가 완성됐어요',{percent:100});host.remove();return {...base,blob,mode:'text'};}
     }
     const {jsPDF}=window.jspdf,pdf=new jsPDF('portrait','mm','a4');
     // html2canvas 1.4는 color-mix()로 칠한 문서 배경을 읽지 못한다 — 그리는 동안만 일반 색으로 바꿔 둔다
@@ -1314,7 +1317,8 @@ async function rpOutput(host,all,spec,d,cat,opts,prog,info){
     roots.forEach(el=>el.style.setProperty('background-color','#faf8f3','important'));
     try{
     for(let i=0;i<all.length;i++){
-      prog(`${i+1} / ${all.length}쪽을 그리는 중이에요`);
+      if(opts.webAccessSession)ReportAccess.assertActive(opts.webAccessSession);
+      prog(`${i+1} / ${all.length}쪽을 그리는 중이에요`,{percent:93+6*i/all.length});
       const canvas=await html2canvas(all[i],{scale:1.5,backgroundColor:'#faf8f3',useCORS:true,logging:false,width:RP_W,height:RP_H,windowWidth:RP_W});
       if(i)pdf.addPage();
       pdf.addImage(canvas.toDataURL('image/jpeg',0.8),'JPEG',0,0,210,297);
@@ -1322,6 +1326,7 @@ async function rpOutput(host,all,spec,d,cat,opts,prog,info){
     }
     }finally{roots.forEach((el,i)=>{if(saved[i][0])el.style.setProperty('background-color',saved[i][0],saved[i][1]);else el.style.removeProperty('background-color');});}
     host.remove();
+    if(opts.webAccessSession)ReportAccess.assertActive(opts.webAccessSession);prog('PDF가 완성됐어요',{percent:100});
     return {...base,blob:pdf.output('blob'),mode:'image'};
   }catch(e){host.remove();throw e;}
 }
@@ -1402,12 +1407,13 @@ async function rpServerPdf(html,opts){
   const ctl=typeof AbortController==='function'?new AbortController():null,timer=ctl?setTimeout(()=>ctl.abort(),70000):0;
   try{
     const token=typeof pdfPaidToken==='function'?pdfPaidToken(opts.category):'';
-    const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html,paidToken:token}),signal:ctl?ctl.signal:undefined});
-    if(!resp.ok||!/application\/pdf/.test(resp.headers.get('Content-Type')||''))return null;
+    const resp=await fetch((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html,paidToken:token,...(typeof ReportAccess==='object'?await ReportAccess.pdfMeta(opts.category):{})}),signal:ctl?ctl.signal:undefined});
+    if(!resp.ok){const data=await resp.json().catch(()=>({}));if([401,403].includes(resp.status)||/WEB_|DEVICE_|NEED_PAYMENT/.test(data.code||''))throw Object.assign(new Error(data.error||'PDF 열람 권한을 확인해 주세요.'),{code:data.code,permanent:true});return null;}
+    if(!/application\/pdf/.test(resp.headers.get('Content-Type')||''))return null;
     const blob=await resp.blob();
     const head=new Uint8Array(await blob.slice(0,5).arrayBuffer());
     return blob.size>2000&&String.fromCharCode(...head).startsWith('%PDF')?blob:null;
-  }catch(e){return null;}
+  }catch(e){if(e.permanent)throw e;return null;}
   finally{if(timer)clearTimeout(timer);}
 }
 window.TEMPLATE_REPORT_SPECS=SPECS;

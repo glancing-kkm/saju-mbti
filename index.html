@@ -2154,7 +2154,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=d11a534947b9">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=8c5af1f52732">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=8ac5bcfeadb0">
 </head>
 <body>
 <div id="app">
@@ -3090,8 +3090,9 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </div>
 
 <script src="assets/premium-saju.js?v=0544723594c7"></script>
-<script src="assets/reading-stage.js?v=d10c3101528f"></script>
-<script src="assets/ai-report.js?v=c929a943170c"></script>
+<script src="assets/reading-stage.js?v=c31fde7874c7"></script>
+<script src="assets/report-access.js?v=d29a7133094b"></script>
+<script src="assets/ai-report.js?v=313c5f17291b"></script>
 <script src="assets/reading-voice.js?v=59650d7c4102"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -3244,6 +3245,7 @@ const _unlockedCats=new Map();
 function unlockKeyOf(cat){return `saju_paid_unlocked_${cat}_v4`;} // (호환용 — 이제 사용처 없음)
 function isUnlockedFor(cat){
   const scope=_unlockedCats.get(cat);
+  if(scope&& !_loadValidPaidTokens().some(t=>t.cat===cat&&(t.sajuId===scope||(!t.scoped&&t.sajuId===sajuIdOf(_saju,_meta))))){_unlockedCats.delete(cat);return false;}
   return scope!==undefined&&(scope===''||scope===unlockScopeOf(cat));
 }
 // 사주 식별자 — 성별 + 4기둥(년/월/일/시) 한글 표기. 같은 사주면 같은 식별자.
@@ -5316,13 +5318,14 @@ function playReveal(cat){
   el.id='revealLayer';el.className='reveal';el.setAttribute('role','status');
   const steps=revealStepsFor(cat);
   if(steps)el.classList.add('staged');
-  el.innerHTML=`<div><div class="reveal-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p id="revealMsg">${steps?steps[0]:msg}</p><small>${steps?'본인 사주에 맞춰 하나씩 계산하고 있어요 · 눌러서 건너뛰기':'다섯 기운의 균형을 맞추고 있어요'}</small></div>`;
-  if(steps)steps.slice(1).forEach((s,i)=>setTimeout(()=>{const m=document.getElementById('revealMsg');if(m)m.textContent=s;},1000*(i+1)));
+  el.innerHTML=`<div><div class="reveal-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p id="revealMsg">${steps?steps[0]:msg}</p><small>풀이가 준비됐어요 · 눌러서 바로 보기</small>${typeof ReportProgress==='object'?ReportProgress.markup('calculated','풀이 준비'):''}</div>`;
+
   const done=()=>{if(el.parentNode)el.remove();};
   el.addEventListener('click',done);
   el.addEventListener('animationend',e=>{if(e.animationName==='reveal-out')done();});
   document.body.appendChild(el);
-  setTimeout(done,steps?3800:2200);
+  if(typeof ReportProgress==='object')ReportProgress.update(el,100,'계산한 풀이가 준비됐어요');
+  setTimeout(done,120);
 }
 // 휴대폰 뒤로 가기 — 홈을 떠날 때 한 칸만 쌓아 두고, 뒤로 가면 홈으로 돌아온다.
 // 결제 창이 열려 있으면 먼저 결제 창만 닫는다.
@@ -6117,7 +6120,7 @@ async function finishTarotDraw(){
   _tarotFlow.meaningVersion=TAROT_MEANING_VERSION;
   _tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown='';_tarotFlow.authorError=false;_tarotFlow.resultLoading=false;_tarotFlow.deepLoading=true;
   saveTarotFlow();tarotNavigate('result');
-  try{const ai=await generateAIReading(input);if(_tarotFlow!==target)return;if(!tarotAIQuality(ai,input))throw Error('invalid reading');_tarotFlow.resultMarkdown=ai.trim();_tarotFlow.aiAuthored=true;}
+  try{const ai=await generateAIReading(input);if(_tarotFlow!==target)return;singleReadingProgress(tarotRoot(),90,'완성된 풀이를 확인하고 있어요');if(!tarotAIQuality(ai,input))throw Error('invalid reading');_tarotFlow.resultMarkdown=ai.trim();_tarotFlow.aiAuthored=true;singleReadingProgress(tarotRoot(),100,'전체 풀이가 완성됐어요');}
   catch(e){if(_tarotFlow!==target)return;_tarotFlow.authorError=true;}
   _tarotFlow.deepLoading=false;
   saveTarotFlow();
@@ -6235,16 +6238,10 @@ function generateTemplateReading(input){
 }
 
 async function generateAIReading(input,opts){
-  const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({input:typeof storyMdPlan==='function'?{...input,storyPlan:storyPayload(storyMdPlan(generateTemplateReading(input),'tarot',input,input.topic||input.questionCategory))}:input,language:currentLanguagePayload(),paidToken:latestPaidToken()})
-  });
-  if(!resp.ok)throw new Error(`tarot-reading ${resp.status}`);
-  const data=await resp.json();
-  const text=String(data.resultMarkdown||data.text||'').trim();
-  if(!text)throw new Error('empty tarot-reading');
-  return text;
+  const body=JSON.stringify({input:typeof storyMdPlan==='function'?{...input,storyPlan:storyPayload(storyMdPlan(generateTemplateReading(input),'tarot',input,input.topic||input.questionCategory))}:input,language:currentLanguagePayload(),paidToken:latestPaidToken()});
+  const generate=async()=>{const resp=await fetch(WORKER_URL.replace(/\/$/,'')+'/tarot-reading',{method:'POST',headers:{'Content-Type':'application/json'},body});
+    if(!resp.ok)throw new Error(`tarot-reading ${resp.status}`);const data=await resp.json(),text=String(data.resultMarkdown||data.text||'').trim();if(!text)throw new Error('empty tarot-reading');return text;};
+  return typeof ReadingRequests==='object'?ReadingRequests.run('tarot:'+body,generate,text=>tarotAIQuality(text,input)):generate();
 }
 // 유료 타로 AI 응답 채택 기준 — 실제로 뽑은 카드만 언급하고, 섹션 구조·분량·출처 규칙을 지킬 때만 쓴다.
 // 문장 규칙 검사이며 해석의 정확도를 보장하지 않는다.
@@ -6262,7 +6259,7 @@ function tarotAIQuality(md,input){
 }
 function renderTarotResult(root){
   if(_tarotFlow&&(_tarotFlow.resultLoading||_tarotFlow.deepLoading)){
-    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'');root.innerHTML=readingLoadingHTML();return;
+    tarotSetHeader('타로 결과',_tarotFlow.spreadName||'');root.innerHTML=readingLoadingHTML({single:true});singleReadingProgress(root,10,'선택한 카드와 질문을 연결해 풀이하고 있어요');return;
   }
   if(_tarotFlow?.paymentStatus==='paid'&&_tarotFlow.authorError){root.innerHTML='<section class="tarot-panel"><p>풀이를 완성하지 못했어요. 선택한 카드는 유지돼요.</p><button class="ts-cta" onclick="finishTarotDraw()">다시 풀이하기</button></section>';return;}
   if(_tarotFlow&&_tarotFlow.previewTemplate&&_tarotFlow.meaningVersion!==TAROT_MEANING_VERSION){
@@ -7613,18 +7610,20 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=2c2e1be64588';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=8c44dca35cfd';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';
   const paid=isUnlockedFor('pdf-'+cat),price=formatWon(PAY_BASE_PRICE['pdf-'+cat]||5000);
-  return `<section class="pdf-cta"><div><b>프리미엄 PDF 리포트</b><small>표지·차례·도표와 장별 상세 풀이를 담은 A4 보고서예요. ${paid?'결제가 확인됐어요. 24시간 동안 다시 받을 수 있어요.':`풀이 결제와 별도인 ${price} 상품이에요.`}</small>${_meta&&birthTimeReference(_meta).applied?`<small class="pdf-time-reference">${birthTimeReference(_meta).note}</small>`:''}</div><button type="button" class="pdf-cta-btn" onclick="downloadReportPdf('${cat}')">${paid?'PDF 받기':`${price} · PDF 받기`}</button></section>`;
+  return `<section class="pdf-cta"><div><b>프리미엄 PDF 리포트</b><small>웹 풀이의 이야기와 결론을 바탕으로, 근거와 상황별 해석을 더 자세히 풀어 쓴 A4 심층 보고서예요. 웹 풀이를 본 이 브라우저에서, 웹 열람 기간 24시간 안에 PDF 결제 후 작성해요. ${paid?'결제가 확인됐어요. 24시간 동안 다시 받을 수 있어요.':`풀이 결제와 별도인 ${price} 상품이에요.`}</small>${_meta&&birthTimeReference(_meta).applied?`<small class="pdf-time-reference">${birthTimeReference(_meta).note}</small>`:''}</div><button type="button" class="pdf-cta-btn" onclick="downloadReportPdf('${cat}')">${paid?'PDF 받기':`${price} · PDF 받기`}</button></section>`;
 }
-function pdfProgress(text){
+function pdfProgress(text,progress){
   let el=document.getElementById('pdfProgress');
   if(!el){el=document.createElement('div');el.id='pdfProgress';el.className='pdf-progress';el.setAttribute('role','status');document.body.appendChild(el);}
-  if(text===null){el.remove();return;}
-  el.innerHTML=`<div><b>PDF 리포트를 만드는 중이에요</b><span>${text}</span></div>`;
+  if(text===null){if(typeof ReportProgress==='object')ReportProgress.stop(el);el.remove();return;}
+  if(!el.querySelector('.report-progress'))el.innerHTML=`<div><b>PDF 리포트를 만드는 중이에요</b><span class="pdf-progress-status"></span>${typeof ReportProgress==='object'?ReportProgress.markup('pdf','PDF 작성과 파일 제작'):''}</div>`;
+  el.querySelector('.pdf-progress-status').textContent=text;
+  if(typeof ReportProgress==='object')ReportProgress.update(el,progress?.percent||0,progress?.detail||text);
 }
 // 오래 걸린 작업 뒤에는 자동 저장이 막히는 브라우저가 많아서, 준비가 끝나면 사용자가 눌러서 저장한다
 function pdfPaidToken(cat){return loadPaidTokens().find(t=>{const p=chatOrderClaims(t);return p&&p.c==='pdf-'+cat;})||'';}
@@ -7664,8 +7663,10 @@ function loadReportPdfModule(){
 }
 async function downloadReportPdf(cat){
   if(_pdfBusy||!PDF_REPORT_CATS.includes(cat))return;
-  if(!isUnlockedFor('pdf-'+cat)){openPaymentConsent('pdf-'+cat,'KAKAOPAY');return;}
-  if(typeof html2canvas==='undefined'||typeof window.jspdf==='undefined'){alert('PDF 기능을 불러오는 중이에요. 잠시 후 다시 눌러 주세요.');return;}
+  _pdfBusy=true;let pdfAccess;
+  try{if(typeof ReportAccess!=='object')throw Error('기기 확인 기능을 불러오지 못했어요. 새로고침해 주세요.');pdfAccess=await ReportAccess.requirePdf(cat);}catch(e){_pdfBusy=false;alert(e.message);return;}
+  if(!isUnlockedFor('pdf-'+cat)){_pdfBusy=false;openPaymentConsent('pdf-'+cat,'KAKAOPAY');return;}
+  if(typeof html2canvas==='undefined'||typeof window.jspdf==='undefined'){_pdfBusy=false;alert('PDF 기능을 불러오는 중이에요. 잠시 후 다시 눌러 주세요.');return;}
   _pdfBusy=true;
   try{
     pdfProgress('보고서를 준비하는 중이에요');
@@ -7674,14 +7675,17 @@ async function downloadReportPdf(cat){
     const info=await window.askTemplateReportInfo(cat);
     if(info===null)return;
     pdfProgress('보고서를 준비하는 중이에요');
-    const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress,info});
+    const started=performance.now();
+    const r=await window.buildTemplateReport(cat,{onProgress:pdfProgress,info,webAccessSession:pdfAccess});
+    try{localStorage.setItem('pdf-performance-v1',JSON.stringify({category:cat,ms:Math.round(performance.now()-started),pages:r.pages,mode:r.mode,at:Date.now()}));}catch(e){}
+    pdfProgress('PDF가 완성됐어요',{percent:100});
     pdfProgress(null);
     pdfReadyPrompt(r.blob,r.fileName,r.title,cat);
     journeyEvent('pdf_download',cat,{pages:r.pages,mode:r.mode});
   }catch(e){
     try{console.error('[pdf]',e);}catch(_){}
     pdfProgress(null);
-    alert('PDF를 만들지 못했어요. 잠시 후 다시 눌러 주세요. 결제한 리포트는 24시간 동안 다시 받을 수 있어요.');
+    alert(/WEB_|DEVICE_/.test(e.code||'')?e.message:'PDF를 만들지 못했어요. 웹 열람 기간 안에 같은 브라우저에서 다시 시도해 주세요.');
   }finally{
     pdfProgress(null);_pdfBusy=false;
   }
@@ -11162,7 +11166,7 @@ for(const key of Object.keys(PAY_BASE_PRICE))if(PAID_META[key])PAID_META[key].pr
 for(const c of PDF_REPORT_CATS){
   const key='pdf-'+c,label=(CAT_LABEL[c]||(PAID_META[c]&&PAID_META[c].title)||c);
   CAT_LABEL[key]=`${label} PDF 리포트`;
-  PAID_META[key]={icon:'',title:CAT_LABEL[key],desc:`${label} 풀이를 전용 템플릿 보고서로 정리해 PDF로 드려요.<br>표지·차례·도표와 장별 상세 풀이를 담은 A4 보고서예요.`,features:['· 주제별 전용 템플릿 표지와 차례','· 사주 원국표·흐름 그래프·성향 도표','· 장마다 소제목별 맞춤 풀이','· 화면 풀이 전문을 담은 상세 풀이','· 같은 사주로 24시간 동안 다시 받기'],price:(PAY_BASE_PRICE[key]||5000).toLocaleString('ko-KR')+'원'};
+  PAID_META[key]={icon:'',title:CAT_LABEL[key],desc:`${label} 풀이를 전용 템플릿 보고서로 정리해 PDF로 드려요.<br>웹 풀이의 이야기와 결론을 바탕으로, 근거와 상황별 해석을 더 자세히 풀어 쓴 A4 심층 보고서예요. 웹 풀이를 본 이 브라우저에서, 웹 열람 기간 24시간 안에 PDF 결제 후 작성해요.`,features:['· 주제별 전용 템플릿 표지와 차례','· 사주 원국표·흐름 그래프·성향 도표','· 장마다 소제목별 맞춤 풀이','· 화면 풀이 전문을 담은 상세 풀이','· 같은 사주로 24시간 동안 다시 받기'],price:(PAY_BASE_PRICE[key]||5000).toLocaleString('ko-KR')+'원'};
 }
 const CHAT_PACK_COUNT={chatpack3:3,chatpack5:5,chatpack7:7};
 // 지금 이 순간의 카테고리 단가 — 워커 augustPromoPriceForCategory()와 같은 규칙
@@ -11463,7 +11467,7 @@ function unlockAndRender(category){
 const _ADMIN_ERR={BAD_CODE:'코드가 올바르지 않습니다.',RATE_LIMITED:'잠시 후 다시 시도해 주세요. 코드 확인은 1분에 한 번만 할 수 있어요.',ADMIN_NOT_CONFIGURED:'서버에 운영자 코드가 등록되지 않았어요.'};
 async function _verifyAdminCode(code,category){
   try{
-    const r=await fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,category})});
+    const r=await fetch(KAKAO_PAYMENT_BASE+'/admin-paid-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,category,...(typeof ReportAccess==='object'?await ReportAccess.paymentBinding(category):{})})});
     const d=await r.json().catch(()=>({}));
     if(r.ok&&d&&d.ok&&d.paidToken){savePaidToken(d.paidToken);return {ok:true};}
     return {ok:false,msg:_ADMIN_ERR[d&&d.code]||'코드를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'};
@@ -11697,6 +11701,7 @@ async function startKakaoPayment(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         category:cat,
+        ...(typeof ReportAccess==='object'?await ReportAccess.paymentBinding(cat):{}),
         amount:amount,
         partnerOrderId:orderId,
         partnerUserId:userId,
@@ -11734,7 +11739,7 @@ async function startKakaoPayment(){
     paymentButton.removeAttribute('aria-busy');payAgreeSync();
     journeyEvent('checkout_error',cat,{reason:'ready'});
     statusEl.className='pay-status err';
-    statusEl.textContent='결제 화면으로 이동하지 못했어요. 잠시 후 다시 시도해 주세요.';
+    statusEl.textContent=/^(WEB_|DEVICE_)/.test(e.code||'')?e.message:'결제 화면으로 이동하지 못했어요. 잠시 후 다시 시도해 주세요.';
   }
 }
 // 토스 호환 alias — 기존 onclick 호환 (장기적으론 제거 가능)
@@ -12990,6 +12995,7 @@ function lcCurve(points,opts){
   ${P.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===peak?5:3.4}" class="${i===peak?'peak':''}${i===opts.cur?' cur':''}"/><text x="${p[0].toFixed(1)}" y="${(p[1]-9).toFixed(1)}" text-anchor="middle" class="v">${points[i].v}</text><text x="${p[0].toFixed(1)}" y="${H-8}" text-anchor="middle" class="l">${points[i].l}</text>`).join('')}
   <g transform="translate(${P[peak][0].toFixed(1)},${(P[peak][1]-24).toFixed(1)})"><rect x="-21" y="-11" width="42" height="15" rx="7.5" class="badge"/><text y="0" text-anchor="middle" class="badge-t">최고조</text></g></svg>`;
 }
+function lcYearAreaScores(tm){return [['love','연애운'],['money','재물운'],['marriage','결혼운'],['career','직업운'],['health','건강운'],['study','학업운'],['children','자녀운']].filter(([key])=>Number.isFinite(tm[key]?.yearNow?.score)).map(([key,label])=>[label,tm[key].yearNow.score]);}
 // 레이더 — 영역별 운의 크기
 function lcRadar(items){
   const n=items.length;if(n<3)return '';const S=260,c=S/2,r=88;
@@ -13249,9 +13255,8 @@ function buildLifeChapters(m,s,meta,ctx){
   const people=lcPeople(s,{genderKey:m.genderKey,partner:true,seatShort,seatLove,when:lv?(lv1&&lv1.year!==lv.year?`${lv1.year}년 · `:'')+`${lv.year}년 <span class="lk-m">${lv.month}월</span>`:lv1?`${lv1.year}년`:''});
   // 5) 흐름 그래프
   const das=(m.dq.daeuns||[]).filter(du=>du.age<=85),pts=das.map(du=>({l:`${du.age}세`,v:lcEraScore(s,du)})),curI=das.indexOf(m.cur);
-  const avgY=t=>t&&t.years&&t.years.length?Math.round(t.years.reduce((a,x)=>a+x.score,0)/t.years.length):0;
-  const radar=[['연애',avgY(tm.love)],['재물',avgY(tm.money)],['결혼',avgY(tm.marriage)],['직업',avgY(tm.career)],['건강',avgY(tm.health)],['학업',avgY(tm.study)],['자녀',avgY(tm.children)]].filter(x=>x[1]);
-  const graph=`<section class="lc-card lc-graph" id="lv4-lc-graph"><h3 class="lc-card-title">${ppWho()}의 인생 그래프</h3><p class="lc-sub">대운(10년 단위)이 바뀌는 해마다의 흐름 점수예요. 가장 높은 곳이 인생의 최고조예요.</p>${lcCurve(pts.map((pt,i)=>({...pt,l:String(m.meta.sy+das[i].age-1)})),{cur:curI,label:'인생 그래프'})}<h4>영역별 운 지도 · 앞으로 10년</h4>${lcRadar(radar)}<h4>${y0}년 영역별 흐름</h4>${lcAreaBars(areas.map(([,l,v])=>[l,v]))}</section>`;
+  const radar=lcYearAreaScores(tm);
+  const graph=`<section class="lc-card lc-graph" id="lv4-lc-graph"><h3 class="lc-card-title">${ppWho()}의 인생 그래프</h3><p class="lc-sub">대운(10년 단위)이 바뀌는 해마다의 흐름 점수예요. 가장 높은 곳이 인생의 최고조예요.</p>${lcCurve(pts.map((pt,i)=>({...pt,l:String(m.meta.sy+das[i].age-1)})),{cur:curI,label:'인생 그래프'})}<h4>${y0}년 영역별 운 지도</h4>${lcRadar(radar)}<h4>${y0}년 영역별 흐름</h4>${lcAreaBars(radar)}</section>`;
   return {top:lcOrbs(s)+lcScene(s,'먼저<br>본인 얘기부터<br>해 볼까요?')+hookCardsHTML(s,m)+timeline+lcScene(s,'기회는 살리고<br>부담은 덜도록<br>생활 속 선택을<br>함께 짚어봐요.',true),
     ch1:lcChapter(1,'명식 분석')+`<section class="lc-card" id="lv4-lc-bars"><h3 class="lc-card-title">${ppWho()}이 타고난 성향</h3>${bars}</section>`+card+lcScene(s,'이 성향을<br>일과 관계에<br>어떻게 쓸지<br>살펴볼게요.',true),
     ch2:lcChapter(2,'영역별 사주풀이')+lcScene(s,lcChartCue(s).html)+special+lcAreaGrid(),
@@ -13286,6 +13291,12 @@ function lcBox(id,title,html,sub){return `<section class="lc-card lc-graph" id="
 function lcWhenYM(year,month,y0){return month?`${year}년 <span class="lk-m">${month}월</span>`:`<span class="lk-m">${year}년</span>`;}
 // 운명의 상대·귀인·거리 둘 사람 — 인생총운과 같은 계산
 
+// 귀인과 악연이 한눈에 다른 사람으로 보이도록 머리 모양·안경·옷차림을 서로 다른 목록에서 고른다(이미지 생성용 영어 묘사).
+const LC_PORTRAIT_LOOK={
+ helper:{male:['short salt-and-pepper hair','neatly combed graying hair','close-cropped hair graying at the temples','short side-parted hair with a few gray strands'],female:['shoulder-length hair with gray strands','a low bun with graying hair','a short natural gray bob','softly permed short hair'],extra:['thin metal-frame glasses','round tortoiseshell glasses','no glasses, kind laugh lines','reading glasses on a cord'],wear:['a navy knit cardigan over a collared shirt','a beige linen jacket','a soft gray turtleneck sweater','a cream knit vest over a light shirt']},
+ foe:{male:['slicked-back dark hair','a sharp undercut with a hard side part','a textured crop dyed light brown','medium wavy hair pushed back'],female:['long sleek hair with a middle part','glossy dyed brown waves','a sharp chin-length bob','a sleek high ponytail'],extra:['no glasses, a slim silver watch','no glasses, small stud earrings','thin black rectangular glasses','no glasses, a thin chain necklace'],wear:['a fitted black blazer over a black T-shirt','a dark leather jacket','a camel trench coat over a dark turtleneck','a fitted dark shirt with rolled sleeves']}
+};
+function lcPortraitTraits(kind,g,seed){const L=LC_PORTRAIT_LOOK[kind];if(!L)return '';const n=Math.abs(Number(seed)||0),pick=(a,k)=>a[Math.floor(n/[1,4,16][k])%a.length];return [pick(L[g==='female'?'female':'male'],0),pick(L.extra,1),pick(L.wear,2)].join(', ');}
 function lcPeople(saju,o){
   // 좋은 인연 카드는 연애·결혼 상태에 따라 바뀐다: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼(또는 미성년)은 귀인.
   // partner를 켠 풀이(인생총운·신년운세·자미두수·연애운·결혼운·재회운)에서만 연인 카드를 쓰고, 나머지 주제는 귀인. 악연 카드는 늘 함께 보인다.
@@ -13295,7 +13306,7 @@ function lcPeople(saju,o){
   const clashB=(saju.dp.branch+6)%12,gw=LC_GWIN[saju.dp.stem]||[],gwYear=years.find(y=>gw.includes(y.yp.branch)&&y.yp.branch!==clashB),clashYear=years.slice(1).find(y=>y.yp.branch===clashB);
   const ds=saju.dp.stem,tgs=[saju.yp.stem,saju.mp.stem].map(x=>tenGod(ds,x)).concat([saju.yp.branch,saju.mp.branch,saju.dp.branch].map(b=>tenGod(ds,BR_MAIN_STEM[b])));
   const peer=tgs.filter(t=>t==='비견'||t==='겁재').length,gwanN=tgs.filter(t=>t==='정관'||t==='편관').length;
-  const who=ppWho(),seed=saju.dp.stem*7+saju.dp.branch,mg=female?'female':'male',og=female?'male':'female';
+  const who=ppWho(),seed=saju.dp.stem*7+saju.dp.branch,mg=female?'female':'male',og=female?'male':'female',hg=(saju.dp.stem+saju.mp.branch)%2?og:mg;
   const uAge=y0-(Number(_meta&&_meta.sy)||y0-30)+1,ageOf=(ys,d)=>ys&&ys[0]?y0-ys[0]+1:d,lk=BOH[saju.dp.branch];
   const dmg=peer>=2?'돈 거래로 인한 금전 손실':gwanN>=2?'책임 떠넘기기와 지나친 압박':'말 바꾸기로 인한 신뢰 손상';
   const st=(_meta&&_meta.marital)||'',dating=st==='dating',partnerOn=!!o.partner&&st!=='married'&&uAge>=19;
@@ -13310,11 +13321,11 @@ function lcPeople(saju,o){
       P?['사는 곳',ppWhere(P.reg,P.city)]:null,
       o.when?[dating?'관계가 깊어지는 때':'만나는 때',o.when]:null],{kind:'love',gender:og,age:ageOf(P&&P.years,uAge),look:lk,seed},o.partnerTitle?'':dating?'결혼할 사람 · 함께 미래를 그릴 인연':'연인이 될 사람 · 이성 인연');
   }
-  if(!partnerOn||o.helper===true)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(mg,seed+3),[
+  if(!partnerOn||o.helper===true)h+=lcProfileCard('helper',`${who}${eul(who)}<br>끌어 주는 귀인`,lcArt(hg,seed+3),[
     P&&P.helper.years.length?['출생년도 예시',ppM(ppYearLab(P.helper.years[0]))]:['띠',`<span class="lk-m">${gw.map(b=>ANIMAL[b]+'띠').join(' · ')}</span>`],
     P?['초성 예시',ppM(personInitials(seed+3))]:null,
     ['특징',`말수는 적어도 막힐 때 <span class="lk-m">결정적인 길을 알려 주는 윗사람</span>`],
-    gwYear?['등장 시기',`${gwYear.year}년`]:null],{kind:'helper',gender:mg,age:Math.max(ageOf(P&&P.helper.years,uAge+12),uAge+5),look:(lk+1)%5,seed:seed+3,country:'대한민국',traits:'차분하고 따뜻한 표정, 단정한 인상'});
+    gwYear?['등장 시기',`${gwYear.year}년`]:null],{kind:'helper',gender:hg,age:Math.max(ageOf(P&&P.helper.years,uAge+12),uAge+5),look:(lk+1)%5,seed:seed+3,country:'대한민국',traits:lcPortraitTraits('helper',hg,seed+3)});
   if(o.avoid!==false){
     h+=lcScene(saju,'믿음이 자라는<br>관계의 기준도<br>함께 확인해요.',true);
     h+=lcProfileCard('foe',`${who}${eul(who)}<br>흔드는 악연`,lcArt(mg,seed+5),[
@@ -13322,7 +13333,7 @@ function lcPeople(saju,o){
       P?['초성 예시',ppM(personInitials(seed+5))]:null,
       ['성격',`<span class="lk-m">${o.avoidTrait||(peer>=2?'친해지면 돈 이야기를 먼저 꺼내는 사람':gwanN>=2?'처음부터 지나치게 몰아붙이는 사람':'말과 행동이 자주 다른 사람')}</span>`],
       ['피해 유형',`<span class="lk-m">${dmg}</span>`],
-      clashYear?['주의 시기',`${clashYear.year}년 (일지와 부딪히는 해)`]:null],{kind:'foe',gender:mg,age:ageOf(P&&P.avoid.years,uAge),look:(lk+3)%5,seed:seed+5,country:'대한민국',traits:'차분하고 중립적인 표정, 단정한 인상'});
+      clashYear?['주의 시기',`${clashYear.year}년 (일지와 부딪히는 해)`]:null],{kind:'foe',gender:mg,age:ageOf(P&&P.avoid.years,uAge),look:(lk+3)%5,seed:seed+5,country:'대한민국',traits:lcPortraitTraits('foe',mg,seed+5)});
   }
   return h?`<section class="lc-people lc-people2" id="lv4-${o.id||'lc-people'}">${h}<p class="lc-foot">* 유형별 대표 인물 1명의 특징으로 AI 인상 이미지를 그려 드려요(실존 인물이 아니에요). 귀인의 띠는 일간의 천을귀인, 주의할 띠는 일지와 충하는 관계를 참고해요. 둘이 겹치면 귀인은 겹치지 않는 띠를 먼저 골라요. 출생년도·초성·인상은 참고 예시이며 실제 인물을 예측하는 정보가 아니에요. 따라서, 사람을 판단하기보다 관계의 속도를 조절하는 참고로 보세요.</p></section>`:'';
 }
@@ -19761,12 +19772,13 @@ function deepCached(key){
  }catch(e){return null;}
 }
 // Keep the draft out of view until every requested text section has settled.
-function readingLoadingHTML(){return '<div class="reading-wait" role="status" aria-live="polite"><span class="reading-wait-spinner" aria-hidden="true"></span><p>풀이 중입니다</p></div>';}
+function readingLoadingHTML(opts={}){return '<div class="reading-wait" role="status" aria-live="polite"><span class="reading-wait-spinner" aria-hidden="true"></span><p>풀이 중입니다</p>'+(typeof ReportProgress==='object'?ReportProgress.markup(opts.single?'single':'generic','전체 풀이 작성'):'')+'</div>';}
+function singleReadingProgress(root,n,text){if(typeof ReportProgress==='object')ReportProgress.update(root,n,text);}
 function beginReadingWait(el){
   if(!el)return ()=>{};
   el._readingWaitCount=(el._readingWaitCount||0)+1;
-  if(el._readingWaitCount===1){el.classList.add('reading-pending');el.setAttribute('aria-busy','true');el.insertAdjacentHTML('afterbegin',readingLoadingHTML());}
-  let finished=false;return ()=>{if(finished)return;finished=true;el._readingWaitCount=Math.max(0,(el._readingWaitCount||1)-1);if(el._readingWaitCount)return;el.querySelector(':scope > .reading-wait')?.remove();el.classList.remove('reading-pending');el.removeAttribute('aria-busy');};
+  if(el._readingWaitCount===1){el.classList.add('reading-pending');el.setAttribute('aria-busy','true');el.insertAdjacentHTML('afterbegin',readingLoadingHTML());if(typeof ReportProgress==='object')ReportProgress.start(el);}
+  let finished=false;return ()=>{if(finished)return;finished=true;el._readingWaitCount=Math.max(0,(el._readingWaitCount||1)-1);if(el._readingWaitCount)return;if(typeof ReportProgress==='object')ReportProgress.update(el,100,'풀이 정리가 끝났어요');el.querySelector(':scope > .reading-wait')?.remove();el.classList.remove('reading-pending');el.removeAttribute('aria-busy');};
 }
 async function hydrateDeepReading(el){
   if(typeof AIReport==='object'&&AIReport.enabled(el))return AIReport.run(el);
@@ -25411,7 +25423,7 @@ function _hanziSearchGoPage(delta){
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=f1112b0ae6ab">
+<script src="assets/astrology.js?v=67bd3c248677">
 </script>
 </body>
 </html>

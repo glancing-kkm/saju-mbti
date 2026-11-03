@@ -1,0 +1,19 @@
+{
+  "sample": "life-21-chapters",
+  "environment": "Cloudflare Worker version preview, real provider; prior production log for baseline",
+  "baselineApproxMs": 175496,
+  "webMs": 98040,
+  "webBodyCharacters": 21955,
+  "pdfMs": 45389,
+  "pdfAuthorshipMs": 36702,
+  "pdfPages": 41,
+  "pdfBytes": 1142408,
+  "repeatPdfMs": 8010,
+  "repeatAiGenerationMs": 6,
+  "notes": [
+    "One sample, not a latency guarantee",
+    "Web target lengths retained",
+    "A prior PDF validation failure was diagnosed and followed by exact-duplicate editing; successful PDF measured afterward",
+    "No new payment or production deployment"
+  ]
+}

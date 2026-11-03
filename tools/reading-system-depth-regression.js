@@ -51,7 +51,7 @@ try{
  run("_tarotFlow={question:'이직해도 될까요?',topic:'career',questionCategory:'career',spreadName:'3장',selectedSpreadId:'tarot3',positions:getSpreadPositions('tarot3','career','career'),selectedCards:[{positionIndex:0,cardId:'cups-05',orientation:'upright'},{positionIndex:1,cardId:'major-07-chariot',orientation:'reversed'},{positionIndex:2,cardId:'pentacles-01',orientation:'upright'}],paymentStatus:'none'};tarotNavigate=()=>{};renderTarot=()=>{};");
  await run('finishTarotDraw()');assert.equal(calls,0,'미리보기에서 AI 호출 금지');const preview=run('_tarotFlow.resultMarkdown');
  run("_tarotFlow.paymentStatus='paid'");w.tarotReply=good;await run('finishTarotDraw()');assert.equal(calls,1);assert.equal(run('_tarotFlow.resultMarkdown'),good.trim(),'검증된 AI가 첫 장면까지 전체 대체');
- w.tarotReply=w.tbad2;run("_tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=''");await run('finishTarotDraw()');assert.equal(run('_tarotFlow.resultMarkdown'),'','유료 검증 실패 시 계산형으로 대체 금지');assert.equal(run('_tarotFlow.authorError'),true,'선택한 카드를 유지한 재시도 화면');
+ w.tarotReply=w.tbad2;await run('finishTarotDraw()');assert.equal(calls,1,'동일 요청은 검증된 응답 재사용');assert.equal(run('_tarotFlow.resultMarkdown'),good.trim());run("_tarotFlow.question='조건이 바뀌면 이직해도 될까요?';_tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown=''");await run('finishTarotDraw()');assert.equal(calls,2,'질문이 달라지면 새 응답 검증');assert.equal(run('_tarotFlow.resultMarkdown'),'','유료 검증 실패 시 계산형으로 대체 금지');assert.equal(run('_tarotFlow.authorError'),true,'선택한 카드를 유지한 재시도 화면');
  ok(`타로 ${tarotN}개 조합(12주제×3·5·10장): 실제 카드·자리 역할·방향, 미리보기 AI 차단, 검증된 AI만 전체 대체`);
 
  // ── 3. 점성술: 서로 다른 요구·실제 각도·트랜짓 ──

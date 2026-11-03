@@ -1,4 +1,6 @@
 name = "kakao-payment-worker"
+# Prevent old version URLs from bypassing the current access policy.
+preview_urls = false
 main = "kakao-payment-worker.js"
 compatibility_date = "2024-11-01"
 

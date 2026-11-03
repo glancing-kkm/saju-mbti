@@ -318,7 +318,7 @@ const submitBirth=async()=>{
       assert.match(run("pdfReportCtaHTML('life')"),/5,000원 · PDF 받기/);
       assert(!/Summary\('pdf'\)|PDF 다운로드/.test(html),'요약본 PDF 버튼이 남아 있음');
       assert(!/onclick="download[A-Za-z]*Summary\(|<div class="nb-card summary-card"/.test(html),'요약본 다운로드 카드가 남아 있음');
-      run("downloadReportPdf('topic-love')");
+      run("openPaymentConsent('pdf-topic-love','KAKAOPAY')"); // Access-gated async download is covered in report-access-regression.
       assert.equal(d.getElementById('payProductName').textContent,'연애운 PDF 리포트');assert.equal(d.getElementById('payProductPrice').textContent,'5,000원');
       run('closePaymentConsent()');
     });

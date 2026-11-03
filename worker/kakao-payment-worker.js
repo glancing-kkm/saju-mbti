@@ -174,6 +174,16 @@ export default {
   },
 };
 
+// PDF checkout carries the signed web-view certificate; purchasing cannot extend its window.
+async function pdfWebBinding(env,body,category){
+ if(!String(category).startsWith('pdf-'))return null;
+ try{const [raw,sig]=String(body.webAccessToken||'').split('.'),decode=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4)),c=>c.charCodeAt(0)),key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.PAID_TOKEN_SECRET),{name:'HMAC',hash:'SHA-256'},false,['verify']);
+  if(!await crypto.subtle.verify('HMAC',key,decode(sig),new TextEncoder().encode(raw)))return null;
+  const p=JSON.parse(new TextDecoder().decode(decode(raw)));
+  return p.t==='web-access-v1'&&p.complete&&p.c===category.slice(4)&&p.e>Date.now()&&p.d===body.reportDevice?{order:p.o,expiresAt:p.e}:null;
+ }catch(e){return null;}
+}
+
 // ─── 결제 준비 ───
 async function handleReady(request, env, cid, corsHeaders) {
   let body;
@@ -190,6 +200,9 @@ async function handleReady(request, env, cid, corsHeaders) {
   if (!isAmountValid(category, amount)) {
     return json({ ok: false, code: 'AMOUNT_MISMATCH', message: `Amount mismatch for ${category}` }, 400, corsHeaders);
   }
+
+  const webBinding=await pdfWebBinding(env,body,category);
+  if(String(category).startsWith('pdf-')&&!webBinding)return json({ok:false,code:'WEB_READING_REQUIRED',message:'웹 풀이 열람 기간 안에 같은 기기에서만 PDF를 구매할 수 있어요.'},403,corsHeaders);
 
   const reqBody = {
     cid,
@@ -226,7 +239,7 @@ async function handleReady(request, env, cid, corsHeaders) {
   // 주문 시점에 합의된 카테고리·금액을 고정 저장한다.
   // 승인(/approve)은 이 기록으로 검증하므로, 결제창에 머무는 동안 프로모션이
   // 시작·종료되어도 "결제는 됐는데 승인이 거부되는" 상황이 생기지 않는다.
-  await putPinnedOrder(env, partnerOrderId, { category, amount, tid: data.tid, createdAt: Date.now() });
+  await putPinnedOrder(env, partnerOrderId, { category, amount, tid: data.tid, reportDevice:/^[-\w]{43}$/.test(body.reportDevice||'')?body.reportDevice:'', webBinding, createdAt: Date.now() });
 
   return json({
     ok: true,
@@ -314,7 +327,7 @@ async function handleApprove(request, env, cid, corsHeaders) {
   }
 
   // 카카오페이 승인 응답: aid, tid, cid, sid?, partner_order_id, partner_user_id, payment_method_type, amount, item_name, ...
-  const paidToken = await signPaidToken(env, data.partner_order_id, category);
+  const paidToken = await signPaidToken(env, data.partner_order_id, category,pinned?.reportDevice,pinned?.webBinding);
   await recordApprovedOrder(env, data, category);
   return json({
     ok: true,
@@ -418,11 +431,11 @@ function b64url(bytes) {
   bytes.forEach((b) => { s += String.fromCharCode(b); });
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
-async function signPaidToken(env, orderId, category) {
+async function signPaidToken(env, orderId, category, reportDevice, webBinding) {
   if (!env.PAID_TOKEN_SECRET || !orderId) return '';
   try {
     const enc = new TextEncoder();
-    const body = b64url(enc.encode(JSON.stringify({ o: String(orderId), c: String(category || ''), e: Date.now() + (/^chatpack\d+$/.test(String(category || '')) ? CHATPACK_TOKEN_TTL_MS : PAID_TOKEN_TTL_MS) })));
+    const body = b64url(enc.encode(JSON.stringify({ o: String(orderId), c: String(category || ''), i:Date.now(), ...(/^[-\w]{43}$/.test(reportDevice||'')?{d:reportDevice}:{}), ...(String(category).startsWith('pdf-')&&webBinding?{w:webBinding.order,we:webBinding.expiresAt}:{}), e: Date.now() + (/^chatpack\d+$/.test(String(category || '')) ? CHATPACK_TOKEN_TTL_MS : PAID_TOKEN_TTL_MS) })));
     const key = await crypto.subtle.importKey('raw', enc.encode(env.PAID_TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
     const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(body)));
     return `${body}.${b64url(sig)}`;
@@ -449,7 +462,9 @@ async function handleAdminPaidToken(request, env, corsHeaders) {
   const code = String((b && b.code) || '').trim().toLowerCase().slice(0, 200);
   if (!env.ADMIN_UNLOCK_CODE) return json({ ok: false, code: 'ADMIN_NOT_CONFIGURED' }, 503, corsHeaders);
   if (!(await isAdminCode(env, code))) return json({ ok: false, code: 'BAD_CODE' }, 403, corsHeaders);
-  const paidToken = await signPaidToken(env, `admin-${Date.now()}`, String((b && b.category) || 'admin').slice(0, 40));
+  const webBinding=await pdfWebBinding(env,b,String(b.category||''));
+  if(String(b.category||'').startsWith('pdf-')&&!webBinding)return json({ok:false,code:'WEB_READING_REQUIRED'},403,corsHeaders);
+  const paidToken = await signPaidToken(env, `admin-${Date.now()}`, String((b && b.category) || 'admin').slice(0, 40),b.reportDevice,webBinding);
   return paidToken ? json({ ok: true, paidToken }, 200, corsHeaders) : json({ ok: false, code: 'SERVER_MISCONFIGURED' }, 500, corsHeaders);
 }
 

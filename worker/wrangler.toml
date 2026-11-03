@@ -1,4 +1,6 @@
 name = "saju-chat"
+# Prevent old version URLs from bypassing the current access policy.
+preview_urls = false
 main = "saju-chat-worker.js"
 compatibility_date = "2025-04-01"
 # @cloudflare/puppeteer(PDF 리포트 인쇄)가 Node 호환 기능을 쓴다

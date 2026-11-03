@@ -11,7 +11,7 @@ const tick=()=>new Promise(r=>setTimeout(r,0));
  const root=panel.querySelector('[data-deep]'),task=root._fullReportTask;
  assert(d.getElementById('view-analysis').classList.contains('on'));assert(!d.getElementById('view-result').classList.contains('on'));assert.equal(d.querySelectorAll('#view-analysis .analysis-glyph').length,8);assert(!d.getElementById('view-analysis').textContent.includes('MUST NOT'));
  d.querySelector('.analysis-board').click();assert(d.getElementById('view-analysis').classList.contains('on'),'analysis cannot be skipped by clicking');
- for(let i=0;i<20&&pending.length<4;i++)await tick();assert.equal(pending.length,4);pending[0].resolve();await tick();await tick();assert.equal(root.querySelectorAll('[data-ai-authored=true]').length,0);assert(!d.getElementById('view-result').classList.contains('on'));
+ for(let i=0;i<20&&pending.length<6;i++)await tick();assert.equal(pending.length,6);pending[0].resolve();await tick();await tick();assert.equal(root.querySelectorAll('[data-ai-authored=true]').length,0);assert(!d.getElementById('view-result').classList.contains('on'));
  let done=false;task.then(()=>done=true);for(let i=0;i<200&&!done;i++){pending.splice(0).forEach(x=>x.resolve());await tick();}await task;
  assert(d.getElementById('view-result').classList.contains('on'));assert(!d.getElementById('view-analysis').classList.contains('on'));assert(root.dataset.aiComplete);assert(!root.textContent.includes('풀이 중입니다'));assert(!root.querySelector('[data-ai-authored=false]'));const before=calls;run("showView('result')");await tick();assert.equal(calls,before);
  // Leaving while generation runs must never pull the user back to a result page.
