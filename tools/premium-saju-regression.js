@@ -13,7 +13,7 @@ try{
   assert(!d.getElementById('counsel_occupation'),cat+' should not ask occupation');
   for(const f of spec.fields){const input=d.getElementById('counsel_'+f.key);assert(input,cat+'/'+f.key);assert(!input.required);assert(!input.hasAttribute('maxlength'));if(f.type==='select'){assert.equal(input.tagName,'SELECT');assert([...input.options].some(o=>o.value==='답변하지 않음'));assert([...input.options].some(o=>o.value==='기타'));}}
   const report=run('AIReport.sources(window.cat,_saju,_meta)');
-  assert(report.productGuide);assert.equal(report.productGuide.targetCharacters[0],spec.range[0]);assert(report.storytelling.secondary.includes('STORY_06'));
+  assert(report.productGuide);assert.equal(report.productGuide.targetCharacters[0],Math.round(spec.range[0]*.8));assert(report.storytelling.secondary.includes('STORY_06'));
   assert.equal(report.chapters[0].kind,'prologue');assert.equal(report.chapters.at(-1).kind,'guide');
   assert(report.chapters.every(c=>c.question.length>40));assert(report.chapters.length>=8);
   outlines.add(report.chapters.map(c=>c.title).join('|'));

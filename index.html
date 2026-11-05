@@ -3092,12 +3092,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <script src="assets/premium-saju.js?v=bc12443ffd5c"></script>
 <script src="assets/reading-stage.js?v=c31fde7874c7"></script>
 <script src="assets/report-access.js?v=d29a7133094b"></script>
-<script src="assets/ai-report.js?v=402e68c4df43"></script>
+<script src="assets/ai-report.js?v=5290b61bbda1"></script>
 <script src="assets/reading-voice.js?v=cd57b8fb51cd"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
-<script src="assets/interpretation-engine.js?v=3e926890e980"></script>
-<script src="assets/interpretation-adapters.js?v=ba61e082e788"></script>
+<script src="assets/interpretation-engine.js?v=20238000efe0"></script>
+<script src="assets/interpretation-adapters.js?v=43fa5c7facc6"></script>
 <script>
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>{try{renderSajuPaidHistoryHome();}catch(e){}});}
 else{try{renderSajuPaidHistoryHome();}catch(e){}}
@@ -7645,7 +7645,7 @@ function sinsalMiniHTML(activeSins, contextDesc){
 // 14개 주제 템플릿에 맞춰 풀이를 채운 A4 보고서. 만드는 코드는 assets/report-pdf.js에 있고, 처음 누를 때 불러온다.
 // 결제 확인은 다른 상품과 같다 — 같은 사주(궁합은 상대, 이름풀이는 이름까지) 범위로 24시간 동안 다시 받을 수 있다.
 const PDF_REPORT_CATS=['life','newyear','gunghap','name','ziwei','topic-love','topic-money','topic-career','topic-marriage','topic-reunion','topic-study','topic-child','topic-children','topic-health'];
-const PDF_REPORT_JS='/assets/report-pdf.js?v=e7bbe94b7ab3';
+const PDF_REPORT_JS='/assets/report-pdf.js?v=cbae4821eb39';
 function isPdfReportCat(cat){return /^pdf-/.test(String(cat||''))&&PDF_REPORT_CATS.includes(String(cat).slice(4));}
 function pdfReportCtaHTML(cat){
   if(!PDF_REPORT_CATS.includes(cat))return '';

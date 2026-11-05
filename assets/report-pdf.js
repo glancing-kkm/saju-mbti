@@ -399,7 +399,7 @@ async function rpAI(spec,d,plan,onProgress,opts){
       if(plan.storyPlan)payload.meta.storyPlan=storyPayload(plan.storyPlan);
       payload.meta.narrativeStyle='알아볼 수 있는 장면과 안에서 당기는 두 기준 → 강점이 부담으로 바뀌는 조건 → 지금 달라지는 점 → 선택지의 득실과 판단 기준. 소제목마다 focus에 답하고 draft의 사실만 쓰며, 서로 다른 소제목에 같은 문장을 쓰지 않기. 날짜나 사건은 새로 만들지 않기.';
       if(told)payload.sajuContext.situation=told.slice(0,300);
-      Object.assign(payload.meta,{reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint,focus:h.focus,draft:h.draft})),fields:requestGroup.fields.map(([id,ask,max])=>({id,ask,max}))});
+      Object.assign(payload.meta,{readingKind:d.cat,reportName:spec.name.replace(/\s/g,''),facts,sections:g.heads.map(h=>({id:h.id,chapter:h.chapter,title:h.title,hint:h.hint,focus:h.focus,draft:h.draft})),fields:requestGroup.fields.map(([id,ask,max])=>({id,ask,max}))});
       let resp,data,text='',out=null;
       for(let k=0;k<2&&!rpEnough(out,requestGroup);k++){
         ({resp,data}=await fetchJsonWithRetry((opts.endpoint||WORKER_URL).replace(/\/$/,'')+'/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},2));
@@ -1178,7 +1178,7 @@ function rpCount(pages){return pages.reduce((n,p)=>n+clean(p.querySelector('.rp-
 
 // Paid report prose has one source: validated AI authorship. Facts/diagrams keep the original calculators.
 async function rpFullAuthor(spec,d,plan,prog,opts){
- const report=AIReport.sources(d.cat,d.saju,d.meta);report.depth='pdf';
+ const report=AIReport.preparePdf(AIReport.sources(d.cat,d.saju,d.meta),d.info||{});
  if(d.cat==='name'&&d.cands?.length)report.ledger.push({id:'name.candidates',label:'기존 계산에서 실제 생성된 후보',value:d.cands.map(c=>({name:c.name,han:c.han,meaning:c.meaning})),anchors:d.cands.flatMap(c=>[c.name,c.han])});
  report.userStatements.pdfInfo={source:'user-stated',...d.info};
  report.chapters=plan.groups.flatMap(g=>g.heads||[]).map(h=>({id:h.id,title:h.chapter+' · '+h.title,question:h.title+'의 근거와 원인, 생활 모습과 조건별 차이를 자세히 설명하세요.',months:[]}));
@@ -1187,6 +1187,8 @@ async function rpFullAuthor(spec,d,plan,prog,opts){
  plan.pages.forEach(pg=>{const match=(pg.vis||'').match(/^months:(\d+)/);if(match)for(let m=+match[1];m<+match[1]+3;m++)monthly.push({id:'pdf-month-'+m,title:m+'월의 흐름',question:m+'월에 달라지는 조건과 생활에서 확인할 점을 설명하세요.',months:[m]});
  if(pg.vis==='quarters')for(let q=1;q<=4;q++)monthly.push({id:'pdf-quarter-'+q,title:q+'분기의 흐름',question:q+'분기를 구성하는 월들의 차이와 준비할 일을 연결하세요.',months:[q*3-2,q*3-1,q*3]});});
  report.chapters.push(...monthly);
+ // The old page template has different chapter IDs; never attach unrelated web chapter prose.
+ report.webBasis=null;
  const token=typeof pdfPaidToken==='function'?pdfPaidToken(d.cat):undefined;
  const authorOpts={kind:'report-tpl',token,endpoint:opts.endpoint,onProgress:()=>prog('풀이 중입니다')};
  const state=await AIReport.author(report,authorOpts),secs={},sources={},ledger=rpLedger();d.storyPlan=null;d.aiStoryPlan=state.plan;

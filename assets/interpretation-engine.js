@@ -34,6 +34,9 @@ function eligible(type,ctx){
  default:return false;
  }
 }
+// Shared deterministic planning for free and paid adapters; never calls an AI or changes source facts.
+const SUBJECT_QUESTIONS={life:'서로 다른 생활 영역에서 같은 성향이 어떻게 달라질까요?',newyear:'올해 실제로 달라지는 조건과 준비할 일은 무엇일까요?',love:'마음이 움직이는 이유와 신뢰를 쌓는 방식은 무엇일까요?',marriage:'함께 사는 생활과 책임을 어떻게 맞출까요?',reunion:'다시 시작한다면 달라져야 할 조건은 무엇일까요?',money:'수입을 만드는 방식과 돈이 남는 조건은 어떻게 다를까요?',career:'능력이 살아나는 환경과 지금 선택의 조건은 무엇일까요?',study:'이해한 내용을 실제 문제에 적용하려면 무엇을 바꿀까요?',child:'아이의 반응을 이해하고 도울 환경은 무엇일까요?',children:'가족의 변화에 필요한 돌봄과 역할은 무엇일까요?',health:'무리하는 습관을 줄이고 회복할 조건은 무엇일까요?',gunghap:'같은 상황을 두 사람이 어떻게 다르게 받아들일까요?',timing:'계산된 시기에 무엇이 달라지고 무엇을 준비할까요?',talent:'어떤 조건에서 강점을 활용할까요?',core:'이 특징이 어떤 조건에서 강점이나 부담이 될까요?'};
+function subjectQuestion(product,topic){const key=String(product||'life').replace(/^topic-/,'');return SUBJECT_QUESTIONS[topic==='core'?key:topic]||SUBJECT_QUESTIONS.core;}
 function createPlan(input){
  const system=input.system,product=input.product||'life',question=txt(input.question);
  if(!['saju','tarot','astrology','ziwei'].includes(system))throw Error('Unsupported interpretation system');
@@ -54,7 +57,7 @@ function createPlan(input){
   let selected=c.signalIds?c.signalIds.map(id=>signals.find(s=>s.id===id)).filter(Boolean):pool.slice(0,4);
   const relation=relations.find(r=>r.signal_ids.some(id=>selected.some(s=>s.id===id)));
   if(relation&&!c.signalIds)for(const id of relation.signal_ids){if(!selected.some(s=>s.id===id)){const s=signals.find(s=>s.id===id);if(s&&selected.length<7)selected.push(s);}}
-  return {id:txt(c.id)||'chapter-'+i,title:txt(c.title),core_question:txt(c.question)||`${txt(c.title)}에서 본인이 먼저 살필 것은 무엇일까요?`,topic,
+  return {id:txt(c.id)||'chapter-'+i,title:txt(c.title),core_question:txt(c.question)||`${txt(c.title)} — ${subjectQuestion(product,topic)}`,new_contribution:`${txt(c.title)}에서 ${subjectQuestion(product,topic)} 실제 배정 근거의 이유·조건을 설명하고 앞 장의 용어 풀이와 결론은 반복하지 않습니다.`,topic,
    supporting_signal_ids:selected.map(s=>s.id),conclusion:selected[0]?.meaning||'',counterpoints:uniq(selected.map(s=>s.counterpoint).filter(Boolean)),
    period_analysis:selected.filter(s=>s.applicable_period?.computed).map(s=>({signal_id:s.id,period:s.applicable_period})),
    practical_advice:uniq(selected.map(s=>s.advice).filter(Boolean)).slice(0,2),next_chapter_connection:null};
@@ -125,11 +128,11 @@ function validateChapters(plan,output){
  return {ok:!issues.length,issues:uniq(issues)};
 }
 function prompt(plan){
- return {version:VERSION,id:plan.id,system:plan.system,main_theme:plan.main_theme,question:plan.user_question,resolution:plan.resolution,
+ return {version:VERSION,id:plan.id,system:plan.system,product:plan.product_type,main_theme:plan.main_theme,question:plan.user_question,resolution:plan.resolution,
   story:plan.primary_storytelling_type,secondary:plan.secondary_storytelling_types,settings:plan.calculation_settings,limitations:plan.limitations,
   signals:plan.selected_signals.filter(s=>plan.chapter_outline.some(c=>c.supporting_signal_ids.includes(s.id))).map(s=>({id:s.id,reference:s.source_reference,value:s.source_value,method:s.interpretation_method,meaning:s.meaning,period:s.applicable_period||null,limitations:s.limitations||[]})),
-  chapters:plan.chapter_outline.map(c=>({id:c.id,question:c.core_question,topic:c.topic,signalIds:c.supporting_signal_ids,advice:c.practical_advice})),dependencies:plan.chapter_dependencies,
+  chapters:plan.chapter_outline.map(c=>({id:c.id,question:c.core_question,topic:c.topic,newContribution:c.new_contribution,signalIds:c.supporting_signal_ids,advice:c.practical_advice})),dependencies:plan.chapter_dependencies,
   rule:'전체 핵심 질문을 장마다 다른 측면에서 풀고, 실제 공유 근거가 있는 장만 연결하세요. 결말은 도입을 그대로 반복하지 말고 선택 기준으로 회수하세요. 계산 사실과 상징적 해석, 사용자 진술과 조언을 구분하세요. 근거가 없는 갈등·시기는 생략하세요.'};
 }
-return {VERSION,LIBRARY,createPlan,compose,validatePlan,validateChapters,prompt,hash};
+return {VERSION,LIBRARY,subjectQuestion,createPlan,compose,validatePlan,validateChapters,prompt,hash};
 });

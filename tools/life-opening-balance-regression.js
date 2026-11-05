@@ -9,12 +9,11 @@ try{
   const meta={...rt.fixture(39,1,'married'),counsel:{answers:[{key:'occupation',value:occupation}]}};rt.set(meta);
   const report=run("AIReport.sources('life',_saju,_meta)");
   const actualLedger=JSON.stringify(report.ledger);if(ledger)assert.equal(actualLedger,ledger,'occupation must not change chart facts');ledger=actualLedger;
-  const opening=report.chapters.filter(c=>['prologue','chart','nature'].includes(c.kind));assert.equal(opening.length,5);
-  const nature=opening.filter(c=>c.kind==='nature');assert.equal(nature.length,3);
-  assert.match(opening[0].question,/성격·감정.*가까운 사람.*즐거움·생활/);
-  assert.match(nature[0].question,/일간과 태어난 계절/);assert.match(nature[0].question,/입력 직업을 사례로 쓰거나 성과·평가로 귀결하지 마세요/);
-  assert.match(nature[1].question,/실제로 강하거나 상반되는 십성/);assert.match(nature[1].question,/마음이 편해지는 조건/);
-  assert.match(nature[2].question,/실제 충·합/);assert.match(nature[2].question,/자료에 없으면 억지로 만들지/);
+  const opening=report.chapters.filter(c=>['prologue','chart','nature'].includes(c.kind));assert.equal(opening.length,2);
+  const nature=opening.filter(c=>c.kind==='nature');assert.equal(nature.length,1);
+  assert.match(nature[0].question,/감정·관계·즐거움/);
+  assert.match(nature[0].question,/일간·계절·실제 십성·합충/);assert.match(nature[0].question,/직업을 전체 주제로 삼지/);
+  assert.match(nature[0].question,/자료에 없으면 억지로 만들지/);
   assert(report.chapters.some(c=>c.tag==='직업운'&&c.question.includes('적용 예시 한 문단')),'job personalization retained in career chapter');
   const pdf=w.AIReport.preparePdf(report);for(const c of nature){const p=pdf.chapters.find(x=>x.id===c.id);assert(p.question.includes('직업')||p.question.includes('업무'));assert.equal(p.kind,'nature');}
   const old=JSON.parse(JSON.stringify(report));old.chapters.find(c=>c.kind==='nature').question='직업 장면을 먼저 쓰세요';assert.notEqual(w.AIReport.reportFingerprint(report),w.AIReport.reportFingerprint(old),'old writing plan must not match new cache fingerprint');

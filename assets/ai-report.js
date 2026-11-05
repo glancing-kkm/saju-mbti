@@ -1,7 +1,7 @@
 /* Paid prose is authored from calculated facts. No new fortune calculations or free inference. */
 (function(g){
 'use strict';
-g.AIReportConfig=Object.assign({enabled:true},g.AIReportConfig||{});
+g.AIReportConfig=Object.assign({enabled:true,webScale:1},g.AIReportConfig||{});
 const VERSION='ai-full-v1',CAT={life:'인생총운',newyear:'신년운세',gunghap:'궁합',name:'이름풀이·작명',ziwei:'자미두수','topic-love':'연애운','topic-marriage':'결혼운','topic-reunion':'재회운','topic-money':'재물운','topic-career':'직업운','topic-study':'학업·시험운','topic-child':'우리 아이 운','topic-children':'자녀(임신)운','topic-health':'건강·생활운'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const unique=a=>[...new Set(a)],compact=s=>String(s||'').replace(/[\s\u200b\u00a0]/g,'');
@@ -151,13 +151,43 @@ function sources(cat,s,meta){
  }
  const storytelling=selectStory(cat,ledger);
  const spec=g.PremiumSaju?.products[cat],productGuide=spec?{version:g.PremiumSaju.version,title:spec.title,targetCharacters:spec.range,rules:spec.rules,structure:'질문 프롤로그 → 주제별 원국 → 강점과 갈등 → 실제 대운·세운·필요한 월운 → 사용자 상황과 선택 → 질문을 회수하는 결론',sources:{calculation:'CALCULATED',interpretation:'INTERPRETED',user:'USER_PROVIDED',advice:'ADVICE',missing:'UNKNOWN'}}:null;
- return {version:VERSION,contextPolicy:'consultation-v2-occupation-scoped',productGuide,storytelling,product:cat,label:CAT[cat],year,age:year-Number(meta.sy)+1,birthTimeKnown:!!s.hp,limits:chart.limits.concat(sourceLimits),ledger,timeline,frame:newyearFrame,chapters:outline(cat,year,meta,{daeuns}),userStatements:{source:'user-stated',marital:meta.marital||'',counsel:meta.counsel||null,question:ctxSituationText()||''},executionProfile:'compact-v1'};
+ return webLengthEdition({version:VERSION,contextPolicy:'judgment-v2-specialist',analysisContract:'judgment-v2',productGuide,storytelling,product:cat,label:CAT[cat],year,age:year-Number(meta.sy)+1,birthTimeKnown:!!s.hp,limits:chart.limits.concat(sourceLimits),ledger,timeline,frame:newyearFrame,chapters:scaleWebQuestions(outline(cat,year,meta,{daeuns}),g.AIReportConfig.webScale),userStatements:{source:'user-stated',marital:meta.marital||'',counsel:meta.counsel||null,question:ctxSituationText()||''},executionProfile:'compact-v1'});
 }
 function selectStory(cat,ledger){
  const primary=g.PremiumSaju?.products[cat]?.story||(cat==='ziwei'?'STORY_09':cat==='newyear'?'STORY_04':cat==='gunghap'?'STORY_02':['topic-money','topic-career','topic-reunion'].includes(cat)?'STORY_05':cat==='topic-health'?'STORY_10':cat.startsWith('topic-')?'STORY_03':'STORY_01');
  const relation=ledger.find(s=>s.id==='natal.relations'&&s.value.some(r=>['충','형','해','원진'].includes(r.kind)));
  return {primary,secondary:unique([...(relation?['STORY_02']:[]),...(['life','newyear','ziwei'].includes(cat)||g.PremiumSaju?.products[cat]?['STORY_06']:[])]).filter(x=>x!==primary),conflictSource:relation?.id||null,rule:'상품 목적을 우선하고, 상충 서사는 실제 관계 신호가 있을 때만 선택'};
 }
+function judgmentRefs(j){return unique([...(j.supportingRefs||[]),...(j.counterRefs||[]),...(j.periodRefs||[])]);}
+function judgmentQuality(plan,report){
+ if(!['judgment-v1','judgment-v2'].includes(report.analysisContract))return true;
+ if(report.analysisContract==='judgment-v2'&&(!Array.isArray(plan?.chapters)||plan.chapters.some(c=>typeof c.newContribution!=='string'||c.newContribution.trim().length<20)||new Set(plan.chapters.map(c=>compact(c.newContribution))).size!==plan.chapters.length))return false;
+ const js=plan?.judgments;if(!Array.isArray(js)||js.length<2||js.length>5||new Set(js.map(j=>j.id)).size!==js.length)return false;
+ if(!js.every(j=>/^judgment-[1-5]$/.test(j.id)&&validRefs(j.supportingRefs,report)&&validRefs(j.counterRefs,report,0)&&validRefs(j.periodRefs,report,0)&&['conclusion','mechanism','condition','limits'].every(k=>typeof j[k]==='string'&&j[k].trim().length>=15)&&!factIssues([j.conclusion,j.mechanism,j.condition,j.limits].join(' '),report,judgmentRefs(j)).length))return false;
+ return report.chapters.every(c=>{const p=plan.chapters?.find(x=>x.id===c.id);return p&&Array.isArray(p.judgmentIds)&&p.judgmentIds.length>=1&&p.judgmentIds.length<=2&&p.judgmentIds.every(id=>js.some(j=>j.id===id));});
+}
+// Sample-only length control by default; PDF has its own depth and is never scaled here.
+function scaleWebQuestions(chapters,scale){const n=Math.min(1,Math.max(.5,Number(scale)||1));if(n===1)return chapters;return chapters.map(c=>({...c,question:c.question.replace(/(공백 포함(?: 약)? )([0-9]+)(?:~([0-9]+))?(자)/g,(m,p,a,b,z)=>{const floor=['future','topic-future','topic-months'].includes(c.kind)?500:c.kind==='mw'?220:240,lo=Math.max(floor,Math.round(Number(a)*n)),hi=b?Math.max(lo,Math.round(Number(b)*n)):null;return p+lo+(hi?'~'+hi:'')+z;})}));}
+// Web-only editorial budgets. Keep the full calculation ledger and every requested period.
+function webLengthEdition(report){
+ const all=report.chapters,cat=report.product,merge=(items,kind,title,question)=>({...items[0],kind,title,mode:'fixed',months:[],refs:unique(items.flatMap(c=>c.refs||[])),sourceChapterIds:items.map(c=>c.id),question:question+consultationQuestion({kind})}),length=(c,lo,hi)=>({...c,question:c.question.replace(/분량은 공백 포함(?: 약)? \d+(?:~\d+)?자입니다\./g,'').replace(/웹은 공백 포함 약 \d+자 중심으로 쓰되 근거가 부족하면 줄이세요\./g,'')+` 본문 분량은 공백 포함 ${lo}~${hi}자입니다. 핵심 이유와 적용 조건에 집중하고 같은 설명을 늘리지 마세요.`});
+ let chapters=all,range=null,ratio=.8;
+ if(cat==='life'){
+  const opening=all.filter(c=>['prologue','nature'].includes(c.kind)),flows=all.filter(c=>c.kind==='decade'),closing=all.filter(c=>['story','epilogue','guide'].includes(c.kind));
+  const intro=merge(opening,'nature','타고난 성향과 마음의 균형','원국의 세 가지 핵심 특징을 일간·계절·실제 십성·합충의 상호작용으로 설명하세요. 감정·관계·즐거움에서 나타나는 모습과 이유를 연결하고 직업을 전체 주제로 삼지 마세요. 실제 십성의 대립이나 충·합이 확인된 경우만 긴장을 설명하고 자료에 없으면 억지로 만들지 마세요. 뒤 영역의 조언을 미리 반복하지 마세요. 분량은 공백 포함 850~1100자입니다.');
+  const flow=flows.length?merge(flows,'flow','대운으로 보는 삶의 변화와 지금의 방향',flows.map(c=>c.title).join(' / ')+' — 배정된 각 대운의 나이와 기간, 해당 인생 단계에서 새롭게 강조되는 주제를 빠뜨리지 말고 구분하세요. 현재와 다음 대운은 차이를 더 자세히 설명하세요. 지나온 사건은 확정하지 마세요. 원국 성향과 연도별 설명은 반복하지 마세요. 분량은 공백 포함 1100~1500자입니다.'):null;
+  const guide=merge(closing,'guide','지금의 선택에 적용하는 인생 활용법','도입의 질문에 답하고 지금 우선할 선택 기준 세 가지를 정리하세요. 앞 장의 설명을 되풀이하지 말고 조건별 적용 차이를 짚으세요. 분량은 공백 포함 550~750자입니다.');
+  chapters=[intro,...all.filter(c=>c.kind==='chart').map(c=>length(c,300,450)),...all.filter(c=>c.kind==='domain').map(c=>length(c,650,800)),...all.filter(c=>c.kind==='future').map(c=>length(c,1100,1500)),...(flow?[{...flow,requiredDecades:flows.map(c=>c.refs.find(id=>id.startsWith('decade.'))).filter(Boolean),question:flow.question+' 각 대운은 ### 시작연도~끝연도년 — 주제 소제목 아래 실제 설명을 쓰세요.'}]:[]),guide];range=[8500,9500];ratio=.625;
+ }else if(cat==='newyear'){
+  const opening=all.filter(c=>['prologue','total','compare'].includes(c.kind)),ending=all.filter(c=>['half','watch','strategy','questions','epilogue','guide'].includes(c.kind));
+  chapters=[merge(opening,'total','올해의 핵심과 작년부터 달라진 점','원국·현재 대운·올해 세운의 상호작용에서 올해의 핵심 질문을 도출하고 작년과 달라지는 조건을 설명하세요. 도입·총론·비교를 따로 반복하지 마세요. 분량은 공백 포함 850~1100자입니다.'),...all.filter(c=>c.kind==='domain').map(c=>length(c,550,700)),...all.filter(c=>c.kind==='mw').map(c=>length(c,300,400)),merge(ending,'guide','상하반기의 차이와 올해의 우선순위','상하반기의 차이, 주목할 시기와 주의 조건을 실제 근거로 연결하고 다섯 가지 이내의 선택 기준으로 마무리하세요. 월별 내용을 다시 열거하지 마세요. 분량은 공백 포함 650~850자입니다.')];range=[9000,10000];ratio=.65;
+ }else{
+  chapters=scaleWebQuestions(all,ratio);
+  if(report.productGuide)range=report.productGuide.targetCharacters.map(n=>Math.round(n*ratio));
+ }
+ return {...report,webLength:{version:'web-length-v1',ratio,targetCharacters:range},...(report.productGuide?{productGuide:{...report.productGuide,targetCharacters:range||report.productGuide.targetCharacters}}:{}),chapters};
+}
+
 function parse(text){try{const t=String(text||''),a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(t.slice(a,b+1));}catch(e){return null;}}
 const inflight=new Map();
 function reportError(code,message,status=0){return Object.assign(new Error(message),{code,status,permanent:['NEED_PAYMENT','PAID_LIMIT','INVALID_REPORT_SOURCE'].includes(code)||[400,401,403,404].includes(status)});}
@@ -166,9 +196,9 @@ function normalizePlan(raw,report){
  if(!raw||!raw.profile||!Array.isArray(raw.chapters))return raw;
  const plan=JSON.parse(JSON.stringify(raw)),by=new Map(plan.chapters.map(c=>[c.id,c]));
  plan.chapters=report.chapters.map(c=>by.get(c.id)).filter(Boolean);
- if(report.executionProfile==='compact-v1')for(const c of report.chapters){const p=by.get(c.id);if(p){if(typeof p.focus!=='string')p.focus=c.title;if(typeof p.title!=='string')p.title='';if(typeof p.connection!=='string')p.connection=(plan.links||[]).find(l=>l.to===c.id)?.development||p.conclusion;}}
+ if(report.executionProfile==='compact-v1')for(const c of report.chapters){const p=by.get(c.id);if(p){if(typeof p.focus!=='string')p.focus=p.newContribution||c.title;if(typeof p.title!=='string')p.title='';if(typeof p.connection!=='string')p.connection=(plan.links||[]).find(l=>l.to===c.id)?.development||p.conclusion;}}
  // Attach the exact requested months already present in the calculation ledger; no prose or facts are invented.
- for(const c of report.chapters){const p=by.get(c.id);if(p&&Array.isArray(p.evidenceRefs))p.evidenceRefs=unique([...(c.refs||[]),...c.months.map(m=>`month.${report.year}.${m}`),...p.evidenceRefs].filter(id=>report.ledger.some(x=>x.id===id))).slice(0,16);}
+ for(const c of report.chapters){const p=by.get(c.id);if(p&&Array.isArray(p.evidenceRefs))p.evidenceRefs=unique([...(c.refs||[]),...(c.kind==='story'?report.ledger.filter(s=>s.id.startsWith('decade.')).map(s=>s.id):[]),...c.months.map(m=>`month.${report.year}.${m}`),...p.evidenceRefs,...(plan.judgments||[]).filter(j=>(p.judgmentIds||[]).includes(j.id)).flatMap(j=>judgmentRefs(j))].filter(id=>report.ledger.some(x=>x.id===id))).slice(0,16);}
  if(!Array.isArray(plan.links))plan.links=[];
  plan.links=plan.links.filter(l=>{const a=by.get(l.from),b=by.get(l.to);return a&&b&&report.chapters.findIndex(c=>c.id===l.from)<report.chapters.findIndex(c=>c.id===l.to)&&typeof l.development==='string'&&l.development.length>=15&&Array.isArray(l.evidenceRefs)&&l.evidenceRefs.length&&l.evidenceRefs.every(id=>a.evidenceRefs?.includes(id)&&b.evidenceRefs?.includes(id));});
  if(!plan.links.length&&plan.chapters.length>=8){for(let i=1;i<plan.chapters.length;i++){const a=plan.chapters[i-1],b=plan.chapters[i],shared=(a.evidenceRefs||[]).filter(id=>(b.evidenceRefs||[]).includes(id));if(shared.length&&typeof b.connection==='string'&&b.connection.length>=15){plan.links.push({from:a.id,to:b.id,evidenceRefs:shared,development:b.connection});break;}}}
@@ -180,7 +210,7 @@ function normalizeSection(raw){
 }
 function validRefs(refs,report,min=2){return Array.isArray(refs)&&unique(refs).length>=min&&refs.every(id=>report.ledger.some(s=>s.id===id));}
 function validLinks(plan,report){const links=plan?.links;if(!Array.isArray(links)||(report.chapters.length>=8&&!links.length))return false;return links.every(l=>{const from=plan.chapters?.find(c=>c.id===l.from),to=plan.chapters?.find(c=>c.id===l.to);return from&&to&&report.chapters.findIndex(c=>c.id===l.from)<report.chapters.findIndex(c=>c.id===l.to)&&typeof l.development==='string'&&l.development.length>=15&&Array.isArray(l.evidenceRefs)&&l.evidenceRefs.length>0&&l.evidenceRefs.every(id=>from.evidenceRefs.includes(id)&&to.evidenceRefs.includes(id));});}
-function planQuality(plan,report){return !!(plan&&plan.profile&&typeof plan.profile.theme==='string'&&plan.profile.theme.length>=8&&plan.profile.theme.length<=100&&typeof plan.profile.mainConclusion==='string'&&plan.profile.mainConclusion.length>=15&&['strength','challenge','action','closing'].every(k=>typeof plan.profile[k]==='string'&&plan.profile[k].trim().length>0)&&Array.isArray(plan.profile.keywords)&&plan.profile.keywords.length>=1&&plan.profile.keywords.length<=5&&validRefs(plan.profile.evidenceRefs,report)&&!factIssues(Object.values(plan.profile).filter(v=>typeof v==='string').join(' '),report,plan.profile.evidenceRefs).length&&Array.isArray(plan.chapters)&&plan.chapters.length===report.chapters.length&&validLinks(plan,report)&&new Set(plan.chapters.map(c=>compact(c.conclusion))).size===report.chapters.length&&report.chapters.every(c=>{const p=plan.chapters.find(x=>x.id===c.id);return p&&typeof p.conclusion==='string'&&p.conclusion.length>=15&&validRefs(p.evidenceRefs,report)&&typeof p.focus==='string'&&!factIssues(p.conclusion,report,p.evidenceRefs).length&&c.months.every(m=>p.evidenceRefs.includes(`month.${report.year}.${m}`))&&(c.kind!=='topic-months'||c.refs.filter(id=>id.startsWith('mw.')).every(id=>p.evidenceRefs.includes(id)));}));}
+function planQuality(plan,report){return !!(plan&&judgmentQuality(plan,report)&&plan.profile&&typeof plan.profile.theme==='string'&&plan.profile.theme.length>=8&&plan.profile.theme.length<=100&&typeof plan.profile.mainConclusion==='string'&&plan.profile.mainConclusion.length>=15&&['strength','challenge','action','closing'].every(k=>typeof plan.profile[k]==='string'&&plan.profile[k].trim().length>0)&&Array.isArray(plan.profile.keywords)&&plan.profile.keywords.length>=1&&plan.profile.keywords.length<=5&&validRefs(plan.profile.evidenceRefs,report)&&!factIssues(Object.values(plan.profile).filter(v=>typeof v==='string').join(' '),report,plan.profile.evidenceRefs).length&&Array.isArray(plan.chapters)&&plan.chapters.length===report.chapters.length&&validLinks(plan,report)&&new Set(plan.chapters.map(c=>compact(c.conclusion))).size===report.chapters.length&&report.chapters.every(c=>{const p=plan.chapters.find(x=>x.id===c.id);return p&&typeof p.conclusion==='string'&&p.conclusion.length>=15&&validRefs(p.evidenceRefs,report)&&typeof p.focus==='string'&&!factIssues(p.conclusion,report,p.evidenceRefs).length&&c.months.every(m=>p.evidenceRefs.includes(`month.${report.year}.${m}`))&&(c.kind!=='topic-months'||c.refs.filter(id=>id.startsWith('mw.')).every(id=>p.evidenceRefs.includes(id)));}));}
 function natalClaimsConsistent(body,report){
  if(['ziwei','gunghap'].includes(report.product))return true;
  const chart=report.ledger.find(x=>x.id==='name.chart')?.value;
@@ -209,6 +239,16 @@ function factIssues(body,report,refs){
  return issues;
 }
 // Remove verbatim cross-chapter boilerplate before validation; never invent replacement prose.
+// Repetition diagnostics are advisory; near matches never delete time/card-specific facts.
+function repetitionAudit(sections){
+ const seen=[],duplicates=[];const gram=t=>new Set(Array.from({length:Math.max(0,t.length-2)},(_,i)=>t.slice(i,i+3)));
+ for(const s of sections||[])for(const p of s.paragraphs||[])for(const sentence of String(p).split(/(?<=[.!?])\s+/)){
+ const t=compact(sentence).replace(/[*#]/g,'');if(t.length<40||/^###|^- /.test(sentence))continue;const numbers=(t.match(/\d+/g)||[]).join('|'),g=gram(t);
+ for(const old of seen){if(old.id===s.id&&old.text===t){duplicates.push({from:old.id,to:s.id,kind:'within-chapter',text:sentence});break;}if(old.id===s.id)continue;if(old.text===t){duplicates.push({from:old.id,to:s.id,kind:'exact',text:sentence});break;}if(old.numbers!==numbers||Math.abs(old.text.length-t.length)>Math.max(5,t.length*.15))continue;const intersection=[...g].filter(x=>old.grams.has(x)).length,union=g.size+old.grams.size-intersection;if(union&&intersection/union>=.9){duplicates.push({from:old.id,to:s.id,kind:'near',text:sentence});break;}}
+ seen.push({id:s.id,text:t,numbers,grams:g});
+ }
+ return {sentences:seen.length,duplicates,duplicateRatio:seen.length?duplicates.length/seen.length:0};
+}
 function editDuplicateSentences(section,accepted,report){
  if(!section?.paragraphs||['prologue','guide','epilogue','story'].includes(report.chapters.find(c=>c.id===section.id)?.kind))return section;
  const prior=compact(Object.values(accepted).filter(c=>c.id!==section.id).flatMap(c=>c.paragraphs||[]).join(' '));
@@ -216,6 +256,7 @@ function editDuplicateSentences(section,accepted,report){
  const paragraphs=section.paragraphs.map(p=>p.split(/(?<=[.!?])\s+/).filter(sentence=>compact(sentence).length<35||!prior.includes(compact(sentence))).join(' ')).filter(Boolean);
  return {...section,paragraphs};
 }
+function unknownDecadeBoundary(body){const boundary=/(?:\d{1,3}\s*(?:세|살)[^.!?]{0,40}대운|대운[^.!?]{0,40}\d{1,3}\s*(?:세|살)|\d{4}년[^.!?]{0,40}대운|대운[^.!?]{0,40}\d{4}년)/;return String(body||'').split(/(?<=[.!?])\s+/).some(s=>boundary.test(s)&&!/대략|가정|참고|달라질|불확실|추정|근사|approx|uncertain/i.test(s));}
 function chapterIssues(section,report,plan,accepted={}){
  const issues=[];if(!section||!report.chapters.some(c=>c.id===section.id))return ['unknown_chapter'];
  const target=report.chapters.find(c=>c.id===section.id),p=plan?.chapters.find(c=>c.id===section.id),ps=section.paragraphs,refs=section.evidenceRefs;
@@ -235,6 +276,7 @@ function chapterIssues(section,report,plan,accepted={}){
    if(compact(lines.slice(at+1,next).join(' ')).length<35)issues.push('missing_year_explanation_'+year);
   }
  }
+ if(target.requiredDecades?.length){for(const id of target.requiredDecades){const d=report.ledger.find(s=>s.id===id)?.value;if(!refs?.includes(id))issues.push('missing_decade_evidence');if(d&&!body.includes(d.approxYears[0]+'~'+d.approxYears[1]+'년'))issues.push('missing_decade_'+id);}}
  const web=report.depth==='pdf'&&report.webBasis?.chapters?.find(c=>c.id===section.id);
  if(web&&compact(web.paragraphs.join(' '))===compact(body))issues.push('pdf_not_expanded');
  // Causal reasoning belongs in prose. Internal analysis strings need not be verbatim duplicates.
@@ -243,7 +285,7 @@ function chapterIssues(section,report,plan,accepted={}){
  if(!recap&&!/(?:때문|그래서|따라|이유|조건|반면|다만|경우|때는|다면|이에 따라|연결|이어|으로|에서|because|therefore|when|if )/i.test(body))issues.push('missing_causal_chain');
  const anchors=report.ledger.filter(s=>refs?.includes(s.id)).flatMap(s=>s.anchors);if(!recap&&!anchors.some(a=>body.includes(a)))issues.push('basis_not_in_body');
  issues.push(...factIssues(body,report,refs));
- if(!report.birthTimeKnown&&refs?.some(id=>id.startsWith('decade.'))&&!/대략|가정|참고|달라|불확실|확인|approx|uncertain/i.test(body))issues.push('unknown_decade_boundary');
+ if(!report.birthTimeKnown&&refs?.some(id=>id.startsWith('decade.'))&&((report.uncertaintyDisclosure==='standalone'&&unknownDecadeBoundary(body))||/(?:대운[^.!?]{0,25}(?:정확히|확정적으로|반드시)|(?:정확히|확정적으로|반드시)[^.!?]{0,25}대운)/.test(body)))issues.push('unknown_decade_boundary');
  if(report.userStatements.marital==='married'&&/(?:새|새로운)\s*(?:연인|애인)을\s*만나/.test(body))issues.push('marital_context');
  if(report.age<16&&/이직|승진|대출|창업|배우자를/.test(body))issues.push('age_context');
  if(!report.birthTimeKnown&&/본인(?:의)?\s*시주(?:는|가|에)/.test(body))issues.push('unknown_hour');
@@ -274,7 +316,8 @@ function execution(report,opts={}){return report.executionProfile==='compact-v1'
 // PDF is an on-demand expansion. Reading a web cache never starts web authorship.
 // PDF는 웹보다 자세히 쓰는 판이다. 장 지시문의 웹 분량 문장("분량은 …자입니다")만 빼고, 중복 금지 지시는 그대로 둔다.
 function pdfQuestion(q){return String(q||'')
- .replace(/ ?분량은 공백 포함 \d+~\d+자입니다\./g,'').replace(/ ?웹은 공백 포함 약 \d+자 중심으로 쓰되 근거가 부족하면 줄이세요\./g,'')
+ .replace(/ ?(?:본문 )?분량은 공백 포함 \d+~\d+자입니다\./g,'').replace(/ ?웹은 공백 포함 약 \d+자 중심으로 쓰되 근거가 부족하면 줄이세요\./g,'')
+ .replace(/ ?본문 분량은 공백 포함 \d+~\d+자입니다\./g,'').replace(/ ?핵심 이유와 적용 조건에 집중하고 같은 설명을 늘리지 마세요\./g,'')
  .replace(/1~2문장으로 설명하세요/g,'2~3문장으로 설명하세요').replace(/각각 한두 문단의 설명/g,'각각 두세 문단의 설명').replace(/목록 3~4개를/g,'목록 4~5개를');}
 function preparePdf(report,info={}){
  const baseFingerprint=reportFingerprint(report);let web=null;
@@ -283,7 +326,7 @@ function preparePdf(report,info={}){
    if(planQuality(plan,report)&&report.chapters.every(ch=>c.accepted?.[ch.id]&&!chapterIssues(c.accepted[ch.id],report,plan).length))web={...c,plan};
   }
  }catch(e){}
- const pdf={...report,depth:'pdf',pdfEdition:'web-expansion-v1',userStatements:{...report.userStatements},webBasis:web?{plan:web.plan,chapters:report.chapters.map(c=>({id:c.id,title:chapterTitleText(c,web.plan),paragraphs:web.accepted[c.id].paragraphs,conclusion:web.plan.chapters.find(x=>x.id===c.id)?.conclusion||''}))}:null};
+ const pdf={...report,webLength:null,depth:'pdf',pdfEdition:'web-expansion-v1',userStatements:{...report.userStatements},webBasis:web?{plan:web.plan,chapters:report.chapters.map(c=>({id:c.id,title:chapterTitleText(c,web.plan),paragraphs:web.accepted[c.id].paragraphs,conclusion:web.plan.chapters.find(x=>x.id===c.id)?.conclusion||''}))}:null};
  const weights=report.chapters.map(c=>Math.max(400,web?.accepted[c.id]?.paragraphs.join('').length||400)),total=weights.reduce((a,b)=>a+b,0);
  pdf.chapters=report.chapters.map((c,i)=>({...c,question:pdfQuestion(c.question),pdfMaxCharacters:Math.min(6000,Math.floor(45000*weights[i]/total))}));
  if(Object.keys(info).length)pdf.userStatements.pdfInfo={source:'user-stated',...info};
@@ -394,6 +437,7 @@ function pdfDoc(report,state){
  const parts=[],hero=document.createElement('div');hero.innerHTML=heroHTML(report,state);const h=hero.firstElementChild;
  const title=h.querySelector('h1')?.textContent||report.label,subs=[...h.querySelectorAll('.ai-hero-sub')].map(x=>x.textContent);
  parts.push({label:'',title:'기본 정보와 풀이 기준',blocks:[...h.querySelectorAll('dl,.ai-board,.ai-note')].map(x=>x.outerHTML)});
+ if(!report.birthTimeKnown)parts[0].blocks.push('<p class="ai-note">출생시각을 몰라 시주는 해석에서 제외했습니다. 대운의 시작 나이와 기간은 달라질 수 있는 참고 범위입니다.</p>');
  let group=null;
  report.chapters.forEach((c,i)=>{const a=state.accepted[c.id];if(!a)return;
   const sec=document.createElement('div');sec.innerHTML=chapterHTML(report,state,c,labels[i]);const el=sec.firstElementChild;el.querySelector('.ai-ch-head')?.remove();
@@ -428,7 +472,7 @@ function chapterPayload(report,plan,requested){
  const wanted=new Set((requested||[]).map(c=>c.id)),links=(plan?.links||[]).filter(l=>wanted.has(l.from)||wanted.has(l.to));
  const related=new Set([...wanted,...links.flatMap(l=>[l.from,l.to])]);
  const planChapters=(plan?.chapters||[]).map(c=>related.has(c.id)?c:{id:c.id,focus:c.focus,conclusion:c.conclusion,connection:'',evidenceRefs:[]});
- const keep=new Set([...planChapters.flatMap(c=>c.evidenceRefs||[]),...(requested||[]).flatMap(c=>c.refs||[]),...links.flatMap(l=>l.evidenceRefs||[]),...(plan?.profile?.evidenceRefs||[])]);
+ const keep=new Set([...(plan?.judgments||[]).flatMap(j=>judgmentRefs(j)),...planChapters.flatMap(c=>c.evidenceRefs||[]),...(requested||[]).flatMap(c=>c.refs||[]),...links.flatMap(l=>l.evidenceRefs||[]),...(plan?.profile?.evidenceRefs||[])]);
  const ledger=report.ledger.filter(s=>keep.has(s.id)||/^(?:natal\.|pair\.chart\.|name\.)/.test(s.id));
  return {...report,webBasis:report.webBasis?{chapters:report.webBasis.chapters.filter(c=>wanted.has(c.id))}:null,ledger,chapters:report.chapters.map(c=>({id:c.id,title:c.title,pdfMaxCharacters:c.pdfMaxCharacters,question:wanted.has(c.id)?c.question:'',months:wanted.has(c.id)?c.months:[]})),plan:{...plan,chapters:planChapters,links}};
 }
@@ -456,6 +500,14 @@ async function author(report,opts={}){
  try{return await entry.promise;}finally{if(opts.onState)entry.listeners.delete(opts.onState);}
 }
 
+function repairInstruction(issues,report){
+ const instructions=['이미 통과한 장은 다시 쓰지 말고 요청한 장만 수정하세요.'];
+ if(issues.includes('unknown_decade_boundary'))instructions.push('출생시각 미상입니다. 대운의 나이·시작 연도를 언급할 때 대략적인 참고 범위이며 달라질 수 있음을 해당 문장에서 짧게 밝히세요. 시기 없는 성향 장에 같은 경고를 반복하지 마세요.');
+ if(issues.includes('wrong_natal_claim'))instructions.push('원국 자리와 글자가 달랐습니다. '+report.ledger.filter(s=>/^natal\.(year|month|day|hour)\.(stem|branch)$/.test(s.id)).map(s=>s.label+': '+s.value.glyph).join(', ')+' — 이 원본만 따르며 없는 시주를 만들지 마세요.');
+ if(issues.includes('unsupported_year')||issues.includes('missing_year_evidence'))instructions.push('이 장에 배정한 evidenceRefs의 연도만 사용하고, 본문에 언급한 연도의 실제 근거 ID를 응답 evidenceRefs에 반드시 포함하세요. 다른 장의 연도나 출생연도를 추측해 추가하지 말고, 지정된 연도 해설은 빠뜨리지 마세요.');
+ if(issues.includes('repeated_explanation'))instructions.push('다른 장과 같은 문장을 빼고 이 장에서 새롭게 답할 이유와 조건만 설명하세요.');
+ instructions.push('실제 ledger와 배정된 판단의 이유 및 조건별 차이를 본문에 설명하세요.');return instructions.join(' ');
+}
 async function authorCore(report,opts={}){
  const started=performance.now(),policy=execution(report,opts),fingerprint=reportFingerprint(report),storageKey=cacheKey(report)+(opts.kind==='report-tpl'?':pdf':'');
  let old=null;try{old=JSON.parse(localStorage.getItem(storageKey)||'null');}catch(e){}
@@ -482,7 +534,7 @@ async function authorCore(report,opts={}){
    const parts=attempt&&remaining.length>2?[remaining.slice(0,2),remaining.slice(2)]:[remaining];
    for(const part of parts){if(fatal)break;
     try{const out=await request(report,'chapters',plan,part,feedback,opts);feedback=[];
-     for(const c of part){const section=editDuplicateSentences(normalizeSection(out.sections?.find(x=>x.id===c.id)),state.accepted,report),hard=chapterIssues(section,report,plan,state.accepted),issues=hard.length||attempt?hard:wordingIssues(section.paragraphs.join(' '));if(!issues.length){if(attempt)section.styleChecked=true;state.accepted[c.id]=section;save();notify();}else{feedback.push({id:c.id,issues,instruction:hard.length?'기존에 통과한 장은 쓰지 마세요. 실제 ledger의 글자·연도·근거 ID를 다시 대조하고, 이 장의 근거와 작용 이유 및 조건별 차이를 본문에서 설명하세요.':STYLE_FIX});diagnostic(report,'chapter_rejected',{id:c.id,issues,attempt:attempt+1,paragraphs:section?.paragraphs?.length||0,chars:(section?.paragraphs||[]).filter(p=>typeof p==='string').join('').length});}}
+     for(const c of part){const section=editDuplicateSentences(normalizeSection(out.sections?.find(x=>x.id===c.id)),state.accepted,report),hard=chapterIssues(section,report,plan,state.accepted),issues=hard.length||attempt?hard:wordingIssues(section.paragraphs.join(' '));if(!issues.length){if(attempt)section.styleChecked=true;state.accepted[c.id]=section;save();notify();}else{feedback.push({id:c.id,issues,instruction:hard.length?repairInstruction(hard,report):STYLE_FIX});diagnostic(report,'chapter_rejected',{id:c.id,issues,attempt:attempt+1,paragraphs:section?.paragraphs?.length||0,chars:(section?.paragraphs||[]).filter(p=>typeof p==='string').join('').length});}}
     }catch(e){lastError=e;if(e.permanent){fatal=e;break;}feedback=[{issues:[e.code||'NETWORK'],instruction:'요청한 장만 완결된 JSON으로 반환하세요.'}];diagnostic(report,'retry',{phase:'chapters',code:e.code||'NETWORK',attempt:attempt+1});}
    }
   }
@@ -491,6 +543,7 @@ async function authorCore(report,opts={}){
  await Promise.all(Array.from({length:Math.min(policy.concurrency,groups.length)},worker));
  if(fatal)throw fatal;
  if(report.chapters.some(c=>!state.accepted[c.id]))throw lastError||reportError('CHAPTER_VALIDATION','일부 장을 이어서 작성해야 해요.');
+ const repeat=repetitionAudit(Object.values(state.accepted));diagnostic(report,'repetition_review',{sentences:repeat.sentences,duplicates:repeat.duplicates.length,ratio:repeat.duplicateRatio});
  state.complete=true;save();notify();diagnostic(report,'generation_complete',{ms:Math.round(performance.now()-started),chapters:report.chapters.length,cache:missing.length===0});return state;
 }
 function ready(el){return (typeof ReportAccess!=='object'||el?._completedWebOrder===ReportAccess.order(category(el)))&&el?.dataset.aiComplete===VERSION&&el._completedReportIdentity===JSON.stringify({meta:_meta,lang:currentLanguage()})&&!!el.querySelector('[data-ai-authored="true"]');}
@@ -523,5 +576,5 @@ async function run(el){
  el._fullReportTask=task().catch(error=>{el.innerHTML='';showError(el,error,()=>run(el));}).finally(()=>{el._fullReportTask=null;});return el._fullReportTask;
 }
 
-g.AIReport={pdfQuestion,VERSION,CAT,enabled,category,ready,outline,chapterTitle,chapterLabels,aiBody,aiBlocks,plain,pdfDoc,preparePdf,reportFingerprint,execution,wordingIssues,themeIssues,readerText,sources,selectStory,natalClaimsConsistent,factIssues,parse,normalizePlan,normalizeSection,planQuality,editDuplicateSentences,chapterIssues,render,chapterPayload,request,author,run};
+g.AIReport={webLengthEdition,repairInstruction,repetitionAudit,judgmentQuality,scaleWebQuestions,pdfQuestion,VERSION,CAT,enabled,category,ready,outline,chapterTitle,chapterLabels,aiBody,aiBlocks,plain,pdfDoc,preparePdf,reportFingerprint,execution,wordingIssues,themeIssues,readerText,sources,selectStory,natalClaimsConsistent,factIssues,parse,normalizePlan,normalizeSection,planQuality,editDuplicateSentences,chapterIssues,render,chapterPayload,request,author,run};
 })(globalThis);

@@ -130,7 +130,7 @@ function storyBuild(system,product,input,chapters){
  }catch(e){console.warn('Story plan unavailable; keeping existing reading',e.message);return null;}
 }
 function interpretationEsc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function storyTopic(id,title){const t=id+' '+title;return /money|재물|재백/.test(t)?'money':/career|work|직업|관록/.test(t)?'career':/love|연애|관계|부부/.test(t)?'love':/now|future|대운|대한|세운|현재 흐름/.test(t)?'timing':/talent|재능/.test(t)?'talent':'core';}
+function storyTopic(id,title){const t=id+' '+title;return /children|임신|가족계획/.test(t)?'children':/child|아이|자녀|양육/.test(t)?'child':/reunion|재회|이별/.test(t)?'reunion':/marriage|결혼|부부/.test(t)?'marriage':/health|건강|수면|휴식/.test(t)?'health':/study|학업|시험|공부/.test(t)?'study':/money|재물|재백/.test(t)?'money':/career|work|직업|관록/.test(t)?'career':/love|연애|관계/.test(t)?'love':/now|future|대운|대한|세운|현재 흐름/.test(t)?'timing':/talent|재능/.test(t)?'talent':'core';}
 function interpretationText(s){const t=interpretationEsc(s);return typeof lv4Text==='function'?lv4Text(t):t;}
 function storyEvidenceHTML(plan,chapter){
  const ids=chapter?.supporting_signal_ids||plan.selected_signals.filter(s=>!s.applicable_period).slice(0,4).map(s=>s.id);
