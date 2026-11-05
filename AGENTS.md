@@ -206,6 +206,7 @@
 - 본문 `p`·`li`·`span`에 `word-break:keep-all`이나 `text-wrap:pretty`를 걸지 않는다. 긴 낱말이 통째로 넘어가 오른쪽 끝이 들쭉날쭉해진다(사용자가 두 번 지적함).
 - 양쪽 정렬(`text-align:justify`)도 쓰지 않는다. 낱말 사이가 벌어진다.
 - `keep-all`은 제목(h1~h4)·목차·칩·라벨처럼 짧은 한 줄 문구에만 쓴다. 본문의 짧은 끝어미는 `preventOrphan()`으로 묶는다.
+- Safari(아이폰의 모든 브라우저)는 `word-break:normal`에서도 한국어를 띄어쓰기 단위로 넘긴다. 그래서 `reading-flow.css` 끝의 `@supports (font:-apple-system-body)` 블록이 Safari에서만 `break-all`을 쓰고, index.html의 Safari 전용 스크립트가 영문·숫자 묶음을 `.rd-nobr`로 감싼다. 본문 선택자 목록을 바꾸면 두 곳을 함께 바꾼다.
 
 ---
 

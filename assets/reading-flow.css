@@ -337,3 +337,11 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 /* 풀이 본문은 글자 단위로 줄을 바꿔 오른쪽 끝을 고르게 둔다(낱말 통째 넘김 금지). 짧은 끝어미는 preventOrphan()이 묶는다. 제목만 낱말 단위로 넘긴다. */
 #app .view :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.astro-text,.tarot-fortune-item){word-break:normal;line-break:strict;overflow-wrap:anywhere;text-wrap:wrap;word-spacing:0;letter-spacing:0}
 #app .view :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :is(p,li,div){word-break:normal;text-wrap:wrap}
+
+/* Safari(아이폰의 모든 브라우저 포함)는 한국어 본문을 word-break:normal에서도 띄어쓰기 단위로 넘겨 오른쪽 끝이 들쭉날쭉해진다.
+   Safari에서만 글자 단위로 넘기고, 영문·숫자 묶음은 index.html이 감싼 .rd-nobr로 지킨다. */
+@supports (font:-apple-system-body){
+#app .view :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.astro-text,.tarot-fortune-item),
+#app .view :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :is(p,li,div){word-break:break-all}
+#app .rd-nobr{white-space:nowrap;word-break:keep-all}
+}
