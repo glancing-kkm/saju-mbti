@@ -332,8 +332,8 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 #app :is(.tarot-markdown,.astro-markdown,.tarot-panel,.astro-panel) :is(h1,h2,h3,h4){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 
 #app :is(.tarot-markdown,.astro-markdown){font-size:1rem;line-height:1.95}
-#app :is(div,section):is(.tarot-markdown,.astro-markdown) :is(p,li){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;text-align:left;word-spacing:0;letter-spacing:0}
+#app :is(div,section):is(.tarot-markdown,.astro-markdown) :is(p,li){word-break:normal;line-break:strict;overflow-wrap:anywhere;text-wrap:wrap;text-align:left;word-spacing:0;letter-spacing:0}
 
-/* Keep complete Korean words and short endings together on every reading surface. */
-#app .view :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.astro-text,.tarot-fortune-item){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;word-spacing:0;letter-spacing:0}
-#app .view :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :is(p,li,div){word-break:keep-all;text-wrap:pretty}
+/* 풀이 본문은 글자 단위로 줄을 바꿔 오른쪽 끝을 고르게 둔다(낱말 통째 넘김 금지). 짧은 끝어미는 preventOrphan()이 묶는다. 제목만 낱말 단위로 넘긴다. */
+#app .view :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.astro-text,.tarot-fortune-item){word-break:normal;line-break:strict;overflow-wrap:anywhere;text-wrap:wrap;word-spacing:0;letter-spacing:0}
+#app .view :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :is(p,li,div){word-break:normal;text-wrap:wrap}
