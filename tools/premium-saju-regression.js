@@ -6,6 +6,8 @@ try{
  rt.set({...rt.fixture(40),hour:8});
  const outlines=new Set();
  for(const [cat,spec]of Object.entries(products)){
+  assert(spec.fields.length<=(cat==='topic-reunion'?4:3),cat+' must keep intake short');
+  assert(spec.fields.some(f=>f.key==='question'),cat+' keeps one optional free question');
   w.cat=cat;run('goToInput(window.cat)');
   // 주제별 운세는 각자의 질문으로 상황을 받으므로 직업 칸을 따로 묻지 않는다(2026-11-02 사용자 요청).
   assert(!d.getElementById('counsel_occupation'),cat+' should not ask occupation');
@@ -20,6 +22,10 @@ try{
   assert(!JSON.stringify(report.productGuide).includes('계유')); // no example natal chart in product contract
  }
  assert.equal(outlines.size,11);
+ assert.deepEqual(Array.from(products['topic-reunion'].fields,f=>f.key),['timing','contact','reason','question']);
+ assert(products.name.fields.some(f=>f.key==='hanjaStatus'),'retain actual Han characters verification');
+ for(const cat of ['life','newyear','ziwei']){w.cat=cat;run('goToInput(window.cat)');assert.equal(d.querySelectorAll('#counselFields fieldset').length,1);assert(d.getElementById('counsel_occupation').required);assert.equal(d.querySelectorAll('#counselFields .counsel-skip').length,0);}
+ assert(!rt.source.includes('추가로 알려 주실 내용이 있나요? 없으면 건너뛰어도 돼요.'));
  const fixed={...rt.fixture(40),counsel:{source:'user-stated',category:'topic-career',answers:[{key:'question',value:'현재 직장에 남을지 고민합니다.'}]}};
  rt.set(fixed);const first=run("AIReport.sources('topic-career',_saju,_meta)");assert.equal(JSON.stringify(first),JSON.stringify(run("AIReport.sources('topic-career',_saju,_meta)")));
  rt.set({...fixed,counsel:{...fixed.counsel,answers:[{key:'question',value:'지난해 나만의 개인 사건 표본을 겪었습니다.'}]}});const second=run("AIReport.sources('topic-career',_saju,_meta)");assert.equal(JSON.stringify(first.ledger),JSON.stringify(second.ledger));assert.notEqual(JSON.stringify(first.userStatements),JSON.stringify(second.userStatements));assert(!JSON.stringify(second.ledger).includes('개인 사건'));
@@ -27,10 +33,10 @@ try{
  rt.set({...rt.fixture(40),gnExtra:null});assert.throws(()=>run("AIReport.sources('gunghap',_saju,_meta)"),/상대방/);rt.set({...rt.fixture(40),gnExtra:{...rt.fixture(40).gnExtra,gh:-1}});const pair=run("AIReport.sources('gunghap',_saju,_meta)");assert(pair.limits.some(x=>x.includes('상대방 출생시각 미상')));
 
  run("goToInput('topic-love');document.getElementById('counsel_status').value='솔로';counselUpdateVisibility()");
- assert(d.getElementById('counsel_duration').closest('fieldset').hidden);
- d.getElementById('counsel_duration').value='기존 관계 정보';assert(!run("counselRead('topic-love')").answers.some(a=>a.key==='duration'));
+ assert.equal(d.getElementById('counsel_duration'),null,'relationship duration no longer asked');
+ assert(!run("counselRead('topic-love')").answers.some(a=>a.key==='duration'));
  run("document.getElementById('counsel_status').value='연애 중';document.getElementById('counsel_status').dispatchEvent(new Event('change',{bubbles:true}))");
- assert(!d.getElementById('counsel_duration').closest('fieldset').hidden);assert(run('_wz.steps').some(s=>s[0].dataset.counselKey==='duration'));
+ assert(run('_wz.steps').some(s=>s[0].dataset.counselKey==='question'),'one question follows relationship status');
  const question='개인별 상담 질문 '.repeat(600);d.getElementById('counsel_question').value=question;run('counselSave()');assert.equal(run("ctxCollect('topic-love')").text,question);assert.equal(run("counselRead('topic-love')").source,'user-stated');
  run("goToInput('topic-money');goToInput('topic-love')");assert.equal(d.getElementById('counsel_question').value,question.trim());
  run("document.getElementById('iY').value='1991';renderCounselFields('topic-love')");assert.equal(d.getElementById('counsel_question').value,'');

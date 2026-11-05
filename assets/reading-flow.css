@@ -327,3 +327,13 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 
 /* Keep Korean heading words intact; short title endings are glued before rendering. */
 #app .lv4 :is(h1,h2,h3),#app .lv4-toc .ai-toc-text{word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+
+/* Shared report headings, including tarot/astrology history and free result cards. */
+#app :is(.tarot-markdown,.astro-markdown,.tarot-panel,.astro-panel) :is(h1,h2,h3,h4){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+
+#app :is(.tarot-markdown,.astro-markdown){font-size:1rem;line-height:1.95}
+#app :is(div,section):is(.tarot-markdown,.astro-markdown) :is(p,li){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;text-align:left;word-spacing:0;letter-spacing:0}
+
+/* Keep complete Korean words and short endings together on every reading surface. */
+#app .view :is(.lv4 p,.lv4-list span,.lv4-md-list li span,.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown,.astro-text,.tarot-fortune-item){word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;word-spacing:0;letter-spacing:0}
+#app .view :is(.nb-body,.abody,.daily-cat-body,.reading-brief,.ai-reading-body,.ai-reading-section,.tarot-markdown,.astro-markdown) :is(p,li,div){word-break:keep-all;text-wrap:pretty}

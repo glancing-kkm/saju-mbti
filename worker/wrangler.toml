@@ -20,9 +20,16 @@ binding = "BROWSER"
 # 환경변수는 wrangler 명령어로 설정합니다 (DEPLOY.md 참고)
 # wrangler secret put OPENAI_API_KEY
 # wrangler secret put ANTHROPIC_API_KEY
-# 선택: 즉문즉답 기본 모델과 프리미엄 모델
-# wrangler secret put OPENAI_QNA_MODEL            # 예: gpt-5.4-mini
-# wrangler secret put OPENAI_QNA_PREMIUM_MODEL    # 예: gpt-5.5
+# wrangler secret put ANTHROPIC_MODEL             # 예: claude-sonnet-5-5
+# OpenAI 텍스트 모델: 본문·PDF·타로·점성술·번역·질문답변은 gpt-5.6-luna
+# 필요하면 경로별 모델을 별도로 지정할 수 있습니다.
+# wrangler secret put OPENAI_MODEL
+# wrangler secret put OPENAI_READING_CORE_MODEL
+# wrangler secret put OPENAI_TAROT_MODEL
+# wrangler secret put OPENAI_ASTROLOGY_MODEL
+# wrangler secret put OPENAI_TRANSLATE_MODEL
+# wrangler secret put OPENAI_QNA_MODEL            # 예: gpt-5.6-luna
+# wrangler secret put OPENAI_QNA_PREMIUM_MODEL    # 예: gpt-5.6-luna
 # 선택: Hermes를 OpenAI 대신 호출할 때
 # wrangler secret put HERMES_API_URL
 # wrangler secret put HERMES_API_KEY

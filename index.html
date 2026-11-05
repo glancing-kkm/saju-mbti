@@ -2154,7 +2154,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=d11a534947b9">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=d99c3b4f7c68">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=1202d6329a33">
 </head>
 <body>
 <div id="app">
@@ -3089,15 +3089,15 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
-<script src="assets/premium-saju.js?v=3809901514a1"></script>
+<script src="assets/premium-saju.js?v=bc12443ffd5c"></script>
 <script src="assets/reading-stage.js?v=c31fde7874c7"></script>
 <script src="assets/report-access.js?v=d29a7133094b"></script>
-<script src="assets/ai-report.js?v=9d5dbd30cc80"></script>
-<script src="assets/reading-voice.js?v=59650d7c4102"></script>
+<script src="assets/ai-report.js?v=a2e228d7fb5b"></script>
+<script src="assets/reading-voice.js?v=cd57b8fb51cd"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
 <script src="assets/interpretation-engine.js?v=3e926890e980"></script>
-<script src="assets/interpretation-adapters.js?v=0e5c36d3e302"></script>
+<script src="assets/interpretation-adapters.js?v=ba61e082e788"></script>
 <script>
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>{try{renderSajuPaidHistoryHome();}catch(e){}});}
 else{try{renderSajuPaidHistoryHome();}catch(e){}}
@@ -4308,7 +4308,7 @@ function counselFieldsFor(cat){
  const spec=globalThis.PremiumSaju?.products[cat];
  const occupational=COUNSEL_OCCUPATION_CATS.includes(cat);
  return [...(occupational?[['occupation','현재 하는 일 (직업)','예: 사무직, 자영업, 학생, 구직 중, 육아, 은퇴']]:[]),
-  ...(spec?spec.fields.map(f=>[f.key,f.label,f.placeholder]):COUNSEL_FIELDS[cat].filter(([key])=>!(occupational&&key==='activity')))];
+  ...(spec?spec.fields.map(f=>[f.key,f.label,f.placeholder]):['life','newyear','ziwei'].includes(cat)?[]:COUNSEL_FIELDS[cat].filter(([key])=>!(occupational&&key==='activity')))];
 }
 function counselUpdateVisibility(){const host=document.getElementById('counselFields');if(!host)return;
  host.querySelectorAll('.counsel-step').forEach(fs=>{const visible=counselFieldVisible(host.dataset.cat,fs.dataset.counselKey);fs.hidden=!visible;fs.style.display=visible?'':'none';});
@@ -4575,7 +4575,7 @@ function wzStepKind(step){
 }
 const WZ_PROMPT={name:'이름을 알려 주세요',naming:'풀이할 이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
 function wzPromptFor(step){
-  const k=wzStepKind(step);if(k==='counsel')return step[0].dataset.counselKey==='occupation'?'현재 하는 일(직업)을 알려 주세요':'추가로 알려 주실 내용이 있나요? 없으면 건너뛰어도 돼요.';if(k==='ctx'&&!CTX_Q[_category])return '상황을 알려 주시면 더 자세히 풀어드려요 (선택)';if(WZ_PROMPT[k])return WZ_PROMPT[k];
+  const k=wzStepKind(step);if(k==='counsel'){const key=step[0].dataset.counselKey;if(key==='occupation')return '현재 하는 일(직업)을 알려 주세요';if(key==='question')return '이 상담에서 가장 궁금한 점을 적어 주세요';const label=step[0].querySelector('label')?.textContent||'상담 상황';return label+(_hasJong(label)?'을':'를')+' 알려 주세요';}if(k==='ctx'&&!CTX_Q[_category])return '상황을 알려 주시면 더 자세히 풀어드려요 (선택)';if(WZ_PROMPT[k])return WZ_PROMPT[k];
   const t=step[0]&&(step[0].querySelector('.cat-extra-title')||step[0].querySelector('legend'));
   const lab=t?t.textContent.replace(/\(.*?\)/g,'').split('—').pop().trim():'';
   return lab?`${lab}${_hasJong(lab)?'을':'를'} 알려 주세요`:'나머지 정보를 알려 주세요';
@@ -6247,8 +6247,9 @@ async function generateAIReading(input,opts){
 // 문장 규칙 검사이며 해석의 정확도를 보장하지 않는다.
 function tarotAIQuality(md,input){
   const t=String(md||'').trim(),cards=(input&&input.cards)||[];
-  if(t.length<Math.max(600,cards.length*160)||mdSections(t).length<6)return false;
+  if(t.length<Math.max(600,cards.length*160)||mdSections(t).length<8)return false;
   if(!cards.every(c=>t.includes(c.cardNameKo)))return false;
+  if((typeof TAROT_CARDS!=='undefined'?TAROT_CARDS:[]).filter(c=>c.arcana==='major'&&!cards.some(x=>x.cardNameKo===c.nameKo)).some(c=>new RegExp(c.nameKo+'\\s*카드').test(t)))return false;
   const drawn=new Set(cards.map(c=>c.cardNameKo.replace(/\s/g,'')));
   if((t.match(/(?:완드|컵|소드|펜타클)\s?(?:에이스|페이지|기사|여왕|왕|10|[2-9])/g)||[]).some(n=>!drawn.has(n.replace(/\s/g,''))))return false;
   if(typeof readingProvenanceQuality==='function'&&!readingProvenanceQuality(t))return false;
@@ -6283,8 +6284,9 @@ function mdInlineToHtml(escaped){
   return String(escaped??'').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/__([^_\n]+)__/g,'<b>$1</b>');
 }
 function markdownToTarotHTML(md){
+  md=typeof ReadingVoice==='object'?ReadingVoice.markdown(md):md;
   let html=mdInlineToHtml(tarotEsc(md)).replace(/^### (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^- (.*)$/gm,'<p>• $1</p>').replace(/^\d+\. (.*)$/gm,'<p>$&</p>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
-  html='<p>'+html+'</p>';return html.replace(/<p><h/g,'<h').replace(/<\/h1><\/p>/g,'</h1>').replace(/<\/h2><\/p>/g,'</h2>').replace(/<p><\/p>/g,'');
+  html='<p>'+html+'</p>';html=typeof ReadingVoice==='object'?ReadingVoice.headingsHTML(html):html;html=html.replace(/<p><h/g,'<h').replace(/<\/h1><\/p>/g,'</h1>').replace(/<\/h2><\/p>/g,'</h2>').replace(/<p><\/p>/g,'');return typeof preventOrphan==='function'?preventOrphan(html):html;
 }
 function renderTarotHistory(root){
   tarotSetHeader('타로 히스토리','24시간 보관');
@@ -13962,7 +13964,7 @@ function buildLifeReadingV4(saju,meta){
     lv4Sub('천기의 마지막 이야기',lv4P([`${p.season}에 태어난 ${dsm.nick||''} 같은 본인은, ${ax.label}의 힘으로 한 걸음씩 자기 자리를 만들어 가는 사람이에요.`,`지금 ${curTxt}의 흐름은 ${tgNow.use}이에요. 이 시기에 쌓은 것이 다음 10년의 선택지를 넓혀 줘요.`,'사주는 정해진 운명이 아니라 본인이 타고난 지도예요. 지도를 알면 길을 잃어도 금방 돌아올 수 있어요. 오늘 한 가지만 골라 실천해 보세요.']))+
     lv4Act(`${support.items[0][1]}부터 시작해 보세요.`));
 
-  const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;
+  const toc=`<nav class="lv4-toc" aria-label="인생총운 목차"><b>이 풀이의 순서</b>${LV4_TITLES.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${typeof ReadingVoice==='object'?ReadingVoice.headingHTML(t):t}</a>`).join('')}</nav>`;
   const hero=`<header class="lv4-hero"><p class="lv4-kicker">인생총운</p><h1>${preventOrphan(iljuImg||'')}</h1><p class="lv4-hero-who">${preventOrphan(iljuWho||'')}</p><p class="lv4-hero-meta">${ppName()?ppName()+' · ':''}${m.meta.sy}년 ${m.meta.sm}월 ${m.meta.sd}일생 · ${m.genderLabel} · 지금 ${curTxt} 흐름</p>${lvTagsHTML([LV4_AXIS_TAG[m.axis],`${LV4_OH[p.top]}_기운이_두터운_사람`,m.golden[0]?`${m.golden[0].range}_황금기`:''])}${lvGaugeHTML(m.yearInfo.score,`${m.year}년 흐름`)}</header>`;
   h=ctxApplyScenes('life',h,{axis:m.axis,golden:m.golden[0]&&m.golden[0].range,goldenNow:(()=>{const g=m.golden[0],r=g?String(g.range).match(/(\d+)~(\d+)/):null,y=new Date().getFullYear();return !!r&&+r[1]>1900&&+r[1]<=y&&+r[2]>=y;})(),el:LV4_OH[m.ys.main]});
   let ch={top:'',ch1:'',ch2:'',ch3:'',whens:{}};try{ch=buildLifeChapters(m,s,meta,{seatShort,seatLove});}catch(e){}
@@ -13974,7 +13976,7 @@ function lv4Jump(id){const el=document.getElementById('lv4-'+id);if(el)el.scroll
 function lv4MdEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function lv4MdInline(s){return lv4MdEsc(s).replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/__([^_\n]+)__/g,'<b>$1</b>').replace(/\*([^*\n]+)\*/g,'$1');}
 function lv4FromMarkdown(md,prefix){
-  const lines=String(md||'').replace(/\r/g,'').split('\n');
+  const lines=String(typeof ReadingVoice==='object'?ReadingVoice.markdown(md||''):md||'').replace(/\r/g,'').split('\n');
   const secs=[];let cur=null;
   const push=()=>{if(cur)secs.push(cur);};
   lines.forEach(raw=>{
@@ -13995,7 +13997,7 @@ function lv4FromMarkdown(md,prefix){
   const render=s=>{let h='',para=[],list=[],sub='',subBody='';
     const flushP=()=>{if(para.length){subBody+=`<p>${lv4Text(lv4MdInline(para.join(' ')))}</p>`;para=[];}};
     const flushL=()=>{if(list.length){subBody+=`<ul class="lv4-md-list">${list.map(x=>{const m=x.match(/^(?:\*\*)?([^:：*]{1,30})(?:\*\*)?\s*[:：]\s*(.+)$/);return m?`<li><b>${lv4MdInline(m[1])}</b><span>${lv4Text(lv4MdInline(m[2]))}</span></li>`:`<li><span>${lv4Text(lv4MdInline(x))}</span></li>`;}).join('')}</ul>`;list=[];}};
-    const flushSub=()=>{flushP();flushL();if(sub)h+=`<div class="lv4-sub"><h3>${lv4MdInline(sub)}</h3>${subBody}</div>`;else h+=subBody;sub='';subBody='';};
+    const flushSub=()=>{flushP();flushL();if(sub)h+=`<div class="lv4-sub"><h3>${typeof ReadingVoice==='object'?ReadingVoice.headingHTML(lv4MdInline(sub)):lv4MdInline(sub)}</h3>${subBody}</div>`;else h+=subBody;sub='';subBody='';};
     s.blocks.forEach(b=>{if(b.t==='h'){flushSub();sub=b.v;}else if(b.t==='li'){flushP();list.push(b.v);}else if(b.t==='br'){flushP();flushL();}else{flushL();para.push(b.v);}});
     flushSub();
     return h+(s.key?lv4Key(lv4MdInline(s.key)):'');};
@@ -14069,7 +14071,7 @@ function buildZiweiReadingV4(saju,m){
 // ══════════════════════════════════════════════
 //  주제별 풀이 V4 — 한 페이지로 이어 읽는 풀이 (소개 화면 '풀이에 담긴 내용' 순서)
 // ══════════════════════════════════════════════
-function lvSecX(id,title,lead,html){html=lv4WithWhy(html);return `<section class="lv4-sec lv4-extra" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">✦</span><h2>${title}</h2></div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
+function lvSecX(id,title,lead,html){if(typeof ReadingVoice==='object')title=ReadingVoice.headingHTML(title);html=lv4WithWhy(html);return `<section class="lv4-sec lv4-extra" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">✦</span><h2>${title}</h2></div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
 function lv4List(arr){return `<ol class="lv4-list">${arr.filter(Boolean).map(([t,d])=>`<li><b>${t}</b><span>${lv4Text(d)}</span></li>`).join('')}</ol>`;}
 function _tpYearLab(x,showAge){return `${x.year}년${showAge?` · ${x.age}세`:''}`;}
 function _tpMonthLab(x,y0){return `${x.year!==y0?`${x.year}년 `:''}${x.month}월`;}
@@ -14559,8 +14561,8 @@ const TOPIC_GUILT={
 };
 function lvTagsHTML(tags){return tags&&tags.length?`<div class="lv4-tags">${tags.filter(Boolean).slice(0,3).map(t=>`<span>#${String(t).replace(/\s+/g,'_')}</span>`).join('')}</div>`:'';}
 function lvGaugeHTML(score,label){const s=Math.max(0,Math.min(100,Math.round(score||0)));return `<div class="lv4-gauge"><div class="lv4-gauge-head"><span>${label}</span><b>${s}</b></div><div class="lv4-gauge-bar"><i style="width:${s}%"></i></div></div>`;}
-function lvSec(no,id,title,lead,html,q){q=q||LV4_QHEAD[id];html=lv4WithWhy(html);const head=q?`<div class="lv4-sec-titles"><small class="lv4-sec-label">${title}</small><h2>${q}</h2></div>`:`<h2>${title}</h2>`;return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span>${head}</div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
-function lvToc(items,label){return `<nav class="lv4-toc" aria-label="${label}"><b>이 풀이의 순서</b>${items.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${t}</a>`).join('')}</nav>`;}
+function lvSec(no,id,title,lead,html,q){q=q||LV4_QHEAD[id];if(typeof ReadingVoice==='object'){title=ReadingVoice.headingHTML(title);if(q)q=ReadingVoice.headingHTML(q);}html=lv4WithWhy(html);const head=q?`<div class="lv4-sec-titles"><small class="lv4-sec-label">${title}</small><h2>${q}</h2></div>`:`<h2>${title}</h2>`;return `<section class="lv4-sec" id="lv4-${id}"><div class="lv4-sec-head"><span class="lv4-no">${String(no).padStart(2,'0')}</span>${head}</div>${lead?`<p class="lv4-lead">${lv4Text(lead)}</p>`:''}${html}</section>`;}
+function lvToc(items,label){return `<nav class="lv4-toc" aria-label="${label}"><b>이 풀이의 순서</b>${items.map(([id,t],i)=>`<a href="#lv4-${id}" onclick="return lv4Jump('${id}')"><span>${i+1}</span>${typeof ReadingVoice==='object'?ReadingVoice.headingHTML(t):t}</a>`).join('')}</nav>`;}
 function lvHero(kicker,title,who,meta,extra){if(typeof ppName==='function'&&ppName())meta=`${ppName()} · ${meta}`;return `<header class="lv4-hero"><p class="lv4-kicker">${kicker}</p><h1>${preventOrphan(title||'')}</h1>${who?`<p class="lv4-hero-who">${preventOrphan(who)}</p>`:''}<p class="lv4-hero-meta">${meta}</p>${extra||''}</header>`;}
 function lv4MonthLab(arr){return arr.map(v=>`${v}월`).join(', ');}
 function lv4TopMonths(months,key,n,low){return [...months].sort((a,b)=>low?(a.sc[key]-b.sc[key]||a.month-b.month):(b.sc[key]-a.sc[key]||a.month-b.month)).slice(0,n).sort((a,b)=>a.month-b.month);}
@@ -25425,7 +25427,7 @@ function _hanziSearchGoPage(delta){
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=67bd3c248677">
+<script src="assets/astrology.js?v=e72a041bca97">
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 'use strict';
 function storyEnabled(system,product){
  const cfg=window.FortuneStoryConfig||{};
- return !!window.FortuneStory&&cfg.enabled===true&&cfg.mode!=='legacy'&&(system==='saju'?['life','manse','daily'].includes(product):['ziwei','astrology'].includes(system)?product==='life':system==='tarot');
+ return !!window.FortuneStory&&cfg.enabled===true&&cfg.mode!=='legacy'&&(system==='saju'?['life','manse','daily'].includes(product):system==='ziwei'?product==='life':system==='astrology'?['life','newyear','love','marriage','reunion','gunghap','money','career','study','child','children','health'].includes(product):system==='tarot');
 }
 function storySignal(system,id,reference,value,meaning,options){
  return Object.assign({id:system+':'+id,divination_type:system,source_type:'calculated',source_reference:reference,source_value:JSON.parse(JSON.stringify(value)),
@@ -56,7 +56,7 @@ function storyTarotInput(input,chapters){
   snapshot:signals.map(s=>s.source_value),settings:{spread:input.spreadName,positions_fixed_before_draw:true,reading:'카드별 고유 정·역방향과 위치 역할',celtic_cross:'기존 서비스 배열을 유지'},
   limitations:['카드는 실제 속마음·과거 사건·미래 날짜를 확인하는 수단이 아니에요.'],userStatements:{question:input.question}};
 }
-function storyAstroInput(chart,transit,chapters,question){
+function storyAstroInput(chart,transit,chapters,question,context={}){
  const unknown=chart.birthInfo?.birthTimeUnknown!==false,signals=[],relations=[];
  for(const p of chart.planets||[]){const theme=ASTRO_NATAL_THEME[p.planet];if(!theme)continue;
   const v={planet:p.planet,sign:p.sign,degree:p.degree};if(!unknown&&p.house)v.house=p.house;
@@ -77,10 +77,25 @@ function storyAstroInput(chart,transit,chapters,question){
   signals.push(storySignal('astrology',id,id,a,`풀이 시점의 ${planetNameKo(a.transit)}과 출생 ${planetNameKo(a.natal)} 사이에 ${ASTRO_ASPECT_KO[a.aspectType]} 각도가 계산됐어요.`,{
    topic:['timing'],label:'현재 '+planetNameKo(a.transit)+'–'+planetNameKo(a.natal),priority:1,applicable_period:date?{computed:true,kind:'transit',date}:null}));
  }
- const anchors=signals.filter(s=>s.source_reference.startsWith('planets.')).slice(0,2);
+ const product=context.productType||'life',needs=typeof ASTRO_TOPIC_NEEDS!=='undefined'?(ASTRO_TOPIC_NEEDS[product]||ASTRO_TOPIC_NEEDS.life):['sun','moon'];
+ for(const signal of signals){const key=signal.source_value?.planet;if(needs.includes(key)){signal.priority+=3;signal.topic=uniqStory(signal.topic.concat([product]));}}
+ if(product==='newyear')for(const row of context.yearTransits||[]){
+  if(!Number.isInteger(row.month)||row.month<1||row.month>12||!Array.isArray(row.planets)||!row.planets.length)continue;
+  const planets=row.planets.filter(p=>p&&Number.isFinite(p.longitude)).map(p=>({planet:p.planet,longitude:p.longitude,retrograde:!!p.retrograde}));if(!planets.length)continue;
+  signals.push(storySignal('astrology','year.month.'+row.month,'yearTransits.'+row.month,{month:row.month,planets},`${row.month}월 기준일의 행성 위치를 앞뒤 달과 비교해 달라지는 생활 주제를 살펴봐요. 월 전체 사건을 확정한 자료는 아니에요.`,{topic:['timing'],label:row.month+'월 기준 행성 위치',priority:2,applicable_period:{computed:true,kind:'month-snapshot',year:context.targetYear,month:row.month}}));
+ }
+ if(product==='gunghap'&&context.partnerChart){
+  for(const p of context.partnerChart.planets||[]){if(!ZODIAC_SIGNS.some(s=>s.id===p.sign))continue;const v={planet:p.planet,sign:p.sign};if(context.partnerChart.birthInfo?.birthTimeUnknown===false&&p.house)v.house=p.house;
+   signals.push(storySignal('astrology','partner.planet.'+p.planet,'partnerChart.planets.'+p.planet,v,`상대방 ${planetNameKo(p.planet)}은 ${signNameKo(p.sign)}에 있어요. 본인의 배치와 구분해 두 사람의 다른 요구를 살펴봐요.`,{topic:['love','gunghap'],label:'상대방 '+planetNameKo(p.planet),priority:2}));
+  }
+  for(const a of context.synastryAspects||[]){if(!ASTRO_ASPECT_KO[a.aspectType]||!Number.isFinite(a.orb))continue;
+   signals.push(storySignal('astrology','synastry.'+signals.length,'synastryAspects',a,'제공된 두 차트 사이의 실제 각도를 바탕으로 조율할 부분을 살펴봐요.',{topic:['love','gunghap'],label:'두 차트의 '+ASTRO_ASPECT_KO[a.aspectType],priority:3}));
+  }
+ }
+ const anchors=needs.map(key=>signals.find(s=>s.id==='astrology:planet.'+key)).filter(Boolean).slice(0,2);
  const resolution={signal_ids:anchors.map(s=>s.id),text:anchors.length===2?`${anchors.map(s=>s.keyword).join('과 ')}을 어느 한쪽만 옳다고 정하지 않아도 돼요. 이번에 살핀 배치를 바탕으로, 중요한 선택 전에 두 요구를 각각 얼마나 채울지 정해 보세요.`:'계산된 행성의 성향을 실제 생활의 선택과 함께 살펴보세요.',action:anchors[0]?.advice||''};
- return {resolution,system:'astrology',product:'life',question:question||'',signals,relations,chapters,
-  snapshot:{planets:signals.filter(s=>s.source_reference.startsWith('planets.')).map(s=>s.source_value),aspects:chart.aspects||[],transit:signals.filter(s=>s.source_reference.startsWith('transit.')).map(s=>s.source_value)},
+ return {resolution,system:'astrology',product,question:question||'',signals,relations,chapters,
+  snapshot:{planets:signals.filter(s=>s.source_reference.startsWith('planets.')).map(s=>s.source_value),aspects:chart.aspects||[],transit:signals.filter(s=>s.source_reference.startsWith('transit.')).map(s=>s.source_value),context:signals.filter(s=>/^(yearTransits|partnerChart|synastryAspects)/.test(s.source_reference)).map(s=>s.source_value)},
   settings:{calculation:'기존 출생차트·행성 각도·트랜짓 결과 재사용',birth_time_known:!unknown,solar_return:false},
   limitations:['솔라 리턴과 하우스 지배성 분석을 새로 계산하지 않아요.'].concat(unknown?['출생시간 미상: 상승궁·하우스를 사용하지 않으며 달의 세부 위치도 시간 오차가 있어요.']:[])};
 }
@@ -109,7 +124,7 @@ function storyZiweiInput(saju,meta,chapters){
 function storyBuild(system,product,input,chapters){
  if(!storyEnabled(system,product))return null;
  try{
-  const data=system==='saju'?storySajuInput(input.saju,input.meta,chapters):system==='tarot'?storyTarotInput(input,chapters):system==='astrology'?storyAstroInput(input.chart,input.transit,chapters,input.question):storyZiweiInput(input.saju,input.meta,chapters);
+  const data=system==='saju'?storySajuInput(input.saju,input.meta,chapters):system==='tarot'?storyTarotInput(input,chapters):system==='astrology'?storyAstroInput(input.chart,input.transit,chapters,input.question,{...input,productType:product}):storyZiweiInput(input.saju,input.meta,chapters);
   if(system==='ziwei'&&!data.settings.birth_time_known)return null;
   data.product=product;if(['manse','daily'].includes(product)){data.signals=data.signals.filter(s=>!s.applicable_period);data.relations=[];}const plan=FortuneStory.createPlan(data);return FortuneStory.validatePlan(plan).ok?plan:null;
  }catch(e){console.warn('Story plan unavailable; keeping existing reading',e.message);return null;}
@@ -175,7 +190,7 @@ function storyAcceptDeep(root,section){
  return checked.ok&&proof.claims.some(c=>proof.signalIds.includes(c.signal_id));
 }
 function storyValidateMarkdown(md,system,input){
- const product=system==='tarot'?(input.topic||input.questionCategory):'life';
+ const product=system==='tarot'?(input.topic||input.questionCategory):system==='astrology'?canonicalAstroProduct(input.productType||'life'):'life';
  if(!storyEnabled(system,product))return true;
  const plan=storyMdPlan(md,system,input,product);if(!plan)return false;
  const sections=mdSections(md),out=sections.map((s,i)=>({id:plan.chapter_outline[i].id,paragraphs:[s.body],supporting_signal_ids:plan.chapter_outline[i].supporting_signal_ids}));
@@ -191,8 +206,9 @@ function storyValidateMarkdown(md,system,input){
   const names={태양:'sun',달:'moon',수성:'mercury',금성:'venus',화성:'mars',목성:'jupiter',토성:'saturn'};
   for(const sent of String(md).split(/(?<=[.!?])\s+/)){
    if(/지금 하늘|트랜짓|현재 하늘/.test(sent))continue;
-   for(const m of sent.matchAll(/(?:본인(?:의)?\s*|출생\s*)?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s*([가-힣]{1,3}자리)/g)){
-    const p=findPlanet(chart,names[m[1]]);if(!p||signNameKo(p.sign)!==m[2])return false;
+   for(const m of sent.matchAll(/(?:(본인(?:의)?|당신(?:의)?|출생|상대방(?:의)?)\s*)?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s*([가-힣]{1,3}자리)/g)){
+    const partner=m[1]?.startsWith('상대방')||(!m[1]&&/상대방/.test(sent)&&!/본인|당신|출생/.test(sent)),source=partner?input.partnerChart:chart;
+    if(!source)return false;const p=findPlanet(source,names[m[2]]);if(!p||signNameKo(p.sign)!==m[3])return false;
    }
   }
  }

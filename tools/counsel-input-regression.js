@@ -24,17 +24,16 @@ try{
  run("document.getElementById('counsel_occupation').value='프리랜서';document.getElementById('counsel_occupation').dispatchEvent(new Event('input',{bubbles:true}));");
  assert.equal(run("wzStepDone(_wz.steps[_wz.open])"),false,'typing must not immediately reveal next');
  run("document.getElementById('counsel_occupation').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}))");
- assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'focus');
- assert(d.getElementById('counsel_timing').closest('fieldset').classList.contains('wz-hide'));
- run("confirmCounselStep('focus',true)");assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'timing');
- run("confirmCounselStep('timing',true);renderCounselFields('life')");
- assert.equal(d.getElementById('counsel_focus').closest('fieldset').dataset.wzConfirmed,'1','skip decision restored');
+ assert.equal(d.getElementById('counsel_occupation').closest('fieldset').dataset.wzConfirmed,'1');
+ assert.equal(d.getElementById('counsel_focus'),null,'general report has no optional focus step');
+ assert.equal(d.getElementById('counsel_timing'),null,'general report has no optional timing step');
+ run("renderCounselFields('life')");assert.equal(d.getElementById('counsel_occupation').value,'프리랜서');
  run("renderCounselFields('manse');counselSave();renderCounselFields('topic-money');counselSave();renderCounselFields('newyear')");assert.equal(d.getElementById('counsel_occupation').value,'프리랜서','occupation survives a topic without the field');run("renderCounselFields('topic-money')");assert.equal(d.getElementById('counsel_activity').value,'','income type must not become occupation');
  run("document.getElementById('iY').value='1991';renderCounselFields('newyear')");assert.equal(d.getElementById('counsel_occupation').value,'');
  console.log('✓ 입력·Enter·건너뛰기 순서, 공백 직업 제출 차단, 동일 출생정보 재사용·다른 출생정보 격리');
  run("document.getElementById('iY').value='1990';renderCounselFields('qna');document.getElementById('counsel_marriage').value='기혼';document.getElementById('counsel_children').value='있음';counselSave();");
  assert.equal(d.getElementById('qaJob').value,'프리랜서');assert.equal(d.getElementById('qaMarriage').value,'기혼');assert.equal(d.getElementById('qaChildren').value,'있음');
  const info=run("counselRead('qna')");assert.equal(info.source,'user-stated');assert.equal(info.answers[0].key,'occupation');
- run("renderCounselFields('topic-child')");assert.equal(d.getElementById('counsel_occupation'),null);assert(d.getElementById('counsel_activity'));
+ run("renderCounselFields('topic-child')");assert.equal(d.getElementById('counsel_occupation'),null);assert(d.getElementById('counsel_focus'));assert.equal(d.getElementById('counsel_activity'),null);
  console.log('✓ 즉문즉답 직업·결혼·자녀 정보 전달 및 아이의 학업·활동 입력 구분');
 }finally{rt.close();}

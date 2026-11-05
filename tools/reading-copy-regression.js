@@ -26,7 +26,7 @@ try{
  rt.set({...rt.fixture(40),sy:1987,sm:9,sd:21,hour:8,min:15});
  assert(!rt.run('lcChartCue(_saju).html').includes('도화'),'연애운 점수만 보고 원국에 없는 도화를 말하면 안 됨');
  const life=box(rt.run('buildLifeReadingV4(_saju,_meta)'));
- const talent=[...life.querySelectorAll('.lv4-sub')].find(e=>e.querySelector('h3')?.textContent==='가장 강한 재능');
+ const talent=[...life.querySelectorAll('.lv4-sub')].find(e=>e.querySelector('h3')?.textContent.replace(/\u00a0/g,' ')==='가장 강한 재능');
  assert(talent.textContent.includes('둘째는 가까이 지낼수록 드러나는 깊이 파고드는 직관'));
  rt.w.copyRoot=life;rt.w.copyRewrite=rt.run("buildReadingNarrative(_saju,_meta,'career').paragraphs");
  assert.equal(rt.run("deepApply(window.copyRoot,{sections:[{id:'lv4-talent',paragraphs:window.copyRewrite}]})"),1);

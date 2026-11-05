@@ -1165,5 +1165,8 @@ const products={
  }
 };
 Object.values(products).forEach(p=>p.fields.push({key:'question',label:'이 상담에서 가장 답을 듣고 싶은 질문',type:'text',placeholder:'궁금한 점을 편하게 적어 주세요. 답변하지 않아도 돼요.'}));
+// Only ask for context that materially changes this product's consultation.
+const intakeKeys={gunghap:['status','question'],'topic-love':['status','question'],'topic-marriage':['status','question'],'topic-reunion':['timing','contact','reason','question'],'topic-money':['activity','focus','question'],'topic-career':['activity','focus','question'],'topic-study':['activity','timing','question'],'topic-child':['focus','question'],'topic-children':['status','question'],'topic-health':['focus','question'],name:['mode','hanjaStatus','question']};
+Object.entries(products).forEach(([cat,p])=>{p.fields=intakeKeys[cat].map(key=>p.fields.find(f=>f.key===key)).filter(Boolean);});
 g.PremiumSaju={version:'premium-topic-v1',products};
 })(globalThis);
