@@ -2154,7 +2154,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=d11a534947b9">
-<link rel="stylesheet" href="/assets/reading-flow.css?v=e6437005fc71">
+<link rel="stylesheet" href="/assets/reading-flow.css?v=0c8dec8e8a52">
 </head>
 <body>
 <div id="app">
@@ -2684,11 +2684,11 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <span>시간을 몰라요</span>
           </label>
         </div>
-        <label class="time-unknown-row dst-row">
+        <label class="time-unknown-row dst-row" hidden>
           <input type="checkbox" id="iDstAsIs" aria-describedby="dstHelp">
           <span>서머타임 적용 (입력한 시각 그대로)</span>
         </label>
-        <p class="journey-form-help dst-help" id="dstHelp">서머타임 기간(1948~1951년, 1955~1960년, 1987~1988년의 여름)에 태어났다면 체크하지 않을 때 1시간 앞당겨 보정해요. 체크하면 입력한 시각을 그대로 써요.</p>
+        <p class="journey-form-help dst-help" id="dstHelp" hidden>입력한 날짜는 한국 서머타임 기간이에요. 체크하지 않으면 1시간 앞당겨 보정하고, 체크하면 입력한 시각을 그대로 써요.</p>
       </fieldset>
 
       <fieldset>
@@ -2798,7 +2798,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
             <input type="number" id="gnMin" placeholder="0~59" min="0" max="59" inputmode="numeric" autocomplete="off">
           </div>
         </div>
-        <label class="time-unknown-row dst-row">
+        <label class="time-unknown-row dst-row" hidden>
           <input type="checkbox" id="gnDstAsIs">
           <span>상대 서머타임 적용 (입력한 시각 그대로)</span>
         </label>
@@ -4175,6 +4175,18 @@ const KR_DST=[[1948,6,1,0,1948,9,13,0],[1949,4,3,0,1949,9,11,0],[1950,4,1,0,1950
 function krDstActive(y,m,d,h,mi){if(!(h>=0))return false;const t=Date.UTC(y,m-1,d,h,mi||0);return KR_DST.some(([a,b,c,e,f,g2,i,j])=>t>=Date.UTC(a,b-1,c,e)&&t<Date.UTC(f,g2-1,i,j));}
 // 1시간 앞당긴 시각. 자정을 넘으면 날짜도 하루 앞당긴다.
 function krDstShift(y,m,d,h,mi){const t=new Date(Date.UTC(y,m-1,d,h,mi||0)-3600000);return {y:t.getUTCFullYear(),m:t.getUTCMonth()+1,d:t.getUTCDate(),h:t.getUTCHours(),mi:t.getUTCMinutes()};}
+// 서머타임 체크 칸은 입력한 생년월일(음력이면 양력으로 바꾼 날)이 한국 서머타임 기간일 때만 보인다. 숨길 때는 체크도 푼다.
+function krDstDay(y,m,d){return krDstActive(y,m,d,0,0)||krDstActive(y,m,d,23,59);}
+function dstBirthSolar(y,m,d,cal,leap){if(!(y>=1900&&y<=2050&&m>=1&&m<=12&&d>=1&&d<=31))return null;if(cal!=='lunar')return {y,m,d};try{const t=l2s(y,m,d,!!leap);return t&&t.y?t:null;}catch(e){return null;}}
+function syncDstRows(){
+  const num=id=>parseInt(document.getElementById(id)?.value,10);
+  const show=(boxId,on,help)=>{const box=document.getElementById(boxId),row=box&&box.closest('.dst-row');if(!row)return;row.hidden=!on;if(help)help.hidden=!on;if(!on)box.checked=false;};
+  const me=dstBirthSolar(num('iY'),num('iM'),num('iD'),typeof calType==='string'?calType:'solar',typeof isLeap!=='undefined'&&isLeap);
+  show('iDstAsIs',!!me&&krDstDay(me.y,me.m,me.d),document.getElementById('dstHelp'));
+  const gn=dstBirthSolar(num('gnY'),num('gnM'),num('gnD'),typeof _gnCal==='string'?_gnCal:'solar',typeof _gnLeap!=='undefined'&&_gnLeap);
+  show('gnDstAsIs',!!gn&&krDstDay(gn.y,gn.m,gn.d));
+}
+if(typeof document!=='undefined'){['input','change'].forEach(ev=>document.addEventListener(ev,e=>{if(/^(iY|iM|iD|gnY|gnM|gnD)$/.test(e.target&&e.target.id||''))syncDstRows();}));if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncDstRows);else setTimeout(syncDstRows,0);}
 function birthTimeReferenceHTML(meta){const t=birthTimeReference(meta);return `<p class="birth-time-reference">${preventOrphan(t.note)}</p>`;}
 
 // 시간 미상 토글 + 시 입력 동기화
@@ -4721,6 +4733,7 @@ function setCal(t){
   document.getElementById('iCalType').value=t;
   document.getElementById('leapSec').className='leap-sec'+(t==='lunar'?' vis':'');
   refreshCounselOwner();
+  syncDstRows();
 }
 let _marital='';
 function setMarital(v){_marital=v;if(_category!=='topic-child'&&_lastInputs&&['iY','iM','iD'].every((id,i)=>document.getElementById(id).value===String([_lastInputs.year,_lastInputs.month,_lastInputs.day][i])))_lastInputs.marital=v;[['mrSingle','single'],['mrDating','dating'],['mrMarried','married']].forEach(([id,k])=>_setTog(id,_marital===k));}
@@ -4729,13 +4742,14 @@ function setLeap(b){
   _setTog('breg',!b);
   _setTog('blp',b);
   refreshCounselOwner();
+  syncDstRows();
 }
 
 // 궁합 — 상대방 입력 상태
 let _gnGender='male', _gnCal='solar', _gnLeap=false;
 function setGnGender(g){_gnGender=g;_setTog('gnGm',g==='male');_setTog('gnGf',g==='female');}
-function setGnCal(t){_gnCal=t;document.getElementById('gnCalType').value=t;const el=document.getElementById('gnLeapSec');if(el)el.className='leap-sec'+(t==='lunar'?' vis':'');}
-function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);}
+function setGnCal(t){_gnCal=t;document.getElementById('gnCalType').value=t;const el=document.getElementById('gnLeapSec');if(el)el.className='leap-sec'+(t==='lunar'?' vis':'');syncDstRows();}
+function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);syncDstRows();}
 function ensureGnTimeSelects(){
   const h=document.getElementById('gnH'), mi=document.getElementById('gnMin');
   if(h&&!h.value)h.value='';
@@ -5512,6 +5526,7 @@ function restoreLastInputs(){
     if(tu){tu.checked=false;setTimeUnknown(false);}
   }
   const dstBox=document.getElementById('iDstAsIs');if(dstBox)dstBox.checked=!!i.dstAsIs;
+  syncDstRows();
 }
 // ── 결과 패널 라우팅 ──
 function gotoCard(idx){

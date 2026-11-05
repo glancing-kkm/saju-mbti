@@ -273,6 +273,7 @@ html[data-flow-theme] #app .lc-scroll :is(.lc-tl-when,.lk-tl-what){color:#202b26
 /* 서머타임 선택: 시간 입력 줄 아래 한 줄로 */
 #app #formWrap .dst-row{display:inline-flex;margin-top:12px;border-radius:10px;white-space:normal}
 #app #formWrap .dst-help{margin:8px 2px 0;line-height:1.6;text-align:left}
+#app .dst-row[hidden],#app .dst-help[hidden]{display:none!important}
 
 /* The analysis view is a real completion gate, without artificial countdowns. */
 #view-analysis{min-height:100svh;background:var(--bg)}
