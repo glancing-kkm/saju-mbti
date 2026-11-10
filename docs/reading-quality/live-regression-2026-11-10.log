@@ -1,0 +1,362 @@
+
+> test
+> node tools/openai-luna-model-regression.js && node tools/anthropic-sonnet-model-regression.js && node tools/all-category-presentation-regression.js && node tools/report-feedback-regression.js && node tools/smooth-progress-regression.js && node tools/report-access-regression.js && node tools/pdf-web-expansion-regression.js && node tools/compact-report-regression.js && node tools/reading-stage-regression.js && node tools/premium-saju-regression.js && node tools/ai-report-recovery-regression.js && node tools/life-opening-balance-regression.js && node tools/occupation-context-regression.js && node tools/consultation-style-regression.js && node tools/judgment-specialist-regression.js && node tools/web-length-regression.js && node tools/all-category-consultation-regression.js && node tools/prose-reference-regression.js && node tools/ai-full-report-regression.js && AI_REPORT_FULL=1 node tools/free-ai-regression.js && node tools/reading-loading-regression.js && node tools/reading-voice-regression.js && node tools/interpretation-story-regression.js && node tools/tarot-meaning-regression.js && node tools/free-ai-regression.js && node tools/persona-regression.js && node tools/journey-regression.js && node tools/counsel-input-regression.js && node tools/reading-fixes-regression.js && node tools/reading-story-email-regression.js && node tools/reading-narrative-regression.js && node tools/reading-copy-regression.js && node tools/reading-provenance-regression.js && node tools/reading-editorial-regression.js && node tools/reading-system-depth-regression.js
+
+OpenAI Luna routing passed: all GPT defaults, workload overrides, standard/premium depth budgets, Responses JSON contract, Claude fallback configurable. Network mocked. Separate remote account/model smoke test documented.
+Sonnet routing passed: 5 routes, default/override, Messages payload and text blocks, GPT preserved. Network mocked.
+{"sharedCopyAndOrphans":true,"markdownAndAppendix":true,"periodChapters":10,"astroTopics":12,"annualMissingMonthBlocked":true,"partnerChartClaimsSeparated":true,"freeAIAdded":false,"modelResponses":"synthetic; no live provider/payment calls"}
+Report feedback passed: repeated preamble removed from web/PDF rendering, ten individual annual explanations/evidence required, 2027/2032/2033 omissions detected, real radar/bar domains and scores identical. 14 product web/PDF appendices absent, repeated contrast/context intros cleaned, meaningful occupation conditions retained. No live AI calls.
+Smooth progress passed: honest estimated label, gradual wait motion, 98% pending cap, explicit completion, error/navigation cleanup, validated-only request reuse, grounded writer policy/rollback. Mock providers; no new latency claim.
+Access/progress passed: real cryptographic signatures, non-exportable key, same-device/order/scope, complete web prerequisite, exact 24h deadline/no extension, old-token migration, receipt misuse, monotonic accessible progress. No real payment/model calls.
+PDF expansion passed: all 14 products, unchanged web, same story plan, chapter-scoped web context, separate paid generation/cache, no duplicate plan or web requests, copy rejection, changed-input isolation. Model responses mocked; prose quality/real cost not measured.
+Compact execution passed: smaller web groups, six bounded calls, PDF depth retained, compact/legacy schema compatibility, internal metadata restoration, semantic cache preserved, theme false rejection fixed, paid request budget retained. Mock responses only; no ten-second latency claim.
+Completion gate passed: source chart, hidden result/partial chapters, no click-to-skip, all-at-once completion, cached immediate display, navigation safety, honest failure state, unknown hour, reduced source payload. Mock AI only.
+✓ 11개 상품별 질문·다른 목차·서사·분량 계약, 조건부 단계, 건너뛰기, 질문 보존·사용자 격리, 절기월 근거, 시간·한자 미상 제한, 서버 계약 전달
+모델 출력·실제 해석 품질은 이 테스트에서 평가하지 않습니다. 실제 유료 요청 없음.
+Recovery checks passed: metadata-only false rejections fixed; atomic complete report display; six bounded web requests; no duplicate authorship; payment errors not retried; deadline; strict JSON schema; factual guards retained. All model responses mocked.
+Life opening balance contracts passed: 3 occupations, unchanged calculation facts, distinct personality/emotion/relationship scope, job chapter retained, PDF scope, cache fingerprint and legacy-client prompt precedence. Does not assess live AI prose quality.
+Occupation context passed: 3 broad products × 3 jobs, occupation-free planning, per-chapter career scope in mixed batches, money/PDF exclusion, concern retained, career product personalization preserved. Model output not simulated as quality evidence.
+Consultation style passed: 14 products × plan/chapter × web/PDF, topic identities, answer-first chapter instructions, PDF expansion, cross-chapter consistency and unsupported-event restrictions. Prompt contracts only; actual prose evaluated separately.
+Judgment/specialist checks passed: 14 paid/PDF products, real evidence/counter/period constraints, missing/fabricated judgments rejected, legacy protocol, web-only scale, 4 systems × 11 distinct questions and repetition diagnostics. No live AI.
+Web length passed: 14 products × 3 ages; compact life, all 12 solar-term months/10 years/requested decades retained; omission rejected; web/PDF budget isolation and server delivery. Mock AI only; no latency/actual word-count guarantee.
+All-category consultation passed: 120 legacy system/product/depth policy combinations; 4 × 12 shared deterministic plans, specific chapter classification, source preservation and both PDF preparation paths. No live model/payment calls.
+Actual year references recovered within declared calculation/plan scope; invented years and mixed foreign scripts blocked; Korean dates, judgment and term ownership preserved. No live AI.
+AI full-report checks passed: 14 paid products + 14 PDF authorship pipelines; plan/source/month validation, repair, exact cache, atomic display/failure recovery, no computed prose fallback. All provider responses mocked.
+Free AI checks passed: 23 free/preview flows, zero inference/portrait/translation requests; paid positive control 2 mocked reading requests.
+Loading checks passed: pending body withheld, no estimated duration, failure fallback, concurrent cleanup, tarot/astrology preparation screen. All network mocked.
+Voice coverage: 19 saju/free routes, 78 daily cards, 36 paid tarot combinations, 12 astrology topics, all Korean AI prompt families and PDF editor; uncertainty/HTML attributes preserved. No real AI/payment requests.
+Story engine: 10 techniques; deterministic real adapters; evidence-only selection and links; unknown-time/child safety; false proof/date/duplicate rejection; legacy flag.
+Tarot meaning checks passed: 78 cards, 56 minor semantic anchors, 1872 card/direction/topic cases, cached preview refresh.
+Free AI checks passed: 23 free/preview flows, zero inference/portrait/translation requests; paid positive control 2 mocked reading requests.
+  ✅ careerProfile: 같은 일주라도 십신축 다르면 추천 직군 다름
+  ✅ personaStrengths: 같은 일주라도 강점/약점 다름
+  ✅ personaStrengths.keyword 존재
+  ✅ personaTwist: 사주별로 다른 구절
+  ✅ userMatchZodiacs: 같은 날이라도 일지 다르면 좋은 띠 다름
+  ✅ getPersonalityCompat: 같은 일간쌍이라도 사주 다르면 다름
+  ✅ resultHeroHTML 키워드 칩: 사주별로 다름
+  ✅ renderSajuPaid 렌더 정상
+  ✅ renderSajuPaid 누수 없음(dm 미치환·undefined)
+  ✅ renderSajuPaid 비유 본질: 같은 일간이라도 다름
+  ✅ 개인 지문: 같은 일주도 나머지 여섯 글자에 따라 다름
+  ✅ 개인 지문: 120개 표본에서 60개 이상의 조합
+  ✅ 인생총운: 캐릭터와 통합 풀이에 개인 지문 노출
+  ✅ renderNewyearFortune 한 페이지 렌더 정상
+  ✅ 신년운세: 한 페이지 본문에 개인 지문 연결
+  ✅ renderMBTI 통합: 성장 방향이 사주별로 다름
+  ✅ renderSajuAnalysis 천성: 같은 일간이라도 다름
+  ✅ 인생총운 덱: 8장 생성
+  ✅ 인생총운 덱: 카드당 300~400자
+  ✅ 인생총운 덱: 20대부터 100세 이후까지 9구간
+  ✅ 인생총운 덱: 본인 현재 나이대 한 곳만 강조
+  ✅ 인생총운 덱: 분야별 전용 심볼 배지 사용
+  ✅ 인생총운 덱: 이전·근거·다음 버튼 제공
+  ✅ 인생총운 한 페이지: 목차에서 섹션으로 바로 이동
+  ✅ 미니 만세력: 네 기둥 명칭 확대 스타일 적용
+  ✅ 사주판: 모든 판이 같은 글씨 크기 토큰 사용
+  ✅ 테마 UI: 본문 회색 음영 0건
+  ✅ 테마 UI: 브랜드·기능성 오버레이 외 그라데이션 0건
+  ✅ 캐릭터 초상: 일간 10종 × 계절 4종
+  ✅ 동양화 초상: 모든 유형이 새 WebP 인물 이미지 사용
+  ✅ 공유 카드: 1080 정사각형 클래스 생성
+  ✅ 인생총운 한 페이지: 넘김 없이 소개 순서 8개 섹션을 이어서 노출
+  ✅ 인생총운 한 페이지: 사주판·글자 관계를 일상어로 설명
+  ✅ 인생총운 한 페이지: 12개월과 향후 10년을 모두 제공
+  ✅ 인생총운 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음
+  ✅ 인생총운 V3: 요약본 다운로드 카드 없음
+  ✅ 인생총운 V3: 예시 사주 네 자리·출생지·보정 시각을 그대로 반영
+  ✅ 인생총운 V3: 실제 계산에 쓴 보정 분과 입력·적용 시각 구분
+  ✅ 인생총운 한 페이지: 겹친 글자를 문장으로 풀어 설명
+  ✅ 인생총운 V3: 목차 글자와 관계도 고아글자 방지
+  ✅ 인생총운 V3: 녹색 사주판 글자는 흰색으로 고정
+  ✅ 인생총운 V3: 근거 노드 내용은 가로·세로 중앙 정렬
+  ✅ 풀이 본문: 화면 폭과 무관하게 왼쪽 기준선으로 정렬
+  ✅ 풀이 본문: 긴 글에 가운데 정렬이 남아있지 않음
+  ✅ 풀이 본문: 한 줄 표시 문구와 비교 도식은 가운데 유지
+  ✅ 풀이 본문: text-align-last:center 잔재 0건
+  ✅ 모바일 풀이: 설명형 카드와 목차는 한 열로 정돈
+  ✅ 인생총운 V3: 예시 사주에 12개월·향후 10년·황금기 노출
+  ✅ 인생총운 V3: 첨부 예시의 현재 10년·8월·다음 해 원본값 유지
+  ✅ 신년운세 한 페이지: 넘김 없이 소개 순서 7개 섹션을 이어서 노출
+  ✅ 신년운세 한 페이지: 사주판·글자 관계·12개월을 일상어로 설명
+  ✅ 풀이 심볼: 컬러 이모지 대신 녹색·금색 프리미엄 문양 사용
+  ✅ 풀이 심볼: 모든 유료 본문 공통 변환 계층 적용
+  ✅ 신년운세 V3: 예시의 출생·음력·보정 시각 원본값 반영
+  ✅ 신년운세 V3: 2027 정미·현재 을사 34~43세·나이 변화를 유지
+  ✅ 신년운세 V3: 예시 다섯 기운 분포와 도움 방향 유지
+  ✅ 신년운세 V3: 기존 반복 카드와 AI 대체 본문 제거
+  ✅ 신년운세 V3: 풀이 본문 전문용어·단독 명사 결 노출 없음
+  ✅ 신년운세 V3: 요약본 다운로드 카드 없음
+  ✅ 이름풀이 한 페이지: 넘김 없이 소개 순서 7개 섹션을 이어서 노출
+  ✅ 이름풀이: 한글 소리·한자 네 자리·81수리·추천 이름을 일상어로 풀이
+  ✅ 궁합 한 페이지: 넘김 없이 소개 순서 8개 섹션을 이어서 노출
+  ✅ 궁합: 두 사람의 반응을 비교하고 전문용어 없이 풀이
+  ✅ 공통 카드 덱: 이전·근거·다음 버튼 제공
+  ✅ 주제별 풀이 한 페이지: 9개 주제 모두 소개 항목 수만큼 섹션, 전문용어 없음
+  ✅ 카드 이동: 전환·이전·다음 버튼이 스크롤을 맨 위로 올리지 않음
+  ✅ 월별·지정일 운세 제거: 렌더러·입력 칸·가격이 남지 않음
+  ✅ 유료 풀이 장 구성: 14개 카테고리 모두 원국 구슬·3가지 순간·장 제목
+  ✅ 콕 찍은 풀이: 연애운·인생총운·신년운세 본문에 출생년도·띠·이름 초성·지역·직업·만나는 곳
+  ✅ 콕 찍은 풀이: 직업·재물·건강·학업·결혼·재회·아이·행운·궁합까지 구체 풀이 상자
+  ✅ 이름·결혼 상태: 이름은 제목·말풍선에만 쓰고 AI로 보내지 않음, 기혼이면 운명의 상대 대신 배우자와의 관계
+  ✅ 궁금한 점: 주제별에만 있고, 적은 질문에는 규칙 답 + 결제 후 AI 답 자리
+  ✅ 상황별 본문 장면: 모든 상황 선택지가 해당 섹션에 장면 문단을 넣고, 빈 값·금지어 없음
+  ✅ 결정성: 유료 6종 × 12회 모두 동일
+  ✅ 결정성: 고전 한 줄 시드 고정
+
+전체 통과 75/75 ✅
+  ✅ 점성술 한 페이지: 출생차트·AI 리포트 섹션·한 줄 정리
+✓ 초기화: 새 대분류 홈과 실제 상품 가격 표시
+✓ 분류: 사주·타로·점성술 12개 주제를 맞추고 각 상품은 한 탭에만 배치
+✓ 가격: 총운·신년·자미두수 2천원, 주제별·이름풀이 1천5백원, 타로 별도 요금
+✓ 리딩 서버: 12개 주제·궁합·선택 연도·긴 질문을 프롬프트에 보존
+✓ 무료 풀이 추천: 분야별 추천 6개가 같은 분야에 속하고 소개의 다른 풀이도 섞이지 않음
+✓ 홈 배너: 오늘의 무료 운세 3종 선택 팝업
+✓ 무료 운세 팝업: Escape로 닫기
+✓ 무료 운세 선택: daily에 바로 연결
+✓ 무료 운세 선택: tarot에 바로 연결
+✓ 무료 운세 선택: astrology에 바로 연결
+✓ 보관함: 결제 전에는 비어 있다는 안내와 무료 시작 버튼
+✓ 홈 분류: 예전 홈을 복원하고 이름풀이는 전용 화면으로 표시
+✓ 홈 카드: 모든 data-go가 소개 화면이나 무료 풀이로 연결
+✓ 홈 카테고리 → 해당 입력 화면: manse
+✓ 홈 카테고리 → 해당 입력 화면: daily
+✓ 유료 카드 → 소개 화면: life
+✓ 홈 카테고리 → 해당 입력 화면: life
+✓ 입력 뒤로 → 소개 화면으로 복귀: life
+✓ 유료 카드 → 소개 화면: newyear
+✓ 홈 카테고리 → 해당 입력 화면: newyear
+✓ 입력 뒤로 → 소개 화면으로 복귀: newyear
+✓ 유료 카드 → 소개 화면: name
+✓ 홈 카테고리 → 해당 입력 화면: name
+✓ 입력 뒤로 → 소개 화면으로 복귀: name
+✓ 유료 카드 → 소개 화면: ziwei
+✓ 홈 카테고리 → 해당 입력 화면: ziwei
+✓ 입력 뒤로 → 소개 화면으로 복귀: ziwei
+✓ 유료 카드 → 소개 화면: gunghap
+✓ 홈 카테고리 → 해당 입력 화면: gunghap
+✓ 입력 뒤로 → 소개 화면으로 복귀: gunghap
+✓ 유료 카드 → 소개 화면: topic-love
+✓ 홈 카테고리 → 해당 입력 화면: topic-love
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-love
+✓ 유료 카드 → 소개 화면: topic-marriage
+✓ 홈 카테고리 → 해당 입력 화면: topic-marriage
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-marriage
+✓ 유료 카드 → 소개 화면: topic-reunion
+✓ 홈 카테고리 → 해당 입력 화면: topic-reunion
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-reunion
+✓ 유료 카드 → 소개 화면: topic-money
+✓ 홈 카테고리 → 해당 입력 화면: topic-money
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-money
+✓ 유료 카드 → 소개 화면: topic-career
+✓ 홈 카테고리 → 해당 입력 화면: topic-career
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-career
+✓ 유료 카드 → 소개 화면: topic-study
+✓ 홈 카테고리 → 해당 입력 화면: topic-study
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-study
+✓ 유료 카드 → 소개 화면: topic-child
+✓ 홈 카테고리 → 해당 입력 화면: topic-child
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-child
+✓ 유료 카드 → 소개 화면: topic-children
+✓ 홈 카테고리 → 해당 입력 화면: topic-children
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-children
+✓ 유료 카드 → 소개 화면: topic-health
+✓ 홈 카테고리 → 해당 입력 화면: topic-health
+✓ 입력 뒤로 → 소개 화면으로 복귀: topic-health
+✓ 무료 시작: 입력 화면과 결제 없는 안내
+✓ 빈 입력: 오류를 표시하고 결제로 넘어가지 않음
+✓ 이름 필수: 처음에는 이름만 보이고 성별은 입력 완료 후 표시
+✓ 달력 선택: 본인과 궁합 상대방 모두 날짜와 같은 줄이며 음력 전환 유지
+✓ 시간 미상: 실제 계산으로 무료 풀이 생성
+✓ 무료 결과: 만세력 판 아래에 유료 풀이 추천
+✓ 오늘의 운세: 선택 바·요약 덱 없이 전체 리포트 바로 표시
+✓ 오늘의 행운: 색·음식·중복 없는 1~45 숫자 6개
+✓ 유료 연결: 200자 미만의 짧은 호기심 문구와 실제 가격
+✓ 유료 연결 버튼: 기존 출생정보로 신년운세 가린 미리보기와 결제 버튼
+✓ 입력 재사용: 동일한 생년월일로 인생총운 결제 안내
+✓ 인생총운 상담 정보: 직업 필수·그 외 선택 단계로 제공
+✓ 미리보기: 프로필→원국→인물 장면 순서와 하단 결제 버튼
+✓ 유료 미리보기: 이미지·챕터·짧은 풀이가 이어지고 본문 사이 핵심은 블러 처리
+✓ 챕터 발췌: 실제 계산 문장 보존, 중요한 날짜·장소 마스킹, 긴 본문 제외
+✓ 결제 전 풀이 비공개: life
+✓ 결제 전 풀이 비공개: newyear
+✓ 결제 전 풀이 비공개: gunghap
+✓ 결제 전 풀이 비공개: name
+✓ 결제 전 풀이 비공개: ziwei
+✓ 결제 전 풀이 비공개: topic-love
+✓ 결제 전 풀이 비공개: topic-money
+✓ 결제 전 풀이 비공개: topic-career
+✓ 결제 전 풀이 비공개: topic-marriage
+✓ 결제 전 풀이 비공개: topic-reunion
+✓ 결제 전 풀이 비공개: topic-study
+✓ 결제 전 풀이 비공개: topic-child
+✓ 결제 전 풀이 비공개: topic-health
+✓ 이름·자미두수도 미리보기만 축약하고 전체 본문 보존
+✓ PDF 리포트: 14개 주제 5천원 별도 상품, 요약본 PDF 버튼 제거
+✓ 질문권 복구 링크: 토큰만 저장해 질문권 3회로 세고, 같은 링크는 한 번만
+✓ 질문권 이용기간: 결제 동의·패키지 설명에 24시간·결제한 기기 안내
+✓ PDF 리포트 life: 템플릿 장을 모두 채우고 빈 칸·누락 값이 없음
+✓ PDF 리포트 gunghap: 템플릿 장을 모두 채우고 빈 칸·누락 값이 없음
+✓ PDF 리포트 ziwei: 템플릿 장을 모두 채우고 빈 칸·누락 값이 없음
+✓ 결제 안내: 금액과 포커스, 미동의 버튼 비활성
+✓ 동의 없는 직접 호출도 결제 요청을 보내지 않음
+✓ 중복 클릭: 결제 준비 요청은 한 번만 전송
+✓ 결제 준비 실패: 상태 안내와 재시도 복원
+✓ 결제 이동: 입력·사주 정보를 보존
+✓ 결제 취소: 잠금을 풀지 않고 결제 안내 복원
+✓ 승인 성공: 축약 없이 전체 풀이를 열고 구매 완료 이벤트 전송
+✓ PDF 리포트 승인: 리포트만 열고 보던 인생총운으로 돌아와 PDF 받기 버튼 표시
+✓ 구매 후 홈 왕복: 같은 사주는 재결제 없이 복원
+✓ 보관함: 결제한 인생총운이 남은 시간과 함께 보임
+✓ 다른 사주: 이전 결제로 열리지 않고 결제 안내만 노출
+✓ 원래 사주로 돌아오면 24시간 안에는 다시 열림
+✓ 궁합: 상대가 바뀌면 다시 잠김
+✓ 궁합: 같은 상대는 그대로 열림
+✓ 분석 이벤트: 개인정보와 결제 토큰 제외
+✓ 운영자 코드: 자물쇠 onclick이 해당 카테고리로 연결
+✓ 운영자 코드: 자물쇠 4번은 입력창 없음
+✓ 운영자 코드: 5번이면 페이지 안 입력창(브라우저 prompt 미사용)
+✓ 운영자 코드: 틀린 코드는 창 안에서 거절
+✓ 운영자 코드: 취소하면 창이 닫히고 잠금 유지
+✓ 운영자 코드: 서버가 확인한 코드(대소문자·공백 무시)면 토큰을 받고 결제 없이 열림
+✓ 운영자 코드: 결제 동의 창에서 열면 창이 닫히고 풀이가 보임
+✓ 주제별 풀이: 연애운은 가린 미리보기와 1,500원 결제 버튼
+✓ 주제별 풀이: 결제 안내 금액 1,500원
+✓ 주제별 풀이: 결제 후 요약·10년·12개월 풀이가 열림
+✓ 주제별 풀이: topic-money 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-career 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-marriage 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-reunion 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-study 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-children 렌더링에 빈 값 없음
+✓ 주제별 풀이: topic-health 렌더링에 빈 값 없음
+✓ 연애 타로: 주제 제목과 연애 질문 예시
+✓ 연애 타로: 주제가 흐름에 저장되고 5장을 추천
+✓ 연애 타로 3장: 나의 마음 · 그 사람의 마음 · 두 사람의 흐름
+✓ 타로: 스프레드를 고르면 결제 전에 카드부터 뽑기
+✓ 타로: 결제 화면에 무료·블러 미리보기 없이 상품 안내만 표시
+✓ 연애 타로 10장: 켈틱크로스 자리는 그대로
+✓ 기본 질문 타로: 총운 주제로 연결
+✓ 타로: 긴 질문을 자르지 않고 총운·주제별 10장 가격을 구분
+✓ 동양화 타로 덱: 컵 2·컵 6의 데이터와 그림 번호 일치
+✓ 주제별 표지: 타로 12장·점성술 12장이 서로 다른 실제 이미지이고 홈·소개 화면도 같은 표지 사용
+✓ 동양화 이미지: 타로 78장과 모든 카테고리 포스터가 실제 파일로 연결
+✓ 캐릭터 상담: 달님 언니가 상담방 제목과 첫 인사에 나옴
+✓ 캐릭터 상담: 상담사를 바꾸면 제목과 인사가 바뀜
+✓ 자미두수: 태어난 시간이 없으면 안내하고 진행하지 않음
+✓ 자미두수: 결제 안내와 2,000원 결제 버튼
+✓ 자미두수: 결제 후 12궁 판과 주성 14개
+✓ 베딕 점성술: 결제 없이 낙샤트라와 다샤가 보임
+✓ 마하보테: 1994년 5월 18일 오전 9시는 수요일 오전의 상아 코끼리
+✓ 아이 사주: 보호자 생년월일을 비우고 입력란 이름을 바꿈
+✓ 아이 사주: 보호자 입력 캐시를 덮어쓰지 않음
+✓ 아이 사주 뒤 다른 풀이: 보호자 생년월일이 다시 채워짐
+✓ 한 해 풀이: 올해를 기본값으로 사용
+✓ 점성술: 출생정보 입력 후 무료 요약 없이 유료 상품 선택
+✓ 점성술: life 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: love 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: marriage 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: reunion 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: career 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: money 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: study 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: child 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: children 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: health 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술: newyear 풀이를 먼저 만들고 핵심을 가린 미리보기와 결제 버튼
+✓ 점성술 궁합: 실제 상대방 차트와 유효한 각도를 계산하고 긴 질문 보존
+✓ 신년 점성술: 선택한 2028년의 12개월 행성 위치를 실제 계산
+✓ 점성술 연애 카테고리: 상품 재선택 없이 해당 풀이 미리보기로 연결
+✓ 점성술 미리보기: 결제 전에는 AI 풀이 요청을 보내지 않음(비용 0원)
+✓ 점성술 결제 완료: 이때 처음 AI 풀이를 요청
+✓ 점성술 결제 완료: 불완전한 AI 응답은 계산형으로 대체하지 않고 재시도 제공
+✓ 무료 출생차트 카테고리: 결제 없이 기존 결과 제공
+✓ 출생차트: 풀이·덱·시간 여행 없이 차트와 원본 위치표만 표시
+✓ 출생차트 AI 데이터: 계산값·위치·각도는 원본과 동일하고 트랜짓 제외
+✓ 출생차트 AI 선택창: chatgpt
+✓ 출생차트 AI 선택창: claude
+✓ 출생차트 AI 선택창: gemini
+✓ 출생차트 복사창: Escape로 닫기
+✓ 출생시간 미상: 차트와 AI 복사에 가짜 시간·ASC·MC·하우스 없음
+✓ 공유 AI 복사창: 만세력으로 돌아가면 제목과 데이터도 만세력으로 복귀
+✓ 출생정보 자동 이동: natal의 연·월·일·시·분
+✓ 출생정보 입력: natal의 잘못된 값은 다음 칸으로 이동하지 않음
+✓ 출생정보 입력: natal의 Enter 확정과 시간 모름 건너뛰기
+✓ 출생정보 자동 이동: today의 연·월·일·시·분
+✓ 출생정보 입력: today의 잘못된 값은 다음 칸으로 이동하지 않음
+✓ 출생정보 입력: today의 Enter 확정과 시간 모름 건너뛰기
+✓ 출생정보 자동 이동: input의 연·월·일·시·분
+✓ 출생정보 입력: input의 잘못된 값은 다음 칸으로 이동하지 않음
+✓ 출생정보 입력: input의 Enter 확정과 시간 모름 건너뛰기
+✓ 오늘의 점성술: 출생정보 제출 후 요약·선택 바 없이 전체 풀이
+✓ 오늘의 점성술: 재렌더링에도 전체 풀이 유지
+✓ 오늘의 점성술: 짧은 안내에서 유료 상품 선택으로 연결
+✓ 오늘의 타로: 카드 뽑은 직후 주제 선택 없이 핵심·메시지·장면·확인할 일 4개 표시
+✓ 오늘의 타로: 유료 질문형 타로로 정상 연결
+✓ 모든 사주 입력: 이름 완료 전 성별 숨김, 완료 후 성별 표시
+✓ life 지역 선택 전: 기본 서울 값만으로 연애·결혼 상태가 열리지 않음
+✓ life 지역 입력 중: 다음 상태 선택은 계속 숨김
+✓ life 지역 선택 완료: 바로 다음에 연애·결혼 상태 표시
+✓ life 빈 지역 확인: 다음 단계로 넘어가지 않음
+✓ life 기본 지역도 Enter로 확인하면 다음 단계가 열림
+✓ newyear 지역 선택 전: 기본 서울 값만으로 연애·결혼 상태가 열리지 않음
+✓ newyear 지역 입력 중: 다음 상태 선택은 계속 숨김
+✓ newyear 지역 선택 완료: 바로 다음에 연애·결혼 상태 표시
+✓ newyear 빈 지역 확인: 다음 단계로 넘어가지 않음
+✓ newyear 기본 지역도 Enter로 확인하면 다음 단계가 열림
+✓ 연애·결혼 상태 필수: 미선택 제출 차단, 선택 후 재클릭해도 유지
+✓ 카테고리 테마: 입력·결과·전체 해제에 같은 색을 쓰고 홈에서는 초기화
+✓ 런타임: 입력·무료·유료 전체 흐름에서 오류 없음
+Journey integration checks passed. Network fully mocked; no live payment.
+✓ 15개 상담 입력: 직업은 필요한 상품에서만 필수, 추가 항목은 각각 다음·건너뛰기 단계
+✓ 입력·Enter·건너뛰기 순서, 공백 직업 제출 차단, 동일 출생정보 재사용·다른 출생정보 격리
+✓ 즉문즉답 직업·결혼·자녀 정보 전달 및 아이의 학업·활동 입력 구분
+✓ 이름 초성: 한글 이름을 음절별로 분해하고 두 인물을 구분
+✓ 귀인·주의 인물: 각각 사진 1장과 서로 다른 초성의 프로필 2명 이하
+✓ 관계 상태: 기혼은 귀인, 연애 중은 현재 연인과 배우자 관계, 캐시 분리
+✓ 성향·회고 카드: 성향 4개, 과거 연도와 계산 근거, 미래 별점, 약점과 행동
+✓ 지난 흐름: 특정인의 사건을 정답으로 고정하지 않고 실제 원국 관계만 제시
+✓ 인물 카드: 미혼은 연인이 될 사람, 연애 중은 결혼할 사람, 기혼은 귀인 + 늘 악연
+✓ 무료 질문: 이전 전역 소진 기록과 무관하게 결제 건마다 1회, 새 결제에는 다시 1회
+✓ 질문권: 무료를 먼저 쓰고 구매 횟수만큼 이어서 사용
+✓ AI 요청: 관계 상태를 명시하고 기혼자에게 새 연인 예측을 하지 않도록 안내
+✓ 서버: 서명 검증·결제 건별 1회·정확한 질문권·오류 미차감·재시도·다른 카테고리 차단·사용량 동기화
+✓ 대표 인물 사진: 성별·나이·국가·특징을 실사풍 생성 요청에 전달(모델 호출은 모의 처리)
+✓ 서머타임: 기간 판정·1시간 보정·입력 그대로 선택과 안내 문구
+Reading fix checks passed. No live AI or payment requests.
+✓ PDF 대체 풀이: 궁합의 문맥 유지, 신년 분기별 실제 점수와 실행·조절 월 연결
+✓ 시간 표시: 입력/보정 시각 분리, 과거 기록·자정 경계·반올림·미상, 웹·다운로드 안내·본인/궁합 PDF
+✓ 인물 검증: 계유일 표본과 120개 일간·일지 조합에서 귀인/충 기준 분리, 두 번째 인물 카드 없음
+✓ 풀이: 생활 장면·부담 조건·현재 변화·선택 기준(근거는 접힘), 주제별 구별, 기혼 관계, 어린이 생애주기, 실제 웹 본문 반영
+✓ 월별 풀이: 12달 개별 서술·장면과 행동, 영역별 구분, 기혼·아동 반영, 임의 점수 조작에 따른 성과 단정 없음, 두 번째 인물 없음
+✓ 구체성: 궁합 4지표별 장면·행동, 타로 12주제 실제 카드 조언, 점성술 12주제 실제 행성과 생활 기준
+✓ 공통 색상: 45개 상품 테마의 본문·보조 글씨가 배경과 카드에서 대비 4.5:1 이상
+✓ 재입력·미리보기: 관계 상태와 지역 확인 복원, 신년 연도부터 시작, 공용 남녀 이미지, 유료 이미지 생성 차단
+✓ PDF UI: 이메일 입력·발송 상태·첨부 요청·PDF 상품 토큰 선택
+✓ 메일 서버: 서명·PDF 상품 검증, 주소·파일 검증, 설정 미완료, 실패 미차감, PDF 첨부, 중복·3회 제한, 주소·파일 미보관
+✓ 대체 메일 공급자: PDF base64·발신 주소·중복 방지 키, 환불한 PDF 발송 차단
+✓ AI 보완 보호: 짧은 응답·중복·근거 없는 연도 거절, 계산 설명 유지
+✓ 근거/개인화: 1200개 설명·3600개 월별 결과, 8개 생애주기, 20개 성향 조합, 행동 93종
+✓ AI 근거 전달: 허용 필드/개수 제한, 임의 명령 제거, 대상 연도 유지
+✓ 안내 멘트: 14개 카테고리 전체/미리보기, 208개 말풍선·제목 확인
+✓ 원국별 멘트: 120개 명식 중 도화 23개·비도화 97개, 실제 근거 7종 확인
+✓ 강점 목록: 첫째·둘째·셋째 연속 표시, 둘째만 근거 상자로 이동하는 오류 재현·수정
+✓ 말투 구분: 도령의 말풍선만 ~봅시다·~보겠소, 설명 본문은 친근 존댓말 유지
+✓ 과거 풀이 120표본: 실제 원국 관계만 인용, 개인 사건·이름·혼인 상태로 사건을 역산하지 않음
+✓ 회고 본문: 세 해의 다른 생활 장면, 기술 근거는 접힘, 조사·아이 나이 문맥 유지
+✓ 카테고리별 상담: 직업은 필요한 상품에서만 필수·다른 항목 선택, 생일/카테고리별 저장·복원·격리, AI/PDF 전달, 상담 수정 시 캐시 분리
+✓ 서버: 개인 진술 출처·원국 상세·계산 한계 전달, 상담/기존 본문이 다르면 Q&A 캐시 분리
+✓ 종합 풀이: 유효한 계산 참조가 있는 응답만 장 본문을 대체, 근거 오류는 원문 보존
+✓ 비동기 격리: 응답 대기 중 상담자가 바뀌면 새 상담자의 캐시/화면에 저장하지 않음
+✓ 인생총운 편집: 360개 계획, 제목 core 10/career 9/money 10종, 실제 두 성향 근거와 현재 운 연결
+✓ AI/PDF: 세 장을 분리해 전달·추출, 부모/자식 중복 대체 방지, 개인 사건 미사용, 미성년 분기 유지
+✓ 사주 공통 설명: 네 단계(장면·부담·변화·선택), 근거 접힘, 기혼 관계, 아동 생애주기
+✓ 타로 36개 조합(12주제×3·5·10장): 실제 카드·자리 역할·방향, 미리보기 AI 차단, 검증된 AI만 전체 대체
+✓ 점성술 12주제: 실제 각도 변화 12/12, 달 변화 10/10, 시간 미상 하우스 제외, AI 별자리·하우스 검증
+✓ 자미두수: 명궁·천이궁·사화·대한 실제 배치, 시스템별 근거 ID, 별·궁 주장 대조, 유년 미계산 명시
+✓ 궁합(성향 막대·일지·대운)·이름(소리 오행·수리)·만세력·일일운세에 같은 흐름 적용, 월별·지정일 코드 제거
+✓ 결제 후 종합 풀이: 9개 장 → 2개 묶음, 동시 2개, 장마다 질문(focus) 전달
+✓ 워커: 시스템 근거 ID 허용 목록, 장 질문·계산 초안 전달, 타로 8단계·자리 역할, 트랜짓 각도 정제
+✓ PDF 14종: 소제목 중복·글자 수 상한, 체계별 근거 검증, 불완전한 유료 응답은 파일 생성 중단
+  life 91문단 · newyear 36문단 · gunghap 59문단 · name 57문단 · ziwei 47문단 · topic-love 57문단 · topic-money 57문단 · topic-career 58문단 · topic-marriage 57문단 · topic-reunion 57문단 · topic-study 56문단 · topic-child 57문단 · topic-children 62문단 · topic-health 61문단
+System depth checks passed. No live AI, payment, or email requests.

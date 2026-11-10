@@ -10,7 +10,7 @@ for(const key of ['love','money','career','marriage','reunion','study','child','
 routes.free='renderSajuFree(_saju)';routes['mbti-comparison']="renderMBTI(_saju,'INTJ')";
 const fixtures=[5,6,15,16,19,20,25,26,35,36,45,46,55,56,65,66,80].map((age,i)=>rt.fixture(age,i));
 fixtures.push(rt.fixture(40,7,'dating'),rt.fixture(40,7,'married'),rt.fixture(40,7,'single',true),rt.fixture(40,8,'married'));
-const summary={revision:crypto.createHash('sha256').update(rt.source).digest('hex').slice(0,12),referenceDate:'2026-10-28',scope:'생성 경로/대표 사례의 문장 품질 검사. 미래 사건의 정확도 검증이나 AI 실응답 전수 검증은 포함하지 않음.',routes:Object.keys(routes),fixtures:fixtures.map(m=>m.id),records:[],findings:[],metrics:{}};
+const summary={revision:crypto.createHash('sha256').update(rt.source).digest('hex').slice(0,12),referenceDate:'2026-10-28',renderPath:'calculated-preview-or-legacy',scope:'계산형 미리보기·레거시 생성 경로/대표 사례의 문장 품질 검사. 미래 사건의 정확도 검증이나 AI 실응답 전수 검증은 포함하지 않음.',routes:Object.keys(routes),fixtures:fixtures.map(m=>m.id),records:[],findings:[],metrics:{}};
 const stories=[],monthActions=new Map(),samples=[];
 summary.metrics.longSentences={all:0,structured:0};summary.metrics.repeatedSentences={reports:0,sentenceOccurrences:0,excessOccurrences:0,examples:[]};
 const add=(severity,code,where,detail)=>summary.findings.push({severity,code,where,detail});

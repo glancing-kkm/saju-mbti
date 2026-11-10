@@ -23,9 +23,11 @@ const edits=[
 ];
 // Presentation edits only: preserve calculations, uncertainty, quoted user facts and advice.
 function cleanText(value){if(typeof value!=='string')return value;return value
+ .replace(/अस्पष्ट/g,'불분명')
  .replace(/복잡한\s*용어를\s*현실적인\s*언어로\s*바꿔\s*보겠습니다[.!。]?\s*/g,'')
  .replace(/하지만\s*이\s*장점에는\s*반대쪽\s*모습도\s*있습니다[.!。]?\s*/g,'하지만 ')
  .replace(/(^|[.!?]\s+)((?:하지만|다만|반면)\s+)?(?:현재\s+)?[^.!?\n,]{1,35}?(?:이라는|라는)\s*(?:현재\s*)?정보를\s*(?:토대로|바탕으로)\s*(?:연결해\s*보면|살펴보면|보면|생각해\s*보면)[,，]?\s*/g,'$1$2');}
+function foreignScript(value){const t=String(value||'');return /[가-힣]/.test(t)&&/[\u0400-\u052f\u0590-\u08ff\u0900-\u0dff\u0e00-\u0eff]/.test(t);}
 function headingHTML(value){
  const text=String(value??'');let at=-1,inTag=false;
  for(let i=0;i<text.length;i++){if(text[i]==='<')inTag=true;else if(text[i]==='>')inTag=false;else if(!inTag&&/[ \t]/.test(text[i]))at=i;}
@@ -67,5 +69,5 @@ function apply(root){
  for(const h of root.querySelectorAll('h1,h2,h3,h4,p,li,blockquote')){if(/^H[1-6]$/.test(h.tagName)&&appendixTitle(h.textContent)){const section=h.closest('section');if(section&&section!==root)section.remove();else h.remove();continue;}const next=headingHTML(h.innerHTML);if(next!==h.innerHTML)h.innerHTML=next;}
 }
 function install(scope,names){for(const name of names){const fn=scope[name];if(typeof fn!=='function'||fn.readingVoiceVersion)continue;const wrapped=function(...args){const result=fn.apply(this,args);if(typeof result==='string')return scope.ReadingVoice.html(result);if(args[0]?.nodeType===1)scope.ReadingVoice.apply(args[0]);return result;};wrapped.readingVoiceVersion=VERSION;scope[name]=wrapped;}}
-return {VERSION,text,cleanText,markdown,headingHTML,periodIssues,headingsHTML,html,apply,install};
+return {VERSION,text,cleanText,markdown,foreignScript,headingHTML,periodIssues,headingsHTML,html,apply,install};
 });

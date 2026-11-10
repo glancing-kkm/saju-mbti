@@ -1,0 +1,3668 @@
+{
+  "generatedAt": "2026-11-10T06:23:06.801Z",
+  "fixturePolicy": "Synthetic development fixtures only; no real orders, payments or email.",
+  "scope": "Saved outputs checked against current validators. Not an accuracy, satisfaction or expert endorsement score.",
+  "products": [
+    {
+      "product": "life",
+      "label": "인생총운",
+      "chapters": 11,
+      "web": {
+        "characters": 11302,
+        "ms": 52555,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 7,
+        "inputTokens": 80196,
+        "outputTokens": 11952
+      },
+      "pdf": {
+        "characters": 14582,
+        "ms": 66364,
+        "resumed": false,
+        "cache": {
+          "ms": 8,
+          "additionalCalls": 0
+        },
+        "requests": 7,
+        "inputTokens": 94497,
+        "outputTokens": 16582
+      },
+      "layout": {
+        "product": "life",
+        "renderMs": 1884,
+        "characters": 17646,
+        "pages": 26,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 199
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 402
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 120
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1266
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 461
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 516
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 641
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1189
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 288
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1237
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 285
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1272
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 262
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1216
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 278
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1398
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 262
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1018
+          },
+          {
+            "page": 19,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 207
+          },
+          {
+            "page": 20,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 951
+          },
+          {
+            "page": 21,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1297
+          },
+          {
+            "page": 22,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 962
+          },
+          {
+            "page": 23,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1203
+          },
+          {
+            "page": 24,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1123
+          },
+          {
+            "page": 25,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 281
+          },
+          {
+            "page": 26,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 928
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 19736,
+        "file": "life.pdf",
+        "pageCharacters": [
+          208,
+          433,
+          136,
+          1280,
+          475,
+          579,
+          660,
+          1202,
+          303,
+          1250,
+          300,
+          1287,
+          276,
+          1232,
+          292,
+          1410,
+          276,
+          1033,
+          221,
+          993,
+          1315,
+          982,
+          1219,
+          1136,
+          294,
+          944
+        ],
+        "pages": 26
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 11,
+          "expected": 11
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 11,
+          "expected": 11
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "newyear",
+      "label": "신년운세",
+      "chapters": 20,
+      "web": {
+        "characters": 12247,
+        "ms": 64923,
+        "resumed": false,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 12,
+        "inputTokens": 168775,
+        "outputTokens": 15054
+      },
+      "pdf": {
+        "characters": 15683,
+        "ms": 36758,
+        "resumed": true,
+        "cache": {
+          "ms": 10,
+          "additionalCalls": 0
+        },
+        "requests": 3,
+        "inputTokens": 52404,
+        "outputTokens": 6410
+      },
+      "layout": {
+        "product": "newyear",
+        "renderMs": 1519,
+        "characters": 19547,
+        "pages": 31,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 211
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 225
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 241
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 276
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1096
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 982
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 231
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1109
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 238
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 944
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 258
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1103
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 917
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 248
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 969
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 257
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 899
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 914
+          },
+          {
+            "page": 19,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 844
+          },
+          {
+            "page": 20,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 796
+          },
+          {
+            "page": 21,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 850
+          },
+          {
+            "page": 22,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 859
+          },
+          {
+            "page": 23,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 728
+          },
+          {
+            "page": 24,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 856
+          },
+          {
+            "page": 25,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 826
+          },
+          {
+            "page": 26,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 844
+          },
+          {
+            "page": 27,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 825
+          },
+          {
+            "page": 28,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 794
+          },
+          {
+            "page": 29,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 720
+          },
+          {
+            "page": 30,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 180
+          },
+          {
+            "page": 31,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 947
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 21839,
+        "file": "newyear.pdf",
+        "pageCharacters": [
+          220,
+          252,
+          272,
+          316,
+          1114,
+          996,
+          245,
+          1126,
+          252,
+          959,
+          272,
+          1122,
+          939,
+          261,
+          987,
+          270,
+          922,
+          940,
+          868,
+          819,
+          877,
+          885,
+          753,
+          882,
+          850,
+          870,
+          846,
+          820,
+          742,
+          194,
+          968
+        ],
+        "pages": 31
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 20,
+          "expected": 20
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 20,
+          "expected": 20
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "gunghap",
+      "label": "궁합",
+      "chapters": 10,
+      "web": {
+        "characters": 7329,
+        "ms": 45435,
+        "resumed": false,
+        "cache": {
+          "ms": 4,
+          "additionalCalls": 0
+        },
+        "requests": 8,
+        "inputTokens": 88999,
+        "outputTokens": 10562
+      },
+      "pdf": {
+        "characters": 8819,
+        "ms": 54844,
+        "resumed": true,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 4,
+        "inputTokens": 53510,
+        "outputTokens": 8043
+      },
+      "layout": {
+        "product": "gunghap",
+        "renderMs": 1321,
+        "characters": 10791,
+        "pages": 17,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 196
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 295
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 127
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 697
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 479
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 637
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 957
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 845
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1105
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1043
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 273
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1021
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 948
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 302
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1386
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 207
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1166
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 12003,
+        "file": "gunghap.pdf",
+        "pageCharacters": [
+          203,
+          325,
+          143,
+          708,
+          554,
+          652,
+          975,
+          863,
+          1123,
+          1054,
+          288,
+          1042,
+          960,
+          317,
+          1398,
+          219,
+          1179
+        ],
+        "pages": 17
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 10,
+          "expected": 10
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 10,
+          "expected": 10
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "name",
+      "label": "이름풀이·작명",
+      "chapters": 7,
+      "web": {
+        "characters": 4997,
+        "ms": 42826,
+        "resumed": false,
+        "cache": {
+          "ms": 3,
+          "additionalCalls": 0
+        },
+        "requests": 5,
+        "inputTokens": 39696,
+        "outputTokens": 6104
+      },
+      "pdf": {
+        "characters": 5458,
+        "ms": 23353,
+        "resumed": false,
+        "cache": {
+          "ms": 5,
+          "additionalCalls": 0
+        },
+        "requests": 2,
+        "inputTokens": 21782,
+        "outputTokens": 3997
+      },
+      "layout": {
+        "product": "name",
+        "renderMs": 1824,
+        "characters": 6554,
+        "pages": 10,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 217
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 246
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 137
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 761
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 873
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1013
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1123
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 962
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 966
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 929
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 7384,
+        "file": "name.pdf",
+        "pageCharacters": [
+          227,
+          270,
+          153,
+          772,
+          889,
+          1030,
+          1142,
+          978,
+          983,
+          940
+        ],
+        "pages": 10
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 7,
+          "expected": 7
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 7,
+          "expected": 7
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님",
+        "한자 미확인 또는 검토 후보: 실제 사용 이름이라고 단정하지 않으며 등록 가능 여부도 미검증.",
+        "한자 미확인: 한자 뜻·자원오행·획수·수리격은 해석에서 제외. 한글 이름과 발음만 분석."
+      ]
+    },
+    {
+      "product": "ziwei",
+      "label": "자미두수",
+      "chapters": 13,
+      "web": {
+        "characters": 7234,
+        "ms": 47772,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 8,
+        "inputTokens": 80401,
+        "outputTokens": 10088
+      },
+      "pdf": {
+        "characters": 9897,
+        "ms": 37445,
+        "resumed": true,
+        "cache": {
+          "ms": 8,
+          "additionalCalls": 0
+        },
+        "requests": 2,
+        "inputTokens": 21895,
+        "outputTokens": 3224
+      },
+      "layout": {
+        "product": "ziwei",
+        "renderMs": 1207,
+        "characters": 12017,
+        "pages": 17,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 197
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 447
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 118
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 724
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 706
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 882
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 895
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1067
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1089
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 885
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 247
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1102
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 968
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 954
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 818
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 958
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 945
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 13289,
+        "file": "ziwei.pdf",
+        "pageCharacters": [
+          206,
+          484,
+          134,
+          734,
+          721,
+          900,
+          913,
+          1086,
+          1110,
+          896,
+          262,
+          1122,
+          988,
+          974,
+          830,
+          969,
+          960
+        ],
+        "pages": 17
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 13,
+          "expected": 13
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 13,
+          "expected": 13
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-love",
+      "label": "연애운",
+      "chapters": 10,
+      "web": {
+        "characters": 9422,
+        "ms": 25365,
+        "resumed": true,
+        "cache": {
+          "ms": 5,
+          "additionalCalls": 0
+        },
+        "requests": 1,
+        "inputTokens": 11515,
+        "outputTokens": 2183
+      },
+      "pdf": {
+        "characters": 10016,
+        "ms": 53271,
+        "resumed": true,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 4,
+        "inputTokens": 53801,
+        "outputTokens": 9023
+      },
+      "layout": {
+        "product": "topic-love",
+        "renderMs": 1373,
+        "characters": 12136,
+        "pages": 18,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 193
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 304
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 121
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 651
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 489
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 718
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 877
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1001
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 799
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1176
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 989
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1036
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 365
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1210
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 276
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1439
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 445
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 961
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 13404,
+        "file": "topic-love.pdf",
+        "pageCharacters": [
+          201,
+          334,
+          137,
+          661,
+          552,
+          736,
+          894,
+          1019,
+          815,
+          1198,
+          1010,
+          1061,
+          379,
+          1228,
+          290,
+          1452,
+          461,
+          976
+        ],
+        "pages": 18
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 10,
+          "expected": 10
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 10,
+          "expected": 10
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-marriage",
+      "label": "결혼운",
+      "chapters": 10,
+      "web": {
+        "characters": 7626,
+        "ms": 60198,
+        "resumed": false,
+        "cache": {
+          "ms": 5,
+          "additionalCalls": 0
+        },
+        "requests": 7,
+        "inputTokens": 74419,
+        "outputTokens": 10483
+      },
+      "pdf": {
+        "characters": 10674,
+        "ms": 48837,
+        "resumed": true,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 4,
+        "inputTokens": 47491,
+        "outputTokens": 8823
+      },
+      "layout": {
+        "product": "topic-marriage",
+        "renderMs": 1379,
+        "characters": 12670,
+        "pages": 18,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 200
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 301
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 126
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 885
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 520
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 943
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1049
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1043
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1152
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1153
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1242
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1427
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 303
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 887
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 262
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1141
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 198
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 800
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 13955,
+        "file": "topic-marriage.pdf",
+        "pageCharacters": [
+          208,
+          331,
+          142,
+          896,
+          583,
+          963,
+          1067,
+          1061,
+          1171,
+          1172,
+          1253,
+          1438,
+          317,
+          898,
+          276,
+          1156,
+          210,
+          813
+        ],
+        "pages": 18
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 10,
+          "expected": 10
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 10,
+          "expected": 10
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-reunion",
+      "label": "재회운",
+      "chapters": 10,
+      "web": {
+        "characters": 8545,
+        "ms": 54913,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 6,
+        "inputTokens": 72056,
+        "outputTokens": 9915
+      },
+      "pdf": {
+        "characters": 8820,
+        "ms": 46718,
+        "resumed": true,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 4,
+        "inputTokens": 53829,
+        "outputTokens": 7489
+      },
+      "layout": {
+        "product": "topic-reunion",
+        "renderMs": 1279,
+        "characters": 10785,
+        "pages": 18,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 197
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 299
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 125
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 673
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 467
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 656
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 727
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 931
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 992
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1017
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 895
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 703
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 252
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 803
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 282
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1189
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 347
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1159
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 12049,
+        "file": "topic-reunion.pdf",
+        "pageCharacters": [
+          205,
+          329,
+          141,
+          684,
+          530,
+          674,
+          744,
+          949,
+          1011,
+          1037,
+          916,
+          720,
+          265,
+          814,
+          297,
+          1200,
+          359,
+          1174
+        ],
+        "pages": 18
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 10,
+          "expected": 10
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 10,
+          "expected": 10
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-money",
+      "label": "재물운",
+      "chapters": 12,
+      "web": {
+        "characters": 11699,
+        "ms": 59262,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 9,
+        "inputTokens": 106976,
+        "outputTokens": 13617
+      },
+      "pdf": {
+        "characters": 11965,
+        "ms": 26306,
+        "resumed": true,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 1,
+        "inputTokens": 15521,
+        "outputTokens": 2843
+      },
+      "layout": {
+        "product": "topic-money",
+        "renderMs": 1405,
+        "characters": 14401,
+        "pages": 20,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 186
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 344
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 121
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 856
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 522
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 796
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1128
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1061
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 196
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1124
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1243
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1006
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1064
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 954
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 439
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1172
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 766
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 962
+          },
+          {
+            "page": 19,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 918
+          },
+          {
+            "page": 20,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 603
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 15849,
+        "file": "topic-money.pdf",
+        "pageCharacters": [
+          194,
+          378,
+          137,
+          867,
+          585,
+          815,
+          1147,
+          1073,
+          209,
+          1143,
+          1263,
+          1024,
+          1083,
+          972,
+          455,
+          1187,
+          784,
+          981,
+          939,
+          613
+        ],
+        "pages": 20
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 12,
+          "expected": 12
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 12,
+          "expected": 12
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-career",
+      "label": "직업운",
+      "chapters": 12,
+      "web": {
+        "characters": 10322,
+        "ms": 66779,
+        "resumed": false,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 8,
+        "inputTokens": 97212,
+        "outputTokens": 12871
+      },
+      "pdf": {
+        "characters": 10860,
+        "ms": 64174,
+        "resumed": true,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 3,
+        "inputTokens": 47310,
+        "outputTokens": 8434
+      },
+      "layout": {
+        "product": "topic-career",
+        "renderMs": 1281,
+        "characters": 13335,
+        "pages": 20,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 193
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 341
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 117
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 885
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 552
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1045
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1066
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1154
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1027
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 861
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 870
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 281
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 905
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 760
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 265
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1056
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 481
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 959
+          },
+          {
+            "page": 19,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 960
+          },
+          {
+            "page": 20,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 607
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 14776,
+        "file": "topic-career.pdf",
+        "pageCharacters": [
+          201,
+          375,
+          133,
+          896,
+          615,
+          1064,
+          1084,
+          1171,
+          1046,
+          879,
+          881,
+          296,
+          930,
+          783,
+          279,
+          1072,
+          497,
+          978,
+          979,
+          617
+        ],
+        "pages": 20
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 12,
+          "expected": 12
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 12,
+          "expected": 12
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-study",
+      "label": "학업·시험운",
+      "chapters": 9,
+      "web": {
+        "characters": 6726,
+        "ms": 47092,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 7,
+        "inputTokens": 77269,
+        "outputTokens": 8464
+      },
+      "pdf": {
+        "characters": 7549,
+        "ms": 33705,
+        "resumed": true,
+        "cache": {
+          "ms": 5,
+          "additionalCalls": 0
+        },
+        "requests": 3,
+        "inputTokens": 38338,
+        "outputTokens": 5818
+      },
+      "layout": {
+        "product": "topic-study",
+        "renderMs": 1416,
+        "characters": 9365,
+        "pages": 13,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 194
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 284
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 126
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 737
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 552
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 860
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1022
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1125
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 982
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1054
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 786
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1013
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1401
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 10410,
+        "file": "topic-study.pdf",
+        "pageCharacters": [
+          203,
+          312,
+          142,
+          749,
+          615,
+          879,
+          1042,
+          1143,
+          1000,
+          1074,
+          803,
+          1034,
+          1414
+        ],
+        "pages": 13
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 9,
+          "expected": 9
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 9,
+          "expected": 9
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-child",
+      "label": "우리 아이 운",
+      "chapters": 10,
+      "web": {
+        "characters": 7076,
+        "ms": 48536,
+        "resumed": false,
+        "cache": {
+          "ms": 6,
+          "additionalCalls": 0
+        },
+        "requests": 6,
+        "inputTokens": 70546,
+        "outputTokens": 8976
+      },
+      "pdf": {
+        "characters": 11320,
+        "ms": 57298,
+        "resumed": true,
+        "cache": {
+          "ms": 5,
+          "additionalCalls": 0
+        },
+        "requests": 3,
+        "inputTokens": 40409,
+        "outputTokens": 8461
+      },
+      "layout": {
+        "product": "topic-child",
+        "renderMs": 1488,
+        "characters": 13440,
+        "pages": 19,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 224
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 299
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 136
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 947
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 479
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1054
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 198
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1134
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1164
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 272
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1126
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 183
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1224
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1260
+          },
+          {
+            "page": 15,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1107
+          },
+          {
+            "page": 16,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 259
+          },
+          {
+            "page": 17,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1256
+          },
+          {
+            "page": 18,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1051
+          },
+          {
+            "page": 19,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1223
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 14960,
+        "file": "topic-child.pdf",
+        "pageCharacters": [
+          233,
+          329,
+          152,
+          960,
+          559,
+          1068,
+          211,
+          1155,
+          1176,
+          287,
+          1138,
+          195,
+          1245,
+          1280,
+          1120,
+          274,
+          1273,
+          1068,
+          1237
+        ],
+        "pages": 19
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 10,
+          "expected": 10
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 10,
+          "expected": 10
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-children",
+      "label": "자녀(임신)운",
+      "chapters": 9,
+      "web": {
+        "characters": 8106,
+        "ms": 62187,
+        "resumed": false,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 8,
+        "inputTokens": 87032,
+        "outputTokens": 11815
+      },
+      "pdf": {
+        "characters": 8217,
+        "ms": 34349,
+        "resumed": true,
+        "cache": {
+          "ms": 7,
+          "additionalCalls": 0
+        },
+        "requests": 3,
+        "inputTokens": 38889,
+        "outputTokens": 6376
+      },
+      "layout": {
+        "product": "topic-children",
+        "renderMs": 1286,
+        "characters": 10212,
+        "pages": 14,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 224
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 283
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 140
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 850
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 534
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 825
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1059
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1178
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1131
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1221
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 287
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1076
+          },
+          {
+            "page": 13,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1142
+          },
+          {
+            "page": 14,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 1144
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 11372,
+        "file": "topic-children.pdf",
+        "pageCharacters": [
+          234,
+          311,
+          156,
+          860,
+          597,
+          843,
+          1077,
+          1196,
+          1148,
+          1238,
+          301,
+          1095,
+          1160,
+          1156
+        ],
+        "pages": 14
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 9,
+          "expected": 9
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 9,
+          "expected": 9
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    },
+    {
+      "product": "topic-health",
+      "label": "건강·생활운",
+      "chapters": 8,
+      "web": {
+        "characters": 4657,
+        "ms": 35992,
+        "resumed": false,
+        "cache": {
+          "ms": 2,
+          "additionalCalls": 0
+        },
+        "requests": 5,
+        "inputTokens": 56969,
+        "outputTokens": 6186
+      },
+      "pdf": {
+        "characters": 5725,
+        "ms": 24344,
+        "resumed": true,
+        "cache": {
+          "ms": 3,
+          "additionalCalls": 0
+        },
+        "requests": 2,
+        "inputTokens": 26751,
+        "outputTokens": 4536
+      },
+      "layout": {
+        "product": "topic-health",
+        "renderMs": 1135,
+        "characters": 7464,
+        "pages": 12,
+        "overflows": [],
+        "orphanSupplements": [],
+        "layout": [
+          {
+            "page": 1,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 202
+          },
+          {
+            "page": 2,
+            "bodyHeight": 779,
+            "scrollHeight": 779,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 267
+          },
+          {
+            "page": 3,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 126
+          },
+          {
+            "page": 4,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 821
+          },
+          {
+            "page": 5,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 511
+          },
+          {
+            "page": 6,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 867
+          },
+          {
+            "page": 7,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 960
+          },
+          {
+            "page": 8,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 926
+          },
+          {
+            "page": 9,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 882
+          },
+          {
+            "page": 10,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 994
+          },
+          {
+            "page": 11,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 963
+          },
+          {
+            "page": 12,
+            "bodyHeight": 831,
+            "scrollHeight": 831,
+            "overflow": 0,
+            "orphanSupplement": false,
+            "characters": 577
+          }
+        ]
+      },
+      "native": {
+        "extractedCharacters": 8349,
+        "file": "topic-health.pdf",
+        "pageCharacters": [
+          210,
+          293,
+          142,
+          832,
+          574,
+          886,
+          978,
+          945,
+          900,
+          1017,
+          984,
+          588
+        ],
+        "pages": 12
+      },
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "chapters": 8,
+          "expected": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "chapters": 8,
+          "expected": 8
+        }
+      ],
+      "calculationLimits": [
+        "용신 표시는 최소 오행 개수로 정한 보완 후보이며 종합 용신 판정이 아님",
+        "강약 표시는 오행 개수 비율을 사용한 참고값이며 월령·통근을 종합한 판정이 아님"
+      ]
+    }
+  ],
+  "markdown": [
+    {
+      "system": "astrology",
+      "topic": "career",
+      "characters": 1897,
+      "ms": 13243,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5028,
+      "outputTokens": 1163
+    },
+    {
+      "system": "astrology",
+      "topic": "child",
+      "characters": 2034,
+      "ms": 17054,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5095,
+      "outputTokens": 1286
+    },
+    {
+      "system": "astrology",
+      "topic": "children",
+      "characters": 1884,
+      "ms": 12754,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5108,
+      "outputTokens": 1184
+    },
+    {
+      "system": "astrology",
+      "topic": "gunghap",
+      "characters": 2212,
+      "ms": 15415,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 6574,
+      "outputTokens": 1458
+    },
+    {
+      "system": "astrology",
+      "topic": "health",
+      "characters": 1802,
+      "ms": 13756,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5102,
+      "outputTokens": 1112
+    },
+    {
+      "system": "astrology",
+      "topic": "life",
+      "characters": 3215,
+      "ms": 20085,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4993,
+      "outputTokens": 1876
+    },
+    {
+      "system": "astrology",
+      "topic": "love",
+      "characters": 2273,
+      "ms": 15089,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5031,
+      "outputTokens": 1370
+    },
+    {
+      "system": "astrology",
+      "topic": "marriage",
+      "characters": 1944,
+      "ms": 12832,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5019,
+      "outputTokens": 1194
+    },
+    {
+      "system": "astrology",
+      "topic": "money",
+      "characters": 1921,
+      "ms": 15590,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5059,
+      "outputTokens": 1170
+    },
+    {
+      "system": "astrology",
+      "topic": "newyear",
+      "characters": 4119,
+      "ms": 48910,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 7
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 7
+        }
+      ],
+      "requests": 2,
+      "inputTokens": 15471,
+      "outputTokens": 4824
+    },
+    {
+      "system": "astrology",
+      "topic": "reunion",
+      "characters": 1779,
+      "ms": 12191,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5044,
+      "outputTokens": 1102
+    },
+    {
+      "system": "astrology",
+      "topic": "study",
+      "characters": 2210,
+      "ms": 16600,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 6
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 6
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 5035,
+      "outputTokens": 1339
+    },
+    {
+      "system": "tarot",
+      "topic": "career",
+      "characters": 3089,
+      "ms": 23654,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4836,
+      "outputTokens": 1791
+    },
+    {
+      "system": "tarot",
+      "topic": "child",
+      "characters": 2991,
+      "ms": 21736,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4898,
+      "outputTokens": 1765
+    },
+    {
+      "system": "tarot",
+      "topic": "children",
+      "characters": 3483,
+      "ms": 25185,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4875,
+      "outputTokens": 1998
+    },
+    {
+      "system": "tarot",
+      "topic": "gunghap",
+      "characters": 3433,
+      "ms": 22855,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4840,
+      "outputTokens": 1959
+    },
+    {
+      "system": "tarot",
+      "topic": "health",
+      "characters": 3366,
+      "ms": 46123,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 2,
+      "inputTokens": 9795,
+      "outputTokens": 3857
+    },
+    {
+      "system": "tarot",
+      "topic": "life",
+      "characters": 3583,
+      "ms": 24211,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4815,
+      "outputTokens": 2057
+    },
+    {
+      "system": "tarot",
+      "topic": "love",
+      "characters": 3295,
+      "ms": 21867,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4842,
+      "outputTokens": 1884
+    },
+    {
+      "system": "tarot",
+      "topic": "marriage",
+      "characters": 3373,
+      "ms": 22210,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4833,
+      "outputTokens": 1975
+    },
+    {
+      "system": "tarot",
+      "topic": "money",
+      "characters": 3035,
+      "ms": 21710,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4868,
+      "outputTokens": 1784
+    },
+    {
+      "system": "tarot",
+      "topic": "newyear",
+      "characters": 2960,
+      "ms": 19713,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4845,
+      "outputTokens": 1697
+    },
+    {
+      "system": "tarot",
+      "topic": "reunion",
+      "characters": 3227,
+      "ms": 21682,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4852,
+      "outputTokens": 1861
+    },
+    {
+      "system": "tarot",
+      "topic": "study",
+      "characters": 2998,
+      "ms": 21724,
+      "browser": [
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "headings": 8
+        },
+        {
+          "width": 1069,
+          "scrollWidth": 1069,
+          "headings": 8
+        }
+      ],
+      "requests": 1,
+      "inputTokens": 4847,
+      "outputTokens": 1778
+    }
+  ],
+  "sources": {
+    "index.html": "3492838a9a79",
+    "assets/ai-report.js": "38893dbe26db",
+    "assets/reading-voice.js": "531fc44d3533",
+    "assets/report-pdf.js": "3d339ea240e5",
+    "assets/astrology.js": "c40d0a7b3418",
+    "worker/saju-chat-worker.js": "c4004242ab5b"
+  }
+}

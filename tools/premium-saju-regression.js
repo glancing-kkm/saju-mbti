@@ -15,7 +15,7 @@ try{
   const report=run('AIReport.sources(window.cat,_saju,_meta)');
   assert(report.productGuide);assert.equal(report.productGuide.targetCharacters[0],Math.round(spec.range[0]*.8));assert(report.storytelling.secondary.includes('STORY_06'));
   assert.equal(report.chapters[0].kind,'prologue');assert.equal(report.chapters.at(-1).kind,'guide');
-  assert(report.chapters.every(c=>c.question.length>40));assert(report.chapters.length>=8);
+  assert(report.chapters.every(c=>c.question.length>40));assert(report.chapters.length>=(cat==='name'?7:8),'한자 미확인 이름풀이만 한자·획수 장을 제외한다');
   outlines.add(report.chapters.map(c=>c.title).join('|'));
   const monthly=report.chapters.find(c=>c.kind==='topic-months');
   if(monthly){assert.equal(report.ledger.filter(x=>x.id.startsWith('mw.')).length,12);assert.equal(monthly.refs.filter(id=>id.startsWith('mw.')).length,12);assert(monthly.question.includes('절기'));}

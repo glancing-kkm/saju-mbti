@@ -1292,7 +1292,13 @@ async function rpWebReport(cat,spec,d,opts,prog,fontLoad){
     const warm=document.createElement('div');warm.className='rp-page rp-ai';warm.style.height='auto';warm.innerHTML=doc.parts.map(p=>esc(p.title)+p.blocks.join('')).join('');host.appendChild(warm);await rpFontsReady();warm.remove();
     const cover=rpCover(host,{...spec,sub:cat==='newyear'?(doc.subs[0]||spec.sub):doc.title},d,{intro:doc.intro});
     const tocSlot=document.createElement('div');host.appendChild(tocSlot);
-    const chapters=doc.parts.map(p=>({title:(p.label&&/장$|로그$/.test(p.label)?p.label+'. ':'')+p.title,pages:rpFlow(host,spec,d,{tab:true,cls:'rp-ai',ey:p.label||spec.en,title:p.title},p.blocks.map((html,i)=>({html,keep:/^<(?:h3|div class="ai-mw-head")/.test(html)&&i<p.blocks.length-1})))}));
+    const chapters=doc.parts.map(p=>{
+      // Keep trailing advice/evidence with the final prose paragraph, not alone on a new page.
+      const blocks=p.blocks.map((html,i)=>({html,keep:/^<(?:h3|div class="ai-mw-head")/.test(html)&&i<p.blocks.length-1}));
+      let tail=blocks.length;while(tail>0&&/^<div class="ai-(?:basis|advice)\b/.test(blocks[tail-1].html))tail--;
+      if(tail>0&&tail<blocks.length&&/^<p\b/.test(blocks[tail-1].html)){const endnotes=blocks.splice(tail-1);blocks.push({html:'<div class="rp-endgroup">'+endnotes.map(b=>b.html).join('')+'</div>'});}
+      return {title:(p.label&&/장$|로그$/.test(p.label)?p.label+'. ':'')+p.title,pages:rpFlow(host,spec,d,{tab:true,cls:'rp-ai',ey:p.label||spec.en,title:p.title},blocks)};
+    });
     // 차례가 두 쪽 이상이면 그만큼 뒤 쪽 번호를 밀어 다시 만든다
     const tocFor=start=>{let n=start;return chapters.map(c=>{const e=[c.title,n];n+=c.pages.length;return e;});};
     let toc=rpTocPage(host,spec,d,tocFor(3));if(toc.length>1){toc.forEach(p=>p.remove());toc=rpTocPage(host,spec,d,tocFor(2+toc.length));}
@@ -1403,7 +1409,7 @@ window.askTemplateReportInfo=askTemplateReportInfo;
 // 서버 인쇄용 문서 — 쪽 HTML과 보고서 스타일만 담는다(스크립트 없음)
 function rpStandalone(pages){
   const css=RP_CSS+`@page{size:${RP_W}px ${RP_H}px;margin:0}html,body{margin:0;padding:0;background:#faf8f3}.rp-page{break-after:page;page-break-after:always}.rp-page:last-child{break-after:auto;page-break-after:auto}.lv4-nb{white-space:nowrap}`;
-  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700&display=block"><style>${css}</style></head><body>${pages.map(p=>p.outerHTML).join('')}</body></html>`;
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700&display=swap"><style>${css}</style></head><body>${pages.map(p=>p.outerHTML).join('')}</body></html>`;
 }
 async function rpServerPdf(html,opts){
   const ctl=typeof AbortController==='function'?new AbortController():null,timer=ctl?setTimeout(()=>ctl.abort(),70000):0;

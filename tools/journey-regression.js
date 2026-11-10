@@ -540,7 +540,7 @@ const submitBirth=async()=>{
     run("goToInput('life')");
     check('아이 사주 뒤 다른 풀이: 보호자 생년월일이 다시 채워짐',()=>{assert.equal(d.getElementById('iY').value,'1994');assert.equal(d.getElementById('lgBirth').textContent,'생년월일');});
     run("goToInput('newyear')");
-    check('한 해 풀이: 올해를 기본값으로 사용',()=>assert.equal(d.getElementById('nyY').value,String(new Date().getFullYear())));
+    check('한 해 풀이: 2027년을 기본값으로 사용',()=>assert.equal(d.getElementById('nyY').value,'2027'));
     run("closePaymentConsent();window._astroPreferProduct='';goToAstrology('input')");
     d.getElementById('astroYear').value='1994';d.getElementById('astroMonth').value='5';d.getElementById('astroDay').value='18';
     d.getElementById('astroTimeUnknown').checked=true;
@@ -733,7 +733,9 @@ const submitBirth=async()=>{
       assert.equal(d.querySelector('#todayTarotResult .same-kind-recommend').dataset.readingKind,'tarot');
       assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,4);
       assert(!d.querySelector('#todayTarotResult .journey-chapters,#todayTarotResult .story-experience,#todayTarotResult .story-deck-layer'));
-      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,1);
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,9);
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn:disabled').length,9);
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .flipped').length,1);
       assert(!d.querySelector('#todayTarotResult .tarot-mini-face'));
       assert(d.querySelector('#todayTarotResult .today-paid-hook').textContent.length<200);
     });

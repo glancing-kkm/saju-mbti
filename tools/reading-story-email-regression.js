@@ -75,8 +75,8 @@ const wait=()=>new Promise(r=>setTimeout(r,0));
  assert(!/직장|계약|수입|세금|승진|대출/.test(monthlyChild));
  const low=run("lv4MonthNarrative({...window.monthFixture,score:40,sc:{wealth:40}},_saju,_meta,41,'money')");
  const high=run("lv4MonthNarrative({...window.monthFixture,score:90,sc:{wealth:90}},_saju,_meta,41,'money')");
- assert.notEqual(low,high);assert.match(low,/늦추|미루|한 번 더|말을 아끼|물러서|하루 뒤/);assert.match(high,/밀어붙|미뤄 둔|좋은 쪽|말투|상의|한 박자/);
- console.log('✓ 월별 풀이: 12달 개별 서술·장면과 행동, 영역별 구분, 기혼·아동 반영, 점수별 속도, 두 번째 인물 없음');
+ assert.equal(low,high,'같은 실제 월주와 관계라면 점수만 바꿔 성과를 약속하는 문장을 만들지 않는다');assert(!/준비한 만큼 결과|결실이 가장|반드시/.test(high));
+ console.log('✓ 월별 풀이: 12달 개별 서술·장면과 행동, 영역별 구분, 기혼·아동 반영, 임의 점수 조작에 따른 성과 단정 없음, 두 번째 인물 없음');
  const gh=run("buildGunghapReadingV4(_saju,calcSaju(1992,8,10,8,0),{sy1:1987,sm1:9,sd1:21,h1:7,min1:0,gen1:'male',sy2:1992,sm2:8,sd2:10,h2:8,min2:0,gen2:'female'})");
  assert(!gh.includes('여기서 서운함이 쌓이지 않게 자주 이야기하세요'));assert(!gh.includes('이 부분이 관계를 받쳐 주는 기둥'));
  for(const metric of ['배우자 자리의 만남','서로를 바라보는 방식','중심 기운의 어울림','다섯 기운의 균형']){w.metric=metric;const v=run("ghMetricReading(window.metric,{dayBrRel:{kind:'충'},tg12:'정재'},true)");assert(v.length>80);assert.match(v,/시간|물어|구분|써 보세요/);}
