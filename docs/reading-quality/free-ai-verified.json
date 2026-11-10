@@ -1,0 +1,144 @@
+{
+  "scope": "Runtime fetch spy with mocked network on production-matching scripts; no real AI calls.",
+  "rows": [
+    {
+      "category": "manse",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "daily",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "vedic",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "mahabote",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "tarot-today",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "astro-today",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "astro-natal",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:life",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:newyear",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:gunghap",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:name",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:ziwei",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-love",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-money",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-career",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-marriage",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-reunion",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-study",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-child",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-children",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "preview:topic-health",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "tarot-locked-preview",
+      "aiRequests": 0,
+      "requests": []
+    },
+    {
+      "category": "astro-locked-preview",
+      "aiRequests": 0,
+      "requests": []
+    }
+  ],
+  "paidPositiveControl": [
+    {
+      "path": "/reading",
+      "method": "POST"
+    },
+    {
+      "path": "/reading",
+      "method": "POST"
+    }
+  ],
+  "allRequests": [
+    {
+      "path": "/",
+      "method": "HEAD"
+    },
+    {
+      "path": "/reading",
+      "method": "POST"
+    },
+    {
+      "path": "/reading",
+      "method": "POST"
+    }
+  ]
+}
