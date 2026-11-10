@@ -446,6 +446,23 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .tarot-mini-card{min-width:74px;text-align:center;font-size:.65rem;color:var(--sub)}
 .tarot-mini-face{height:108px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--on-accent);font-family:var(--font-heading);font-synthesis:none;margin-bottom:5px;overflow:hidden}
 .tarot-mini-face img{width:100%;height:100%;object-fit:cover;display:block}
+.tarot-result-toc{margin-bottom:12px}
+.tarot-result-board{min-height:0;padding:14px 0 6px}
+.td-slot-no{position:absolute;top:-7px;left:-7px;z-index:2;min-width:17px;height:17px;padding:0 3px;border-radius:9px;background:var(--accent-bright,var(--accent));color:var(--on-accent);font-size:.62rem;font-weight:800;line-height:17px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tarot-drawn-list{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:.72rem;line-height:1.5;color:var(--sub)}
+.tarot-drawn-list li{display:flex;align-items:baseline;gap:5px;min-width:0}
+.tarot-drawn-no{flex:none;color:var(--accent);font-weight:800}
+.tarot-drawn-pos{flex:none;color:var(--muted)}
+.tarot-drawn-list b{font-weight:700;color:var(--text);word-break:keep-all}
+.tarot-drawn-list small{font-size:.66rem;color:var(--muted)}
+.tarot-sec-cards{margin:2px 0 14px}
+.tarot-sec-cards-label{display:block;margin-bottom:6px;font-size:.72rem;font-weight:700;color:var(--muted)}
+.tarot-sec-cards-row{display:flex;flex-wrap:wrap;gap:10px 8px}
+.tarot-sec-card{flex:none;width:52px;margin:0;text-align:center;font-size:.66rem;line-height:1.35;color:var(--text)}
+.tarot-sec-card small{display:block;color:var(--muted);font-size:.6rem;word-break:keep-all}
+.tarot-sec-face{display:block;width:52px;height:78px;margin-bottom:4px;border-radius:7px;overflow:hidden;background:var(--accent)}
+.tarot-sec-face img{width:100%;height:100%;object-fit:cover;display:block}
+.tarot-sec-card.reversed .tarot-sec-face img{transform:rotate(180deg)}
 .tarot-markdown{font-size:.9rem;line-height:1.85;color:var(--sub)}
 .tarot-markdown h1{font-size:1.08rem;color:var(--accent-bright);margin:18px 0 8px}
 .tarot-markdown h2{font-size:.98rem;color:var(--text);margin:15px 0 6px}
@@ -6050,7 +6067,7 @@ function tarotDrawLayout(id){
   if(id==='tarot10')return {sw:38,sh:57,cw:46,ch:66,cells:[[1,1],[1,1,90],[0,1],[2,1],[1,0],[1,2],[3,3],[3,2],[3,1],[3,0]]};
   return {sw:52,sh:78,cw:62,ch:90,cells:[[1,1],[1,0],[1,2],[0,1],[2,1]]}; // 5장 십자
 }
-function tarotSpreadBoardHTML(positions,selected){
+function tarotSpreadBoardHTML(positions,selected,numbered){
   const L=tarotDrawLayout(_tarotFlow.selectedSpreadId);
   let maxc=0,maxr=0;L.cells.forEach(([c,r])=>{maxc=Math.max(maxc,c);maxr=Math.max(maxr,r);});
   const W=maxc*L.cw+L.sw, H=maxr*L.ch+L.sh;
@@ -6064,7 +6081,8 @@ function tarotSpreadBoardHTML(positions,selected){
     const cls=`td-slot ${card?'filled':''} ${!card&&i===nextIdx?'next':''}`;
     const inner=card?`<span class="td-mini">${tarotCardImageHTML(card,'')}</span>`:`<span class="td-slot-n">${i+1}</span>`;
     const lab=(showLab&&!rot)?`<span class="td-slot-lab">${tarotEsc(pos.label)}</span>`:'';
-    return `<div class="${cls}" style="${style}">${inner}${lab}</div>`;
+    const no=numbered&&card?`<span class="td-slot-no"${rot?` style="top:50%;left:auto;right:-9px;margin-top:-8px;transform:rotate(-${rot}deg)"`:''}>${i+1}</span>`:'';
+    return `<div class="${cls}" style="${style}">${inner}${lab}${no}</div>`;
   }).join('');
   return `<div class="td-spread" style="width:${W}px;height:${H+18}px">${slots}</div>`;
 }
@@ -6269,6 +6287,39 @@ function tarotAIQuality(md,input){
   if((t.match(/(?:19|20)\d{2}년/g)||[]).some(y=>!allowed.has(y.slice(0,4))))return false;
   return !/\d{1,2}월\s?\d{1,2}일/.test(t.replace(String(input.question||''),''))&&(typeof storyValidateMarkdown!=='function'||storyValidateMarkdown(t,'tarot',input));
 }
+// 타로 결과: 뽑을 때의 배치판 + 순서대로 본 카드 목록, 그리고 장마다 그 장이 근거로 삼은 카드.
+function tarotFindCard(c){return TAROT_CARDS.find(x=>x.id===c.cardId)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);}
+function tarotResultCardsHTML(input){
+  const board=_tarotFlow&&_tarotFlow.selectedSpreadId&&_tarotFlow.positions?`<div class="td-stage tarot-result-board">${tarotSpreadBoardHTML(_tarotFlow.positions,_tarotFlow.selectedCards||[],true)}</div>`:'';
+  const list=`<ol class="tarot-drawn-list">${input.cards.map((c,i)=>`<li><span class="tarot-drawn-no">${i+1}</span><span class="tarot-drawn-pos">${tarotEsc(c.positionLabel)}</span><b>${tarotEsc(c.cardNameKo)}</b>${c.orientation==='reversed'?'<small>역방향</small>':''}</li>`).join('')}</ol>`;
+  return board+list;
+}
+// 본문에 카드 이름이 나오면 그 카드를 근거 카드로 본다. '연인·정의·달'처럼 일상어와 겹치는 짧은 이름은 '카드'·따옴표·자리 이름이 붙을 때만 센다.
+function tarotCardMentioned(text,c){
+  const name=String(c.cardNameKo||'');if(!name)return false;
+  const pat=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/^(완드|컵|소드|펜타클)/,'$1\\s*').replace(/\s+/g,'\\s*');
+  const re=new RegExp('(^|[^가-힣])('+pat+')(?=\\s*카드|[은는이가을를의와과도로에만처럼]|[\\s,.)\'"’”·」』]|$)','g');
+  const short=!/\d|에이스|페이지|기사|여왕|왕$/.test(name)&&name.replace(/\s/g,'').length<=2;
+  const posWords=String(c.positionLabel||'').split(/[\s·/]+/).filter(w=>w.length>=2);
+  for(const m of text.matchAll(re)){
+    if(!short)return true;
+    const at=m.index+m[1].length,before=text.slice(Math.max(0,at-14),at),after=text.slice(at+m[2].length,at+m[2].length+4);
+    if(/^\s*카드/.test(after)||/[「『'"‘“]$/.test(before)||/자리/.test(before)||posWords.some(w=>before.includes(w)))return true;
+  }
+  return false;
+}
+function tarotSectionCardsHTML(html,input){
+  const box=document.createElement('div');box.innerHTML=html;
+  box.querySelectorAll('section.lv4-sec').forEach(sec=>{
+    const text=(sec.textContent||'').replace(/\u00a0/g,' ');
+    const used=input.cards.map((c,i)=>({c,i})).filter(({c})=>tarotCardMentioned(text,c));
+    if(!used.length)return;
+    const strip=document.createElement('div');strip.className='tarot-sec-cards';strip.setAttribute('aria-label','이 장에서 본 카드');
+    strip.innerHTML=`<span class="tarot-sec-cards-label">이 장에서 본 카드</span><div class="tarot-sec-cards-row">${used.map(({c,i})=>{const card=tarotFindCard(c);return `<figure class="tarot-sec-card${c.orientation==='reversed'?' reversed':''}"><span class="tarot-sec-face">${tarotCardImageHTML(card,'')}</span><figcaption><small>${i+1}. ${tarotEsc(c.positionLabel)}</small>${tarotEsc(c.cardNameKo)}${c.orientation==='reversed'?' (역)':''}</figcaption></figure>`;}).join('')}</div>`;
+    const head=sec.querySelector('.lv4-sec-head');if(head)head.after(strip);else sec.prepend(strip);
+  });
+  return box.innerHTML;
+}
 function renderTarotResult(root){
   if(_tarotFlow&&(_tarotFlow.resultLoading||_tarotFlow.deepLoading)){
     tarotSetHeader('타로 결과',_tarotFlow.spreadName||'');root.innerHTML=readingLoadingHTML({single:true});singleReadingProgress(root,10,'선택한 카드와 질문을 연결해 풀이하고 있어요');return;
@@ -6281,12 +6332,15 @@ function renderTarotResult(root){
   if(!_tarotFlow||!_tarotFlow.resultMarkdown)return tarotNavigate('draw');
   tarotSetHeader((TAROT_TOPICS[_tarotFlow.topic]||{}).title||'타로 결과',_tarotFlow.spreadName);
   const input=buildAIReadingInput(_tarotFlow);
-  root.innerHTML=tarotHtml(`<section class="tarot-panel">
+  // 순서: 풀이 목차 → 질문과 뽑은 카드 배치 → 본문(장마다 근거 카드).
+  const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr');
+  root.innerHTML=tarotHtml(`<div class="lv4-wrap tarot-v4 tarot-result-toc"><div class="lv4">${lvToc(r.items,'타로 풀이 목차')}</div></div>
+  <section class="tarot-panel tarot-result-cards">
     <div class="tarot-section-title">${tarotEsc(_tarotFlow.question)}</div>
     <div class="tarot-small">${tarotEsc(_tarotFlow.spreadName)} · ${(_tarotFlow.price||0).toLocaleString()}원</div>
-    <div class="tarot-selected-strip">${input.cards.map(c=>{const card=TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo&&x.nameEn===c.cardNameEn)||TAROT_CARDS.find(x=>x.nameKo===c.cardNameKo);return `<div class="tarot-mini-card"><div class="tarot-mini-face">${tarotCardImageHTML(card,'')}</div>${tarotEsc(c.positionLabel)}<br>${tarotEsc(c.cardNameKo)}</div>`;}).join('')}</div>
+    ${tarotResultCardsHTML(input)}
   </section>
-  ${(()=>{const r=lv4FromMarkdown(_tarotFlow.resultMarkdown,'tr'),body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${typeof storyMarkdownView==='function'?storyMarkdownView(_tarotFlow.resultMarkdown,'tarot',input,input.topic||input.questionCategory):''}${lvToc(r.items,'타로 풀이 목차')}${r.html}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(tarotPaymentCategory(_tarotFlow),body,{visibleSections:2})}</div>${lkBarHTML(tarotPaymentCategory(_tarotFlow))}`;})()}
+  ${(()=>{const body=`<div class="lv4-wrap tarot-v4"><div class="lv4">${typeof storyMarkdownView==='function'?storyMarkdownView(_tarotFlow.resultMarkdown,'tarot',input,input.topic||input.questionCategory):''}${tarotSectionCardsHTML(r.html,input)}</div></div>`;return _tarotFlow.paymentStatus==='paid'?body:`<div class="lk-preview">${previewLockHTML(tarotPaymentCategory(_tarotFlow),body,{visibleSections:2})}</div>${lkBarHTML(tarotPaymentCategory(_tarotFlow))}`;})()}
   <div class="tarot-actions"><button class="tarot-btn" onclick="tarotNavigate('question')">새 질문 보기</button><button class="tarot-btn secondary" onclick="tarotNavigate('history')">히스토리 보기</button></div>`);
   if(typeof storyBindMarkdownView==='function')storyBindMarkdownView(root);
 }
