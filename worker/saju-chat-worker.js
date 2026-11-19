@@ -717,7 +717,9 @@ async function handleTarotReading(request, env) {
 
   const lang = normalizeLanguage(body && (body.language || body.targetLanguage));
   const cardCount = input.cards.length;
-  const maxOutputTokens = cardCount >= 10 ? 7600 : cardCount >= 5 ? 4800 : 3200;
+  // 총운·신년은 영역별 운과 12개월까지 쓰므로 더 길다.
+  const totalKind = ['life', 'newyear'].includes(input.topic);
+  const maxOutputTokens = totalKind ? (cardCount >= 10 ? 13000 : cardCount >= 5 ? 11000 : 9000) : (cardCount >= 10 ? 8500 : cardCount >= 5 ? 6000 : 4500);
   const systemPrompt = buildTarotReadingSystemPrompt(lang);
   const userPrompt = buildTarotReadingUserPrompt(input, lang);
 
@@ -902,6 +904,42 @@ function skipSectionsNote(list) {
   return items.length ? `\n\n이미 화면에 작성된 섹션: ${items.join(', ')}\n이 섹션들은 다시 쓰지 말고, 그 다음 번호의 섹션부터 같은 형식("# 번호. 제목")으로 끝까지 작성하세요.` : '';
 }
 
+// 타로 풀이 구성 — 사주 풀이와 같은 흐름(핵심 장면 → 카드 → 영역별 운 → 시기별 흐름 → 정리).
+// index.html의 tarotSectionTitles·tarotMonthCards와 같은 제목·월 배정을 유지한다(결제 전 미리보기 목차와 맞춘다).
+const TAROT_TOPIC_DETAIL={love:['나의 마음과 연애 방식','상대와 관계의 온도','관계를 키우는 대화'],reunion:['헤어진 이유와 지금의 차이','두 사람의 지금 마음','다가갈 때의 기준'],marriage:['관계의 기반','결혼 준비와 현실 조건','함께 맞출 생활 기준'],gunghap:['나의 관계 방식','상대의 관계 방식','잘 맞는 부분과 맞출 부분'],money:['들어오는 돈','새는 돈과 지출 습관','기회와 검토 기준'],career:['지금 일의 상태','맞는 일과 숨은 강점','이직·도전의 판단 기준'],study:['공부 흐름과 집중','막히는 공부 습관','시험과 실전 전략'],child:['아이의 기질','아이의 마음과 관심','부모가 도울 일'],children:['가족 계획의 마음','함께 맞출 기준','생활 속 준비'],health:['생활 리듬','쌓인 부담과 휴식','바꿀 생활 습관']};
+const TAROT_DOMAINS=[['직업운','완드·펜타클 카드와 성장·출발 자리'],['재물운','펜타클 카드와 결과·마무리 자리'],['연애·결혼운','컵 카드와 감정·관계 자리'],['인간관계운','컵·소드 카드와 주변 환경 자리'],['건강·생활운','펜타클·소드 카드와 주의·장애물 자리']];
+function tarotKind(input){const k=input&&input.topic;return k==='newyear'||k==='life'?k:'topic';}
+function tarotMonthCards(count){return Array.from({length:12},(_,m)=>Math.min(count-1,Math.floor(m*count/12)));}
+function tarotSectionPlan(input){
+  const kind=tarotKind(input),cards=input.cards||[],n=cards.length,label=c=>`${c.positionLabel} 자리의 ${c.cardNameKo}${c.orientation==='reversed'?'(역방향)':''}`;
+  const head=kind==='newyear'?[['올해의 총운','올해 전체를 한마디로 정리한 결론을 먼저 쓰고, 출발·전체 흐름 자리 카드의 실제 슈트와 방향을 근거로 한 해의 분위기를 생활 장면으로 설명해줘. 질문을 다시 말하며 시작하지 마.'],['올해 반복하기 쉬운 패턴','현재·출발 카드의 방식과 주의·장애물 자리(없으면 뒤집힌 카드나 슈트가 다른 카드) 사이의 어긋남으로, 올해 강점이 부담으로 바뀌는 조건을 설명해줘.']]
+    :kind==='life'?[['인생 전체의 총운','인생 전체를 한마디로 정리한 결론을 먼저 쓰고, 기질·현재 자리 카드의 실제 슈트와 방향을 근거로 이 사람이 살아가는 방식을 생활 장면으로 설명해줘.'],['반복되는 인생 패턴','강점이 부담으로 바뀌는 조건을 조심할 패턴·과제 자리(없으면 뒤집힌 카드나 슈트가 다른 카드)로 설명해줘.']]
+    :[['지금 이 질문에서 보이는 장면','질문에서 가장 중요한 해석을 먼저 한두 문장으로 말하고, 현재·본인 자리 카드의 실제 슈트와 방향을 근거로 그 이유와 생활 모습을 설명해줘. 질문을 다시 말하거나 질문하지 않은 과거 경험을 만들어 시작하지 마.'],['같은 고민이 반복되는 이유','현재 카드의 방식과 장애물·숨은 자리(없으면 뒤집힌 카드나 슈트가 다른 카드) 사이의 어긋남으로, 강점이 부담으로 바뀌는 조건을 설명해줘.']];
+  const core=[...head,['카드별 해석','각 카드를 아래 형식으로 해석해줘.\n\n## {{positionLabel}} - {{cardNameKo}}\n- 핵심키워드: {{keyword1}}, {{keyword2}}, {{keyword3}}\n\n이 자리가 질문 안에서 맡는 역할(positionRole)과 카드의 슈트·숫자 단계·방향을 연결해 2~3문장으로 써줘. 카드 사전 의미를 그대로 옮기지 마.'],['흐름이 바뀌는 지점','처음 자리와 마지막 자리의 슈트 변화, 가장 많이 나온 슈트, 뒤집힌 카드 수처럼 실제 카드 구성에서 보이는 변화를 설명해줘.']];
+  const domains=TAROT_DOMAINS.map(([t,hint])=>[t,`${hint} 가운데 이 영역과 가장 관련 있는 카드 1~2장을 근거로(해당 슈트가 없으면 메이저 카드와 자리 의미로) 이 영역에서 실제로 겪을 장면, 기회와 조심할 점을 써줘. 장 끝에 "**${t}의 결론:** "으로 시작하는 한 문장을 둬.`]);
+  const tail=[['조심할 해석','뒤집힌 카드의 의미를 공포 없이 설명하고, 카드로 확인할 수 없는 것(상대 속마음·실제 사건·날짜·진단·투자 결과)을 짚어줘.'],['다음에 확인할 신호',kind==='topic'?'오늘 할 행동 하나와, 다음에 이 질문을 다시 볼 때 무엇이 달라졌는지 확인할 신호를 써줘.':'스스로 돌아볼 핵심 질문 세 가지와, 다음에 다시 볼 때 확인할 신호를 써줘.']];
+  if(kind==='newyear'){
+    const map=tarotMonthCards(n),span=i=>{const ms=map.map((x,m)=>x===i?m+1:0).filter(Boolean);return ms.length>1?`${ms[0]}~${ms.at(-1)}월`:`${ms[0]}월`;};
+    const assign=cards.map((c,i)=>map.includes(i)?`${span(i)}: ${label(c)}`:'').filter(Boolean).join(' / ');
+    return [...core,...domains,
+      ['상반기와 하반기',`1~6월과 7~12월을 맡는 카드(${assign})의 차이로 두 시기의 분위기와 할 일을 비교해줘. 달마다의 설명은 월별 운세 장이 하므로 여기서는 두 시기의 차이만 써줘.`],
+      ['월별 운세',`1월부터 12월까지 빠짐없이 "### N월 — 그달의 핵심 한 줄" 소제목을 달고 각 달을 2~3문장으로 써줘. 달마다 맡는 카드는 ${assign}이야. 같은 카드가 맡는 달도 시작·한가운데·마무리처럼 단계가 달라지도록 써서 문장이 겹치지 않게 해. 일·돈·관계 중 그달에 두드러지는 쪽과 그달의 조언을 함께 넣어. 날짜(며칠)는 쓰지 마.`],
+      ['주목할 시기','힘이 붙는 달과 쉬어 갈 달, 결정을 미뤄야 할 달을 위 월별 배정의 카드 근거와 함께 짚어줘.'],
+      ['올해의 다섯 가지 전략','올해를 위한 전략 다섯 가지를 "- " 목록 다섯 줄로 쓰고, 각 줄은 근거 카드와 실제로 할 행동을 한 문장으로 담아줘.'],
+      ...tail];
+  }
+  if(kind==='life')return [...core,['타고난 성향과 강점','기질 자리와 메이저 카드를 근거로 타고난 성향, 강점, 그 강점이 과해질 때의 모습을 설명해줘.'],...domains,
+    ['앞으로의 흐름','카드를 자리 순서대로 가까운 시기·중간 시기·먼 시기의 세 단계로 나눠 각 단계의 과제와 기회를 써줘. 연도나 나이는 정하지 마.'],
+    ['인생 활용 설명서','강점, 주의할 패턴, 발전 방향을 "### 강점", "### 주의할 패턴", "### 발전 방향" 소제목 아래 각각 두세 문장으로 정리해줘.'],
+    ...tail];
+  const key=input.topic||input.questionCategory,detail=TAROT_TOPIC_DETAIL[key]||['지금의 상태','막히는 지점','도움이 되는 방향'];
+  return [...core,...detail.map(t=>[t,`이 주제의 "${t}"를 가장 관련 있는 카드 1~2장을 근거로 실제 장면과 판단 기준으로 써줘. 앞 장에서 이미 쓴 카드 뜻은 이름만 짚어.`]),
+    ['앞으로의 흐름','카드를 자리 순서대로 가까운 몇 주, 몇 달 뒤, 1년 안팎의 세 단계로 나눠 각 단계에 달라질 점과 확인할 조건을 써줘. 날짜는 정하지 마.'],
+    ['질문에 대한 답','가능성과 조건을 함께 말해줘. 결과 카드와 조언 카드(있을 때만)를 근거로 삼아. 가장 깊은 섹션으로 써줘.'],
+    ['선택지별로 얻는 것과 잃는 것','두 가지 길을 나란히 놓고 각각 얻는 것과 잃는 것, 본인이 판단할 기준을 서술형으로 써줘.'],
+    ...tail];
+}
+
 function buildTarotReadingUserPrompt(input, language = 'ko') {
   const lang = normalizeLanguage(language);
   const cards = input.cards.map((card) => ({
@@ -918,12 +956,22 @@ function buildTarotReadingUserPrompt(input, language = 'ko') {
     categoryMeaning: card.categoryMeaning,
   }));
   const count = cards.length;
-  const lengthGuide = count >= 10
-    ? '2,100~3,000자. 복잡한 흐름, 내면, 외부 환경, 최종 결과까지 깊이 있게 다루되 늘어지지 않게 쓴다.'
+  const kind = tarotKind(input), sectionPlan = tarotSectionPlan(input), lastTitle = sectionPlan.length + '. ' + sectionPlan.at(-1)[0];
+  const lengthGuide = kind === 'newyear'
+    ? (count >= 10 ? '5,500~7,500자.' : count >= 5 ? '5,000~6,500자.' : '4,500~6,000자.') + ' 사주 신년운세처럼 총운·영역별 운·상반기와 하반기·12개월·주목할 시기·전략을 모두 담되, 장마다 맡은 내용만 쓰고 늘어지지 않게 쓴다.'
+    : kind === 'life'
+      ? (count >= 10 ? '5,000~7,000자.' : count >= 5 ? '4,500~6,000자.' : '4,000~5,500자.') + ' 사주 인생총운처럼 총운·성향·영역별 운·앞으로의 흐름·활용 설명서를 모두 담되, 장마다 맡은 내용만 쓰고 늘어지지 않게 쓴다.'
+      : count >= 10
+    ? '3,500~4,800자. 복잡한 흐름, 내면, 외부 환경, 최종 결과까지 깊이 있게 다루되 늘어지지 않게 쓴다.'
     : count >= 5
-      ? '1,500~2,100자. 현재 상황, 장애물, 숨겨진 흐름, 조언, 결과가 충분히 드러나야 한다.'
-      : '1,000~1,500자. 간결하지만 핵심이 명확해야 한다.';
-  const depthGuide = count >= 10
+      ? '2,800~3,800자. 현재 상황, 장애물, 숨겨진 흐름, 조언, 결과가 충분히 드러나야 한다.'
+      : '2,000~2,800자. 간결하지만 핵심이 명확해야 한다.';
+  const depthGuide = kind !== 'topic'
+    ? `${kind === 'newyear' ? '신년' : '총운'} 타로는 사주 풀이처럼 영역마다 결론을 주는 종합 리딩이다.
+- 카드의 기본 뜻은 카드별 해석에서 한 번만 풀고, 영역별 운${kind === 'newyear' ? '·월별 운세' : '·앞으로의 흐름'}에서는 근거 카드 이름만 짚은 뒤 그 영역의 장면과 조언을 쓴다.
+- 영역마다 카드 근거가 약하면 그렇다고 밝히고, 카드에 없는 사건이나 날짜를 만들지 않는다.
+- ${count}장 리딩이므로 ${count >= 10 ? '내면·환경·결과 자리까지 영역별 근거로 나눠 쓴다' : count >= 5 ? '다섯 자리의 역할을 영역마다 나눠 근거로 쓴다' : '세 장을 영역마다 돌려 쓰되 같은 문장을 반복하지 않는다'}.`
+    : count >= 10
     ? `10장 켈틱크로스는 프리미엄 리딩이다.
 - 각 카드 해석은 짧게 끝내지 말고, 위치 의미와 질문을 함께 엮어 설명한다.
 - "흐름이 바뀌는 지점"은 과거, 현재, 의식·무의식, 주변 환경, 희망과 두려움, 최종 결과 자리가 어떻게 이어지는지 풀어준다.
@@ -961,48 +1009,21 @@ ${JSON.stringify(cards, null, 2)}
 ${languageInstruction(lang)}
 ${lang.code === 'ko' ? '' : `All headings below are structural source labels only. In the final answer, translate them naturally into ${lang.label} and do not output Korean section titles.`}
 
-아래 구조로 Markdown 타로 리딩을 작성해줘. 이 리딩은 화면의 계산형 풀이 전체를 대체하므로, 처음부터 끝까지 하나의 이야기로 새로 써줘.
+아래 구조로 Markdown 타로 리딩을 작성해줘. 이 리딩은 화면의 계산형 풀이 전체를 대체하므로, 처음부터 끝까지 하나의 이야기로 새로 써줘. 제목은 아래와 똑같이 "# 번호. 제목"으로 쓰고 순서와 개수를 바꾸지 마.
 
-# 1. 지금 이 질문에서 보이는 장면
-질문에서 가장 중요한 해석을 먼저 한두 문장으로 말하고, 현재·본인 자리 카드의 실제 슈트와 방향을 근거로 그 이유와 생활 모습을 설명해줘. 질문을 다시 말하거나 질문하지 않은 과거 경험을 만들어 시작하지 마.
-
-# 2. 같은 고민이 반복되는 이유
-현재 카드의 방식과 장애물·숨은 자리(없으면 뒤집힌 카드나 슈트가 다른 카드) 사이의 어긋남으로, 강점이 부담으로 바뀌는 조건을 설명해줘.
-
-# 3. 카드별 해석
-각 카드를 아래 형식으로 해석해줘.
-
-## {{positionLabel}} - {{cardNameKo}}
-- 핵심키워드: {{keyword1}}, {{keyword2}}, {{keyword3}}
-
-이 자리가 질문 안에서 맡는 역할(positionRole)과 카드의 슈트·숫자 단계·방향을 연결해 2~4문장으로 써줘. 카드 사전 의미를 그대로 옮기지 마.
-
-# 4. 흐름이 바뀌는 지점
-처음 자리와 결과 자리의 슈트 변화, 가장 많이 나온 슈트, 뒤집힌 카드 수처럼 실제 카드 구성에서 보이는 변화를 설명해줘.
-
-# 5. 질문에 대한 답
-가능성과 조건을 함께 말해줘. 결과 카드와 조언 카드(있을 때만)를 근거로 삼아.
-
-# 6. 선택지별로 얻는 것과 잃는 것
-두 가지 길을 나란히 놓고 각각 얻는 것과 잃는 것, 본인이 판단할 기준을 서술형으로 써줘.
-
-# 7. 조심할 해석
-뒤집힌 카드의 의미를 공포 없이 설명하고, 카드로 확인할 수 없는 것(상대 속마음·실제 사건·날짜·진단·투자 결과)을 짚어줘.
-
-# 8. 다음에 확인할 신호
-오늘 할 행동 하나와, 다음에 이 질문을 다시 볼 때 무엇이 달라졌는지 확인할 신호를 써줘.
+${sectionPlan.map(([t,a],i)=>`# ${i+1}. ${t}\n${a}`).join('\n\n')}
 
 작성 조건:
 - 전체 분량은 ${lengthGuide}
 - 상품별 깊이 기준:
 ${depthGuide}
-- 위 분량 범위를 넘길 것 같으면 각 섹션을 조금 압축하되, 절대 중간에 끊지 말고 "# 8. 다음 행동 가이드"까지 완결한다.
+- 위 분량 범위를 넘길 것 같으면 각 섹션을 조금 압축하되, 절대 중간에 끊지 말고 "# ${lastTitle}"까지 완결한다.
 - 마지막 문장은 조언이 자연스럽게 마무리되는 완성 문장으로 끝낸다.
-- 토큰 한도가 부족하다고 느껴지면 카드별 해석을 조금 줄이고, 1·2·5·6번 섹션을 우선한다.
+- 토큰 한도가 부족하다고 느껴지면 카드별 해석을 조금 줄이고, 1번 섹션과 영역별·시기별 섹션을 우선한다.
 - 뽑히지 않은 카드 이름, 입력에 없는 연도·날짜·사건을 쓰지 않는다. 상대의 속마음을 확인했다고 말하지 않는다.
 - 질문을 바꿔 말한 문장을 새 통찰처럼 쓰지 않는다. 같은 조언을 여러 섹션에 반복하지 않는다.
 - 카드의 기본 의미는 3번 카드별 해석에서 한 번만 설명하고, 다른 섹션에서는 카드 이름만 짚은 뒤 그 섹션의 새 내용을 쓴다. 같은 뜻을 표현만 바꿔 두 번 쓰지 않는다. 자세하되 늘어지지 않게 쓴다.
-- 개조식 표현은 카드별 해석의 "핵심키워드" 한 줄에만 사용한다.
+- 개조식 표현은 카드별 해석의 "핵심키워드" 한 줄과 "다섯 가지 전략" 목록에만 사용한다.
 - "위치 의미:", "카드 핵심:", "질문과 연결한 해석:" 같은 항목형 라벨은 쓰지 않는다.
 - 핵심키워드 외의 모든 풀이는 서술식, 이야기식, 대화식 문장으로 작성한다.
 - 현실적인 조언도 번호 목록 대신 문장으로 이어서 작성한다.
@@ -1028,7 +1049,7 @@ async function handleAstrologyReading(request, env) {
     return json({ error: 'JSON 본문이 필요합니다.' }, 400);
   }
 
-  const { chart, transit, productType, language, partnerChart, synastryAspects, targetYear, yearTransits, question } = body || {};
+  const { chart, transit, productType, language, partnerChart, synastryAspects, targetYear, yearTransits, lifeYears, question } = body || {};
   if (!chart || typeof chart !== 'object' || !Array.isArray(chart.planets) || !chart.birthInfo) {
     return json({ error: '계산된 출생차트 데이터가 필요합니다.' }, 400);
   }
@@ -1036,9 +1057,10 @@ async function handleAstrologyReading(request, env) {
   const systemPrompt = buildAstrologyReadingSystemPrompt(lang);
   if (!ASTRO_READING_TOPICS[ASTRO_PRODUCT_ALIAS[productType]||productType]) return json({ error: '점성술 주제를 확인해주세요.' }, 400);
   if (productType==='gunghap'&&(!partnerChart||!Array.isArray(partnerChart.planets)||!partnerChart.birthInfo)) return json({ error: '궁합은 상대방 출생차트도 필요해요.' }, 400);
-  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, partnerChart, synastryAspects, targetYear, yearTransits, question, transitAspects: body && body.transitAspects, storyPlan:body&&body.storyPlan, language: lang });
+  const userPrompt = buildAstrologyReadingUserPrompt({ chart, transit, productType, partnerChart, synastryAspects, targetYear, yearTransits, lifeYears, question, transitAspects: body && body.transitAspects, storyPlan:body&&body.storyPlan, language: lang });
   const premium = ['life','newyear','full-report','yearly'].includes(productType);
-  const maxOutputTokens = premium ? 5200 : 2800;
+  // 총운·신년은 영역별 운과 연도·월별 흐름까지 쓰므로 더 길다.
+  const maxOutputTokens = premium ? 10000 : 4500;
 
   try {
     if (env.OPENAI_API_KEY) {
@@ -1272,14 +1294,24 @@ function astroSectionOrder(prompt){
  return head+secs.map((s,i)=>[s[0].replace(/^# \d+\./,'# '+(i+1)+'.'),...s.slice(1)].join('\n')).join('\n');
 }
 function buildAstrologyReadingUserPrompt(args){return consultationFocus('astrology',ASTRO_PRODUCT_ALIAS[args.productType]||args.productType||'life')+'\n'+astroSectionOrder(buildAstrologyReadingUserPromptRaw(args));}
-function buildAstrologyReadingUserPromptRaw({chart,transit,productType,language,partnerChart,synastryAspects,targetYear,yearTransits,question,transitAspects,storyPlan}){
+// 점성술 풀이 구성 — 사주 풀이와 같은 흐름(차트 요약 → 성향 → 영역별 운 → 시기별 흐름 → 실천).
+// assets/astrology.js의 astroTopicSections와 같은 제목을 유지한다(결제 전 미리보기 목차와 맞춘다).
+const ASTRO_DOMAIN_ASK={'직업운':'태양·토성·화성(시간이 있으면 10하우스)','재물운':'금성·목성·토성(시간이 있으면 2·8하우스)','연애·결혼운':'금성·화성·달(시간이 있으면 5·7하우스)','인간관계운':'달·수성·금성(시간이 있으면 11하우스)','건강·생활운':'달·화성·토성(시간이 있으면 6하우스)'};
+function astroDomainAsk(t){return `${ASTRO_DOMAIN_ASK[t]} 가운데 계산값에 있는 행성의 별자리와 실제 각도를 근거로, 이 영역에서 실제로 겪을 장면과 기회·조심할 점을 써 주세요. 장 끝에 "**${t}의 결론:** "으로 시작하는 한 문장을 두세요.`;}
+function astroSectionPlan(key,topic,hasYears){
+  const D=Object.keys(ASTRO_DOMAIN_ASK).map(t=>[t,astroDomainAsk(t)]);
+  if(key==='life')return [['타고난 성향과 강점','태양·달·상승궁(시간이 있을 때)으로 성향과 강점, 강점이 과해질 때의 모습을 설명하세요.'],...D,['인생의 성장 과제','토성과 가장 촘촘한 긴장 각도로 평생 다듬을 과제를 설명하세요.'],['앞으로 10년의 흐름',hasYears?'lifeYears에 있는 각 연도를 빠짐없이 시간순으로 "### YYYY년 — 그해의 핵심 한 줄" 소제목과 2~3문장으로 설명하세요. 그해 목성·토성 등 느린 행성이 본인 행성에 만드는 계산된 각도만 근거로 쓰고, 각도가 없는 해는 없다고 밝히세요.':'연도별 계산 자료가 없으므로 연도를 만들지 말고, 지금 트랜짓 각도로 가까운 흐름만 설명하세요.'],['현재 흐름과 실천','지금 트랜짓 각도가 바꾸는 점과 바로 할 수 있는 실천을 쓰세요.']];
+  if(key==='newyear')return [['선택한 해의 총운','선택한 해 전체를 한마디로 정리한 결론을 먼저 쓰고, 그해 목성·토성의 위치와 본인 행성의 각도로 한 해의 분위기를 설명하세요.'],...D,['상반기와 하반기','1~6월과 7~12월의 차이를 근거 행성과 함께 비교하세요.'],['달마다 달라지는 흐름','계산된 yearTransits에 실제로 있는 각 month를 빠짐없이 시간순으로 ### N월 — 주제 소제목과 2~3문장으로 설명하세요. 그달의 제공된 행성 위치에서 무엇이 달라지는지와 확인할 생활 조건을 설명하세요. 월별 위치는 기준일의 스냅샷이지 정확한 변곡일이나 월 전체 사건을 확정한 자료가 아닙니다. 월별 계산 자료가 없다면 월운을 만들어내지 말고 현재 자료로 가능한 범위를 설명하세요.'],['주목할 시기','힘이 붙는 달과 속도를 늦출 달을 월별 계산 근거와 함께 짚으세요.'],['한 해를 위한 실천','한 해를 위한 실천 다섯 가지를 근거 행성과 함께 정리하세요.']];
+  if(key==='gunghap')return ['두 사람의 관계 방식','끌리는 부분과 차이','대화와 감정의 궁합','함께 맞출 생활 기준','관계를 위한 실천'].map(t=>[t,'']);
+  const label=String(topic.label||'').replace(/\s*점성술$/,''),detail=TAROT_TOPIC_DETAIL[key]||[label+'의 타고난 성향',topic.focus,'도움이 되는 방향'];
+  return [...detail.map(t=>[t,`이 장은 "${t}" 한 가지에 집중해, 관련 행성의 별자리와 실제 각도로 장면과 판단 기준을 설명하세요.`]),['현재 흐름과 기회',''],['선택의 기준과 조심할 패턴',''],[label+'을(를) 위한 실천','']];
+}
+function buildAstrologyReadingUserPromptRaw({chart,transit,productType,language,partnerChart,synastryAspects,targetYear,yearTransits,lifeYears,question,transitAspects,storyPlan}){
   const lang=normalizeLanguage(language),key=ASTRO_PRODUCT_ALIAS[productType]||productType;
   const topic=ASTRO_READING_TOPICS[key]||ASTRO_READING_TOPICS.life;
   const hasTime=!(chart.birthInfo&&chart.birthInfo.birthTimeUnknown);
-  const sections=key==='life'?['타고난 성향과 강점','관계와 사랑','일과 재물','인생의 성장 과제','현재 흐름과 실천']:
-    key==='newyear'?['선택한 해의 전체 흐름','상반기와 하반기','일과 돈의 기회','관계와 생활의 변화','한 해를 위한 실천']:
-    key==='gunghap'?['두 사람의 관계 방식','끌리는 부분과 차이','대화와 감정의 궁합','함께 맞출 생활 기준','관계를 위한 실천']:
-    [topic.label+'의 타고난 성향',topic.focus,'현재 흐름과 기회','선택의 기준과 조심할 패턴',topic.label+'을(를) 위한 실천'];
+  const years=key==='life'&&Array.isArray(lifeYears)?lifeYears.filter(y=>Number.isInteger(y&&y.year)).slice(0,10):[];
+  const sections=astroSectionPlan(key,topic,years.length>0);
   return storyPlanText(storyPlan)+`상품 유형: ${topic.label}
 출력 언어: ${languageInstruction(lang)}
 집중할 주제: ${topic.focus}. 다른 주제의 일반론을 늘어놓지 말고 이 주제의 구체적인 해석에 집중하세요.
@@ -1288,6 +1320,7 @@ function buildAstrologyReadingUserPromptRaw({chart,transit,productType,language,
 계산된 기준 트랜짓: ${JSON.stringify(transit||{})}
 ${key==='gunghap'?`계산된 상대방 출생차트: ${JSON.stringify(partnerChart||{})}\n계산된 두 차트 사이 각도: ${JSON.stringify(synastryAspects||[])}\n두 사람의 실제 행성 관계를 비교하세요. 상대방 정보가 없는 관계를 지어내지 마세요. 상대방 시간을 모르면 상대방 ASC·하우스 해석은 하지 마세요.`:''}
 ${key==='newyear'?`보고 싶은 해: ${targetYear||new Date().getFullYear()}년\n계산된 해당 연도 월별 행성 위치: ${JSON.stringify(yearTransits||[])}\n현재 연도가 아닌 위에서 선택한 해를 기준으로 설명하세요. 제공되지 않은 날짜나 행성 위치를 만들어내지 마세요.`:''}
+${years.length?`계산된 앞으로 10년의 연도별 느린 행성 각도(lifeYears, 각 해 7월 1일 기준 스냅샷): ${JSON.stringify(years)}\n이 목록에 없는 연도나 각도를 만들지 마세요.`:''}
 ${key==='child'?'아이의 실제 나이와 발달 단계에 맞게 양육·기질·학습·또래 관계로 설명하세요. 성인의 취업·결혼 문제로 바꾸지 마세요.':''}
 ${['health','children'].includes(key)?'질병 진단, 임신 가능 여부나 임신 시기, 태아 성별, 생존 여부를 예언하거나 보장하지 마세요. 생활 습관·마음의 준비·가족 소통 관점으로 설명하고, 의학적 판단은 진료를 통해 확인하도록 안내하세요.':''}
 본인 출생시간 사용 가능: ${hasTime?'제공된 ASC·하우스만 사용':'ASC·하우스 해석 금지. 달 위치 오차 가능성 안내'}
@@ -1295,10 +1328,9 @@ ${['health','children'].includes(key)?'질병 진단, 임신 가능 여부나 �
 이 주제에서 먼저 연결할 본인 행성: ${(ASTRO_NEEDS_SERVER[key]||ASTRO_NEEDS_SERVER.life).join(', ')}
 편집 원칙: 이 리딩은 화면의 계산형 풀이 전체를 대체해요. 1번 섹션부터 새로 쓰세요. 서로 다른 요구를 가진 두 행성(위 목록의 앞 두 개)의 별자리와, chart.aspects에 실제로 있는 두 행성 사이 각도(없으면 없다고)를 연결해 독자가 알아볼 장면과 안에서 당기는 두 마음을 먼저 보여 주세요. 이어서 강점이 부담으로 바뀌는 조건(실제 긴장 각도나 별자리 주의점), 지금 트랜짓 각도가 바꾸는 점, 선택지별로 얻는 것과 잃는 것과 판단 기준 순서로 이어 주세요. 같은 원소라는 이유로 각도가 있다고 말하지 마세요. 행성 이름만 나열하지 말고 생활 장면으로 바꿔 쓰세요.
 행성 위치와 각도는 주어진 계산값만 사용하세요. 합격·투자 수익·재회·임신 등을 확정하지 마세요.
-응답은 Markdown 본문만 쓰고, 아래 제목 순서에 맞춰 ${key==='newyear'?'2,500~3,200':key==='life'?'2,000~2,700':'1,100~1,500'}자 안팎으로, 자세하되 늘어지지 않게 설명하세요. 행성·별자리·각도의 기본 뜻은 1번 요약이나 처음 나온 섹션에서 한 번만 풀고, 뒤 섹션에서는 이름만 짚은 뒤 그 섹션의 새 내용을 쓰세요. 같은 뜻을 표현만 바꿔 두 번 쓰지 마세요.
+응답은 Markdown 본문만 쓰고, 아래 제목을 똑같이 "# 번호. 제목"으로 순서와 개수를 바꾸지 말고 ${key==='newyear'?'4,500~6,000':key==='life'?'4,000~5,500':key==='gunghap'?'1,200~1,600':'1,800~2,600'}자 안팎으로, 사주 풀이처럼 영역마다 결론을 주되 자세하고 늘어지지 않게 설명하세요. 행성·별자리·각도의 기본 뜻은 1번 요약이나 처음 나온 섹션에서 한 번만 풀고, 뒤 섹션에서는 이름만 짚은 뒤 그 섹션의 새 내용을 쓰세요. 같은 뜻을 표현만 바꿔 두 번 쓰지 마세요.
 # 1. 출생차트 핵심 요약
-${sections.map((h,i)=>'# '+(i+2)+'. '+h).join('\n')}
-${key==='newyear'?'# 7. 달마다 달라지는 흐름\n계산된 yearTransits에 실제로 있는 각 month를 빠짐없이 시간순으로 ### N월 — 주제 소제목과 2~3문장으로 설명하세요. 그달의 제공된 행성 위치에서 무엇이 달라지는지와 확인할 생활 조건을 설명하세요. 월별 위치는 기준일의 스냅샷이지 정확한 변곡일이나 월 전체 사건을 확정한 자료가 아닙니다. 월별 계산 자료가 없다면 월운을 만들어내지 말고 현재 자료로 가능한 범위를 설명하세요. 기존 전체 분량 안에서 다른 장의 반복을 줄여 월별 설명을 배분하세요.':''}`;
+${sections.map(([h,ask],i)=>'# '+(i+2)+'. '+h+(ask?'\n'+ask:'')).join('\n')}`;
 }
 
 async function handleTranslate(request, env) {

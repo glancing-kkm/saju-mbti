@@ -6224,6 +6224,20 @@ function tarotReadingPlan(input){
  const counts={};cards.forEach(c=>counts[c.suit]=(counts[c.suit]||0)+1);
  return {cards,group,key,present,obstacle,advice,outcome,counts,reversed:cards.filter(c=>c.reversed),majors:cards.filter(c=>c.major)};
 }
+// 타로 풀이 구성 — 사주 풀이와 같은 흐름(핵심 장면 → 카드 → 영역별 운 → 시기별 흐름 → 정리).
+// 워커 tarotSectionPlan과 같은 제목·월 배정을 쓴다(결제 전 미리보기 목차 = 결제 후 AI 풀이 목차).
+const TAROT_TOPIC_DETAIL={love:['나의 마음과 연애 방식','상대와 관계의 온도','관계를 키우는 대화'],reunion:['헤어진 이유와 지금의 차이','두 사람의 지금 마음','다가갈 때의 기준'],marriage:['관계의 기반','결혼 준비와 현실 조건','함께 맞출 생활 기준'],gunghap:['나의 관계 방식','상대의 관계 방식','잘 맞는 부분과 맞출 부분'],money:['들어오는 돈','새는 돈과 지출 습관','기회와 검토 기준'],career:['지금 일의 상태','맞는 일과 숨은 강점','이직·도전의 판단 기준'],study:['공부 흐름과 집중','막히는 공부 습관','시험과 실전 전략'],child:['아이의 기질','아이의 마음과 관심','부모가 도울 일'],children:['가족 계획의 마음','함께 맞출 기준','생활 속 준비'],health:['생활 리듬','쌓인 부담과 휴식','바꿀 생활 습관']};
+const TAROT_DOMAINS=[['직업운','career',['wands','pentacles']],['재물운','money',['pentacles']],['연애·결혼운','love',['cups']],['인간관계운','gunghap',['cups','swords']],['건강·생활운','health',['pentacles','swords']]];
+function tarotKind(input){const k=input&&input.topic;return k==='newyear'||k==='life'?k:'topic';}
+function tarotMonthCards(count){return Array.from({length:12},(_,m)=>Math.min(count-1,Math.floor(m*count/12)));}
+function tarotSectionTitles(input){
+  const kind=tarotKind(input),tail=['조심할 해석','다음에 확인할 신호'],domains=TAROT_DOMAINS.map(d=>d[0]);
+  const head=kind==='newyear'?['올해의 총운','올해 반복하기 쉬운 패턴']:kind==='life'?['인생 전체의 총운','반복되는 인생 패턴']:['지금 이 질문에서 보이는 장면','같은 고민이 반복되는 이유'];
+  const core=[...head,'카드별 해석','흐름이 바뀌는 지점'];
+  if(kind==='newyear')return [...core,...domains,'상반기와 하반기','월별 운세','주목할 시기','올해의 다섯 가지 전략',...tail];
+  if(kind==='life')return [...core,'타고난 성향과 강점',...domains,'앞으로의 흐름','인생 활용 설명서',...tail];
+  return [...core,...(TAROT_TOPIC_DETAIL[input.topic||input.questionCategory]||['지금의 상태','막히는 지점','도움이 되는 방향']),'앞으로의 흐름','질문에 대한 답','선택지별로 얻는 것과 잃는 것',...tail];
+}
 function generateTemplateReading(input){
  if(!(input.cards||[]).length)return '';
  const P=tarotReadingPlan(input),{cards,present,obstacle,advice,outcome}=P,plan=tarotQuestionPlan(input);
@@ -6234,7 +6248,8 @@ function generateTemplateReading(input){
  if(present.role==='self'&&P.cards.some(c=>c.role==='other'))s1+=' 본인의 자리와 상대의 자리는 구분해 읽어요.';
  let s2=`${name(obstacle)} 카드는 이 고민에서 따로 살필 조건을 보여 줘요. ${obstacle.warning}`;
  if(obstacle.role==='other')s2+=' 상대의 실제 속마음이나 잘못을 확인한 뜻은 아니에요.';
- let md=`# 1. 지금 이 질문에서 보이는 장면\n\n${s1}\n\n# 2. 같은 고민이 반복되는 이유\n\n${s2}\n\n# 3. 카드별 해석\n\n`;
+ const T=tarotSectionTitles(input),kind=tarotKind(input);let no=0;const sec=(body)=>`# ${no+1}. ${T[no++]}\n\n${body}\n\n`;
+ let md=sec(s1)+sec(s2)+`# ${no+1}. ${T[no++]}\n\n`;
  cards.forEach(c=>{
   const detail=c.meaning+' '+(tarotTopicMeaning(c.card,P.key)||'');
   md+=`## ${c.positionLabel} - ${c.cardNameKo}${c.reversed?' (역방향)':''}\n\n- 핵심키워드: ${(c.keywords||[]).slice(0,3).join(', ')}\n\n${tarotRoleLine(c)} ${detail}${c.role==='other'?' 카드가 상대의 실제 속마음을 확인해 주는 것은 아니에요.':''}\n\n`;
@@ -6247,21 +6262,45 @@ function generateTemplateReading(input){
  if(cards.length>=5){const miss=['wands','cups','swords','pentacles'].filter(s=>!P.counts[s]);if(miss.length&&miss.length<4)flow.push(`${miss.map(s=>TAROT_SUIT_THEME[s]).join(', ')} 카드는 나오지 않았어요. 그 부분은 카드보다 본인이 직접 확인해 채워야 해요.`);}
  if(P.reversed.length)flow.push(`뒤집힌 카드는 ${P.reversed.length}장이에요. 역방향은 지연만을 뜻하지 않아요. 카드마다 회복·해소·과잉·내면화 중 어떤 의미인지 따로 읽어요.`);
  const hid=cards.find(c=>c.role==='hidden');if(hid&&hid!==obstacle)flow.push(`${name(hid)}${_tEun(tail(hid))} 아직 충분히 살피지 않은 ${hid.theme}${_tEul(hid.theme)} 확인하라는 자리예요.`);
- md+=`# 4. 흐름이 바뀌는 지점\n\n${flow.join(' ')||`${first.theme}에 집중된 질문이에요.`}\n\n`;
+ md+=sec(flow.join(' ')||`${first.theme}에 집중된 질문이에요.`);
+ // 영역별 운 — 영역과 맞는 슈트의 카드를 먼저, 없으면 자리를 돌려 가며 근거로 쓴다.
+ const used=new Set(),pick=(suits,k)=>{const c=cards.find(x=>suits.includes(x.suit)&&!used.has(x))||cards.find(x=>!used.has(x))||cards.find(x=>suits.includes(x.suit))||cards[(k+1)%cards.length];used.add(c);return c;};
+ const domainBody=([title,key,suits],k)=>{const c=pick(suits,k),m=tarotTopicMeaning(c.card,key)||c.meaning,tip=c.reversed?c.warning:c.advice;return `${name(c)} 카드로 ${title}${_tEul(title)} 봐요. ${m===tip?c.meaning:m} ${tip}\n\n**${title}의 결론:** ${c.reversed?`${c.theme}에서 속도를 늦추고 조건부터 확인할 때예요.`:`${c.theme}${_tEul(c.theme)} 살리면 흐름이 열려요.`}`;};
+ const stage=(list,labels)=>labels.map((lab,i)=>{const c=list[Math.min(list.length-1,Math.floor(i*list.length/labels.length))];return `${lab}에는 ${name(c)} 카드가 보여 주는 ${c.theme}${_tJong(c.theme)?'이':'가'} 중심이에요.`;}).join(' ');
  // 5. 조건부 답
  let s5=`${name(outcome)} 카드는 앞으로 확인할 방향을 보여 줘요. ${outcome.warning}`;
  s5+=` 지금 본인이 시도할 방향은 이래요. ${advice.advice}`;
  s5+=' 카드는 확정된 답이 아니라, 지금 흐름에서 살펴볼 조건을 보여 줘요.';
- md+=`# 5. 질문에 대한 답\n\n${s5}\n\n`;
- // 6. 선택지의 득실
- md+=`# 6. 선택지별로 얻는 것과 잃는 것\n\n${name(advice)} 카드가 짚는 ${advice.theme}${_tEul(advice.theme)} 바꾸려면, 먼저 ${criterion}${_tEul(criterion)} 확인하세요. 지금 방식을 유지할 때와 조언을 실행할 때 이 조건이 어떻게 달라지는지 비교해 보세요. 카드의 기본 뜻을 다시 읽기보다, 앞에서 살핀 ${present.cardNameKo}의 현재 상황과 실제 선택의 차이를 적어 보세요.\n\n`;
- // 7. 조심할 해석
+ const s6=`${name(advice)} 카드가 짚는 ${advice.theme}${_tEul(advice.theme)} 바꾸려면, 먼저 ${criterion}${_tEul(criterion)} 확인하세요. 지금 방식을 유지할 때와 조언을 실행할 때 이 조건이 어떻게 달라지는지 비교해 보세요. 카드의 기본 뜻을 다시 읽기보다, 앞에서 살핀 ${present.cardNameKo}의 현재 상황과 실제 선택의 차이를 적어 보세요.`;
+ if(kind==='newyear'){
+  TAROT_DOMAINS.forEach((d,k)=>{md+=sec(domainBody(d,k));});
+  const map=tarotMonthCards(cards.length),half=(from,to)=>[...new Set(map.slice(from,to))].map(i=>cards[i]);
+  md+=sec(`상반기는 ${half(0,6).map(name).join(', ')} 카드가 맡아요. ${half(0,6)[0].theme}${_tEul(half(0,6)[0].theme)} 먼저 세우는 시기예요. 하반기는 ${half(6,12).map(name).join(', ')} 카드가 맡아요. ${half(6,12).at(-1).theme}${_tRo(half(6,12).at(-1).theme)} 한 해를 마무리하는 시기예요.`);
+  let months='';map.forEach((i,m)=>{const c=cards[i],first=map.indexOf(i)===m,last=map.lastIndexOf(i)===m;months+=`### ${m+1}월 — ${c.theme}\n\n${m+1}월은 ${name(c)} 카드가 맡는 달이에요. ${first?`이 카드의 흐름이 시작되는 달이라 ${c.advice}`:last?`이 카드의 흐름을 마무리하는 달이라 ${c.reversed?c.warning:`${c.theme}에서 거둔 것을 정리하고 다음 달을 준비하세요.`}`:`흐름이 한가운데에 있는 달이라 ${c.theme}${_tEul(c.theme)} 꾸준히 이어 가세요.`}\n\n`;});
+  md+=sec(months.trim());
+  const good=cards.find(c=>!c.reversed&&c!==obstacle)||present,careful=P.reversed[0]||obstacle,monthsOf=c=>map.map((x,m)=>x===cards.indexOf(c)?m+1:0).filter(Boolean).join('·');
+  md+=sec(`힘이 붙는 시기는 ${name(good)} 카드가 맡는 ${monthsOf(good)}월이에요. 속도를 늦출 시기는 ${name(careful)} 카드가 맡는 ${monthsOf(careful)}월이에요. 이때는 큰 결정을 미루고 조건부터 확인하세요.`);
+  md+=sec(cards.slice(0,4).map(c=>`- ${name(c)}: ${c.advice}`).concat([`- 큰 선택은 ${criterion}${_tEul(criterion)} 기준으로 정하세요.`]).join('\n'));
+ }else if(kind==='life'){
+  const base=cards.find(c=>c.major)||present;
+  md+=sec(`${name(base)} 카드가 본인의 타고난 성향을 보여 줘요. ${base.meaning} 이 강점이 과해지면 ${base.theme}에만 기대어 다른 선택지를 늦게 보게 될 수 있어요.`);
+  TAROT_DOMAINS.forEach((d,k)=>{md+=sec(domainBody(d,k));});
+  md+=sec(stage(cards,['가까운 시기','중간 시기','먼 시기']));
+  const ups=cards.filter(c=>!c.reversed),downs=P.reversed.length?P.reversed:[obstacle];
+  md+=sec(`### 강점\n\n본인의 강점은 ${(ups.length?ups:[present]).slice(0,2).map(c=>`${name(c)} 카드가 보여 주는 ${c.theme}`).join(', 그리고 ')}${_tJong((ups.length?ups:[present]).slice(0,2).at(-1).theme)?'이에요':'예요'}.\n\n### 주의할 패턴\n\n${downs.map(c=>`${name(c)} 카드`).join(', ')}처럼 ${downs[0].warning}\n\n### 발전 방향\n\n${advice.advice} 큰 선택 앞에서는 ${criterion}${_tEul(criterion)} 기준으로 삼으세요.`);
+ }else{
+  const detail=T.slice(4,7);
+  detail.forEach((t,k)=>{const c=cards[(k+1)%cards.length];md+=sec(`${name(c)} 카드로 ${t}${_tEul(t)} 살펴요. ${tarotTopicMeaning(c.card,P.key)||c.meaning}`);});
+  md+=sec(stage(cards,['가까운 몇 주','몇 달 뒤','1년 안팎']));
+  md+=sec(s5);md+=sec(s6);
+ }
+ // 조심할 해석
  const warn=[];
  if(P.reversed.length)warn.push(`${P.reversed.map(c=>c.cardNameKo).join(', ')}처럼 뒤집힌 카드는 나쁜 결과나 지연으로만 읽지 않아요. 각 카드의 별도 의미를 자리와 함께 살펴요.`);
  warn.push(P.group==='love'?'카드만으로 상대의 속마음이나 실제 사건, 정확한 날짜를 확인한 것은 아니에요.':P.group==='money'?'카드는 투자나 계약을 대신 결정해 주지 않아요. 실제 금액과 조건은 따로 확인하세요.':P.key==='health'?'카드는 건강 상태를 진단하지 않아요. 불편이 이어지면 진료를 먼저 받으세요.':'카드만으로 실제 사건이나 정확한 날짜를 확인한 것은 아니에요.');
- md+=`# 7. 조심할 해석\n\n${warn.join(' ')}\n\n`;
- // 8. 다시 확인할 신호
- md+=`# 8. 다음에 확인할 신호\n\n${plan[1]} 다음에 이 질문을 다시 볼 때는 ${TAROT_SUIT_SIGNAL[outcome.suit]} 먼저 살펴보세요.`;
+ md+=sec(warn.join(' '));
+ // 다시 확인할 신호
+ md+=`# ${no+1}. ${T[no++]}\n\n${plan[1]} 다음에 이 질문을 다시 볼 때는 ${TAROT_SUIT_SIGNAL[outcome.suit]} 먼저 살펴보세요.`;
  return typeof storyMarkdown==='function'?storyMarkdown(md,'tarot',input,input.topic||input.questionCategory):md;
 }
 
@@ -6276,7 +6315,9 @@ async function generateAIReading(input,opts){
 function tarotAIQuality(md,input){
   if(typeof ReadingVoice==='object'&&ReadingVoice.foreignScript(md))return false;
   const t=String(md||'').trim(),cards=(input&&input.cards)||[];
-  if(t.length<Math.max(600,cards.length*160)||mdSections(t).length<8)return false;
+  const kind=tarotKind(input),need=tarotSectionTitles(input).length;
+  if(t.length<(kind==='topic'?Math.max(1000,cards.length*200):2500)||mdSections(t).length<need)return false;
+  if(kind==='newyear'&&typeof ReadingVoice==='object'&&ReadingVoice.periodIssues(t,[1,2,3,4,5,6,7,8,9,10,11,12],'월').length)return false;
   if(!cards.every(c=>t.includes(c.cardNameKo)))return false;
   if((typeof TAROT_CARDS!=='undefined'?TAROT_CARDS:[]).filter(c=>c.arcana==='major'&&!cards.some(x=>x.cardNameKo===c.nameKo)).some(c=>new RegExp(c.nameKo+'\\s*카드').test(t)))return false;
   const drawn=new Set(cards.map(c=>c.cardNameKo.replace(/\s/g,'')));
@@ -25494,7 +25535,7 @@ function _hanziSearchGoPage(delta){
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=c40d0a7b3418">
+<script src="assets/astrology.js?v=dfa34b8a2df1">
 </script>
 </body>
 </html>

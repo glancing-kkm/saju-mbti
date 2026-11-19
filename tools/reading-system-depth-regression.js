@@ -41,7 +41,7 @@ try{
  // 유료 AI 채택 기준
  w.tin=run(`buildAIReadingInput({question:'이직해도 될까요?',topic:'career',questionCategory:'career',spreadName:'3장',positions:getSpreadPositions('tarot3','career','career'),selectedCards:[{positionIndex:0,cardId:'cups-05',orientation:'upright'},{positionIndex:1,cardId:'major-07-chariot',orientation:'reversed'},{positionIndex:2,cardId:'pentacles-01',orientation:'upright'}]})`);
  const names=run('window.tin.cards.map(c=>c.cardNameKo)');
- const good=['# 1. 지금 이 질문에서 보이는 장면',`지금 일의 상태 자리에 나온 ${names[0]} 카드는 일의 조건보다 사람 사이 분위기가 마음을 크게 좌우하는 장면으로 읽혀요. 하루 기분이 동료의 말투에 따라 오르내리기 쉬워요.`,'# 2. 같은 고민이 반복되는 이유',`${names[1]} 카드가 뒤집혀 있어 밀고 나가려는 힘이 방향을 잃은 상태예요. 마음으로 풀려는 문제인데 걸림은 실행 순서에 있어 같은 고민이 돌아와요.`,'# 3. 카드별 해석',`${names[0]}, ${names[1]}, ${names[2]} 세 장을 자리 역할과 함께 읽었어요. 감정에서 시작해 현실 조건으로 무게가 옮겨 가요.`,'# 4. 흐름이 바뀌는 지점','처음 자리의 감정에서 마지막 자리의 현실 조건으로 무게가 옮겨 가요. 뒤집힌 카드는 한 장이라 일부 자리에서만 속도가 엇갈려요.','# 5. 질문에 대한 답',`${names[2]} 카드가 바로 서 있어 조건을 숫자로 맞추면 움직일 여지가 있어요. 카드는 확정된 답이 아니라 조건을 보여 줘요.`,'# 6. 선택지별로 얻는 것과 잃는 것','조건을 먼저 맞추면 오래 갈 기반이 생기지만 마음의 속도와 어긋날 수 있어요. 지금처럼 마음을 확인하면 오해는 빨리 풀려도 결정은 늦어져요.','# 7. 조심할 해석','뒤집힌 카드는 나쁜 결과의 예고가 아니라 속도가 어긋난 신호예요. 카드만으로 실제 사건이나 날짜를 확인한 것은 아니에요.','# 8. 다음에 확인할 신호','보상·권한·업무 범위를 적고 비교해 보세요. 다음에는 숫자와 일정이 정해졌는지 살펴보세요.'].join('\n\n');
+ const good=['# 1. 지금 이 질문에서 보이는 장면',`지금 일의 상태 자리에 나온 ${names[0]} 카드는 일의 조건보다 사람 사이 분위기가 마음을 크게 좌우하는 장면으로 읽혀요. 하루 기분이 동료의 말투에 따라 오르내리기 쉬워요.`,'# 2. 같은 고민이 반복되는 이유',`${names[1]} 카드가 뒤집혀 있어 밀고 나가려는 힘이 방향을 잃은 상태예요. 마음으로 풀려는 문제인데 걸림은 실행 순서에 있어 같은 고민이 돌아와요.`,'# 3. 카드별 해석',`${names[0]}, ${names[1]}, ${names[2]} 세 장을 자리 역할과 함께 읽었어요. 감정에서 시작해 현실 조건으로 무게가 옮겨 가요.`,'# 4. 흐름이 바뀌는 지점','처음 자리의 감정에서 마지막 자리의 현실 조건으로 무게가 옮겨 가요. 뒤집힌 카드는 한 장이라 일부 자리에서만 속도가 엇갈려요.','# 5. 지금 일의 상태',`${names[0]} 카드로 보면 지금 일은 업무 자체보다 함께 일하는 사람들과의 온도에 마음이 크게 움직이는 상태예요. 회의가 끝난 뒤에도 말투 하나가 오래 남아 집중이 흩어지기 쉬워요.`,'# 6. 맞는 일과 숨은 강점',`${names[2]} 카드는 작게라도 손에 잡히는 결과를 만드는 힘을 보여 줘요. 숫자와 일정이 분명한 일에서 본인의 꼼꼼함이 가장 잘 드러나요.`,'# 7. 이직·도전의 판단 기준',`${names[1]} 카드가 뒤집혀 있어 서두르면 방향을 잃기 쉬워요. 옮길 곳의 역할과 보상, 결정 권한을 지금 자리와 나란히 적어 비교한 뒤 움직이세요.`,'# 8. 앞으로의 흐름','가까운 몇 주에는 마음을 정리하는 일이 먼저예요. 이때 서운했던 장면과 바라는 조건을 따로 적어 두면 다음 단계가 훨씬 가벼워져요. 몇 달 뒤에는 조건을 비교할 자료가 쌓이고, 1년 안팎에는 현실 조건을 기준으로 한 선택이 자리를 잡아요.','# 9. 질문에 대한 답',`${names[2]} 카드가 바로 서 있어 조건을 숫자로 맞추면 움직일 여지가 있어요. 카드는 확정된 답이 아니라 조건을 보여 줘요.`,'# 10. 선택지별로 얻는 것과 잃는 것','조건을 먼저 맞추면 오래 갈 기반이 생기지만 마음의 속도와 어긋날 수 있어요. 지금처럼 마음을 확인하면 오해는 빨리 풀려도 결정은 늦어져요.','# 11. 조심할 해석','뒤집힌 카드는 나쁜 결과의 예고가 아니라 속도가 어긋난 신호예요. 카드만으로 실제 사건이나 날짜를 확인한 것은 아니에요.','# 12. 다음에 확인할 신호','보상·권한·업무 범위를 적고 비교해 보세요. 다음에는 숫자와 일정이 정해졌는지 살펴보세요.'].join('\n\n');
  w.tgood=good;assert(run('tarotAIQuality(window.tgood,window.tin)'));
  w.tbad1=good.split(names[2]).join('다른 카드');assert(!run('tarotAIQuality(window.tbad1,window.tin)'),'뽑은 카드 누락 거절');
  w.tbad2=good+' 소드9 카드도 함께 보여요.';assert(!run('tarotAIQuality(window.tbad2,window.tin)'),'뽑지 않은 카드 거절');
@@ -68,12 +68,12 @@ try{
  w.unk=run("(()=>{const c=window.mkChart();c.birthInfo.birthTimeUnknown=true;c.ascendant=null;c.planets.forEach(p=>delete p.house);return c;})()");
  assert(!/하우스|상승궁은/.test(run("astroPracticalReading(window.unk,'career')")),'시간 미상은 하우스·상승궁 해석 금지');
  assert(/3\. 인연과 마음이 가까워지는 흐름|# 3\./.test(run("astroPreviewTemplate(window.mkChart(),'love')")));
- assert.equal(run("mdSections(astroPreviewTemplate(window.mkChart(),'career')).length"),6,'계산형 전체 목차 유지');
+ assert.equal(run("mdSections(astroPreviewTemplate(window.mkChart(),'career')).length"),run("astroTopicSections('career').length"),'계산형 전체 목차 유지');
  const flowSun=run("signNameKo(window.mkChart().planets[0].sign)");
- w.afine=['# 1. 출생차트 핵심 요약','# 2. 성향','# 3. 일','# 4. 흐름','# 5. 기준','# 6. 실천'].map((h,i)=>`${h}\n\n본인의 태양은 ${flowSun}에 있어요. 금성과 화성 사이에 계산된 각도는 없어 두 마음이 따로 움직여요. 일과 돈의 장면에서 이 차이가 드러나요. 선택마다 얻는 것과 잃는 것을 나눠 보세요. 다음에 볼 신호도 적어 두세요. ${i+1}번째 장에서는 이 차이를 생활 장면으로 바꿔 살펴봐요.`).join('\n\n');
- w.flowA={chart:run('window.mkChart()'),targetYear:2026};assert(run('astroAIQuality(window.afine,window.flowA)'));
+ w.afine=['# 1. 출생차트 핵심 요약','# 2. 성향','# 3. 일','# 4. 강점','# 5. 흐름','# 6. 기준','# 7. 실천'].map((h,i)=>`${h}\n\n본인의 태양은 ${flowSun}에 있어요. 금성과 화성 사이에 계산된 각도는 없어 두 마음이 따로 움직여요. 일과 돈의 장면에서 이 차이가 드러나요. 선택마다 얻는 것과 잃는 것을 나눠 보세요. 다음에 볼 신호도 적어 두세요. ${i+1}번째 장에서는 이 차이를 생활 장면으로 바꿔 살펴봐요.`).join('\n\n');
+ w.flowA={chart:run('window.mkChart()'),targetYear:2026,productType:'career'};assert(run('astroAIQuality(window.afine,window.flowA)'));
  w.awrong=w.afine.replace(`본인의 태양은 ${flowSun}`,'본인의 태양은 처녀자리');assert(!run('astroAIQuality(window.awrong,window.flowA)'),'실제와 다른 본인 행성 별자리 거절');
- w.flowU={chart:w.unk};w.ahouse=w.afine.replace('일과 돈의 장면','10하우스의 장면');assert(!run('astroAIQuality(window.ahouse,window.flowU)'),'시간 미상 하우스 해석 거절');
+ w.flowU={chart:w.unk,productType:'career'};w.ahouse=w.afine.replace('일과 돈의 장면','10하우스의 장면');assert(!run('astroAIQuality(window.ahouse,window.flowU)'),'시간 미상 하우스 해석 거절');
  ok(`점성술 12주제: 실제 각도 변화 ${aspectSensitive}/12, 달 변화 ${moonSensitive}/${moonTopics}, 시간 미상 하우스 제외, AI 별자리·하우스 검증`);
 
  // ── 4. 자미두수: 실제 명반 배치와 시스템별 근거 ID ──
