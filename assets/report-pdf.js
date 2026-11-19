@@ -58,8 +58,8 @@ const SPECS={
       {no:3,t:'사주와 이름의 관계',vis:'steps:name',h:['확인된 명식의 주요 특징','이름과 연결해 읽는 관점','해석 기준의 범위와 차이']},
       {no:4,t:'후보 이름 비교',vis:'candidates',h:['뜻과 발음의 조화','사주와 연결한 해석','일상에서 부르기 쉬운 정도']},
       {no:5,t:'후보별 상세 풀이',vis:'situ',h:['후보 1의 의미와 특징','후보 2의 의미와 특징','후보 3의 의미와 특징']},
-      {no:6,t:'선택 전 확인 사항',vis:'nameCheck',h:['정확한 글자와 뜻 확인','본인과 가족의 선호','공식 사용 관련 확인 사항']},
-      {no:7,t:'최종 의견과 선택',h:['우선 검토할 후보와 이유','남은 확인 사항','본인이 중요하게 생각할 기준']}]},
+      {no:6,t:'선택 전 확인 사항',vis:'nameCheck',h:['정확한 글자와 뜻 확인','당신과 가족의 선호','공식 사용 관련 확인 사항']},
+      {no:7,t:'최종 의견과 선택',h:['우선 검토할 후보와 이유','남은 확인 사항','당신이 중요하게 생각할 기준']}]},
   ziwei:{name:'자미두수',file:'자미두수',en:'ZI WEI DOU SHU',kicker:'별과 삶의 흐름',sub:'명반의 궁과 별을 연결해 읽는 별자리 명반 보고서',accent:'#7c7399',
     info:['음력 및 윤달 정보','명반 산출 및 해석 기준','명궁 · 신궁 · 오행국'],note:'음력 생일과 태어난 시로 12궁을 세우고 14개 주성을 배치했어요. 태어난 시간을 모르면 궁의 위치가 달라질 수 있어요.',glanceQ:'나의 명반에서 궁과 별은 어떤 삶의 주제를 보여줄까요?',glance:['명반의 주요 특징','먼저 읽을 궁','현재 시기의 주제'],
     pages:[
@@ -335,10 +335,10 @@ function rpPlan(spec,d){
     if(/^theme/.test(v)||v==='zwTheme'){f.push([`p${pg.pi}core`,`'${pg.t}'의 핵심 문장`,36]);if(v!=='zwTheme'){f.push([`p${pg.pi}kw1`,'핵심 키워드 하나',8],[`p${pg.pi}kw2`,'다른 핵심 키워드 하나',8]);}}
     if(v==='situ')for(let r=0;r<2;r++)f.push([`p${pg.pi}s${r}a`,`'${pg.t}'에서 실제로 나타날 수 있는 구체적인 상황`,40],[`p${pg.pi}s${r}b`,'그 상황에서 확인할 판단 기준',44]);
     if(v==='check')['우선 과제','필요한 준비','도움을 받을 곳'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 지금 확인할 점`,30],[`p${pg.pi}c${r}b`,`${l} — 다음 행동`,30]));
-    if(v==='talk')['생활과 기대','관계의 속도','경계와 약속'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 본인의 생각(사주 성향에 근거)`,30],[`p${pg.pi}c${r}b`,`${l} — 함께 확인할 질문`,32]));
+    if(v==='talk')['생활과 기대','관계의 속도','경계와 약속'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 당신의 생각(사주 성향에 근거)`,30],[`p${pg.pi}c${r}b`,`${l} — 함께 확인할 질문`,32]));
     if(v==='childObs')['새로운 활동','놀이와 학습','감정과 관계'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l}에서 아이에게 보일 수 있는 반응`,30],[`p${pg.pi}c${r}b`,`${l}에서 바꿔 볼 환경`,30]));
     if(v==='prep')['시간과 돌봄','일과 생활','지원 환경','상담 질문'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 지금 확인할 점`,30],[`p${pg.pi}c${r}b`,`${l} — 다음 행동`,30]));
-    if(v==='nameCheck')['정확한 글자','발음과 사용성','본인의 선호','공식 사용'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 후보별로 확인할 내용`,44]));
+    if(v==='nameCheck')['정확한 글자','발음과 사용성','당신의 선호','공식 사용'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} — 후보별로 확인할 내용`,44]));
     if(v==='candidates')for(let k=0;k<3;k++)f.push([`p${pg.pi}cand${k}`,`후보 ${k+1}에 대한 짧은 검토 의견`,26]);
     if(v==='zwStars')['명궁의 주성','신궁의 주성','마주 보는 천이궁'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l} 배치에 대한 해석 메모`,34]));
     if(v==='zwSihua')['화록','화권','화과','화기'].forEach((l,r)=>f.push([`p${pg.pi}c${r}a`,`${l}이 붙은 별과 궁에 대한 해석 메모`,34]));
@@ -368,7 +368,7 @@ function rpHint(pg,d){
     if(/^line:/.test(v)){const L=rpLine(d,v.split(':')[1]);return `도표(${L.cap}): `+L.pts.map(p=>`${p.l} ${p.v}`).join(', ');}
     if(v==='radar')return '영역별 점수: '+rpRadar(d).map(([l,x])=>`${l} ${x}`).join(', ');
     if(/^sliders:/.test(v)){const sl=SLIDERS[v.split(':')[1]];return '성향 막대: '+sl.map(([k,a,b,fn])=>`${k} ${a} ${100-fn(d.persona)} : ${b} ${fn(d.persona)}`).join(', ');}
-    if(v==='pair'&&d.persona2)return '두 사람 성향(본인/상대): '+PAIR_ROWS.map(([k,fn])=>`${k} ${fn(d.persona)}/${fn(d.persona2)}`).join(', ');
+    if(v==='pair'&&d.persona2)return '두 사람 성향(당신/상대): '+PAIR_ROWS.map(([k,fn])=>`${k} ${fn(d.persona)}/${fn(d.persona2)}`).join(', ');
     if(pg.sub==='@early'||pg.sub==='@late')return rpLifeRange(d,pg.sub);
   }catch(e){}
   return '';
@@ -482,7 +482,7 @@ function rpEnough(o,g){if(!o)return false;const ids=new Set((o.sections||[]).fil
 function rpDetFields(d){
   const t=d.base||{},ch=t.character||{},st=t.strengths||{},fp=t.fingerprint||{},o={};
   const first=s=>rpUnquote(String(s||'').replace(/<[^>]+>/g,'').split(/(?<=[.!?요])\s+/)[0]||'');
-  if(ch.nickname)o.gq=`${ch.nickname}, ${ch.subtitle||'본인만의 분위기'}의 사람이에요`;
+  if(ch.nickname)o.gq=`${ch.nickname}, ${ch.subtitle||'당신만의 분위기'}의 사람이에요`;
   if(st.keyword)o.gk1=st.keyword;
   if(st.strengths&&st.strengths[0])o.gk2=st.strengths[0].replace(/\s*\(.*\)$/,'');
   const bm=t.bestMonths&&t.bestMonths[0];if(bm)o.gk3=`${bm.year}년 ${bm.month}월에 움직이기`;
@@ -501,7 +501,7 @@ function rpDetFields(d){
     o.send=`두 사람의 종합 궁합은 ${d.gh.score}점이에요. 점수보다 ${rows[0].k}의 차이를 말로 맞추는 습관이 관계를 오래 받쳐 줘요. 서로 다른 점은 고칠 대상이 아니라 역할을 나눌 근거로 써 보세요. 이 보고서는 두 사람의 사주 계산을 정리한 참고이고, 관계의 결정은 두 사람의 대화로 정하세요.`;
   }
   if(st.cautions&&st.cautions[0])o.si2=`${st.cautions[0]} — 이 부분은 속도를 한 박자 늦추면 좋아요.`;
-  if(st.strengths&&st.strengths[0])o.si1=`${st.strengths[0]} — 본인이 가장 자연스럽게 힘을 내는 방식이라 계속 살려 주세요.`;
+  if(st.strengths&&st.strengths[0])o.si1=`${st.strengths[0]} — 당신이 가장 자연스럽게 힘을 내는 방식이라 계속 살려 주세요.`;
   if(bm)o.si3=`${bm.year}년 ${bm.month}월을 첫 실행의 달로 정하고, 그 전에 준비할 일 한 가지를 오늘 적어 두세요.`;
   if(d.ny&&typeof lv4MonthNarrative==='function'){
     o.intro=`${d.nyYear}년, 기회의 달과 조절할 달을 함께 읽어요.`;
@@ -510,10 +510,10 @@ function rpDetFields(d){
       o[`q${q}a`]=avg>=80?'준비한 것을 시험할 분기':avg<65?'범위와 부담을 줄일 분기':'결과를 보며 조정할 분기';
       o[`q${q}b`]=`${best.month}월(${best.score}점)을 준비한 일의 실행 후보로 보세요. ${low.month}월(${low.score}점)에는 약속과 지출의 부담을 다시 확인하세요. ${LIFE_V2_MONTH_ACTION[low.tg]||''}`;
     }
-    const titles={'비견':'본인 속도를 찾는 달','겁재':'비교보다 기준이 필요한 달','식신':'준비한 것을 보여 주는 달','상관':'다른 방법을 제안하는 달','편재':'제안의 실속을 따져 보는 달','정재':'반복 지출을 정돈하는 달','편관':'책임의 범위를 정하는 달','정관':'해 온 일을 증명하는 달','편인':'막힌 문제를 다시 보는 달','정인':'배움을 생활에 쓰는 달'};
+    const titles={'비견':'당신의 속도를 찾는 달','겁재':'비교보다 기준이 필요한 달','식신':'준비한 것을 보여 주는 달','상관':'다른 방법을 제안하는 달','편재':'제안의 실속을 따져 보는 달','정재':'반복 지출을 정돈하는 달','편관':'책임의 범위를 정하는 달','정관':'해 온 일을 증명하는 달','편인':'막힌 문제를 다시 보는 달','정인':'배움을 생활에 쓰는 달'};
     d.ny.months.forEach(x=>{
       const ps=lv4MonthNarrative(x,d.saju,d.meta,d.ny.targetAge).match(/[^.!?]+[.!?]+/g)||[];
-      o[`m${x.month}a`]=titles[x.tg]||'본인 흐름을 살피는 달';
+      o[`m${x.month}a`]=titles[x.tg]||'당신의 흐름을 살피는 달';
       o[`m${x.month}b`]=ps.slice(0,3).join('').trim();
       o[`m${x.month}c`]=ps.slice(3).join('').trim();
     });
@@ -522,8 +522,8 @@ function rpDetFields(d){
     if(sh[0].palace)o.si1=`화록이 붙은 ${ZW_SHOW(sh[0].palace)}의 ${sh[0].star}성 — 막힐 때 기댈 자원이라 이 영역의 강점을 계속 살려 주세요.`;
     if(sh[3].palace)o.si2=`화기가 붙은 ${ZW_SHOW(sh[3].palace)} — 같은 걱정이 반복되면 이 방의 일을 따로 떼어 점검하세요.`;
     if(nx)o.si3=`${nx.from}세에 열릴 ${ZW_SHOW(nx.palace.name)}을 앞두고 ${ZW_DECADE_THEME[nx.palace.name]}을 준비할 일 하나를 적어 두세요.`;
-    o.send=`명궁의 ${me.stars.map(x=>x+'성').join('과 ')}은 본인이 가장 자연스럽게 쓰는 힘이에요. 다만 ${ZW_STAR_SHADOW[me.stars[0]]||'같은 방식만 고집하기 쉬워요.'} 지금 열린 대한의 방에서 그 힘을 어디에 쓸지 정하면 흐름을 덜 소모하며 지나갈 수 있어요. 이 보고서는 해마다의 유년은 계산하지 않았으니, 한 해 단위의 변화는 직접 기록하며 맞춰 가세요.`;}
-  if(d.cat==='name'){try{const m=nameModel(d.saju,d.meta.nmExtra||{});o.si1=`이름 소리에 담긴 ${LV4_OH[m.ys.main]} 기운 ${m.nameOh.oh[m.ys.main]}개 — 사주의 도움 기운과 이어지는 부분이에요.`;o.si3='후보를 소리 내어 불러 보고, 한자 뜻과 인명용 등록 가능 여부를 함께 확인하세요.';o.send=`이 이름은 '${m.grade}'로 계산됐어요. 이름은 사주를 바꾸는 장치가 아니라, 본인에게 필요한 기운을 일상에서 의식하게 돕는 이름표예요. 뜻과 소리, 부르는 사람의 편안함까지 함께 보고 오래 쓸 이름을 고르세요.`;}catch(e){}}
+    o.send=`명궁의 ${me.stars.map(x=>x+'성').join('과 ')}은 당신이 가장 자연스럽게 쓰는 힘이에요. 다만 ${ZW_STAR_SHADOW[me.stars[0]]||'같은 방식만 고집하기 쉬워요.'} 지금 열린 대한의 방에서 그 힘을 어디에 쓸지 정하면 흐름을 덜 소모하며 지나갈 수 있어요. 이 보고서는 해마다의 유년은 계산하지 않았으니, 한 해 단위의 변화는 직접 기록하며 맞춰 가세요.`;}
+  if(d.cat==='name'){try{const m=nameModel(d.saju,d.meta.nmExtra||{});o.si1=`이름 소리에 담긴 ${LV4_OH[m.ys.main]} 기운 ${m.nameOh.oh[m.ys.main]}개 — 사주의 도움 기운과 이어지는 부분이에요.`;o.si3='후보를 소리 내어 불러 보고, 한자 뜻과 인명용 등록 가능 여부를 함께 확인하세요.';o.send=`이 이름은 '${m.grade}'로 계산됐어요. 이름은 사주를 바꾸는 장치가 아니라, 당신에게 필요한 기운을 일상에서 의식하게 돕는 이름표예요. 뜻과 소리, 부르는 사람의 편안함까지 함께 보고 오래 쓸 이름을 고르세요.`;}catch(e){}}
   return o;
 }
 // ── 소제목별 대체 본문 ──
@@ -600,19 +600,19 @@ function rpSajuItems(d,domain){
       timing:[`${t.info.stat} 점수가 높은 해는 ${by.map(L).join(', ')}${rpIda(L(by[by.length-1]))}.${cy.length?` 살필 해는 ${cy.map(L).join(', ')}${rpIda(L(cy[cy.length-1]))}.`:''}`].concat(by.map(x=>`${x.year}년(${x.gz})은 ${t.info.stat} 점수가 ${x.score}점이에요. ${T(x)[0]} ${T(x)[1]}`),cy.map(x=>`${x.year}년(${x.gz})은 ${t.info.stat} 점수가 ${x.score}점으로 낮은 편이에요. ${T(x)[0]} ${T(x)[2]}`)),
       choice:[`${by[0].year}년처럼 점수가 높은 해에는 미뤄 둔 결정을 꺼내 볼 만해요. ${cy[0]?`${cy[0].year}년처럼 낮은 해에는 규모를 줄이고 조건을 다시 확인하세요.`:''}`].concat(by.slice(1).map(x=>`${x.year}년에 큰 선택을 둔다면 이 기준을 먼저 보세요. ${T(x)[2]}`)),
       burden:cy[0]?`${cy[0].year}년(${cy[0].gz})은 ${['충','원진','형','자형','파','해'].includes(cy[0].rel&&cy[0].rel.kind)?'일지와 맞부딪히는 글자가 들어와':'흐름이 약해져'} 무리한 확장이 부담으로 돌아오기 쉬워요.`:'',
-      action:`${by.map(x=>x.year+'년').join('·')}을 달력에 먼저 표시하고, 그 전 해에 준비할 일 하나를 적어 두세요.`,scene:`해마다 점수가 달라 같은 노력도 해에 따라 결과가 다르게 보여요. 가장 높은 해는 ${L(by[0])}이에요.`,evidence:`해마다의 점수는 그해 간지와 본인 일간·일지의 관계로 계산했어요.`}});}
+      action:`${by.map(x=>x.year+'년').join('·')}을 달력에 먼저 표시하고, 그 전 해에 준비할 일 하나를 적어 두세요.`,scene:`해마다 점수가 달라 같은 노력도 해에 따라 결과가 다르게 보여요. 가장 높은 해는 ${L(by[0])}이에요.`,evidence:`해마다의 점수는 그해 간지와 당신의 일간·일지의 관계로 계산했어요.`}});}
   if(t&&t.bestMonths&&t.bestMonths.length&&!young){const bm=t.bestMonths,cm=t.careMonths||[],M=x=>`${x.year}년 ${x.month}월`;
     const TM=x=>t.tgText(x.tg)||['','',''];
     items.push({id:'months',basis:'달마다의 점수',render:{
       timing:[`다가오는 12개월 중 ${bm.map(M).join(', ')}이 흐름이 좋은 달이에요.${cm.length?` ${cm.map(M).join(', ')}은 한 박자 늦추는 편이 좋아요.`:''}`].concat(bm.map(x=>`${M(x)}(${x.gz})은 ${x.score}점이에요. ${TM(x)[0]}`),cm.map(x=>`${M(x)}(${x.gz})은 ${x.score}점이에요. ${TM(x)[0]} ${TM(x)[2]}`)),
       action:[`${M(bm[0])}을 첫 실행의 달로 정하고, 그 전에 필요한 준비를 하나만 끝내 두세요.`].concat(bm.slice(1).map(x=>`${M(x)}에는 ${TM(x)[1]}`)),choice:cm[0]?`${M(cm[0])}처럼 낮은 달에 계약이나 큰 지출이 겹치면 날짜를 옮길 수 있는지부터 보세요.`:'',
-      scene:`달마다 앞에 서는 힘이 바뀌어요. ${M(bm[0])}에는 ${(t.tgText(bm[0].tg)||[''])[0]}`,burden:cm[0]?`${M(cm[0])}에는 ${(t.tgText(cm[0].tg)||['',''])[0]}`:'',evidence:'달마다의 점수는 그달 월주와 본인 사주의 관계로 계산했어요.'}});}
+      scene:`달마다 앞에 서는 힘이 바뀌어요. ${M(bm[0])}에는 ${(t.tgText(bm[0].tg)||[''])[0]}`,burden:cm[0]?`${M(cm[0])}에는 ${(t.tgText(cm[0].tg)||['',''])[0]}`:'',evidence:'달마다의 점수는 그달 월주와 당신의 사주의 관계로 계산했어요.'}});}
   const seatTg=e.seatTg,db=d.saju.dp.branch;
   items.push({id:'seat',basis:`일지 ${BRCHKO[db]}`,render:{
     scene:`일지(가까운 관계를 보는 자리) ${BRCHKO[db]}에는 '${TOPIC_SEAT_SHORT[seatTg]||'차분한 안정감'}'의 분위기가 담겨 있어요. ${dom==='love'&&!young?(TOPIC_SEAT_LOVE[seatTg]||''):'가까운 사람과 지낼 때 이 분위기가 먼저 드러나요.'}`,
     burden:`가까운 사이일수록 '${TOPIC_SEAT_SHORT[seatTg]||'차분한 안정감'}'을 당연하게 기대하게 돼요. 기대를 말하지 않으면 서운함이 먼저 쌓여요.`,
     choice:`가까운 사람과 정할 일은 기대를 먼저 말할지, 상대의 방식을 지켜볼지로 갈려요. 같은 일이 세 번 반복되면 말로 꺼내는 쪽을 고르세요.`,
-    action:`가까운 사람에게 바라는 행동 하나를 구체적으로 말해 보세요.`,evidence:`일지는 태어난 날의 아래 글자로, 본인과 가장 가까운 관계를 보여 주는 자리예요.`}});
+    action:`가까운 사람에게 바라는 행동 하나를 구체적으로 말해 보세요.`,evidence:`일지는 태어난 날의 아래 글자로, 당신과 가장 가까운 관계를 보여 주는 자리예요.`}});
   const lack=e.oh.indexOf(Math.min(...e.oh)),lc=LV4_LACK_CAUTION[lack];
   if(lc)items.push({id:'lack',basis:`${LV4_OH[lack]} 기운`,render:{burden:`${LV4_OH[lack]} 기운이 사주에서 가장 옅어요. ${lc[1]}`,action:`${lc[0]}부터 해 보세요. ${lc[1].split(/(?<=[.!?])\s+/).slice(-1)[0]}`,scene:`다섯 기운 중 ${LV4_OH[lack]}${rpJ(LV4_OH[lack],'이','가')} 가장 옅어 그 영역의 일은 의식해서 챙겨야 해요.`,choice:'',timing:'',evidence:`다섯 기운 수는 목 ${e.oh[0]}, 화 ${e.oh[1]}, 토 ${e.oh[2]}, 금 ${e.oh[3]}, 수 ${e.oh[4]}이에요.`}});
   return items;
@@ -681,7 +681,7 @@ function rpNameParas(d,h,ledger){
   else if(/뜻과 발음의 조화/.test(h))ps=cands.length?[cands.map((c,i)=>`${i+1}. ${c.name}(${c.han}) ${c.meaning||''}`).join(' / '),'뜻이 좋아도 발음이 어색하면 오래 쓰기 어려워요. 후보마다 소리 내어 불러 보세요.']:['화면 풀이에서 계산된 후보가 없어 비교하지 않았어요.'];
   else if(/사주와 연결한 해석/.test(h))ps=cands.length?[`후보는 사주의 도움 기운 ${O[m.ys.main]}을 기준으로 골랐어요. ${cands.map((c,i)=>`${i+1}번 ${c.name}${c.good?` ${c.good}`:''}`).join(', ')}.`]:['계산된 후보가 없어요.'];
   else if(/정확한 글자/.test(h))ps=['후보마다 한자의 뜻, 획수, 대법원 인명용 한자 해당 여부를 공식 자료로 다시 확인하세요.'];
-  else if(/선호/.test(h))ps=['본인과 가족이 각자 마음에 드는 후보를 따로 고른 뒤, 고른 이유를 비교해 보세요. 계산 점수와 선호가 다를 때는 오래 부를 사람의 느낌을 우선 보세요.'];
+  else if(/선호/.test(h))ps=['당신과 가족이 각자 마음에 드는 후보를 따로 고른 뒤, 고른 이유를 비교해 보세요. 계산 점수와 선호가 다를 때는 오래 부를 사람의 느낌을 우선 보세요.'];
   else if(/공식 사용/.test(h))ps=['개명이나 출생 신고에 쓰려면 인명용 한자 해당 여부와 필요한 서류를 관할 기관에서 확인하세요. 이 보고서는 공식 판단을 대신하지 않아요.'];
   else if(/우선 검토할 후보/.test(h))ps=cands.length?[`먼저 볼 후보는 ${cands[0].name}(${cands[0].han})이에요. ${cands[0].good||''} ${cands[0].why||''}`.trim()]:['계산된 후보가 없어 기존 이름의 보완 방향을 먼저 보세요.'];
   else if(/남은 확인/.test(h))ps=['남은 확인은 세 가지예요. 실제 한자의 뜻, 가족의 부르기 편함, 공식 등록 가능 여부예요.'];
@@ -697,13 +697,13 @@ const RP_PAIR_ROW_TEXT={
 function rpPairParas(d,h,ledger,usage){
   const g=d.gh,s1=d.saju,s2=d.partner.saju,a=d.persona,b=d.persona2||{E:50,A:50,I:50,L:50},O=LV4_OH;
   const rows=PAIR_ROWS.map(([k,fn])=>({k,v1:fn(a),v2:fn(b),diff:Math.abs(fn(a)-fn(b))})).sort((x,y)=>y.diff-x.diff);
-  const rowText=r=>`${r.k}${rpJ(r.k,'은','는')} 본인 ${r.v1}, 상대 ${r.v2}${rpRo(String(r.v2))} ${r.diff>=25?'차이가 커요':r.diff>=10?'조금 달라요':'비슷해요'}. ${r.diff>=10?RP_PAIR_ROW_TEXT[r.k][0]:'이 부분은 서로 설명하지 않아도 잘 맞는 편이에요.'}`;
+  const rowText=r=>`${r.k}${rpJ(r.k,'은','는')} 당신 ${r.v1}, 상대 ${r.v2}${rpRo(String(r.v2))} ${r.diff>=25?'차이가 커요':r.diff>=10?'조금 달라요':'비슷해요'}. ${r.diff>=10?RP_PAIR_ROW_TEXT[r.k][0]:'이 부분은 서로 설명하지 않아도 잘 맞는 편이에요.'}`;
   const metric=(name,score)=>{try{return ghMetricReading(name,g,score<70);}catch(e){return '';}};
   const oh1=ohCount(s1),oh2=ohCount(s2);
   let ps;
-  if(/일간과 기질/.test(h))ps=[`본인의 일간은 ${STEMKO[s1.dp.stem]}, 상대는 ${STEMKO[s2.dp.stem]}${rpIda(STEMKO[s2.dp.stem])}. 두 글자의 관계는 '${(g.dayStemRel&&g.dayStemRel.kind)||'평'}'으로 계산돼요.`,metric('중심 기운의 어울림',g.ohScore)];
-  else if(/공통점과 차이/.test(h))ps=[`다섯 기운 수는 본인 ${oh1.join('·')}, 상대 ${oh2.join('·')}이에요(목·화·토·금·수 순서).`,`두 사람 모두 ${O[oh1.map((v,i)=>v+oh2[i]).indexOf(Math.max(...oh1.map((v,i)=>v+oh2[i])))]} 기운이 두터워요. 같은 기운이 겹치는 영역은 함께 편하지만 같은 실수도 함께 반복하기 쉬워요.`];
-  else if(/보완/.test(h)){const l1=oh1.indexOf(Math.min(...oh1)),l2=oh2.indexOf(Math.min(...oh2));ps=[`본인에게 옅은 ${O[l1]} 기운을 상대는 ${oh2[l1]}개, 상대에게 옅은 ${O[l2]} 기운을 본인은 ${oh1[l2]}개 가지고 있어요.`,metric('다섯 기운의 균형',g.balScore)];}
+  if(/일간과 기질/.test(h))ps=[`당신의 일간은 ${STEMKO[s1.dp.stem]}, 상대는 ${STEMKO[s2.dp.stem]}${rpIda(STEMKO[s2.dp.stem])}. 두 글자의 관계는 '${(g.dayStemRel&&g.dayStemRel.kind)||'평'}'으로 계산돼요.`,metric('중심 기운의 어울림',g.ohScore)];
+  else if(/공통점과 차이/.test(h))ps=[`다섯 기운 수는 당신 ${oh1.join('·')}, 상대 ${oh2.join('·')}이에요(목·화·토·금·수 순서).`,`두 사람 모두 ${O[oh1.map((v,i)=>v+oh2[i]).indexOf(Math.max(...oh1.map((v,i)=>v+oh2[i])))]} 기운이 두터워요. 같은 기운이 겹치는 영역은 함께 편하지만 같은 실수도 함께 반복하기 쉬워요.`];
+  else if(/보완/.test(h)){const l1=oh1.indexOf(Math.min(...oh1)),l2=oh2.indexOf(Math.min(...oh2));ps=[`당신에게 옅은 ${O[l1]} 기운을 상대는 ${oh2[l1]}개, 상대에게 옅은 ${O[l2]} 기운을 당신은 ${oh1[l2]}개 가지고 있어요.`,metric('다섯 기운의 균형',g.balScore)];}
   else if(/갈등이 시작|반복되는 반응/.test(h))ps=[`두 사람의 배우자 자리(일지)는 ${BRCHKO[s1.dp.branch]}${rpJ(BRCHKO[s1.dp.branch],'과','와')} ${BRCHKO[s2.dp.branch]}${rpRo(BRCHKO[s2.dp.branch])} 관계는 '${(g.dayBrRel&&g.dayBrRel.kind)||'평'}'이에요.`,metric('배우자 자리의 만남',g.brScore)];
   else if(/바라보는|기대를 확인/.test(h))ps=[metric('서로를 바라보는 방식',g.tgScore)];
   else if(/관계의 속도|환경 변화/.test(h)){
@@ -711,8 +711,8 @@ function rpPairParas(d,h,ledger,usage){
     const dec=(t,age)=>t&&t.cur?{from:t.cur.age,to:t.cur.age+9,gz:STEMKO[t.cur.stem]+BRCHKO[t.cur.branch],next:(t.dq.daeuns.find(x=>x.age>t.cur.age)||{}).age,age}:null;
     const a1=dec(tA,d.age),b1=dec(tB,ageB);
     const r=rows.find(x=>x.k==='결정 속도');
-    ps=/관계의 속도/.test(h)?[rowText(r),a1&&b1?`본인은 ${a1.from}~${a1.to}세 대운(${a1.gz}), 상대는 ${b1.from}~${b1.to}세 대운(${b1.gz})을 지나고 있어요. 각자 10년의 다른 구간에 있어 같은 일도 서두르는 정도가 다를 수 있어요.`:'',RP_PAIR_ROW_TEXT['결정 속도'][1]]
-      :[`두 사람의 연지(태어난 해의 띠 글자) 관계는 '${brRel(s1.yp.branch,s2.yp.branch).kind}'${rpIda(brRel(s1.yp.branch,s2.yp.branch).kind)}. 집안 분위기나 가족 행사처럼 바깥 환경이 바뀔 때 반응이 이 관계를 따라가기 쉬워요.`,a1&&b1&&a1.next&&b1.next?`본인의 다음 대운은 ${d.y0+(a1.next-a1.age)}년(${a1.next}세), 상대는 ${d.y0+(b1.next-b1.age)}년(${b1.next}세)에 바뀌어요. 한 사람의 흐름이 먼저 바뀌는 해에는 생활 계획을 함께 다시 맞춰 보세요.`:''];}
+    ps=/관계의 속도/.test(h)?[rowText(r),a1&&b1?`당신은 ${a1.from}~${a1.to}세 대운(${a1.gz}), 상대는 ${b1.from}~${b1.to}세 대운(${b1.gz})을 지나고 있어요. 각자 10년의 다른 구간에 있어 같은 일도 서두르는 정도가 다를 수 있어요.`:'',RP_PAIR_ROW_TEXT['결정 속도'][1]]
+      :[`두 사람의 연지(태어난 해의 띠 글자) 관계는 '${brRel(s1.yp.branch,s2.yp.branch).kind}'${rpIda(brRel(s1.yp.branch,s2.yp.branch).kind)}. 집안 분위기나 가족 행사처럼 바깥 환경이 바뀔 때 반응이 이 관계를 따라가기 쉬워요.`,a1&&b1&&a1.next&&b1.next?`당신의 다음 대운은 ${d.y0+(a1.next-a1.age)}년(${a1.next}세), 상대는 ${d.y0+(b1.next-b1.age)}년(${b1.next}세)에 바뀌어요. 한 사람의 흐름이 먼저 바뀌는 해에는 생활 계획을 함께 다시 맞춰 보세요.`:''];}
   else if(/선택을 존중|역할의 배분|생활 습관|오래 유지/.test(h)){
     const k=/존중/.test(h)?'개인 시간':/역할/.test(h)?'생활 규칙':'감정 표현',r=rows.find(x=>x.k===k);
     ps=[rowText(r),/존중/.test(h)?metric('서로를 바라보는 방식',g.tgScore):/역할/.test(h)?`두 사람 다섯 기운 균형은 ${g.balScore}점이에요. ${g.balScore>=70?'서로 비어 있는 기운을 채워 주는 편이라 잘하는 일 위주로 역할을 나누면 돼요.':'둘 다 약한 기운이 겹쳐, 둘 다 미루기 쉬운 일은 따로 담당을 정해야 해요.'}`:`종합 궁합은 ${g.score}점(${g.grade})이에요. 점수보다 작은 약속을 꾸준히 지키는 습관이 관계를 오래 받쳐 줘요.`,RP_PAIR_ROW_TEXT[k][1]];}
@@ -743,7 +743,7 @@ function rpFill(plan,ai,d,spec,facts){
   // Pilot fields use calculated defaults; unstructured AI fields have no source proof.
   if(!plan.storyPlan)Object.entries(ai.fields).forEach(([k,v])=>{fields[k]=rpUnquote(v);});
   const det=rpDetFields(d),ctxBase={ground:rpGround(d),years:rpAllowedYears(d,facts),marital:d.meta&&d.meta.marital,ledger,zw:d.zw||null};
-  if(plan.storyPlan){const sp=plan.storyPlan,first=sp.selected_signals[0],natal=sp.selected_signals.filter(s=>!s.applicable_period);det.intro=sp.main_theme.split(/(?<=[.!?])\s+/)[0];det.gq='타고난 방식을 지금의 선택에 어떻게 쓸까요?';det.gk1=natal[0]?.keyword||'본인의 기준';det.gk2=natal.find(s=>s.keyword&&s.keyword!==det.gk1)?.keyword||'함께 쓸 강점';det.gk3='역할과 조건 나누기';det.gi1=sp.main_theme;det.gi2=first.counterpoint||sp.limitations[0];det.gi3=sp.resolution?.action||first.advice||'';if(sp.resolution){det.send=sp.resolution.text+' '+sp.resolution.action;det.sq='읽은 성향을 실제로 정할 조건으로 옮겨 보세요.';}}
+  if(plan.storyPlan){const sp=plan.storyPlan,first=sp.selected_signals[0],natal=sp.selected_signals.filter(s=>!s.applicable_period);det.intro=sp.main_theme.split(/(?<=[.!?])\s+/)[0];det.gq='타고난 방식을 지금의 선택에 어떻게 쓸까요?';det.gk1=natal[0]?.keyword||'당신의 기준';det.gk2=natal.find(s=>s.keyword&&s.keyword!==det.gk1)?.keyword||'함께 쓸 강점';det.gk3='역할과 조건 나누기';det.gi1=sp.main_theme;det.gi2=first.counterpoint||sp.limitations[0];det.gi3=sp.resolution?.action||first.advice||'';if(sp.resolution){det.send=sp.resolution.text+' '+sp.resolution.action;det.sq='읽은 성향을 실제로 정할 조건으로 옮겨 보세요.';}}
   // 한눈에 보기 문장을 먼저 장부에 올려 장 본문에서 같은 문장이 반복되지 않게 한다
   ['gi1','gi2','gi3','gq','intro'].forEach(k=>ledger.mark(fields[k]||det[k]||''));
   plan.pages.forEach(pg=>pg.h.forEach((title,k)=>{
@@ -1006,14 +1006,14 @@ function rpVis(pg,d,spec,F){
   }
   if(v==='pillarsAB'&&d.partner){
     const row=(lab,sj)=>`<div class="lb">${lab}</div>`+[sj.yp,sj.mp,sj.dp,sj.hp].map(p=>p?`<div class="cell" style="background:${OH_TINT[SOH[p.stem]]};font-size:17px">${STEMKO[p.stem]}${BRCHKO[p.branch]}<small>${OH_WORD[SOH[p.stem]]}·${OH_WORD[BOH[p.branch]]}</small></div>`:`<div class="cell" style="background:#efece2"><span style="font-size:13px;color:#9aa198">모름</span></div>`).join('');
-    return `<div class="rp-pil"><div class="hd">구분</div>${['연주','월주','일주','시주'].map(l=>`<div class="hd">${l}</div>`).join('')}${row('A · 본인',s)}${row('B · 상대',d.partner.saju)}</div>`;
+    return `<div class="rp-pil"><div class="hd">구분</div>${['연주','월주','일주','시주'].map(l=>`<div class="hd">${l}</div>`).join('')}${row('A · 당신',s)}${row('B · 상대',d.partner.saju)}</div>`;
   }
   if(/^sliders:/.test(v)){
     const sl=SLIDERS[v.split(':')[1]];
     return `<div class="rp-sl">${sl.map(([k,a,b,fn])=>{const x=Math.max(8,Math.min(92,fn(d.persona)));return `<div class="row"><div class="k">${k}</div><div><div class="ends"><span>${a}</span><span>${b}</span></div><div class="track"><div class="fill" style="width:${x}%"></div><div class="knob" style="left:${x}%"></div></div></div></div>`;}).join('')}</div><p class="rp-cap">사주팔자의 기운 분포로 계산한 성향이에요 · 좋고 나쁨이 아니라 기울기예요</p>`;
   }
   if(v==='pair'&&d.persona2){
-    return `<p class="rp-cap" style="text-align:left;margin:0 0 12px;font-weight:700;color:#252c2b">두 사람의 성향 비교</p><div class="rp-pair">${PAIR_ROWS.map(([k,fn])=>`<div class="row"><span>${k}</span><div class="rbars"><div class="bar"><i style="width:${fn(d.persona)}%"></i></div><div class="bar b"><i style="width:${fn(d.persona2)}%"></i></div></div><div class="ab">A<br>B</div></div>`).join('')}</div><div class="rp-legend"><span><i style="background:${tint(ac,.55)}"></i>A · 본인</span><span><i style="background:#c9a08f"></i>B · 상대</span></div><p class="rp-cap">두 사람을 이해하기 위한 비교예요 · 궁합의 확률이 아니에요</p>`;
+    return `<p class="rp-cap" style="text-align:left;margin:0 0 12px;font-weight:700;color:#252c2b">두 사람의 성향 비교</p><div class="rp-pair">${PAIR_ROWS.map(([k,fn])=>`<div class="row"><span>${k}</span><div class="rbars"><div class="bar"><i style="width:${fn(d.persona)}%"></i></div><div class="bar b"><i style="width:${fn(d.persona2)}%"></i></div></div><div class="ab">A<br>B</div></div>`).join('')}</div><div class="rp-legend"><span><i style="background:${tint(ac,.55)}"></i>A · 당신</span><span><i style="background:#c9a08f"></i>B · 상대</span></div><p class="rp-cap">두 사람을 이해하기 위한 비교예요 · 궁합의 확률이 아니에요</p>`;
   }
   if(/^line:/.test(v)){const L=rpLine(d,v.split(':')[1]);return `<p class="rp-cap" style="text-align:left;margin:0 0 4px;font-weight:700;color:#252c2b">${esc(L.cap)}</p>${rpLineSVG(L.pts,ac)}<p class="rp-cap">점수는 흐름을 비교하기 위한 지수예요 · 확률이나 수익률이 아니에요</p>`;}
   if(v==='radar'){const R=rpRadar(d);return `<div style="display:flex;align-items:center;gap:26px;margin:0 0 4px">${rpRadarSVG(R,ac)}<div style="flex:1"><p style="font-size:13px;font-weight:800;color:#252c2b;margin:0 0 12px">${R.length}대 영역 요약</p>${R.map(([l,x])=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;color:#4d5650"><span><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${ac};margin-right:8px"></i>${l}</span><b style="font-weight:400;color:#252c2b">${x}</b></div>`).join('')}</div></div><p class="rp-cap">앞으로 10년 해마다 점수의 평균이에요</p>`;}
@@ -1049,7 +1049,7 @@ function rpAfterVis(pg,F){
   if(v==='talk')return rpTable(['대화 주제','나의 생각','함께 확인할 질문'],['생활과 기대','관계의 속도','경계와 약속'].map((l,r)=>[l,f(`p${pi}c${r}a`),f(`p${pi}c${r}b`)]),true);
   if(v==='childObs')return rpTable(['관찰할 상황','아이의 반응','바꿔볼 환경'],['새로운 활동','놀이와 학습','감정과 관계'].map((l,r)=>[l,f(`p${pi}c${r}a`),f(`p${pi}c${r}b`)]),true);
   if(v==='prep')return rpTable(['함께 준비할 일','현재 상황','다음 행동'],['시간과 돌봄','일과 생활','지원 환경','상담 질문'].map((l,r)=>[l,f(`p${pi}c${r}a`),f(`p${pi}c${r}b`)]),true);
-  if(v==='nameCheck')return rpTable(['확인 항목','후보별 확인 내용'],['정확한 글자','발음과 사용성','본인의 선호','공식 사용'].map((l,r)=>[l,f(`p${pi}c${r}a`)]),true);
+  if(v==='nameCheck')return rpTable(['확인 항목','후보별 확인 내용'],['정확한 글자','발음과 사용성','당신의 선호','공식 사용'].map((l,r)=>[l,f(`p${pi}c${r}a`)]),true);
   return '';
 }
 // 표 위치 — 템플릿처럼 상단 도표형은 소제목 위, 나머지(상황표·확인표)는 소제목 아래 또는 위
@@ -1120,7 +1120,7 @@ function rpInfoPage(host,spec,d){
   let html;
   if(spec.pair&&d.partner){
     const p=d.partner.meta,gn=d.partner.gn,partnerTime=birthTimeReference(p);
-    html=rpTable(['구분','A','B'],[['이름',m.userName||'본인','상대'],['생년월일',birth,`${p.sy}.${pad2(p.sm)}.${pad2(p.sd)}`],['양력 / 음력',cal,gn.cal==='lunar'?`음력${gn.leap?' · 윤달':''}`:'양력'],['입력 시각',time.input,partnerTime.input],['풀이 기준 시각',time.corrected,partnerTime.corrected],['시간 보정',time.note,partnerTime.note],['출생 지역',city,(()=>{try{return cityLabelOf(gn.cityKey);}catch(e){return '';}})()]],true);
+    html=rpTable(['구분','A','B'],[['이름',m.userName||'당신','상대'],['생년월일',birth,`${p.sy}.${pad2(p.sm)}.${pad2(p.sd)}`],['양력 / 음력',cal,gn.cal==='lunar'?`음력${gn.leap?' · 윤달':''}`:'양력'],['입력 시각',time.input,partnerTime.input],['풀이 기준 시각',time.corrected,partnerTime.corrected],['시간 보정',time.note,partnerTime.note],['출생 지역',city,(()=>{try{return cityLabelOf(gn.cityKey);}catch(e){return '';}})()]],true);
   }else html=rpTable(['구분','입력 정보'],[['이름',m.userName||'입력하지 않음'],['생년월일',birth],['달력 구분',cal],['입력 시각',time.input],['풀이 기준 시각',time.corrected],['시간 보정',time.note],['출생 지역',city]],true);
   const cov=d.coverage,system=d.cat==='ziwei'?'자미두수 명반(궁·주성·대한·사화) · 유년은 계산하지 않음':d.cat==='name'?'이름 글자의 소리 오행 · 한자 획수 수리 · 사주의 도움 기운':d.cat==='gunghap'?'두 사람의 사주와 관계 수치 · 각자의 대운':'사주 원국 · 대운 · 해마다·달마다의 운';
   html+=rpTable(['상담 및 해석 기준','입력 정보'],rpInfoRows(spec,d).concat([['명식 기준',spec.pair?'두 사람 모두 만세력 기준 사주팔자':(d.cat==='ziwei'?'음력 명반 + 만세력 사주팔자':'만세력 기준 사주팔자 · 출생 지역 시차 보정')],['해석에 쓴 계산',system]].concat(cov&&cov.total?[['소제목 본문 작성',`${cov.total}개 중 AI 종합 ${cov.ai}개 · 계산 근거로 쓴 해석 ${cov.computed}개`]]:[])),true);

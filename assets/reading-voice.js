@@ -10,7 +10,7 @@ const edits=[
  ['지금은 좋은 뜻보다 실제 시간과 보상이 맞는지가 더 중요해지는 쪽이에요.','지금은 좋은 뜻만큼 들이는 시간과 받는 보상도 중요해요.'],
  ['맡을 수 있는 일과 오래 이어갈 활동의 범위를 구분해 볼 때예요.','잘할 수 있는 일이라도 오래 이어갈 수 있는지 따져 보세요.'],
  ['현재의 조건과 선택의 기준을 함께 살펴보세요.','지금 감당할 시간과 비용부터 확인하세요.'],
- ['개인화된 해석','본인에게 맞춘 풀이'],['종합적으로 해석하면','함께 놓고 보면'],
+ ['개인화된 해석','맞춤 풀이'],['종합적으로 해석하면','함께 놓고 보면'],
  ['구조로 해석돼요','모습으로 읽혀요'],['성향이 강조됩니다','성향이 두드러져요'],
  ['현실적인 의미로 옮기면','생활에서는'],['생활 장면으로 옮기면','생활에서는'],
  ['삶의 영역에서','생활에서'],['해당 영역에서','이 부분에서'],
@@ -54,20 +54,38 @@ function periodIssues(value,periods,unit){
 }
 function headingsHTML(value){return String(value).replace(/(<(?:script|style|code|pre|textarea)\b[^>]*>[\s\S]*?<\/(?:script|style|code|pre|textarea)>|(<h[1-6]\b[^>]*>)([\s\S]*?)(<\/h[1-6]>))/gi,(match,protectedOrHeading,open,body,close)=>open?open+headingHTML(body)+close:match);}
 function blocksHTML(value){return String(value).replace(/(<(?:script|style|code|pre|textarea)\b[^>]*>[\s\S]*?<\/(?:script|style|code|pre|textarea)>|(<(?:p|li|blockquote)\b[^>]*>)([\s\S]*?)(<\/(?:p|li|blockquote)>))/gi,(match,protectedOrBlock,open,body,close)=>open?open+headingHTML(body)+close:match);}
+// AGENTS.md §0: '당신'은 장(섹션)마다 두 번까지만 쓴다. 그 뒤의 '당신은/이/의/을/를/도/에게'는 주어를 생략한다.
+// 두 사람을 견주는 문장(상대·두 사람·두 분)은 누가 누구인지 흐려지므로 그대로 둔다.
+const ADDRESS=/(^|[\s"'“‘(])당신(은|이|의|을|를|도|에게)?(?=\s|[가-힣])\s?/g;
+function limitAddress(value,state){
+ if(typeof value!=='string'||value.indexOf('당신')<0)return value;
+ return value.replace(ADDRESS,(m,pre,josa,at,all)=>{
+  state.n=(state.n||0)+1;if(state.n<=2||!josa)return m;
+  const near=all.slice(Math.max(0,at-80),at+80);if(/상대|두 사람|두 분|아이|자녀|부모/.test(near))return m;
+  return pre;
+ });
+}
+function addressHTML(value){
+ return String(value).split(/(?=<section\b|<h[1-3]\b)/i).map(chunk=>{const state={n:0};let skip=0;return chunk.split(/(<!--[\s\S]*?-->|<[^>]*>)/g).map(part=>{
+  if(part.startsWith('<')){if(/^<\/(?:script|style|code|pre|textarea)\b/i.test(part))skip=Math.max(0,skip-1);else if(/^<(?:script|style|code|pre|textarea)\b/i.test(part))skip++;return part;}
+  return skip?part:limitAddress(part,state);
+ }).join('');}).join('');
+}
 function text(value){if(typeof value!=='string')return value;let out=cleanText(value);for(const [from,to]of edits)out=out.split(from).join(to);return out;}
 function html(value){
  if(typeof value!=='string')return value;
  let skip=0;const edited=value.split(/(<!--[\s\S]*?-->|<[^>]*>)/g).map(part=>{
   if(part.startsWith('<')){if(/^<\/(?:script|style|code|pre|textarea)\b/i.test(part))skip=Math.max(0,skip-1);else if(/^<(?:script|style|code|pre|textarea)\b/i.test(part))skip++;return part;}
   return skip?part:text(part);
- }).join('');return headingsHTML(blocksHTML(edited));
+ }).join('');return headingsHTML(blocksHTML(addressHTML(edited)));
 }
 function apply(root){
  if(!root?.ownerDocument)return;
  const walker=root.ownerDocument.createTreeWalker(root,4),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
- for(const n of nodes){if(n.parentElement?.closest('script,style,code,pre,textarea,input,[contenteditable="true"],.lk,.lk-m,.term'))continue;const next=text(n.nodeValue);if(next!==n.nodeValue)n.nodeValue=next;}
+ const counts=new Map();
+ for(const n of nodes){if(n.parentElement?.closest('script,style,code,pre,textarea,input,[contenteditable="true"],.lk,.lk-m,.term'))continue;const box=n.parentElement?.closest('section,h1,h2,h3')||root;if(!counts.has(box))counts.set(box,{n:0});const next=limitAddress(text(n.nodeValue),counts.get(box));if(next!==n.nodeValue)n.nodeValue=next;}
  for(const h of root.querySelectorAll('h1,h2,h3,h4,p,li,blockquote')){if(/^H[1-6]$/.test(h.tagName)&&appendixTitle(h.textContent)){const section=h.closest('section');if(section&&section!==root)section.remove();else h.remove();continue;}const next=headingHTML(h.innerHTML);if(next!==h.innerHTML)h.innerHTML=next;}
 }
 function install(scope,names){for(const name of names){const fn=scope[name];if(typeof fn!=='function'||fn.readingVoiceVersion)continue;const wrapped=function(...args){const result=fn.apply(this,args);if(typeof result==='string')return scope.ReadingVoice.html(result);if(args[0]?.nodeType===1)scope.ReadingVoice.apply(args[0]);return result;};wrapped.readingVoiceVersion=VERSION;scope[name]=wrapped;}}
-return {VERSION,text,cleanText,markdown,foreignScript,headingHTML,periodIssues,headingsHTML,html,apply,install};
+return {VERSION,limitAddress,addressHTML,text,cleanText,markdown,foreignScript,headingHTML,periodIssues,headingsHTML,html,apply,install};
 });

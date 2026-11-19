@@ -391,7 +391,7 @@ const harness = `
       let out='';try{out=(__sceneRender[cat]||(()=>renderTopicPaid(cat,SELF,_meta)))();}catch(e){out='ERR '+e.message;}
       _meta.ctx=sv;
       const txt=clean(out),sc=(out.match(/<div class="lv4-scene">([\\s\\S]*?)<\\/div>/)||[])[1]||'';
-      if(!out.includes('lv4-scene')||/undefined|NaN|\\$\\{|ERR /.test(txt)||!sc||/(^|\\s)결(\\s|이|을|에)|당신|상관|여덟 글자/.test(clean(sc)))__sceneBad.push(cat+':'+key);
+      if(!out.includes('lv4-scene')||/undefined|NaN|\\$\\{|ERR /.test(txt)||!sc||/(^|\\s)결(\\s|이|을|에)|본인|상관|여덟 글자/.test(clean(sc)))__sceneBad.push(cat+':'+key);
     }));
     ok('상황별 본문 장면: 모든 상황 선택지가 해당 섹션에 장면 문단을 넣고, 빈 값·금지어 없음',__sceneBad.length===0,__sceneBad.join(', '));
 

@@ -32,7 +32,7 @@ function storySajuInput(saju,meta,chapters){
    interpretation_method:'existing brRel',meaning:`${sa.label}와 ${sb.label} 사이에 ${rel.kind} 관계가 계산됐어요. 두 자리의 요구가 엇갈리는 조건을 함께 살피되, 특정 사건이 있었다고 단정하지 않아요.`});
  }
  const axes=uniqStory(e.nodes.map(n=>n.axis)).filter(a=>READING_AXIS[a]),keyNodes=axes.slice(0,2).map(a=>e.nodes.find(n=>n.axis===a));
- const resolution={signal_ids:keyNodes.map(n=>'saju:'+n.id),text:young?ageNarrative[3]:`이 풀이에서 일과 돈, 관계를 이어 주는 기준은 ${axes.slice(0,2).map(a=>READING_AXIS[a]).join('과 ')}을 상황에 맞게 나누어 쓰는 거예요. 강점을 더 쓰기 전에 본인이 정할 몫과 함께 맞출 몫을 구분해 보세요.`,action:young?readingAction(e,'core','core').text:READING_ACTION.core[e.primary]};
+ const resolution={signal_ids:keyNodes.map(n=>'saju:'+n.id),text:young?ageNarrative[3]:`이 풀이에서 일과 돈, 관계를 이어 주는 기준은 ${axes.slice(0,2).map(a=>READING_AXIS[a]).join('과 ')}을 상황에 맞게 나누어 쓰는 거예요. 강점을 더 쓰기 전에 당신이 정할 몫과 함께 맞출 몫을 구분해 보세요.`,action:young?readingAction(e,'core','core').text:READING_ACTION.core[e.primary]};
  return {resolution,system:'saju',product:'life',question:storyQuestion(meta,'life'),signals,relations,chapters,snapshot:{nodes:e.nodes,flow:e.flow,decade:e.decade,hourKnown:e.hourKnown},
   settings:{calculation:'기존 만세력·대운·세운 결과 재사용',interpretation:'기존 십신 축·지지 관계의 상징적 해석',birth_time_known:e.hourKnown},
   limitations:['격국·조후·용신의 정밀 학파 판정을 새로 수행하지 않아요.','같은 사주라도 실제 과거 사건과 삶의 환경은 달라요.'].concat(e.hourKnown?[]:['출생시간 미상: 시주는 제외하고 대운 시작 시점도 기존 엔진의 미상 처리 범위로 읽어요.']),
@@ -50,7 +50,7 @@ function storyTarotInput(input,chapters){
   relations.push({id:'tarot-link-'+i,kind:same?'shared_context':'contrast',signal_ids:[signals[i].id,signals[i+1].id],source_value:{cards:[a.card.id,b.card.id],positions:[a.positionLabel,b.positionLabel]},
    meaning:`${a.positionLabel}의 ${a.cardNameKo}와 ${b.positionLabel}의 ${b.cardNameKo}를 함께 읽으면, ${same?`${TAROT_SUIT_THEME[a.suit]||'삶의 방향'}이라는 같은 무대 안에서 두 조건을 구분해야 해요.`:'처음 살필 조건과 다음 자리에서 살필 조건이 달라요.'} ${a.meaning} 이어지는 자리에서는 ${b.meaning}`});
  }
- const resolution={signal_ids:signals.length?[signals[0].id,signals.at(-1).id]:[],text:signals.length?`${P.cards[0].cardNameKo}에서 살핀 출발 조건을 ${P.cards.at(-1).cardNameKo}의 조언과 함께 판단해 보세요. 결과를 기다리기보다 본인이 바꿀 수 있는 조건을 하나 확인하는 것이 이 질문의 다음 걸음이에요.`:'',action:P.advice?.advice||''};
+ const resolution={signal_ids:signals.length?[signals[0].id,signals.at(-1).id]:[],text:signals.length?`${P.cards[0].cardNameKo}에서 살핀 출발 조건을 ${P.cards.at(-1).cardNameKo}의 조언과 함께 판단해 보세요. 결과를 기다리기보다 당신이 바꿀 수 있는 조건을 하나 확인하는 것이 이 질문의 다음 걸음이에요.`:'',action:P.advice?.advice||''};
  return {resolution,system:'tarot',product:input.topic||input.questionCategory||'general',question:input.question,signals,relations,
   chapters:chapters.map((c,i)=>({...c,signalIds:i===2||i===3?signals.map(s=>s.id):i===4?[signals[P.cards.indexOf(P.outcome)]?.id].filter(Boolean):i===5?[signals[P.cards.indexOf(P.advice)]?.id].filter(Boolean):undefined})),
   snapshot:signals.map(s=>s.source_value),settings:{spread:input.spreadName,positions_fixed_before_draw:true,reading:'카드별 고유 정·역방향과 위치 역할',celtic_cross:'기존 서비스 배열을 유지'},
@@ -86,7 +86,7 @@ function storyAstroInput(chart,transit,chapters,question,context={}){
  }
  if(product==='gunghap'&&context.partnerChart){
   for(const p of context.partnerChart.planets||[]){if(!ZODIAC_SIGNS.some(s=>s.id===p.sign))continue;const v={planet:p.planet,sign:p.sign};if(context.partnerChart.birthInfo?.birthTimeUnknown===false&&p.house)v.house=p.house;
-   signals.push(storySignal('astrology','partner.planet.'+p.planet,'partnerChart.planets.'+p.planet,v,`상대방 ${planetNameKo(p.planet)}은 ${signNameKo(p.sign)}에 있어요. 본인의 배치와 구분해 두 사람의 다른 요구를 살펴봐요.`,{topic:['love','gunghap'],label:'상대방 '+planetNameKo(p.planet),priority:2}));
+   signals.push(storySignal('astrology','partner.planet.'+p.planet,'partnerChart.planets.'+p.planet,v,`상대방 ${planetNameKo(p.planet)}은 ${signNameKo(p.sign)}에 있어요. 당신의 배치와 구분해 두 사람의 다른 요구를 살펴봐요.`,{topic:['love','gunghap'],label:'상대방 '+planetNameKo(p.planet),priority:2}));
   }
   for(const a of context.synastryAspects||[]){if(!ASTRO_ASPECT_KO[a.aspectType]||!Number.isFinite(a.orb))continue;
    signals.push(storySignal('astrology','synastry.'+signals.length,'synastryAspects',a,'제공된 두 차트 사이의 실제 각도를 바탕으로 조율할 부분을 살펴봐요.',{topic:['love','gunghap'],label:'두 차트의 '+ASTRO_ASPECT_KO[a.aspectType],priority:3}));
@@ -138,7 +138,7 @@ function storyEvidenceHTML(plan,chapter){
  return `<details class="story-evidence"><summary>이 해석이 나온 이유</summary><ul>${selected.map(s=>`<li data-signal-id="${interpretationEsc(s.id)}"><b>${interpretationEsc(s.label||s.source_reference)}</b><span>${interpretationText(s.meaning)}</span></li>`).join('')}</ul><p>계산된 배치와 그 배치에 대한 상징적 해석을 함께 표시했어요.</p>${plan.limitations.map(l=>`<p>${interpretationText(l)}</p>`).join('')}</details>`;
 }
 function storyHeaderHTML(plan){
- const qs={saju:'타고난 방식은 지금의 선택과 어떻게 이어질까요?',tarot:plan.user_question||'이 고민에서 먼저 확인할 조건은 무엇일까요?',astrology:'본인 안의 서로 다른 욕구를 어떻게 함께 살릴까요?',ziwei:'지금 중심이 되는 삶의 무대는 어디일까요?'};
+ const qs={saju:'타고난 방식은 지금의 선택과 어떻게 이어질까요?',tarot:plan.user_question||'이 고민에서 먼저 확인할 조건은 무엇일까요?',astrology:'당신의 안의 서로 다른 욕구를 어떻게 함께 살릴까요?',ziwei:'지금 중심이 되는 삶의 무대는 어디일까요?'};
  return `<section class="story-overview" data-story-version="${plan.version}"><h3>${interpretationText(qs[plan.system])}</h3><p>${interpretationText(plan.main_theme)}</p></section>`;
 }
 function storyEnrichHTML(html,system,product,input){
@@ -206,8 +206,8 @@ function storyValidateMarkdown(md,system,input){
   const names={태양:'sun',달:'moon',수성:'mercury',금성:'venus',화성:'mars',목성:'jupiter',토성:'saturn'};
   for(const sent of String(md).split(/(?<=[.!?])\s+/)){
    if(/지금 하늘|트랜짓|현재 하늘/.test(sent))continue;
-   for(const m of sent.matchAll(/(?:(본인(?:의)?|당신(?:의)?|출생|상대방(?:의)?)\s*)?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s*([가-힣]{1,3}자리)/g)){
-    const partner=m[1]?.startsWith('상대방')||(!m[1]&&/상대방/.test(sent)&&!/본인|당신|출생/.test(sent)),source=partner?input.partnerChart:chart;
+   for(const m of sent.matchAll(/(?:((?:본인|당신)(?:의)?|당신(?:의)?|출생|상대방(?:의)?)\s*)?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s*([가-힣]{1,3}자리)/g)){
+    const partner=m[1]?.startsWith('상대방')||(!m[1]&&/상대방/.test(sent)&&!/(?:본인|당신)|당신|출생/.test(sent)),source=partner?input.partnerChart:chart;
     if(!source)return false;const p=findPlanet(source,names[m[2]]);if(!p||signNameKo(p.sign)!==m[3])return false;
    }
   }

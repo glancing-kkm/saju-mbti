@@ -93,7 +93,7 @@ try{
  rt.set(rt.fixture(40,3,'married'));
  const gh=rt.text(run("buildGunghapReadingV4(_saju,calcSaju(1992,8,10,8,0),{sy1:_meta.sy,sm1:_meta.sm,sd1:_meta.sd,h1:_meta.hour,min1:_meta.min,gen1:'male',sy2:1992,sm2:8,sd2:10,h2:8,min2:0,gen2:'female'})"));
  const ghA=run('personaAxesValues(_saju)'),ghB=run('personaAxesValues(calcSaju(1992,8,10,8,0))');
- assert(gh.includes(`본인 ${ghA.E}`)||gh.includes(`본인 ${ghA.A}`)||gh.includes(`본인 ${ghA.I}`)||gh.includes(`본인 ${ghA.L}`)||/네 가지가 모두 10 이내/.test(gh),'궁합 해석은 실제 성향 막대 값을 인용');
+ assert(gh.includes(`당신 ${ghA.E}`)||gh.includes(`당신 ${ghA.A}`)||gh.includes(`당신 ${ghA.I}`)||gh.includes(`당신 ${ghA.L}`)||/네 가지가 모두 10 이내/.test(gh),'궁합 해석은 실제 성향 막대 값을 인용');
  assert(/기준이에요/.test(gh)&&/대운을 지나고 있어요/.test(gh));
  const nm=rt.text(run("nameEditorialHTML(_saju,{surname:'김',given:'하늘'})"));assert(/김\(목\)/.test(nm)&&/하\(토\)/.test(nm)&&/기준이에요/.test(nm),'이름 해석은 실제 글자의 소리 오행을 인용');
  const ms=rt.text(run('renderManseryeokExpanded(_saju,_meta.sy,_meta.sm,_meta.sd,_meta.hour,_meta.min,s2l(_meta.sy,_meta.sm,_meta.sd))'));assert(/이 명식을 생활로 옮기면/.test(ms)&&/고를 때의 기준/.test(ms));
@@ -144,7 +144,7 @@ try{
   const text=r.pages.map(p=>p.textContent).join(' ').replace(/[\u00a0\u200b\u2060]/g,' ').replace(/\s+/g,' ');
   if(cat==='ziwei'){assert(/유년은 이 보고서에서 따로 계산하지 않았어요/.test(text));assert(!/일간 [가-힣]{1}를 기준으로 각 자리의 관계를 살폈어요/.test(text));}
   if(cat==='name'){assert(/소리 오행/.test(text));assert(!/일간 [가-힣]{1}를 기준으로 각 자리의 관계를 살폈어요/.test(text));}
-  if(cat==='gunghap')assert(/본인 \d+, 상대 \d+/.test(text),'궁합은 두 사람의 실제 차이로 채움');
+  if(cat==='gunghap')assert(/당신 \d+, 상대 \d+/.test(text),'궁합은 두 사람의 실제 차이로 채움');
   assert(/소제목 본문 작성/.test(text)&&/해석에 쓴 계산/.test(text),'본문 출처와 계산 범위 표시');
   pdfStats.push(`${cat} ${paras.length}문단`);r.host.remove();
  }

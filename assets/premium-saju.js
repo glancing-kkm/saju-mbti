@@ -384,7 +384,7 @@ const products={
    },
    {
     "title": "관계를 되돌아보는 방식",
-    "focus": "본인 원국의 표현·판단·배우자궁 분석"
+    "focus": "당신의 원국의 표현·판단·배우자궁 분석"
    },
    {
     "title": "이별의 이유와 반복될 수 있는 문제",
@@ -821,7 +821,7 @@ const products={
     "key": "activity",
     "label": "아이의 학년·생활 단계",
     "type": "text",
-    "placeholder": "아이 본인의 출생정보를 입력해 주세요"
+    "placeholder": "아이 당신의 출생정보를 입력해 주세요"
    },
    {
     "key": "concern",
@@ -839,7 +839,7 @@ const products={
   "chapters": [
    {
     "title": "아이는 어떤 방식으로 성장할까",
-    "focus": "아이 본인의 원국과 보호자의 질문을 구분해 도입"
+    "focus": "아이 당신의 원국과 보호자의 질문을 구분해 도입"
    },
    {
     "title": "타고난 기질과 감정 표현",
@@ -1116,7 +1116,7 @@ const products={
     "key": "goal",
     "label": "이름을 짓거나 바꾸는 목적",
     "type": "text",
-    "placeholder": "본인 개명·아이 작명 등"
+    "placeholder": "당신의 개명·아이 작명 등"
    },
    {
     "key": "concern",

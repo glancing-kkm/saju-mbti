@@ -1,7 +1,8 @@
 'use strict';
 const assert=require('node:assert/strict');
 const rt=require('./lib/reading-runtime')(),{run,w,d}=rt;
-const clean=s=>rt.clean(s);
+// 화면 정리기가 장마다 '당신'을 두 번까지만 남기므로(AGENTS.md §0) 호칭을 뺀 뒤 비교한다.
+const clean=s=>rt.clean(s).replace(/당신(?:은|이|의|을|를|도|에게)?\s?/g,'');
 try{
  const cards=run('TAROT_CARDS');
  assert.equal(cards.length,78);assert.equal(new Set(cards.map(c=>c.id)).size,78);
