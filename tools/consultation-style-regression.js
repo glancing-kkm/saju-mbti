@@ -20,6 +20,14 @@ try{
   }
  }
  for(const fn of ['buildTarotReadingSystemPrompt','buildAstrologyReadingSystemPrompt'])assert(vm.runInContext(`${fn}('ko')`,ctx).includes('[상담형 집필 원칙]'));
+ // 2026-11-19 사용자 결정: 모든 결제 후 풀이 프롬프트는 쉬운 상담가 규칙이 맨 앞(최우선)이고, 합니다체·한자 병기·하십시오 지시가 없다.
+ ctx.data={product:'life',depth:'web'};
+ for(const expr of ["buildTarotReadingSystemPrompt('ko')","buildAstrologyReadingSystemPrompt('ko')","professionalReportSystem(data,{code:'ko'})","buildReadingSystemPrompt('reading-deep',{language:'ko',synthesis:true})"]){
+  const p=vm.runInContext(expr,ctx);assert(p.startsWith('[최우선 집필 규칙'),expr);
+  for(const w of ['비유와 꾸밈 표현 금지','전문용어는 최대 3개','한자는 쓰지 않는다','해요체로 쓴다','출력 전 스스로 점검'])assert(p.includes(w),expr+' '+w);
+  assert(!/합니다체로 씁|~하십시오|칠살\(七殺\)/.test(p),expr);
+ }
+ assert(!vm.runInContext("buildTarotReadingSystemPrompt('en')",ctx).includes('[최우선 집필 규칙'));
  const cards=[{positionLabel:'현재',cardNameKo:'마법사',orientation:'upright'},{positionLabel:'과제',cardNameKo:'은둔자',orientation:'upright'},{positionLabel:'조언',cardNameKo:'힘',orientation:'upright'}];ctx.input={cards,question:'어떻게 선택할까요?',topic:'career'};
  const tarot=vm.runInContext("buildTarotReadingUserPrompt(input,'ko')",ctx);assert(tarot.includes('실제 뽑힌 카드의 자리·방향'));assert(tarot.includes('2,000~2,800자'));assert(tarot.includes('능력이 드러나는 환경'));
  for(const system of ['saju','tarot','astrology','ziwei','name']){ctx.system=system;assert(vm.runInContext("consultationFocus(system,'health')",ctx).includes('질병·사고·회복 시기'));}

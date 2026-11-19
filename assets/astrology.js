@@ -885,7 +885,7 @@ function astroAIQuality(md,flow){if(typeof ReadingVoice==='object'&&ReadingVoice
   const unknown=chart.birthInfo&&chart.birthInfo.birthTimeUnknown;
   if(unknown&&/상승궁|어센던트|ASC|\d{1,2}\s?하우스/.test(t.replace(/상승궁과 하우스[^.]*제외[^.]*\./g,'')))return false;
   const names={태양:'sun',달:'moon',수성:'mercury',금성:'venus',화성:'mars',목성:'jupiter',토성:'saturn'};
-  for(const m of t.matchAll(/본인(?:의)?\s?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s?([가-힣]{1,3}자리)/g)){const p=findPlanet(chart,names[m[1]]);if(p&&signNameKo(p.sign)!==m[2])return false;}
+  for(const m of t.matchAll(/(?:본인|당신)(?:의)?\s?(태양|달|수성|금성|화성|목성|토성)(?:은|는|이|가)?\s?([가-힣]{1,3}자리)/g)){const p=findPlanet(chart,names[m[1]]);if(p&&signNameKo(p.sign)!==m[2])return false;}
   const years=astroLifeYearsFor(flow);if(years.length&&/[가-힣]/.test(t)&&typeof ReadingVoice==='object'&&ReadingVoice.periodIssues(t,years.map(x=>x.year),'년').length)return false;
   const y=new Date().getFullYear(),allowed=new Set([String(y),String(y+1),String((flow&&flow.targetYear)||y),String(chart.birthInfo&&chart.birthInfo.year),...years.map(x=>String(x.year))]);
   return !(t.match(/(?:19|20)\d{2}년/g)||[]).some(x=>!allowed.has(x.slice(0,4)))&&(typeof storyValidateMarkdown!=='function'||storyValidateMarkdown(t,'astrology',flow));

@@ -3103,7 +3103,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <script src="assets/premium-saju.js?v=bc12443ffd5c"></script>
 <script src="assets/reading-stage.js?v=c31fde7874c7"></script>
 <script src="assets/report-access.js?v=d29a7133094b"></script>
-<script src="assets/ai-report.js?v=38893dbe26db"></script>
+<script src="assets/ai-report.js?v=89789ef33894"></script>
 <script src="assets/reading-voice.js?v=531fc44d3533"></script>
 <link rel="stylesheet" href="assets/interpretation-story.css?v=b1e6c29e04c5">
 <script>window.FortuneStoryConfig=Object.assign({enabled:false,mode:'pilot'},window.FortuneStoryConfig||{});</script>
@@ -13139,7 +13139,7 @@ function relationshipReadingHTML(html,meta){
 }
 const LC_ROLE={love:'운명의 상대 · 이성 인연',helper:'귀인 · 나를 끌어 주는 윗사람',foe:'주의 인물 · 관계의 기준을 살필 사람'};
 function lcProfileCard(kind,title,img,rows,portrait,role){
-  const photo=portrait?` data-portrait="${encodeURIComponent(JSON.stringify({...portrait,v:4,country:portrait.country||'대한민국'}))}"`:'';
+  const photo=portrait?` data-portrait="${encodeURIComponent(JSON.stringify({...portrait,v:5,country:portrait.country||'대한민국'}))}"`:'';
   const image=portrait?`<div class="lc-pcard-img lc-portrait-pending" role="status" aria-label="대표 인물 이미지 생성 중"><img alt="AI가 생성할 대표 인물의 인상 이미지" hidden width="300" height="400"><span class="lc-portrait-status">대표 인물 이미지를 준비하고 있어요</span></div>`:`<div class="lc-pcard-img"><img src="${img}" alt="" loading="lazy" width="300" height="400"></div>`;
   if(portrait)rows=[['대표 인물',`${portrait.gender==='female'?'여성':'남성'} · ${portrait.age}세 · ${portrait.country||'대한민국'}`],...rows];
   return `<div class="lc-pcard ${kind}" data-person-index="1"${photo}>${image}<div class="lc-pcard-body"><span class="lc-pcard-role">${role||LC_ROLE[kind]||''}</span><h4>${title}</h4><dl>${rows.filter(r=>r&&r[1]).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl><small class="lc-pcard-note">대표 인물의 AI 인상 이미지 · 실존 인물이 아니에요</small></div></div>`;
@@ -13411,7 +13411,8 @@ function lcWhenYM(year,month,y0){return month?`${year}년 <span class="lk-m">${m
 
 // 귀인과 악연이 한눈에 다른 사람으로 보이도록 머리 모양·안경·옷차림을 서로 다른 목록에서 고른다(이미지 생성용 영어 묘사).
 const LC_PORTRAIT_LOOK={
- helper:{male:['short salt-and-pepper hair','neatly combed graying hair','close-cropped hair graying at the temples','short side-parted hair with a few gray strands'],female:['shoulder-length hair with gray strands','a low bun with graying hair','a short natural gray bob','softly permed short hair'],extra:['thin metal-frame glasses','round tortoiseshell glasses','no glasses, kind laugh lines','reading glasses on a cord'],wear:['a navy knit cardigan over a collared shirt','a beige linen jacket','a soft gray turtleneck sweater','a cream knit vest over a light shirt']},
+ // 머리 색과 주름은 나이에 맞춰 워커가 정한다. 여기에는 색이 없는 머리 모양만 둔다(나이와 안 맞는 흰머리 방지).
+ helper:{male:['short neatly combed hair','close-cropped hair','short side-parted hair','short textured hair'],female:['shoulder-length straight hair','a neat low bun','a short bob','softly permed short hair'],extra:['thin metal-frame glasses','round tortoiseshell glasses','no glasses, a kind smile','no glasses, a simple wristwatch'],wear:['a navy knit cardigan over a collared shirt','a beige linen jacket','a soft gray turtleneck sweater','a cream knit vest over a light shirt']},
  foe:{male:['slicked-back dark hair','a sharp undercut with a hard side part','a textured crop dyed light brown','medium wavy hair pushed back'],female:['long sleek hair with a middle part','glossy dyed brown waves','a sharp chin-length bob','a sleek high ponytail'],extra:['no glasses, a slim silver watch','no glasses, small stud earrings','thin black rectangular glasses','no glasses, a thin chain necklace'],wear:['a fitted black blazer over a black T-shirt','a dark leather jacket','a camel trench coat over a dark turtleneck','a fitted dark shirt with rolled sleeves']}
 };
 function lcPortraitTraits(kind,g,seed){const L=LC_PORTRAIT_LOOK[kind];if(!L)return '';const n=Math.abs(Number(seed)||0),pick=(a,k)=>a[Math.floor(n/[1,4,16][k])%a.length];return [pick(L[g==='female'?'female':'male'],0),pick(L.extra,1),pick(L.wear,2)].join(', ');}
@@ -25541,7 +25542,7 @@ function _hanziSearchGoPage(delta){
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=dfa34b8a2df1">
+<script src="assets/astrology.js?v=760d657cdd38">
 </script>
 </body>
 </html>

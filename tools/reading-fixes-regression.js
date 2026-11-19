@@ -121,8 +121,10 @@ vm.runInContext(fs.readFileSync(path.join(root,'worker/saju-chat-worker.js'),'ut
  console.log('✓ 서버: 서명 검증·결제 건별 1회·정확한 질문권·오류 미차감·재시도·다른 카테고리 차단·사용량 동기화');
  let prompt='';server.photoEnv={AI:{run:async(model,input)=>{assert.equal(model,'@cf/black-forest-labs/flux-2-klein-9b');const form=await new Response(input.multipart.body,{headers:{'Content-Type':input.multipart.contentType}}).formData();prompt=form.get('prompt');return {image:'mock-image-only'};}}};
  server.photoBody={kind:'helper',gender:'female',age:58,country:'일본',look:2,seed:72,traits:'calm expression and neat appearance'};
- const photo=await vm.runInContext("handlePortrait(new Request('https://worker.example/portrait',{method:'POST',body:JSON.stringify(photoBody)}),photoEnv)",server);assert.equal(photo.status,200);assert.match(prompt,/Japanese woman around 58/);assert.match(prompt,/calm expression/);assert.match(prompt,/Photorealistic/);
- console.log('✓ 대표 인물 사진: 성별·나이·국가·특징을 실사풍 생성 요청에 전달(모델 호출은 모의 처리)');
+ const photo=await vm.runInContext("handlePortrait(new Request('https://worker.example/portrait',{method:'POST',body:JSON.stringify(photoBody)}),photoEnv)",server);assert.equal(photo.status,200);assert.match(prompt,/Japanese woman in their late 50s, exactly 58 years old/);assert.match(prompt,/never older than 58/);assert.match(prompt,/calm expression/);assert.match(prompt,/Photorealistic/);
+ server.photoBody={kind:'helper',gender:'male',age:42,look:1,seed:3,traits:'short salt-and-pepper hair, thin metal-frame glasses'};
+ await vm.runInContext("handlePortrait(new Request('https://worker.example/portrait',{method:'POST',body:JSON.stringify(photoBody)}),photoEnv)",server);assert.doesNotMatch(prompt,/salt-and-pepper/);assert.match(prompt,/no gray or white hair/);assert.match(prompt,/thin metal-frame glasses/);
+ console.log('✓ 대표 인물 사진: 성별·나이·국가·특징을 실사풍 생성 요청에 전달, 50세 미만은 흰머리 표현 제외(모델 호출은 모의 처리)');
  // 서머타임: 1987·1988년 등 기간이면 체크하지 않을 때 1시간 앞당기고(자정을 넘으면 날짜도), 체크하면 입력 그대로.
  assert.equal(run('krDstActive(1987,9,21,8,45)'),true);assert.equal(run('krDstActive(1987,10,11,3,0)'),false);assert.equal(run('krDstActive(1990,7,1,12,0)'),false);
  assert.equal(run('JSON.stringify(krDstShift(1987,9,21,0,20))'),JSON.stringify({y:1987,m:9,d:20,h:23,mi:20}));
