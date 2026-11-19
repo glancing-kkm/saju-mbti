@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 
 <!-- Google AdSense -->
 <meta name="google-adsense-account" content="ca-pub-9194151925851653">
@@ -2164,7 +2164,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 </style>
 <link rel="stylesheet" href="/assets/design-system.css">
 <link rel="stylesheet" href="/assets/journey.css">
-<link rel="stylesheet" href="/assets/night.css?v=d11a534947b9">
+<link rel="stylesheet" href="/assets/night.css?v=d8cafa824d32">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=0c8dec8e8a52">
 </head>
 <body>
@@ -2731,9 +2731,12 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <fieldset class="cat-extra" id="catExtraNewyear" style="display:none">
         <legend style="all:unset"><div class="cat-extra-head"><span class="cat-extra-title">신년운세 — 보고 싶은 해</span></div></legend>
         <div class="cat-extra-desc">한 해의 흐름을 사주와 올해·10년 흐름까지 함께 보며 입체적으로 풀어드려요.</div>
-        <div class="ig">
-          <label for="nyY">연도 (예: 2027)</label>
-          <input type="number" id="nyY" name="nyYear" placeholder="2027" min="1900" max="2100" inputmode="numeric" autocomplete="off">
+        <div class="name-entry ny-entry">
+          <div class="ig">
+            <label for="nyY">연도 (예: 2027)</label>
+            <input type="number" id="nyY" name="nyYear" placeholder="2027" min="1900" max="2100" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter'&&!event.isComposing){event.preventDefault();confirmNewyearStep();}">
+          </div>
+          <button type="button" class="name-next" onclick="confirmNewyearStep()">다음 <span aria-hidden="true">→</span></button>
         </div>
       </fieldset>
 
@@ -4671,6 +4674,12 @@ function confirmNameStep(){
   clearErr();document.getElementById('nameFieldset').dataset.wzConfirmed='1';wzAdvance(false);
   const next=_wz.steps[_wz.open],button=next&&next[0].querySelector('button');
   if(button)button.focus({preventScroll:true});
+}
+// 신년운세 연도는 2027이 미리 채워져 있어서, 그대로 쓸 때도 넘어갈 수 있게 다음 버튼으로 확인한다.
+function confirmNewyearStep(){
+  const y=parseInt(document.getElementById('nyY').value,10);
+  if(!y||y<1900||y>2100)return showErr('보고 싶은 해(1900~2100)를 입력해 주세요.','nyY');
+  clearErr();document.getElementById('catExtraNewyear').dataset.wzTouched='1';wzAdvance(true);
 }
 // 이 칸을 다 채웠는지 — 다 채웠을 때만 다음 항목으로 커서를 옮긴다
 function wzFieldFinished(el){
@@ -25549,6 +25558,25 @@ function _hanziSearchGoPage(delta){
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
 <script src="assets/astrology.js?v=f785a027ec8c">
+</script>
+<style>html.kb-open body{padding-bottom:60vh}</style>
+<script>
+// 휴대폰 키보드가 입력 칸을 가리지 않게 한다. 아이폰은 키보드가 올라와도 화면 크기가 그대로라
+// 페이지가 짧으면 칸을 올릴 여유가 없다. 입력 중에만 아래 여백을 붙이고, 보이는 화면 위쪽 1/3 지점으로 칸을 올린다.
+(function(){
+  const vv=window.visualViewport;
+  if(!vv||!window.matchMedia||!matchMedia('(pointer:coarse)').matches)return;
+  let target=null,timer=0;
+  const typing=el=>!!el&&(el.tagName==='TEXTAREA'||el.isContentEditable||(el.tagName==='INPUT'&&!/^(checkbox|radio|button|submit|reset|hidden|range|color|file|image)$/i.test(el.type)));
+  const lift=()=>{
+    if(!target||!document.contains(target))return;
+    const r=target.getBoundingClientRect(),top=vv.offsetTop,h=vv.height;
+    if(r.top<top+12||r.bottom>top+h-24)window.scrollBy({top:r.top-(top+h*0.3),behavior:'smooth'});
+  };
+  document.addEventListener('focusin',e=>{if(!typing(e.target))return;target=e.target;document.documentElement.classList.add('kb-open');clearTimeout(timer);timer=setTimeout(lift,320);});
+  document.addEventListener('focusout',()=>{setTimeout(()=>{if(!typing(document.activeElement)){target=null;document.documentElement.classList.remove('kb-open');}},180);});
+  vv.addEventListener('resize',()=>{if(target){clearTimeout(timer);timer=setTimeout(lift,80);}});
+})();
 </script>
 </body>
 </html>
