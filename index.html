@@ -6141,6 +6141,8 @@ function selectDeckCard(cardId){
   if(done){root.querySelector('.td-caption p').textContent='모든 카드를 뽑았어요. 아래에서 풀이를 확인하세요.';root.querySelector('.tarot-actions').insertAdjacentHTML('afterbegin','<button class="ts-cta" onclick="finishTarotDraw()"><span class="material-symbols-outlined">visibility</span> 풀이 확인하기</button>');}
 }
 function resetTarotDraw(){if(confirm('선택한 카드를 모두 지우고 다시 뽑을까요?')){_tarotFlow.selectedCards=[];_tarotFlow.resultMarkdown='';_tarotFlow.resultLoading=false;saveTarotFlow();renderTarot();}}
+// 새 집필 규칙 전에 받은 유료 타로 풀이는 지우지 않고, 위에 다시 받기 안내를 띄운다.
+function tarotNeedsRewrite(f){return !!(f&&f.paymentStatus==='paid'&&f.aiAuthored&&f.resultMarkdown&&!f.deepLoading&&!f.resultLoading&&f.rulesVersion!==READING_RULES_VERSION&&!(Number(f.expiresAt)&&Number(f.expiresAt)<=Date.now()));}
 async function finishTarotDraw(){
   const target=_tarotFlow;
   const input=buildAIReadingInput(_tarotFlow);
@@ -6154,7 +6156,7 @@ async function finishTarotDraw(){
   _tarotFlow.meaningVersion=TAROT_MEANING_VERSION;
   _tarotFlow.previewTemplate=false;_tarotFlow.resultMarkdown='';_tarotFlow.authorError=false;_tarotFlow.resultLoading=false;_tarotFlow.deepLoading=true;
   saveTarotFlow();tarotNavigate('result');
-  try{const ai=await generateAIReading(input);if(_tarotFlow!==target)return;singleReadingProgress(tarotRoot(),90,'완성된 풀이를 확인하고 있어요');if(!tarotAIQuality(ai,input))throw Error('invalid reading');_tarotFlow.resultMarkdown=ai.trim();_tarotFlow.aiAuthored=true;singleReadingProgress(tarotRoot(),100,'전체 풀이가 완성됐어요');}
+  try{const ai=await generateAIReading(input);if(_tarotFlow!==target)return;singleReadingProgress(tarotRoot(),90,'완성된 풀이를 확인하고 있어요');if(!tarotAIQuality(ai,input))throw Error('invalid reading');_tarotFlow.resultMarkdown=ai.trim();_tarotFlow.aiAuthored=true;_tarotFlow.rulesVersion=READING_RULES_VERSION;singleReadingProgress(tarotRoot(),100,'전체 풀이가 완성됐어요');}
   catch(e){if(_tarotFlow!==target)return;_tarotFlow.authorError=true;}
   _tarotFlow.deepLoading=false;
   saveTarotFlow();
@@ -19568,6 +19570,9 @@ function buildSajuContextForChat(source){
 }
 
 const AI_READING_TTL_MS=24*60*60*1000;
+// 결제 후 풀이 집필 규칙 버전(AGENTS.md §0). 바꾸면 저장된 사주 풀이는 새로 쓰고, 타로·점성술은 '새 문체로 다시 받기'를 띄운다.
+const READING_RULES_VERSION='reader-first-1';
+function readingRewriteNotice(panel,btn,onclick,what){return `<section class="${panel} reading-rewrite" role="status"><p><b>풀이 문체가 더 쉽게 바뀌었어요.</b> 이 풀이는 바뀌기 전에 받은 거예요. 같은 ${what}로 새 문체 풀이를 다시 받을 수 있어요.</p><button type="button" class="${btn}" onclick="${onclick}">새 문체로 다시 받기</button></section>`;}
 const AI_READING_LABELS={
   life:'천기가 먼저 짚는 당신의 핵심 흐름',
   'life-core':'천기가 다시 정리한 인생총운 핵심 섹션',
@@ -19585,7 +19590,7 @@ function aiReadingCacheKey(category, extraKey, lang){
   // v4 — 캐시 항목에 complete 플래그 추가. v3의 잘린 풀이가 그대로 살아나지 않도록 키를 올린다.
   const sit=_meta&&_meta.ctx?':ctx-'+_meta.ctx.cat+'-'+_meta.ctx.key+'-'+textHash(String(_meta.ctx.text||''))+'-'+String(_meta.ctx.text||'').length:'';
   const counsel=JSON.stringify({counsel:(_meta&&_meta.counsel)||null,userName:(_meta&&_meta.userName)||'',qaExtra:(_meta&&_meta.qaExtra)||null});
-  return 'saju_ai_reading_v12-consultation:'+textHash(counsel)+':'+counsel.length+':'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
+  return 'saju_ai_reading_v13-'+READING_RULES_VERSION+':'+textHash(counsel)+':'+counsel.length+':'+(lang||currentLanguage())+':'+category+':'+birth+':relationship-v2-'+((_meta&&_meta.marital)||'unknown')+sit+':'+(extraKey||'main');
 }
 // 반환값: {text, complete} 또는 null
 function aiReadingCacheGet(category, extraKey, lang){
@@ -25540,9 +25545,10 @@ function _hanziSearchGoPage(delta){
   _renderHanziSearchPage();
 }
 // One copy policy for all reading surfaces; calculators and payment functions are not wrapped.
+(function(){const base=renderTarotResult;renderTarotResult=function(root){const out=base.apply(this,arguments);if(root&&root.insertAdjacentHTML&&tarotNeedsRewrite(_tarotFlow))root.insertAdjacentHTML('afterbegin',readingRewriteNotice('tarot-panel','ts-cta','finishTarotDraw()','카드'));return out;};})();
 if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","renderDailyFortune", "renderManseryeokFull", "renderSajuFree", "renderVedicFree", "renderMahaboteFree", "renderNewyearFortune", "renderNewyearFortuneLegacy", "renderSajuPaid", "renderSajuPaidLegacy", "renderTopicPaid", "renderTopicPaidLegacy", "renderZiweiPaid", "renderZiweiPaidLegacy", "renderNamePaid", "renderNamePaidLegacy", "renderGunghapPaid", "renderGunghapDetailFull", "todayTarotResultHTML", "renderTodayTarot", "renderTarotResult", "buildLifeReadingV4", "buildZiweiReadingV4", "buildTopicReadingV4", "buildNameReadingV4", "buildGunghapReadingV4", "buildNewyearReadingV4"]);
 </script>
-<script src="assets/astrology.js?v=f54d635e632b">
+<script src="assets/astrology.js?v=f785a027ec8c">
 </script>
 </body>
 </html>
