@@ -733,8 +733,9 @@ const submitBirth=async()=>{
       assert.equal(d.querySelector('#todayTarotResult .same-kind-recommend').dataset.readingKind,'tarot');
       assert.equal(d.querySelectorAll('#todayTarotResult .tarot-reading-flow').length,4);
       assert(!d.querySelector('#todayTarotResult .journey-chapters,#todayTarotResult .story-experience,#todayTarotResult .story-deck-layer'));
-      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,9);
-      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn:disabled').length,9);
+      assert(d.querySelector('#view-tarot .tarot-today-grid.single'));
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn').length,1);
+      assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .tarot-card-btn:disabled').length,1);
       assert.equal(d.querySelectorAll('#view-tarot .tarot-today-grid .flipped').length,1);
       assert(!d.querySelector('#todayTarotResult .tarot-mini-face'));
       assert(d.querySelector('#todayTarotResult .today-paid-hook').textContent.length<200);
