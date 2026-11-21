@@ -2166,7 +2166,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <link rel="stylesheet" href="/assets/journey.css">
 <link rel="stylesheet" href="/assets/night.css?v=d8cafa824d32">
 <link rel="stylesheet" href="/assets/reading-flow.css?v=0c8dec8e8a52">
-<link rel="stylesheet" href="assets/input-chat.css?v=aab4f4104687">
+<link rel="stylesheet" href="assets/input-chat.css?v=b3a3940580eb">
 </head>
 <body>
 <div id="app">
@@ -4774,7 +4774,7 @@ function setGnLeap(b){_gnLeap=b;_setTog('gnLr',!b);_setTog('gnLp',b);syncDstRows
 function ensureGnTimeSelects(){
   const h=document.getElementById('gnH'), mi=document.getElementById('gnMin');
   if(h&&!h.value)h.value='';
-  if(mi&&!mi.value)mi.value='0';
+  if(mi&&!mi.value)mi.value='';
   const gnCity=document.getElementById('gnCity');
   if(gnCity&&!gnCity.value)gnCity.value='서울특별시';
 }
@@ -25579,6 +25579,6 @@ if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","ren
   vv.addEventListener('resize',()=>{if(target){clearTimeout(timer);timer=setTimeout(lift,80);}});
 })();
 </script>
-<script src="assets/input-chat.js?v=2dca072ef309"></script>
+<script src="assets/input-chat.js?v=f543a0b9bd56"></script>
 </body>
 </html>

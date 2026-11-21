@@ -14,12 +14,14 @@
       function part(id,title,nodes){const fs=document.createElement('fieldset');fs.id=id;const legend=document.createElement('legend');legend.textContent=title;fs.append(legend,...nodes);parent.after(fs);return fs;}
       const date=part('chatPartnerBirth','상대방 생년월일',[$('gnY').closest('.birth-date-row')]);
       const calendar=part('chatPartnerCalendar','상대방 달력 기준',[$('gnCalType').closest('.birth-calendar'),$('gnLeapSec')]);
+      calendar.insertAdjacentHTML('afterbegin','<div class="chat-calendar-options" role="group" aria-label="상대방 달력 기준"><button type="button" data-partner-cal="solar">양력이에요</button><button type="button" data-partner-cal="lunar">음력이에요</button></div>');
+      calendar.querySelectorAll('[data-partner-cal]').forEach(b=>b.addEventListener('click',()=>{setGnCal(b.dataset.partnerCal);paint();}));
       const time=part('chatPartnerTime','상대방 태어난 시각',[$('gnH').closest('.row3')]);
       const unknown=document.createElement('label');unknown.className='time-unknown-row';unknown.innerHTML='<input type="checkbox" id="chatPartnerUnknown"> 시간을 몰라요';time.append(unknown);
       unknown.querySelector('input').addEventListener('change',e=>{['gnH','gnMin'].forEach(id=>{$(id).disabled=e.target.checked;if(e.target.checked)$(id).value='';});});
       const city=part('chatPartnerCity','상대방 출생지역',[$('gnCity').closest('.ig')]);
       const dst=part('chatPartnerDst','상대방 서머타임 확인',[$('gnDstAsIs').closest('.dst-row')]);
-      dst.insertAdjacentHTML('beforeend','<div class="chat-dst-options"><button type="button" data-partner-dst="clock">당시 시계 시간이에요</button><button type="button" data-partner-dst="corrected">이미 1시간을 뺐어요</button><button type="button" data-partner-dst="unknown">잘 모르겠어요</button></div><p class="chat-dst-note">잘 모르겠다면 당시 시계 시간으로 보고 기존 시간 보정을 적용해요.</p>');
+      dst.insertAdjacentHTML('beforeend','<div class="chat-dst-options"><button type="button" data-partner-dst="clock">기록된 시간 그대로예요</button><button type="button" data-partner-dst="corrected">이미 1시간 빼고 적었어요</button><button type="button" data-partner-dst="unknown">어느 쪽인지 모르겠어요</button></div><p class="chat-dst-note">모르시면 기록된 시간으로 보고, 서머타임 1시간을 빼서 계산해요.</p>');
       dst.querySelectorAll('[data-partner-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.partnerDst;$('gnDstAsIs').checked=b.dataset.partnerDst==='corrected';paint();}));
       parent.after(date,calendar,time,city,dst);
     }
@@ -31,11 +33,13 @@
   }
   function prepare(){
     const form=$('formWrap');form.classList.add('input-chat');
+    // Faded examples replace the field labels: 1990. 01. 01 / 14 : 30
+    [['iY','1990'],['iM','01'],['iD','01'],['gnY','1990'],['gnM','01'],['gnD','01'],['iHourInput','14'],['iMin','30'],['gnH','14'],['gnMin','30']].forEach(([id,v])=>{if($(id))$(id).placeholder=v;});
     if(!$('chatCalendar')){
       const date=$('iY').closest('fieldset'),cal=document.createElement('fieldset');cal.id='chatCalendar';cal.innerHTML='<legend>달력 기준</legend><div class="chat-calendar-options" role="group" aria-label="달력 기준"><button type="button" data-cal="solar">양력이에요</button><button type="button" data-cal="lunar">음력이에요</button></div>';
       cal.append($('iCalType').closest('.birth-calendar'),$('leapSec'));date.after(cal);
       cal.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{setCal(b.dataset.cal);cal.dataset.wzConfirmed='1';paint();}));
-      const dst=document.createElement('fieldset');dst.id='chatDst';dst.innerHTML='<legend>서머타임 확인</legend><div class="chat-dst-options" role="group" aria-label="입력한 시각의 기준"><button type="button" data-dst="clock">당시 시계 시간이에요</button><button type="button" data-dst="corrected">이미 1시간을 뺐어요</button><button type="button" data-dst="unknown">잘 모르겠어요</button></div><p class="chat-dst-note">잘 모르겠다면 당시 시계 시간으로 보고 기존 시간 보정을 적용해요.</p>';
+      const dst=document.createElement('fieldset');dst.id='chatDst';dst.innerHTML='<legend>서머타임 확인</legend><div class="chat-dst-options" role="group" aria-label="입력한 시각의 기준"><button type="button" data-dst="clock">기록된 시간 그대로예요</button><button type="button" data-dst="corrected">이미 1시간 빼고 적었어요</button><button type="button" data-dst="unknown">어느 쪽인지 모르겠어요</button></div><p class="chat-dst-note">모르시면 기록된 시간으로 보고, 서머타임 1시간을 빼서 계산해요.</p>';
       dst.append($('iDstAsIs').closest('.dst-row'),$('dstHelp'));$('iCity').closest('fieldset').after(dst);
       dst.querySelectorAll('[data-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.dst;dst.dataset.signature=signature();$('iDstAsIs').checked=b.dataset.dst==='corrected';paint();}));
       form.addEventListener('click',e=>{
@@ -71,14 +75,14 @@
   function character(){let key=_category?.replace('topic-','')||'life';if(['manse','daily','life','newyear','gunghap','name','love','marriage','reunion','money','career','study','child','children','health','ziwei','qna'].includes(key)===false)key='life';return '/assets/art-v2/posters/'+key+'.webp';}
   function question(fs){const k=wzStepKind([fs]),name=readSajuName(),who=name?name+'님, ':'';
     const optional=k==='counsel'&&fs.dataset.counselKey!=='occupation';
-    return ({partnerGender:'이제 상대방 정보를 알려주세요. 성별은 어떻게 되세요?',partnerBirth:'상대방의 생년월일을 알려주세요.',partnerCalendar:'상대방 생일은 양력인가요, 음력인가요?',partnerTime:'상대방이 태어난 시각을 알고 계세요?',partnerCity:'상대방은 어느 지역에서 태어났나요?',partnerDst:'상대방이 태어난 날짜에도 서머타임을 사용했어요. 입력한 시각의 기준을 알려주세요.',name:'만나서 반가워요 🙂 편하게 불러드릴 이름을 알려주세요.',gender:who+'성별을 알려주시겠어요?',birth:who+'생일은 언제인가요? 태어난 날짜를 알려주세요.',calendar:'알려주신 생일은 양력인가요, 음력인가요?',time:'태어난 시각을 알려주세요. 모르면 아래에서 선택해 주세요.',city:'어느 지역에서 태어나셨나요?',dst:who+'태어난 날짜에는 한국에서 서머타임을 사용했어요. 입력한 시각은 당시 시계 시간인가요?',marital:'지금 연애·결혼 상태는 어떻게 되세요?',naming:'풀이하고 싶은 이름을 알려주세요.'})[k]||(wzPromptFor([fs])+(optional?' 답변은 선택이에요.':''));
+    return ({partnerGender:'이제 상대방 정보를 알려주세요. 성별은 어떻게 되세요?',partnerBirth:'상대방의 생년월일을 알려주세요.',partnerCalendar:'상대방 생일은 양력인가요, 음력인가요?',partnerTime:'상대방이 태어난 시각을 알고 계세요?',partnerCity:'상대방은 어느 지역에서 태어났나요?',partnerDst:'상대방이 태어난 날에도 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',name:'만나서 반가워요 🙂 편하게 불러드릴 이름을 알려주세요.',gender:who+'성별을 알려주시겠어요?',birth:who+'생일은 언제인가요? 태어난 날짜를 알려주세요.',calendar:'알려주신 생일은 양력인가요, 음력인가요?',time:'태어난 시각을 알려주세요. 모르면 아래에서 선택해 주세요.',city:'어느 지역에서 태어나셨나요?',dst:who+'태어난 날에는 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',marital:'지금 연애·결혼 상태는 어떻게 되세요?',naming:'풀이하고 싶은 이름을 알려주세요.'})[k]||(wzPromptFor([fs])+(optional?' 답변은 선택이에요.':''));
   }
   function answer(fs){const k=wzStepKind([fs]);
-    if(k==='partnerGender')return _gnGender==='female'?'여성':'남성';if(k==='partnerBirth')return `${val('gnY')}년 ${val('gnM')}월 ${val('gnD')}일`;if(k==='partnerCalendar')return _gnCal==='lunar'?'음력 · '+(_gnLeap?'윤달':'평달'):'양력';if(k==='partnerTime')return val('gnH')===''?'태어난 시각은 몰라요':`${val('gnH')}시 ${val('gnMin')||'00'}분`;if(k==='partnerCity')return val('gnCity');if(k==='partnerDst')return ({clock:'당시 시계 시간',corrected:'이미 1시간 보정함',unknown:'잘 모르겠어요 · 당시 시계 시간으로 적용'})[fs.dataset.answer]||'';if(k==='name')return readSajuName();if(k==='gender')return gender==='female'?'여성':'남성';
+    if(k==='partnerGender')return _gnGender==='female'?'여성':'남성';if(k==='partnerBirth')return `${val('gnY')}년 ${val('gnM')}월 ${val('gnD')}일`;if(k==='partnerCalendar')return _gnCal==='lunar'?'음력 · '+(_gnLeap?'윤달':'평달'):'양력';if(k==='partnerTime')return val('gnH')===''?'태어난 시각은 몰라요':`${val('gnH')}시 ${val('gnMin')||'00'}분`;if(k==='partnerCity')return val('gnCity');if(k==='partnerDst')return ({clock:'기록된 시간 그대로',corrected:'이미 1시간 빼고 적음',unknown:'모르겠어요 · 기록된 시간 그대로 적용'})[fs.dataset.answer]||'';if(k==='name')return readSajuName();if(k==='gender')return gender==='female'?'여성':'남성';
     if(k==='birth')return `${val('iY')}년 ${val('iM')}월 ${val('iD')}일`;
     if(k==='calendar')return calType==='lunar'?'음력 · '+(isLeap?'윤달':'평달'):'양력';
     if(k==='time')return $('iTimeUnknown').checked?'태어난 시각은 몰라요':`${val('iHourInput')}시 ${val('iMin')||'00'}분`;
-    if(k==='city')return val('iCity');if(k==='dst')return ({clock:'당시 시계 시간',corrected:'이미 1시간 보정함',unknown:'잘 모르겠어요 · 당시 시계 시간으로 적용'})[fs.dataset.answer]||'시간 기준을 확인해 주세요';
+    if(k==='city')return val('iCity');if(k==='dst')return ({clock:'기록된 시간 그대로',corrected:'이미 1시간 빼고 적음',unknown:'모르겠어요 · 기록된 시간 그대로 적용'})[fs.dataset.answer]||'시간 기준을 확인해 주세요';
     if(k==='marital')return ({single:'미혼',dating:'연애 중',married:'기혼'})[_marital]||'';
     return [...fs.querySelectorAll('input:not([type=hidden]):not([type=checkbox]),select,textarea')].filter(x=>x.value).map(x=>x.tagName==='SELECT'?x.selectedOptions[0]?.textContent:x.value).join(' · ')||'건너뛰었어요';
   }
@@ -100,12 +104,16 @@
       if(!send.querySelector('svg'))send.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>';
       send.setAttribute('aria-label',optional?'건너뛰기':'보내기');send.title=optional?'건너뛰기':'보내기';
       send.hidden=kind==='gender'||kind==='partnerGender';
-      if(!send.hidden&&!fs.querySelector('.chat-composer')){
-        const control=[...fs.children].find(el=>!el.matches('legend,.chat-question,.chat-reply,.chat-send')&&el.querySelector('input:not([type=hidden]):not([type=checkbox]),select,textarea'));
-        if(control){const composer=document.createElement('div');composer.className='chat-composer';fs.insertBefore(composer,control);composer.append(control,send);if(kind==='birth'||kind==='partnerBirth')composer.classList.add('chat-date-composer');}
+      // Choice questions need no typing box: the send button sits beside the choices.
+      const options=fs.querySelector(':scope > :is(.chat-calendar-options,.chat-dst-options)');
+      if(options){if(send.parentNode!==options)options.append(send);}
+      else if(!send.hidden&&!fs.querySelector('.chat-composer')){
+        const control=kind==='time'?$('timeInputs'):kind==='partnerTime'?$('gnH').closest('.row3'):[...fs.children].find(el=>!el.matches('legend,.chat-question,.chat-reply,.chat-send')&&el.querySelector('input:not([type=hidden]):not([type=checkbox]),select,textarea'));
+        if(control){const composer=document.createElement('div');composer.className='chat-composer';control.before(composer);composer.append(control,send);if(kind==='birth'||kind==='partnerBirth')composer.classList.add('chat-date-composer');if(kind==='time'||kind==='partnerTime')composer.classList.add('chat-time-composer');}
       }
 
       fs.classList.toggle('chat-answered',i<_wz.open||complete);fs.classList.toggle('chat-current',i===_wz.open&&!complete);
+      fs.querySelectorAll('[data-partner-cal]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.partnerCal===_gnCal)));
       fs.querySelectorAll('[data-partner-dst]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.partnerDst===fs.dataset.answer)));
       fs.querySelectorAll('[data-cal]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cal===calType)));fs.querySelectorAll('[data-dst]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dst===fs.dataset.answer)));
     }));

@@ -15,12 +15,18 @@ try{
  assert(d.getElementById('iY').closest('.chat-composer').querySelector('.chat-send'));
  assert(d.getElementById('iName').closest('.chat-composer').querySelector('[aria-label="보내기"]'));
  ['iY','iM','iD'].forEach((id,i)=>d.getElementById(id).value=[1987,9,21][i]);next();assert.equal(step(),'calendar');
+ assert.deepEqual(['iY','iM','iD'].map(id=>d.getElementById(id).placeholder),['1990','01','01'],'date shows a faded 1990. 01. 01 example');
+ assert(d.querySelector('#chatCalendar .chat-calendar-options > .chat-send'),'calendar send sits beside the choices');
+ assert(!d.querySelector('#chatCalendar .chat-composer'),'choice questions have no typing box');
  run("setCal('solar')");next();assert.equal(step(),'time');
+ assert.deepEqual(['iHourInput','iMin'].map(id=>d.getElementById(id).placeholder),['14','30']);
+ const timeBox=d.getElementById('iHourInput').closest('.chat-time-composer');assert(timeBox&&timeBox.contains(d.getElementById('iMin'))&&timeBox.querySelector('.chat-send'),'time uses the same composer shape as the date');
  d.getElementById('iHourInput').value=8;d.getElementById('iMin').value=45;run("syncHourInput('8')");next();assert.equal(step(),'city');
  d.getElementById('iCity').value='대전광역시';next();
  // Marital may precede DST in the legacy order. Both must remain available.
  if(step()==='marital'){run("setMarital('married')");next();}
  assert.equal(step(),'dst');next();assert.equal(step(),'dst');
+ assert.deepEqual([...d.querySelectorAll('#chatDst [data-dst]')].map(x=>x.textContent),['기록된 시간 그대로예요','이미 1시간 빼고 적었어요','어느 쪽인지 모르겠어요']);assert(d.querySelector('#chatDst .chat-dst-options > .chat-send'));
  d.querySelector('[data-dst="clock"]').click();assert(!d.getElementById('iDstAsIs').checked);d.querySelector('[data-dst="unknown"]').click();assert(!d.getElementById('iDstAsIs').checked);d.querySelector('[data-dst="corrected"]').click();assert(d.getElementById('iDstAsIs').checked);next();
  for(let i=0;i<30&&!d.getElementById('formWrap').classList.contains('chat-complete');i++){
    if(step()==='marital')run("setMarital('married')");
@@ -42,7 +48,7 @@ try{
  }
  run("goToInput('gunghap');_wz.open=_wz.steps.findIndex(s=>wzStepKind(s)==='partnerGender');wizardShow(null)");
  assert.equal(step(),'partnerGender');next();assert.equal(step(),'partnerGender');d.getElementById('gnGf').click();assert.equal(step(),'partnerBirth');
- ['gnY','gnM','gnD'].forEach((id,i)=>d.getElementById(id).value=[1987,9,21][i]);next();assert.equal(step(),'partnerCalendar');next();assert.equal(step(),'partnerTime');
+ ['gnY','gnM','gnD'].forEach((id,i)=>d.getElementById(id).value=[1987,9,21][i]);next();assert.equal(step(),'partnerCalendar');assert(d.querySelector('#chatPartnerCalendar .chat-calendar-options > .chat-send'));d.querySelector('[data-partner-cal="lunar"]').click();assert.equal(run('_gnCal'),'lunar');d.querySelector('[data-partner-cal="solar"]').click();next();assert.equal(step(),'partnerTime');
  d.getElementById('gnH').value=8;d.getElementById('gnMin').value=45;next();assert.equal(step(),'partnerCity');
  d.getElementById('gnCity').value='대전광역시';next();assert.equal(step(),'partnerDst');
  d.querySelector('[data-partner-dst="corrected"]').click();assert(d.getElementById('gnDstAsIs').checked);next();

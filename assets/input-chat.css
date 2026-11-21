@@ -10,7 +10,7 @@
 #formWrap.input-chat .chat-question p{margin:0;max-width:calc(100% - 52px);padding:12px 15px;background:var(--card,#103b30);color:var(--text);border:1px solid var(--border-strong);border-radius:3px 17px 17px;font-size:1rem;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
 #formWrap.input-chat fieldset>:not(legend):not(.chat-question){margin-left:52px}
 #formWrap.input-chat .birth-date-row{grid-template-columns:1.4fr 1fr 1fr}
-#formWrap.input-chat :is(.name-next,.city-confirm,.counsel-actions,.dst-row,.dst-help,#chatCalendar .birth-calendar){display:none!important}
+#formWrap.input-chat :is(.name-next,.city-confirm,.counsel-actions,.dst-row,.dst-help,#chatCalendar .birth-calendar,#chatPartnerCalendar .birth-calendar){display:none!important}
 #formWrap.input-chat :is(.chat-calendar-options,.chat-dst-options){display:flex;flex-wrap:wrap;gap:8px}
 #formWrap.input-chat :is(.chat-calendar-options,.chat-dst-options) button{min-height:46px;padding:10px 14px;border:1px solid var(--border-strong);border-radius:12px;background:var(--card);color:var(--text);font:inherit;cursor:pointer}
 #formWrap.input-chat button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
@@ -44,8 +44,6 @@
 #formWrap.input-chat fieldset>.chat-send{width:40px;margin-left:auto;border-radius:50%;padding:10px;display:grid;place-items:center}
 #formWrap.input-chat .chat-date-composer .birth-date-row{display:grid;grid-template-columns:minmax(70px,1.4fr) minmax(42px,1fr) minmax(42px,1fr);gap:0}
 #formWrap.input-chat .chat-date-composer .ig{position:relative;padding:0 5px}
-#formWrap.input-chat .chat-date-composer .ig+.ig{border-left:1px solid var(--border-strong)}
-#formWrap.input-chat .chat-date-composer .ig label{display:block;margin:3px 0 0;padding-left:8px;font-size:.7rem;color:var(--sub)}
 #formWrap.input-chat .chat-date-composer input{padding:5px 8px;min-height:34px;appearance:textfield;-moz-appearance:textfield}
 #formWrap.input-chat .chat-date-composer input::-webkit-inner-spin-button{appearance:none;margin:0}
 #formWrap.input-chat .gender-choice{gap:10px}
@@ -53,3 +51,24 @@
 #formWrap.input-chat .gender-choice button:hover{border-color:var(--accent);background:var(--accent-soft)}
 #formWrap.input-chat .chat-question p{text-align:left;word-break:normal;line-break:strict;overflow-wrap:anywhere;text-wrap:wrap;word-spacing:0}
 @media(max-width:420px){#formWrap.input-chat .chat-composer{gap:4px;padding:5px;border-radius:19px}#formWrap.input-chat .chat-date-composer .ig{padding:0 2px}}
+/* Date and time share one shape: no field labels, faded examples "1990. 01. 01" and "14 : 30". */
+#formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) .ig label{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0;padding:0}
+#formWrap.input-chat .chat-time-composer>.row3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0}
+#formWrap.input-chat .chat-time-composer .ig{position:relative;min-width:0;margin:0;padding:0 5px}
+#formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) .ig+.ig::before{position:absolute;left:-2px;top:50%;transform:translateY(-50%);color:var(--sub);pointer-events:none}
+#formWrap.input-chat .chat-date-composer .ig+.ig::before{content:'.'}
+#formWrap.input-chat .chat-time-composer .ig+.ig::before{content:':'}
+#formWrap.input-chat .chat-time-composer input{padding:5px 8px;min-height:34px;appearance:textfield;-moz-appearance:textfield}
+#formWrap.input-chat .chat-time-composer input::-webkit-inner-spin-button{appearance:none;margin:0}
+#formWrap.input-chat .chat-time-composer input:disabled{opacity:.45}
+#app #formWrap.input-chat .birth-time-row{display:block}
+#app #formWrap.input-chat .birth-time-row .time-unknown-row,#formWrap.input-chat #chatPartnerTime .time-unknown-row{display:inline-flex;width:auto;min-height:0;margin-top:10px}
+/* Choice questions: choices and the send button sit on one line, with room above. */
+#formWrap.input-chat :is(.chat-calendar-options,.chat-dst-options){align-items:center;margin-top:4px}
+#formWrap.input-chat :is(.chat-calendar-options,.chat-dst-options)>button.chat-send{border:1px solid var(--accent);background:var(--accent);color:var(--on-accent,#00291c);flex:0 0 44px;width:44px;height:44px;min-height:44px;margin:0;padding:10px;border-radius:50%;display:grid;place-items:center}
+#formWrap.input-chat :is(#chatCalendar,#chatPartnerCalendar) .leap-sec.vis{margin-top:12px}
+#app #formWrap.input-chat .chat-date-composer .birth-date-row{grid-template-columns:56px 42px 42px;gap:0;justify-content:start;padding-left:6px}
+#app #formWrap.input-chat .chat-time-composer>.row3,#app #formWrap.input-chat .birth-time-row .chat-time-composer>#timeInputs{grid-template-columns:42px 42px;gap:0;justify-content:start;padding-left:6px}
+#formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) .ig{padding:0}
+#formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) input{padding:5px 0;text-align:center}
+#formWrap.input-chat .chat-dst-note{margin-top:10px}
