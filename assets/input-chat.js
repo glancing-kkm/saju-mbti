@@ -78,7 +78,7 @@
   wzAdvance=function(){if(!ready||permit)return oldAdvance.apply(this,arguments);paint();};
   function character(){let key=_category?.replace('topic-','')||'life';if(['manse','daily','life','newyear','gunghap','name','love','marriage','reunion','money','career','study','child','children','health','ziwei','qna'].includes(key)===false)key='life';return '/assets/art-v2/posters/'+key+'.webp';}
   function question(fs){const k=wzStepKind([fs]),name=readSajuName(),who=name?name+'님, ':'';
-    const optional=k==='counsel'&&fs.dataset.counselKey!=='occupation';
+    const optional=k==='counsel'&&!counselFieldRequired(_category,fs.dataset.counselKey);
     return ({leap:'알려주신 음력 생일은 평달인가요, 윤달인가요?',partnerLeap:'상대방의 음력 생일은 평달인가요, 윤달인가요?',partnerGender:'이제 상대방 정보를 알려주세요. 성별은 어떻게 되세요?',partnerBirth:'상대방의 생년월일을 알려주세요.',partnerCalendar:'상대방 생일은 양력인가요, 음력인가요?',partnerTime:'상대방이 태어난 시각을 알고 계세요?',partnerCity:'상대방은 어느 지역에서 태어났나요?',partnerDst:'상대방이 태어난 날에도 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',name:'만나서 반가워요 🙂 편하게 불러드릴 이름을 알려주세요.',gender:who+'성별을 알려주시겠어요?',birth:who+'생일은 언제인가요? 태어난 날짜를 알려주세요.',calendar:'알려주신 생일은 양력인가요, 음력인가요?',time:'태어난 시각을 알려주세요. 모르면 아래에서 선택해 주세요.',city:'어느 지역에서 태어나셨나요?',dst:who+'태어난 날에는 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',marital:'지금 연애·결혼 상태는 어떻게 되세요?',naming:'풀이하고 싶은 이름을 알려주세요.'})[k]||(wzPromptFor([fs])+(optional?' 답변은 선택이에요.':''));
   }
   function answer(fs){const k=wzStepKind([fs]);
@@ -105,7 +105,7 @@
         fs.querySelectorAll('.gender-choice button').forEach(b=>{const on=picked==='1'&&((b.id==='bm'||b.id==='gnGm')?selected==='male':selected==='female');b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));});
       }
       let send=fs.querySelector('.chat-send');if(!send){send=document.createElement('button');send.type='button';send.className='chat-send';send.addEventListener('click',next);send.addEventListener('mousedown',e=>e.preventDefault());fs.append(send);}
-      const optional=wzStepKind([fs])==='counsel'&&fs.dataset.counselKey!=='occupation'&&!fs.querySelector('input,select,textarea')?.value.trim();
+      const optional=wzStepKind([fs])==='counsel'&&!counselFieldRequired(_category,fs.dataset.counselKey)&&!fs.querySelector('input,select,textarea')?.value.trim();
       if(!send.querySelector('svg'))send.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>';
       send.setAttribute('aria-label',optional?'건너뛰기':'보내기');send.title=optional?'건너뛰기':'보내기';
       send.hidden=['gender','partnerGender','calendar','partnerCalendar','leap','partnerLeap','dst','partnerDst','marital'].includes(kind);
@@ -145,7 +145,7 @@
     if(k==='dst'&&!fs.dataset.answer)return showErr('입력한 시각의 기준을 골라주세요.'),false;
     if(k==='marital'&&!_marital)return showErr('현재 연애·결혼 상태를 선택해 주세요.','mrSingle'),false;
     if(k==='naming'){if(!namingFieldsValid())return showErr('성씨와 이름을 확인해 주세요.','nmGiven'),false;fs.dataset.wzConfirmed='1';}
-    if(k==='counsel'){const input=fs.querySelector('input,select,textarea');if(fs.dataset.counselKey==='occupation'&&!input.value.trim())return showErr('현재 하는 일을 알려주세요. 학생·구직 중·육아·은퇴도 적을 수 있어요.',input.id),false;fs.dataset.wzConfirmed='1';counselSave();}
+    if(k==='counsel'){const input=fs.querySelector('input,select,textarea');if(_category==='topic-love'&&fs.dataset.counselKey==='status'&&!input.value.trim())return showErr('현재 연애·결혼 상태를 선택해 주세요.',input.id),false;if(fs.dataset.counselKey==='occupation'&&!input.value.trim())return showErr('현재 하는 일을 알려주세요. 학생·구직 중·육아·은퇴도 적을 수 있어요.',input.id),false;fs.dataset.wzConfirmed='1';counselSave();}
     if(fs.querySelector('#nyY')){if(+val('nyY')<1900||+val('nyY')>2100)return showErr('보고 싶은 해를 확인해 주세요.','nyY'),false;}
     return true;
   }

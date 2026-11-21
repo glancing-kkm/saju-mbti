@@ -3104,7 +3104,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   </div>
 </div>
 
-<script src="assets/premium-saju.js?v=f43ec1fb116c"></script>
+<script src="assets/premium-saju.js?v=7b49e15686fa"></script>
 <script src="assets/reading-stage.js?v=c31fde7874c7"></script>
 <script src="assets/report-access.js?v=d29a7133094b"></script>
 <script src="assets/ai-report.js?v=68f580112a3f"></script>
@@ -4328,6 +4328,8 @@ function counselOwnerKey(){return ['iY','iM','iD','iH','iMin'].map(id=>document.
 function counselStore(){try{return JSON.parse(sessionStorage.getItem('saju_counsel_v1')||'{}');}catch(e){return {};}}
 // 직업은 같은 출생정보의 상담끼리 공유하고, 주제별 답변은 별도로 보관한다.
 function counselDefinition(cat,key){return globalThis.PremiumSaju?.products[cat]?.fields.find(f=>f.key===key);}
+function counselFieldRequired(cat,key){return key==='occupation'||(cat==='topic-love'&&key==='status');}
+function syncLoveMarital(){if(_category!=='topic-love')return;const status=document.getElementById('counsel_status')?.value||'';setMarital(status==='기혼'?'married':['연애 중','장기 연애'].includes(status)?'dating':status&&status!=='답변하지 않음'?'single':'');}
 function counselFieldVisible(cat,key){const f=counselDefinition(cat,key);return !f?.when||Object.entries(f.when).every(([k,values])=>values.includes(document.getElementById('counsel_'+k)?.value));}
 const COUNSEL_OCCUPATION_CATS=['life','newyear','ziwei','qna'];
 function counselFieldsFor(cat){
@@ -4348,6 +4350,7 @@ function counselRead(cat){
 function refreshCounselOwner(){const h=document.getElementById('counselFields');if(h&&h.dataset.cat&&h.dataset.owner!==counselOwnerKey())renderCtxQuestion(h.dataset.cat);}
 function counselSave(){
  const host=document.getElementById('counselFields');if(!host||!COUNSEL_FIELDS[host.dataset.cat]||host.dataset.owner!==counselOwnerKey())return;
+ syncLoveMarital();
  const data=counselStore(),owner=counselOwnerKey();data[owner]=data[owner]||{};data[owner][host.dataset.cat]=counselRead(host.dataset.cat);
  if(data[owner][host.dataset.cat])data[owner][host.dataset.cat].confirmed=[...host.querySelectorAll('fieldset[data-wz-confirmed="1"]')].map(f=>f.dataset.counselKey);
  // 직업 칸이 없는 주제에서 저장할 때 앞서 적은 직업을 지우지 않는다.
@@ -4356,6 +4359,7 @@ function counselSave(){
  try{sessionStorage.setItem('saju_counsel_v1',JSON.stringify(data));}catch(e){}
 }
 function confirmCounselStep(key,skip=false){
+ if(_category==='topic-love'&&key==='status'&&(skip||!document.getElementById('counsel_status')?.value))return showErr('현재 연애·결혼 상태를 선택해 주세요.','counsel_status');
  const input=document.getElementById('counsel_'+key);if(!input)return;
  if(key==='occupation'&&!input.value.trim())return showErr('현재 하는 일(직업)을 입력해 주세요. 학생·구직 중·육아·은퇴도 적을 수 있어요.',input.id);
  if(skip)input.value='';
@@ -4368,10 +4372,11 @@ function renderCounselFields(cat){
  const fields=counselFieldsFor(cat),owner=counselStore()[counselOwnerKey()]||{},saved=owner[cat];
  const occupation=owner.occupation??Object.entries(owner).filter(([c])=>['life','newyear','topic-career','ziwei'].includes(c)).flatMap(([,v])=>v?.answers||[]).find(a=>a.key==='occupation'||a.key==='activity')?.value??'';
  host.innerHTML=fields.map(([key,label,ph])=>{const def=counselDefinition(cat,key),id='counsel_'+key;
- const control=def?.type==='select'?`<select id="${id}" name="${id}"><option value="">선택해 주세요</option>${def.options.map(v=>`<option value="${storyEsc(v)}">${storyEsc(v)}</option>`).join('')}</select>`:`<input type="text" id="${id}" name="${id}" placeholder="${storyEsc(ph)}" autocomplete="off" ${key==='occupation'?'required aria-required="true"':''}>`;
- return `<fieldset class="cat-extra counsel-step" data-counsel-key="${key}"><legend><label for="${id}">${storyEsc(label)}</label> <small class="${key==='occupation'?'required-note':'optional-note'}">${key==='occupation'?'필수':'(선택)'}</small></legend><div class="ig">${control}</div><div class="counsel-actions"><button type="button" class="name-next" onclick="confirmCounselStep('${key}')">다음 →</button>${key==='occupation'?'':`<button type="button" class="counsel-skip" onclick="confirmCounselStep('${key}',true)">건너뛰기</button>`}</div></fieldset>`;}).join('');
+ const required=counselFieldRequired(cat,key);
+ const control=def?.type==='select'?`<select id="${id}" name="${id}" ${required?'required aria-required="true"':''}><option value="">선택해 주세요</option>${def.options.map(v=>`<option value="${storyEsc(v)}">${storyEsc(v)}</option>`).join('')}</select>`:`<input type="text" id="${id}" name="${id}" placeholder="${storyEsc(ph)}" autocomplete="off" ${required?'required aria-required="true"':''}>`;
+ return `<fieldset class="cat-extra counsel-step" data-counsel-key="${key}"><legend><label for="${id}">${storyEsc(label)}</label> <small class="${required?'required-note':'optional-note'}">${required?'필수':'(선택)'}</small></legend><div class="ig">${control}</div><div class="counsel-actions"><button type="button" class="name-next" onclick="confirmCounselStep('${key}')">다음 →</button>${required?'':`<button type="button" class="counsel-skip" onclick="confirmCounselStep('${key}',true)">건너뛰기</button>`}</div></fieldset>`;}).join('');
  fields.forEach(([key])=>{const input=document.getElementById('counsel_'+key);input.value=key==='occupation'?occupation:saved?.answers?.find(a=>a.key===key)?.value||(key==='question'?owner.questions?.[cat]?.text:'')||'';input.closest('fieldset').dataset.wzConfirmed=input.value||saved?.confirmed?.includes(key)?'1':'0';input.addEventListener('input',()=>{input.closest('fieldset').dataset.wzConfirmed='0';counselUpdateVisibility();counselSave();});input.addEventListener('change',()=>{counselUpdateVisibility();counselSave();if(input.tagName==='SELECT')inputWizardInit(true);});});
- counselUpdateVisibility();
+ counselUpdateVisibility();syncLoveMarital();
  if(cat==='qna')counselSave();
  // 생년월일·출생지 변경으로 새 입력칸이 만들어졌을 때 단계 목록도 갱신한다.
  if(active&&previous===cat)inputWizardInit(true);
@@ -4602,7 +4607,7 @@ function wzStepKind(step){
 }
 const WZ_PROMPT={name:'이름을 알려 주세요',naming:'풀이할 이름을 알려 주세요',marital:'지금 연애·결혼 상태를 알려 주세요',gender:'성별을 골라 주세요',birth:'생년월일을 입력해 주세요',time:'태어난 시각을 알려 주세요',city:'태어난 곳을 확인해 주세요',ctx:'궁금한 점을 적어 주세요'};
 function wzPromptFor(step){
-  const k=wzStepKind(step);if(k==='counsel'){const key=step[0].dataset.counselKey;if(key==='occupation')return '현재 하는 일(직업)을 알려 주세요';if(key==='question')return '이 상담에서 가장 궁금한 점을 적어 주세요';const label=step[0].querySelector('label')?.textContent||'상담 상황';return label+(_hasJong(label)?'을':'를')+' 알려 주세요';}if(k==='ctx'&&!CTX_Q[_category])return '상황을 알려 주시면 더 자세히 풀어드려요 (선택)';if(WZ_PROMPT[k])return WZ_PROMPT[k];
+  const k=wzStepKind(step);if(k==='counsel'){const key=step[0].dataset.counselKey;if(key==='occupation')return '현재 하는 일(직업)을 알려 주세요';if(key==='question')return _category==='topic-love'?'더 알려주고 싶은 상황이 있나요?':'이 상담에서 가장 궁금한 점을 적어 주세요';const label=step[0].querySelector('label')?.textContent||'상담 상황';return label+(_hasJong(label)?'을':'를')+' 알려 주세요';}if(k==='ctx'&&!CTX_Q[_category])return '상황을 알려 주시면 더 자세히 풀어드려요 (선택)';if(WZ_PROMPT[k])return WZ_PROMPT[k];
   const t=step[0]&&(step[0].querySelector('.cat-extra-title')||step[0].querySelector('legend'));
   const lab=t?t.textContent.replace(/\(.*?\)/g,'').split('—').pop().trim():'';
   return lab?`${lab}${_hasJong(lab)?'을':'를'} 알려 주세요`:'나머지 정보를 알려 주세요';
@@ -4610,7 +4615,7 @@ function wzPromptFor(step){
 function wzBirthOk(){const y=+document.getElementById('iY').value,m=+document.getElementById('iM').value,d=+document.getElementById('iD').value;return y>=1900&&y<=2050&&m>=1&&m<=12&&d>=1&&d<=31;}
 function wzStepDone(step){
   const form=document.getElementById('formWrap'),k=wzStepKind(step);
-  if(k==='counsel'){const f=step[0],input=f.querySelector('input,select,textarea');return f.dataset.wzConfirmed==='1'&&(f.dataset.counselKey!=='occupation'||!!input.value.trim());}
+  if(k==='counsel'){const f=step[0],input=f.querySelector('input,select,textarea');return f.dataset.wzConfirmed==='1'&&(!counselFieldRequired(_category,f.dataset.counselKey)||!!input.value.trim());}
   if(k==='gender')return form&&form.dataset.genderPicked==='1';
   if(k==='birth')return wzBirthOk();
   if(k==='time'){const u=document.getElementById('iTimeUnknown'),h=document.getElementById('iHourInput').value,mi=document.getElementById('iMin').value;return (u&&u.checked)||(h!==''&&(mi!==''||!step.some(f=>f.contains(document.activeElement))));}
@@ -5502,7 +5507,7 @@ function goToInput(cat){
       :'선택하시면 일주와 MBTI의 흐름을 비교한 한 줄 풀이가 결과에 함께 노출돼요.';
   }
   const nmFs=document.getElementById('nameFieldset');if(nmFs)nmFs.style.display=cat==='name'?'none':'';
-  const mrFs=document.getElementById('catExtraMarital');if(mrFs)mrFs.style.display=(cat==='life'||cat==='newyear'||(/^topic-/.test(cat)&&cat!=='topic-child'))?'':'none';
+  const mrFs=document.getElementById('catExtraMarital');if(mrFs)mrFs.style.display=(cat==='life'||cat==='newyear'||(/^topic-/.test(cat)&&!['topic-child','topic-love'].includes(cat)))?'':'none';
   // 아이 사주는 보호자의 출생정보를 채우지 않는다 — 다른 풀이로 돌아가면 보호자 정보가 다시 채워진다
   const isChild=cat==='topic-child';
   const lgG=document.getElementById('lgGender'),lgB=document.getElementById('lgBirth');
@@ -24307,9 +24312,10 @@ function analyze(){
   const inputHour=hour,inputMin=min,dstAsIs=!!document.getElementById('iDstAsIs')?.checked;
 
   if(cat0!=='name'&&!readSajuName())return showErr('이름을 입력해 주세요.','iName');
-  if((cat0==='life'||cat0==='newyear'||(/^topic-/.test(cat0)&&cat0!=='topic-child'))&&!['single','dating','married'].includes(_marital))return showErr('연애·결혼 상태를 선택해 주세요.','mrSingle');
+  if((cat0==='life'||cat0==='newyear'||(/^topic-/.test(cat0)&&!['topic-child','topic-love'].includes(cat0)))&&!['single','dating','married'].includes(_marital))return showErr('연애·결혼 상태를 선택해 주세요.','mrSingle');
 
   refreshCounselOwner();
+  if(cat0==='topic-love'&&!document.getElementById('counsel_status')?.value)return showErr('현재 연애·결혼 상태를 선택해 주세요.','counsel_status');
   if(counselFieldsFor(cat0).some(([key])=>key==='occupation')&&!String(document.getElementById('counsel_occupation')?.value||'').trim())return showErr('현재 하는 일(직업)을 입력해 주세요.','counsel_occupation');
   counselSave();
 
@@ -25580,6 +25586,6 @@ if(typeof ReadingVoice==='object')ReadingVoice.install(window,["renderMBTI","ren
   vv.addEventListener('resize',()=>{if(target){clearTimeout(timer);timer=setTimeout(lift,80);}});
 })();
 </script>
-<script src="assets/input-chat.js?v=fb2aabba10d9"></script>
+<script src="assets/input-chat.js?v=b3f80ec3a624"></script>
 </body>
 </html>

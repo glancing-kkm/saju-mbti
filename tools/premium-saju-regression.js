@@ -6,12 +6,12 @@ try{
  rt.set({...rt.fixture(40),hour:8});
  const outlines=new Set();
  for(const [cat,spec]of Object.entries(products)){
-  assert(spec.fields.length<=(cat==='topic-reunion'?4:3),cat+' must keep intake short');
+  assert(spec.fields.length<=(['topic-reunion','topic-love'].includes(cat)?4:3),cat+' must keep intake short');
   assert(spec.fields.some(f=>f.key==='question'),cat+' keeps one optional free question');
   w.cat=cat;run('goToInput(window.cat)');
   // 주제별 운세는 각자의 질문으로 상황을 받으므로 직업 칸을 따로 묻지 않는다(2026-11-02 사용자 요청).
   assert(!d.getElementById('counsel_occupation'),cat+' should not ask occupation');
-  for(const f of spec.fields){const input=d.getElementById('counsel_'+f.key);assert(input,cat+'/'+f.key);assert(!input.required);assert(!input.hasAttribute('maxlength'));if(f.type==='select'){assert.equal(input.tagName,'SELECT');assert([...input.options].some(o=>o.value==='답변하지 않음'));assert([...input.options].some(o=>o.value==='기타'));}}
+  for(const f of spec.fields){const input=d.getElementById('counsel_'+f.key);assert(input,cat+'/'+f.key);assert.equal(input.required,cat==='topic-love'&&f.key==='status');assert(!input.hasAttribute('maxlength'));if(f.type==='select'){assert.equal(input.tagName,'SELECT');if(!(cat==='topic-love'&&f.key==='status'))assert([...input.options].some(o=>o.value==='답변하지 않음'));assert([...input.options].some(o=>o.value==='기타'));}}
   const report=run('AIReport.sources(window.cat,_saju,_meta)');
   assert(report.productGuide);assert.equal(report.productGuide.targetCharacters[0],Math.round(spec.range[0]*.8));assert(report.storytelling.secondary.includes('STORY_06'));
   assert.equal(report.chapters[0].kind,'prologue');assert.equal(report.chapters.at(-1).kind,'guide');
@@ -33,10 +33,20 @@ try{
  rt.set({...rt.fixture(40),gnExtra:null});assert.throws(()=>run("AIReport.sources('gunghap',_saju,_meta)"),/상대방/);rt.set({...rt.fixture(40),gnExtra:{...rt.fixture(40).gnExtra,gh:-1}});const pair=run("AIReport.sources('gunghap',_saju,_meta)");assert(pair.limits.some(x=>x.includes('상대방 출생시각 미상')));
 
  run("goToInput('topic-love');document.getElementById('counsel_status').value='솔로';counselUpdateVisibility()");
- assert.equal(d.getElementById('counsel_duration'),null,'relationship duration no longer asked');
+ assert(d.getElementById('counsel_duration').closest('fieldset').hidden,'solo skips relationship duration');
+ assert.equal(d.getElementById('catExtraMarital').style.display,'none');
+ assert.deepEqual(Array.from(products['topic-love'].fields,f=>f.key),['status','focus','duration','question']);
+ assert.equal(d.getElementById('counsel_concern'),null);assert.equal(d.getElementById('counsel_goal'),null);
  assert(!run("counselRead('topic-love')").answers.some(a=>a.key==='duration'));
  run("document.getElementById('counsel_status').value='연애 중';document.getElementById('counsel_status').dispatchEvent(new Event('change',{bubbles:true}))");
- assert(run('_wz.steps').some(s=>s[0].dataset.counselKey==='question'),'one question follows relationship status');
+ assert(run('_wz.steps').some(s=>s[0].dataset.counselKey==='duration'));
+ assert.equal(run('_marital'),'dating');
+ run("document.getElementById('counsel_duration').value='교제 1년';counselSave()");
+ assert(run("counselRead('topic-love')").answers.some(a=>a.key==='duration'));
+ run("document.getElementById('counsel_status').value='기혼';document.getElementById('counsel_status').dispatchEvent(new Event('change',{bubbles:true}))");
+ assert.equal(run('_marital'),'married');assert(d.getElementById('counsel_duration').closest('fieldset').hidden);
+ assert(!run("counselRead('topic-love')").answers.some(a=>a.key==='duration'));
+ assert(run('_wz.steps').some(s=>s[0].dataset.counselKey==='question'));
  const question='개인별 상담 질문 '.repeat(600);d.getElementById('counsel_question').value=question;run('counselSave()');assert.equal(run("ctxCollect('topic-love')").text,question);assert.equal(run("counselRead('topic-love')").source,'user-stated');
  run("goToInput('topic-money');goToInput('topic-love')");assert.equal(d.getElementById('counsel_question').value,question.trim());
  run("document.getElementById('iY').value='1991';renderCounselFields('topic-love')");assert.equal(d.getElementById('counsel_question').value,'');

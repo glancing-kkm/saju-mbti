@@ -59,5 +59,14 @@ try{
  d.getElementById('gnCity').value='대전광역시';next();assert.equal(step(),'partnerDst');
  d.querySelector('[data-partner-dst="corrected"]').click();assert(d.getElementById('gnDstAsIs').checked);assert.notEqual(step(),'partnerDst');
  run("goToInput('life')");assert(!run('_wz.steps.some(s=>wzStepKind(s).startsWith("partner"))'));
- console.log('Input chat passed: explicit replies, named/category guide, DST corrected/unknown, completion/edit, unknown-time skip, 16 shared categories; no model/payment calls.');
+ run("goToInput('topic-love');document.getElementById('counsel_status').value='';_wz.open=_wz.steps.findIndex(s=>s[0].dataset.counselKey==='status');wizardShow(null)");
+ next();assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'status','unified relationship status is required');
+ assert(!run('_wz.steps.some(s=>wzStepKind(s)==="marital")'),'no duplicate relationship question');
+ d.getElementById('counsel_status').value='연애 중';d.getElementById('counsel_status').dispatchEvent(new w.Event('change',{bubbles:true}));next();
+ assert.equal(run('_marital'),'dating');assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'focus');
+ next();assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'duration');
+ next();assert.equal(run('_wz.steps[_wz.open][0].dataset.counselKey'),'question');
+ assert.match(d.querySelector('#counsel_question').closest('fieldset').querySelector('.chat-question').textContent,/더 알려주고 싶은 상황/);
+ next();assert(d.getElementById('formWrap').classList.contains('chat-complete'),'all extra context may be skipped');
+ console.log('Input chat passed: explicit replies, named/category guide, DST corrected/unknown, completion/edit, unknown-time skip, 16 shared categories, unified love intake; no model/payment calls.');
 }finally{rt.close();}

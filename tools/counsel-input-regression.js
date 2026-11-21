@@ -8,7 +8,7 @@ try{
   w.cat=cat;run('goToInput(window.cat)');
   // 직업은 인생총운·신년운세·자미두수·즉문즉답에서만 묻는다. 궁합·연애 같은 주제는 직업 칸이 없다.
   const occupation=d.getElementById('counsel_occupation');
-  if(!run('COUNSEL_OCCUPATION_CATS').includes(cat)){assert.equal(occupation,null,cat+' must not ask occupation');assert.equal(d.querySelectorAll('#counselFields [required]').length,0);continue;}
+  if(!run('COUNSEL_OCCUPATION_CATS').includes(cat)){assert.equal(occupation,null,cat+' must not ask occupation');assert.equal(d.querySelectorAll('#counselFields [required]').length,cat==='topic-love'?1:0);continue;}
   assert(occupation.required,cat);
   const fs=occupation.closest('fieldset'),steps=run('_wz.steps');
   assert(steps.some(step=>step[0]===fs),cat+' must be a wizard step');

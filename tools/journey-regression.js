@@ -22,12 +22,13 @@ w.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');
 w.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');};
 w.fetch=async()=>({ok:true,json:async()=>({}),text:async()=>'',headers:{get:()=>null}});
 const run=code=>vm.runInContext(code,ctx,{timeout:15000});
+run(fs.readFileSync(path.join(root,'assets/premium-saju.js'),'utf8'));
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const check=(label,fn)=>{fn();console.log('✓ '+label);};
 const scripts=[...d.querySelectorAll('script')].filter(s=>!s.src&&!/json/.test(s.type)).map(s=>s.textContent).join('\n;\n');
 const events=()=>Array.from(w.dataLayer||[]).filter(e=>e[0]==='event');
 const pending=()=>JSON.parse(w.sessionStorage.getItem('kakao_pay_pending_v1'));
-const completeCounsel=()=>run("renderCounselFields(_category);if(document.getElementById('counsel_occupation')){document.getElementById('counsel_occupation').value='사무직';counselSave();}");
+const completeCounsel=()=>run("renderCounselFields(_category);if(_category==='topic-love'){document.getElementById('counsel_status').value='솔로';counselSave();}if(document.getElementById('counsel_occupation')){document.getElementById('counsel_occupation').value='사무직';counselSave();}");
 const submitBirth=async()=>{
   if(!d.getElementById('iName').value)d.getElementById('iName').value='김하늘';
   run("setMarital('single')");
