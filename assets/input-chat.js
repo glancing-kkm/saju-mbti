@@ -15,17 +15,19 @@
       const date=part('chatPartnerBirth','상대방 생년월일',[$('gnY').closest('.birth-date-row')]);
       const calendar=part('chatPartnerCalendar','상대방 달력 기준',[$('gnCalType').closest('.birth-calendar'),$('gnLeapSec')]);
       calendar.insertAdjacentHTML('afterbegin','<div class="chat-calendar-options" role="group" aria-label="상대방 달력 기준"><button type="button" data-partner-cal="solar">양력이에요</button><button type="button" data-partner-cal="lunar">음력이에요</button></div>');
-      calendar.querySelectorAll('[data-partner-cal]').forEach(b=>b.addEventListener('click',()=>{setGnCal(b.dataset.partnerCal);paint();}));
+      calendar.querySelectorAll('[data-partner-cal]').forEach(b=>b.addEventListener('click',()=>{setGnCal(b.dataset.partnerCal);next();}));
+      const leap=part('chatPartnerLeap','상대방 평달·윤달',[$('gnLeapSec')]);
       const time=part('chatPartnerTime','상대방 태어난 시각',[$('gnH').closest('.row3')]);
       const unknown=document.createElement('label');unknown.className='time-unknown-row';unknown.innerHTML='<input type="checkbox" id="chatPartnerUnknown"> 시간을 몰라요';time.append(unknown);
       unknown.querySelector('input').addEventListener('change',e=>{['gnH','gnMin'].forEach(id=>{$(id).disabled=e.target.checked;if(e.target.checked)$(id).value='';});});
       const city=part('chatPartnerCity','상대방 출생지역',[$('gnCity').closest('.ig')]);
       const dst=part('chatPartnerDst','상대방 서머타임 확인',[$('gnDstAsIs').closest('.dst-row')]);
       dst.insertAdjacentHTML('beforeend','<div class="chat-dst-options"><button type="button" data-partner-dst="clock">기록된 시간 그대로예요</button><button type="button" data-partner-dst="corrected">이미 1시간 빼고 적었어요</button><button type="button" data-partner-dst="unknown">어느 쪽인지 모르겠어요</button></div><p class="chat-dst-note">모르시면 기록된 시간으로 보고, 서머타임 1시간을 빼서 계산해요.</p>');
-      dst.querySelectorAll('[data-partner-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.partnerDst;$('gnDstAsIs').checked=b.dataset.partnerDst==='corrected';paint();}));
-      parent.after(date,calendar,time,city,dst);
+      dst.querySelectorAll('[data-partner-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.partnerDst;$('gnDstAsIs').checked=b.dataset.partnerDst==='corrected';next();}));
+      parent.after(date,calendar,leap,time,city,dst);
     }
     ['Birth','Calendar','Time','City'].forEach(k=>$('chatPartner'+k).hidden=_category!=='gunghap');
+    $('chatPartnerLeap').hidden=_category!=='gunghap'||_gnCal!=='lunar';
     const b=dstBirthSolar(+val('gnY'),+val('gnM'),+val('gnD'),_gnCal,_gnLeap);
     $('chatPartnerDst').hidden=_category!=='gunghap'||!b||!krDstDay(b.y,b.m,b.d)||val('gnH')===''||!domestic.has(normalizeCityInput(val('gnCity')));
     const sig=['gnY','gnM','gnD','gnH','gnMin','gnCity'].map(val).join('|')+_gnCal+_gnLeap;
@@ -38,28 +40,30 @@
     if(!$('chatCalendar')){
       const date=$('iY').closest('fieldset'),cal=document.createElement('fieldset');cal.id='chatCalendar';cal.innerHTML='<legend>달력 기준</legend><div class="chat-calendar-options" role="group" aria-label="달력 기준"><button type="button" data-cal="solar">양력이에요</button><button type="button" data-cal="lunar">음력이에요</button></div>';
       cal.append($('iCalType').closest('.birth-calendar'),$('leapSec'));date.after(cal);
-      cal.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{setCal(b.dataset.cal);cal.dataset.wzConfirmed='1';paint();}));
+      cal.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{setCal(b.dataset.cal);cal.dataset.wzConfirmed='1';next();}));
+      const leap=document.createElement('fieldset');leap.id='chatLeap';leap.innerHTML='<legend>평달·윤달</legend>';leap.append($('leapSec'));cal.after(leap);
       const dst=document.createElement('fieldset');dst.id='chatDst';dst.innerHTML='<legend>서머타임 확인</legend><div class="chat-dst-options" role="group" aria-label="입력한 시각의 기준"><button type="button" data-dst="clock">기록된 시간 그대로예요</button><button type="button" data-dst="corrected">이미 1시간 빼고 적었어요</button><button type="button" data-dst="unknown">어느 쪽인지 모르겠어요</button></div><p class="chat-dst-note">모르시면 기록된 시간으로 보고, 서머타임 1시간을 빼서 계산해요.</p>';
       dst.append($('iDstAsIs').closest('.dst-row'),$('dstHelp'));$('iCity').closest('fieldset').after(dst);
-      dst.querySelectorAll('[data-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.dst;dst.dataset.signature=signature();$('iDstAsIs').checked=b.dataset.dst==='corrected';paint();}));
+      dst.querySelectorAll('[data-dst]').forEach(b=>b.addEventListener('click',()=>{dst.dataset.answer=b.dataset.dst;dst.dataset.signature=signature();$('iDstAsIs').checked=b.dataset.dst==='corrected';next();}));
       form.addEventListener('click',e=>{
-        const button=e.target.closest('.gender-choice button');
+        const button=e.target.closest('.gender-choice button,#catExtraMarital .tog-row button,#leapSec button,#gnLeapSec button');
         if(!button||!button.closest('fieldset').classList.contains('chat-current'))return;
         const fs=button.closest('fieldset');
         if(wzStepKind([fs])==='gender')form.dataset.genderPicked='1';
-        else fs.dataset.genderPicked='1';
+        else if(wzStepKind([fs])==='partnerGender')fs.dataset.genderPicked='1';
         next();
       });
       form.addEventListener('submit',e=>{if(!complete){e.preventDefault();e.stopImmediatePropagation();next();}},true);
       form.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='BUTTON'){e.preventDefault();e.stopImmediatePropagation();next();}},true);
     }
     partnerPrepare();
+    $('chatLeap').hidden=calType!=='lunar';
     $('chatDst').hidden=!dstNeeded();
     if($('chatDst').dataset.signature!==signature())delete $('chatDst').dataset.answer;
     if(!form.querySelector('.chat-progress')){const p=document.createElement('div');p.className='chat-progress';p.innerHTML='<span role="status" aria-live="polite"></span><progress max="100" value="0" aria-label="출생정보 입력 진행률"></progress>';form.prepend(p);}
   }
-  wzStepKind=function(step){if(step[0].id==='catExtraGunghap')return 'partnerGender';if(step[0].id.startsWith('chatPartner'))return 'partner'+step[0].id.slice(11);if(step.some(f=>f.id==='chatCalendar'))return 'calendar';if(step.some(f=>f.id==='chatDst'))return 'dst';return oldKind(step);};
-  wzStepDone=function(step){const k=wzStepKind(step);if(k.startsWith('partner'))return step[0].dataset.wzConfirmed==='1';if(k==='calendar')return $('chatCalendar').dataset.wzConfirmed==='1';if(k==='dst')return !!$('chatDst').dataset.answer;return oldDone(step);};
+  wzStepKind=function(step){if(step[0].id==='chatLeap')return 'leap';if(step[0].id==='catExtraGunghap')return 'partnerGender';if(step[0].id.startsWith('chatPartner'))return 'partner'+step[0].id.slice(11);if(step.some(f=>f.id==='chatCalendar'))return 'calendar';if(step.some(f=>f.id==='chatDst'))return 'dst';return oldKind(step);};
+  wzStepDone=function(step){const k=wzStepKind(step);if(k.startsWith('partner'))return step[0].dataset.wzConfirmed==='1';if(k==='leap')return step[0].dataset.wzConfirmed==='1';if(k==='calendar')return $('chatCalendar').dataset.wzConfirmed==='1';if(k==='dst')return !!$('chatDst').dataset.answer;return oldDone(step);};
   inputWizardInit=function(keep){
     prepare();ready=true;complete=false;if(!keep)editReturn=null;
     if(!keep&&_lastInputs&&val('iY')===String(_lastInputs.year)&&val('iM')===String(_lastInputs.month)&&val('iD')===String(_lastInputs.day))$('chatCalendar').dataset.wzConfirmed='1';
@@ -75,10 +79,11 @@
   function character(){let key=_category?.replace('topic-','')||'life';if(['manse','daily','life','newyear','gunghap','name','love','marriage','reunion','money','career','study','child','children','health','ziwei','qna'].includes(key)===false)key='life';return '/assets/art-v2/posters/'+key+'.webp';}
   function question(fs){const k=wzStepKind([fs]),name=readSajuName(),who=name?name+'님, ':'';
     const optional=k==='counsel'&&fs.dataset.counselKey!=='occupation';
-    return ({partnerGender:'이제 상대방 정보를 알려주세요. 성별은 어떻게 되세요?',partnerBirth:'상대방의 생년월일을 알려주세요.',partnerCalendar:'상대방 생일은 양력인가요, 음력인가요?',partnerTime:'상대방이 태어난 시각을 알고 계세요?',partnerCity:'상대방은 어느 지역에서 태어났나요?',partnerDst:'상대방이 태어난 날에도 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',name:'만나서 반가워요 🙂 편하게 불러드릴 이름을 알려주세요.',gender:who+'성별을 알려주시겠어요?',birth:who+'생일은 언제인가요? 태어난 날짜를 알려주세요.',calendar:'알려주신 생일은 양력인가요, 음력인가요?',time:'태어난 시각을 알려주세요. 모르면 아래에서 선택해 주세요.',city:'어느 지역에서 태어나셨나요?',dst:who+'태어난 날에는 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',marital:'지금 연애·결혼 상태는 어떻게 되세요?',naming:'풀이하고 싶은 이름을 알려주세요.'})[k]||(wzPromptFor([fs])+(optional?' 답변은 선택이에요.':''));
+    return ({leap:'알려주신 음력 생일은 평달인가요, 윤달인가요?',partnerLeap:'상대방의 음력 생일은 평달인가요, 윤달인가요?',partnerGender:'이제 상대방 정보를 알려주세요. 성별은 어떻게 되세요?',partnerBirth:'상대방의 생년월일을 알려주세요.',partnerCalendar:'상대방 생일은 양력인가요, 음력인가요?',partnerTime:'상대방이 태어난 시각을 알고 계세요?',partnerCity:'상대방은 어느 지역에서 태어났나요?',partnerDst:'상대방이 태어난 날에도 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',name:'만나서 반가워요 🙂 편하게 불러드릴 이름을 알려주세요.',gender:who+'성별을 알려주시겠어요?',birth:who+'생일은 언제인가요? 태어난 날짜를 알려주세요.',calendar:'알려주신 생일은 양력인가요, 음력인가요?',time:'태어난 시각을 알려주세요. 모르면 아래에서 선택해 주세요.',city:'어느 지역에서 태어나셨나요?',dst:who+'태어난 날에는 한국에서 서머타임을 썼어요. 알려주신 시각은 출생 기록에 적힌 시간 그대로인가요?',marital:'지금 연애·결혼 상태는 어떻게 되세요?',naming:'풀이하고 싶은 이름을 알려주세요.'})[k]||(wzPromptFor([fs])+(optional?' 답변은 선택이에요.':''));
   }
   function answer(fs){const k=wzStepKind([fs]);
     if(k==='partnerGender')return _gnGender==='female'?'여성':'남성';if(k==='partnerBirth')return `${val('gnY')}년 ${val('gnM')}월 ${val('gnD')}일`;if(k==='partnerCalendar')return _gnCal==='lunar'?'음력 · '+(_gnLeap?'윤달':'평달'):'양력';if(k==='partnerTime')return val('gnH')===''?'태어난 시각은 몰라요':`${val('gnH')}시 ${val('gnMin')||'00'}분`;if(k==='partnerCity')return val('gnCity');if(k==='partnerDst')return ({clock:'기록된 시간 그대로',corrected:'이미 1시간 빼고 적음',unknown:'모르겠어요 · 기록된 시간 그대로 적용'})[fs.dataset.answer]||'';if(k==='name')return readSajuName();if(k==='gender')return gender==='female'?'여성':'남성';
+    if(k==='leap')return isLeap?'윤달':'평달';if(k==='partnerLeap')return _gnLeap?'윤달':'평달';
     if(k==='birth')return `${val('iY')}년 ${val('iM')}월 ${val('iD')}일`;
     if(k==='calendar')return calType==='lunar'?'음력 · '+(isLeap?'윤달':'평달'):'양력';
     if(k==='time')return $('iTimeUnknown').checked?'태어난 시각은 몰라요':`${val('iHourInput')}시 ${val('iMin')||'00'}분`;
@@ -90,7 +95,7 @@
     steps.forEach((step,i)=>step.forEach(fs=>{
       let prompt=fs.querySelector(':scope > .chat-question');if(!prompt){prompt=document.createElement('div');prompt.className='chat-question';prompt.innerHTML='<img alt="" width="42" height="42"><p tabindex="-1"></p>';fs.prepend(prompt);}
       prompt.querySelector('img').src=character();prompt.querySelector('img').onerror=function(){this.onerror=null;this.src='/assets/art-v2/posters/life.webp';};prompt.querySelector('p').textContent=question(fs);
-      let reply=fs.querySelector(':scope > .chat-reply');if(!reply){reply=document.createElement('button');reply.type='button';reply.className='chat-reply';reply.innerHTML='<span></span><small>수정</small>';fs.append(reply);reply.addEventListener('click',()=>{editReturn={fs:_wz.steps[_wz.open][0],complete};complete=false;_wz.open=_wz.steps.findIndex(s=>s.includes(fs));wizardShow(null);fs.scrollIntoView({behavior:'smooth',block:'center'});});}
+      let reply=fs.querySelector(':scope > .chat-reply');if(!reply){reply=document.createElement('button');reply.type='button';reply.className='chat-reply';reply.innerHTML='<span></span><small>수정</small>';fs.append(reply);reply.addEventListener('click',()=>{editReturn={fs:_wz.steps[_wz.open][0],complete};complete=false;_wz.open=_wz.steps.findIndex(s=>s.includes(fs));wizardShow(null);reveal(60);});}
       reply.querySelector('span').textContent=answer(fs);reply.setAttribute('aria-label',answer(fs)+' 수정');
       const kind=wzStepKind([fs]);
       fs.dataset.chatKind=kind;
@@ -99,12 +104,12 @@
         const selected=kind==='gender'?gender:_gnGender;
         fs.querySelectorAll('.gender-choice button').forEach(b=>{const on=picked==='1'&&((b.id==='bm'||b.id==='gnGm')?selected==='male':selected==='female');b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));});
       }
-      let send=fs.querySelector('.chat-send');if(!send){send=document.createElement('button');send.type='button';send.className='chat-send';send.addEventListener('click',next);fs.append(send);}
+      let send=fs.querySelector('.chat-send');if(!send){send=document.createElement('button');send.type='button';send.className='chat-send';send.addEventListener('click',next);send.addEventListener('mousedown',e=>e.preventDefault());fs.append(send);}
       const optional=wzStepKind([fs])==='counsel'&&fs.dataset.counselKey!=='occupation'&&!fs.querySelector('input,select,textarea')?.value.trim();
       if(!send.querySelector('svg'))send.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>';
       send.setAttribute('aria-label',optional?'건너뛰기':'보내기');send.title=optional?'건너뛰기':'보내기';
-      send.hidden=kind==='gender'||kind==='partnerGender';
-      // Choice questions need no typing box: the send button sits beside the choices.
+      send.hidden=['gender','partnerGender','calendar','partnerCalendar','leap','partnerLeap','dst','partnerDst','marital'].includes(kind);
+      // Choices submit immediately; text inputs retain their send button.
       const options=fs.querySelector(':scope > :is(.chat-calendar-options,.chat-dst-options)');
       if(options){if(send.parentNode!==options)options.append(send);}
       else if(!send.hidden&&!fs.querySelector('.chat-composer')){
@@ -133,6 +138,7 @@
     if(k==='name'){if(!readSajuName())return showErr('이름을 입력해 주세요.','iName'),false;fs.dataset.wzConfirmed='1';}
     if(k==='gender'&&$('formWrap').dataset.genderPicked!=='1')return showErr('성별을 선택해 주세요.','bm'),false;
     if(k==='birth'){const y=+val('iY'),m=+val('iM'),d=+val('iD');if(!wzBirthOk()||d>31)return showErr('생년월일을 확인해 주세요.','iD'),false;}
+    if(k==='leap')fs.dataset.wzConfirmed='1';
     if(k==='calendar'){if(calType==='solar'){const date=new Date(+val('iY'),+val('iM')-1,+val('iD'));if(date.getMonth()!==+val('iM')-1)return showErr('해당 월에 없는 날짜예요. 생일을 확인해 주세요.','iD'),false;}fs.dataset.wzConfirmed='1';}
     if(k==='time'&&!$('iTimeUnknown').checked){if(val('iHourInput')===''||+val('iHourInput')<0||+val('iHourInput')>23||val('iMin')===''||+val('iMin')<0||+val('iMin')>59)return showErr('시(0~23)와 분(0~59)을 입력하거나 시간을 몰라요를 선택해 주세요.','iHourInput'),false;}
     if(k==='city'){if(!val('iCity'))return showErr('태어난 곳을 알려주세요.','iCity'),false;fs.dataset.wzConfirmed='1';}
@@ -147,8 +153,28 @@
     const old=fs;prepare(); // A changed date/place may insert or remove the DST question.
     permit=true;try{inputWizardInit(true);}finally{permit=false;}
     const at=_wz.steps.findIndex(s=>s.includes(old));_wz.open=Math.min(at+1,_wz.steps.length-1);complete=at===_wz.steps.length-1;
-    if(editReturn&&!['birth','calendar','time','city','partnerBirth','partnerCalendar','partnerTime','partnerCity'].includes(wzStepKind([old]))){const back=_wz.steps.findIndex(s=>s.includes(editReturn.fs));if(back>=0){_wz.open=back;complete=editReturn.complete;}}editReturn=null;wizardShow(null);
-    const target=complete?$('formWrap').querySelector('.analyze-btn'):_wz.steps[_wz.open][0];requestAnimationFrame(()=>{target?.scrollIntoView({behavior:'smooth',block:'center'});(target?.querySelector('.chat-question p')||target)?.focus({preventScroll:true});});
+    if(editReturn&&!['birth','calendar','leap','time','city','partnerBirth','partnerCalendar','partnerLeap','partnerTime','partnerCity'].includes(wzStepKind([old]))){const back=_wz.steps.findIndex(s=>s.includes(editReturn.fs));if(back>=0){_wz.open=back;complete=editReturn.complete;}}editReturn=null;wizardShow(null);
+    // Typing questions keep the keyboard open: focus moves straight to the next box inside the same tap.
+    const target=complete?$('formWrap').querySelector('.analyze-btn'):_wz.steps[_wz.open][0];
+    const box=!complete&&[...target.querySelectorAll('.chat-composer input:not([type=hidden]):not([type=checkbox]), .chat-composer textarea')].find(x=>x.offsetParent&&!x.disabled);
+    if(box)box.focus({preventScroll:true});else{if(document.activeElement?.matches('input,textarea'))document.activeElement.blur();(complete?target:target.querySelector('.chat-question p')||target).focus({preventScroll:true});}
+    reveal(60);
   }
+  // The only code that moves the page while answering. Other scroll helpers (keyboard lift, step-centering)
+  // each moved the page on their own and fought each other, so the conversation bounced up and down.
+  // The current question and its reply box end just above the keyboard or bottom bar, like a messenger.
+  const vv=window.visualViewport;let revealTimer=0,steppedAt=0;
+  function reveal(delay){steppedAt=Date.now();clearTimeout(revealTimer);revealTimer=setTimeout(()=>{
+    const form=$('formWrap');if(!ready||!form||!form.offsetParent||!_wz.steps.length)return;
+    const target=complete?form.querySelector('.analyze-btn'):_wz.steps[_wz.open]?.[0];if(!target||!target.offsetParent)return;
+    const top=vv?vv.offsetTop:0;let bottom=top+(vv?vv.height:innerHeight);
+    const dock=document.querySelector('.nh-dock');if(dock&&getComputedStyle(dock).position==='fixed'&&getComputedStyle(dock).display!=='none'){const d=dock.getBoundingClientRect().top;if(d>top&&d<bottom)bottom=d;}
+    const bar=form.querySelector('.chat-progress'),minTop=top+(bar?bar.offsetHeight:0)+12,r=target.getBoundingClientRect();
+    let delta=Math.max(0,r.bottom-(bottom-16));if(r.top-delta<minTop)delta=r.top-minTop; // already fully visible: stay still
+    if(Math.abs(delta)>4)window.scrollBy({top:delta,behavior:'smooth'});
+  },delay||0);}
+  // Keyboard opening or closing changes the visible height; settle once it has finished moving.
+  if(vv)vv.addEventListener('resize',()=>{const a=document.activeElement;if(ready&&((a&&$('formWrap')?.contains(a)&&a.matches('input,textarea'))||Date.now()-steppedAt<1200)){const t=steppedAt;reveal(160);steppedAt=t;}});
+  document.addEventListener('focusin',e=>{const form=$('formWrap');if(ready&&form?.classList.contains('input-chat')&&form.contains(e.target)&&e.target.matches('input,textarea')){const t=steppedAt;reveal(350);steppedAt=t;}});
   window.InputChat={next,refresh:paint};
 })();

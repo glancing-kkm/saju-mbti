@@ -72,3 +72,10 @@
 #formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) .ig{padding:0}
 #formWrap.input-chat :is(.chat-date-composer,.chat-time-composer) input{padding:5px 0;text-align:center}
 #formWrap.input-chat .chat-dst-note{margin-top:10px}
+/* Room below the conversation so the current question can sit just above the phone keyboard.
+   It stays fixed while typing: adding and removing it on every focus change made the page jump. */
+@media (pointer:coarse){#formWrap.input-chat:not(.chat-complete){padding-bottom:50vh}}
+
+/* The question bubble replaces legacy headings in every chat step. */
+#formWrap.input-chat :is(.cat-extra-head,.required-note){display:none!important}
+#formWrap.input-chat :is(#chatLeap,#chatPartnerLeap) .leap-sec.vis{margin-top:4px}
